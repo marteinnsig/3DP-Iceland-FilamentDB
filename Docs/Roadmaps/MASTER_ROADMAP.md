@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v43.8.8 — Remote Signed Update Delivery Production Consolidation**
+Current canonical release: **v43.8.9 — SQLite Dependency Security**
 
-Last runtime-accepted baseline: **v43.8.8 — Remote Signed Update Delivery Production Consolidation**
+Last runtime-accepted baseline: **v43.8.9 — SQLite Dependency Security**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -19,8 +19,8 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v40 | Experimental Testing & Platform Integration | ★★★★★ | Complete — production FTPS publishing validated |
 | v41 | Engineering Intelligence | ★★★★★ | Complete — governed downstream handoffs delivered |
 | v42 | Website & Approved Template Architecture | ★★★★☆ | Foundation delivered early |
-| v43 | Deployment Platform | ★★★★☆ | In progress — installer/portable deployment runtime accepted |
-| v44 | Open Engineering Platform | ★★★☆☆ | Future |
+| v43 | Deployment Platform | ★★★★☆ | Complete — canonical v43.8.9 runtime accepted |
+| v44 | Daily Use, Reliability & Maintainability | ★★★★★ | Planned — feedback-driven, bounded desktop improvements |
 
 ## Reconciliation of the older plans
 
@@ -157,7 +157,7 @@ End-to-end export, working index links and Verification PASS were confirmed on
 2026-07-22. v41.7 is closed; Startup Performance & Safe Concurrency is now the
 next focused extension.
 
-### In progress - v41.8 Startup Performance & Safe Concurrency
+### Complete - v41.8 Startup Performance & Safe Concurrency
 
 Begin only after the current Report Portfolio has been implemented and accepted
 report by report. This is a profiling-first optimization build, not a general
@@ -203,7 +203,7 @@ confirmed Materials visible in about 5 seconds, all three workspaces warmed by
 - Use the 2026-07-21 baseline of about 3 seconds to splash and 19 seconds to a
   visible Materials list for before/after comparison.
 
-## Foundation delivered early — v42 Website & Approved Template Architecture
+## Complete — v42 Website & Approved Template Architecture
 
 Already delivered:
 
@@ -215,7 +215,7 @@ Already delivered:
 Remaining work belongs to the Publishing roadmap and should be driven by
 specific user-facing needs rather than a template rewrite.
 
-### v42 candidate - Public Report Publishing
+### Complete - v42 Public Report Publishing
 
 Evaluate which accepted engineering reports should become public website
 artifacts. The platform's purpose is to share useful 3D-printing research, so
@@ -421,7 +421,7 @@ Conflict-free legacy JSON can seed an empty database once, then remains a
 snapshot. Required schema-upgrade backup and Verification row/key parity protect
 the transition; operational report/publishing JSON remains unchanged.
 
-## Planned — v43 Deployment Platform
+## Complete — v43 Deployment Platform
 
 Delivered early:
 
@@ -429,13 +429,12 @@ Delivered early:
 - Trusted TLS certificate validation, passive transfers, timestamped remote
   backups, staged replacement and rollback protection.
 
-Remaining:
+Completed scope:
 
 - Installer and portable deployment modes.
-- Safe updater and rollback workflow.
-- Production deployment diagnostics.
-- Further deployment diagnostics and operational hardening where real usage
-  identifies a concrete need.
+- Safe signed updater, durable rollback and interrupted-state recovery.
+- Production deployment diagnostics, remote discovery/feed publishing and VM acceptance.
+- Further operational hardening now belongs to feedback-driven maintenance, not an open v43 milestone.
 
 Delivered in v43.1-v43.3.1:
 
@@ -504,6 +503,7 @@ Status: first read-only signed-package verification increment runtime accepted o
 | v43.7.0 | Installer and portable deployment modes | Complete; runtime accepted |
 | v43.8.0 | Remote signed update discovery, download and publishing | Complete; runtime accepted |
 | v43.8.8 | Production consolidation above all VM candidates | Complete; runtime accepted and production published |
+| v43.8.9 | SQLite dependency security, BOM-safe feed and repository/documentation closure | Complete; canonical and runtime accepted |
 
 ### v43.4.1 — Release Signing and Package Creation
 
@@ -730,28 +730,130 @@ Automated evidence (2026-07-22):
 
 - NuGet resolved `Microsoft.Data.Sqlite` 9.0.18 and the complete SQLitePCLRaw native/provider graph at 2.1.12. `dotnet list package --vulnerable --include-transitive` reports no known vulnerable package from the configured sources; the former high-severity 2.1.10 native library is absent.
 - Isolated Debug and Release builds passed with 0 warnings and 0 errors. The updater self-test passed commit, rollback, every interrupted-state recovery phase, traversal rejection and SQLite-backup-reference preservation.
-- A dirty-tree pre-release v43.8.9 signed candidate passed the production application verifier with exactly six governed files and schema v29. It is retained under `App/artifacts/v43_8_9-security-candidate`; it is not canonical or publish-approved until runtime acceptance.
-- Removed all enumerated reproducible ignored `.vs`, `bin`, `obj`, legacy application-local build artifacts and isolated test output. No locked target failed. Preserved only canonical `v43_8_8-production` and the explicit `v43_8_9-security-candidate` beneath `App/artifacts`; user data and the private Git archive were outside every cleanup target.
+- A pre-release v43.8.9 signed candidate passed the production application verifier with exactly six governed files and schema v29, then passed clean-VM update and restored-data runtime acceptance. The byte-identical tested artifact was promoted to `App/artifacts/v43_8_9-production`.
+- Removed all enumerated reproducible ignored `.vs`, `bin`, `obj`, legacy application-local build artifacts and isolated test output. No locked target failed. Preserved canonical `v43_8_8-production` and `v43_8_9-production`; user data and the private Git archive were outside every cleanup target.
 - Visual Studio subsequently reported NU1105 for `UpdateCore` because the application referenced it while the project was absent from the solution membership and the prior IDE cache had hidden that gap. Command-line restore/build proved both projects valid; `UpdateCore` was then added explicitly to the solution with Debug/Release configurations to make clean-cache Visual Studio restore deterministic.
-- Local Release runtime acceptance passed on 2026-07-22: Verification Center reported PASS 296/296 for `v43.8.9 SQLITE-DEPENDENCY-SECURITY`, assembly 43.8.9.0, informational identity aligned, schema v29 and the owner's 200-material SQLite database operating normally. The exported diagnostics contained 296 PASS lines and zero FAIL lines. Commit/push of the completed local security gate is approved; VM update/runtime acceptance remains the final candidate-promotion gate.
-- Documentation path hygiene consolidated all 45 lowercase `docs/` files into the canonical `Docs/` tree without filename collisions or content deletion. All active path references now use exact GitHub case, and README has one current v43.8.9 candidate identity instead of the stale v41.6 declaration.
+- Local Release runtime acceptance passed on 2026-07-22: Verification Center reported PASS 296/296 for `v43.8.9 SQLITE-DEPENDENCY-SECURITY`, assembly 43.8.9.0, informational identity aligned, schema v29 and the owner's 200-material SQLite database operating normally. The exported diagnostics contained 296 PASS lines and zero FAIL lines.
+- Documentation path hygiene consolidated all 45 lowercase `docs/` files into the canonical `Docs/` tree without filename collisions or content deletion. All active path references now use exact GitHub case, and README has one canonical v43.8.9 identity instead of the stale v41.6 declaration.
 - The first v43.8.8 VM update discovery failed before mutation because generated `latest.json` began with the Windows PowerShell UTF-8 BOM (`EF BB BF`). The generator now writes BOM-less UTF-8 explicitly, and the v43.8.9 client defensively accepts one standard UTF-8 BOM. This is a parser-compatibility extension only; package bytes, SHA-256, trusted manifest, schema and default-No apply gates remain mandatory.
 - Final VM acceptance passed on 2026-07-22. A fresh zero-Materials v43.8.8 installation consumed the corrected feed, updated to v43.8.9 without an error, recorded the transaction as `Committed` with zero incomplete transactions and preserved the zero-data boundary. A verified schema-v29 owner backup restored 200 Materials, 3,728 tensile samples, 3,752 impact samples and 191 stiffness rows; creating a canonical post-restore SQLite backup satisfied all recovery evidence gates. Verification Center then reported PASS 296/296 with zero FAIL lines. v43.8.9 is the canonical release.
 
-## Future — v44 Open Engineering Platform
+## Planned — v44 Daily Use, Reliability & Maintainability
 
-- Governed public API.
-- Broader CSV/JSON exchange.
-- Plugin and scripting architecture.
-- External research and manufacturer integrations.
-- Optional cloud synchronization.
+Purpose: strengthen the Windows desktop product that is actually used. v44 is
+not an API, plugin, SaaS or cloud-platform programme. Work is selected from
+observed daily use, VM/release evidence and concrete owner feedback. Every
+increment must remain small, backwards compatible and independently runtime
+accepted before the next increment begins.
 
-All open-platform work must preserve canonical MaterialID identity, SQLite
-ownership, Verified Material Summary boundaries and backwards compatibility.
+Non-goals:
 
-## Backburner
+- No public application API without a real identified consumer and a separately approved authentication/hosting/support contract.
+- No general plugin or arbitrary scripting host; the compatibility and security surface is disproportionate for the current product.
+- No assumed manufacturer API integration. Filament manufacturers generally expose pages, datasheets, email and occasional files rather than a stable shared service contract; add only a proven source-specific import when a real source and workflow exist.
+- No bidirectional cloud synchronization. SQLite conflict resolution, identity, offline state and multi-instance editing would create more risk than value; current local/OneDrive storage plus verified backup/restore remains canonical.
+- No broad CSV/JSON platform for its own sake. Add a typed export/import only when a specific user workflow cannot be served safely by SQLite backup, governed Excel recovery or an existing report.
+
+### v44.0 — Baseline and release-workflow closure
+
+- Start from canonical v43.8.9, clean `master == origin/master`, Debug/Release 0/0 and Verification 296/296.
+- Decide whether first-install downloads should be rebuilt directly at v43.8.9 or intentionally retain the accepted v43.8.8 installer followed by guarded update; document one unambiguous public route either way.
+- Make candidate versus canonical/production state explicit in build output and UI. Production packaging must reject dirty trees and must not overwrite an existing artifact silently.
+- Add deterministic release gates for NuGet vulnerability results, BOM-less update feed, exact feed/ZIP bytes and SHA-256, signature, governed inventory, schema and stable-route-last publishing.
+- Keep Authenticode deferred while distribution is private; retain the trusted ECDSA package signature and document the Windows Unknown Publisher trade-off.
+
+### v44.1 — Verification profiles and diagnostic honesty
+
+- Separate **Application Readiness** from **Full Data Verification** without weakening either gate.
+- A legitimate fresh profile with zero Materials should report application/schema/assets/update/recovery readiness as PASS and data-dependent calculation/report checks as `Not applicable — no canonical data`, not as 90 product failures.
+- Full release acceptance with restored/owner data remains the complete 296/296 gate (or its explicitly versioned successor).
+- Show profile name, applicable/pass/fail/not-applicable counts and exact reasons in Verification exports.
+- Keep clean-profile isolation, zero compiled seed rows, empty deployment identity and no automatic SQLite restore as mandatory checks in every profile.
+
+### v44.2 — Daily-use UI state and selected MaterialID clarity
+
+- Persist user-resized column widths, column order, window size and other proven daily layout preferences as machine-local UI state.
+- Do not place machine-specific presentation state in the portable SQLite engineering backup unless a later explicit portability choice is approved.
+- Keep the current Materials selection visually unmistakable after focus moves; Material Detail, Reports and other downstream tabs must show the same selected MaterialID.
+- Evaluate tab/filter persistence one preference at a time. Never restore a stale selection that is absent from the current filtered/canonical dataset.
+- Add reset-to-default and invalid-state fallback so old preferences cannot block startup or hide required fields.
+
+### v44.3 — Backup, Recovery and update evidence clarity
+
+- Explain `Ready`, `Migration required`, `Legacy / incomplete`, `Newer / incompatible`, `Corrupt` and valid zero-data backup states directly in Recovery Center.
+- Distinguish a healthy empty clean-profile backup from corruption and explain why full-data release gates require a canonical backup containing Materials.
+- Surface the most recent update transaction, health acknowledgement, application rollback snapshot and SQLite evidence as separate read-only boundaries.
+- Preserve all existing contracts: recovery snapshot before restore, atomic/transactional data replacement, no automatic SQLite restore, default-No application-file recovery and no automatic evidence deletion.
+
+### v44.4 — Measured responsiveness and presentation polish
+
+- Use existing startup phase diagnostics to detect regressions; perform more lazy initialization or concurrency work only when a measured bottleneck materially affects first usable Materials time.
+- Profile first-open and repeated-open latency for top-level Tools/Help menus before changing command construction or UI-thread work.
+- Treat splash logo-line animation as optional presentation polish. It must follow measured splash lifetime, support high DPI and never delay startup.
+- Record before/after Release timings on the same machine; reject optimization work that adds complexity without a meaningful observed gain.
+
+### v44.5 — Legacy compatibility audit and bounded maintainability
+
+- Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state ownership.
+- Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete UI, dead handlers/services and stale documentation in small reviewed increments.
+- Reduce `MainWindow.xaml.cs` and `LocalDatabase.cs` only while touching an owned feature: extract cohesive services/partial classes with no behavioral rewrite and one Verification/runtime gate per increment.
+- Keep the project-wide `IOPath`/`IOFile`/`IODirectory` convention and compile probe; do not reintroduce bare ambiguous `Path.*` calls.
+
+### v44.6 — Feedback-driven feature evaluation
+
+- Use `Docs/BUG_FEEDBACK_LOG.md`, daily operation and VM/release observations as the intake queue.
+- Evaluate per-MaterialID printing profiles only when there is a concrete daily-use/report need beyond the delivered base-material profile foundation. Preserve typed units, provenance and `Not recorded` honesty.
+- Evaluate bilingual website presentation only when translation ownership and ongoing parity are affordable; reuse the one renderer/publisher and never fork a second website engine.
+- Evaluate new report types only after their canonical source data exists. No inferred printer profiles, test sessions, durability history or manufacturer claims.
+
+### v44 delivery discipline
+
+1. Research and map one issue before code changes.
+2. Record owner-visible purpose, non-goals, data/storage boundary and rollback plan.
+3. Implement the smallest additive increment.
+4. Run Debug/Release, relevant static/security/package gates and Verification Center.
+5. Obtain visual/runtime acceptance where UI, restore, installer or updater behavior changes.
+6. Commit/push only after the increment passes; do not accumulate a large v44 rewrite.
+
+### Disposition of all previously open proposals
+
+| Proposal | Disposition | Reason / trigger |
+|---|---|---|
+| Public API | Retired from v44; demand-only backburner | No identified consumer; would require authentication, hosting, versioning, monitoring and support. |
+| Broad CSV/JSON exchange | Demand-only | Existing SQLite/Excel/report paths cover current recovery and sharing; require a concrete typed workflow first. |
+| Plugin and scripting architecture | Retired from v44 | Excessive execution, compatibility and support surface for the current desktop product. |
+| External research/manufacturer API integrations | Demand-only | Implement only against a real stable source and explicit rights/provenance; do not assume manufacturers provide APIs. |
+| Cloud synchronization | Retired from v44 | Conflicts with single-writer SQLite and adds identity/conflict/offline complexity; verified local/OneDrive backup remains safer. |
+| Experimental and Data Quality reports | Backburner | Useful only when requested; canonical sources exist partly, but current six-report portfolio is complete. |
+| Batch/history, printer-profile and durability reports | Blocked by missing canonical data | Do not infer missing sessions, profiles or long-term history. |
+| Per-MaterialID printing profiles | v44.6 evaluation queue | Base-material profiles are delivered; add variants only for a proven workflow with typed provenance. |
+| Persistent Materials selection | v44.2 | Concrete daily-use clarity improvement with low architectural scope. |
+| Column widths/layout persistence | v44.2 | Concrete cross-machine observation; keep machine-local by default. |
+| Remaining startup optimization | v44.4 conditional | Existing v41.8 work succeeded; continue only from measured regressions/bottlenecks. |
+| GUI menu responsiveness | v44.4 | Profile first; presentation-only change. |
+| Splash logo animation | Optional v44.4 polish | No functional value; never place ahead of reliability/usability. |
+| Manufacturer submission server | Retired until real operational need | Current browser/email handoff is sufficient; no public-to-SQLite write path. |
+| Bilingual website | v44.6 evaluation queue | Requires durable translation ownership and parity budget. |
+| Website logo/branding | Delivered | Canonical governed logo assets already render in application/reports; verify public placement only as part of a requested presentation change. |
+| Legacy Excel/compatibility audit | v44.5 | Valuable security/maintenance cleanup, but requires caller-by-caller proof before removal. |
+| Split large application/database files | Incremental v44.5 only | No standalone rewrite; extract only cohesive touched ownership with regression proof. |
+| Fresh-install Verification failures | v44.1 | Observed in VM: zero-data readiness and full-data coverage need honest separate profiles. |
+| Recovery catalog wording | v44.3 | Observed in VM: valid empty backups were easy to mistake for failed update transactions. |
+| Direct v43.8.9 installer/portable refresh | v44.0 decision | Current v43.8.8 installer plus guarded update is accepted; rebuild only for clearer first-install experience. |
+
+All v44 work must preserve canonical MaterialID identity, SQLite ownership,
+Verified Material Summary publication boundaries, signed/default-No update
+contracts, privacy-clean distribution and backwards compatibility.
+
+## Idea source archive and demand-only backburner
+
+The detailed notes below preserve the original intent of ideas raised during
+development. Their authoritative disposition and priority are in the v44 table
+above; presence here is not authorization to implement them.
 
 ### Future report extensions
+
+Status: demand-only backburner; the accepted six-report portfolio is complete.
 
 - Experimental Research Report for one canonical experimental series, including
   baseline, controlled runs, analytics, charts and conclusion.
@@ -763,6 +865,9 @@ batch/history, printer-profile or durability reports until the required
 canonical session, profile or long-term test data exists.
 
 ### Canonical material printing profiles
+
+Status: per-MaterialID variants moved to the v44.6 evaluation queue. The typed
+base-material profile foundation is already delivered and remains canonical.
 
 Schedule an additive SQLite/Material Detail milestone for typed per-MaterialID
 printing settings: nozzle and bed temperature ranges, print-speed range,
@@ -778,6 +883,8 @@ Missing settings must remain `Not recorded`; report code must never infer them.
 
 ### Materials selection visibility
 
+Status: promoted to v44.2 as a concrete daily-use improvement.
+
 Make the current Materials-grid selection persistent and visually unmistakable
 after the grid loses focus. The selected row/MaterialID should remain clearly
 highlighted until another material is selected, and downstream tabs such as
@@ -786,6 +893,9 @@ focused desktop UX improvement and must not change canonical MaterialID or
 filter behavior.
 
 ### Startup performance optimization (scheduled after v41.7)
+
+Status: the v41.8 instrumentation/coalescing/warm-up work is complete. Further
+work is conditional v44.4 profiling only; the old 19-second baseline is historical.
 
 Baseline measured on the current development machine on 2026-07-21: the splash
 screen appears after about 3 seconds and the Materials list becomes available
@@ -802,6 +912,8 @@ the detailed work contract is scheduled immediately after the Report Portfolio.
 
 ### GUI menu responsiveness
 
+Status: promoted to measured v44.4 investigation.
+
 Profile and improve the delay when opening top-level desktop menus such as
 `Tools` and `Help`. Measure first-open and repeated-open latency separately,
 identify whether menu construction, command state evaluation or UI-thread
@@ -810,6 +922,8 @@ behavior. This is a presentation-performance task only; it must not change
 SQLite data, MaterialID identity, calculations or publishing behavior.
 
 ### Splash screen logo line animation
+
+Status: optional v44.4 polish after reliability and daily-use work.
 
 Refine the existing splash-screen logo animation so the complete blue logo line
 is progressively revealed during the actual visible lifetime of the splash
@@ -830,12 +944,17 @@ of the full line immediately before the splash closes.
 
 ### Manufacturer submission server handoff
 
+Status: retired until a real operational need exists; email/browser handoff is canonical.
+
 The browser-only enquiry form and email handoff remain canonical for now.
 A future server endpoint may add validation, spam protection, rate limiting,
 delivery acknowledgement and governed intake states. It must never write
 directly from the public website into the engineering SQLite database.
 
 ### Bilingual public website and branding
+
+Status: localization is a v44.6 evaluation item. Core governed application/report
+branding assets are delivered; public placement changes require a specific visual request.
 
 Investigate a future additive website-localization milestone that keeps the
 current English site and adds a complete Icelandic presentation with a clear
@@ -845,13 +964,13 @@ metadata, report-language scope, Preview/Production parity and Verification
 coverage before implementation. It must reuse the canonical website renderer
 and publishing pipeline rather than creating parallel site engines.
 
-Add an approved 3DPIceland logo/brand asset to the public website as part of the
-same presentation milestone, with responsive and accessible rendering. Logo
-source, variants and placement must be governed so generated pages, dark/light
-surfaces and published assets remain consistent. This is roadmap-only for now;
-no website, report or publishing behavior changes in v43.3.1.
+Any public logo placement change must reuse the approved governed assets with
+responsive and accessible rendering. Logo source, variants and placement must
+remain consistent across generated pages and dark/light surfaces.
 
 ### Legacy Excel and compatibility surface audit
+
+Status: promoted to v44.5 as an isolated, evidence-first cleanup sequence.
 
 Inventory every remaining UI command, startup/load path, service, handler,
 documentation reference and Verification check that mentions or can read the
@@ -873,8 +992,8 @@ other legacy code paths encountered during the audit.
 - Add Verification checks proving normal startup, canonical SQLite counts,
   backup/restore, governed Excel disaster recovery, reports and publishing are
   unchanged after cleanup.
-- Do not begin this audit inside the active update/rollback milestone; schedule
-  it as a separate release with runtime acceptance before commit/push.
+- Execute it as separate small v44.5 increments with runtime acceptance before
+  each commit/push; never combine it with an unrelated updater or schema change.
 
 ## Platform roadmaps
 
