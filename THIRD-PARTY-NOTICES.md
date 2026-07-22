@@ -5,7 +5,7 @@ The original 3DPIceland Engineering Platform source code is licensed under
 third-party works and retain their respective copyright notices and licenses.
 
 This inventory reflects the dependency graph restored for
-`App/FilamentDbApp/FilamentDbApp.csproj` at v40.19.1. Package source archives
+`App/FilamentDbApp/FilamentDbApp.csproj` at v43.8.9. Package source archives
 and license texts are available from NuGet and the linked upstream projects.
 
 ## Direct dependencies
@@ -13,7 +13,8 @@ and license texts are available from NuGet and the linked upstream projects.
 | Package | Version | License | Upstream |
 | --- | ---: | --- | --- |
 | ClosedXML | 0.104.2 | MIT | <https://github.com/ClosedXML/ClosedXML> |
-| Microsoft.Data.Sqlite | 9.0.7 | MIT | <https://github.com/dotnet/efcore> |
+| Microsoft.Data.Sqlite | 9.0.18 | MIT | <https://github.com/dotnet/efcore> |
+| SQLitePCLRaw.bundle_e_sqlite3 | 2.1.12 | Apache-2.0 | <https://github.com/ericsink/SQLitePCL.raw> |
 | Microsoft.Web.WebView2 | 1.0.3537.50 | Microsoft WebView2 SDK license (permissive redistribution terms reproduced below) | <https://www.nuget.org/packages/Microsoft.Web.WebView2/1.0.3537.50> |
 | FluentFTP | 54.2.0 | MIT | <https://github.com/robinrodricks/FluentFTP> |
 
@@ -25,13 +26,12 @@ and license texts are available from NuGet and the linked upstream projects.
 | DocumentFormat.OpenXml | 3.1.1 | MIT |
 | DocumentFormat.OpenXml.Framework | 3.1.1 | MIT |
 | ExcelNumberFormat | 1.1.0 | MIT |
-| Microsoft.Data.Sqlite.Core | 9.0.7 | MIT |
+| Microsoft.Data.Sqlite.Core | 9.0.18 | MIT |
 | RBush | 4.0.0 | MIT |
 | SixLabors.Fonts | 1.0.0 | Apache-2.0 |
-| SQLitePCLRaw.bundle_e_sqlite3 | 2.1.10 | Apache-2.0 |
-| SQLitePCLRaw.core | 2.1.10 | Apache-2.0 |
-| SQLitePCLRaw.lib.e_sqlite3 | 2.1.10 | Apache-2.0 |
-| SQLitePCLRaw.provider.e_sqlite3 | 2.1.10 | Apache-2.0 |
+| SQLitePCLRaw.core | 2.1.12 | Apache-2.0 |
+| SQLitePCLRaw.lib.e_sqlite3 | 2.1.12 | Apache-2.0 |
+| SQLitePCLRaw.provider.e_sqlite3 | 2.1.12 | Apache-2.0 |
 | System.IO.Packaging | 8.0.1 | MIT |
 | System.Memory | 4.5.3 | MIT |
 

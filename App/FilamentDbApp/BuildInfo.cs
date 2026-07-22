@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "REMOTE-SIGNED-UPDATE-DELIVERY";
-    public const string ReleaseTitle = "Remote Signed Update Delivery";
+    public const string ReleaseCode = "SQLITE-DEPENDENCY-SECURITY";
+    public const string ReleaseTitle = "SQLite Dependency Security";
 
     public static string Version
     {

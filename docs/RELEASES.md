@@ -1,3 +1,10 @@
+## v43.8.9 - SQLite Dependency Security
+
+- Updates `Microsoft.Data.Sqlite` within the supported net9 line from 9.0.7 to 9.0.18.
+- Explicitly selects `SQLitePCLRaw.bundle_e_sqlite3` 2.1.12 so restore cannot resolve the high-severity affected 2.1.10/2.1.11 native SQLite line.
+- No SQLite schema, database ownership, backup/restore or automatic-restore policy change.
+- Release promotion requires vulnerability scan, Debug/Release, updater/verifier, Verification Center and VM acceptance.
+
 ## v43.8.8 - Production Consolidation
 
 - Canonical production identity above all v43.8 VM candidates.

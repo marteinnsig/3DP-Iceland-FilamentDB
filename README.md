@@ -113,7 +113,7 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 43.8.8 is the current canonical release. It provides guarded remote signed-update delivery, interrupted-state diagnostics and recovery, per-user installer and portable deployment, SQLite-native backup/restore, and verified separation between application files and user-owned data.
+Version 43.8.9 is the current security-maintenance candidate. It preserves the v43.8.8 runtime and deployment contracts while updating the net9 SQLite provider and explicitly selecting a SQLite native bundle newer than the vulnerable 2.1.10/2.1.11 line. Canonical release promotion remains gated on build, package, Verification Center and VM runtime acceptance.
 
 The clean-install profile contains no material dataset and no private FTPS identity. SQLite is never restored automatically by application update recovery.
 

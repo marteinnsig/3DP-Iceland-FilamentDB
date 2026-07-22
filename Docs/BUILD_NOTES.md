@@ -1,4 +1,14 @@
-# Current Build Notes - v43.8.8
+# Current Build Notes - v43.8.9
+
+## SQLite Dependency Security
+
+v43.8.9 is a narrow security-maintenance candidate. It updates `Microsoft.Data.Sqlite` from 9.0.7 to the current net9 servicing release 9.0.18 and directly selects `SQLitePCLRaw.bundle_e_sqlite3` 2.1.12. This prevents NuGet's minimum-version resolution from retaining the high-severity affected `SQLitePCLRaw.lib.e_sqlite3` 2.1.10/2.1.11 line (CVE-2025-6965). No schema, SQLite ownership, backup/restore, update transaction, website, report or FTPS behavior changes.
+
+`UpdateCore` is now explicitly included in `FilamentDbApp.sln`. The application already used a project reference, but Visual Studio could report NU1105 after `.vs`/`obj` cleanup because the referenced project was not a solution member; command-line restore masked that solution-state gap.
+
+Local Release runtime Verification Center passed 296/296 on 2026-07-22 with schema v29 and the existing 200-material owner database. The v43.8.9 signed candidate remains pending a guarded v43.8.8-to-v43.8.9 VM update/runtime acceptance before canonical promotion.
+
+# Previous Build Notes - v43.8.8
 
 ## Production Consolidation
 

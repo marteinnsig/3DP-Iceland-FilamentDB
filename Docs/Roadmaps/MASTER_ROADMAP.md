@@ -716,6 +716,25 @@ Audit 7 approved execution record (2026-07-22):
 - A fresh clone of the rewritten GitHub repository exposed exactly one commit, only `origin/master`, no tags, no sensitive identity/material/personal-path/secret markers and no old audited commit object. The final amended root was re-pushed and rechecked against the same gates.
 - Public-readiness decision: **YES** for the current reachable repository. Residual operational caution: GitHub may retain inaccessible caches for an unspecified period, and every pre-rewrite clone plus the private archive bundle still contains the old history. Never publish those copies; any collaborator must discard the old clone and re-clone. The public product domain is intentionally retained, while the private FTPS username and all credentials remain excluded.
 
+## v43.8.9 SQLite Dependency Security
+
+Status: automated gates and local Verification Center passed; VM update/runtime acceptance remains pending before canonical release promotion.
+
+- Keep the application on `net9.0-windows` and update `Microsoft.Data.Sqlite` only within the supported 9.0 servicing line.
+- Explicitly select a non-affected SQLitePCLRaw native bundle so NuGet minimum-version resolution cannot retain 2.1.10 or 2.1.11.
+- Do not change schema v29, SQLite ownership, backup/restore behavior, interrupted-update recovery, website/report/FTPS engines or automatic-restore policy.
+- Gates: resolved dependency inventory contains no vulnerable package; Debug and Release build with zero warnings/errors; updater self-test and package verifier pass; clean-profile/static privacy checks pass; Verification Center and VM database/runtime acceptance are required before canonical release, commit and push.
+- Local hygiene: remove only reproducible ignored `.vs`, `bin`, `obj` and noncanonical build-output directories after validation. Preserve `App/artifacts/v43_8_8-production`, all user SQLite/backups/configuration/evidence and the private pre-clean-root archive.
+
+Automated evidence (2026-07-22):
+
+- NuGet resolved `Microsoft.Data.Sqlite` 9.0.18 and the complete SQLitePCLRaw native/provider graph at 2.1.12. `dotnet list package --vulnerable --include-transitive` reports no known vulnerable package from the configured sources; the former high-severity 2.1.10 native library is absent.
+- Isolated Debug and Release builds passed with 0 warnings and 0 errors. The updater self-test passed commit, rollback, every interrupted-state recovery phase, traversal rejection and SQLite-backup-reference preservation.
+- A dirty-tree pre-release v43.8.9 signed candidate passed the production application verifier with exactly six governed files and schema v29. It is retained under `App/artifacts/v43_8_9-security-candidate`; it is not canonical or publish-approved until runtime acceptance.
+- Removed all enumerated reproducible ignored `.vs`, `bin`, `obj`, legacy application-local build artifacts and isolated test output. No locked target failed. Preserved only canonical `v43_8_8-production` and the explicit `v43_8_9-security-candidate` beneath `App/artifacts`; user data and the private Git archive were outside every cleanup target.
+- Visual Studio subsequently reported NU1105 for `UpdateCore` because the application referenced it while the project was absent from the solution membership and the prior IDE cache had hidden that gap. Command-line restore/build proved both projects valid; `UpdateCore` was then added explicitly to the solution with Debug/Release configurations to make clean-cache Visual Studio restore deterministic.
+- Local Release runtime acceptance passed on 2026-07-22: Verification Center reported PASS 296/296 for `v43.8.9 SQLITE-DEPENDENCY-SECURITY`, assembly 43.8.9.0, informational identity aligned, schema v29 and the owner's 200-material SQLite database operating normally. The exported diagnostics contained 296 PASS lines and zero FAIL lines. Commit/push of the completed local security gate is approved; VM update/runtime acceptance remains the final candidate-promotion gate.
+
 ## Future — v44 Open Engineering Platform
 
 - Governed public API.
