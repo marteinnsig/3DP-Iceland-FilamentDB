@@ -1,0 +1,679 @@
+# Current Build Notes - v43.8.8
+
+## Production Consolidation
+
+v43.8.8 consolidates the runtime-accepted remote update delivery, SQLite-native restore, clean-profile Verification fixes and interrupted snapshot/recovery hardening proven through the v43.8.1-v43.8.7 VM candidates. It also bounds chunked HTTP responses during streaming download and gives update-feed publishing remote staging, backup and rollback parity. This is the first production identity above every published VM candidate.
+
+# Previous Build Notes - v43.8.0
+
+## Remote Signed Update Delivery
+
+v43.8.0 adds manual and delayed one-minute HTTPS discovery at the governed `/updates/latest.json` route. The feed embeds the production-signed package manifest, which is authenticated before download; package URL is confined to the same HTTPS update root and downloads are bounded to 512 MiB. Downloaded bytes and SHA-256 must match the feed, then the complete ZIP must reproduce the trusted manifest and pass the existing inventory, signature, version and schema verifier before Default-No Apply is offered.
+
+`Publish Application Update...` separately verifies and publishes the versioned signed ZIP before activating `latest.json`; it does not use website deployment state or change SQLite. Runtime acceptance completed through clean installer, remote update and restored-data VM scenarios. The accepted transaction engine keeps incomplete snapshot preparation in `Prepared`, retries transient Windows file locks, skips byte-identical rollback files, uses the verified staged helper, and preserves durable error/path evidence. SQLite restore now uses the native SQLite backup API instead of replacing an open Windows file; no update or recovery path automatically restores SQLite.
+
+VM v43.8.5 -> v43.8.6 and v43.8.6 -> v43.8.7 transactions committed with zero incomplete transactions. A schema-v29 backup restored 200 Materials, 3,728 tensile samples, 3,752 impact samples and 191 stiffness rows with a verified pre-restore recovery backup. Final Verification Center result was PASS 296/296 on v43.8.7. Canonical repository release identity remains v43.8.0.
+
+# Previous Build Notes - v43.7.0
+
+## Installer and Portable Deployment
+
+v43.7.0 consumes the production-signed six-file application package and produces two first-install artifacts: a per-user/no-admin Inno Setup EXE and a portable ZIP containing the exact governed runtime inventory. The installer targets `%LocalAppData%\Programs\3DPIceland Engineering Platform`, creates Start Menu and optional Desktop shortcuts, and uninstalls only application files. SQLite, backups, configured storage, Credential Manager secrets and update transaction evidence remain external and are never installer payloads or uninstall targets.
+
+`App/build_deployment_artifacts.ps1` first invokes the real application package verifier, extracts only the accepted signed payload into a disposable source tree, rejects database/spreadsheet/legacy JSON files, the historical website snapshot and private material or FTPS identity markers, builds the portable ZIP and compiles `Deployment/3DPIcelandInstaller.iss`. It writes a versioned deployment plan binding both artifacts to byte length, SHA-256, versioned FTPS paths and stable download paths. The corrected v43.7.0 VM candidate contains a 68,032,212-byte installer and 95,403,440-byte portable ZIP; the portable archive contains exactly six governed runtime files.
+
+Tools now includes explicit default-No `Publish Application Release...`. It accepts only the exact Installer/Portable deployment plan, rechecks local bytes and SHA-256 before connection, uses the existing SQLite-governed explicit-FTPS endpoint and host/user-scoped Credential Manager password, stages versioned files first and activates stable `/downloads` routes last. Remote backup/staging is isolated under `/backups/application_releases`; website deployment manifests and routes are blocked. Public browser routes are `https://www.iskort.is/3dp/downloads/3DPIceland-Setup-x64.exe` and `.../3DPIceland-Portable-x64.zip` because the FTPS account root already maps to `/3dp`.
+
+The first VM candidate exposed 176 historical production material rows because an obsolete clean-profile fallback was compiled into the executable. A second audit found that `website-template-index.html` also carried a publication snapshot outside SQLite. The next VM probe then found an owner-specific FTPS host/user seed. Clean startup now uses only SQLite or an explicit legacy/import source for materials, website templates require explicit owner import, and new deployment settings start with empty host/user values. A later VM probe found that the loose PNG URI did not render from the installed single-file application; splash/header branding now uses an embedded WPF pack resource while the ICO and report JPEG retain their governed external roles. Three unused SVG development diagrams were removed from publish/governed inventory. Earlier candidates were deleted and invalidated.
+
+Authenticode is intentionally deferred while distribution remains private; Windows may show Unknown publisher. The existing ECDSA signed-package verification remains mandatory. Debug/Release builds and corrected artifact compilation pass with no private marker in the signed package, installer or portable ZIP. Verification Center passed; corrected clean-VM install/restart, zero-data boundary, explicit SQLite transfer, credential isolation, embedded branding, live application-release publish and browser download were runtime accepted.
+
+# Previous Build Notes - v43.6.0
+
+## Update and Deployment Diagnostics
+
+v43.6.0 adds a backwards-compatible read-only catalog over the existing v1 durable transaction state and request files. System Diagnostics lists prior transaction identity, versions, phase, timestamp, recommended recovery and the retained SQLite backup reference without changing application files, transaction evidence, backups or SQLite.
+
+Normal startup detects `Prepared`, `SnapshotReady`, `Installed`, `RollingBack` and `RollbackFailed` transactions, except the transaction currently completing its guarded health acknowledgement. Any application-file recovery is explicit and default-No. The existing external helper waits for the running PID before recovery. `Prepared` safely restarts the guarded transaction; the other incomplete phases restore the complete last-known-good governed-file snapshot and relaunch the prior application. Request/state identity and live-directory containment must match before mutation.
+
+No transaction evidence or backup is automatically deleted. SQLite is never automatically restored. Website/report generation and FTPS publishing are unchanged. Isolated updater tests cover all five interrupted phases, read-only history classification, prior commit/rollback behavior and path traversal. Debug and Release builds complete with zero warnings and zero errors. Visual Studio Debug runtime acceptance on 2026-07-22 confirmed v43.6.0 identity, read-only history with one prior Committed transaction, zero incomplete transactions and Verification PASS 294/294.
+
+# Previous Build Notes - v43.5.1
+
+## Guarded Application Update
+
+Update Readiness now offers a separate default-No Apply confirmation only after a package is newer and every manifest, exact inventory, byte length, SHA-256, production signature and SQLite schema check passes. Apply repeats full verification during extraction into a unique LocalAppData transaction staging folder, commits active Materials edits, requires SQLite save completion and creates a verified manual SQLite backup before shutdown. The package must govern the running executable and an installed external helper; transaction and live application folders must share a volume but may not contain one another.
+
+The app copies the installed helper to the transaction folder, writes a durable request and launches that copy before shutting down with stale close-save suppressed. The helper waits for the exact old PID to exit, snapshots all governed live files, installs the staged set and launches the new executable with a contained health-ack path and transaction identity. The new app writes acknowledgement only after MainWindow construction, SQLite startup/schema checks and first usable content rendering. Helper acceptance requires matching transaction ID, exact new release version and supported SQLite schema.
+
+Launch failure, early process exit, timeout, invalid acknowledgement or unsupported schema kills the candidate process, restores the last-known-good application files and relaunches the prior app. SQLite is never automatically rolled back; the verified pre-update backup remains recorded for guarded recovery. Apply remains manual; key loss/rotation and unattended updating are still out of scope.
+
+For isolated runtime acceptance, production-signed v43.5.1 base and v43.5.2 candidate packages are created from the same governed code with assembly/informational version override. v43.5.1 is extracted into a disposable portable app directory so the repository/Visual Studio outputs are never live-update targets.
+
+Runtime acceptance completed on 2026-07-22. The signed v43.5.2 package passed all readiness checks with 11 governed files and SQLite schema v29, the external helper committed the v43.5.1 to v43.5.2 transaction, and the restarted app acknowledged the exact transaction ID, release v43.5.2 and schema v29 after first usable rendering. Verification Center passed 293/293 after restart. Durable state recorded `Committed`; a verified manual SQLite backup was created before mutation and SQLite was not restored.
+
+The first portable launch exposed that `MainWindow.xaml` loaded a loose ICO through a BAML type converter. Shipping the file alone was insufficient for single-file WPF and startup failed before updater or SQLite mutation. The runtime `Icon` URI was removed because `ApplicationIcon` already embeds the same icon in the executable; the ICO remains explicitly governed as the eleventh signed package file. Startup diagnostics now also display the deepest inner exception.
+
+## Transactional Updater Engine
+
+The first v43.5 increment adds a separate `3DPIcelandUpdater.exe` and a shared transaction engine, but deliberately does not expose live application-file Apply. A versioned durable transaction state records Prepared, SnapshotReady, Installed, Committed, RollingBack, RolledBack or RollbackFailed with previous/new version identity and the verified pre-update SQLite backup reference. The engine accepts only unique safe relative governed paths, requires every staged file, confines staging/rollback below the transaction folder and keeps that folder separate from the live application directory.
+
+Before mutation, every existing governed live file is copied atomically into a last-known-good rollback tree and previously missing paths are recorded. Staged files then replace only the governed application paths through per-file temporary copy/rename. Failed installation or failed health acknowledgement restores the complete snapshot and removes files that did not exist before the transaction. SQLite is never copied or restored by this engine; its verified backup path is evidence for separately guarded database recovery.
+
+Isolated self-tests use disposable fake application trees. A complete update committed, an injected failure after the first installed file restored all old files, failed health acknowledgement rolled back, and traversal was blocked before mutation. The external helper runs the same contract self-test. It is added as the tenth governed file in the signed update package. Live process waiting, launch, health acknowledgement and the guarded Apply UI remain disabled until this engine is runtime accepted.
+
+Runtime acceptance on 2026-07-22 confirmed Verification Overall PASS and selected the production-signed v43.5.0 package in Update Readiness. Package, manifest, ten-file inventory, SHA-256, trusted signature and SQLite schema v29 all passed; version policy alone correctly blocked the same-version v43.5.0 package. No live application or SQLite files were changed.
+
+## Governed Signed Release Packaging
+
+A dedicated Windows-only `Tools/ReleasePackager` now creates the application update signing identity and package. The production ECDSA P-256 private key is persisted in the current Windows user's Microsoft Software Key Storage Provider under `3DPIceland.ApplicationUpdate.Release.v1`, is marked non-exportable and passed both sign/verify and blocked-private-export probes. Only the public SubjectPublicKeyInfo and its pinned SHA-256 fingerprint `87D407FEA230D484D8F436A4BA4958BF7F70336B968FFEC7F3966C15DFDFF1EA` are embedded in the application.
+
+`App/build_signed_update.ps1` requires a clean Git worktree for normal production packaging, performs the canonical self-contained single-file Release publish, reads version identity from the project, requires exactly nine governed runtime files and invokes the CNG-backed packager. An explicit `-AllowDirty` switch exists only for pre-release verification before runtime acceptance. PDB and the three known WebView2 XML documentation files are explicitly excluded; any other unexpected publish output blocks packaging. SQLite, backups, credentials, storage configuration, reports, website staging and developer files are never package candidates. An independent console probe references the real application verifier and rejects a newly created package unless its production signature, identity, file inventory, hashes and SQLite schema policy pass.
+
+The canonical v43.4.1 pre-release packaging run created `3DPIceland_Update_v43_4_1.zip` with nine governed files and SQLite schema v29-v29. The application verifier accepted the production-signed package, then blocked a separately modified production package at the LICENSE length/hash boundary. Single-file `Assembly.Location` fallbacks were removed so canonical publish completes without IL3000 warnings. The update remains read-only: no helper, staging, extraction or application-file replacement exists yet.
+
+Operational risk: the current production private key is intentionally non-exportable and therefore tied to this Windows user profile/machine. Loss of that key requires a manually installed future build with a new trust root; automated key rotation/recovery must be designed before unattended updater deployment.
+
+Runtime acceptance on 2026-07-22 selected the production-signed v43.4.1 package in Tools > Update Readiness. Package readability, manifest, nine-file inventory, SHA-256, trusted production signature and SQLite schema v29 policy all passed. Version policy alone was correctly blocked because package and installed application were both v43.4.1. Verification Center was Overall PASS.
+
+## Signed Update Readiness Foundation
+
+Tools > Update Readiness now performs a read-only inspection of a selected ZIP update package. The versioned `3dp-update-manifest.json` contract governs release identity, supported SQLite schema range and a complete application-file inventory with exact lengths and SHA-256 hashes. ZIP traversal, rooted/backslash paths, duplicate/reserved paths, missing or extra files, malformed hashes, unsupported algorithms and invalid manifest fields are blocked before any trust or version decision.
+
+The manifest requires an ECDSA P-256/SHA-256 signature over a deterministic payload. Production deliberately has no fallback to hash-only trust: until the governed release public key is provisioned, an otherwise intact package reports `Signing trust root not provisioned` and remains blocked. This foundation does not download, extract, stage, replace or launch application files and never changes SQLite data. An external transactional updater and protected private-key release workflow remain follow-on work.
+
+Verification creates isolated temporary packages and requires a valid signed fixture to pass while tampered content, downgrade, path traversal and absent production trust are blocked. Temporary fixtures are deleted after the check. Existing SQLite backup/recovery and website FTPS publishing/rollback boundaries remain unchanged.
+
+The obsolete `Restore Excel Defaults` entry was removed from Tools because canonical Materials are SQLite-owned and governed recovery now belongs in Backup and Recovery Center. The underlying backwards-compatibility code is not rewritten by this UI cleanup.
+
+Runtime acceptance on 2026-07-22 confirmed v43.4 startup, the new Tools > Update Readiness entry and Overall Verification PASS. Release and Debug builds completed with zero warnings and zero errors.
+
+## Backup and Recovery Center UI
+
+The File menu now exposes one `Backup and Recovery Center` entry instead of separate Excel import/export, Excel restore, SQLite restore and Recovery Center commands. The center retains the compatibility catalog and adds manual SQLite backup, browse/restore an external SQLite backup, governed Excel backup/restore and one Open Storage Folder action. The retired legacy Excel database import is intentionally omitted. Its wrapping toolbar remains usable when the window is narrowed.
+
+System Diagnostics is again diagnostics-only: Open Database Folder, Open Backup Folder and Create Manual Backup were removed. Database and backup folders are the same governed storage folder, so one center action replaces both folder buttons. Refresh, integrity check, recalculation and diagnostics export remain in System Diagnostics. Choose Storage Folder remains in File because it changes configuration rather than performing backup or recovery.
+
+Runtime acceptance on 2026-07-22 confirmed the consolidated center, its eight final actions and correct button layout. `Create SQLite Backup` continues to create/list the established `Manual backup` file identity; only its visible button label was simplified. Verification was PASS after the accepted UI run.
+
+## Recovery Compatibility Center
+
+File > Recovery Center inventories every local `.sqlite` backup except the active database and shows file, type, timestamp, schema, integrity, canonical Materials/measurement/Settings counts and compatibility status. Backup types distinguish rotating automatic/migration copies, newly named manual backups, pre-SQLite-restore recovery, pre-Excel-restore recovery and external SQLite files. Recovery snapshots are not consumed by the 20-file automatic rotation.
+
+The standalone recovery boundary is explicit: schema v27 is the first SQLite backup containing canonical native measurements. Schema v26 and older are classified `Legacy / incomplete` because external JSON migration snapshots may be required; newer-than-application and corrupt files are blocked. Current schema v29 is `Ready`. Schema v27-v28 starts as `Migration required` and becomes restore-eligible only after Verify Selected copies the source read-only through SQLite online backup into a unique temp folder, applies current migrations there, verifies integrity/schema and preserves Materials plus native tensile/impact/stiffness counts, then clears pools and deletes the temp tree.
+
+Restore Selected reruns compatibility verification, presents a default-No confirmation and then uses the established verified pre-restore recovery snapshot, atomic replace and controlled restart. The original File > Restore SQLite Backup path now uses the same compatibility policy. Manual backups receive a separate `filamentdb_manual_*` identity and are preserved independently of automatic rotation. Remote Production restore remains unchanged.
+
+Isolated production-backup testing classified schema v26 as blocked, migrated v27→v29 and v28→v29 with integrity and canonical counts preserved, and accepted v29 without migration. The read-only catalog contained 22 local backups. Runtime acceptance then confirmed Recovery Center classification, Verify Selected, separately identified manual backup, guarded same-state restore, automatic restart and Verification PASS.
+
+## Excel Disaster Recovery
+
+`Export Native Excel Recovery Data` now adds a versioned `DR Manifest` and 21 canonical SQLite table payloads to the six readable engineering sheets. Every logical value has an explicit NULL, UTF-8 text or BLOB identity; UTF-8 and binary data use Base64 and long values are split into bounded chunks so full website-template HTML is not truncated by Excel's per-cell limit. Each logical table has a deterministic SHA-256 covering table identity, ordered columns and ordered typed values.
+
+`Restore Excel Disaster Recovery` accepts only the exact governed table set and verifies package identity, format version, schema compatibility, sheet identity, logical row/column counts, chunk completeness and every table hash before showing a default-No confirmation. Restore creates a verified `filamentdb_pre_excel_restore_*` SQLite recovery backup, deletes/inserts all governed rows in foreign-key-safe order inside one transaction, restores the native-measurement canonical marker, and requires foreign-key, integrity and Materials-count checks before commit. It then performs the same controlled restart used by local SQLite restore.
+
+The governed set covers Materials, native measurement inputs/results/notes, general/base-material/deployment settings, manufacturers, website templates, Video Ideas, inventory, purchasing/suppliers/document metadata and the complete experimental hierarchy. Windows Credential Manager passwords and external file contents referenced by path, such as purchase documents and image assets, are intentionally not embedded. SHA-256 detects accidental corruption or editing; it is not a digital signature proving workbook authorship. SQLite remains the preferred first-line backup.
+
+An isolated production-data round-trip exported 21 tables and 8,188 rows, including 200 Materials and long website-template content, into a 1,476,887-byte workbook. After deliberately deleting canonical rows from the isolated database, transactional restore created its SQLite recovery backup and reproduced every table with zero SHA-256 mismatches.
+
+Runtime acceptance on 2026-07-22 produced the expected 29-sheet workbook. Pre-restore verification reported format v1, source schema v29, 21 governed tables, 8,188 rows and 200 Materials. Transactional restore created `filamentdb_pre_excel_restore_20260722_125835_333.sqlite`, passed foreign-key, integrity and Materials-count checks, restarted successfully, and Verification was PASS both before and after restore.
+
+## Local SQLite Backup and Restore
+
+Local SQLite backups now use the SQLite online-backup API and are integrity-checked before they are retained. File > Restore SQLite Backup inspects the selected database read-only, requires a compatible schema and canonical Material rows, and presents schema, size and measurement counts before a default-No confirmation.
+
+Restore creates and verifies a separate `filamentdb_pre_restore_*` recovery database, stages and verifies the selected source, atomically replaces the active database, then verifies the restored file again. Any failure attempts to restore the recovery copy. Successful restore suppresses stale Material close-save behavior and restarts the application so normal schema migrations and startup loading run against the restored state. Remote website Production restore and FTPS behavior are unchanged.
+
+Runtime acceptance on 2026-07-22 restored the newly created `filamentdb_20260722_123610_165.sqlite` backup. Pre-restore inspection reported schema v29, integrity `ok`, 200 Materials, 3,728 tensile samples, 3,752 impact samples and 191 stiffness rows. Restore created `filamentdb_pre_restore_20260722_123743_325.sqlite`, restarted successfully and completed 286/286 Verification PASS with unchanged canonical counts and 5 measurement notes.
+
+The Excel command is renamed `Export Native Excel Recovery Data` and its README now explicitly states that it is a readable secondary export of core engineering data, not a complete SQLite backup. Governed Excel disaster-recovery round-trip remains a separate follow-on milestone and is not claimed by this release.
+
+## SQLite Canonical Working Stores
+
+Schema v29 retires active Materials and general Settings JSON working stores. Production reconciliation found all 200 MaterialIDs and all 78 persisted Material fields exactly equal between `native-materials-manager.json` and `NativeMaterialManagerRows`, with no conflicts or one-sided rows. No `native-settings-manager.json` existed, so the governed built-in defaults safely seed the new normalized `NativeSettingsRows` table. The Settings identity includes Unit because the Impact net cross-section exists legitimately in both mm² and m²; the rejected pre-release three-part key is upgraded in place without discarding rows.
+
+Pre-release runtime testing exposed that the original three-part Settings key caused startup to fail with `UNIQUE constraint failed` immediately after the splash screen. The failed run left an intact schema-v28 database and an empty Settings table. Schema v29 repairs that exact state in place, preserves any rows if present by normalizing null units to blank, and then permits both governed unit variants.
+
+Materials startup/load/save now uses SQLite directly. Legacy Materials JSON is read only as a one-time seed if SQLite is empty; silent validation failure no longer writes a divergent JSON copy. General Settings startup/load/save/reset uses SQLite, while Deployment Settings and Base Material Catalog retain their dedicated SQLite tables. Schema upgrades require a successful pre-upgrade SQLite backup.
+
+Diagnostics now label JSON files as legacy snapshots rather than working copies. Verification requires SQLite Materials row parity, general Settings row/key parity and schema v29. Report metadata, website/publish manifests and other operational JSON artifacts remain intentionally unchanged.
+
+## SQLite Native Measurements
+
+Schema v27 makes native Tensile, Impact and Stiffness input rows canonical in normalized SQLite tables linked to `NativeMaterialManagerRows`. A read-only production reconciliation found JSON to be a conflict-free superset: 3,256 matching plus 472 new tensile samples, 3,332 matching plus 420 new impact samples, and 168 matching plus 23 new stiffness rows. Four tensile notes and the stiffness `[private-material-id-removed]` DNF note are explicitly preserved.
+
+First startup performs one atomic migration only when the canonical marker is absent. A required timestamped SQLite backup must succeed before the transaction begins; sample counts are reconciled inside the transaction before commit. JSON files remain untouched as migration snapshots but are no longer active startup or save sources after migration.
+
+Native grid edits now persist to SQLite. Automatic backups are throttled to one per five-minute editing window so rapid entry does not evict all 20 retained backups. Verification Center compares live UI sample/row counts with SQLite and requires the canonical migration marker.
+
+Runtime acceptance on 2026-07-22 confirmed two consecutive 284/284 Verification PASS runs. The active schema-v27 database passed `PRAGMA integrity_check` with 3,728 tensile samples, 3,752 impact samples, 191 stiffness rows and 5 notes. The required `filamentdb_20260722_114619_301.sqlite` pre-migration backup also passed integrity check at schema v26 with no migration marker. All three measurement JSON timestamps remained unchanged. The second startup retained identical counts without rerunning migration.
+
+## Deployment Settings Governance
+
+SQLite schema v26 owns the FTPS host, port and username shown as governed `Deployment` rows in Settings Manager. Existing installations seed the previously approved `www.iskort.is:21` and `[private-ftps-identity-removed]` values, so publishing remains backwards compatible without silently changing the live endpoint.
+
+Every connection test, Website Test publish, Production publish, rollback and restore receives one immutable endpoint snapshot. The password remains outside SQLite and JSON in Windows Credential Manager; its new credential target is scoped to normalized host plus username, with read-only fallback to the legacy fixed target until the next successful connection test stores it under the governed identity.
+
+Remote production/test activation routes, `/backups`, explicit TLS, passive mode, one remote session, three retries, four local validators and incremental manifest behavior remain locked and unchanged. Verification Center validates SQLite endpoint ownership, endpoint syntax, credential scoping and the existing publishing safety gates.
+
+## Base Material Printing Profiles
+
+Schema v25 moves the working printing baseline to a dedicated SQLite `BaseMaterialCatalog`. One governed 3DPIceland test/G-code baseline can now serve every MaterialID with the same Base Material. It is explicitly not a manufacturer recommendation. Temperature, speed and cooling retain min/recommended/max values; blank remains unknown.
+
+Material Detail now has a focused Printing Profile tab that lists the complete canonical baseline and renders missing evidence as `Not recorded`. Materials remains the editing surface, including controlled profile-kind and provenance choices. Native SQLite persistence, backwards-compatible JSON hydration and Excel `00 Materials` import/export include every field.
+
+Verification checks 0–100 cooling ranges, numeric ordering, drying temperature, absolute source URLs, checked dates, profile round-trip/projection and the unchanged public-report allowlist boundary. Public reports, website rendering and FTPS publishing remain unchanged. Runtime startup, edit/restart persistence, Excel round-trip, Printing Profile review and Verification Center Overall PASS remain required.
+
+The per-MaterialID printing columns were removed from the Materials grid after runtime review showed that the controlled test method reuses one G-code/settings baseline per base-material family. The few entered values were test-only and are intentionally not migrated. Material Detail resolves the baseline by Base Material. Public reports and allowlists remain unchanged. Excel import remains intentionally deferred until the planned backup/restore safety milestone.
+
+The Base Material Catalog is now SQLite-canonical. `native-settings-manager.json` remains only for the older general measurement-settings area and as a one-time backwards-compatible Base Material seed; it no longer overwrites the catalog. A separate roadmap item will migrate remaining canonical JSON working data (general settings and native tensile/impact/stiffness stores) without mixing that broader migration into this release.
+
+Runtime review restored controlled dropdowns for Cooling Guidance, Enclosure and Profile Kind in the Base Material Catalog. The obsolete per-MaterialID Printing Settings card is removed from Material Detail General; the dedicated Printing Profile tab is the sole resolved presentation.
+Profile Kind records profile origin with the vendor-neutral choices `Slicer provided`, `Manufacturer provided` and `User provided`; validation status is not conflated with profile origin.
+
+The same review exposed light `.review` cards under dark-screen text in the public Material Engineering Report. The shared screen-only theme now includes `.review` in its dark background/border contract and uses a new marker revision. Light base CSS and PDF/print rendering remain unchanged, and Verification explicitly checks the review-card contrast selector.
+
+## Material Printing Settings Foundation
+
+Canonical MaterialID rows now carry optional nozzle-temperature, bed-temperature and print-speed min/recommended/max values. Units are part of the governed contract: °C, mm/s and hours. Cooling and enclosure use vendor-neutral controlled UI values, while printer and slicer profiles remain free-form references so this foundation is not tied to one manufacturer or profile format.
+
+SQLite schema v23 adds columns without rewriting existing rows. Blank values remain unknown/unrecorded and are not converted to zero. The backwards-compatible JSON working copy is hydrated from SQLite for these canonical fields, and the native Excel `00 Materials` import/export path round-trips them. Material Detail groups them under Printing Settings.
+
+Verification checks numeric parsing, non-negative values, min/recommended/max ordering, model round-trip, Material Detail projection and the unchanged public-report allowlist boundary. Public report models, rendering, website generation and FTPS publishing are unchanged. Runtime acceptance confirmed Material editing, persistence across restart, normal column display and Verification Center Overall PASS.
+
+The first Debug startup attempt failed inside `MainWindow.InitializeComponent` with `NullReferenceException`. The cause was an empty `sys:String` element in each new XAML ComboBox `x:Array`; WPF compiled the BAML but failed while constructing it at runtime. The empty array entries were removed. Runtime re-test confirmed normal startup.
+
+Runtime Materials entry then exposed a navigation delay not present in Impact: `CellEditEnding` queued the complete material recompute, filter rebuild, three measurement-module synchronizations and SQLite autosave at the same dispatcher priority as arrow-key selection, but earlier in the queue. Materials edits now use a 450 ms restartable debounce. Arrow/Tab navigation can activate the next editor immediately, while rapid sequential edits collapse into one governed refresh/save; application close still commits and saves dirty material data synchronously.
+
+Runtime acceptance confirmed the delay is removed, arrow-key column movement is fast and edited values remain present across application restarts.
+
+## Incremental FTPS Publishing
+
+Website Test and Production publishing still construct and locally SHA-256 verify the complete catalog-derived allowlist. A completed deployment manifest now also records the full published route, byte and SHA-256 state. On the next matching publish, the application compares that governed state with the new canonical plan and checks that each candidate remote artifact still exists with the expected byte length. Only new, changed or missing artifacts proceed to remote backup, staging and sequential activation; unchanged artifacts are counted and skipped.
+
+The first publish after this upgrade intentionally remains a full publish because legacy manifests do not contain full published state. A route-set change, unreadable or malformed newest completed state, missing remote artifact, byte mismatch, or a newer Production Restore recovery event also forces a safe full or changed-file path rather than trusting stale state. Test and Production histories remain isolated. Delta backups contain only files changed by that deployment, while `publishedArtifacts` retains the full resulting state for the next comparison. Restore remains backwards compatible with legacy full backups and new delta backups.
+
+Any failed publish invalidates its remote deployment manifest after rollback. If that invalidation cannot be confirmed, the operation is reported as an incomplete rollback rather than allowing a possibly completed-looking manifest to become a later delta baseline.
+
+If every artifact matches, publishing performs no backup, upload or activation and reports a successful no-change deployment. Results show the baseline folder, complete allowlist count, unchanged files skipped, files staged/activated, transferred bytes and timings. The single runtime-proven FTPS transfer session, three retries, complete-transfer barrier, rollback and entry-index-last contracts remain unchanged.
+
+The Production button runs Generate Production first, reloads and rehashes the exact generated plan, tests the encrypted connection and presents a final default-No confirmation. That confirmation distinguishes complete package size from actual post-comparison transfer bytes, explains that only changed/new/missing targets are backed up and staged, and warns that the first v42.12 Production run may be a full fallback because Test and Production baselines are isolated.
+
+Runtime acceptance on the isolated Website Test route used 862 allowlisted files. The first post-upgrade fallback published all 862 files (37,578,896 bytes), with 134.2 seconds of backup/staging and 57.9 seconds of activation. The immediately repeated delta publish used `/backups/website_test_2026-07-22_091758_872` as its baseline, skipped 856 files (99.3%), and transferred/activated only 6 files totaling 1,089,493 bytes. Backup/staging took 0.7 seconds and activation 0.1 seconds. This is a 97.1% byte reduction and approximately 240x improvement for the measured remote staging-plus-activation phase; it is not stated as a whole-workflow speedup because local validation, export generation and remote state comparison are separate phases.
+
+Production runtime acceptance used 861 allowlisted files. The first Production fallback published all 861 files (37,578,526 bytes) into `/backups/website_2026-07-22_093445_629`, with 41.9 seconds of backup/staging and 57.0 seconds of activation. The immediate repeat used that completed Production manifest as its isolated baseline, skipped 855 files (99.3%), and transferred/activated 6 files totaling 1,089,476 bytes into `/backups/website_2026-07-22_093754_428`. Backup/staging took 0.7 seconds and activation 0.1 seconds: a 97.1% byte reduction and approximately 124x improvement for the measured Production remote staging-plus-activation phase. A read-only HTTPS check of `https://www.iskort.is/3dp/index.html` returned HTTP 200, 826,646 bytes, the v42.12 release identity, material content and the explicit reports route.
+
+## Host-Compatible FTPS Staging
+
+Guarded Website Test and Production publishing validate all exact publish-plan artifacts with four bounded parallel local workers before any live FTPS mutation. Remote backup and staging use one runtime-proven explicit-FTPS session, with up to three reconnect-and-retry attempts per artifact. Five- and three-session trials failed on the original 101-port passive range; after the FileZilla Server range was expanded to 5,001 ports and its thread count raised to eight, a two-session trial still produced concurrent upload aborts. One remote session is therefore the accepted safety bound for this FTPS/TLS/network path.
+
+The local validation stage checks existence, byte length and SHA-256 concurrently. The host-compatible remote worker then creates required parent directories inside the retry-protected file operation, backs up existing targets and uploads the isolated staged copy. Only after every allowlisted artifact is represented in the ordered deployment manifest does the control connection resume sequential activation. `/index.html` or `/index-test.html` remains last, and the existing rollback/recovery contracts are unchanged.
+
+Publish results report four local validation workers, the single remote transfer session, backup/staging time and sequential activation time. The application retains real bounded local multitasking without parallelizing the unreliable remote path, activation or rollback. Future transfer-speed work should use manifest-driven delta publishing rather than additional FTPS sessions.
+
+Runtime testing also exposed a transport-close exception after a long successful transfer sequence. FTPS disconnect is now best-effort after a completed and manifest-confirmed deployment, so an already closed socket cannot falsely convert success into rollback. Sequential activation and restore are idempotent and retry-capable: if a remote move succeeds but its response is lost, the next attempt recognizes the missing staged source plus the correctly sized target as success. Remote deletions use the same reconnect-and-verify pattern.
+
+Failure messages identify the guarded publish phase (`host-compatible backup and staging`, manifest creation, sequential activation or manifest completion), while still reporting whether rollback completed. This keeps a transient host-side connection closure diagnosable without weakening the rollback gate.
+
+## Guarded Public Report FTPS Deployment
+
+`Publish Website` now starts by running the same confirmed Generate Production workflow, including automatic data-fresh rebuilding of all six public report types and creation of the exact catalog-derived `website-publish-plan.json`. The plan is then loaded back from disk and every allowlisted artifact is checked for the current release identity, byte length and SHA-256 before an FTPS connection is made. A second explicit confirmation shows the public MaterialID count, catalog entries, exact file count and total bytes before any live change.
+
+The complete allowlist is transferred over explicit TLS into a timestamped `/backups/website_*` tree. Existing targets are preserved under `original/`; all new artifacts are uploaded and size-verified under `staged/` before activation begins. Activation follows the plan order with the root `/index.html` last. Every activated target is size-verified. If activation fails, replaced targets are restored from their remote backups and newly introduced targets are removed; incomplete rollback is reported distinctly with the retained backup path. The older three-file publisher remains available internally for backwards compatibility, while the website button uses only the new guarded plan flow.
+
+Verification remains offline and never connects to or mutates the production server. Runtime acceptance requires the operator to run Verification Center and then deliberately confirm the live publish from the application.
+
+`Publish Website Test` provides the same automatic Preview generation, source-fresh report rebuilding, SHA-256 allowlist validation, remote backup, complete staging, size checks and rollback protection without touching Production routes. All test content is isolated under `/preview/`; only the browser entry `/index-test.html` sits at the FTPS root and it is activated last. The test contract explicitly rejects `/index.html`, `/reports/` and `/manufacturers/index.html`. This gives the operator a stable `https://iskort.is/3dp/index-test.html` browser shortcut for server-level validation before choosing `Publish Website Production`.
+
+Every newly completed guarded deployment backup now contains `deployment-backup-manifest.json`. It records mode, completion state, ordered target routes, whether each target existed before deployment, original byte length and original SHA-256. Incomplete or legacy manifest-free folders and Website Test backups are never offered by `Restore Last Production Backup`.
+
+Production restore discovers the newest eligible completed backup and presents its timestamp, target count and previous byte total before confirmation. It first captures the current live state into a new `/backups/website_revert_*` recovery folder, copies and verifies every selected original into restore staging, removes targets that did not exist before the reverted deployment and restores `/index.html` last. If restore fails, the recovery snapshot is applied in reverse order; incomplete recovery is reported separately with the retained recovery path. Source backups are copied, never consumed.
+
+## Production Publish Readiness
+
+Generate Production now completes the full local handoff required before public-report FTPS integration. After ensuring the data-fresh six-type report package and staging stable Production routes, it builds `website-publish-plan.json` from the canonical staged report catalog. Only the root website, manufacturer redirect, methodology whitepaper, production report portal, catalog/manifest/fingerprint, catalog-owned report directories and shared report assets enter the plan.
+
+Every planned file must exist, be non-empty and remain inside the selected website root. The plan records its exact local path, safe remote route, byte length and SHA-256. Preview routes, backups and unrelated folders are excluded, duplicate remote routes fail verification, and `/index.html` is deliberately ordered last for activation.
+
+All public website HTML buttons now target explicit `/index.html` files instead of relying on web-server directory-index resolution. This keeps the same stable report directories on Production while making Preview and Production links work when opened directly from the local filesystem without a development web server. PDF buttons remain explicit `report.pdf` links.
+
+## Public Report Data Freshness
+
+The public package ensure pipeline now computes a deterministic SHA-256 source fingerprint from the current public MaterialID selection, the report-relevant canonical SQLite rows and the exact current Verified Material Summary/report projection consumed by the renderers. This includes the active tensile, impact and stiffness inputs, so adding another measurement changes the fingerprint even before any unrelated package file changes. The package stores only the hash, schema, public material count and generation timestamp in `source-fingerprint.json`; raw measurement, projection or operational values are not copied into that file.
+
+Preview, Production and Build Public Report Package compare the current fingerprint with the accepted package revision. A missing or changed fingerprint marks the report set data-stale and rebuilds all six report types before the package is refreshed and staged. This deliberately favors correctness across dataset-level ranks, averages, comparisons, manufacturer portfolios and the Material Summary; a measurement on one material can affect context shown by several reports. When the fingerprint still matches, the existing fast validation-only path remains active.
+
+## Automatic Website Report Prerequisites
+
+Generate Preview and Generate Production no longer require the operator to build the public report package first. Both actions call the same async package prerequisite used by the manual Build Public Report Package action. The shared flow derives the expected six-type catalog from the current public MaterialID selection, rebuilds only missing or presentation-stale report types, verifies every HTML/PDF/metadata artifact, refreshes the package index/manifest/catalog and then stages the website portal.
+
+Production retains its explicit confirmation and local backup behavior. Preview remains local-only. FTPS publication and its explicit file allowlist are unchanged; this milestone does not upload public reports.
+
+## Public Website Report Portal
+
+Website Preview and Production now consume the accepted public report catalog through one shared renderer. The local website export validates the complete six-type package, stages its canonical HTML/PDF/metadata/assets under the website `reports/` tree, and writes `reports/index-test.html` for Preview or the stable `reports/index.html` route for Production. Every catalog-linked artifact must exist and be non-empty before website export can proceed.
+
+The main portal adds an Engineering Reports navigation action and dataset-level entry card. Opted-in MaterialIDs receive contextual Material Engineering, PDF, Printing Recommendation, Test Session, Material Family Comparison and Manufacturer Report actions; private MaterialIDs receive none. Manufacturer cards link their public report when at least one included material is opted in. The website export manifest records the staged portal and catalog counts. FTPS remains deliberately unchanged: the staged report tree is not part of the guarded Publish Website upload list.
+
+The material-level directory presents the full public material name as its primary label and retains MaterialID as smaller traceability metadata. Stable routes and catalog identity continue to use canonical MaterialID.
+
+All six public report types and the report portal now share one screen-only dark theme aligned with the main website. The existing light report CSS remains the canonical base and the dark overrides are restricted to `@media screen`, so WebView2 PDF output and paper printing remain light without a second renderer or duplicated report content.
+
+The Material Engineering radar has dedicated dark-screen contrast for its grid, axes, labels and three comparison profiles. These overrides are presentation-only; the light PDF radar remains unchanged.
+
+The one-click package validator treats existing report HTML without the current shared screen-theme marker as presentation-stale. It automatically rebuilds the affected report types and PDFs, so website staging cannot silently retain an older light-only HTML package.
+
+## Public Report PDF Layout Parity
+
+Comparison, Manufacturer and Material Summary reports now have explicit canonical print CSS that preserves their desktop header, summary-card and chart-grid relationships. This prevents the A4 print viewport from activating the narrow-screen layout that previously stacked cards and charts in PDF while HTML remained wide.
+
+Those three wide portfolio report types print in A4 landscape so their engineering tables remain visible instead of clipping right-hand columns. Per-MaterialID Material Engineering, Test Session and Printing Recommendation reports remain portrait. HTML is still canonical, PDF is still printed from that same HTML, and no report data, allowlist, route or FTPS behavior changed.
+
+## Public Report Bounded Multitasking
+
+The public package pipeline now performs real bounded multitasking: up to four thread-pool workers validate the existence and non-zero length of the complete HTML/PDF/metadata artifact catalog concurrently. Work is limited to immutable relative routes and read-only filesystem checks, so SQLite ownership, report models and WPF/WebView2 thread affinity remain unchanged.
+
+PDF rendering still uses the reusable single STA-safe WebView2 host, but the fixed 350 ms delay after every navigation is replaced by bounded polling of document, font and image readiness plus a short layout-settle delay. The package log explicitly reports the four-worker artifact validation contract. This is a measured, limited parallel extension rather than an unsafe parallel rewrite of the print engine.
+
+## Public Report Batch Performance
+
+The clean-folder one-click package workflow now opens one hidden WebView2 print host for the entire missing-report sequence and reuses it for every canonical HTML-to-PDF operation. Individual report buttons retain the existing isolated one-PDF host behavior. The batch remains sequential at the WebView2/STA print boundary, preserving WPF thread affinity and deterministic PDF parity while removing repeated browser/window initialization for every artifact.
+
+The package log records total elapsed time and per-report-type timings. This establishes evidence for any later bounded two-worker experiment without introducing unmeasured concurrent WebView2 instances. HTML, metadata, allowlists, routes and report calculations are unchanged.
+
+## Public Engineering Report Package
+
+`Build Public Report Package` is the one-action public portfolio workflow. It detects missing artifacts by report type, invokes only the required existing canonical report builders, waits for them to finish, and then verifies the complete portfolio before writing `public-report-preview/index.html`, root `manifest.txt`, `report-catalog.json` and shared JPG branding. A clean output folder is therefore supported. The package requires all six accepted public report types: Material Summary, Material Engineering, Comparison, Manufacturer, Test Session and Printing Recommendation.
+
+The package does not copy, merge or recalculate report data. It orchestrates the accepted builders and catalogs their stable HTML/PDF/metadata artifacts. If an invoked builder still cannot produce an expected artifact, the package fails with the remaining exact paths. The root index presents portfolio counts, dataset summary, comparison and manufacturer directories, and MaterialID-level Engineering/Recommendation/Test links. Rebuilding Material Engineering previews writes their batch index to `materials.html` and preserves an existing v42.8 portfolio root. FTPS and website navigation remain unchanged.
+
+## Public Material Summary Report
+
+Public Material Summary publishes the accepted REPORT-110 dataset view at the stable local-preview route `reports/material-summary/`. Its scope is every active MaterialID explicitly checked `Public reports`. The public report preserves the internal coverage cards, native tensile/impact/stiffness and score-availability table, material-type and manufacturer distributions, and the full MaterialID-level six-score ledger.
+
+The dedicated typed allowlist excludes purchasing, inventory, supplier, path, credential, raw specimen and internal-note fields. Each ledger row links to the existing public Material Engineering, Printing Recommendation and Test Session routes. HTML is canonical, PDF is printed from that HTML, and FTPS remains deferred.
+
+## Public Printing Recommendation Report
+
+Public Printing Recommendation Report creates stable per-MaterialID local-preview routes with full REPORT-150 applications, strengths, limitations, trade-offs, six-axis profile, workflow checks, decision guidance and stronger public same-family alternatives. Exact printer settings remain `Not recorded` until canonical Material Printing Profiles exist; the renderer never infers them. FTPS remains deferred.
+
+## Public Test Session Report
+
+Public Test Session Report creates stable `reports/test-sessions/{MaterialID}/` local-preview routes for every active MaterialID checked `Public reports`. The public-safe baseline retains REPORT-140 result-quality depth: module/specimen coverage, averages, standard deviation, CV, confidence, validation, method/equipment context and honest missing-provenance disclosure. Batch/lot and operational fields are excluded.
+
+An additive SQLite-backed `Public test details` checkbox defaults false. Only explicitly approved MaterialIDs expose recorded raw tensile/impact/stiffness inputs and reviewed module test notes; otherwise those collections never enter the public DTO and the report states the detail boundary. Verification probes both aggregate-only and approved-detail contracts. FTPS remains deferred.
+
+## Public Manufacturer Report
+
+Public-report parity is now a standing platform rule: an accepted internal engineering report is the canonical content baseline for its public counterpart. Public output retains the available engineering data, comparisons, charts, rankings, coverage and limitations, while explicit internal, operational and sensitive fields are removed through typed allowlists. Public reports are not intentionally reduced to summary-only editions.
+
+A parity audit covered all three current public reports. Material Engineering already retained the governed measurements, score/radar context, interpretation, rankings, alternatives and peers. Manufacturer parity was expanded to the full public portfolio/global/category and six-axis product context. Comparison parity now also retains the internal coverage summary cards and separate materials/evidence context table in addition to leaders, four charts and side-by-side scores. Verification Center has a combined internal-content parity gate across all three publishers.
+
+Public Manufacturer Report batch preview creates stable `reports/manufacturers/{slug}/` routes for every manufacturer with at least one active MaterialID explicitly checked `Public reports`. Portfolio counts, averages, leaders, category positions and charts use only that public projection. The dedicated allowlist excludes purchasing, inventory, supplier URLs, local paths, raw specimen rows and internal notes.
+
+Each manufacturer receives canonical HTML, PDF printed from that HTML, metadata, manifest and canonical JPG branding. Public presentation intentionally retains the accepted REPORT-130 depth: full coverage cards, public global position, MSRP/video availability, category positions, overall/consistency charts and a six-axis product-level engineering table. Public safety removes sensitive fields rather than reducing engineering usefulness. Product links use only approved manufacturer/product fields; `Supplier URL` is never a public fallback. FTPS integration remains deferred.
+
+## Public Comparison Report
+
+The accepted internal REPORT-120 contract now has a separate public publishing projection. Local preview builds stable `reports/comparisons/material-family-{slug}/` routes for base-material families containing at least two active MaterialIDs with explicit `Public reports` opt-in. The public renderer receives only its dedicated 18-field allowlist and existing Verified Material Summary score outputs; it does not receive internal report rows or calculate measurements and scores.
+
+Each preset contains canonical `index.html`, PDF printed from that HTML, metadata, manifest and the canonical JPG logo. The accepted REPORT-120 visual comparison is preserved through leaders plus responsive Overall, Tensile, Impact and Stiffness bar-chart panels sourced from the same governed scores. Verification checks the stable route, unique MaterialID membership, allowlist, sensitive-field exclusion, all four charts, report content and local preview action. FTPS integration remains intentionally deferred.
+
+## Public Engineering Report Content Expansion
+
+The public Material Engineering Report now carries the substantive governed content already available to the accepted internal report: Verified Material Summary measurement averages, standard deviation, CV, sample count and confidence; stiffness modulus/deflection; engineering score bars and six-axis radar comparing the selected material with material-family and manufacturer averages; per-metric ranks/percentiles; decision guidance; stronger same-family alternatives; engineering interpretation; strengths, limitations, trade-offs, recommended applications and peer context. These values are prepared by the existing calculation, Engineering Intelligence and ranking layers and passed through an expanded 38-field public allowlist; the public renderer only converts existing scores into SVG coordinates and performs no measurement or score calculation. Internal shell diagnostics such as `Unified HTML report engine` and `Materials in database` are intentionally absent.
+
+Canonical public HTML now displays `assets/3dp-iceland-labs-logo-pdf.jpg`, which is already copied into every public report package and therefore also appears in the PDF printed from that HTML. Radar axis and label coordinates use invariant SVG number formatting so Icelandic decimal commas cannot split labels or extend axis lines, and the viewport includes enough left margin for the full `Consistency` and `Layer adhesion` labels; Verification has a dedicated radar-layout check. Verification also adds rich-content and JPEG-branding checks plus the v42.2.1 release gate. Runtime acceptance confirmed the expanded public report, canonical HTML/PDF presentation, complete radar labels and all-PASS Verification. Release build completes with zero warnings and zero errors.
+
+## Canonical Public Material Selection
+
+Materials now exposes an explicit `Public reports` checkbox for each canonical MaterialID. The opt-in is stored as `PublishPublicReports` in SQLite with a backwards-compatible default of false; existing databases migrate in place and no material is selected automatically. The legacy JSON working copy remains readable, but SQLite overrides publication intent during load.
+
+The shared Preview/Production website renderer emits stable `reports/materials/{MaterialID}/` HTML and PDF links only for selected materials. Unselected materials remain available in the existing engineering charts and product/video link surfaces but receive no public report links. The selection does not upload anything and the guarded FTPS workflow is unchanged.
+
+Verification covers checkbox/UI availability, canonical record round-trip, selected-versus-unselected URL behavior, shared website rendering and the v42.2 release gate. Debug and Release builds complete with zero warnings and zero errors.
+
+The first UI run showed that the existing shared first-click DataGrid editor consumed checkbox clicks before WPF could toggle them. Native Materials boolean columns now toggle directly on the first click, update the visible checkbox immediately and enter the normal coalesced auto-save path.
+
+The next runtime pass showed that the original v42.1 button still built only the currently selected row even when several materials were opted in. `Build Selected Public Reports` now resolves every active checked MaterialID before writing, verifies every allowlisted model, creates one independent canonical HTML/PDF package per material and writes a combined preview index containing all selected reports.
+
+Runtime acceptance confirmed that publication selections persist across restart, two opted-in materials produce two independent report packages, the combined `index.html` links to both, and Verification Center reports all checks PASS. v42.2.0 is accepted; public report FTPS publishing remains deferred.
+
+## Public Report Publishing Foundation
+
+The Reports tab now provides `Build Public Report Preview` for the selected material. It writes a local static website package under `public-report-preview/reports/materials/{MaterialID}/`, including canonical HTML, a PDF printed from that HTML, public JSON metadata, a manifest and assets. The preview is never uploaded automatically.
+
+A dedicated 21-field public model is the security boundary. Only approved material identity, public links, canonical MSRP and existing Verified Material Summary/governed score outputs reach the public renderer. Purchasing, operational stock, credentials, device filesystem locations, raw specimen rows and internal notes are not supplied. Verification checks routing, allowlist enforcement, sensitive-field exclusion, methodology links, artifact parity and the v42.1 release gate.
+
+Runtime acceptance confirmed that the selected-material public preview builds successfully with the canonical HTML/PDF package and that Verification Center reports all checks PASS after the deferred measurement-tab warm-up receives time to complete. Build Solution also completed successfully. v42.1.0 is accepted as a local-only publishing foundation; production FTPS publishing remains intentionally disabled.
+
+## Deferred Measurement Tab Warm-up
+
+Tensile, Impact and Stiffness now perform their first WPF visual-tree/DataGrid layout automatically after the Materials view is visible and higher-priority startup work has finished. The selected workspace is restored inside the same Dispatcher callback, preventing visible tab switching.
+
+Startup Diagnostics records an independent first-use warm-up time for each measurement tab. Verification requires all three warm-up phases and the prior v41.8 startup gates. No measurement data, calculations or SQLite ownership changed.
+
+Runtime acceptance confirmed Materials remained visible after about 5 seconds with Verification PASS. The accepted Debug trace rendered Materials at 4.47 seconds and completed Tensile, Impact and Stiffness warm-up at 8.00 seconds.
+
+## Startup Refresh Coalescing
+
+The first measured Debug trace found that MainWindow construction took about 1.0 seconds but the app then waited roughly 17 seconds before showing the window. Bulk loading 200 Materials had queued approximately 201 copies of the same downstream UI refresh.
+
+Bulk replacement now schedules one measured consolidated refresh. Materials filters, Inventory choices and summary, measurement identity synchronization and deferred engineering intelligence still use their existing implementations. No concurrency or data-source change is included.
+
+User runtime acceptance confirmed Verification PASS and reduced the observed Visual Studio startup to the visible Materials list from about 19-20 seconds to about 5 seconds. The accepted diagnostic trace reached first usable Materials rendering at 4.49 seconds from instrumentation start.
+
+## Startup Performance Instrumentation
+
+This profiling-only build records the full startup path without changing its behavior. System Diagnostics now shows ordered timestamps and phase durations for splash rendering, MainWindow/XAML construction, canonical Materials loading, every major secondary workspace, the Loaded workflow, first usable Materials rendering and deferred engineering intelligence.
+
+Use the trace to compare Visual Studio Debug startup separately from cold and warm Release EXE runs. Verification checks that the core markers are present and that the v41.8.0 release identity is aligned. Concurrency, lazy tabs and startup reordering remain intentionally deferred until the measurements identify the actual bottlenecks.
+
+Debug and Release builds complete with zero warnings and zero errors. v41.8.0 instrumentation and the v41.8.1 coalescing result are runtime accepted with Verification PASS.
+
+## Combined Engineering Report Package
+
+The Reports tab now exposes `Export Engineering Package`. It exports the six accepted engineering reports into one timestamped parent folder with stable numbered subfolders:
+
+1. Material Summary
+2. Material Engineering
+3. Comparison
+4. Manufacturer
+5. Test Session
+6. Printing Recommendation
+
+Every subfolder contains canonical HTML, a PDF printed from that exact HTML, text, metadata, manifest and assets. The parent folder contains `index.html`, `manifest.txt` and `package-metadata.json`. Existing folders are never overwritten; a numeric suffix is added if a same-second package already exists.
+
+Selected and all-visible scope behavior remains owned by each individual accepted report contract. The package layer only orchestrates exports and does not merge or recalculate report data.
+
+Verification checks the exact six-report set, stable folders, index links, manifest, metadata, export button and the aggregate v41.7.8 release gate. Debug and Release builds complete with zero warnings and zero errors. User acceptance confirmed normal package export and Verification PASS; v41.7 is closed.
+
+## Report Portfolio - Printing Recommendation
+
+`REPORT-150` is a distinct Printing Recommendation Report over existing governed engineering profiles, Verified Material Summary coverage and canonical MSRP. No measurement or score is recalculated.
+
+Selected scope provides application guidance, measured strengths, limitations, engineering trade-offs, decision guidance, print-workflow checks and stronger same-family alternatives. All-visible scope provides a recommendation ledger following the exact current Materials search/filter result.
+
+The report deliberately contains no Video Planner or YouTube content. It does not invent nozzle temperature, bed temperature, speed, cooling, drying or enclosure values; exact settings remain a manufacturer/printer validation step. MaterialID and MSRP now remain present through the shared ranking projection.
+
+Verification checks REPORT-150 identity, selected guidance, all-visible ledger behavior, settings honesty, exclusion of content-planning hooks and the aggregate v41.7.7 release gate. Debug and Release builds complete with zero warnings and zero errors. User visual review and Verification PASS are confirmed; REPORT-150 is closed.
+
+## Report Portfolio - Test Session
+
+`REPORT-140` is a distinct Test Session Report over native MaterialID-linked tensile, impact and stiffness records plus existing Verified Material Summary results. The report does not recalculate measurements.
+
+Selected scope provides detailed traceability: specimen/result counts, average, standard deviation, CV, confidence/completeness, validation status, recorded native inputs and module notes. All-visible scope provides a compact ledger for the exact current Materials search/filter result.
+
+Method/equipment context uses the same native Settings Manager constants consumed by ResultsService. The report also declares the current provenance limitation: SessionID, test timestamp, operator, printer/slicer profile and environmental conditions are not stored in the canonical test schema and are therefore shown as `Not recorded`, never inferred.
+
+Verification checks REPORT-140 identity, selected detail, all-visible ledger behavior, missing-metadata honesty and the aggregate v41.7.6 release gate. Debug and Release builds complete with zero warnings and zero errors. User visual review and Verification PASS are confirmed; REPORT-140 is closed.
+
+## Report Portfolio - Manufacturer
+
+`REPORT-130` is a distinct Manufacturer Report over canonical active/visible Materials projections and existing Verified Material Summary outputs. The report layer does not calculate measurements or introduce a parallel score source.
+
+With `Selected Material Only`, the selected MaterialID identifies a manufacturer and the report expands to that manufacturer's complete active portfolio, even when the Materials view is currently narrowed to one product. With `All Visible Materials`, the exact current Materials search/filter scope is preserved and grouped into one or multiple manufacturer sections.
+
+The selected-scope report names the source material and highlights its row in the expanded portfolio. Selected and all-visible reports can legitimately contain the same materials when the current Materials filter already selects exactly that manufacturer; the scope explanation distinguishes those paths.
+
+The HTML/PDF report includes portfolio/test/profile coverage, product-line and material-type breadth, MSRP/video availability, existing average score and strongest-axis context, global manufacturer positioning, category position by base material, safe product/video links and a full product-level engineering table. Missing evidence remains `n/a`.
+
+The product table labels its five-axis availability as `Engineering axes`, avoiding the ambiguous impression that a value such as 5/5 represents five specimens or measurements.
+
+Verification checks REPORT-130 identity, selected-manufacturer expansion, exclusion of unrelated manufacturers, all-visible multi-manufacturer behavior and the aggregate v41.7.5 release gate. Debug and Release builds complete with zero warnings and zero errors. User visual review and Verification PASS are confirmed; REPORT-130 is closed.
+
+## Concise Report Package Naming
+
+Export Current Report now creates folders using `report-name-yyyyMMdd-HHmmss`. Comparison Report therefore exports to a name such as `comparison-report-20260721-231416`, without repeated platform, key, PDF and title segments. The HTML/PDF/text/metadata/manifest/assets package contract is unchanged.
+
+Verification checks the exact folder-name contract. Release build completes with zero warnings and zero errors, and the concise naming change is accepted.
+
+## Report Portfolio - Comparison
+
+`REPORT-120` is a distinct Comparison Report over the canonical native Materials projection and existing Verified Material Summary scores. It never calculates measurements in the report layer.
+
+With `Selected Material Only`, the selected material is the highlighted anchor and up to five peers are taken from the current visible Materials scope. Same-base-material peers come first, followed by closest available overall-score context. With `All Visible Materials`, every canonical visible material is included and missing values remain `n/a`.
+
+The HTML/PDF report includes scope explanation, comparison-set coverage, leaders by engineering axis, overall/tensile/impact/stiffness charts, a side-by-side score/evidence/MSRP table and methodology links. Overall deltas are explicitly comparative context rather than statistical confidence or application certification.
+
+Verification checks REPORT-120 identity and both report scopes. User visual review confirmed the report presentation and Verification Center passes; v41.7.3 is closed.
+
+## Canonical Material Projection
+
+The legacy `_materialsView` material universe has been removed. Native SQLite-backed Materials records and MaterialID now govern active, archived, visible and selected material scope throughout the application.
+
+All user-facing engineering consumers now receive either the current filtered native Materials projection or the full active native projection. This includes analytics, rankings, category rankings, awards, Video Planner, recommendations, dashboards, YouTube Research, AI collections/sessions, reports and website export. Existing DataRow-based services receive transient adapters built from native rows, preserving compatibility without retaining a second material list.
+
+The hidden legacy import-cache tab and its filters, search, grid selection and fallback counts no longer exist. Imported workbook material tables are bounded to ingestion/transition workflows and cannot become the runtime material scope.
+
+Canonical secondary-filter and intelligence refreshes are deferred until after the main window is visible. This keeps the splash-screen phase limited to core data/workspace initialization and coalesces downstream refreshes in the background.
+
+Verification Center now checks unique MaterialID parity for active and visible projections, validates that every visible row belongs to the active native set and confirms that the legacy workspace tab is absent. Debug and Release builds complete with zero warnings and zero errors. User acceptance confirmed Verification PASS, normal reviewed-tab behavior and correct Materials-filter propagation; v41.7.2 is closed.
+
+## Report Portfolio - Material Summary
+
+The first v41.7 report increment establishes the canonical report scope and completes Material Summary as a distinct report. `All Visible Materials` now consumes the same filtered native Materials view shown to the user, rather than the older imported projection. With no active filters it therefore uses all 200 active materials in the current database; active search/filter choices reduce that scope predictably.
+
+`REPORT-110` presents material identity, manufacturer and material-type coverage, verified engineering-axis coverage, complete-profile count and high-level score values without recalculating measurements. Missing verified evidence remains `n/a`.
+
+The accepted refinement separates complete, partial and no-verified-evidence profiles, records active Materials-tab search/filter values, expands selected-material identity and links the public methodology and whitepaper. Duplicate scope totals and internal `Canonical total` wording were removed.
+
+Verified-result wording now explains the accepted engineering-result boundary in plain language. Valid video-review URLs are rendered as safe clickable HTTP(S) links in selected and multi-material summaries.
+
+REPORT-110 test coverage is now counted from native Verified Material Summary modules, not from whether the legacy score projection happened to contain an axis. Fully tested means tensile, impact and stiffness are all present; partial means one or two modules are present. Native summaries also feed the existing score formula for the report table, and Verification checks exact parity with native Materials test flags.
+
+User acceptance confirmed parity with the Excel export and a clean Verification Center run. REPORT-110 is closed. The next build is the v41.7.2 application-wide removal of `_materialsView` as a material source.
+
+`Refresh Preview` shows at most ten material lines and states that limitation. `Export Current Report` always creates canonical HTML plus its print-matched PDF, text summary, metadata, manifest and assets. The future Engineering Report Package will be enabled after all six reports above the selector separator have passed individual visual acceptance.
+
+Release build completes with 0 warnings and 0 errors. Verification Center and visual acceptance are pending before work starts on Comparison Report.
+
+## Internal Repeatability Calibration
+
+One canonical service now owns the 3DPIceland internal repeatability score and its user-facing labels across the app, Engineering Advisor, reports, website and whitepaper. The established `100 - average CV% - sample penalty` calculation is unchanged, preserving existing values and rankings.
+
+Score labels are 90–100 Excellent, 85–89.9 Very good, 80–84.9 Good, 70–79.9 Moderate, 60–69.9 Low and below 60 Very low repeatability. Individual measurement sets reach the internal review boundary at 30% CV and the high-variation boundary at 40% CV.
+
+These are internal comparative bands, not an industry standard or accredited measurement uncertainty. The methodology now records the known impact-pointer, tensile low-force and stiffness-angle limitations and adds matching pre-session checks.
+
+Acceptance testing found that Selected Material Engineering Reports retained the numerical consistency score but did not pass the matching Verified Material Summary into the governed intelligence handoff. The report path now builds the canonical summary map once, reuses it for the selected material and its context rows, and Verification Center checks that the summary survives into repeatability analysis.
+
+Comparison of high- and low-consistency exports then exposed two scores in the low-coverage report: the canonical profile included its established incomplete-sample penalty while repeatability context recalculated only the available sets. Engineering Consistency now accepts the existing profile score as canonical for its label and displayed score while continuing to source CV, sample coverage and outlier review from Verified Material Summary. Existing website rankings therefore remain unchanged.
+
+Manufacturer-facing report review also removed obsolete and editorial-only content. The report header now records the current platform version instead of the v36 milestone name; the final Video Planner hook has been removed; radar lines explicitly identify material-family and manufacturer averages; and the former AI heading now states that the review is generated locally by deterministic rules with no external AI or LLM.
+
+Debug and Release builds complete with 0 warnings and 0 errors. User acceptance confirmed the updated Material Engineering Report presentation and a clean Verification Center run. Differentiating the remaining legacy report choices is queued as v41.7.
+
+## Governed Intelligence Handoffs
+
+Material Engineering Reports, the methodology whitepaper and recommendation-created Video Planner ideas now consume one shared Engineering Intelligence handoff. It composes the advisor, repeatability, price/inventory/manufacturer context, peer position and alternatives that their existing services have already produced; it does not calculate measurements or score axes.
+
+The canonical HTML report contains the governance statement, so PDF receives exactly the same content through the established HTML print path. The whitepaper documents the source boundary without embedding changing per-material rankings.
+
+Video Planner ideas retain canonical MaterialID and the existing EngineeringScoreProfile axes. The queue migration is additive and preserves older rows, whose MaterialID remains empty until they are recreated or relinked.
+
+Verification Center covers the shared composition, report payload, whitepaper section, persistent video-planning handoff and aggregate v41.5 release gate.
+
+Acceptance review found that Selected Material Only still prioritized a retained Native Materials grid selection over the material currently displayed in Material Detail. Report selection now uses the displayed row as canonical, shows its name beside the scope selector and refreshes the selected-material preview when that row changes. Canonical report HTML also embeds the approved JPG logo used by the PDF/whitepaper path instead of the obsolete PNG asset.
+
+Debug and Release builds complete with 0 warnings and 0 errors. The in-app Verification Center run and visual review remain the user acceptance gate.
+
+## Manufacturer & Category Positioning
+
+Recommendation Detail now compares the selected recommendation with same-manufacturer and same-category peers in the active dataset. It shows rank, peer count, overall score and the group average while preserving the current recommendation filters as the comparison boundary.
+
+The purple Selected Material Intelligence card exposes the same positioning for the active MaterialID independently of the global winner lists.
+
+The service consumes existing EngineeringScoreProfile values and canonical MaterialIDs only. It does not calculate raw test values or create a parallel score model. Missing classifications and score evidence are shown explicitly.
+
+Verification Center covers manufacturer/category rank, peer counts, missing-data honesty, UI availability and the aggregate v41.4 release gate. Debug and Release builds complete with 0 warnings and 0 errors; user acceptance is confirmed.
+
+## Price, Inventory & Manufacturer Context
+
+Recommendation Detail now shows canonical MSRP, current inventory availability and active manufacturer context beside the Engineering Advisor output. Inventory values come from `InventoryEngineService`; the context layer does not recalculate spool quantities, remaining weight or cost.
+
+The reusable ChatGPT prompt carries the same governed context. Missing price, inventory links or manufacturer records remain explicit rather than inferred.
+
+Canonical MSRP never falls back to landed cost or a stale legacy projection when a native Materials record exists. Clearing MSRP in Materials therefore produces an explicit unavailable state throughout recommendation context.
+
+The UI calls this value `Public MSRP reference`; `canonical` remains an internal architecture term rather than user-facing language.
+
+Verification Center covers source ownership, deterministic interpretation, UI presence and the aggregate v41.3 release gate. Debug and Release builds complete with 0 warnings and 0 errors; user acceptance is confirmed.
+
+## Consistency & Outlier Intelligence
+
+Recommendation Detail now interprets repeatability directly from Verified Material Summary CV and sample-count outputs. It reports how many tensile/impact orientation sets contain CV evidence, average and highest CV, and how many sets have at least five valid specimens.
+
+Selected Material Intelligence now follows the active MaterialID above the recommendation rankings. This exposes the chosen material even when it is not a global winner, while the existing performance and application lists remain separate and are labelled as global rankings.
+
+The displayed Material Detail row is the canonical selected-material UI context. A stale selection retained by another materials grid can no longer overwrite the card during recommendation refresh.
+
+Documented CV bands are used only to identify variation that deserves review. The platform does not infer or remove an individual specimen outlier from aggregate statistics; raw samples, failure notes and a test-specific reason remain authoritative. Missing repeatability evidence is shown explicitly rather than converted into confidence.
+
+The same governed context is included in the reusable ChatGPT prompt. Verification Center covers strong repeatability, high-variation review, insufficient evidence, selected-material binding, the Verified Material Summary calculation boundary, UI availability and the aggregate v41.2 gate.
+
+Debug and Release builds complete with 0 warnings and 0 errors. The user confirmed a clean in-app Verification Center run on 2026-07-21.
+
+## Comparable Alternatives & Hidden Gems
+
+The Recommendation Engine now turns each selected result into a small decision set. It finds the closest comparable profile, a price-aware hidden gem when one exists, and a specialist alternative with a clear engineering-axis advantage.
+
+All candidates come from the active filtered recommendation group. Existing recommendation scores remain canonical, while MSRP USD/kg is read from the same native material pricing record used by Pricing & Value. The alternatives service compares these governed outputs and does not calculate raw measurements or create a parallel scoring model.
+
+Recommendation Detail shows type, material, score, MSRP, reason, gain and trade-off. Missing pricing is displayed honestly as unavailable. Five new Verification Center checks cover selection exclusion, recommendation-context isolation, price/value behavior, specialist trade-offs, UI and the aggregate v41.1 gate.
+
+The obsolete fixed Yasin Playlist Discovery prototype has been removed from Recommendation Detail. The separate Playlist Discovery surface under YouTube Research remains the only canonical implementation and continues to derive its candidates from live material and video-coverage data.
+
+Cached material views load before the native material manager during startup. A coalesced post-load refresh now rebuilds Recommendation, Video Planner and YouTube Research after canonical pricing is hydrated, so MSRP is visible immediately without touching a filter. The same refresh follows native pricing edits and undo operations.
+
+## Advisor Locale Verification Fix
+
+The v41.0.0 advisor output was correct, but its comparison verification inspected English-formatted text. On an Icelandic system the same values are displayed with decimal commas. v41.0.1 verifies typed comparison deltas and axis identities instead, preserving localized UI text and a culture-independent release gate.
+
+## Explainable Engineering Advisor
+
+v41 begins with a deterministic advisor integrated into the existing Recommendation Engine. It reads the established EngineeringScoreProfile only; native test calculations and normalized axes remain owned by their existing services.
+
+For every recommendation, the detail panel now identifies the strongest available evidence, lowest available axis, missing axes, evidence coverage and consistency context. It also compares the row with the nearest ranked alternative and reports both recommendation-score difference and the clearest axis lead or trade-off.
+
+Evidence coverage is deliberately labelled as an advisor indicator rather than statistical confidence. Partial profiles remain usable but explicitly disclose missing evidence. The copy/paste ChatGPT prompt carries the same deterministic context, while direct API integration remains optional and outside the canonical decision path.
+
+Verification Center adds four advisor contracts plus a v41 release gate. Debug and Release builds complete with 0 warnings and 0 errors; the in-app Verification Center run remains the user acceptance gate.
+
+## Pricing Filter Synchronization Fix
+
+Pricing & Value remains a mirror of the canonical Filament Database filter state. The bridge now emits the `input` event consumed by the established filter engine, so selections made from Pricing immediately update the shared dataset and charts. Its multi-select controls also use the same click-to-toggle interaction as Database, preserving several selected values without Ctrl/Cmd and allowing a selected option to be deselected with another click.
+
+## Platform Integration & Release Readiness
+
+v40.20.0 is the local completion build for the v40 platform cycle. Verification Center now owns an aggregate release gate instead of relying on stale informational PASS entries. The gate combines Engineering, Experimental, Website, Reporting, workspace order and release identity.
+
+Website Preview and Production render through the same active SQLite template and canonical portal path. Their complete HTML output must match after removing only the generated mode header. The export contract also verifies the five portal routes, mode-aware manufacturer redirects and the main HTML/redirect/whitepaper package manifests.
+
+The production manifest now records the methodology whitepaper path. Live explicit-FTPS transfer is still pending the external passive-port opening and is not included as a local software PASS.
+
+The first user Verification Center run passed 162 of 165 checks while the exported website remained visually correct. The two direct failures were stale verification assumptions introduced by later portal extensions: the Pricing compact row carries two CSS classes, and a governed terminology marker precedes the generated Preview/Production header. The checks now match those exact contracts, and parity failures include a useful first-difference location if another renderer divergence is introduced.
+
+Nullable flow has been made explicit in DataGrid lookup, website export without a legacy DataView, selected-material reporting, Experimental verification and AI material scope. Both Debug and Release builds now complete with 0 warnings and 0 errors; warning analysis remains enabled.
+
+## Roadmap consolidation
+
+`Docs/Roadmaps/MASTER_ROADMAP.md` is again a strategic forward-looking document rather than a release log. The conflicting v39 Cost Analytics and Daily Workflow definitions are reconciled, early delivery of v42/v43 foundations is recorded, and `docs/ROADMAP.md` now points to the canonical roadmap instead of maintaining a competing plan.
+
+## Pricing & Value Portal Tab
+
+The main application workspace now prioritizes daily engineering work. Materials and Material Detail remain adjacent at the left, while Manufacturers, Purchase Orders, Inventory and Experimental Testing are grouped immediately after Website Export.
+
+The website portal now includes `#pricing`. Pricing & Value Explorer, Performance vs Price and Value Rankings are extracted from the canonical template into that page exactly once. Matching pricing filters use unique HTML identities and synchronize with the original Filament Database controls in both directions, so both tabs keep one canonical visible dataset.
+
+The mirrored controls deliberately reuse the original `.filters`, `.price-filter`, `.filter-hint` and `.search-reset` presentation classes so the two tabs have the same spacing, card surface, field sizes, multi-select height, helper text and responsive breakpoints.
+
+The concise instruction “Click to select/deselect — multiple selections allowed.” appears once beneath Base material instead of repeating under every field. Multi-select surfaces are now 198 pixels high after a further 25 percent increase, and redundant descriptions beneath MSRP range and Pricing availability are omitted.
+
+On wide screens both filter cards use the same eight-column order from Chart mode through Product line. Sort/Search occupy the lower-left side, while MSRP range and Pricing availability are bottom-aligned across columns six through eight on the lower-right side. Pricing mirrors both Chart mode and Sort mode as part of the shared canonical state. Explicit placement is released at narrower five-, three- and one-column breakpoints.
+
+Within the lower row, Reset filters sits directly above Search, Sort tensile / impact occupies the next compact column, and MSRP begins immediately to its right.
+
+The legacy "About the methodology" summary is removed during the portal transform. The approved SQLite template remains untouched, while the dedicated Methodology tab and whitepaper handoff remain canonical.
+
+## Experimental Website Analytics
+
+Series marked Website in Experimental Testing now publish a responsive engineering dashboard, series selector, five SVG chart types and an accessible result table. The payload is created and verified by `ExperimentalWebsiteService` from stored native result fields and `ExperimentalAnalyticsService` output. Browser JavaScript draws exported values only and does not own engineering calculations.
+
+Verification Center includes live publication checks plus a deterministic two-run contract probe for identities, rankings, baselines, finite values, payload serialization and chart coverage.
+
+## Explicit FTPS publishing fix
+
+Website publishing now matches the confirmed FileZilla profile: explicit FTP
+over TLS on port 21 with passive data connections. TLS is mandatory and the
+server certificate must pass Windows trust validation.
+
+## Superseded SFTP assumption
+
+The initial v40.18.0 SSH/SFTP transport was replaced before a successful live
+connection. Its backup, staging and rollback design is retained by v40.18.1.
+
+## Website export folder persistence
+
+The last folder selected with Choose Folder is stored in the existing local
+workflow preferences and restored automatically on the next application start.
+Unavailable folders are ignored safely.
+
+## Relative manufacturer redirect fix
+
+Preview redirects to the matching local `../index-test.html#manufacturers` file,
+while Production redirects to `../index.html#manufacturers`. The full iskort.is
+address remains canonical metadata only.
+
+## Manufacturer redirect export cleanup
+
+Website Export now has one canonical Preview/Production workflow. Each export
+also writes a small redirect companion under `manufacturers/` pointing to
+`https://iskort.is/3dp/index.html#manufacturers`. Preview remains isolated in
+`index-test.html`; Production backs up the previous redirect before replacing it.
+
+## Verification hotfix
+
+The terminology verification gate now distinguishes the exact obsolete
+`manufacturer-cta` class from the current `manufacturer-cta-row`,
+`manufacturer-cta-primary` and `manufacturer-cta-secondary` classes. The
+v40.17.4 form passed its own verification checks; this patch corrects the
+false failure without changing the rendered form or website terminology.
+
+## Manufacturer Material Submission Workflow
+
+The Manufacturers portal now includes a structured browser-only form for
+material testing enquiries. It prepares an addressed email to
+`iskort@iskort.is`; no form data is uploaded to or stored by the website.
+
+## Included
+
+- Company, contact name and contact email.
+- Material name, product line, material type and colour.
+- Spool size and proposed sample quantity.
+- Product-page and technical-datasheet URLs.
+- Testing goals and additional notes.
+- Required acknowledgement of independent, data-driven testing.
+- Per-enquiry `3DPI-YYYYMMDD-XXXXXXXX` reference ID.
+- `mailto:` submission with encoded subject and message body.
+- Copy Submission Details fallback when a local email application is unavailable.
+- Responsive, keyboard-accessible form styling and inline validation/status feedback.
+
+## Architecture boundary
+
+- No backend, SMTP integration, web database or direct SQLite access was added.
+- The public form is an email preparation surface only.
+- Canonical materials, results and manufacturer intelligence remain SQLite-backed.
+- Website Preview and Production use the same manufacturer portal renderer.
+- A server endpoint remains a future extension and can replace the delivery layer without redesigning the form.
+
+## What to test
+
+1. Open Website Preview and select Manufacturers.
+2. Press Submit Materials for Testing and confirm the form scrolls into view.
+3. Leave required fields empty and confirm browser validation prevents submission.
+4. Enter company, contact, material and sample details; accept the acknowledgement.
+5. Press Prepare Email Submission and confirm the email client opens an addressed message to `iskort@iskort.is` with a reference ID and all entered details.
+6. Press Copy Submission Details and confirm the same structured content is copied.
+7. Check desktop and narrow/mobile layouts.
+8. Run Verification Center and confirm all manufacturer submission checks pass.

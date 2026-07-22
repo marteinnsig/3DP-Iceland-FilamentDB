@@ -1,0 +1,120 @@
+<style id="methodologyPortalStyles">
+.methodology-shell{max-width:1180px;margin:28px auto 50px;padding:0 4px}.methodology-hero{padding:30px;border:1px solid rgba(148,163,184,.28);border-radius:22px;background:linear-gradient(145deg,rgba(30,41,59,.94),rgba(17,24,39,.9));box-shadow:0 18px 42px rgba(0,0,0,.22)}
+.methodology-hero h1{margin:5px 0 12px;font-size:clamp(32px,5vw,54px)}.methodology-hero>p{max-width:900px;color:#cbd5e1;line-height:1.7}.methodology-version-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}.methodology-chip{display:inline-flex;padding:7px 11px;border:1px solid #475569;border-radius:999px;background:#0f172a;color:#cbd5e1;font-size:13px;font-weight:700}
+.methodology-jump{display:flex;gap:8px;overflow-x:auto;margin:16px 0 22px;padding:10px 0}.methodology-jump a{white-space:nowrap;color:#dbeafe;text-decoration:none;border:1px solid #334155;border-radius:999px;padding:8px 12px;background:#111827;font-weight:700;font-size:13px}.methodology-jump a:hover{border-color:#60a5fa;background:#172554}
+.methodology-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.methodology-card,.methodology-section,.methodology-whitepaper{border:1px solid #334155;border-radius:18px;background:rgba(15,23,42,.86);padding:22px}.methodology-card h2,.methodology-section h2,.methodology-whitepaper h2{margin:0 0 9px;color:#f8fafc}.methodology-card h3,.methodology-section h3{margin:20px 0 7px;color:#e2e8f0}.methodology-card p,.methodology-card li,.methodology-section p,.methodology-section li,.methodology-whitepaper p{color:#cbd5e1;line-height:1.66}.methodology-card ul,.methodology-section ul{padding-left:20px}.methodology-card .metric{color:#93c5fd;font-weight:800}.methodology-section{margin-top:16px}.methodology-callout{border-left:4px solid #60a5fa;background:rgba(30,64,175,.14);padding:12px 14px;border-radius:0 12px 12px 0;color:#dbeafe!important}.methodology-warning{border-left-color:#f59e0b;background:rgba(180,83,9,.13);color:#fef3c7!important}
+.methodology-video{margin-top:18px;padding-top:16px;border-top:1px solid #334155}.methodology-video a,.methodology-whitepaper a{display:inline-flex;align-items:center;gap:8px;margin-top:7px;padding:10px 14px;border-radius:999px;background:#dc2626;border:1px solid #f87171;color:#fff;text-decoration:none;font-weight:800}.methodology-video a:hover{background:#ef4444}.methodology-video span{display:block;color:#94a3b8;font-size:13px;margin-top:7px}
+.methodology-details{margin-top:12px;border:1px solid #334155;border-radius:13px;background:#0b1220;padding:13px 15px}.methodology-details summary{cursor:pointer;color:#e2e8f0;font-weight:800}.methodology-details p,.methodology-details li{color:#cbd5e1;line-height:1.65}.methodology-faq details{border-top:1px solid #334155;padding:14px 0}.methodology-faq details:first-of-type{border-top:0}.methodology-faq summary{cursor:pointer;color:#e2e8f0;font-weight:800}
+.methodology-whitepaper{margin-top:16px;border-color:#7c3aed;background:linear-gradient(145deg,rgba(76,29,149,.2),rgba(15,23,42,.92))}.methodology-whitepaper .methodology-planned{display:inline-flex;align-items:center;gap:8px;margin-top:7px;padding:10px 14px;border-radius:999px;background:#6d28d9;border:1px solid #a78bfa;color:#fff;font-weight:800}.methodology-small{font-size:13px;color:#94a3b8!important}.methodology-formula{font-family:Consolas,Monaco,monospace;background:#020617;border:1px solid #334155;border-radius:10px;padding:10px 12px;color:#e2e8f0;overflow-wrap:anywhere}
+@media(max-width:900px){.methodology-grid{grid-template-columns:1fr}.methodology-shell{margin:18px 12px 40px}.methodology-hero{padding:22px}}@media(max-width:560px){.methodology-card,.methodology-section,.methodology-whitepaper{padding:18px}.methodology-hero{padding:19px}}
+</style>
+<div class="methodology-shell">
+  <header class="methodology-hero">
+    <p class="portal-eyebrow">3DPIceland Labs Mechanical Testing Methodology</p>
+    <h1>How the filament results are produced</h1>
+    <p>This page documents the practical, repeatable test workflow behind the public database. It combines an accessible explanation with technical details for readers who want to understand specimen orientation, measurements, calculations, repeatability and known limitations.</p>
+    <p class="methodology-callout"><strong>Scope:</strong> These are comparative 3DPIceland Labs measurements produced with consistent in-house equipment and procedures. They are not certified ISO or ASTM datasheet values and should not be interpreted as a replacement for accredited laboratory testing.</p>
+    <div class="methodology-version-row"><span class="methodology-chip">Methodology v1.0</span><span class="methodology-chip">Level 2 — Engineering</span><span class="methodology-chip">Tensile · Impact · Stiffness</span><span class="methodology-chip">Revised July 2026</span></div>
+  </header>
+
+  <nav class="methodology-jump" aria-label="Methodology sections">
+    <a href="#methodology" data-methodology-scroll="methodology-overview">Overview</a><a href="#methodology" data-methodology-scroll="methodology-printing">Printing standard</a><a href="#methodology" data-methodology-scroll="methodology-tensile">Tensile</a><a href="#methodology" data-methodology-scroll="methodology-impact">Impact</a><a href="#methodology" data-methodology-scroll="methodology-stiffness">Stiffness</a><a href="#methodology" data-methodology-scroll="methodology-statistics">Statistics</a><a href="#methodology" data-methodology-scroll="methodology-limitations">Limitations</a><a href="#methodology" data-methodology-scroll="methodology-faq">FAQ</a><a href="#methodology" data-methodology-scroll="methodology-whitepaper">Whitepaper</a>
+  </nav>
+
+  <section id="methodology-overview" class="methodology-section">
+    <h2>Testing philosophy</h2>
+    <p>The objective is controlled comparison across filament brands, material families, colors and reinforced variants. A result is most useful when the same specimen design, orientation, equipment and calculation path are used repeatedly. The database therefore emphasizes consistency and transparency over claiming laboratory certification.</p>
+    <div class="methodology-grid">
+      <div><h3>Comparative</h3><p>Results are designed to compare materials measured within this system. Direct comparison with manufacturer datasheets requires caution because standards, conditioning and specimen geometry may differ.</p></div>
+      <div><h3>Orientation-aware</h3><p>Flat and upright specimens reveal different behavior. Flat specimens primarily represent strength through deposited roads, while upright specimens emphasize bonding between printed layers.</p></div>
+      <div><h3>Repeatable</h3><p>Multiple specimens are measured where applicable. Averages, variation, sample counts and confidence indicators help show how stable each result is.</p></div>
+    </div>
+  </section>
+
+  <section id="methodology-printing" class="methodology-section">
+    <h2>Printing standard</h2>
+    <p>Specimens are printed using a controlled internal test profile so that material-to-material differences are not hidden by changing geometry or general print strategy. Material-specific temperature requirements may differ, but the comparative workflow keeps the remaining relevant settings consistent within each test family.</p>
+    <ul>
+      <li>Specimens are printed in defined flat and upright orientations when the test requires both.</li>
+      <li>The same specimen geometry and repeatable slicer strategy are used for comparable materials.</li>
+      <li>Test specimens are inspected before measurement; samples damaged during printing or removal are not treated as valid measurements.</li>
+      <li>Material preparation, including drying where required, is recorded as part of the practical test context.</li>
+    </ul>
+    <p class="methodology-warning methodology-callout"><strong>Important:</strong> Print temperature, moisture, cooling, machine calibration, color additives and manufacturing batch can all affect the measured result. The database represents the tested spool and documented print conditions.</p>
+  </section>
+
+  <div class="methodology-grid">
+    <article id="methodology-tensile" class="methodology-card">
+      <p class="portal-eyebrow">Mechanical test 01</p><h2>Tensile &amp; layer adhesion strength</h2>
+      <p><strong>What it measures:</strong> The peak pulling force required to break a narrowed printed specimen. Flat specimens are presented publicly as <em>Tensile Strength</em>; upright specimens are presented as <em>Layer Adhesion Strength</em>.</p>
+      <h3>Procedure</h3>
+      <ul><li>The specimen is secured in the custom tensile fixture.</li><li>A force gauge is set to peak-hold mode and the specimen is pulled until fracture.</li><li>The peak force is recorded in newtons.</li><li>Up to ten flat and ten upright specimens are measured for a complete material test.</li></ul>
+      <h3>Calculation</h3>
+      <p>Peak force is converted to stress using the effective printed cross-sectional area at the designed failure zone. Internal void space is excluded rather than treating the complete outer rectangle as solid.</p>
+      <div class="methodology-formula">Tensile stress (MPa) = Peak force (N) ÷ Effective area (mm²)</div>
+      <details class="methodology-details"><summary>Technical details</summary><p>The native calculation engine uses a canonical effective cross-section of approximately <span class="metric">6.5016 mm²</span>. The fixture is designed for a practical range up to roughly 500 N. Fracture should occur in the narrowed gauge region; abnormal fixture or removal failures are excluded.</p></details>
+      <div class="methodology-video"><strong>Watch the complete test procedure</strong><a href="https://www.youtube.com/watch?v=kax8Ha_AGcQ" target="_blank" rel="noopener noreferrer">▶ Tensile testing video</a><span>Shows the custom fixture, specimen orientations, peak-force measurement and MPa conversion.</span></div>
+    </article>
+
+    <article id="methodology-impact" class="methodology-card">
+      <p class="portal-eyebrow">Mechanical test 02</p><h2>Impact resistance</h2>
+      <p><strong>What it measures:</strong> How much energy a printed specimen absorbs when struck by a pendulum hammer. A material that stops more of the hammer's motion receives a higher impact result.</p>
+      <h3>Procedure</h3>
+      <ul><li>The specimen is inserted into the custom holder and locked to prevent movement.</li><li>The indicator is reset and the pendulum is raised to the standard release position.</li><li>The hammer is released without an additional push.</li><li>The remaining travel is read from the indicator and converted into absorbed impact energy.</li><li>Flat and upright orientations are measured separately, normally using multiple specimens per orientation.</li></ul>
+      <h3>Calculation</h3>
+      <p>The no-sample swing establishes the available pendulum energy. The specimen's remaining swing is used to calculate energy absorbed at fracture, normalized by the effective specimen cross-section.</p>
+      <div class="methodology-formula">Impact strength (kJ/m²) = Absorbed pendulum energy ÷ Net cross-sectional area</div>
+      <details class="methodology-details"><summary>Technical details</summary><p>The native calculation engine uses a no-sample reference angle of approximately <span class="metric">105.411°</span> and a net section of approximately <span class="metric">0.00004816 m²</span>. Repeated empty swings indicated about 3% spread between the highest and lowest readings during early validation.</p></details>
+      <div class="methodology-video"><strong>Watch the complete test procedure</strong><a href="https://www.youtube.com/watch?v=ibjS_tWL6sg" target="_blank" rel="noopener noreferrer">▶ Impact testing video</a><span>Shows the pendulum fixture, specimen locking system, release sequence and repeatability development.</span></div>
+    </article>
+
+    <article id="methodology-stiffness" class="methodology-card">
+      <p class="portal-eyebrow">Mechanical test 03</p><h2>Stiffness</h2>
+      <p><strong>What it measures:</strong> Resistance to bending under a defined load. A higher calculated modulus means the material deflects less and is therefore stiffer.</p>
+      <h3>Procedure</h3>
+      <ul><li>A solid printed beam specimen is placed across the fixture supports.</li><li>The contact point is lowered until the indicator confirms initial contact without loading the beam.</li><li>The scale is zeroed and the standard weight is applied.</li><li>Screw revolutions and remaining degrees are recorded to determine displacement.</li><li>The measurement is repeated to assess consistency.</li></ul>
+      <h3>Calculation</h3>
+      <p>Measured center deflection is combined with load, support span and specimen geometry using the fixture's beam-deflection calculation to estimate stiffness in MPa.</p>
+      <div class="methodology-formula">Modulus ∝ Load × Span³ ÷ (Deflection × Second moment of area)</div>
+      <details class="methodology-details"><summary>Technical details</summary><p>The native calculation path uses approximately <span class="metric">1.058774 mm per revolution</span>, a <span class="metric">118.2 mm</span> support span, a <span class="metric">5.47 N</span> load and a second moment of area of approximately <span class="metric">34.679467 mm⁴</span>. Early same-specimen repeats showed roughly 5% variation after fixture repair and validation.</p></details>
+      <div class="methodology-video"><strong>Watch the complete test procedure</strong><a href="https://www.youtube.com/watch?v=nv9PexjvFRw" target="_blank" rel="noopener noreferrer">▶ Stiffness testing video</a><span>Shows specimen placement, zero-contact setup, deflection reading and stiffness calculation.</span></div>
+    </article>
+  </div>
+
+  <section id="methodology-statistics" class="methodology-section">
+    <h2>Statistics, confidence and interpretation</h2>
+    <div class="methodology-grid">
+      <div><h3>Average</h3><p>The displayed engineering value is based on the mean of the valid specimen measurements available for that orientation and test.</p></div>
+      <div><h3>Variation and CV</h3><p>Standard deviation and coefficient of variation show the spread between specimens. CV relates the spread to the average, which helps compare consistency across values of different magnitude.</p></div>
+      <div><h3>Confidence</h3><p>The confidence indicator combines sample coverage and measurement consistency. Lower confidence means the result should be interpreted more cautiously; it does not mean the material itself is weak.</p></div>
+    </div>
+    <h3>3DPIceland internal comparative repeatability scale</h3>
+    <p>The consistency score preserves the established formula: 100 minus average tensile/impact CV%, minus a small incomplete-sample penalty. It describes repeatability inside this test workflow, not accredited instrument accuracy or an industry standard.</p>
+    <ul><li><strong>90–100:</strong> excellent repeatability.</li><li><strong>85–89.9:</strong> very good repeatability.</li><li><strong>80–84.9:</strong> good repeatability.</li><li><strong>70–79.9:</strong> moderate, usable repeatability.</li><li><strong>60–69.9:</strong> low repeatability.</li><li><strong>Below 60:</strong> very low repeatability.</li></ul>
+    <p>With complete ten-specimen sets and no sample penalty, these bands correspond approximately to average CV ranges of 0–10%, 10–15%, 15–20%, 20–30%, 30–40% and above 40% respectively.</p>
+    <h3>How to read the results</h3>
+    <ul><li><strong>High tensile strength:</strong> good resistance to pulling along the printed structure.</li><li><strong>High layer adhesion strength:</strong> stronger bonding across layer boundaries.</li><li><strong>High impact resistance:</strong> greater energy absorption before fracture or severe deformation.</li><li><strong>High stiffness:</strong> less bending under load, but not automatically greater impact toughness or layer adhesion.</li></ul>
+  </section>
+
+  <section id="methodology-limitations" class="methodology-section">
+    <h2>Known limitations</h2>
+    <ul><li>The equipment is purpose-built comparative equipment, not an accredited universal testing machine.</li><li>Specimen geometry and procedures are internal 3DPIceland Labs methods rather than direct ISO/ASTM replicas.</li><li>The impact pointer can be affected by pivot tension, fastener adjustment and room/equipment temperature; free movement and the stop mechanism are checked before a session.</li><li>The tensile carriage has a practical low-force resistance floor, commonly around 7–8 N, so very weak specimens require cautious interpretation.</li><li>The stiffness fixture can show roughly 10–15 degrees of repeat-placement/reading variation; small differences near that range should not be treated as decisive.</li><li>Printed polymers are anisotropic; a single result cannot describe every loading direction or part geometry.</li><li>Very flexible materials may bend or pass through an impact event without a conventional brittle fracture, requiring cautious interpretation.</li><li>Extremely strong or ductile materials can approach the usable range of a fixture and may need a future method revision.</li><li>Results can be influenced by spool moisture, pigment, reinforcement, printer condition and batch-to-batch variation.</li></ul>
+    <p class="methodology-callout">The most reliable use of this database is comparison between materials tested by the same 3DPIceland Labs workflow—not treating an individual number as a certified design allowable.</p>
+  </section>
+
+  <section id="methodology-faq" class="methodology-section methodology-faq">
+    <h2>Frequently asked questions</h2>
+    <details><summary>Why test flat and upright specimens?</summary><p>FDM parts are direction-dependent. Flat specimens emphasize the deposited roads, while upright specimens force the load across many layer interfaces. Reporting both exposes anisotropy that one orientation would hide.</p></details>
+    <details><summary>Why can carbon- or glass-fiber-filled filament be stiffer without being tougher?</summary><p>Short fibers often increase rigidity and dimensional stability, but they can reduce ductility and do not automatically improve impact resistance or bonding between layers. Strength, stiffness, toughness and layer adhesion are separate properties.</p></details>
+    <details><summary>Why are some sample counts below the planned maximum?</summary><p>Fragile specimens can fail during printing, removal from the build plate, brim removal or fixture preparation. Only usable measurements are included, and sample coverage is reflected in confidence.</p></details>
+    <details><summary>Can these results be compared directly with manufacturer datasheets?</summary><p>They can provide useful context, but not a one-to-one replacement. Manufacturer values may use injection-molded specimens, standardized conditioning, different geometry and certified equipment.</p></details>
+    <details><summary>Does a higher number always mean a better filament?</summary><p>No. The best material depends on the application. High stiffness may be desirable for dimensional stability, while a lower-stiffness, higher-impact material may be better for clips, guards or parts exposed to shocks.</p></details>
+  </section>
+
+  <section id="methodology-whitepaper" class="methodology-whitepaper">
+    <p class="portal-eyebrow">Technical documentation</p><h2>Engineering Methodology Whitepaper</h2>
+    <p>A more detailed Level 3 whitepaper is planned as the next documentation milestone. It will expand this page with complete equipment specifications, specimen geometry, calculation derivations, calibration and repeatability records, uncertainty discussion, database calculation ownership and methodology revision history.</p>
+    <a class="methodology-video-link" href="3DPIceland_Labs_Mechanical_Testing_Methodology_v1.0.pdf" target="_blank" rel="noopener">Download Engineering Whitepaper (PDF)</a><span class="methodology-planned">Current methodology version: 1.0 · Generated by the native Documentation Engine</span>
+    <p class="methodology-small">The whitepaper will be generated from the same governed methodology source rather than maintained as a disconnected document.</p>
+  </section>
+</div>

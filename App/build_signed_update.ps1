@@ -1,0 +1,42 @@
+param(
+    [string]$OutputFolder = (Join-Path $PSScriptRoot "artifacts"),
+    [switch]$AllowDirty,
+    [string]$VersionOverride = ""
+)
+
+$ErrorActionPreference = "Stop"
+$repository = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+$gitStatus = @(git -C $repository status --porcelain)
+if ($LASTEXITCODE -ne 0) { throw "Could not inspect repository status." }
+if ($gitStatus.Count -gt 0 -and -not $AllowDirty) { throw "Signed production packaging requires a clean Git worktree. Use -AllowDirty only for an explicit pre-release verification package." }
+if ($gitStatus.Count -gt 0) { Write-Warning "Creating a pre-release verification package from a dirty worktree." }
+$project = Join-Path $PSScriptRoot "FilamentDbApp\FilamentDbApp.csproj"
+$publishFolder = Join-Path $PSScriptRoot "FilamentDbApp\bin\Release\net9.0-windows\win-x64\publish"
+$updaterProject = Join-Path $PSScriptRoot "FilamentDbUpdater\FilamentDbUpdater.csproj"
+$updaterPublishFolder = Join-Path $PSScriptRoot "FilamentDbUpdater\bin\Release\net9.0\win-x64\publish"
+$packager = Join-Path $PSScriptRoot "..\Tools\ReleasePackager\ReleasePackager.csproj"
+$verifier = Join-Path $PSScriptRoot "..\Tools\UpdatePackageVerifier\UpdatePackageVerifier.csproj"
+[xml]$projectXml = Get-Content -LiteralPath $project
+$version = [string]$projectXml.Project.PropertyGroup.Version
+$informational = [string]$projectXml.Project.PropertyGroup.InformationalVersion
+$releaseCode = $informational.Substring($informational.IndexOf("-") + 1)
+if (-not [string]::IsNullOrWhiteSpace($VersionOverride)) { $version = $VersionOverride }
+
+if (Test-Path -LiteralPath $publishFolder) { Remove-Item -LiteralPath $publishFolder -Recurse -Force }
+if (Test-Path -LiteralPath $updaterPublishFolder) { Remove-Item -LiteralPath $updaterPublishFolder -Recurse -Force }
+dotnet publish $project -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:EnableCompressionInSingleFile=true /p:Version=$version /p:AssemblyVersion=$version.0 /p:FileVersion=$version.0 /p:InformationalVersion=$version-$releaseCode
+if ($LASTEXITCODE -ne 0) { throw "Canonical Release publish failed." }
+New-Item -ItemType Directory -Force -Path (Join-Path $publishFolder "Assets") | Out-Null
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot "FilamentDbApp\Assets\3dp-iceland-labs-icon.ico") -Destination (Join-Path $publishFolder "Assets\3dp-iceland-labs-icon.ico") -Force
+dotnet publish $updaterProject -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:EnableCompressionInSingleFile=true
+if ($LASTEXITCODE -ne 0) { throw "Transactional updater publish failed." }
+Copy-Item -LiteralPath (Join-Path $updaterPublishFolder "3DPIcelandUpdater.exe") -Destination (Join-Path $publishFolder "3DPIcelandUpdater.exe") -Force
+
+New-Item -ItemType Directory -Force -Path $OutputFolder | Out-Null
+$output = Join-Path $OutputFolder ("3DPIceland_Update_v" + $version.Replace(".", "_") + ".zip")
+dotnet run --project $packager -c Release -- package --input $publishFolder --output $output --version $version --code $releaseCode --min-schema 29 --max-schema 29
+if ($LASTEXITCODE -ne 0) { throw "Signed update packaging failed." }
+dotnet run --project $verifier -c Release -- $output $version $releaseCode
+if ($LASTEXITCODE -ne 0) { throw "Application verifier rejected the newly signed update package." }
+
+Write-Host "Signed update package ready: $output"

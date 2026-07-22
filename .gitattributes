@@ -1,0 +1,34 @@
+# Normalize text files consistently across Windows and other platforms.
+* text=auto
+
+# Keep source and project metadata as text with normalized line endings.
+*.cs text
+*.xaml text
+*.csproj text
+*.sln text
+*.props text
+*.targets text
+*.md text
+*.html text
+*.css text
+*.js text
+*.json text
+*.xml text
+*.svg text
+*.ps1 text
+*.bat text
+*.cmd text
+
+# Treat binary assets and distributable archives as binary.
+*.ico binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.xlsx binary
+*.xlsm binary
+*.zip binary
+*.7z binary
+*.exe binary
+*.dll binary

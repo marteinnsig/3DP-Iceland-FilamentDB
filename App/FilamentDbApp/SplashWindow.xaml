@@ -1,0 +1,48 @@
+<Window x:Class="FilamentDbApp.SplashWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:FilamentDbApp"
+        Title="3DPIceland Engineering Platform"
+        Width="620" Height="390"
+        WindowStyle="None" ResizeMode="NoResize"
+        AllowsTransparency="True" Background="Transparent"
+        ShowInTaskbar="False" Topmost="True"
+        WindowStartupLocation="CenterScreen">
+    <Border CornerRadius="26" Background="#F8FAFC" BorderBrush="#DCE3EC" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="28" ShadowDepth="8" Opacity="0.28" Color="#0F172A" />
+        </Border.Effect>
+        <Grid Margin="28">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Width="210" Height="210" HorizontalAlignment="Center">
+                <Border CornerRadius="44" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
+                    <Image Source="pack://application:,,,/Assets/3dp-iceland-labs-icon.png" Margin="10" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
+                </Border>
+                <Path x:Name="ExtrusionTrace"
+                      Data="M 79,112 C 66,112 62,124 71,131 L 126,131 C 142,131 142,148 126,148 L 72,148 C 57,148 57,165 72,165 L 136,165"
+                      Stroke="#1479F6" StrokeThickness="8" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" StrokeDashArray="1,220" StrokeDashOffset="220"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+            </Grid>
+
+            <TextBlock Grid.Row="1" Text="3DPIceland Engineering Platform"
+                       HorizontalAlignment="Center" FontSize="24" FontWeight="SemiBold" Foreground="#172131" Margin="0,12,0,0" />
+            <TextBlock Grid.Row="2" Text="Filament intelligence, testing and reporting"
+                       HorizontalAlignment="Center" FontSize="13" Foreground="#64748B" Margin="0,5,0,0" />
+            <Grid Grid.Row="3" Margin="12,20,12,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="LoadingText" Text="Starting platform…" Foreground="#475569" FontSize="12" />
+                <TextBlock Grid.Column="1" Text="{x:Static local:BuildInfo.ShortLabel}" Foreground="#64748B" FontSize="12" />
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

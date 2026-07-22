@@ -1,0 +1,82 @@
+# Visual Studio and IDE user state
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+*.userprefs
+mono_crash.*
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+.localhistory/
+.ionide/
+
+# .NET build, test and publish output
+**/bin/
+**/obj/
+**/artifacts/
+**/TestResults/
+**/publish/
+packages/
+*.nupkg
+*.snupkg
+*.pdb
+*.binlog
+*.cache
+*_wpftmp.csproj
+BenchmarkDotNet.Artifacts/
+coverage*.json
+coverage*.xml
+coverage*.info
+*.coverage
+*.coveragexml
+
+# Visual Studio packaging and publish profiles
+AppPackages/
+BundleArtifacts/
+*.appx
+*.appxbundle
+*.appxupload
+*.pubxml
+*.publishproj
+*.publishsettings
+PublishScripts/
+
+# Local application data and SQLite working files
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+
+# Local settings, secrets and environment overrides
+.env
+.env.*
+!.env.example
+*.local.json
+secrets.json
+
+# Logs, backups and temporary files
+*.log
+*.bak
+*.tmp
+*.temp
+*.orig
+*.rej
+*~
+
+# Local release archives
+*.zip
+*.7z
+*.rar
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
