@@ -21,6 +21,6 @@ Scores should be useful as decision support, not hidden magic. UI panels should 
 
 - `FilamentDbApp/Models/EngineeringScoreProfile.cs`
 - `FilamentDbApp/Services/EngineeringScoringService.cs`
-- `docs/ScoringEngine.md`
-- `docs/RankingsDashboard_v20.md`
-- `docs/AnalyticsRadarEngine.md`
+- `Docs/ScoringEngine.md`
+- `Docs/RankingsDashboard_v20.md`
+- `Docs/AnalyticsRadarEngine.md`

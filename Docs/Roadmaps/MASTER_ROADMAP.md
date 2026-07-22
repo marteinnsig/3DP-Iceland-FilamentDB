@@ -5,7 +5,7 @@ Current canonical release: **v43.8.8 — Remote Signed Update Delivery Productio
 Last runtime-accepted baseline: **v43.8.8 — Remote Signed Update Delivery Production Consolidation**
 
 This file is the canonical strategic roadmap. Completed build details belong in
-`docs/CHANGELOG.md`, `docs/BUILD_HISTORY.md`, `docs/MILESTONES.md` and
+`Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
 `Reports/VERIFICATION_HISTORY.md`.
 
 ## Milestone overview
@@ -734,6 +734,7 @@ Automated evidence (2026-07-22):
 - Removed all enumerated reproducible ignored `.vs`, `bin`, `obj`, legacy application-local build artifacts and isolated test output. No locked target failed. Preserved only canonical `v43_8_8-production` and the explicit `v43_8_9-security-candidate` beneath `App/artifacts`; user data and the private Git archive were outside every cleanup target.
 - Visual Studio subsequently reported NU1105 for `UpdateCore` because the application referenced it while the project was absent from the solution membership and the prior IDE cache had hidden that gap. Command-line restore/build proved both projects valid; `UpdateCore` was then added explicitly to the solution with Debug/Release configurations to make clean-cache Visual Studio restore deterministic.
 - Local Release runtime acceptance passed on 2026-07-22: Verification Center reported PASS 296/296 for `v43.8.9 SQLITE-DEPENDENCY-SECURITY`, assembly 43.8.9.0, informational identity aligned, schema v29 and the owner's 200-material SQLite database operating normally. The exported diagnostics contained 296 PASS lines and zero FAIL lines. Commit/push of the completed local security gate is approved; VM update/runtime acceptance remains the final candidate-promotion gate.
+- Documentation path hygiene consolidated all 45 lowercase `docs/` files into the canonical `Docs/` tree without filename collisions or content deletion. All active path references now use exact GitHub case, and README has one current v43.8.9 candidate identity instead of the stale v41.6 declaration.
 
 ## Future — v44 Open Engineering Platform
 

@@ -22,7 +22,7 @@ Use clear versioned zip names:
 - Avoid marker-only or foundation-only releases unless explicitly needed.
 - Build errors should be fixed before continuing to the next milestone.
 - Build fixes should use patch versions, for example `v25.6.1`.
-- Changelog/release notes belong in `docs/`, not as loose root-level v25 `.txt` files.
+- Changelog/release notes belong in `Docs/`, not as loose root-level v25 `.txt` files.
 - Root should contain only project-level files such as `README.md`, `LICENSE`, `THIRD-PARTY-NOTICES.md`, solution files, scripts and source folders.
 - Every distributable build must include the canonical `LICENSE` and `THIRD-PARTY-NOTICES.md` files beside the executable.
 - Dependency upgrades must include a review and refresh of the third-party license inventory.
@@ -31,7 +31,7 @@ Use clear versioned zip names:
 
 - Commit after every successful local build.
 - Use GitHub releases for major milestones.
-- Keep `docs/CHANGELOG.md` updated when a version is completed.
+- Keep `Docs/CHANGELOG.md` updated when a version is completed.
 - Keep the repository license identifier set to `GPL-3.0-only` unless the copyright holder explicitly approves a future relicensing decision.
 
 

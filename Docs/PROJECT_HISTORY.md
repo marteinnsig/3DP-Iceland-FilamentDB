@@ -61,4 +61,4 @@ Advanced title engine, thumbnail research, comparison discovery, content calenda
 
 - The archive includes feature builds, build fixes, layout fixes, wording patches and documentation builds.
 - The v25 YouTube Research Suite is the largest single creator-focused phase.
-- Build names are preserved in `docs/RELEASES.md` for traceability.
+- Build names are preserved in `Docs/RELEASES.md` for traceability.

@@ -588,7 +588,7 @@ Nullable flow has been made explicit in DataGrid lookup, website export without 
 
 ## Roadmap consolidation
 
-`Docs/Roadmaps/MASTER_ROADMAP.md` is again a strategic forward-looking document rather than a release log. The conflicting v39 Cost Analytics and Daily Workflow definitions are reconciled, early delivery of v42/v43 foundations is recorded, and `docs/ROADMAP.md` now points to the canonical roadmap instead of maintaining a competing plan.
+`Docs/Roadmaps/MASTER_ROADMAP.md` is again a strategic forward-looking document rather than a release log. The conflicting v39 Cost Analytics and Daily Workflow definitions are reconciled, early delivery of v42/v43 foundations is recorded, and `Docs/Roadmap.md` now points to the canonical roadmap instead of maintaining a competing plan.
 
 ## Pricing & Value Portal Tab
 

@@ -14137,8 +14137,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Project Information");
         sb.AppendLine("-------------------");
         sb.AppendLine("GitHub repository: https://github.com/marteinnsig/3DP-Iceland-FilamentDB");
-        sb.AppendLine("Documentation: docs/USER_GUIDE.md");
-        sb.AppendLine("Changelog: docs/CHANGELOG.md");
+        sb.AppendLine("Documentation: Docs/USER_GUIDE.md");
+        sb.AppendLine("Changelog: Docs/CHANGELOG.md");
 
         return sb.ToString();
     }
