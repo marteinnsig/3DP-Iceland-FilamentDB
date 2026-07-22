@@ -2184,9 +2184,12 @@ App source/assets files retained: 68
 
 # v43.8.9 SQLite Dependency Security — 2026-07-22
 
+- PASS: BOM-less `latest.json` updated a fresh v43.8.8 VM install to v43.8.9; durable transaction phase `Committed`, zero incomplete transactions and no automatic SQLite restore.
+- PASS: Fresh-install zero-Materials boundary remained intact after update.
+- PASS: Verified schema-v29 restore recovered 200 Materials, 3,728 tensile samples, 3,752 impact samples and 191 stiffness rows; post-restore canonical backup passed integrity and recovery compatibility.
+- PASS: Final VM Verification Center 296/296 with zero failures; v43.8.9 promoted to canonical.
 - PASS: Release runtime identity `v43.8.9 SQLITE-DEPENDENCY-SECURITY`, assembly 43.8.9.0 and informational version aligned.
 - PASS: Verification Center 296/296; diagnostics export contained 296 PASS lines and zero FAIL lines.
 - PASS: SQLite schema v29 and the existing 200-material owner database loaded and verified normally.
 - PASS: NuGet vulnerability scan resolved `Microsoft.Data.Sqlite` 9.0.18 and SQLitePCLRaw 2.1.12 with no known vulnerable package from configured sources.
 - PASS: Debug/Release 0 warnings and 0 errors; updater self-test and six-file signed-package verifier passed.
-- PENDING: guarded v43.8.8-to-v43.8.9 VM update and post-update Verification Center acceptance before canonical release promotion.

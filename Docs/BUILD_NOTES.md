@@ -8,6 +8,10 @@ v43.8.9 is a narrow security-maintenance candidate. It updates `Microsoft.Data.S
 
 Local Release runtime Verification Center passed 296/296 on 2026-07-22 with schema v29 and the existing 200-material owner database. The v43.8.9 signed candidate remains pending a guarded v43.8.8-to-v43.8.9 VM update/runtime acceptance before canonical promotion.
 
+The first v43.8.8 VM discovery attempt exposed a Windows PowerShell encoding boundary: `Set-Content -Encoding UTF8` emitted an `EF BB BF` BOM, while the byte-oriented JSON reader requires `{` as the first token. Feed generation now writes explicit BOM-less UTF-8. The v43.8.9 reader also strips one standard UTF-8 BOM defensively for backwards compatibility; feed size, hash, signature and governed-root validation remain unchanged.
+
+Canonical runtime acceptance completed in a snapshot-isolated VM. The BOM-less feed updated a fresh v43.8.8 install to v43.8.9 with a `Committed` transaction and zero incomplete transactions while preserving the intentional zero-Materials profile. A schema-v29 owner backup then restored 200 Materials, 3,728 tensile samples, 3,752 impact samples and 191 stiffness rows; a new canonical 200-Material SQLite backup made every recovery gate ready. Final Verification Center result was PASS 296/296 with zero failures.
+
 # Previous Build Notes - v43.8.8
 
 ## Production Consolidation

@@ -20,7 +20,11 @@ try {
         packageSha256 = (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash
         manifest = $manifest
     }
-    $feed | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $OutputFolder "latest.json") -Encoding UTF8
+    $feedJson = $feed | ConvertTo-Json -Depth 8
+    [IO.File]::WriteAllText(
+        (Join-Path $OutputFolder "latest.json"),
+        $feedJson,
+        [Text.UTF8Encoding]::new($false))
     Write-Host "Update feed ready: $OutputFolder"
 }
 finally { if (Test-Path -LiteralPath $work) { Remove-Item -LiteralPath $work -Recurse -Force } }

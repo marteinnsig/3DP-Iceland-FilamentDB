@@ -718,7 +718,7 @@ Audit 7 approved execution record (2026-07-22):
 
 ## v43.8.9 SQLite Dependency Security
 
-Status: automated gates and local Verification Center passed; VM update/runtime acceptance remains pending before canonical release promotion.
+Status: complete and canonical; automated gates, local Verification Center, guarded clean-VM update, restored-data runtime and final VM Verification Center passed.
 
 - Keep the application on `net9.0-windows` and update `Microsoft.Data.Sqlite` only within the supported 9.0 servicing line.
 - Explicitly select a non-affected SQLitePCLRaw native bundle so NuGet minimum-version resolution cannot retain 2.1.10 or 2.1.11.
@@ -735,6 +735,8 @@ Automated evidence (2026-07-22):
 - Visual Studio subsequently reported NU1105 for `UpdateCore` because the application referenced it while the project was absent from the solution membership and the prior IDE cache had hidden that gap. Command-line restore/build proved both projects valid; `UpdateCore` was then added explicitly to the solution with Debug/Release configurations to make clean-cache Visual Studio restore deterministic.
 - Local Release runtime acceptance passed on 2026-07-22: Verification Center reported PASS 296/296 for `v43.8.9 SQLITE-DEPENDENCY-SECURITY`, assembly 43.8.9.0, informational identity aligned, schema v29 and the owner's 200-material SQLite database operating normally. The exported diagnostics contained 296 PASS lines and zero FAIL lines. Commit/push of the completed local security gate is approved; VM update/runtime acceptance remains the final candidate-promotion gate.
 - Documentation path hygiene consolidated all 45 lowercase `docs/` files into the canonical `Docs/` tree without filename collisions or content deletion. All active path references now use exact GitHub case, and README has one current v43.8.9 candidate identity instead of the stale v41.6 declaration.
+- The first v43.8.8 VM update discovery failed before mutation because generated `latest.json` began with the Windows PowerShell UTF-8 BOM (`EF BB BF`). The generator now writes BOM-less UTF-8 explicitly, and the v43.8.9 client defensively accepts one standard UTF-8 BOM. This is a parser-compatibility extension only; package bytes, SHA-256, trusted manifest, schema and default-No apply gates remain mandatory.
+- Final VM acceptance passed on 2026-07-22. A fresh zero-Materials v43.8.8 installation consumed the corrected feed, updated to v43.8.9 without an error, recorded the transaction as `Committed` with zero incomplete transactions and preserved the zero-data boundary. A verified schema-v29 owner backup restored 200 Materials, 3,728 tensile samples, 3,752 impact samples and 191 stiffness rows; creating a canonical post-restore SQLite backup satisfied all recovery evidence gates. Verification Center then reported PASS 296/296 with zero FAIL lines. v43.8.9 is the canonical release.
 
 ## Future — v44 Open Engineering Platform
 

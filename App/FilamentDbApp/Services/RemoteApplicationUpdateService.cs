@@ -23,6 +23,8 @@ public sealed class RemoteApplicationUpdateService
             if (response.Content.Headers.ContentLength is > MaximumFeedBytes) return new(false, "Feed blocked", "Update feed exceeds 1 MiB.", null);
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
             var feedBytes = await ReadBoundedAsync(stream, MaximumFeedBytes, cancellationToken);
+            if (feedBytes.Length >= 3 && feedBytes[0] == 0xEF && feedBytes[1] == 0xBB && feedBytes[2] == 0xBF)
+                feedBytes = feedBytes[3..];
             var feed = JsonSerializer.Deserialize<ApplicationUpdateFeed>(feedBytes, JsonOptions);
             var error = ValidateFeed(feed);
             if (error is not null) return new(false, "Feed blocked", error, feed);

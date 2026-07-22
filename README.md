@@ -4,7 +4,7 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current release candidate:** v43.8.9 — SQLite Dependency Security
+- **Current release:** v43.8.9 — SQLite Dependency Security
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
@@ -113,7 +113,7 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 43.8.9 is the current security-maintenance candidate. It preserves the v43.8.8 runtime and deployment contracts while updating the net9 SQLite provider and explicitly selecting a SQLite native bundle newer than the vulnerable 2.1.10/2.1.11 line. Canonical release promotion remains gated on build, package, Verification Center and VM runtime acceptance.
+Version 43.8.9 is the current canonical security-maintenance release. It preserves the v43.8.8 runtime and deployment contracts while updating the net9 SQLite provider and explicitly selecting a SQLite native bundle newer than the vulnerable 2.1.10/2.1.11 line. Clean-profile update, committed transaction, restored-data operation and Verification Center 296/296 were runtime accepted in a snapshot-isolated VM.
 
 The clean-install profile contains no material dataset and no private FTPS identity. SQLite is never restored automatically by application update recovery.
 

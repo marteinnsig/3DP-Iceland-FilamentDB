@@ -4,6 +4,8 @@
 - Explicitly selects `SQLitePCLRaw.bundle_e_sqlite3` 2.1.12 so restore cannot resolve the high-severity affected 2.1.10/2.1.11 native SQLite line.
 - No SQLite schema, database ownership, backup/restore or automatic-restore policy change.
 - Release promotion requires vulnerability scan, Debug/Release, updater/verifier, Verification Center and VM acceptance.
+- Update-feed generation writes BOM-less UTF-8 for v43.8.8 compatibility; the v43.8.9 reader also tolerates one standard UTF-8 BOM defensively.
+- Canonical runtime accepted: fresh v43.8.8-to-v43.8.9 guarded VM update committed with zero data leakage, restored schema-v29 owner data remained intact, and final Verification Center passed 296/296.
 
 ## v43.8.8 - Production Consolidation
 
