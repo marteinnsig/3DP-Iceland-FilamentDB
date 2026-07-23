@@ -1,4 +1,4 @@
-# Current Build Notes - v44.3.0
+# Current Build Notes - v44.3.1
 
 ## Backup, Recovery and Update Evidence Clarity candidate
 
@@ -27,10 +27,27 @@ applicable on a clean profile. The rebuilt Candidate then passed Application
 Readiness and Overall Verification with 209/209 applicable checks and 90 not
 applicable.
 
-Update transaction/health/snapshot evidence remains read-only in System
-Diagnostics and is the next bounded v44.3 increment. v44.3.0 remains Candidate
-and the canonical/production release remains v44.2.0 until the complete v44.3
-scope is runtime accepted.
+v44.3.1 adds the second bounded increment without changing the durable updater
+schema or recovery engine. Backup and Recovery Center now shows the latest
+application-update evidence in four separate read-only boundaries:
+transaction state, health acknowledgement, application rollback snapshot and
+SQLite backup evidence. Every boundary explicitly reports present, missing,
+invalid/unreadable or not recorded state. Refresh rereads the evidence but does
+not create, modify, recover or delete anything.
+
+Application rollback and SQLite recovery remain explicitly separate. The panel
+states that application rollback never restores SQLite automatically; SQLite
+recovery remains a separate default-No operation and all evidence/backups are
+retained. A clean profile with no transaction history still displays all four
+boundaries as `None recorded`, rather than hiding the distinction.
+
+Clean-VM runtime acceptance completed on 2026-07-23. The Recovery Center showed
+all four boundaries as `None recorded`, retained both healthy empty-profile
+backups and displayed the explicit application-rollback/SQLite separation.
+Application Readiness and Overall Verification passed 209/209 applicable checks
+with 90 not applicable. v44.3.1 is the canonical runtime-accepted release.
+The tested distribution artifacts remain Candidate; Production promotion and
+stable-route publication remain separate clean-tree/default-No operations.
 
 ## Daily-use UI State and MaterialID Clarity candidate
 

@@ -1,5 +1,25 @@
 # Verification History
 
+## v44.3.1 Recovery and Update Evidence
+
+Status: PASS; RUNTIME ACCEPTED
+
+- Backup and Recovery Center presents transaction state, health
+  acknowledgement, application rollback snapshot and SQLite backup evidence as
+  four separate read-only boundaries.
+- Missing, present, invalid/unreadable and not-recorded evidence states remain
+  explicit. A clean profile still shows every boundary.
+- No update/recovery engine, durable schema, SQLite restore, evidence retention,
+  website/report or FTPS behavior changed.
+- Debug and Release builds: 0 warnings, 0 errors.
+- NuGet vulnerability audit: PASS.
+- Clean-VM Recovery Center visually confirmed all four boundaries as
+  `None recorded`, retained two healthy empty-profile backups and explained
+  that application rollback never restores SQLite automatically.
+- PASS: Application Readiness and Overall Verification 209/209 applicable
+  checks; 90 data-dependent checks explicitly not applicable. Build identity:
+  `v44.3.1 RECOVERY-UPDATE-EVIDENCE`.
+
 ## v44.3.0 Backup, Recovery and Update Evidence Clarity Candidate
 
 Status: PASS; FIRST INCREMENT RUNTIME ACCEPTED; v44.3 REMAINS IN PROGRESS

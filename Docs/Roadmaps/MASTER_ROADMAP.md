@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.2.0 — Daily-use UI State and MaterialID Clarity**
+Current canonical release: **v44.3.1 — Backup, Recovery and Update Evidence Clarity**
 
-Last runtime-accepted baseline: **v44.2.0 — Daily-use UI State and MaterialID Clarity**
+Last runtime-accepted baseline: **v44.3.1 — Backup, Recovery and Update Evidence Clarity**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -20,7 +20,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v41 | Engineering Intelligence | ★★★★★ | Complete — governed downstream handoffs delivered |
 | v42 | Website & Approved Template Architecture | ★★★★☆ | Foundation delivered early |
 | v43 | Deployment Platform | ★★★★☆ | Complete — canonical v43.8.9 runtime accepted |
-| v44 | Daily Use, Reliability & Maintainability | ★★★★★ | In progress — v44.0 through v44.2 complete |
+| v44 | Daily Use, Reliability & Maintainability | ★★★★★ | In progress — v44.0 through v44.3 complete |
 
 ## Reconciliation of the older plans
 
@@ -786,7 +786,7 @@ Status: **Complete — machine-local layout/MaterialID persistence, selected-row
 
 ### v44.3 — Backup, Recovery and update evidence clarity
 
-Status: **In progress — v44.3.0 empty-profile compatibility and Recovery Center glossary runtime accepted on a clean VM; update-boundary evidence clarity remains next.**
+Status: **Complete — v44.3.1 clean-VM runtime accepted with separate read-only update-evidence boundaries and Verification PASS 209/209 plus 90 N/A.**
 
 - Explain `Ready`, `Migration required`, `Legacy / incomplete`, `Newer / incompatible`, `Corrupt` and valid zero-data backup states directly in Recovery Center.
 - Distinguish a healthy empty clean-profile backup from corruption and explain why full-data release gates require a canonical backup containing Materials.

@@ -1,3 +1,14 @@
+## v44.3.1 - Backup, Recovery and Update Evidence Clarity
+
+- Classified integrity-valid schema-current zero-Material backups as explicit
+  restore-ready healthy empty profiles, distinct from full-data evidence.
+- Added a Recovery Center compatibility glossary and explicit empty-profile
+  restore warning.
+- Added separate read-only transaction, health acknowledgement, application
+  rollback snapshot and SQLite backup evidence boundaries.
+- Preserved default-No recovery, no automatic SQLite restore and evidence
+  retention.
+
 ## v44.2.0 - Daily-use UI State and MaterialID Clarity
 
 - Added machine-local last-MaterialID and safe keyed column-order persistence.

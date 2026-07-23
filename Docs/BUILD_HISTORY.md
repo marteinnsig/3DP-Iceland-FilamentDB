@@ -1,3 +1,13 @@
+## v44.3.1 - Backup, Recovery and Update Evidence Clarity
+
+Completed honest empty-profile backup classification and four separate
+read-only update-evidence boundaries for transaction state, health
+acknowledgement, application rollback snapshot and SQLite backup evidence.
+Clean-VM runtime acceptance passed Application Readiness and Overall
+Verification 209/209 with 90 N/A. SQLite restore remains explicit/default-No,
+application rollback never restores SQLite automatically and evidence is
+retained.
+
 ## v44.2.0 - Daily-use UI State and MaterialID Clarity
 
 Debug and Release builds completed with zero warnings and zero errors. Runtime

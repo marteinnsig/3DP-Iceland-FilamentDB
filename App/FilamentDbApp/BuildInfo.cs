@@ -9,7 +9,7 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "RECOVERY-EVIDENCE-CLARITY";
+    public const string ReleaseCode = "RECOVERY-UPDATE-EVIDENCE";
     public const string ReleaseTitle = "Backup, Recovery and Update Evidence Clarity";
 
     public static string Version

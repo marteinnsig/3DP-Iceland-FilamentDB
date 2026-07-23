@@ -1,5 +1,14 @@
 # Milestone History
 
+# v44.3.1 - Backup, Recovery and Update Evidence Clarity
+
+Completed clean-profile backup honesty and separated application-update
+transaction, health acknowledgement, rollback snapshot and SQLite backup
+evidence without changing the updater or restore engines. Clean-VM runtime
+Verification passed 209/209 applicable checks with 90 N/A.
+
+---
+
 # v44.2.0 - Daily-use UI State and MaterialID Clarity
 
 Completed machine-local layout and canonical MaterialID continuity with

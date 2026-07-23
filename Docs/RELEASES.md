@@ -1,3 +1,13 @@
+## v44.3.1 - Backup, Recovery and Update Evidence Clarity
+
+- Shows healthy schema-v29 empty-profile backups as explicitly restorable but
+  not full-data release evidence.
+- Explains every Recovery Center compatibility state.
+- Shows the latest transaction, health acknowledgement, application rollback
+  snapshot and SQLite backup evidence as separate read-only boundaries.
+- Keeps application rollback separate from explicit/default-No SQLite recovery.
+- Runtime accepted on a clean VM with Verification PASS 209/209 plus 90 N/A.
+
 ## v44.2.0 - Daily-use UI State and MaterialID Clarity
 
 - Restores machine-local window geometry, keyed column widths/order and the last

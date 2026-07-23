@@ -40,6 +40,10 @@ public partial class MainWindow : Window
         "Refresh", "Verify Selected", "Restore Selected", "Create SQLite Backup", "Restore SQLite Backup",
         "Create Excel Backup", "Restore Excel Backup", "Open Storage Folder"
     };
+    private static readonly string[] UpdateEvidenceBoundaryLabels =
+    {
+        "Transaction state", "Health acknowledgement", "Application rollback snapshot", "SQLite backup evidence"
+    };
     private LocalDatabase _database = new();
     private readonly MaterialDetailService _detailService = new();
     private readonly EngineeringScoringService _scoringService = new();
@@ -1672,6 +1676,18 @@ public partial class MainWindow : Window
         var toolbar = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 8) };
         var status = new TextBlock { Text = "Loading local SQLite backups…", VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(8, 0, 0, 0) };
         var details = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, Height = 90, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new Thickness(0, 8, 0, 0) };
+        var updateEvidence = new TextBox
+        {
+            Text = BuildLatestApplicationUpdateEvidenceSummary(),
+            IsReadOnly = true,
+            TextWrapping = TextWrapping.Wrap,
+            Height = 145,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            Background = new SolidColorBrush(Color.FromRgb(248, 250, 252)),
+            BorderBrush = new SolidColorBrush(Color.FromRgb(203, 213, 225)),
+            Padding = new Thickness(10, 8, 10, 8),
+            Margin = new Thickness(0, 0, 0, 8)
+        };
         var glossary = new TextBlock
         {
             Text = BuildRecoveryCompatibilityGlossary(),
@@ -1725,6 +1741,7 @@ public partial class MainWindow : Window
             {
                 var catalog = await Task.Run(() => _database.GetLocalBackupCatalog());
                 rows.Clear(); foreach (var item in catalog) rows.Add(item);
+                updateEvidence.Text = BuildLatestApplicationUpdateEvidenceSummary();
                 var emptyReady = rows.Count(item => string.Equals(item.CompatibilityStatus, "Ready — empty profile", StringComparison.Ordinal));
                 status.Text = $"{rows.Count:N0} local SQLite backup(s); {emptyReady:N0} healthy empty-profile backup(s); select one for exact details.";
             }
@@ -1797,6 +1814,7 @@ public partial class MainWindow : Window
         restoreExcelButton.Click += (_, _) => { window.Close(); RestoreExcelDisasterRecovery_Click(this, new RoutedEventArgs()); };
         openButton.Click += (_, _) => OpenBackupFolderFromDiagnostics();
         DockPanel.SetDock(toolbar, Dock.Top); root.Children.Add(toolbar);
+        DockPanel.SetDock(updateEvidence, Dock.Top); root.Children.Add(updateEvidence);
         DockPanel.SetDock(glossary, Dock.Top); root.Children.Add(glossary);
         DockPanel.SetDock(details, Dock.Bottom); root.Children.Add(details);
         root.Children.Add(grid); window.Content = root;
@@ -1811,6 +1829,74 @@ public partial class MainWindow : Window
         "Legacy / incomplete = missing supported canonical structure/evidence. " +
         "Newer / incompatible = created by a newer schema and blocked. " +
         "Corrupt / unreadable = integrity/read failure and blocked.";
+
+    private static string BuildLatestApplicationUpdateEvidenceSummary()
+    {
+        var diagnostics = GetApplicationUpdateDiagnostics();
+        var latest = diagnostics.FirstOrDefault();
+        var sb = new StringBuilder();
+        sb.AppendLine("Latest application update evidence (read-only)");
+        if (latest is null)
+        {
+            foreach (var label in UpdateEvidenceBoundaryLabels)
+                sb.AppendLine(label + ": None recorded");
+        }
+        else
+        {
+            sb.AppendLine($"Transaction state: {latest.Phase}; {latest.TransactionId}; v{latest.PreviousVersion} -> v{latest.NewVersion}; updated {latest.UpdatedAtUtc}");
+
+            ApplicationUpdateTransactionRequest? request = null;
+            if (latest.RequestReadable && IOFile.Exists(latest.RequestPath))
+            {
+                try
+                {
+                    request = JsonSerializer.Deserialize<ApplicationUpdateTransactionRequest>(IOFile.ReadAllText(latest.RequestPath));
+                }
+                catch
+                {
+                    request = null;
+                }
+            }
+
+            var acknowledgementPath = request?.HealthAcknowledgementPath ?? string.Empty;
+            sb.AppendLine("Health acknowledgement: " + DescribeUpdateHealthAcknowledgement(acknowledgementPath, latest));
+
+            var rollbackPath = request?.RollbackDirectory ?? string.Empty;
+            sb.AppendLine("Application rollback snapshot: " +
+                (string.IsNullOrWhiteSpace(rollbackPath) ? "None recorded" :
+                    (IODirectory.Exists(rollbackPath) ? "Present; " : "Missing; ") + rollbackPath));
+
+            sb.AppendLine("SQLite backup evidence: " +
+                (string.IsNullOrWhiteSpace(latest.DatabaseBackupPath) ? "None recorded" :
+                    (IOFile.Exists(latest.DatabaseBackupPath) ? "Present; " : "Missing; ") + latest.DatabaseBackupPath));
+        }
+        sb.Append("Application rollback never restores SQLite automatically. SQLite recovery remains a separate explicit/default-No operation; evidence and backups are not deleted here.");
+        return sb.ToString();
+    }
+
+    private static string DescribeUpdateHealthAcknowledgement(
+        string acknowledgementPath,
+        ApplicationUpdateTransactionDiagnostic transaction)
+    {
+        if (string.IsNullOrWhiteSpace(acknowledgementPath)) return "None recorded";
+        if (!IOFile.Exists(acknowledgementPath)) return "Missing; " + acknowledgementPath;
+        try
+        {
+            var acknowledgement = JsonSerializer.Deserialize<ApplicationUpdateHealthAcknowledgement>(
+                IOFile.ReadAllText(acknowledgementPath));
+            var valid = acknowledgement is not null &&
+                        acknowledgement.HealthSchema == ApplicationUpdateHealthAcknowledgement.Schema &&
+                        acknowledgement.TransactionId == transaction.TransactionId &&
+                        acknowledgement.ReleaseVersion == transaction.NewVersion;
+            return valid
+                ? $"Valid; release v{acknowledgement!.ReleaseVersion}; SQLite schema v{acknowledgement.DatabaseSchema}; acknowledged {acknowledgement.AcknowledgedAtUtc}; {acknowledgementPath}"
+                : "Present but identity/schema does not match the latest transaction; " + acknowledgementPath;
+        }
+        catch (Exception ex)
+        {
+            return "Unreadable; " + acknowledgementPath + "; " + ex.Message;
+        }
+    }
 
     private void RestoreExcelDisasterRecovery_Click(object sender, RoutedEventArgs e)
     {
@@ -16858,11 +16944,18 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             recoveryClarityGlossary.Contains("Ready — empty profile", StringComparison.Ordinal) &&
             recoveryClarityGlossary.Contains("not full-data release evidence", StringComparison.Ordinal) &&
             recoveryClarityGlossary.Contains("Corrupt / unreadable", StringComparison.Ordinal);
+        var updateEvidenceClarityReady =
+            UpdateEvidenceBoundaryLabels.SequenceEqual(new[]
+            {
+                "Transaction state", "Health acknowledgement", "Application rollback snapshot", "SQLite backup evidence"
+            }, StringComparer.Ordinal) &&
+            typeof(MainWindow).GetMethod("BuildLatestApplicationUpdateEvidenceSummary", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("DescribeUpdateHealthAcknowledgement", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("v44.3 Backup and recovery evidence clarity release gate",
-            emptyProfileCompatibilityReady && guardedRestoreContractSurfaceReady && releaseIdentityReady,
-            emptyProfileCompatibilityReady && guardedRestoreContractSurfaceReady && releaseIdentityReady
-                ? "Healthy schema-current zero-data backups are explicit restore-ready empty profiles; full-data evidence remains distinct; migration, legacy, newer and corrupt states are explained; guarded/default-No restore boundaries remain intact"
-                : "Empty-profile classification, compatibility glossary, guarded restore boundary or release identity failed"));
+            emptyProfileCompatibilityReady && updateEvidenceClarityReady && guardedRestoreContractSurfaceReady && releaseIdentityReady,
+            emptyProfileCompatibilityReady && updateEvidenceClarityReady && guardedRestoreContractSurfaceReady && releaseIdentityReady
+                ? "Healthy schema-current zero-data backups are explicit restore-ready empty profiles; transaction, health acknowledgement, application rollback snapshot and SQLite backup evidence are separate read-only boundaries; guarded/default-No restore boundaries remain intact"
+                : "Empty-profile classification, compatibility glossary, update-evidence boundaries, guarded restore boundary or release identity failed"));
 
         return checks;
     }
