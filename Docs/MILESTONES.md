@@ -1,5 +1,15 @@
 # Milestone History
 
+# v44.2.0 - Daily-use UI State and MaterialID Clarity
+
+Completed machine-local layout and canonical MaterialID continuity with
+fail-safe restore, explicit identity across dependent workspaces, stable
+single-row selection and precise checkbox hit behavior. Runtime Verification
+passed 298/298; the separately measured horizontal first-page delay remains
+scheduled for v44.4.
+
+---
+
 # v44.1.2 - Verification Profiles and Diagnostic Honesty
 
 Completed the v44.1 reliability increment with honest clean-profile verification

@@ -1,3 +1,13 @@
+## v44.2.0 - Daily-use UI State and MaterialID Clarity
+
+- Added machine-local last-MaterialID and safe keyed column-order persistence.
+- Added one presentation-only selected-row flag and explicit MaterialID labels
+  across Materials, Material Detail and Reports.
+- Limited checkbox mutation to the rendered checkbox bounds without changing
+  text editing or the canonical Materials data model.
+- Preserved native virtualization/startup after rejecting two performance
+  experiments; recorded the older horizontal first-page delay for v44.4.
+
 ## v44.1.2 - Verification Profiles and Diagnostic Honesty
 
 - Added explicit Application Readiness and Full Data Verification profiles with

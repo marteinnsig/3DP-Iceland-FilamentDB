@@ -358,20 +358,41 @@ public partial class MainWindow : Window
         grid.CurrentCell = new DataGridCellInfo(targetItem, targetColumn);
         if (ReferenceEquals(grid, FindName("NativeMaterialsGrid")) && targetItem is NativeMaterialRow nativeMaterial)
         {
-            _lastSelectedNativeMaterial = nativeMaterial;
             grid.SelectedItem = nativeMaterial;
 
-            // The shared first-click editor intentionally owns the mouse event before
-            // WPF's DataGridCheckBoxColumn can toggle. Handle native boolean cells
-            // directly so publication and archive flags remain true one-click controls.
-            if (targetColumn is DataGridCheckBoxColumn &&
-                GetBoundPropertyName(targetColumn) is { } booleanProperty &&
-                GetPropertyValue(nativeMaterial, booleanProperty) is bool currentValue)
+            // Keep selection and mutation distinct for native boolean fields. Clicking
+            // blank space in the cell selects the material; only the rendered checkbox
+            // toggles its value.
+            if (targetColumn is DataGridCheckBoxColumn)
             {
+                var clickedCheckBox = FindVisualChild<CheckBox>(clickedCell);
+                if (clickedCheckBox is null)
+                {
+                    e.Handled = true;
+                    return;
+                }
+
+                var checkBoxPosition = e.GetPosition(clickedCheckBox);
+                var isInsideCheckBox =
+                    checkBoxPosition.X >= 0 &&
+                    checkBoxPosition.Y >= 0 &&
+                    checkBoxPosition.X <= clickedCheckBox.ActualWidth &&
+                    checkBoxPosition.Y <= clickedCheckBox.ActualHeight;
+                if (!isInsideCheckBox)
+                {
+                    e.Handled = true;
+                    return;
+                }
+
+                if (GetBoundPropertyName(targetColumn) is not { } booleanProperty ||
+                    GetPropertyValue(nativeMaterial, booleanProperty) is not bool currentValue)
+                {
+                    return;
+                }
+
                 var nextValue = !currentValue;
                 SetPropertyValue(nativeMaterial, booleanProperty, nextValue);
-                if (FindVisualChild<CheckBox>(clickedCell) is CheckBox checkBox)
-                    checkBox.IsChecked = nextValue;
+                clickedCheckBox.IsChecked = nextValue;
                 MarkNativeMaterialsDirty();
                 QueueNativeMaterialEditRefresh();
                 e.Handled = true;
@@ -1828,8 +1849,10 @@ public partial class MainWindow : Window
         _currentMaterialDetailRow = row;
         var title = _detailService.BuildTitle(row);
         var subtitle = _detailService.BuildSubtitle(row);
+        var materialId = GetCell(row, "Material ID", "MaterialID").Trim();
 
         DetailTitleText.Text = string.IsNullOrWhiteSpace(title) ? "Selected material" : title;
+        DetailMaterialIdText.Text = string.IsNullOrWhiteSpace(materialId) ? "MaterialID: none" : $"MaterialID: {materialId}";
         DetailSubtitleText.Text = string.IsNullOrWhiteSpace(subtitle) ? "All imported Excel fields are shown below." : subtitle;
 
         RenderGroupedDetails(row);
@@ -2474,6 +2497,7 @@ public partial class MainWindow : Window
         _currentMaterialDetailRow = null;
         UpdateReportSelectedMaterial(null);
         DetailTitleText.Text = "No material selected";
+        DetailMaterialIdText.Text = "MaterialID: none";
         DetailSubtitleText.Text = "Click a material row to see all imported fields.";
         GroupedDetailsPanel.Children.Clear();
         TensileSummaryList.ItemsSource = null;
@@ -9592,9 +9616,10 @@ private void OpenReportOutputFolder_Click(object sender, RoutedEventArgs e)
         if (ReportSelectedMaterialText is null) return;
 
         var selectedLabel = row is null ? string.Empty : _detailService.BuildTitle(row);
+        var selectedMaterialId = row is null ? string.Empty : GetCell(row, "Material ID", "MaterialID").Trim();
         ReportSelectedMaterialText.Text = string.IsNullOrWhiteSpace(selectedLabel)
             ? "Selected material: none"
-            : $"Selected material: {selectedLabel}";
+            : $"Selected material: {selectedLabel} · MaterialID: {selectedMaterialId}";
 
         if (IsLoaded && row is not null && GetMaterialReportScope() == "selected" && ReportPreviewLog is not null)
         {
@@ -16791,6 +16816,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             compiledProductionMaterialSeedExcluded && privateDeploymentIdentityExcluded && releaseIdentityReady
                 ? "Zero-data dependencies map to Not applicable with exact reasons; unexpected readiness failures remain FAIL; full-data checks remain mandatory; successful SQLite restore records verified post-restore evidence; compiled seeds and deployment identity remain empty"
                 : "Verification profile classification, post-restore evidence, mandatory readiness failures, clean-profile isolation or release identity failed"));
+        var dailyUiStateReady =
+            typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.GetLastSelectedMaterialId)) is not null &&
+            typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.SetLastSelectedMaterialId)) is not null &&
+            FindName("NativeMaterialSelectionText") is TextBlock &&
+            FindName("DetailMaterialIdText") is TextBlock &&
+            FindName("ReportSelectedMaterialText") is TextBlock;
+        checks.Add(new VerificationCheck("v44.2 Daily-use UI state and MaterialID clarity release gate",
+            dailyUiStateReady && releaseIdentityReady,
+            dailyUiStateReady && releaseIdentityReady
+                ? "Window and keyed grid layout remain machine-local; saved column order and visible canonical MaterialID selection restore fail-safe; Materials, Material Detail and Reports expose the same selected identity"
+                : "Machine-local layout, selected MaterialID clarity or release identity failed"));
 
         return checks;
     }
@@ -21534,8 +21570,24 @@ private List<string> GetVisibleAiMaterialLabels()
                                BestLayerAdhesion is not null || BestOverall is not null || BestValue is not null;
     }
 
-    private sealed class NativeMaterialRow
+    private sealed class NativeMaterialRow : INotifyPropertyChanged
     {
+        private bool _isCurrentSelection;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        [JsonIgnore]
+        public bool IsCurrentSelection
+        {
+            get => _isCurrentSelection;
+            set
+            {
+                if (_isCurrentSelection == value) return;
+                _isCurrentSelection = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCurrentSelection)));
+            }
+        }
+
         public string MaterialID { get; set; } = "";
         public string Manufacturer { get; set; } = "";
         public string ProductLine { get; set; } = "";
@@ -21747,7 +21799,20 @@ private List<string> GetVisibleAiMaterialLabels()
         {
             grid.ItemsSource = _nativeMaterialRows;
             ApplyNativeMaterialFilters();
-            if (grid.SelectedItem is NativeMaterialRow selected)
+            var savedMaterialId = _workflowPreferencesService.GetLastSelectedMaterialId();
+            var restoredSelection = _nativeMaterialRows.FirstOrDefault(row =>
+                string.Equals(row.MaterialID?.Trim(), savedMaterialId, StringComparison.OrdinalIgnoreCase) &&
+                grid.Items.Contains(row));
+            if (restoredSelection is not null)
+            {
+                grid.SelectedItem = restoredSelection;
+                if (grid.Columns.Count > 0)
+                {
+                    grid.CurrentCell = new DataGridCellInfo(restoredSelection, grid.Columns[0]);
+                }
+                grid.ScrollIntoView(restoredSelection);
+            }
+            else if (grid.SelectedItem is NativeMaterialRow selected)
             {
                 ShowNativeMaterialDetails(selected);
             }
@@ -21957,6 +22022,14 @@ private List<string> GetVisibleAiMaterialLabels()
             };
 
             view.Refresh();
+            if (_lastSelectedNativeMaterial is not null && !grid.Items.Contains(_lastSelectedNativeMaterial))
+            {
+                _lastSelectedNativeMaterial.IsCurrentSelection = false;
+                _lastSelectedNativeMaterial = null;
+                _workflowPreferencesService.SetLastSelectedMaterialId(null);
+                NativeMaterialSelectionText.Text = "Selected MaterialID: none";
+                ClearMaterialDetails();
+            }
         }
         catch (InvalidOperationException)
         {
@@ -22060,7 +22133,13 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         if (sender is DataGrid grid && grid.SelectedItem is NativeMaterialRow row)
         {
+            foreach (var materialRow in _nativeMaterialRows)
+            {
+                materialRow.IsCurrentSelection = ReferenceEquals(materialRow, row);
+            }
             _lastSelectedNativeMaterial = row;
+            _workflowPreferencesService.SetLastSelectedMaterialId(row.MaterialID);
+            NativeMaterialSelectionText.Text = $"Selected MaterialID: {row.MaterialID}";
             ShowNativeMaterialDetails(row);
         }
     }
@@ -22701,6 +22780,7 @@ private List<string> GetVisibleAiMaterialLabels()
         if (_databaseRestoreShutdown) return;
 
         _workflowPreferencesService.CaptureWindow(this);
+        _workflowPreferencesService.SetLastSelectedMaterialId(_lastSelectedNativeMaterial?.MaterialID);
         SaveWebsiteExportFolderPreference(WebsiteExportFolderBox.Text?.Trim() ?? string.Empty);
         foreach (var gridName in WorkflowGridNames)
         {

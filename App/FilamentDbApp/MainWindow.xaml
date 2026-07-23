@@ -297,6 +297,7 @@
                                 ToolTip="Permanently delete the selected material and its measurement rows."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE74D;"/><TextBlock Text="Delete"/></StackPanel></Button>
                         <TextBlock Name="NativeMaterialSummaryText" Text="Materials loaded from Excel defaults." VerticalAlignment="Center" Foreground="#64748B" Margin="8,0,0,8"/>
                         <TextBlock Name="NativeMaterialCountText" Text="0 materials" VerticalAlignment="Center" Foreground="#2563EB" FontWeight="SemiBold" Margin="14,0,0,8"/>
+                        <TextBlock Name="NativeMaterialSelectionText" Text="Selected MaterialID: none" VerticalAlignment="Center" Foreground="#1E3A8A" FontWeight="SemiBold" Margin="14,0,0,8"/>
                     </WrapPanel>
 
                     <WrapPanel Grid.Row="2" Margin="0,0,0,10">
@@ -331,17 +332,28 @@
                                   GridLinesVisibility="Horizontal"
                                   VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Auto"
+                                  ScrollViewer.IsDeferredScrollingEnabled="False"
                                   Margin="8"
                                   CellEditEnding="NativeMaterialsGrid_CellEditEnding"
                                   CurrentCellChanged="NativeMaterialsGrid_CurrentCellChanged"
                                   BeginningEdit="InputDataGrid_BeginningEdit"
                                   SelectionChanged="NativeMaterialsGrid_SelectionChanged">
+                            <DataGrid.Resources>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#DBEAFE"/>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#0F172A"/>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#DBEAFE"/>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#0F172A"/>
+                            </DataGrid.Resources>
                             <DataGrid.RowStyle>
                                 <Style TargetType="DataGridRow">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsRowValid}" Value="False">
                                             <Setter Property="Background" Value="#FEF2F2"/>
                                             <Setter Property="ToolTip" Value="Required material fields are missing."/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsCurrentSelection}" Value="True">
+                                            <Setter Property="Background" Value="#DBEAFE"/>
+                                            <Setter Property="Foreground" Value="#0F172A"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -796,6 +808,7 @@
                         <StackPanel>
                             <TextBlock Text="Selected Material" Foreground="#64748B" FontSize="12" FontWeight="SemiBold" />
                             <TextBlock x:Name="DetailTitleText" Text="No material selected" FontSize="22" FontWeight="SemiBold" Margin="0,4,0,0" TextWrapping="Wrap" />
+                            <TextBlock x:Name="DetailMaterialIdText" Text="MaterialID: none" Foreground="#1E3A8A" FontWeight="SemiBold" Margin="0,3,0,0" TextWrapping="Wrap" />
                             <TextBlock x:Name="DetailSubtitleText" Text="Click a material row to see all imported fields." Foreground="#64748B" Margin="0,4,0,0" TextWrapping="Wrap" />
                         </StackPanel>
                     </Border>

@@ -1,3 +1,15 @@
+## v44.2.0 - Daily-use UI State and MaterialID Clarity
+
+- Restores machine-local window geometry, keyed column widths/order and the last
+  visible canonical MaterialID with invalid-state fallback.
+- Keeps exactly one selected Materials row visibly light blue while preserving
+  the accepted one-click text editor and cell-selection model.
+- Checkbox values change only when the rendered box itself is clicked; blank
+  checkbox-cell space selects the material without mutation.
+- Runtime accepted with Full Data Verification PASS 298/298.
+- A measured older first-horizontal-page delay remains scheduled for v44.4;
+  startup-regressing and custom-scroll experiments were removed.
+
 ## v44.1.2 - Verification Profiles and Diagnostic Honesty
 
 - Separates zero-data Application Readiness from Full Data Verification without

@@ -1,4 +1,42 @@
-# Current Build Notes - v44.1.2
+# Current Build Notes - v44.2.0
+
+## Daily-use UI State and MaterialID Clarity candidate
+
+Research confirmed that window geometry and keyed DataGrid widths were already
+stored machine-locally in `%LocalAppData%\3DPIceland\FilamentDbApp\
+workflow-preferences.json`. Column display order was captured but never restored,
+and the selected Material was retained only as an in-memory row reference.
+
+v44.2.0 restores keyed column widths and valid, non-conflicting saved
+`DisplayIndex` order. A/B runtime testing temporarily disabled order restoration,
+but the same roughly 15-second first horizontal page jump remained. Order
+restoration was therefore exonerated and restored; invalid, duplicate or
+out-of-range positions still fall back safely.
+The last canonical MaterialID is stored in the same machine-local preference
+file and restored only when that MaterialID exists in the current visible
+dataset; an absent or filtered identity is never forced back as stale selection.
+
+Materials, Material Detail and Reports each show the same explicit MaterialID.
+An attempted `FullRow` selection-mode change was rejected during runtime testing
+because it conflicted with the accepted one-click editor. The accepted correction
+keeps `CellOrRowHeader` and uses one presentation-only row flag, with selection
+brushes that do not alter editing. Checkbox mutation is limited to the rendered
+checkbox bounds; blank cell space selects the material only.
+
+Runtime investigation measured about 15 seconds for a first large horizontal
+Materials-grid jump into previously unrealized columns. Arrow scrolling remained
+responsive, proving the bottleneck was a large pixel-offset/column-virtualization
+layout rather than SQLite auto-save. Disabling column virtualization made all
+scroll paths responsive but caused an unacceptable startup stall and was
+removed. A later bounded ScrollViewer timer experiment was also rejected after
+a large track jump stalled halfway and left the app unresponsive at 0% CPU.
+The custom timer/ScrollChanged state machine was removed completely. Materials
+keeps native live scrolling plus row/column virtualization; the measured
+first-large-jump delay remains an open performance finding rather than risking
+startup regression or a frozen UI.
+
+No SQLite schema, engineering backup, portable package data, calculation,
+website/report publishing or recovery contract changes.
 
 ## Verification Profiles and Diagnostic Honesty candidate
 

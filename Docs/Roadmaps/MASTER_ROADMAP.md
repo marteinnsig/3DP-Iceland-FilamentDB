@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.1.2 — Verification Profiles and Diagnostic Honesty**
+Current canonical release: **v44.2.0 — Daily-use UI State and MaterialID Clarity**
 
-Last runtime-accepted baseline: **v44.1.2 — Verification Profiles and Diagnostic Honesty**
+Last runtime-accepted baseline: **v44.2.0 — Daily-use UI State and MaterialID Clarity**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -20,7 +20,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v41 | Engineering Intelligence | ★★★★★ | Complete — governed downstream handoffs delivered |
 | v42 | Website & Approved Template Architecture | ★★★★☆ | Foundation delivered early |
 | v43 | Deployment Platform | ★★★★☆ | Complete — canonical v43.8.9 runtime accepted |
-| v44 | Daily Use, Reliability & Maintainability | ★★★★★ | In progress — v44.0 and v44.1 complete |
+| v44 | Daily Use, Reliability & Maintainability | ★★★★★ | In progress — v44.0 through v44.2 complete |
 
 ## Reconciliation of the older plans
 
@@ -776,6 +776,8 @@ Status: **Complete — Application Readiness 207/207 plus 90 N/A and immediate p
 
 ### v44.2 — Daily-use UI state and selected MaterialID clarity
 
+Status: **Complete — machine-local layout/MaterialID persistence, selected-row clarity and precise checkbox hit bounds runtime accepted; Verification PASS 298/298.**
+
 - Persist user-resized column widths, column order, window size and other proven daily layout preferences as machine-local UI state.
 - Do not place machine-specific presentation state in the portable SQLite engineering backup unless a later explicit portability choice is approved.
 - Keep the current Materials selection visually unmistakable after focus moves; Material Detail, Reports and other downstream tabs must show the same selected MaterialID.
@@ -791,6 +793,12 @@ Status: **Complete — Application Readiness 207/207 plus 90 N/A and immediate p
 
 ### v44.4 — Measured responsiveness and presentation polish
 
+- Investigate the measured approximately 15-second first horizontal page jump
+  in the wide Materials DataGrid. Arrow scrolling is responsive; large native
+  thumb/track jumps into unrealized columns are slow. v44.2 A/B testing ruled
+  out saved `DisplayIndex`; disabling column virtualization fixed scrolling but
+  caused an unacceptable startup stall, and a custom ScrollViewer timer was
+  rejected after an unresponsive halfway state.
 - Use existing startup phase diagnostics to detect regressions; perform more lazy initialization or concurrency work only when a measured bottleneck materially affects first usable Materials time.
 - Profile first-open and repeated-open latency for top-level Tools/Help menus before changing command construction or UI-thread work.
 - Treat splash logo-line animation as optional presentation polish. It must follow measured splash lifetime, support high DPI and never delay startup.

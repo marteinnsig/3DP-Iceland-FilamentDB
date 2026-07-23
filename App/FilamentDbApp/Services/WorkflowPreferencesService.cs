@@ -80,6 +80,13 @@ public sealed class WorkflowPreferencesService
         _preferences.WebsiteExportFolder = folder?.Trim() ?? string.Empty;
     }
 
+    public string GetLastSelectedMaterialId() => _preferences.LastSelectedMaterialId?.Trim() ?? string.Empty;
+
+    public void SetLastSelectedMaterialId(string? materialId)
+    {
+        _preferences.LastSelectedMaterialId = materialId?.Trim() ?? string.Empty;
+    }
+
     public bool HasSavedGridWidths(DataGrid grid) =>
         !string.IsNullOrWhiteSpace(grid.Name) &&
         ((_preferences.GridColumnLayouts.TryGetValue(grid.Name, out var layouts) && layouts.Count > 0) ||
@@ -107,6 +114,34 @@ public sealed class WorkflowPreferencesService
                 {
                     column.Width = new DataGridLength(saved.Width);
                 }
+            }
+
+            var orderedColumns = new DataGridColumn?[grid.Columns.Count];
+            foreach (var column in grid.Columns)
+            {
+                var key = GetColumnKey(column);
+                if (!savedByKey.TryGetValue(key, out var saved) ||
+                    saved.DisplayIndex < 0 ||
+                    saved.DisplayIndex >= orderedColumns.Length ||
+                    orderedColumns[saved.DisplayIndex] is not null)
+                {
+                    continue;
+                }
+
+                orderedColumns[saved.DisplayIndex] = column;
+            }
+
+            var remainingColumns = new Queue<DataGridColumn>(
+                grid.Columns
+                    .Where(column => !orderedColumns.Contains(column))
+                    .OrderBy(column => column.DisplayIndex));
+            for (var index = 0; index < orderedColumns.Length; index++)
+            {
+                orderedColumns[index] ??= remainingColumns.Dequeue();
+            }
+            for (var index = 0; index < orderedColumns.Length; index++)
+            {
+                orderedColumns[index]!.DisplayIndex = index;
             }
 
             return;
@@ -220,6 +255,7 @@ public sealed class WorkflowPreferencesService
     {
         public WindowPreference? Window { get; set; }
         public string WebsiteExportFolder { get; set; } = string.Empty;
+        public string LastSelectedMaterialId { get; set; } = string.Empty;
         public Dictionary<string, List<double>> GridColumnWidths { get; set; } = new(StringComparer.Ordinal);
         public Dictionary<string, List<GridColumnPreference>> GridColumnLayouts { get; set; } = new(StringComparer.Ordinal);
     }

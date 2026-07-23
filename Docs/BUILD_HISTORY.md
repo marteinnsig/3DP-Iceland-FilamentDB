@@ -1,3 +1,11 @@
+## v44.2.0 - Daily-use UI State and MaterialID Clarity
+
+Debug and Release builds completed with zero warnings and zero errors. Runtime
+accepted machine-local width/order and MaterialID persistence, one light-blue
+selected row, normal text editing and checkbox-only hit bounds. Full Data
+Verification passed 298/298. A measured older 15-second first horizontal page
+jump is retained for v44.4 after A/B testing ruled out saved column order.
+
 ## v44.1.2 - Verification Profiles and Diagnostic Honesty
 
 Debug and isolated Release builds completed with zero warnings and zero errors.

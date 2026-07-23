@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "VERIFICATION-PROFILES";
-    public const string ReleaseTitle = "Verification Profiles and Diagnostic Honesty";
+    public const string ReleaseCode = "DAILY-UI-STATE";
+    public const string ReleaseTitle = "Daily-use UI State and MaterialID Clarity";
 
     public static string Version
     {

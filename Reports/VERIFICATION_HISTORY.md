@@ -1,5 +1,36 @@
 # Verification History
 
+## v44.2.0 Daily-use UI State and MaterialID Clarity
+
+Status: PASS; RUNTIME ACCEPTED
+
+- PASS: existing machine-local window geometry and keyed column-width storage
+  was preserved; captured column display order is now restored with validation
+  and invalid-state fallback.
+- PASS: selected canonical MaterialID is stored only in machine-local workflow
+  preferences and is restored only when present in the current visible dataset.
+- PASS: Materials, Material Detail and Reports expose the same explicit
+  MaterialID. Exactly one presentation-only row flag keeps the selected row
+  light blue without changing the accepted cell-selection/editing model.
+- PASS: checkbox mutation occurs only inside the rendered checkbox bounds;
+  blank checkbox-cell space selects the material without changing its value.
+- RUNTIME REJECTED / REMOVED: a persistent full-row highlight conflicted with
+  the existing one-click editor, produced multiple apparent selections and
+  blocked text/checkbox edits. The `FullRow` selection-mode change was removed.
+- RUNTIME FINDING: a first native horizontal page jump into unrealized Materials
+  columns measured about 15 seconds. Disabling column virtualization fixed
+  scrolling but caused unacceptable startup delay; a custom bounded timer later
+  produced an unresponsive halfway state. Both experiments were fully removed.
+  A/B testing ruled out saved `DisplayIndex`; the older performance issue is
+  explicitly scheduled for measured v44.4 investigation.
+- PASS: no SQLite schema/backup, calculation, report/website publishing,
+  installer, updater or recovery behavior changed.
+- PASS: Debug and Release builds completed with zero warnings and zero errors.
+- PASS: desktop runtime accepted row-selection clarity, checkbox hit bounds,
+  text editing, restart selection and keyed column-width persistence.
+- PASS: Full Data Verification reported 298/298 applicable PASS, zero FAIL and
+  zero N/A with aligned v44.2.0 `DAILY-UI-STATE` identity.
+
 ## v43.8.0 Remote Signed Update Delivery
 
 Status: PASS; RUNTIME ACCEPTED
