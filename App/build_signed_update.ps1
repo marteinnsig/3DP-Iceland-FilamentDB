@@ -3,7 +3,8 @@ param(
     [switch]$AllowDirty,
     [string]$VersionOverride = "",
     [ValidateSet("Candidate", "Production")]
-    [string]$ReleaseState = "Candidate"
+    [string]$ReleaseState = "Candidate",
+    [string]$VerifierArtifactsPath = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -42,7 +43,13 @@ $output = Join-Path $OutputFolder ("3DPIceland_Update_v" + $version.Replace(".",
 if (Test-Path -LiteralPath $output) { throw "Signed update output already exists: $output" }
 dotnet run --project $packager -c Release -- package --input $publishFolder --output $output --version $version --code $releaseCode --min-schema 29 --max-schema 29
 if ($LASTEXITCODE -ne 0) { throw "Signed update packaging failed." }
-dotnet run --project $verifier -c Release -- $output $version $releaseCode
+if ([string]::IsNullOrWhiteSpace($VerifierArtifactsPath)) {
+    dotnet run --project $verifier -c Release -- $output $version $releaseCode
+} else {
+    dotnet restore $verifier "-p:ArtifactsPath=$VerifierArtifactsPath"
+    if ($LASTEXITCODE -ne 0) { throw "Isolated application verifier restore failed." }
+    dotnet run --project $verifier -c Release --no-restore "-p:ArtifactsPath=$VerifierArtifactsPath" -- $output $version $releaseCode
+}
 if ($LASTEXITCODE -ne 0) { throw "Application verifier rejected the newly signed update package." }
 
 Write-Host "$ReleaseState signed update package ready: $output"

@@ -1,5 +1,14 @@
 # Milestone History
 
+# v44.1.2 - Verification Profiles and Diagnostic Honesty
+
+Completed the v44.1 reliability increment with honest clean-profile verification
+and mandatory full-data verification. Runtime acceptance proves 207/207
+applicable plus 90 N/A on a clean install and 297/297 immediately after explicit
+SQLite restore, backed by retained verified post-restore evidence.
+
+---
+
 # v43.7.0 - Installer and Portable Deployment
 
 Per-user installer, portable ZIP and isolated application-release publishing extend the same signed package/updater contract. Clean-VM lifecycle, data/credential isolation, branding, Verification Center, live publish and browser downloads are runtime accepted.

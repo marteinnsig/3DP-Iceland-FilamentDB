@@ -2182,6 +2182,69 @@ Reports files: 60 -> 2
 App source/assets files retained: 68
 ~~~
 
+# v44.1.2 Verification Profiles and Diagnostic Honesty — 2026-07-23
+
+Status: PASS; RUNTIME ACCEPTED
+
+- RUNTIME FINDING / v44.1.1 BUILD FIX: fresh-VM Application Readiness selected
+  correctly and reported 207 PASS, 88 NOT APPLICABLE and two FAIL. The remaining
+  `Website portal release contract` and `Website export package contract` are
+  known downstream zero-data/template dependencies whose generic detail text
+  lacked the classifier marker. v44.1.1 explicitly classifies only those two
+  named contracts as not applicable on zero-Materials profiles; both remain
+  mandatory in Full Data Verification.
+- PASS: fresh-VM v44.1.1 Application Readiness runtime acceptance. The profile
+  reported 207/207 applicable PASS, 0 FAIL and 90 NOT APPLICABLE across 297
+  checks. Release identity aligned at v44.1.1/44.1.1.0/
+  VERIFICATION-PROFILES; schema-v29 zero Materials/native measurements,
+  intentionally empty deployment identity, trusted signed packaging,
+  transactional/default-No update and recovery, installer/deployment and remote
+  feed gates all passed.
+- PASS: restored schema-v29 owner data selected Full Data Verification with 200
+  active Materials and zero not-applicable checks. The first run passed 293/297;
+  only the four local recovery-evidence gates failed because no canonical local
+  backup of the restored state existed. Creating a manual SQLite backup produced
+  297/297 PASS, 0 FAIL and 0 NOT APPLICABLE.
+- v44.1.2 BUILD FIX: successful explicit SQLite restore now atomically creates
+  and verifies a retained post-restore evidence backup whose schema, Materials,
+  tensile, impact and stiffness counts reproduce the restored database. The
+  pre-restore recovery backup remains retained, rollback remains fail-closed and
+  no automatic restore was introduced.
+
+- PASS: verification checks now retain their existing truth result while an
+  additive profile layer reports PASS, FAIL or NOT APPLICABLE.
+- PASS: zero active canonical Materials selects Application Readiness; profiles
+  containing Materials select Full Data Verification.
+- PASS: only known zero-data dependencies with explicit reasons can become
+  `NOT APPLICABLE — No canonical data`. Unexpected release identity,
+  installer/deployment, schema/assets/privacy/update/recovery failures remain
+  applicable FAIL results.
+- PASS: exports include profile name, selection reason, applicable/pass/fail/
+  not-applicable counts and exact per-check reasons.
+- PASS: Full Data Verification keeps every check applicable. A new v44.1
+  contract gate preserves zero compiled seed Materials, empty default deployment
+  identity and the prior no-automatic-SQLite-restore boundary.
+- PASS: Debug and Release builds completed with 0 warnings and 0 errors.
+- PASS: trusted ECDSA Candidate package contains exactly six governed files and
+  supports SQLite schema v29. NuGet vulnerability, BOM-less feed, exact bytes/
+  SHA-256, signature, inventory and stable-route-last gates passed.
+- Candidate installer: 68,151,058 bytes; SHA-256
+  `E27D7F268211DDEF0923715A9776120D808AF88B7C7E7409E593CD35046BF818`.
+- Candidate portable ZIP: 95,528,026 bytes; SHA-256
+  `3795690466CDF02487B0977EDFF3EEE06B908CB7E4CF93401514D25B171BE024`.
+- Candidate signed update ZIP: 95,899,889 bytes; SHA-256
+  `456E1CEAD96CA8F0A7A92BACCF2D2D0C43C6C9D48C428163C51AA7A724F6F777`.
+- PASS: transactional updater self-test preserved commit/rollback/interrupted
+  recovery, traversal rejection and SQLite-backup-reference boundaries.
+- PASS: final clean-VM Application Readiness passed 207/207 applicable checks
+  with 90 explicit N/A results. Final restored-data Full Data Verification
+  passed 297/297 immediately after explicit restore and automatic restart,
+  without requiring a manual backup.
+- PASS: Recovery Center showed the retained post-restore evidence backup as
+  Ready at schema v29 with 200 Materials, 3,728 tensile rows, 3,752 impact rows,
+  191 stiffness rows and 50 settings. Pre-restore and automatic/migration
+  backups remained retained and were not silently deleted or restored.
+
 # v44.0 Baseline and Release-Workflow Closure Candidate — 2026-07-23
 
 - PASS: baseline began on clean `master` at `105d454`, aligned 0/0 with

@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "SQLITE-DEPENDENCY-SECURITY";
-    public const string ReleaseTitle = "SQLite Dependency Security";
+    public const string ReleaseCode = "VERIFICATION-PROFILES";
+    public const string ReleaseTitle = "Verification Profiles and Diagnostic Honesty";
 
     public static string Version
     {

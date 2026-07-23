@@ -1,3 +1,12 @@
+## v44.1.2 - Verification Profiles and Diagnostic Honesty
+
+Debug and isolated Release builds completed with zero warnings and zero errors.
+Candidate ECDSA packaging, NuGet vulnerability checks, BOM-less update feed,
+exact bytes/SHA-256, governed six-file inventory, schema v29 and
+stable-route-last gates passed. Clean VM Application Readiness passed 207/207
+with 90 N/A; restored-data Full Data Verification passed 297/297 immediately
+after explicit restore and automatic restart.
+
 ## v43.7.0 - Installer and Portable Deployment
 
 Built and runtime-accepted a first-install deployment layer over the signed updater package rather than creating a second application inventory. VM probes removed an obsolete 176-row compiled material fallback, a data-bearing website snapshot, owner-specific FTPS defaults, a loose WPF logo dependency and three unused SVG diagrams. The corrected per-user installer and portable ZIP use exactly six governed runtime files and are blocked if data files or private markers appear. Clean VM, SQLite transfer, credential isolation, Verification Center, live publish and browser downloads passed.

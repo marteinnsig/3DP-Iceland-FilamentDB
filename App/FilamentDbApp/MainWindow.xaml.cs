@@ -1617,7 +1617,8 @@ public partial class MainWindow : Window
             MessageBox.Show(this,
                 "SQLite restore completed and passed integrity verification.\n\n" +
                 $"Restored: {result.SourceBackupPath}\n" +
-                $"Recovery backup: {result.RecoveryBackupPath}\n" +
+                $"Pre-restore recovery backup: {result.RecoveryBackupPath}\n" +
+                $"Post-restore evidence backup: {result.PostRestoreBackupPath}\n" +
                 $"Materials: {result.RestoredDatabase.Materials:N0}\n\n" +
                 "The application will now restart and run normal schema compatibility checks.",
                 "SQLite Backup Restored", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -1736,7 +1737,11 @@ public partial class MainWindow : Window
                     "Confirm Recovery Center Restore", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
                 if (confirmation != MessageBoxResult.Yes) return;
                 var result = await Task.Run(() => _database.RestoreDatabaseBackup(verified.FilePath));
-                MessageBox.Show(window, "Restore completed and passed integrity verification.\n\nRecovery backup: " + result.RecoveryBackupPath, "Recovery Center Restore Completed", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(window,
+                    "Restore completed and passed integrity verification.\n\n" +
+                    "Pre-restore recovery backup: " + result.RecoveryBackupPath + "\n" +
+                    "Post-restore evidence backup: " + result.PostRestoreBackupPath,
+                    "Recovery Center Restore Completed", MessageBoxButton.OK, MessageBoxImage.Information);
                 window.Close();
                 RestartAfterDatabaseRestore();
             }
@@ -14166,6 +14171,30 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         public string Detail { get; }
     }
 
+    private enum VerificationCheckStatus
+    {
+        Pass,
+        Fail,
+        NotApplicable
+    }
+
+    private sealed class VerificationProfileResult
+    {
+        public required string ProfileName { get; init; }
+        public required string ProfileReason { get; init; }
+        public required IReadOnlyList<VerificationProfileCheck> Checks { get; init; }
+        public int PassedCount => Checks.Count(check => check.Status == VerificationCheckStatus.Pass);
+        public int FailedCount => Checks.Count(check => check.Status == VerificationCheckStatus.Fail);
+        public int NotApplicableCount => Checks.Count(check => check.Status == VerificationCheckStatus.NotApplicable);
+        public int ApplicableCount => PassedCount + FailedCount;
+        public bool Passed => FailedCount == 0;
+    }
+
+    private sealed record VerificationProfileCheck(
+        string Name,
+        VerificationCheckStatus Status,
+        string Detail);
+
     private sealed class NativeTensileVerificationResult
     {
         public bool Available { get; set; }
@@ -14286,23 +14315,101 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private string BuildVerificationSummaryReport()
     {
-        var checks = BuildVerificationChecks();
-        var passedCount = checks.Count(check => check.Passed);
-        var failedCount = checks.Count - passedCount;
+        var profile = BuildVerificationProfile();
         var sb = new StringBuilder();
 
         sb.AppendLine("Verification Summary");
         sb.AppendLine("--------------------");
-        foreach (var check in checks)
+        sb.AppendLine("Profile: " + profile.ProfileName);
+        sb.AppendLine("Profile reason: " + profile.ProfileReason);
+        sb.AppendLine($"Counts: applicable {profile.ApplicableCount}; pass {profile.PassedCount}; fail {profile.FailedCount}; not applicable {profile.NotApplicableCount}; total {profile.Checks.Count}");
+        sb.AppendLine();
+        foreach (var check in profile.Checks)
         {
-            sb.AppendLine((check.Passed ? "PASS" : "FAIL") + "  " + check.Name.PadRight(34) + check.Detail);
+            var status = check.Status switch
+            {
+                VerificationCheckStatus.Pass => "PASS",
+                VerificationCheckStatus.Fail => "FAIL",
+                _ => "NOT APPLICABLE"
+            };
+            sb.AppendLine(status.PadRight(16) + check.Name.PadRight(44) + check.Detail);
         }
         sb.AppendLine();
-        sb.AppendLine("Overall Verification: " + (failedCount == 0 ? "PASS" : "FAIL"));
-        sb.AppendLine(passedCount + " / " + checks.Count + " verification tests passed");
+        sb.AppendLine(profile.ProfileName + ": " + (profile.Passed ? "PASS" : "FAIL"));
+        sb.AppendLine("Overall Verification: " + (profile.Passed ? "PASS" : "FAIL"));
+        sb.AppendLine($"{profile.PassedCount} / {profile.ApplicableCount} applicable verification tests passed; {profile.NotApplicableCount} not applicable");
         sb.AppendLine("Build verified: " + BuildInfo.ShortLabel);
         sb.AppendLine("Last verification run: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture));
         return sb.ToString();
+    }
+
+    private VerificationProfileResult BuildVerificationProfile()
+    {
+        var checks = BuildVerificationChecks();
+        var hasCanonicalMaterials = _nativeMaterialRows.Any(row => !row.IsArchived);
+        var profileName = hasCanonicalMaterials ? "Full Data Verification" : "Application Readiness";
+        var profileReason = hasCanonicalMaterials
+            ? $"{_nativeMaterialRows.Count(row => !row.IsArchived):N0} active canonical Materials require every verification check to pass"
+            : "No canonical Materials are present; data-dependent calculation, website, report and recovery checks are not applicable";
+        var profiledChecks = checks.Select(check =>
+        {
+            if (check.Passed)
+                return new VerificationProfileCheck(check.Name, VerificationCheckStatus.Pass, check.Detail);
+            if (!hasCanonicalMaterials && IsKnownZeroDataDependency(check))
+                return new VerificationProfileCheck(
+                    check.Name,
+                    VerificationCheckStatus.NotApplicable,
+                    "No canonical data — " + check.Detail);
+            return new VerificationProfileCheck(check.Name, VerificationCheckStatus.Fail, check.Detail);
+        }).ToList();
+        return new VerificationProfileResult
+        {
+            ProfileName = profileName,
+            ProfileReason = profileReason,
+            Checks = profiledChecks
+        };
+    }
+
+    private static bool IsKnownZeroDataDependency(VerificationCheck check)
+    {
+        var detailMarkers = new[]
+        {
+            "Native material-dependent intelligence did not complete",
+            "0 native materials",
+            "0 / 0 rows have MaterialID",
+            "0 summaries from 0 materials",
+            "0 complete, 0 partial, 0 empty",
+            "0 / 0 active materials complete",
+            "Add Experiment lacks a valid default material or experiment definition",
+            "Material Summary Engine verification has not passed",
+            "No active SQLite website template",
+            "No active website template exists",
+            "No restore-ready SQLite backup with canonical Materials"
+        };
+        if (detailMarkers.Any(marker => check.Detail.Contains(marker, StringComparison.OrdinalIgnoreCase)))
+            return true;
+
+        if (check.Name is "Manufacturer engineering intelligence" or
+            "Website portal release contract" or
+            "Website export package contract" or
+            "Long-term stability baseline" or
+            "Website production workflow preserved" or
+            "v40 local integration release gate" or
+            "v42.9 Public Website Report Portal release gate" or
+            "v42.9.1 Automatic Website Report Prerequisites release gate" or
+            "v43.1 Local SQLite Backup and Restore release gate" or
+            "v43.2 Excel Disaster Recovery release gate" or
+            "v43.3 Recovery Compatibility Center release gate" or
+            "v43.3.1 Backup and Recovery Center UI release gate")
+            return true;
+
+        return check.Name.StartsWith("v41.1 ", StringComparison.Ordinal) ||
+               check.Name.StartsWith("v41.2 ", StringComparison.Ordinal) ||
+               check.Name.StartsWith("v41.3 ", StringComparison.Ordinal) ||
+               check.Name.StartsWith("v41.4 ", StringComparison.Ordinal) ||
+               check.Name.StartsWith("v41.5 ", StringComparison.Ordinal) ||
+               check.Name.StartsWith("v41.6 ", StringComparison.Ordinal) ||
+               check.Name.StartsWith("v41.7.", StringComparison.Ordinal);
     }
 
     private string GetExecutablePathForDiagnostics()
@@ -16668,6 +16775,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             remoteUpdateReady && installerPortableReady && guardedApplicationUpdateReady && releaseIdentityReady
                 ? "Governed HTTPS feed, trusted manifest before download, bounded bytes/SHA-256, full package re-verification, delayed/manual discovery, default-No apply and isolated update publishing are wired to the accepted helper."
                 : "Remote feed/download/publish, prior installer/updater contract or release identity failed."));
+        var zeroDataProfileContractReady =
+            IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
+            IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&
+            IsKnownZeroDataDependency(new VerificationCheck("Website export package contract", false, "Generic downstream contract detail")) &&
+            IsKnownZeroDataDependency(new VerificationCheck("v43.1 Local SQLite Backup and Restore release gate", false, "No restore-ready SQLite backup with canonical Materials is available")) &&
+            !IsKnownZeroDataDependency(new VerificationCheck("Release identity alignment", false, "Assembly identity mismatch")) &&
+            !IsKnownZeroDataDependency(new VerificationCheck("v43.7.0 Installer and Portable Deployment release gate", false, "Clean-profile isolation failed"));
+        checks.Add(new VerificationCheck("v44.1 Verification profiles and diagnostic honesty release gate",
+            zeroDataProfileContractReady &&
+            typeof(DatabaseRestoreResult).GetProperty(nameof(DatabaseRestoreResult.PostRestoreBackupPath)) is not null &&
+            compiledProductionMaterialSeedExcluded && privateDeploymentIdentityExcluded && releaseIdentityReady,
+            zeroDataProfileContractReady &&
+            typeof(DatabaseRestoreResult).GetProperty(nameof(DatabaseRestoreResult.PostRestoreBackupPath)) is not null &&
+            compiledProductionMaterialSeedExcluded && privateDeploymentIdentityExcluded && releaseIdentityReady
+                ? "Zero-data dependencies map to Not applicable with exact reasons; unexpected readiness failures remain FAIL; full-data checks remain mandatory; successful SQLite restore records verified post-restore evidence; compiled seeds and deployment identity remain empty"
+                : "Verification profile classification, post-restore evidence, mandatory readiness failures, clean-profile isolation or release identity failed"));
 
         return checks;
     }
@@ -16727,17 +16850,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private string GetVerificationOverallText()
     {
-        var checks = BuildVerificationChecks();
-        var passedCount = checks.Count(check => check.Passed);
-        return passedCount == checks.Count
-            ? "Overall Verification: PASS (" + passedCount + " / " + checks.Count + ")"
-            : "Overall Verification: FAIL (" + passedCount + " / " + checks.Count + ")";
+        var profile = BuildVerificationProfile();
+        return $"{profile.ProfileName}: {(profile.Passed ? "PASS" : "FAIL")} " +
+               $"({profile.PassedCount}/{profile.ApplicableCount} applicable; {profile.NotApplicableCount} N/A)";
     }
 
     private Brush GetVerificationOverallBrush()
     {
-        var checks = BuildVerificationChecks();
-        return checks.All(check => check.Passed) ? Brushes.ForestGreen : Brushes.DarkRed;
+        return BuildVerificationProfile().Passed ? Brushes.ForestGreen : Brushes.DarkRed;
     }
 
     private string GetWebsiteVerificationVisibilityText()

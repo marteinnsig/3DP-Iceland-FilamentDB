@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v43.8.9 — SQLite Dependency Security**
+Current canonical release: **v44.1.2 — Verification Profiles and Diagnostic Honesty**
 
-Last runtime-accepted baseline: **v43.8.9 — SQLite Dependency Security**
+Last runtime-accepted baseline: **v44.1.2 — Verification Profiles and Diagnostic Honesty**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -20,7 +20,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v41 | Engineering Intelligence | ★★★★★ | Complete — governed downstream handoffs delivered |
 | v42 | Website & Approved Template Architecture | ★★★★☆ | Foundation delivered early |
 | v43 | Deployment Platform | ★★★★☆ | Complete — canonical v43.8.9 runtime accepted |
-| v44 | Daily Use, Reliability & Maintainability | ★★★★★ | Planned — feedback-driven, bounded desktop improvements |
+| v44 | Daily Use, Reliability & Maintainability | ★★★★★ | In progress — v44.0 and v44.1 complete |
 
 ## Reconciliation of the older plans
 
@@ -765,6 +765,8 @@ Status: **Complete — direct v43.8.9 installer/portable runtime accepted and pr
 - Keep Authenticode deferred while distribution is private; retain the trusted ECDSA package signature and document the Windows Unknown Publisher trade-off.
 
 ### v44.1 — Verification profiles and diagnostic honesty
+
+Status: **Complete — Application Readiness 207/207 plus 90 N/A and immediate post-restore Full Data Verification 297/297 runtime accepted on v44.1.2.**
 
 - Separate **Application Readiness** from **Full Data Verification** without weakening either gate.
 - A legitimate fresh profile with zero Materials should report application/schema/assets/update/recovery readiness as PASS and data-dependent calculation/report checks as `Not applicable — no canonical data`, not as 90 product failures.

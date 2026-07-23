@@ -415,6 +415,7 @@ public sealed partial class LocalDatabase
         var name = Path.GetFileName(path);
         if (name.StartsWith("filamentdb_pre_excel_restore_", StringComparison.OrdinalIgnoreCase)) return "Pre-Excel restore recovery";
         if (name.StartsWith("filamentdb_pre_restore_", StringComparison.OrdinalIgnoreCase)) return "Pre-SQLite restore recovery";
+        if (name.StartsWith("filamentdb_post_restore_", StringComparison.OrdinalIgnoreCase)) return "Post-SQLite restore evidence";
         if (name.StartsWith("filamentdb_manual_", StringComparison.OrdinalIgnoreCase)) return "Manual backup";
         if (name.StartsWith(AutomaticBackupPrefix, StringComparison.OrdinalIgnoreCase)) return "Automatic / migration backup";
         return "External SQLite backup";
@@ -442,7 +443,22 @@ public sealed partial class LocalDatabase
             SqliteConnection.ClearAllPools();
             var restored = InspectDatabaseFile(liveFullPath);
             if (!restored.IsIntegrityValid) throw new InvalidOperationException("The restored database failed integrity verification.");
-            return new DatabaseRestoreResult { SourceBackupPath = source.FilePath, RecoveryBackupPath = recovery.FullName, RestoredDatabase = restored };
+            var postRestore = CreateConsistentDatabaseBackup("filamentdb_post_restore_");
+            var postRestoreInspection = InspectDatabaseFile(postRestore.FullName);
+            if (!postRestoreInspection.IsIntegrityValid ||
+                postRestoreInspection.SchemaVersion != restored.SchemaVersion ||
+                postRestoreInspection.Materials != restored.Materials ||
+                postRestoreInspection.TensileSamples != restored.TensileSamples ||
+                postRestoreInspection.ImpactSamples != restored.ImpactSamples ||
+                postRestoreInspection.StiffnessRows != restored.StiffnessRows)
+                throw new InvalidOperationException("The post-restore evidence backup does not reproduce the restored canonical database.");
+            return new DatabaseRestoreResult
+            {
+                SourceBackupPath = source.FilePath,
+                RecoveryBackupPath = recovery.FullName,
+                PostRestoreBackupPath = postRestore.FullName,
+                RestoredDatabase = restored
+            };
         }
         catch
         {

@@ -27,5 +27,6 @@ public sealed class DatabaseRestoreResult
 {
     public required string SourceBackupPath { get; init; }
     public required string RecoveryBackupPath { get; init; }
+    public required string PostRestoreBackupPath { get; init; }
     public required DatabaseBackupInfo RestoredDatabase { get; init; }
 }

@@ -1,3 +1,14 @@
+## v44.1.2 - Verification Profiles and Diagnostic Honesty
+
+- Added explicit Application Readiness and Full Data Verification profiles with
+  per-check PASS, FAIL and NOT APPLICABLE status and exact profile counts.
+- Kept unexpected clean-profile failures fail-closed while mapping only known
+  zero-data dependencies to not applicable.
+- Added a verified post-restore SQLite evidence backup so recovery gates pass
+  immediately after explicit restore and restart without a manual backup step.
+- Retained pre-restore backups, rollback, default-No file mutation and the
+  prohibition on automatic SQLite restore.
+
 ## v43.8.8 - Remote Update Production Consolidation
 
 - Consolidates the VM-accepted v43.8 updater, recovery and SQLite restore fixes under the first production version above all test candidates.

@@ -8,10 +8,10 @@
     <ApplicationIcon>Assets\3dp-iceland-labs-icon.ico</ApplicationIcon>
     <AssemblyName>3DPIcelandFilamentDB</AssemblyName>
     <RootNamespace>FilamentDbApp</RootNamespace>
-    <Version>43.8.9</Version>
-    <AssemblyVersion>43.8.9.0</AssemblyVersion>
-    <FileVersion>43.8.9.0</FileVersion>
-    <InformationalVersion>43.8.9-SQLITE-DEPENDENCY-SECURITY</InformationalVersion>
+    <Version>44.1.2</Version>
+    <AssemblyVersion>44.1.2.0</AssemblyVersion>
+    <FileVersion>44.1.2.0</FileVersion>
+    <InformationalVersion>44.1.2-VERIFICATION-PROFILES</InformationalVersion>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Copyright>Copyright © 2026 Marteinn Sigurðsson / 3DPIceland Labs</Copyright>
   </PropertyGroup>

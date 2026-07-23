@@ -1,4 +1,54 @@
-# Current Build Notes - v43.8.9
+# Current Build Notes - v44.1.2
+
+## Verification Profiles and Diagnostic Honesty candidate
+
+v44.1.0 adds an explicit verification profile layer without changing any
+calculation, SQLite, update, recovery, website, report or publishing contract.
+A profile with zero active canonical Materials is `Application Readiness`;
+profiles containing Materials remain `Full Data Verification`.
+
+Passing checks remain PASS in both profiles. On a legitimate zero-data profile,
+only known data-dependent failures with explicit zero-data reasons become
+`NOT APPLICABLE — No canonical data`. Unexpected schema, asset, privacy,
+release-identity, installer, update or recovery failures remain FAIL. Exports
+show the profile name, selection reason and applicable/pass/fail/not-applicable
+counts. Full Data Verification retains every check as applicable and mandatory.
+
+The v44.1 contract gate also proves that compiled production seed Materials and
+default deployment identity remain empty and that unexpected readiness failures
+cannot be reclassified as not applicable.
+
+Fresh-VM v44.1.0 diagnostics proved 207 applicable PASS, 88 not applicable and
+two remaining FAIL results. `Website portal release contract` and `Website
+export package contract` are known downstream zero-data/template dependencies,
+but their generic detail text did not carry the zero-data marker used by the
+fail-closed classifier. v44.1.1 explicitly adds only those two named contracts
+to the clean-profile allowlist. They remain mandatory in Full Data Verification.
+
+Fresh-VM v44.1.1 runtime acceptance then passed Application Readiness with
+207/207 applicable checks, zero failures and 90 explicitly not-applicable
+data-dependent checks. Release identity, schema-v29 clean-profile isolation,
+empty deployment identity and signed/default-No update/recovery/deployment gates
+all passed. Restored owner-data Full Data Verification remains pending.
+
+Restored owner data selected Full Data Verification correctly and passed 293/297
+before the v44.1.2 correction, then 297/297 after Create SQLite Backup. The four
+intermediate failures were recovery-evidence gates: the explicit restore retained
+a pre-restore backup of the empty profile but did not create a canonical local
+backup of the successfully restored state. v44.1.2 makes successful SQLite
+restore atomically create and verify a `Post-SQLite restore evidence` backup with
+matching schema, Materials, tensile, impact and stiffness counts. Explicit
+default-No restore, rollback on failure, evidence retention and no automatic
+SQLite restore remain unchanged.
+
+Final clean-VM runtime acceptance proves both profiles. Application Readiness
+passes 207/207 applicable checks with 90 data-dependent checks reported as
+not applicable. After explicit restore and automatic restart, Full Data
+Verification passes 297/297 immediately without a manual backup step. The
+Recovery Center shows the verified schema-v29 post-restore evidence backup as
+Ready with 200 Materials, 3,728 tensile rows, 3,752 impact rows, 191 stiffness
+rows and 50 settings; pre-restore and automatic/migration backups remain
+retained and honestly classified.
 
 ## v44.0 release-workflow closure candidate
 

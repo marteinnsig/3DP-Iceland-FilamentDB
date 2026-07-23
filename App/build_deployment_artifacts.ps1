@@ -4,6 +4,7 @@ param(
     [string]$InnoCompiler = "",
     [string]$ExpectedVersion = "",
     [string]$ExpectedCode = "",
+    [string]$VerifierArtifactsPath = "",
     [ValidateSet("Candidate", "Production")]
     [string]$ReleaseState = "Candidate",
     [ValidateSet("DirectCanonicalPackage", "LegacyInstallerThenGuardedUpdate")]
@@ -34,11 +35,20 @@ $work = Join-Path ([IO.Path]::GetTempPath()) ("3DPIceland-Deployment-" + [Guid]:
 $source = Join-Path $work "source"
 try {
     New-Item -ItemType Directory -Force -Path $source, $OutputFolder | Out-Null
+    if (-not [string]::IsNullOrWhiteSpace($VerifierArtifactsPath)) {
+        dotnet restore $verifier "-p:ArtifactsPath=$VerifierArtifactsPath"
+        if ($LASTEXITCODE -ne 0) { throw "Isolated application verifier restore failed." }
+    }
+    $verifierBuildArguments = if ([string]::IsNullOrWhiteSpace($VerifierArtifactsPath)) {
+        @()
+    } else {
+        @("--no-restore", "-p:ArtifactsPath=$VerifierArtifactsPath")
+    }
     if ([string]::IsNullOrWhiteSpace($ExpectedVersion)) {
-        dotnet run --project $verifier -c Release -- $package
+        dotnet run --project $verifier -c Release @verifierBuildArguments -- $package
     } else {
         if ([string]::IsNullOrWhiteSpace($ExpectedCode)) { $ExpectedCode = "REMOTE-SIGNED-UPDATE-DELIVERY" }
-        dotnet run --project $verifier -c Release -- $package $ExpectedVersion $ExpectedCode
+        dotnet run --project $verifier -c Release @verifierBuildArguments -- $package $ExpectedVersion $ExpectedCode
     }
     if ($LASTEXITCODE -ne 0) { throw "Application verifier rejected the signed source package." }
     Expand-Archive -LiteralPath $package -DestinationPath $source

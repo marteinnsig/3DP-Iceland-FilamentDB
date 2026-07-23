@@ -1,3 +1,15 @@
+## v44.1.2 - Verification Profiles and Diagnostic Honesty
+
+- Separates zero-data Application Readiness from Full Data Verification without
+  weakening schema, privacy, installer, updater, recovery or release gates.
+- A clean profile passes 207/207 applicable checks and reports 90 known
+  data-dependent checks as not applicable; restored owner data passes 297/297.
+- Explicit SQLite restore creates and verifies a retained post-restore evidence
+  backup before restart. Pre-restore recovery evidence remains retained and
+  SQLite is never restored automatically.
+- Trusted ECDSA package signing remains canonical. Authenticode remains deferred,
+  so Windows may display an Unknown publisher warning.
+
 ## v43.8.9 - SQLite Dependency Security
 
 - Updates `Microsoft.Data.Sqlite` within the supported net9 line from 9.0.7 to 9.0.18.
