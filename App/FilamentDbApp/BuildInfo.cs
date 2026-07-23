@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "DAILY-UI-STATE";
-    public const string ReleaseTitle = "Daily-use UI State and MaterialID Clarity";
+    public const string ReleaseCode = "RECOVERY-EVIDENCE-CLARITY";
+    public const string ReleaseTitle = "Backup, Recovery and Update Evidence Clarity";
 
     public static string Version
     {

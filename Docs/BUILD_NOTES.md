@@ -1,4 +1,36 @@
-# Current Build Notes - v44.2.0
+# Current Build Notes - v44.3.0
+
+## Backup, Recovery and Update Evidence Clarity candidate
+
+The first v44.3 increment corrects a presentation/policy mismatch observed on
+clean VM backups. A schema-v29 SQLite backup with `PRAGMA integrity_check = ok`
+and zero canonical Materials is a healthy clean-profile snapshot, not corrupt
+or structurally incomplete. It is now classified `Ready — empty profile` and
+remains an explicit, confirmation-gated restore source.
+
+Recovery Center explains Ready, healthy empty profile, Migration required,
+Legacy/incomplete, Newer/incompatible and Corrupt/unreadable states in one
+visible glossary. Empty-profile restore confirmation states that it will
+replace the current database with an empty profile. Full-data release evidence
+continues to require a separate Ready backup containing canonical Materials.
+Pre-restore recovery, post-restore evidence, rollback, restart, default-No
+confirmation, no automatic SQLite restore and evidence retention are unchanged.
+
+Clean-VM runtime acceptance completed on 2026-07-23. Recovery Center showed two
+integrity-valid schema-v29 zero-Material automatic backups as
+`Ready — empty profile`, including one with 50 Settings and one with zero
+Settings. The first Verification run exposed a gate-only defect: v44.3 reused
+the v43.1 full-data-backup predicate and therefore reported 208/209 despite the
+correct UI classification. The correction separates the guarded restore API/UI
+contract from v43.1 full-data release evidence; v43.1 remains honestly not
+applicable on a clean profile. The rebuilt Candidate then passed Application
+Readiness and Overall Verification with 209/209 applicable checks and 90 not
+applicable.
+
+Update transaction/health/snapshot evidence remains read-only in System
+Diagnostics and is the next bounded v44.3 increment. v44.3.0 remains Candidate
+and the canonical/production release remains v44.2.0 until the complete v44.3
+scope is runtime accepted.
 
 ## Daily-use UI State and MaterialID Clarity candidate
 

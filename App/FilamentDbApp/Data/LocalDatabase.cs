@@ -371,9 +371,14 @@ public sealed partial class LocalDatabase
         if (source.SchemaVersion > SchemaVersion) return WithCompatibility(source, "Newer / incompatible", $"Backup schema v{source.SchemaVersion} is newer than application schema v{SchemaVersion}.", false, false);
         if (source.SchemaVersion < MinimumStandaloneBackupSchemaVersion)
             return WithCompatibility(source, "Legacy / incomplete", $"Schema v{source.SchemaVersion} predates SQLite-canonical native measurements; external migration snapshots may be required.", false, false);
-        if (source.Materials <= 0) return WithCompatibility(source, "Incomplete", "No canonical Material rows are present.", false, false);
         if (source.SchemaVersion == SchemaVersion)
+        {
+            if (source.Materials <= 0)
+                return WithCompatibility(source, "Ready — empty profile", $"Integrity ok; schema v{source.SchemaVersion}; healthy clean-profile backup with no canonical Materials. Full-data release evidence requires a separate Ready backup containing Materials.", false, true);
             return WithCompatibility(source, "Ready", $"Integrity ok; schema v{source.SchemaVersion}; no migration required.", false, true);
+        }
+        if (source.Materials <= 0)
+            return WithCompatibility(source, "Legacy / incomplete", $"Schema v{source.SchemaVersion} contains no canonical Materials and requires migration evidence before it can represent a supported clean profile.", false, false);
         if (!runMigrationDryRun)
             return WithCompatibility(source, "Migration required", $"Schema v{source.SchemaVersion} must pass an isolated migration dry-run to v{SchemaVersion} before restore.", false, false);
 

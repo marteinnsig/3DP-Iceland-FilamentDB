@@ -786,6 +786,8 @@ Status: **Complete — machine-local layout/MaterialID persistence, selected-row
 
 ### v44.3 — Backup, Recovery and update evidence clarity
 
+Status: **In progress — v44.3.0 empty-profile compatibility and Recovery Center glossary runtime accepted on a clean VM; update-boundary evidence clarity remains next.**
+
 - Explain `Ready`, `Migration required`, `Legacy / incomplete`, `Newer / incompatible`, `Corrupt` and valid zero-data backup states directly in Recovery Center.
 - Distinguish a healthy empty clean-profile backup from corruption and explain why full-data release gates require a canonical backup containing Materials.
 - Surface the most recent update transaction, health acknowledgement, application rollback snapshot and SQLite evidence as separate read-only boundaries.

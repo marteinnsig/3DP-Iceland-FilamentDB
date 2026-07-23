@@ -1672,6 +1672,15 @@ public partial class MainWindow : Window
         var toolbar = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 8) };
         var status = new TextBlock { Text = "Loading local SQLite backups…", VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(8, 0, 0, 0) };
         var details = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, Height = 90, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new Thickness(0, 8, 0, 0) };
+        var glossary = new TextBlock
+        {
+            Text = BuildRecoveryCompatibilityGlossary(),
+            TextWrapping = TextWrapping.Wrap,
+            Foreground = new SolidColorBrush(Color.FromRgb(51, 65, 85)),
+            Background = new SolidColorBrush(Color.FromRgb(248, 250, 252)),
+            Padding = new Thickness(10, 8, 10, 8),
+            Margin = new Thickness(0, 0, 0, 8)
+        };
         var rows = new ObservableCollection<DatabaseBackupInfo>();
         var grid = new DataGrid
         {
@@ -1716,7 +1725,8 @@ public partial class MainWindow : Window
             {
                 var catalog = await Task.Run(() => _database.GetLocalBackupCatalog());
                 rows.Clear(); foreach (var item in catalog) rows.Add(item);
-                status.Text = $"{rows.Count:N0} local SQLite backup(s); select one for details or migration verification.";
+                var emptyReady = rows.Count(item => string.Equals(item.CompatibilityStatus, "Ready — empty profile", StringComparison.Ordinal));
+                status.Text = $"{rows.Count:N0} local SQLite backup(s); {emptyReady:N0} healthy empty-profile backup(s); select one for exact details.";
             }
             catch (Exception ex) { status.Text = "Recovery catalog failed: " + ex.Message; }
             finally { refreshButton.IsEnabled = verifyButton.IsEnabled = restoreButton.IsEnabled = true; }
@@ -1754,6 +1764,9 @@ public partial class MainWindow : Window
                     "Restore the selected local SQLite backup?\n\n" +
                     $"File: {verified.FileName}\nType: {verified.BackupKind}\nSchema: v{verified.SchemaVersion}\nStatus: {verified.CompatibilityStatus}\n" +
                     $"Materials: {verified.Materials:N0}\nTensile: {verified.TensileSamples:N0}\nImpact: {verified.ImpactSamples:N0}\nStiffness: {verified.StiffnessRows:N0}\n\n" +
+                    (verified.Materials == 0
+                        ? "EMPTY PROFILE WARNING: This is a healthy zero-data backup. Restore will explicitly replace the current database with an empty profile.\n\n"
+                        : string.Empty) +
                     "A verified pre-restore recovery backup will be created. The application will restart after successful restore.",
                     "Confirm Recovery Center Restore", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
                 if (confirmation != MessageBoxResult.Yes) return;
@@ -1784,11 +1797,20 @@ public partial class MainWindow : Window
         restoreExcelButton.Click += (_, _) => { window.Close(); RestoreExcelDisasterRecovery_Click(this, new RoutedEventArgs()); };
         openButton.Click += (_, _) => OpenBackupFolderFromDiagnostics();
         DockPanel.SetDock(toolbar, Dock.Top); root.Children.Add(toolbar);
+        DockPanel.SetDock(glossary, Dock.Top); root.Children.Add(glossary);
         DockPanel.SetDock(details, Dock.Bottom); root.Children.Add(details);
         root.Children.Add(grid); window.Content = root;
         window.Show();
         await RefreshAsync();
     }
+
+    private static string BuildRecoveryCompatibilityGlossary() =>
+        "Compatibility: Ready = integrity/schema accepted with canonical Materials. " +
+        "Ready — empty profile = healthy schema-current clean-profile backup with zero Materials; restorable explicitly, but not full-data release evidence. " +
+        "Migration required = supported older schema needs isolated dry-run. " +
+        "Legacy / incomplete = missing supported canonical structure/evidence. " +
+        "Newer / incompatible = created by a newer schema and blocked. " +
+        "Corrupt / unreadable = integrity/read failure and blocked.";
 
     private void RestoreExcelDisasterRecovery_Click(object sender, RoutedEventArgs e)
     {
@@ -16686,10 +16708,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             }
             catch (Exception ex) { latestLocalBackupDetail = IOPath.GetFileName(latestLocalBackup.FilePath) + ": " + ex.Message; }
         }
-        var localRestoreContractReady = latestLocalBackupValid &&
-                                        typeof(LocalDatabase).GetMethod("RestoreDatabaseBackup") is not null &&
-                                        typeof(LocalDatabase).GetMethod("InspectDatabaseBackup") is not null &&
-                                        typeof(MainWindow).GetMethod("RestoreSqliteBackup_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        var guardedRestoreContractSurfaceReady =
+            typeof(LocalDatabase).GetMethod("RestoreDatabaseBackup") is not null &&
+            typeof(LocalDatabase).GetMethod("InspectDatabaseBackup") is not null &&
+            typeof(MainWindow).GetMethod("RestoreSqliteBackup_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        var localRestoreContractReady = latestLocalBackupValid && guardedRestoreContractSurfaceReady;
         checks.Add(new VerificationCheck("v43.1 Local SQLite Backup and Restore release gate", localRestoreContractReady && canonicalWorkingStoresReady && releaseIdentityReady,
             localRestoreContractReady && canonicalWorkingStoresReady && releaseIdentityReady
                 ? "Verified online backup, compatibility inspection, pre-restore recovery snapshot, atomic replacement, rollback and controlled restart are available; " + latestLocalBackupDetail
@@ -16827,6 +16850,19 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             dailyUiStateReady && releaseIdentityReady
                 ? "Window and keyed grid layout remain machine-local; saved column order and visible canonical MaterialID selection restore fail-safe; Materials, Material Detail and Reports expose the same selected identity"
                 : "Machine-local layout, selected MaterialID clarity or release identity failed"));
+        var recoveryClarityGlossary = BuildRecoveryCompatibilityGlossary();
+        var emptyProfileCompatibilityReady =
+            compatibilityCatalog
+                .Where(item => item.IsIntegrityValid && item.SchemaVersion == 29 && item.Materials == 0)
+                .All(item => item.CompatibilityStatus == "Ready — empty profile" && item.CanRestore) &&
+            recoveryClarityGlossary.Contains("Ready — empty profile", StringComparison.Ordinal) &&
+            recoveryClarityGlossary.Contains("not full-data release evidence", StringComparison.Ordinal) &&
+            recoveryClarityGlossary.Contains("Corrupt / unreadable", StringComparison.Ordinal);
+        checks.Add(new VerificationCheck("v44.3 Backup and recovery evidence clarity release gate",
+            emptyProfileCompatibilityReady && guardedRestoreContractSurfaceReady && releaseIdentityReady,
+            emptyProfileCompatibilityReady && guardedRestoreContractSurfaceReady && releaseIdentityReady
+                ? "Healthy schema-current zero-data backups are explicit restore-ready empty profiles; full-data evidence remains distinct; migration, legacy, newer and corrupt states are explained; guarded/default-No restore boundaries remain intact"
+                : "Empty-profile classification, compatibility glossary, guarded restore boundary or release identity failed"));
 
         return checks;
     }

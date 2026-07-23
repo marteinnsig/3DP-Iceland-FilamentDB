@@ -1,5 +1,28 @@
 # Verification History
 
+## v44.3.0 Backup, Recovery and Update Evidence Clarity Candidate
+
+Status: PASS; FIRST INCREMENT RUNTIME ACCEPTED; v44.3 REMAINS IN PROGRESS
+
+- Schema-v29 integrity-valid backups with zero Materials are classified
+  `Ready — empty profile`, explicitly restorable and distinct from corruption.
+- Recovery Center visibly explains every compatibility state and why an empty
+  profile is not full-data release evidence.
+- Empty-profile restore remains explicit/default-No and warns that current
+  SQLite data will be replaced with a zero-data profile.
+- No automatic SQLite restore/deletion, schema, transaction, update, website,
+  report or FTPS behavior changed.
+- Clean-VM Recovery Center displayed two integrity-valid schema-v29 zero-data
+  automatic backups as `Ready — empty profile`.
+- The initial Candidate correctly exposed a Verification-only dependency error:
+  v44.3 reused the v43.1 full-data-backup predicate and failed 208/209. The
+  bounded correction tests the guarded restore API/UI contract separately while
+  retaining v43.1 as not applicable without canonical Materials.
+- PASS: rebuilt clean-VM Candidate, Application Readiness and Overall
+  Verification 209/209 applicable checks passed; 90 data-dependent checks were
+  explicitly not applicable. Build identity:
+  `v44.3.0 RECOVERY-EVIDENCE-CLARITY`.
+
 ## v44.2.0 Daily-use UI State and MaterialID Clarity
 
 Status: PASS; RUNTIME ACCEPTED
