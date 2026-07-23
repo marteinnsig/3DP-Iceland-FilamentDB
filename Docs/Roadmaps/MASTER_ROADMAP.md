@@ -756,7 +756,7 @@ Non-goals:
 
 ### v44.0 — Baseline and release-workflow closure
 
-Status: **In progress — research, additive workflow gates and direct v43.8.9 installer/portable runtime acceptance pass; byte-preserving clean-tree Production promotion and final closure remain pending.**
+Status: **Complete — direct v43.8.9 installer/portable runtime accepted and promoted byte-identically through clean-tree Production gates; stable-route publication remains a separate explicit default-No operational action.**
 
 - Start from canonical v43.8.9, clean `master == origin/master`, Debug/Release 0/0 and Verification 296/296.
 - Decision: adopt the direct v43.8.9 installer/portable first-install route built from the byte-identical canonical signed package. Both Candidate modes pass fresh-VM runtime acceptance. Production promotion must preserve the exact tested artifact bytes; stable routes remain on the accepted v43.8.8 plus guarded-update route until that promotion and publish are separately verified.

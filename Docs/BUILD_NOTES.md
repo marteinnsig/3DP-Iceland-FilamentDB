@@ -15,6 +15,13 @@ first-install route is accepted for promotion, but the currently published
 stable route remains v43.8.8 plus guarded update until a clean-tree,
 byte-preserving Production promotion and separate publish verification complete.
 
+The clean-tree Production promotion subsequently passed. Installer and portable
+bytes are identical to the fresh-VM runtime-accepted Candidates, Production
+metadata is BOM-less and binds promotion commit `dd4eaf4`, and the full
+Production release-gate suite passed. Stable-route FTPS publication remains a
+separate explicit default-No operational action and was not performed as part of
+local v44.0 closure.
+
 Packaging now declares Candidate or Production state, refuses silent artifact
 replacement, and requires a clean Git tree for Production. Feed and deployment
 metadata are BOM-less. A single release-gate script verifies NuGet vulnerability

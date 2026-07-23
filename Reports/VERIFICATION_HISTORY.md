@@ -2231,9 +2231,16 @@ App source/assets files retained: 68
   Candidates are accepted. Production promotion must preserve these exact tested
   artifact bytes, run only from a clean tree, remain fail-if-exists and keep
   stable routes untouched until the separately verified publish step.
-- PENDING: byte-preserving clean-tree Production promotion and v44.0 closure.
-  No application UI, updater runtime, SQLite, website/report or FTPS behavior
-  changed in source, and stable production routes remain untouched.
+- PASS: clean-tree Production promotion copied the runtime-tested installer,
+  portable ZIP and signed update ZIP without changing their bytes. Production
+  metadata is BOM-less, records promotion commit `dd4eaf4`, and the Production
+  gates passed NuGet vulnerabilities, feed/package bytes and SHA-256, trusted
+  ECDSA signature, six-file governed inventory, schema v29 and stable-route-last
+  contracts.
+- COMPLETE: v44.0 local release-workflow closure. Stable FTPS routes were not
+  changed; their publication remains a separate explicit default-No operational
+  action. No application UI, updater runtime, SQLite, website/report or FTPS
+  behavior changed in source.
 
 # v43.8.9 SQLite Dependency Security — 2026-07-22
 
