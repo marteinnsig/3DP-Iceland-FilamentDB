@@ -2182,6 +2182,59 @@ Reports files: 60 -> 2
 App source/assets files retained: 68
 ~~~
 
+# v44.0 Baseline and Release-Workflow Closure Candidate — 2026-07-23
+
+- PASS: baseline began on clean `master` at `105d454`, aligned 0/0 with
+  `origin/master`; canonical runtime identity remains v43.8.9.
+- DECISION: the only supported first-install route remains the runtime-accepted
+  v43.8.8 installer/portable package followed by the manual default-No guarded
+  update to canonical v43.8.9. No new installer was built or promoted.
+- PASS: Candidate feed regenerated from the byte-identical canonical v43.8.9
+  signed ZIP; NuGet transitive vulnerability result, BOM-less JSON, 95,897,210
+  package bytes, SHA-256, trusted ECDSA signature, exact six-file governed
+  inventory, SQLite schema v29 and stable-route-last contracts passed.
+- PASS: dirty-tree Production and existing-feed overwrite probes failed closed.
+- PASS: Inno Setup 7.0.2 built the direct v43.8.9 Candidate installer
+  (68,149,629 bytes; SHA-256
+  `99623DDD0C34F15E50FA5583FE56CD88B5AF283085627DD4AB071F2F3529E2FA`)
+  and portable ZIP (95,525,502 bytes; SHA-256
+  `DDE4C025C18BAA859A61666B1F066136B48FEF1E0EF6FB852F769528DC61C4F8`)
+  from the canonical signed package. The portable inventory is exactly the six
+  governed files; forbidden data/backup/native payload filenames were absent.
+- PASS: fresh-VM direct-installer runtime acceptance. The application ran from
+  `C:\Users\Maddi\AppData\Local\Programs\3DPIceland Engineering Platform`,
+  reported aligned v43.8.9/43.8.9.0/SQLITE-DEPENDENCY-SECURITY identity, created
+  a schema-v29 clean profile with zero Materials/native measurements, retained
+  empty deployment identity and passed the signed-package, transactional
+  updater, guarded-update, diagnostics, installer/deployment and remote-feed
+  release gates. The VM clock was incorrect, so the exported filename/generated
+  timestamp reads 2026-07-22 even though this evidence belongs to the 2026-07-23
+  Candidate test.
+- EXPECTED CLEAN-PROFILE LIMITATION: Verification reported 223 PASS and 91 FAIL.
+  The failures are data-dependent full-verification checks cascading from zero
+  Materials, no active website template and no canonical recovery backup; no
+  installer/runtime identity, clean-profile isolation, updater or deployment
+  contract failed. This is the accepted evidence feeding v44.1 profile work,
+  not a 296/296 full-data release acceptance.
+- PASS: fresh-VM direct-portable runtime acceptance. The application ran from
+  `C:\Users\Maddi\Documents\3DPIceland-Portable-x64-v43.8.9`, reported the same
+  aligned v43.8.9 identity and schema-v29 privacy-clean zero-data profile, and
+  passed the signed-package, transactional updater, guarded-update, diagnostics,
+  installer/portable deployment and remote-feed gates. First usable Materials
+  rendered at approximately 3.64 seconds. Its 206 PASS/90 FAIL result contains
+  the same data-dependent failure labels as the installer clean profile; no
+  portable-specific failure appeared.
+- PASS: Debug and Release solution builds completed with 0 warnings and 0
+  errors. Transactional updater self-test passed commit, rollback, interrupted
+  recovery, traversal rejection and SQLite-backup-reference preservation.
+- RUNTIME DECISION: direct v43.8.9 installer and portable first-install
+  Candidates are accepted. Production promotion must preserve these exact tested
+  artifact bytes, run only from a clean tree, remain fail-if-exists and keep
+  stable routes untouched until the separately verified publish step.
+- PENDING: byte-preserving clean-tree Production promotion and v44.0 closure.
+  No application UI, updater runtime, SQLite, website/report or FTPS behavior
+  changed in source, and stable production routes remain untouched.
+
 # v43.8.9 SQLite Dependency Security — 2026-07-22
 
 - PASS: BOM-less `latest.json` updated a fresh v43.8.8 VM install to v43.8.9; durable transaction phase `Committed`, zero incomplete transactions and no automatic SQLite restore.

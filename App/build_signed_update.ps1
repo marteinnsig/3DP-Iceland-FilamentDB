@@ -1,15 +1,20 @@
 param(
     [string]$OutputFolder = (Join-Path $PSScriptRoot "artifacts"),
     [switch]$AllowDirty,
-    [string]$VersionOverride = ""
+    [string]$VersionOverride = "",
+    [ValidateSet("Candidate", "Production")]
+    [string]$ReleaseState = "Candidate"
 )
 
 $ErrorActionPreference = "Stop"
 $repository = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $gitStatus = @(git -C $repository status --porcelain)
 if ($LASTEXITCODE -ne 0) { throw "Could not inspect repository status." }
-if ($gitStatus.Count -gt 0 -and -not $AllowDirty) { throw "Signed production packaging requires a clean Git worktree. Use -AllowDirty only for an explicit pre-release verification package." }
-if ($gitStatus.Count -gt 0) { Write-Warning "Creating a pre-release verification package from a dirty worktree." }
+if ($ReleaseState -eq "Production" -and $AllowDirty) { throw "-AllowDirty is valid only for an explicit Candidate package." }
+if ($gitStatus.Count -gt 0 -and ($ReleaseState -eq "Production" -or -not $AllowDirty)) {
+    throw "$ReleaseState signed packaging requires a clean Git worktree. Use -ReleaseState Candidate -AllowDirty only for an explicit pre-release verification package."
+}
+if ($gitStatus.Count -gt 0) { Write-Warning "Creating an explicit Candidate package from a dirty worktree." }
 $project = Join-Path $PSScriptRoot "FilamentDbApp\FilamentDbApp.csproj"
 $publishFolder = Join-Path $PSScriptRoot "FilamentDbApp\bin\Release\net9.0-windows\win-x64\publish"
 $updaterProject = Join-Path $PSScriptRoot "FilamentDbUpdater\FilamentDbUpdater.csproj"
@@ -34,9 +39,10 @@ Copy-Item -LiteralPath (Join-Path $updaterPublishFolder "3DPIcelandUpdater.exe")
 
 New-Item -ItemType Directory -Force -Path $OutputFolder | Out-Null
 $output = Join-Path $OutputFolder ("3DPIceland_Update_v" + $version.Replace(".", "_") + ".zip")
+if (Test-Path -LiteralPath $output) { throw "Signed update output already exists: $output" }
 dotnet run --project $packager -c Release -- package --input $publishFolder --output $output --version $version --code $releaseCode --min-schema 29 --max-schema 29
 if ($LASTEXITCODE -ne 0) { throw "Signed update packaging failed." }
 dotnet run --project $verifier -c Release -- $output $version $releaseCode
 if ($LASTEXITCODE -ne 0) { throw "Application verifier rejected the newly signed update package." }
 
-Write-Host "Signed update package ready: $output"
+Write-Host "$ReleaseState signed update package ready: $output"

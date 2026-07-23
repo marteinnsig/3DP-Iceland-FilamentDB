@@ -1,5 +1,28 @@
 # Current Build Notes - v43.8.9
 
+## v44.0 release-workflow closure candidate
+
+Canonical runtime identity remains v43.8.9. A direct v43.8.9 Setup/portable
+Candidate has now been built from the byte-identical canonical signed package
+with Inno Setup 7.0.2. It passes local release gates. Fresh-VM direct-installer
+runtime acceptance also passed with aligned identity and a privacy-clean
+schema-v29 zero-Materials profile; the exported diagnostics had 223 PASS and 91
+expected data-dependent FAIL results because the full-data profile requires
+canonical Materials, website template and recovery backup. Fresh-VM portable
+runtime acceptance also passed from an isolated Documents folder with the same
+clean-profile boundary and no portable-specific failure. The direct v43.8.9
+first-install route is accepted for promotion, but the currently published
+stable route remains v43.8.8 plus guarded update until a clean-tree,
+byte-preserving Production promotion and separate publish verification complete.
+
+Packaging now declares Candidate or Production state, refuses silent artifact
+replacement, and requires a clean Git tree for Production. Feed and deployment
+metadata are BOM-less. A single release-gate script verifies NuGet vulnerability
+results, exact bytes/SHA-256, ECDSA signature, governed inventory, schema and
+stable-route-last publishing. Authenticode remains deferred; Windows may show
+Unknown publisher even though the application update package has its separate
+trusted ECDSA signature.
+
 ## SQLite Dependency Security
 
 v43.8.9 is a narrow security-maintenance candidate. It updates `Microsoft.Data.Sqlite` from 9.0.7 to the current net9 servicing release 9.0.18 and directly selects `SQLitePCLRaw.bundle_e_sqlite3` 2.1.12. This prevents NuGet's minimum-version resolution from retaining the high-severity affected `SQLitePCLRaw.lib.e_sqlite3` 2.1.10/2.1.11 line (CVE-2025-6965). No schema, SQLite ownership, backup/restore, update transaction, website, report or FTPS behavior changes.

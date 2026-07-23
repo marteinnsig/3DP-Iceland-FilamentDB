@@ -756,10 +756,12 @@ Non-goals:
 
 ### v44.0 — Baseline and release-workflow closure
 
+Status: **In progress — research, additive workflow gates and direct v43.8.9 installer/portable runtime acceptance pass; byte-preserving clean-tree Production promotion and final closure remain pending.**
+
 - Start from canonical v43.8.9, clean `master == origin/master`, Debug/Release 0/0 and Verification 296/296.
-- Decide whether first-install downloads should be rebuilt directly at v43.8.9 or intentionally retain the accepted v43.8.8 installer followed by guarded update; document one unambiguous public route either way.
-- Make candidate versus canonical/production state explicit in build output and UI. Production packaging must reject dirty trees and must not overwrite an existing artifact silently.
-- Add deterministic release gates for NuGet vulnerability results, BOM-less update feed, exact feed/ZIP bytes and SHA-256, signature, governed inventory, schema and stable-route-last publishing.
+- Decision: adopt the direct v43.8.9 installer/portable first-install route built from the byte-identical canonical signed package. Both Candidate modes pass fresh-VM runtime acceptance. Production promotion must preserve the exact tested artifact bytes; stable routes remain on the accepted v43.8.8 plus guarded-update route until that promotion and publish are separately verified.
+- Candidate versus Production state is explicit in packaging parameters, console output, update-feed metadata and deployment-plan metadata. Production packaging rejects dirty trees; every signed ZIP, feed, installer, portable ZIP and plan fails if its destination already exists.
+- Deterministic `App/test_release_gates.ps1` covers NuGet vulnerability results, BOM-less update feed, exact feed/ZIP bytes and SHA-256, ECDSA signature, governed inventory, schema and stable-route-last publishing.
 - Keep Authenticode deferred while distribution is private; retain the trusted ECDSA package signature and document the Windows Unknown Publisher trade-off.
 
 ### v44.1 — Verification profiles and diagnostic honesty

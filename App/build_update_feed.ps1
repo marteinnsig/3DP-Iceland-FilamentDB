@@ -1,6 +1,8 @@
 param(
     [Parameter(Mandatory = $true)][string]$SignedPackage,
-    [string]$OutputFolder = (Join-Path $PSScriptRoot "artifacts\update-feed")
+    [string]$OutputFolder = (Join-Path $PSScriptRoot "artifacts\update-feed"),
+    [ValidateSet("Candidate", "Production")]
+    [string]$ReleaseState = "Candidate"
 )
 $ErrorActionPreference = "Stop"
 $package = (Resolve-Path -LiteralPath $SignedPackage).Path
@@ -12,9 +14,14 @@ try {
     Expand-Archive -LiteralPath $package -DestinationPath $work
     $manifest = Get-Content -LiteralPath (Join-Path $work "3dp-update-manifest.json") -Raw | ConvertFrom-Json
     $packageName = [IO.Path]::GetFileName($package)
-    Copy-Item -LiteralPath $package -Destination (Join-Path $OutputFolder $packageName)
+    $feedPackagePath = Join-Path $OutputFolder $packageName
+    $latestPath = Join-Path $OutputFolder "latest.json"
+    if (Test-Path -LiteralPath $feedPackagePath) { throw "Update-feed package already exists: $feedPackagePath" }
+    if (Test-Path -LiteralPath $latestPath) { throw "Update-feed metadata already exists: $latestPath" }
+    Copy-Item -LiteralPath $package -Destination $feedPackagePath
     $feed = [ordered]@{
         schema = "3dpiceland.application-update-feed.v1"
+        releaseState = $ReleaseState
         packageUrl = "https://www.iskort.is/3dp/updates/$packageName"
         packageBytes = (Get-Item -LiteralPath $package).Length
         packageSha256 = (Get-FileHash -LiteralPath $package -Algorithm SHA256).Hash
@@ -22,9 +29,9 @@ try {
     }
     $feedJson = $feed | ConvertTo-Json -Depth 8
     [IO.File]::WriteAllText(
-        (Join-Path $OutputFolder "latest.json"),
+        $latestPath,
         $feedJson,
         [Text.UTF8Encoding]::new($false))
-    Write-Host "Update feed ready: $OutputFolder"
+    Write-Host "$ReleaseState update feed ready: $OutputFolder"
 }
 finally { if (Test-Path -LiteralPath $work) { Remove-Item -LiteralPath $work -Recurse -Force } }
