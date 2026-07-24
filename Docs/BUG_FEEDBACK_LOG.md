@@ -516,6 +516,10 @@ retirement passes runtime acceptance.
 Owner runtime acceptance and Full Data Verification 323/323 completed Stage
 5A. Stage 5B can remove collapsed measurement XAML and grid-only lifecycle
 code.
+Stage 5B-Tensile candidate removes the complete legacy Tensile DataGrid and
+named lifecycle references while retaining the accepted Fast/canonical paths.
+Owner runtime acceptance and Full Data Verification 324/324 completed the
+Tensile deletion checkpoint. Impact is next.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

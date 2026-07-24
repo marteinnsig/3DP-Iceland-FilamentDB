@@ -14,7 +14,6 @@ public partial class MainWindow
         _embeddedFastTensileView = CreateFastTensileView();
         FastTensileViewHost.Content = _embeddedFastTensileView;
         FastTensileViewHost.Visibility = Visibility.Visible;
-        NativeTensileGrid.Visibility = Visibility.Collapsed;
     }
 
     private void ResetFastTensileColumns_Click(object sender, RoutedEventArgs e)

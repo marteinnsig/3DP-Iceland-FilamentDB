@@ -200,7 +200,6 @@ public partial class MainWindow : Window
             // realized separately only after higher-priority startup/UI work is finished.
             foreach (var target in new[]
                      {
-                         (TabHeader: "Tensile Measurements", GridName: "NativeTensileGrid"),
                          (TabHeader: "Impact Measurements", GridName: "NativeImpactGrid"),
                          (TabHeader: "Stiffness Measurements", GridName: "NativeStiffnessGrid")
                      })
@@ -292,7 +291,6 @@ public partial class MainWindow : Window
     {
         "NativeMaterialsGrid",
         "ManufacturersGrid",
-        "NativeTensileGrid",
         "NativeImpactGrid",
         "NativeStiffnessGrid",
         "NativeSettingsGrid",
@@ -1071,12 +1069,6 @@ public partial class MainWindow : Window
                 MarkNativeMaterialsDirty();
                 QueueNativeMaterialDependentIntelligenceRefresh();
                 break;
-            case "NativeTensileGrid":
-                ApplyNativeTensileComputedFields(_nativeTensileRows);
-                RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-                MarkNativeTensileDirty();
-                RefreshNativeTensileSummary();
-                break;
             case "NativeImpactGrid":
                 ApplyNativeImpactComputedFields(_nativeImpactRows);
                 RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
@@ -1169,7 +1161,7 @@ public partial class MainWindow : Window
     {
         if (string.IsNullOrWhiteSpace(propertyName)) return false;
 
-        if (gridName is "NativeTensileGrid" or "NativeImpactGrid")
+        if (gridName == "NativeImpactGrid")
         {
             return Regex.IsMatch(propertyName, "^(Upright|Flat)(10|[1-9])$", RegexOptions.CultureInvariant);
         }
@@ -2585,7 +2577,6 @@ public partial class MainWindow : Window
         var gridName = header switch
         {
             "Materials" => "NativeMaterialsGrid",
-            "Tensile Measurements" => "NativeTensileGrid",
             "Impact Measurements" => "NativeImpactGrid",
             "Stiffness Measurements" => "NativeStiffnessGrid",
             "Settings Manager" => "NativeSettingsGrid",
@@ -2626,7 +2617,6 @@ public partial class MainWindow : Window
 
         var workspace = gridName switch
         {
-            "NativeTensileGrid" => "Tensile Measurements",
             "NativeImpactGrid" => "Impact Measurements",
             "NativeStiffnessGrid" => "Stiffness Measurements",
             _ => gridName
@@ -13537,7 +13527,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private void PersistCanonicalStateForExcelRecovery()
     {
-        foreach (var gridName in new[] { "NativeMaterialsGrid", "NativeTensileGrid", "NativeImpactGrid", "NativeStiffnessGrid", "NativeSettingsGrid", "BaseMaterialsGrid" })
+        foreach (var gridName in new[] { "NativeMaterialsGrid", "NativeImpactGrid", "NativeStiffnessGrid", "NativeSettingsGrid", "BaseMaterialsGrid" })
         {
             if (FindName(gridName) is not DataGrid grid) continue;
             grid.CommitEdit(DataGridEditingUnit.Cell, true);
@@ -17326,7 +17316,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Materials explains the five required row-identity fields and OK meaning while the established ValidationSummary rules remain unchanged"
                 : "Material row Validation help text, established required-field rules or release identity failed"));
         var workflowLayoutResetReady =
-            WorkflowGridNames.Contains("NativeTensileGrid", StringComparer.Ordinal) &&
             WorkflowGridNames.Contains("NativeImpactGrid", StringComparer.Ordinal) &&
             WorkflowGridNames.Contains("NativeStiffnessGrid", StringComparer.Ordinal) &&
             typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.CaptureGridLayout)) is not null &&
@@ -17496,6 +17485,24 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             measurementFastContractsReady && releaseIdentityReady
                 ? "Measurement legacy toggle controls, handlers and fallback state are absent"
                 : "A measurement fallback control/handler remains, a prior Fast contract failed or release identity is misaligned"));
+        var tensileLegacyGridRetired =
+            FindName("NativeTensileGrid") is null &&
+            typeof(MainWindow).GetMethod(
+                "NativeTensileGrid_CellEditEnding",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "NativeTensileGrid_CurrentCellChanged",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "CommitNativeTensileGridEdits",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null;
+        checks.Add(new VerificationCheck("v44.7.7 Tensile legacy-grid deletion stage gate",
+            tensileLegacyGridRetired && measurementFallbackCodeRetired &&
+            measurementFastContractsReady && releaseIdentityReady,
+            tensileLegacyGridRetired && measurementFallbackCodeRetired &&
+            measurementFastContractsReady && releaseIdentityReady
+                ? "Tensile legacy DataGrid XAML and grid-specific edit/commit lifecycle are absent"
+                : "Tensile legacy XAML/lifecycle remains, a prior Fast contract failed or release identity is misaligned"));
 
         return checks;
     }
@@ -22729,7 +22736,6 @@ private List<string> GetVisibleAiMaterialLabels()
     private void ApplyNativeMeasurementFilters()
     {
         var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
-        ApplyNativeMeasurementFilterToGrid("NativeTensileGrid", visibleMaterialIds);
         ApplyNativeMeasurementFilterToGrid("NativeImpactGrid", visibleMaterialIds);
         ApplyNativeMeasurementFilterToGrid("NativeStiffnessGrid", visibleMaterialIds);
         _embeddedFastTensileView?.ReloadFromCanonical("the current Materials filter/search result");
@@ -23458,14 +23464,13 @@ private List<string> GetVisibleAiMaterialLabels()
         }
         _workflowPreferencesService.Save();
 
-        var measurementEditPending = new[] { "NativeTensileGrid", "NativeImpactGrid", "NativeStiffnessGrid" }
+        var measurementEditPending = new[] { "NativeImpactGrid", "NativeStiffnessGrid" }
             .Select(FindName)
             .OfType<DataGrid>()
             .Select(grid => CollectionViewSource.GetDefaultView(grid.ItemsSource))
             .OfType<IEditableCollectionView>()
             .Any(view => view.IsEditingItem || view.IsAddingNew);
 
-        CommitNativeTensileGridEdits();
         CommitNativeImpactGridEdits();
         CommitNativeStiffnessGridEdits();
 
@@ -26233,7 +26238,6 @@ private List<string> GetVisibleAiMaterialLabels()
         _suppressNativeTensileDirty = true;
         ReplaceNativeTensileRows(BuildNativeTensileRowsFromCanonicalStorage());
         _suppressNativeTensileDirty = false;
-        if (FindName("NativeTensileGrid") is DataGrid grid) grid.ItemsSource = _nativeTensileRows;
         ApplyNativeMeasurementFilters();
         SetNativeTensileDirty(false);
         RefreshNativeTensileSummary();
@@ -26289,7 +26293,6 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         if (_nativeMaterialRows.Count == 0) return;
 
-        CommitNativeTensileGridEdits();
         ApplyNativeMaterialComputedFieldsToAllRows();
 
         var materialRows = _nativeMaterialRows
@@ -26338,7 +26341,6 @@ private List<string> GetVisibleAiMaterialLabels()
 
         ApplyNativeTensileComputedFields(_nativeTensileRows);
         RefreshNativeTensileSummary();
-        if (FindName("NativeTensileGrid") is DataGrid tensileGrid) tensileGrid.Items.Refresh();
         ApplyNativeMeasurementFilters();
         if (markDirty) MarkNativeTensileDirty();
         SyncNativeImpactRowsWithMaterialManager(markDirty);
@@ -26380,44 +26382,8 @@ private List<string> GetVisibleAiMaterialLabels()
         ApplyNativeTensileComputedFields(_nativeTensileRows);
     }
 
-    private void NativeTensileGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-    {
-        var editedRow = e.Row.Item as NativeTensileMeasurementRow;
-        var editedHeader = e.Column.Header?.ToString();
-        var assignMeasuredDate = sender is DataGrid tensileGrid &&
-                                 editedRow is not null &&
-                                 IsFirstMeasurementValueEdit(tensileGrid, e, editedRow.SampleValues(true).Concat(editedRow.SampleValues(false)));
-        if (sender is DataGrid undoGrid) CaptureInputDataGridUndo(undoGrid, e);
-        Dispatcher.BeginInvoke(new Action(() =>
-    {
-        if (!string.Equals(editedHeader, "Measured date", StringComparison.Ordinal) &&
-            assignMeasuredDate && editedRow is not null && editedRow.MeasuredDate is null)
-            editedRow.MeasuredDate = DateTime.Today;
-        // Do not call DataGrid.Items.Refresh() from edit callbacks.
-        // Refreshing the item collection while WPF is committing a cell edit can throw
-        // InvalidOperationException. Computed columns update through PropertyChanged instead.
-        ApplyNativeTensileComputedFields(_nativeTensileRows);
-        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        MarkNativeTensileDirty();
-        SaveNativeTensileSilent();
-    }), System.Windows.Threading.DispatcherPriority.Background);
-    }
-
-    private void NativeTensileGrid_CurrentCellChanged(object sender, EventArgs e)
-    {
-        if (!_suppressNativeTensileDirty)
-        {
-            ApplyNativeTensileComputedFields(_nativeTensileRows);
-            RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-            MarkNativeTensileDirty();
-            SaveNativeTensileSilent();
-            RefreshNativeTensileSummary();
-        }
-    }
-
     private void SaveNativeTensile_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeTensileGridEdits();
         ApplyNativeTensileComputedFields(_nativeTensileRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
         SaveNativeMeasurementsToSqlite();
@@ -26443,32 +26409,20 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void RecalculateNativeTensile_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeTensileGridEdits();
         ApplyNativeTensileComputedFields(_nativeTensileRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        if (FindName("NativeTensileGrid") is DataGrid grid) grid.Items.Refresh();
         MarkNativeTensileDirty();
         RefreshNativeTensileSummary();
     }
 
     private void ValidateNativeTensile_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeTensileGridEdits();
         ApplyNativeTensileComputedFields(_nativeTensileRows);
         var invalid = _nativeTensileRows.Where(r => r.ValidationSummary != "OK").ToList();
         MessageBox.Show(invalid.Count == 0 ? $"Tensile validation passed for {_nativeTensileRows.Count} rows." : $"Tensile validation found {invalid.Count} rows with invalid sample values.", "Tensile Measurements Validation", MessageBoxButton.OK, invalid.Count == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
     }
 
     private void RefreshNativeTensileSummary_Click(object sender, RoutedEventArgs e) => RefreshNativeTensileSummary();
-
-    private void CommitNativeTensileGridEdits()
-    {
-        if (FindName("NativeTensileGrid") is DataGrid grid)
-        {
-            grid.CommitEdit(DataGridEditingUnit.Cell, true);
-            grid.CommitEdit(DataGridEditingUnit.Row, true);
-        }
-    }
 
     private void MarkNativeTensileDirty() => SetNativeTensileDirty(true);
 

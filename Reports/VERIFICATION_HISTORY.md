@@ -62,6 +62,17 @@ Date: 2026-07-24
   owner runtime testing.
 - ACCEPTED: v44.7.7 Stage 5A is runtime accepted.
 
+# v44.7.7 - Legacy Grid Retirement - Stage 5B Tensile
+
+Date: 2026-07-24
+
+- PASS: Full Data Verification reported 324/324 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: legacy Tensile DataGrid XAML and named grid lifecycle were absent.
+- PASS: Fast Tensile editing, navigation, reset, filters, layouts and restart
+  persistence passed owner runtime testing.
+- ACCEPTED: v44.7.7 Stage 5B Tensile is runtime accepted.
+
 # v44.7.6 - Fast Workflow Grid - Settings
 
 Date: 2026-07-24

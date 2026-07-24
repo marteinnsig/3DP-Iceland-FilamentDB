@@ -45,6 +45,11 @@ state and reset branches. Fast measurement views are the only activatable
 paths; collapsed legacy XAML awaits the Stage 5B deletion checkpoint.
 Owner runtime testing accepted Stage 5A and Full Data Verification passed
 323/323.
+Stage 5B-Tensile removes the complete legacy Tensile DataGrid XAML and all
+named grid-specific bind/edit/commit/filter/layout/warm-up/close references.
+Fast Tensile remains on the accepted explicit canonical contract.
+Owner runtime testing accepted Stage 5B-Tensile and Full Data Verification
+passed 324/324.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

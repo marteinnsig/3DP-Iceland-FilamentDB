@@ -58,6 +58,12 @@
   controls and handlers to be absent.
 - Owner runtime testing accepted Fast-only measurement workflows and Full Data
   Verification passed 323/323; Stage 5A is complete.
+- Removed the complete legacy Tensile DataGrid XAML and its grid-specific
+  bind/edit/commit/filter/layout/warm-up/close lifecycle.
+- Added Verification coverage requiring the Tensile legacy XAML and named
+  lifecycle methods to be absent.
+- Owner runtime testing accepted Tensile after complete legacy deletion and
+  Full Data Verification passed 324/324.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 

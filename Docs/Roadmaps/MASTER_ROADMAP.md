@@ -1637,6 +1637,8 @@ changes priority.
   - Stage 5 removes retired legacy DataGrid XAML, toggle handlers and grid-only edit paths.
   - Stage 5A toggle/handler retirement is runtime accepted with Full Data Verification 323/323.
   - Stage 5B removes collapsed measurement XAML and grid-only callers.
+  - Stage 5B-Tensile deletion is runtime accepted with Full Data Verification 324/324.
+  - Stage 5B-Impact removes the next complete legacy measurement grid/lifecycle.
   - Replace those adapters with explicit Fast contracts before deleting legacy XAML, handlers and commit paths.
   - Preserve canonical SQLite, formulas, filters, validation, settings CRUD and layout behavior at every stage.
   - Require runtime acceptance after each removal stage.

@@ -112,6 +112,20 @@ filters, layout persistence and close-time save with Fast as the only
 activatable path. Full Data Verification passed 323/323. Stage 5A is accepted;
 Stage 5B can remove collapsed measurement XAML and grid-only lifecycle code.
 
+Stage 5B begins with Tensile. The complete `NativeTensileGrid` XAML, its
+edit/current-cell handlers, commit path, ItemsSource/refresh/filter calls,
+workflow-layout ownership, warm-up target and close-time edit checks are
+removed. Fast Tensile and the canonical collection/save/calculation paths are
+unchanged.
+
+Impact and Stiffness legacy XAML remain until the Tensile deletion passes
+runtime editing, reset, filters, persistence, close-time save and Verification.
+
+Owner runtime testing accepted Tensile editing, navigation, reset, filters,
+layout persistence and restart/close-time save after complete legacy deletion.
+Impact and Stiffness remained normal and Full Data Verification passed 324/324.
+Stage 5B-Tensile is accepted; Impact is the next deletion checkpoint.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on
