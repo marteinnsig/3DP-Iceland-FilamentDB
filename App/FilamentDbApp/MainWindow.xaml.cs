@@ -2168,7 +2168,6 @@ public partial class MainWindow : Window
         if (!ReferenceEquals(e.Source, WorkspaceTabs) ||
             WorkspaceTabs.SelectedItem is not TabItem selectedTab ||
             !string.Equals(selectedTab.Header?.ToString(), "Settings Manager", StringComparison.Ordinal) ||
-            !_fastSettingsEnabled ||
             _embeddedFastNativeSettingsView is not null)
         {
             return;
@@ -17183,22 +17182,24 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             typeof(MainWindow).GetMethod(nameof(ActivateDefaultFastSettingsViews), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
             typeof(MainWindow).GetMethod(nameof(ApplyFastNativeSettingsChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
             typeof(MainWindow).GetMethod(nameof(ApplyFastBaseMaterialChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod(nameof(ToggleFastSettingsViews_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                "ToggleFastSettingsViews_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
             typeof(MainWindow).GetMethod(nameof(ResetFastSettingsColumns_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("v44.7.6 Fast Workflow Grid - Settings candidate release gate",
             workflowLayoutResetReady && fastTensileReady && fastImpactReady && fastStiffnessReady && fastSettingsReady && releaseIdentityReady,
             workflowLayoutResetReady && fastTensileReady && fastImpactReady && fastStiffnessReady && fastSettingsReady && releaseIdentityReady
-                ? "Fast Settings owns separate general/Base Material layouts, canonical apply contracts and a visible dual-grid fallback"
-                : "Fast Settings layout, canonical general/Base Material apply, fallback, retained accepted Fast-grid contracts or release identity failed"));
+                ? "Fast Settings owns separate general/Base Material layouts and canonical apply contracts as the only activatable UI"
+                : "Fast Settings layout, canonical apply, activation retirement, retained contracts or release identity failed"));
         var legacyGridRetirementUiReady =
             FastMaterialsViewMenuItem.Visibility == Visibility.Collapsed &&
-            FastSettingsToggleButton.Visibility == Visibility.Collapsed;
+            FindName("FastSettingsToggleButton") is null;
         checks.Add(new VerificationCheck("v44.7.7 Legacy Grid Retirement UI-stage release gate",
             legacyGridRetirementUiReady && fastTensileReady && fastImpactReady && fastStiffnessReady &&
             fastSettingsReady && releaseIdentityReady,
             legacyGridRetirementUiReady && fastTensileReady && fastImpactReady && fastStiffnessReady &&
             fastSettingsReady && releaseIdentityReady
-                ? "Legacy/preview switches are hidden while accepted Fast contracts and temporary collapsed adapters remain intact"
+                ? "Legacy/preview switches are absent or hidden while accepted Fast contracts and temporary adapters remain intact"
                 : "A legacy/preview switch remains visible, an accepted Fast contract failed or release identity is misaligned"));
         var fastTensileContractColumns = BuildFastTensileColumns();
         var fastImpactContractColumns = BuildFastImpactColumns();

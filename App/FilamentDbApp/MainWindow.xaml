@@ -1968,8 +1968,6 @@
                     </StackPanel>
 
                     <WrapPanel Grid.Row="1" Margin="0,0,0,10">
-                        <Button Name="FastSettingsToggleButton" Content="Use Legacy Grids" Click="ToggleFastSettingsViews_Click" Padding="12,6" Margin="0,0,8,8" Visibility="Collapsed"
-                                ToolTip="Temporary fallback while Fast Settings is under runtime acceptance."/>
                         <Button Content="Reset Fast Columns" Click="ResetFastSettingsColumns_Click" Padding="12,6" Margin="0,0,16,8"/>
                         <Button Click="SaveNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE74E;"/><TextBlock Text="Save Settings"/></StackPanel></Button>
                         <Button Click="LoadNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE8E5;"/><TextBlock Text="Load Settings"/></StackPanel></Button>

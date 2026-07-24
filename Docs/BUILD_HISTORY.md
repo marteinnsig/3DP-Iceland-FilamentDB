@@ -70,6 +70,12 @@ accepted per-workspace reset behavior and saved layouts remain unchanged.
 Owner runtime testing accepted menu removal, local reset behavior, saved
 layouts and restart persistence. Full Data Verification passed 326/326;
 Stage 5C is accepted.
+Stage 5D removes the hidden Settings legacy-grid toggle, handler and fallback
+activation state. Fast General Settings and Base Materials become the only
+activatable Settings UI; legacy XAML and grid-only lifecycle remain for the
+next checkpoint. Owner runtime testing accepted Settings editing, validation,
+Base Material CRUD, reset, persistence and cross-tab behavior. Full Data
+Verification passed 326/326; Stage 5D is accepted.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

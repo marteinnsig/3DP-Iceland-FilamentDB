@@ -170,6 +170,17 @@ Owner runtime testing accepted Tools-menu removal, Materials and measurement
 reset actions, default-No cancellation, saved-layout persistence and restart
 behavior. Full Data Verification passed 326/326. Stage 5C is accepted.
 
+Stage 5D removes the hidden Settings `Use Legacy Grids` control, toggle handler
+and fallback activation state. Fast General Settings and Base Material views
+are now the only activatable Settings UI. Their legacy XAML, bind/edit callers
+and Base Material selection fallback remain temporarily for the next
+runtime-gated deletion stage. Runtime acceptance is pending.
+
+Owner runtime testing accepted both Fast Settings views, tab return, general
+and Deployment validation, Base Material editing/CRUD, column reset,
+persistence and cross-tab behavior. Full Data Verification passed 326/326.
+Stage 5D is accepted.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on

@@ -542,6 +542,10 @@ Stage 5B-Stiffness candidate removes the final legacy measurement DataGrid,
 named grid lifecycle and now-obsolete deferred DataGrid warm-up while
 retaining the accepted Fast/canonical paths. Owner runtime acceptance and Full
 Data Verification 326/326 completed Stiffness and measurement-grid retirement.
+Stage 5D candidate removes the hidden Settings legacy-grid toggle, handler and
+fallback activation state. Fast Settings becomes the only activatable path;
+owner runtime acceptance and Full Data Verification 326/326 passed. Legacy
+Settings XAML and grid lifecycle are the next deletion checkpoint.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

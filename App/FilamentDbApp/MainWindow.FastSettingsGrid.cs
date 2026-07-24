@@ -10,11 +10,10 @@ public partial class MainWindow
     private List<MaterialsPrototypeColumn>? _defaultFastNativeSettingsColumns;
     private List<MaterialsPrototypeColumn>? _defaultFastBaseMaterialsColumns;
     private NativeBaseMaterialRow? _selectedFastBaseMaterialRow;
-    private bool _fastSettingsEnabled = true;
 
     private void ActivateDefaultFastSettingsViews()
     {
-        if (!_fastSettingsEnabled || _embeddedFastNativeSettingsView is not null) return;
+        if (_embeddedFastNativeSettingsView is not null) return;
 
         _embeddedFastNativeSettingsView = CreateFastNativeSettingsView();
         _embeddedFastBaseMaterialsView = CreateFastBaseMaterialsView();
@@ -24,45 +23,10 @@ public partial class MainWindow
         FastBaseMaterialsViewHost.Visibility = Visibility.Visible;
         NativeSettingsGrid.Visibility = Visibility.Collapsed;
         BaseMaterialsGrid.Visibility = Visibility.Collapsed;
-        FastSettingsToggleButton.Content = "Use Legacy Grids";
-    }
-
-    private void ToggleFastSettingsViews_Click(object sender, RoutedEventArgs e)
-    {
-        if (_fastSettingsEnabled)
-        {
-            _embeddedFastNativeSettingsView?.ConfirmCanClose();
-            _embeddedFastBaseMaterialsView?.ConfirmCanClose();
-            _embeddedFastNativeSettingsView = null;
-            _embeddedFastBaseMaterialsView = null;
-            FastNativeSettingsViewHost.Content = null;
-            FastBaseMaterialsViewHost.Content = null;
-            FastNativeSettingsViewHost.Visibility = Visibility.Collapsed;
-            FastBaseMaterialsViewHost.Visibility = Visibility.Collapsed;
-            NativeSettingsGrid.Visibility = Visibility.Visible;
-            BaseMaterialsGrid.Visibility = Visibility.Visible;
-            FastSettingsToggleButton.Content = "Use Fast Grids";
-            _fastSettingsEnabled = false;
-            return;
-        }
-
-        _fastSettingsEnabled = true;
-        ActivateDefaultFastSettingsViews();
     }
 
     private void ResetFastSettingsColumns_Click(object sender, RoutedEventArgs e)
     {
-        if (!_fastSettingsEnabled)
-        {
-            MessageBox.Show(
-                this,
-                "Switch to Fast Grids before resetting Fast Settings columns.",
-                "Fast Settings Columns",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
-            return;
-        }
-
         var confirmation = MessageBox.Show(
             this,
             "Reset both Fast Settings column layouts to application defaults?",
@@ -244,7 +208,6 @@ public partial class MainWindow
 
     private void RefreshFastSettingsViews()
     {
-        if (!_fastSettingsEnabled) return;
         _embeddedFastNativeSettingsView?.ReloadFromCanonical("current canonical Settings");
         _embeddedFastBaseMaterialsView?.ReloadFromCanonical("current canonical Base Material Catalog");
     }

@@ -92,6 +92,12 @@
   confirmation and saved-layout ownership.
 - Owner runtime testing accepted global-menu retirement, local resets and
   restart persistence; Full Data Verification passed 326/326.
+- Removed the hidden Settings legacy-grid toggle, handler and fallback
+  activation state.
+- Made the accepted Fast General Settings and Base Material views the only
+  activatable Settings UI; legacy XAML deletion remains runtime-gated.
+- Owner runtime testing accepted Fast-only Settings behavior and Full Data
+  Verification passed 326/326.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 
