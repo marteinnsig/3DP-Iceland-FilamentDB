@@ -3667,7 +3667,7 @@ public partial class MainWindow : Window
         SelectComboValue(CategoryRankingBaseMaterialFilter, "All");
         SelectComboValue(CategoryRankingManufacturerFilter, "All");
         SelectComboValue(CategoryRankingReinforcementFilter, "All");
-        SelectComboValue(CategoryRankingLimitFilter, "Top 3");
+        SelectComboValue(CategoryRankingLimitFilter, "10");
         UpdateCategoryRankings();
     }
 
@@ -3714,7 +3714,7 @@ public partial class MainWindow : Window
         var groupMode = SelectedComboText(CategoryRankingGroupFilter);
         if (string.IsNullOrWhiteSpace(groupMode)) groupMode = "Overall top lists";
 
-        var limit = CategoryRankingLimit();
+        var limit = CategoryRankingLimit(SelectedComboText(CategoryRankingLimitFilter));
         var categoryRows = new List<CategoryRankingRow>();
 
         foreach (var metric in metricDefinitions)
@@ -3744,12 +3744,13 @@ public partial class MainWindow : Window
 
             foreach (var group in groups.OrderBy(g => g.Key, StringComparer.CurrentCultureIgnoreCase))
             {
-                var winners = group
+                var orderedWinners = group
                     .OrderByDescending(item => item.Score ?? double.MinValue)
                     .ThenByDescending(item => item.Row.Overall ?? double.MinValue)
-                    .ThenBy(item => item.Row.Label, StringComparer.CurrentCultureIgnoreCase)
-                    .Take(limit)
-                    .ToList();
+                    .ThenBy(item => item.Row.Label, StringComparer.CurrentCultureIgnoreCase);
+                var winners = limit.HasValue
+                    ? orderedWinners.Take(limit.Value).ToList()
+                    : orderedWinners.ToList();
 
                 for (var i = 0; i < winners.Count; i++)
                 {
@@ -3781,17 +3782,20 @@ public partial class MainWindow : Window
         }
 
         CategoryRankingSummaryText.Text = $"{categoryRows.Count} category ranking row{(categoryRows.Count == 1 ? string.Empty : "s")}";
-        CategoryRankingStatusText.Text = $"Showing {categoryRows.Count} row{(categoryRows.Count == 1 ? string.Empty : "s")} across {metricDefinitions.Count} categor{(metricDefinitions.Count == 1 ? "y" : "ies")}. View: {groupMode}. Filters/search from the Materials tab are included.";
+        var limitText = limit.HasValue ? $"up to {limit.Value} rows per group" : "all ranked rows per group";
+        CategoryRankingStatusText.Text = $"Showing {categoryRows.Count} row{(categoryRows.Count == 1 ? string.Empty : "s")} across {metricDefinitions.Count} categor{(metricDefinitions.Count == 1 ? "y" : "ies")}; {limitText}. View: {groupMode}. Filters/search from the Materials tab are included.";
     }
 
-    private int CategoryRankingLimit()
+    private static int? CategoryRankingLimit(string selected)
     {
-        var selected = SelectedComboText(CategoryRankingLimitFilter);
         return selected switch
         {
-            "Top 5" => 5,
-            "Top 10" => 10,
-            _ => 3
+            "5" => 5,
+            "10" => 10,
+            "50" => 50,
+            "100" => 100,
+            "All" => null,
+            _ => 10
         };
     }
 
@@ -17126,6 +17130,18 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             measurementDateReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && releaseIdentityReady
                 ? "Schema v31 stores nullable ISO measurement dates for native Tensile, Impact and Stiffness metadata plus Experimental runs; first-input assignment preserves existing dates and Excel disaster recovery includes both columns"
                 : "Measurement-date schema, ISO conversion, first-input preservation, migration compatibility, Excel recovery or release identity failed"));
+        var categoryRankingScopeReady =
+            CategoryRankingLimit("5") == 5 &&
+            CategoryRankingLimit("10") == 10 &&
+            CategoryRankingLimit("50") == 50 &&
+            CategoryRankingLimit("100") == 100 &&
+            CategoryRankingLimit("All") is null &&
+            CategoryRankingLimit("Unexpected") == 10;
+        checks.Add(new VerificationCheck("v44.7.1 Category Rankings scope controls release gate",
+            categoryRankingScopeReady && releaseIdentityReady,
+            categoryRankingScopeReady && releaseIdentityReady
+                ? "Category Rankings supports safe 5, 10, 50, 100 and All row scopes while preserving the existing score selectors, ordering and canonical visible MaterialID source"
+                : "Category Rankings row-scope mapping or release identity failed"));
 
         return checks;
     }

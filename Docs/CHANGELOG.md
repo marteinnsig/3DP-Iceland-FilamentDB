@@ -2,6 +2,19 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.1 - Category Rankings Scope Controls
+
+- Added 5, 10, 50, 100 and All choices to Category Rankings rows per group.
+- Kept 10 as the bounded default and Reset Filters value.
+- Preserved canonical visible MaterialID scope, score formulas, category
+  selectors, grouping, tie-break ordering and rank assignment.
+- Kept the separate Rankings Dashboard and its Top 25 reset behavior unchanged.
+- `All` removes only the final per-group row limit after canonical ordering;
+  DataGrid row virtualization remains enabled.
+- Added a Verification gate for every supported scope and the safe fallback.
+- Debug/Release passed with zero warnings/errors. Owner runtime acceptance and
+  Full Data Verification 313/313 PASS completed the release.
+
 ## v44.6.2 - Canonical Measurement Date Foundation
 
 - Added nullable canonical measurement dates for native Tensile, Impact and

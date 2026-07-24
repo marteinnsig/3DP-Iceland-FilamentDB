@@ -1066,8 +1066,8 @@ accepted on v44.1.2.**
 
 ### v44.2 — Daily-use UI state and selected MaterialID clarity
 
-Status: **Complete — machine-local layout/MaterialID persistence, selected-row clarity and precise checkbox hit bounds runtime accepted;
-Verification PASS 298/298.**
+Status: **Complete — machine-local layout/MaterialID persistence, selected-row clarity and precise checkbox hit bounds
+runtime accepted; Verification PASS 298/298.**
 
 - Persist user-resized column widths, column order, window size and other proven daily layout preferences as machine-local UI state.
 - Do not place machine-specific presentation state in the portable SQLite engineering backup unless a later explicit portability choice
@@ -1080,8 +1080,8 @@ Verification PASS 298/298.**
 
 ### v44.3 — Backup, Recovery and update evidence clarity
 
-Status: **Complete — v44.3.1 clean-VM runtime accepted with separate read-only update-evidence boundaries and Verification PASS 209/209
-plus 90 N/A.**
+Status: **Complete — v44.3.1 clean-VM runtime accepted with separate read-only update-evidence boundaries and
+Verification PASS 209/209 plus 90 N/A.**
 
 - Explain `Ready`, `Migration required`, `Legacy / incomplete`, `Newer / incompatible`, `Corrupt` and valid zero-data backup states
   directly in Recovery Center.
@@ -1574,11 +1574,11 @@ changes priority.
   - Maintain one counted summary and one authoritative future sequence.
   - Documentation-only; no runtime behavior change.
 - **v44.7.1 — Category Rankings scope controls**
-  - State: **Next planned**.
-  - Feedback disposition: Open.
-  - Research current grouping first.
-  - Add only the proven 5/10/50/100/All choice with safe `All` performance.
-  - Keep ranking formulas unchanged.
+  - State: **Complete**.
+  - Feedback disposition: Solved.
+  - Current grouping and canonical visible MaterialID ownership researched.
+  - Added the proven 5/10/50/100/All choice with runtime-accepted `All` performance.
+  - Ranking formulas remained unchanged; Full Data Verification 313/313 passed.
 - **v44.7.2 — Validation Help Clarity**
   - State: Planned.
   - Feedback disposition: Open.

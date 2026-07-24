@@ -2637,10 +2637,12 @@
 
                                 <StackPanel Grid.Column="5" Margin="0,0,12,0">
                                     <TextBlock Text="Rows per group" FontWeight="SemiBold" Foreground="#334155" />
-                                    <ComboBox x:Name="CategoryRankingLimitFilter" SelectionChanged="CategoryRankingFilter_Changed" SelectedIndex="0">
-                                        <ComboBoxItem Content="Top 3" />
-                                        <ComboBoxItem Content="Top 5" />
-                                        <ComboBoxItem Content="Top 10" />
+                                    <ComboBox x:Name="CategoryRankingLimitFilter" SelectionChanged="CategoryRankingFilter_Changed" SelectedIndex="1">
+                                        <ComboBoxItem Content="5" />
+                                        <ComboBoxItem Content="10" />
+                                        <ComboBoxItem Content="50" />
+                                        <ComboBoxItem Content="100" />
+                                        <ComboBoxItem Content="All" />
                                     </ComboBox>
                                 </StackPanel>
 

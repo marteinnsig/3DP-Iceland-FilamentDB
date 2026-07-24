@@ -1,6 +1,16 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.1 - Category Rankings Scope Controls
+
+- Runtime-accepted bounded Category Rankings release.
+- Adds 5, 10, 50, 100 and All rows-per-group choices with 10 as the safe
+  default and reset value.
+- Preserves canonical visible MaterialID scope, ranking formulas, tie-breaks,
+  grouping and the separate Rankings Dashboard Top 25 reset behavior.
+- Debug/Release passed with zero warnings/errors; owner runtime acceptance and
+  Full Data Verification 313/313 passed.
+
 ## v44.6.2 - Canonical Measurement Date Foundation
 
 - Runtime-accepted bounded data-entry release.

@@ -30,10 +30,10 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 14 |
+| Open | 13 |
 | In progress | 0 |
 | Partially solved | 4 |
-| Solved | 27 |
+| Solved | 28 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
@@ -152,9 +152,9 @@ fæ í raun ekkert vit í neitt af því sem er að gerast í þessum ai assista
 
 
 improvment:
-Status: Open
-Resolution: Category Rankings exists, but no accepted evidence proves the requested 5/10/50/100/All row-count selector.
-Verification evidence: Requires current runtime research before implementation.
+Status: Solved
+Resolution: Solved in version v44.7.1 — Category Rankings provides safe 5/10/50/100/All scope controls.
+Verification evidence: Owner runtime acceptance and Full Data Verification 313/313 PASS.
 catagory rankings  - sýnir aðeins top 10, - mundi vilja sjá allan listann eða allavega fleiri options í rows per group, 5 , 10, 50,100,all, ég er kanski að miskilja hverning þetta á að virka.
 
 

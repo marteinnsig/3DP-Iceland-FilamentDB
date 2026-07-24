@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "CANONICAL-MEASUREMENT-DATE";
-    public const string ReleaseTitle = "Canonical Measurement Date Foundation";
+    public const string ReleaseCode = "CATEGORY-RANKING-SCOPE";
+    public const string ReleaseTitle = "Category Rankings Scope Controls";
 
     public static string Version
     {

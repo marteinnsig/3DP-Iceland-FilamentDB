@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.1 - Category Rankings Scope Controls
+
+Adds bounded 5, 10, 50, 100 and All Category Rankings scopes without changing
+canonical MaterialID ownership, ranking formulas, ordering or grouping.
+Runtime review accepted responsive All behavior and Full Data Verification
+313/313 passed.
+
+---
+
 # v44.6.2 - Canonical Measurement Date Foundation
 
 Introduces a canonical date for when a native test set or Experimental run was

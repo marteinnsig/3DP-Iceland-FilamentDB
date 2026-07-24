@@ -2,6 +2,15 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.1 - Category Rankings Scope Controls
+
+Candidate adds bounded 5, 10, 50, 100 and All row scopes to Category Rankings.
+The canonical visible MaterialID source, score selectors, ordering, tie-breaks
+and CSV-visible-scope behavior remain unchanged. The separate Rankings
+Dashboard retains its existing Top 25 reset behavior. Debug/Release passed
+with zero warnings/errors. Owner runtime acceptance and Full Data Verification
+313/313 passed; v44.7.1 is accepted.
+
 ## v44.6.2 - Canonical Measurement Date Foundation
 
 Adds an explicit nullable measured date to each native material/test-type set
