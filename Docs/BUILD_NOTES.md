@@ -124,7 +124,23 @@ runtime editing, reset, filters, persistence, close-time save and Verification.
 Owner runtime testing accepted Tensile editing, navigation, reset, filters,
 layout persistence and restart/close-time save after complete legacy deletion.
 Impact and Stiffness remained normal and Full Data Verification passed 324/324.
-Stage 5B-Tensile is accepted; Impact is the next deletion checkpoint.
+Stage 5B-Tensile is accepted.
+
+Stage 5B-Impact removes the complete `NativeImpactGrid` XAML, its edit and
+current-cell handlers, commit path, ItemsSource/refresh/filter calls,
+workflow-layout ownership, warm-up target and close-time edit checks. Fast
+Impact keeps its accepted explicit 45-column contract, canonical filtered row
+source, validation, calculations and SQLite save path.
+
+Stiffness legacy XAML remains in place. The Impact deletion is a UI/runtime
+candidate until Impact editing, navigation, reset, filtering, persistence,
+close/restart behavior and Full Data Verification pass owner testing.
+
+Owner runtime testing accepted the complete Impact legacy-grid deletion,
+including editing, validation, calculations, navigation, filters, column
+reset, persistence and restart behavior. Tensile and Stiffness remained normal
+and Full Data Verification passed 325/325. Stage 5B-Impact is accepted;
+Stiffness is the final measurement deletion checkpoint.
 
 ## Fast Workflow Grid - Settings
 

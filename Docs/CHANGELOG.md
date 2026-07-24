@@ -64,6 +64,14 @@
   lifecycle methods to be absent.
 - Owner runtime testing accepted Tensile after complete legacy deletion and
   Full Data Verification passed 324/324.
+- Removed the complete legacy Impact DataGrid XAML and its grid-specific
+  bind/edit/commit/filter/layout/warm-up/close lifecycle.
+- Added Verification coverage requiring the Impact legacy XAML and named
+  lifecycle methods to be absent.
+- Retained the accepted Fast Impact schema, canonical filtered rows,
+  validation, calculations and SQLite persistence.
+- Owner runtime testing accepted Impact after complete legacy deletion and
+  Full Data Verification passed 325/325.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 

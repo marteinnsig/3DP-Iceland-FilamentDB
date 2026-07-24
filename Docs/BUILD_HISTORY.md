@@ -50,6 +50,13 @@ named grid-specific bind/edit/commit/filter/layout/warm-up/close references.
 Fast Tensile remains on the accepted explicit canonical contract.
 Owner runtime testing accepted Stage 5B-Tensile and Full Data Verification
 passed 324/324.
+Stage 5B-Impact removes the complete legacy Impact DataGrid XAML and all named
+grid-specific bind/edit/commit/filter/layout/warm-up/close references. Fast
+Impact remains on the accepted explicit canonical contract. Stiffness remains
+available as the final measurement deletion checkpoint. Impact runtime
+testing passed across editing, validation, calculations, navigation, filters,
+layout and restart persistence. Full Data Verification passed 325/325;
+Stage 5B-Impact is accepted.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

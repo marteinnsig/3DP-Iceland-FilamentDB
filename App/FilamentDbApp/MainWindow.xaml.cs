@@ -200,7 +200,6 @@ public partial class MainWindow : Window
             // realized separately only after higher-priority startup/UI work is finished.
             foreach (var target in new[]
                      {
-                         (TabHeader: "Impact Measurements", GridName: "NativeImpactGrid"),
                          (TabHeader: "Stiffness Measurements", GridName: "NativeStiffnessGrid")
                      })
             {
@@ -291,7 +290,6 @@ public partial class MainWindow : Window
     {
         "NativeMaterialsGrid",
         "ManufacturersGrid",
-        "NativeImpactGrid",
         "NativeStiffnessGrid",
         "NativeSettingsGrid",
         "ExperimentalTensileGrid",
@@ -1069,12 +1067,6 @@ public partial class MainWindow : Window
                 MarkNativeMaterialsDirty();
                 QueueNativeMaterialDependentIntelligenceRefresh();
                 break;
-            case "NativeImpactGrid":
-                ApplyNativeImpactComputedFields(_nativeImpactRows);
-                RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-                MarkNativeImpactDirty();
-                RefreshNativeImpactSummary();
-                break;
             case "NativeStiffnessGrid":
                 ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
                 RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
@@ -1160,11 +1152,6 @@ public partial class MainWindow : Window
     private static bool IsNativeMeasurementNumericInputColumn(string gridName, string? propertyName)
     {
         if (string.IsNullOrWhiteSpace(propertyName)) return false;
-
-        if (gridName == "NativeImpactGrid")
-        {
-            return Regex.IsMatch(propertyName, "^(Upright|Flat)(10|[1-9])$", RegexOptions.CultureInvariant);
-        }
 
         if (gridName is "ExperimentalTensileGrid" or "ExperimentalImpactGrid")
         {
@@ -2577,7 +2564,6 @@ public partial class MainWindow : Window
         var gridName = header switch
         {
             "Materials" => "NativeMaterialsGrid",
-            "Impact Measurements" => "NativeImpactGrid",
             "Stiffness Measurements" => "NativeStiffnessGrid",
             "Settings Manager" => "NativeSettingsGrid",
             "Manufacturers" => "ManufacturersGrid",
@@ -2617,7 +2603,6 @@ public partial class MainWindow : Window
 
         var workspace = gridName switch
         {
-            "NativeImpactGrid" => "Impact Measurements",
             "NativeStiffnessGrid" => "Stiffness Measurements",
             _ => gridName
         };
@@ -13527,7 +13512,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private void PersistCanonicalStateForExcelRecovery()
     {
-        foreach (var gridName in new[] { "NativeMaterialsGrid", "NativeImpactGrid", "NativeStiffnessGrid", "NativeSettingsGrid", "BaseMaterialsGrid" })
+        foreach (var gridName in new[] { "NativeMaterialsGrid", "NativeStiffnessGrid", "NativeSettingsGrid", "BaseMaterialsGrid" })
         {
             if (FindName(gridName) is not DataGrid grid) continue;
             grid.CommitEdit(DataGridEditingUnit.Cell, true);
@@ -17316,7 +17301,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Materials explains the five required row-identity fields and OK meaning while the established ValidationSummary rules remain unchanged"
                 : "Material row Validation help text, established required-field rules or release identity failed"));
         var workflowLayoutResetReady =
-            WorkflowGridNames.Contains("NativeImpactGrid", StringComparer.Ordinal) &&
             WorkflowGridNames.Contains("NativeStiffnessGrid", StringComparer.Ordinal) &&
             typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.CaptureGridLayout)) is not null &&
             typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.ResetGrid)) is not null &&
@@ -17503,6 +17487,24 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             measurementFastContractsReady && releaseIdentityReady
                 ? "Tensile legacy DataGrid XAML and grid-specific edit/commit lifecycle are absent"
                 : "Tensile legacy XAML/lifecycle remains, a prior Fast contract failed or release identity is misaligned"));
+        var impactLegacyGridRetired =
+            FindName("NativeImpactGrid") is null &&
+            typeof(MainWindow).GetMethod(
+                "NativeImpactGrid_CellEditEnding",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "NativeImpactGrid_CurrentCellChanged",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "CommitNativeImpactGridEdits",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null;
+        checks.Add(new VerificationCheck("v44.7.7 Impact legacy-grid deletion stage gate",
+            impactLegacyGridRetired && tensileLegacyGridRetired &&
+            measurementFastContractsReady && releaseIdentityReady,
+            impactLegacyGridRetired && tensileLegacyGridRetired &&
+            measurementFastContractsReady && releaseIdentityReady
+                ? "Impact legacy DataGrid XAML and grid-specific edit/commit lifecycle are absent"
+                : "Impact legacy XAML/lifecycle remains, a prior deletion/contract failed or release identity is misaligned"));
 
         return checks;
     }
@@ -22736,7 +22738,6 @@ private List<string> GetVisibleAiMaterialLabels()
     private void ApplyNativeMeasurementFilters()
     {
         var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
-        ApplyNativeMeasurementFilterToGrid("NativeImpactGrid", visibleMaterialIds);
         ApplyNativeMeasurementFilterToGrid("NativeStiffnessGrid", visibleMaterialIds);
         _embeddedFastTensileView?.ReloadFromCanonical("the current Materials filter/search result");
         _embeddedFastImpactView?.ReloadFromCanonical("the current Materials filter/search result");
@@ -23464,14 +23465,13 @@ private List<string> GetVisibleAiMaterialLabels()
         }
         _workflowPreferencesService.Save();
 
-        var measurementEditPending = new[] { "NativeImpactGrid", "NativeStiffnessGrid" }
+        var measurementEditPending = new[] { "NativeStiffnessGrid" }
             .Select(FindName)
             .OfType<DataGrid>()
             .Select(grid => CollectionViewSource.GetDefaultView(grid.ItemsSource))
             .OfType<IEditableCollectionView>()
             .Any(view => view.IsEditingItem || view.IsAddingNew);
 
-        CommitNativeImpactGridEdits();
         CommitNativeStiffnessGridEdits();
 
         if (measurementEditPending || _nativeTensileDirty || _nativeImpactDirty || _nativeStiffnessDirty)
@@ -26684,7 +26684,6 @@ private List<string> GetVisibleAiMaterialLabels()
         _suppressNativeImpactDirty = true;
         ReplaceNativeImpactRows(BuildNativeImpactRowsFromCanonicalStorage());
         _suppressNativeImpactDirty = false;
-        if (FindName("NativeImpactGrid") is DataGrid grid) grid.ItemsSource = _nativeImpactRows;
         ApplyNativeMeasurementFilters();
         SetNativeImpactDirty(false);
         RefreshNativeImpactSummary();
@@ -26766,7 +26765,6 @@ private List<string> GetVisibleAiMaterialLabels()
     private void SyncNativeImpactRowsWithMaterialManager(bool markDirty)
     {
         if (_nativeMaterialRows.Count == 0) return;
-        CommitNativeImpactGridEdits();
 
         var materialRows = _nativeMaterialRows
             .Where(m => !string.IsNullOrWhiteSpace(m.MaterialID))
@@ -26797,7 +26795,6 @@ private List<string> GetVisibleAiMaterialLabels()
 
         ApplyNativeImpactComputedFields(_nativeImpactRows);
         RefreshNativeImpactSummary();
-        if (FindName("NativeImpactGrid") is DataGrid impactGrid) impactGrid.Items.Refresh();
         ApplyNativeMeasurementFilters();
         if (markDirty) MarkNativeImpactDirty();
     }
@@ -26809,42 +26806,8 @@ private List<string> GetVisibleAiMaterialLabels()
         ApplyNativeImpactComputedFields(_nativeImpactRows);
     }
 
-    private void NativeImpactGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-    {
-        var editedRow = e.Row.Item as NativeImpactMeasurementRow;
-        var editedHeader = e.Column.Header?.ToString();
-        var assignMeasuredDate = sender is DataGrid impactGrid &&
-                                 editedRow is not null &&
-                                 IsFirstMeasurementValueEdit(impactGrid, e, editedRow.SampleValues(true).Concat(editedRow.SampleValues(false)));
-        if (sender is DataGrid undoGrid) CaptureInputDataGridUndo(undoGrid, e);
-        Dispatcher.BeginInvoke(new Action(() =>
-    {
-        if (!string.Equals(editedHeader, "Measured date", StringComparison.OrdinalIgnoreCase) &&
-            assignMeasuredDate && editedRow is not null && editedRow.MeasuredDate is null)
-            editedRow.MeasuredDate = DateTime.Today;
-        ApplyNativeImpactComputedFields(_nativeImpactRows);
-        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        MarkNativeImpactDirty();
-        SaveNativeImpactSilent();
-        RefreshNativeImpactSummary();
-    }), System.Windows.Threading.DispatcherPriority.Background);
-    }
-
-    private void NativeImpactGrid_CurrentCellChanged(object sender, EventArgs e)
-    {
-        if (!_suppressNativeImpactDirty)
-        {
-            ApplyNativeImpactComputedFields(_nativeImpactRows);
-            RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-            MarkNativeImpactDirty();
-            SaveNativeImpactSilent();
-            RefreshNativeImpactSummary();
-        }
-    }
-
     private void SaveNativeImpact_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeImpactGridEdits();
         ApplyNativeImpactComputedFields(_nativeImpactRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
         SaveNativeMeasurementsToSqlite();
@@ -26870,32 +26833,20 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void RecalculateNativeImpact_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeImpactGridEdits();
         ApplyNativeImpactComputedFields(_nativeImpactRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        if (FindName("NativeImpactGrid") is DataGrid grid) grid.Items.Refresh();
         MarkNativeImpactDirty();
         RefreshNativeImpactSummary();
     }
 
     private void ValidateNativeImpact_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeImpactGridEdits();
         ApplyNativeImpactComputedFields(_nativeImpactRows);
         var invalid = _nativeImpactRows.Where(r => r.ValidationSummary != "OK").ToList();
         MessageBox.Show(invalid.Count == 0 ? $"Impact validation passed for {_nativeImpactRows.Count} rows." : $"Impact validation found {invalid.Count} rows with invalid needle % values.", "Impact Measurements Validation", MessageBoxButton.OK, invalid.Count == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
     }
 
     private void RefreshNativeImpactSummary_Click(object sender, RoutedEventArgs e) => RefreshNativeImpactSummary();
-
-    private void CommitNativeImpactGridEdits()
-    {
-        if (FindName("NativeImpactGrid") is DataGrid grid)
-        {
-            grid.CommitEdit(DataGridEditingUnit.Cell, true);
-            grid.CommitEdit(DataGridEditingUnit.Row, true);
-        }
-    }
 
     private void MarkNativeImpactDirty() => SetNativeImpactDirty(true);
 

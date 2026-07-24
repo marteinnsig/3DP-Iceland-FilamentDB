@@ -14,7 +14,6 @@ public partial class MainWindow
         _embeddedFastImpactView = CreateFastImpactView();
         FastImpactViewHost.Content = _embeddedFastImpactView;
         FastImpactViewHost.Visibility = Visibility.Visible;
-        NativeImpactGrid.Visibility = Visibility.Collapsed;
     }
 
     private void ResetFastImpactColumns_Click(object sender, RoutedEventArgs e)
