@@ -2,6 +2,22 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.4 - Fast Workflow Grid - Impact Candidate
+
+Candidate applies the accepted viewport-only workflow grid to Impact while
+retaining the existing canonical row objects, 0–100 needle validation,
+measurement-date behavior, formulas, colors, filters, summaries, test-status
+refresh and SQLite auto-save. Fast Impact starts by default, owns separate
+keyed layout state and retains a visible one-click legacy fallback. In-place
+cell refresh preserves sorting and selection after edits. Impact formulas,
+SQLite schema, reports, FTPS, updater and recovery remain unchanged.
+First runtime review found negative Tensile input, repeated Impact invalid
+warnings and reset-time canonical reordering. The correction enforces
+non-negative canonical samples, restores rejected Fast cells after one warning
+and resets layout in place. Debug/Release and security/static gates passed.
+Owner runtime retest accepted all corrections and Full Data Verification passed
+316/316. v44.7.4 is accepted.
+
 ## v44.7.3 - Fast Workflow Grid - Tensile Candidate
 
 Candidate begins the approved migration away from problematic editable WPF

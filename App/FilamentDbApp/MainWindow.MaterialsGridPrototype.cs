@@ -222,6 +222,7 @@ public partial class MainWindow
     {
         Standard,
         TensileSample,
+        ImpactSample,
         Computed,
         Spacer
     }
@@ -411,6 +412,13 @@ public partial class MainWindow
             }
             _saveLayout(_surface.CaptureLayout());
             return true;
+        }
+
+        public void ResetLayout(IReadOnlyList<MaterialsPrototypeColumn> defaultColumns)
+        {
+            CloseEditor(commit: true);
+            _surface.ResetLayout(defaultColumns);
+            _saveLayout(_surface.CaptureLayout());
         }
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
@@ -629,7 +637,16 @@ public partial class MainWindow
 
             var changes = GetChanges();
             if (changes.Count == 0) return;
-            if (!_applyChanges(changes)) return;
+            if (!_applyChanges(changes))
+            {
+                foreach (var change in changes)
+                {
+                    change.Row.Cells[change.ColumnIndex] = change.OldValue;
+                }
+                _surface.InvalidateVisual();
+                _status.Text = "Invalid value was not applied; the cell was restored.";
+                return;
+            }
             if (_reloadAfterApply)
             {
                 RefreshCurrentRowsFromSources();
@@ -775,6 +792,7 @@ public partial class MainWindow
         private const double RowHeight = 25;
         private const double CellPadding = 5;
         private readonly TensileSampleValueBrushConverter _tensileBrushConverter = new();
+        private readonly ImpactSampleValueBrushConverter _impactBrushConverter = new();
         private readonly List<MaterialsPrototypeColumn> _columns;
         private readonly List<MaterialsPrototypeRow> _rows;
         private readonly double[] _columnOffsets;
@@ -880,6 +898,35 @@ public partial class MainWindow
                     _columnWidths[index],
                     index))
                 .ToList();
+
+        public void ResetLayout(IReadOnlyList<MaterialsPrototypeColumn> defaultColumns)
+        {
+            if (defaultColumns.Count != _columns.Count) return;
+
+            for (var targetIndex = 0; targetIndex < defaultColumns.Count; targetIndex++)
+            {
+                var targetKey = PrototypeColumnKey(defaultColumns[targetIndex]);
+                var sourceIndex = -1;
+                for (var index = targetIndex; index < _columns.Count; index++)
+                {
+                    if (!string.Equals(PrototypeColumnKey(_columns[index]), targetKey, StringComparison.Ordinal)) continue;
+                    sourceIndex = index;
+                    break;
+                }
+                if (sourceIndex < 0) return;
+                if (sourceIndex != targetIndex)
+                {
+                    MoveColumn(sourceIndex, targetIndex);
+                }
+                _columnWidths[targetIndex] = Math.Clamp(defaultColumns[targetIndex].Width, 50, 500);
+            }
+
+            RebuildColumnOffsets();
+            Width = Math.Max(1, _columnOffsets[^1]);
+            InvalidateMeasure();
+            InvalidateVisual();
+            LayoutChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public void ReplaceRows()
         {
@@ -1284,6 +1331,11 @@ public partial class MainWindow
                         : _columns[columnIndex].CellKind switch
                         {
                             FastGridCellKind.TensileSample => (Brush)_tensileBrushConverter.Convert(
+                                _rows[rowIndex].Cells[columnIndex],
+                                typeof(Brush),
+                                null!,
+                                CultureInfo.CurrentCulture),
+                            FastGridCellKind.ImpactSample => (Brush)_impactBrushConverter.Convert(
                                 _rows[rowIndex].Cells[columnIndex],
                                 typeof(Brush),
                                 null!,

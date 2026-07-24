@@ -1,3 +1,18 @@
+# v44.7.4 - Fast Workflow Grid - Impact
+
+Date: 2026-07-24
+
+- PASS: Full Data Verification reported 316/316 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: release identity aligned at v44.7.4, assembly 44.7.4.0 and
+  `FAST-WORKFLOW-IMPACT`.
+- PASS: 201 canonical Impact rows remained aligned with 201 Materials.
+- PASS: Fast Impact retained bounded non-negative input, canonical
+  calculations, colors, dates, filters, SQLite auto-save and legacy fallback.
+- PASS: rejected values restored once and reset preserved sort, selection and
+  scroll during owner runtime testing.
+- ACCEPTED: v44.7.4 is runtime accepted.
+
 # v44.7.3 - Fast Workflow Grid - Tensile
 
 Date: 2026-07-24

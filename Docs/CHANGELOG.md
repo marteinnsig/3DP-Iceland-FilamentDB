@@ -2,6 +2,29 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.4 - Fast Workflow Grid - Impact Candidate
+
+- Added Fast Impact as the startup-default Impact view with a visible
+  one-click legacy-grid fallback.
+- Reused the accepted Fast Workflow Grid rendering, editing, navigation,
+  in-place refresh and immediate layout-persistence contracts.
+- Preserved canonical Impact rows, 0–100 validation, measurement dates,
+  formulas, filters, summaries, colors, test-status refresh and SQLite
+  auto-save.
+- Added separate keyed Fast Impact column width/order state and Default-No
+  reset.
+- Rejected negative samples at both Tensile and Impact canonical row
+  boundaries.
+- Restored rejected Fast input to its previous cell value after one warning,
+  preventing repeated warnings from an unapplied snapshot.
+- Changed Fast Tensile/Impact reset to apply startup-default layout in place,
+  preserving current row order, selection and scroll.
+- Preserved SQLite schema, reports, publishing, updater and recovery behavior.
+- Debug/Release and static/security gates passed.
+- Owner runtime retest accepted all input, navigation, calculation, layout and
+  fallback corrections.
+- Full Data Verification passed 316/316; v44.7.4 is accepted.
+
 ## v44.7.3 - Fast Workflow Grid - Tensile Candidate
 
 - Generalized the accepted Fast Materials renderer so canonical workflow rows

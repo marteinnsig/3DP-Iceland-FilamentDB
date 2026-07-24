@@ -5,87 +5,87 @@ namespace FilamentDbApp;
 
 public partial class MainWindow
 {
-    private MaterialsRenderingPrototypeView? _embeddedFastTensileView;
-    private List<MaterialsPrototypeColumn>? _defaultFastTensileColumns;
-    private bool _fastTensileEnabled = true;
+    private MaterialsRenderingPrototypeView? _embeddedFastImpactView;
+    private List<MaterialsPrototypeColumn>? _defaultFastImpactColumns;
+    private bool _fastImpactEnabled = true;
 
-    private void ActivateDefaultFastTensileView()
+    private void ActivateDefaultFastImpactView()
     {
-        if (!_fastTensileEnabled || _embeddedFastTensileView is not null) return;
-        _embeddedFastTensileView = CreateFastTensileView();
-        FastTensileViewHost.Content = _embeddedFastTensileView;
-        FastTensileViewHost.Visibility = Visibility.Visible;
-        NativeTensileGrid.Visibility = Visibility.Collapsed;
-        FastTensileToggleButton.Content = "Use Legacy Grid";
+        if (!_fastImpactEnabled || _embeddedFastImpactView is not null) return;
+        _embeddedFastImpactView = CreateFastImpactView();
+        FastImpactViewHost.Content = _embeddedFastImpactView;
+        FastImpactViewHost.Visibility = Visibility.Visible;
+        NativeImpactGrid.Visibility = Visibility.Collapsed;
+        FastImpactToggleButton.Content = "Use Legacy Grid";
     }
 
-    private void ToggleFastTensileView_Click(object sender, RoutedEventArgs e)
+    private void ToggleFastImpactView_Click(object sender, RoutedEventArgs e)
     {
-        if (_fastTensileEnabled)
+        if (_fastImpactEnabled)
         {
-            _embeddedFastTensileView?.ConfirmCanClose();
-            _embeddedFastTensileView = null;
-            FastTensileViewHost.Content = null;
-            FastTensileViewHost.Visibility = Visibility.Collapsed;
-            NativeTensileGrid.Visibility = Visibility.Visible;
-            FastTensileToggleButton.Content = "Use Fast Grid";
-            _fastTensileEnabled = false;
+            _embeddedFastImpactView?.ConfirmCanClose();
+            _embeddedFastImpactView = null;
+            FastImpactViewHost.Content = null;
+            FastImpactViewHost.Visibility = Visibility.Collapsed;
+            NativeImpactGrid.Visibility = Visibility.Visible;
+            FastImpactToggleButton.Content = "Use Fast Grid";
+            _fastImpactEnabled = false;
             return;
         }
 
-        _fastTensileEnabled = true;
-        ActivateDefaultFastTensileView();
+        _fastImpactEnabled = true;
+        ActivateDefaultFastImpactView();
     }
 
-    private void ResetFastTensileColumns_Click(object sender, RoutedEventArgs e)
+    private void ResetFastImpactColumns_Click(object sender, RoutedEventArgs e)
     {
-        if (!_fastTensileEnabled)
+        if (!_fastImpactEnabled)
         {
             ResetWorkflowGridColumns_Click(
-                new Button { Tag = nameof(NativeTensileGrid) },
+                new Button { Tag = nameof(NativeImpactGrid) },
                 e);
             return;
         }
 
         var confirmation = MessageBox.Show(
             this,
-            "Reset Fast Tensile column widths and order to the application defaults?",
-            "Reset Fast Tensile Columns",
+            "Reset Fast Impact column widths and order to the application defaults?",
+            "Reset Fast Impact Columns",
             MessageBoxButton.YesNo,
             MessageBoxImage.Question,
             MessageBoxResult.No);
         if (confirmation != MessageBoxResult.Yes) return;
 
-        _workflowPreferencesService.SetFastGridLayout("Tensile", Array.Empty<Services.WorkflowColumnLayout>());
-        _embeddedFastTensileView?.ResetLayout(
-            _defaultFastTensileColumns ?? BuildFastTensileColumns());
-        ShowTransientStatus("Fast Tensile columns reset to defaults.");
+        _workflowPreferencesService.SetFastGridLayout("Impact", Array.Empty<Services.WorkflowColumnLayout>());
+        _embeddedFastImpactView?.ResetLayout(
+            _defaultFastImpactColumns ?? BuildFastImpactColumns());
+        ShowTransientStatus("Fast Impact columns reset to defaults.");
     }
 
-    private MaterialsRenderingPrototypeView CreateFastTensileView(bool useSavedLayout = true)
+    private MaterialsRenderingPrototypeView CreateFastImpactView(bool useSavedLayout = true)
     {
-        var columns = BuildFastTensileColumns();
-        _defaultFastTensileColumns ??= columns.Select(column => column with { }).ToList();
+        var columns = BuildFastImpactColumns();
+        _defaultFastImpactColumns ??= columns.Select(column => column with { }).ToList();
         if (useSavedLayout)
         {
             columns = ApplyFastMaterialsLayout(
                 columns,
-                _workflowPreferencesService.GetFastGridLayout("Tensile"));
+                _workflowPreferencesService.GetFastGridLayout("Impact"));
         }
 
         return new MaterialsRenderingPrototypeView(
             columns,
-            BuildFastTensileRows(columns),
-            ApplyFastTensileChanges,
-            layout => _workflowPreferencesService.SetFastGridLayout("Tensile", layout),
-            BuildFastTensileRows,
+            BuildFastImpactRows(columns),
+            ApplyFastImpactChanges,
+            layout => _workflowPreferencesService.SetFastGridLayout("Impact", layout),
+            BuildFastImpactRows,
             _ => { },
             directCanonicalEditing: true,
             reloadAfterApply: true);
     }
 
-    private List<MaterialsPrototypeColumn> BuildFastTensileColumns() =>
-        NativeTensileGrid.Columns
+    private List<MaterialsPrototypeColumn> BuildFastImpactColumns() =>
+        NativeImpactGrid.Columns
             .OrderBy(column => column.DisplayIndex)
             .Select(column =>
             {
@@ -97,7 +97,7 @@ public partial class MainWindow
                         propertyName,
                         "^(Upright|Flat)(10|[1-9])$",
                         System.Text.RegularExpressions.RegexOptions.CultureInvariant)
-                        ? FastGridCellKind.TensileSample
+                        ? FastGridCellKind.ImpactSample
                         : column.IsReadOnly &&
                           propertyName is not ("MaterialID" or "Manufacturer" or "ProductLine" or "MarketingName" or
                               "BaseMaterial" or "MaterialCategory" or "VariantFinish" or "Reinforcement" or "Color" or
@@ -115,23 +115,23 @@ public partial class MainWindow
             })
             .ToList();
 
-    private List<MaterialsPrototypeRow> BuildFastTensileRows(
+    private List<MaterialsPrototypeRow> BuildFastImpactRows(
         IReadOnlyList<MaterialsPrototypeColumn> columns) =>
-        NativeTensileGrid.Items
+        NativeImpactGrid.Items
             .Cast<object>()
-            .OfType<NativeTensileMeasurementRow>()
+            .OfType<NativeImpactMeasurementRow>()
             .Select(row =>
-        {
-            var cells = columns.Select(column => PrototypeCellText(row, column.PropertyName)).ToArray();
-            return new MaterialsPrototypeRow(
-                row,
-                row.MaterialID,
-                cells,
-                cells.ToArray(),
-                () => !string.Equals(row.ValidationSummary, "Invalid sample value", StringComparison.Ordinal));
-        }).ToList();
+            {
+                var cells = columns.Select(column => PrototypeCellText(row, column.PropertyName)).ToArray();
+                return new MaterialsPrototypeRow(
+                    row,
+                    row.MaterialID,
+                    cells,
+                    cells.ToArray(),
+                    () => row.ValidationSummary is not ("Invalid needle %" or "Needle % outside 0-100"));
+            }).ToList();
 
-    private bool ApplyFastTensileChanges(IReadOnlyList<MaterialsPrototypeChange> changes)
+    private bool ApplyFastImpactChanges(IReadOnlyList<MaterialsPrototypeChange> changes)
     {
         var sampleChanges = changes.Where(change =>
             change.Column.PropertyName is not null &&
@@ -147,18 +147,18 @@ public partial class MainWindow
             {
                 MessageBox.Show(
                     this,
-                    $"'{change.NewValue}' is not a valid tensile sample number.",
-                    "Fast Tensile Input",
+                    $"'{change.NewValue}' is not a valid impact needle percentage.",
+                    "Fast Impact Input",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return false;
             }
-            if (value is < 0 or >= 505)
+            if (value is < 0 or > 100)
             {
                 MessageBox.Show(
                     this,
-                    "Tensile sample value must be between 0 and less than 505.",
-                    "Fast Tensile Input",
+                    "Impact needle percentage must be between 0 and 100.",
+                    "Fast Impact Input",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return false;
@@ -166,7 +166,7 @@ public partial class MainWindow
         }
 
         var rowsWithoutMeasurements = sampleChanges
-            .Select(change => (NativeTensileMeasurementRow)change.Row.Source)
+            .Select(change => (NativeImpactMeasurementRow)change.Row.Source)
             .Distinct()
             .Where(row => row.MeasuredDate is null &&
                           !row.SampleValues(true).Concat(row.SampleValues(false)).Any(value => !string.IsNullOrWhiteSpace(value)))
@@ -181,11 +181,11 @@ public partial class MainWindow
             row.MeasuredDate = DateTime.Today;
         }
 
-        ApplyNativeTensileComputedFields(_nativeTensileRows);
+        ApplyNativeImpactComputedFields(_nativeImpactRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        MarkNativeTensileDirty();
-        SaveNativeTensileSilent();
-        RefreshNativeTensileSummary();
+        MarkNativeImpactDirty();
+        SaveNativeImpactSilent();
+        RefreshNativeImpactSummary();
         return true;
     }
 }

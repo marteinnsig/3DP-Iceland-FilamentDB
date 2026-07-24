@@ -169,6 +169,7 @@ public partial class MainWindow : Window
         RunStartupPhase("Tensile workspace initialization", InitializeNativeTensileMeasurements);
         RunStartupPhase("Fast Tensile candidate view", ActivateDefaultFastTensileView);
         RunStartupPhase("Impact workspace initialization", InitializeNativeImpactMeasurements);
+        RunStartupPhase("Fast Impact candidate view", ActivateDefaultFastImpactView);
         RunStartupPhase("Stiffness workspace initialization", InitializeNativeStiffnessMeasurements);
         UpdateNativeWorkflowStatus("Auto-save ready");
         RunStartupPhase("Application statistics refresh", RefreshApplicationStatistics);
@@ -17329,6 +17330,24 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             workflowLayoutResetReady && fastTensileReady && releaseIdentityReady
                 ? "Fast Tensile owns separate keyed layout state, canonical measurement apply/save integration and a visible legacy-grid fallback"
                 : "Fast Tensile layout, canonical apply, fallback, retained layout safety or release identity failed"));
+        var fastImpactReady =
+            typeof(MainWindow).GetMethod(nameof(ActivateDefaultFastImpactView), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ApplyFastImpactChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ToggleFastImpactView_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ResetFastImpactColumns_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        var tensileNegativeProbe = new NativeTensileMeasurementRow { Upright1 = "44" };
+        tensileNegativeProbe.Upright1 = "-44";
+        var impactRangeProbe = new NativeImpactMeasurementRow { Upright1 = "44" };
+        impactRangeProbe.Upright1 = "-10";
+        impactRangeProbe.Upright1 = "105";
+        var nativeMeasurementLowerBoundsReady =
+            tensileNegativeProbe.Upright1 == "44" &&
+            impactRangeProbe.Upright1 == "44";
+        checks.Add(new VerificationCheck("v44.7.4 Fast Workflow Grid - Impact candidate release gate",
+            workflowLayoutResetReady && fastTensileReady && fastImpactReady && nativeMeasurementLowerBoundsReady && releaseIdentityReady,
+            workflowLayoutResetReady && fastTensileReady && fastImpactReady && nativeMeasurementLowerBoundsReady && releaseIdentityReady
+                ? "Fast Impact owns separate keyed layout state, bounded canonical measurement apply/save, non-negative input and a visible legacy-grid fallback"
+                : "Fast Impact layout, bounded non-negative apply, fallback, retained Fast Tensile contract or release identity failed"));
 
         return checks;
     }
@@ -25856,7 +25875,7 @@ private List<string> GetVisibleAiMaterialLabels()
         private void SetTensileSample(ref string field, string? value, string propertyName)
         {
             var candidate = value ?? "";
-            if (MainWindow.TryParseMeasurement(candidate, out var number) && number >= 505)
+            if (MainWindow.TryParseMeasurement(candidate, out var number) && (number < 0 || number >= 505))
             {
                 OnPropertyChanged(propertyName);
                 return;
@@ -26428,7 +26447,7 @@ private List<string> GetVisibleAiMaterialLabels()
         private void SetImpactSample(ref string field, string? value, string propertyName)
         {
             var candidate = value ?? "";
-            if (MainWindow.TryParseMeasurement(candidate, out var number) && number >= 101)
+            if (MainWindow.TryParseMeasurement(candidate, out var number) && (number < 0 || number >= 101))
             {
                 OnPropertyChanged(propertyName);
                 return;

@@ -1854,11 +1854,17 @@
                     </StackPanel>
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
                         <DockPanel>
-                            <Button DockPanel.Dock="Right" Content="Reset Columns" Tag="NativeImpactGrid" Click="ResetWorkflowGridColumns_Click" Padding="10,4"/>
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                <Button Name="FastImpactToggleButton" Content="Use Legacy Grid" Click="ToggleFastImpactView_Click" Padding="10,4" Margin="0,0,8,0"
+                                        ToolTip="Temporary fallback while the Fast Impact grid is under runtime acceptance."/>
+                                <Button Content="Reset Columns" Click="ResetFastImpactColumns_Click" Padding="10,4"/>
+                            </StackPanel>
                             <TextBlock Name="NativeImpactSummaryText" Text="Impact measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
                         </DockPanel>
                     </Border>
                     <GroupBox Grid.Row="2" Header="Native Impact Measurements - editable raw needle percentage samples with computed Excel-style outputs">
+                        <Grid>
+                            <ContentControl Name="FastImpactViewHost" Margin="8"/>
                         <DataGrid Name="NativeImpactGrid" Style="{StaticResource HighPerformanceDataGrid}" SelectionMode="Single" SelectionUnit="CellOrRowHeader" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" AlternationCount="2" AlternatingRowBackground="#F8FAFC" RowBackground="#FFFFFF" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="8" CellEditEnding="NativeImpactGrid_CellEditEnding" CurrentCellChanged="NativeImpactGrid_CurrentCellChanged" BeginningEdit="InputDataGrid_BeginningEdit" PreparingCellForEdit="MeasurementGrid_PreparingCellForEdit">
                             <DataGrid.RowStyle>
                                 <Style TargetType="DataGridRow">
@@ -1926,6 +1932,7 @@
                                 <DataGridTextColumn Header="Validation" Binding="{Binding ValidationSummary}" Width="150" IsReadOnly="True"/>
                             </DataGrid.Columns>
                         </DataGrid>
+                        </Grid>
                     </GroupBox>
                 </Grid>
             </TabItem>

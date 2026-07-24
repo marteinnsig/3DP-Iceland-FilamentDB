@@ -1,6 +1,18 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.4 - Fast Workflow Grid - Impact
+
+- Runtime-accepted second Fast Workflow Grid migration.
+- Makes Fast Impact the default while retaining a visible legacy-grid
+  fallback.
+- Preserves canonical Impact rows, 0–100 and non-negative validation,
+  measurement dates, formulas, colors, filters and SQLite auto-save.
+- Rejected Fast edits restore the previous cell after one warning; in-place
+  reset preserves current row order, selection and scroll.
+- Debug/Release, documentation and vulnerability gates passed; owner runtime
+  acceptance and Full Data Verification passed 316/316.
+
 ## v44.7.3 - Fast Workflow Grid - Tensile
 
 - Runtime-accepted first Fast Workflow Grid migration.

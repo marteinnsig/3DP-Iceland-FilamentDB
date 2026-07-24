@@ -1,4 +1,32 @@
-# Current Build Notes - v44.7.3
+# Current Build Notes - v44.7.4
+
+## Fast Workflow Grid - Impact Candidate
+
+v44.7.4 applies the runtime-accepted Fast Workflow Grid core to Impact.
+Fast Impact starts by default and keeps a visible `Use Legacy Grid` fallback.
+It edits the existing canonical Impact rows and reuses the unchanged 0–100
+needle-percentage validation, measurement-date assignment, calculations,
+summary, filters, test-status refresh and SQLite auto-save paths.
+
+Impact sample colors and computed-cell distinction are retained. Keyed column
+width/order state is separate from Materials, Tensile and the legacy grid and
+persists immediately after resize/reorder. Computed cells refresh in place so
+the accepted Tensile sort, selection and navigation behavior carries forward.
+Debug/Release, static/security gates, Full Data Verification and owner runtime
+acceptance are required.
+
+The first runtime review found three acceptance issues. Tensile still accepted
+negative samples. Fast Impact left a rejected snapshot value in the cell,
+causing repeated warnings, and column reset rebuilt canonical row order.
+Tensile and Impact now reject negative values at the canonical row boundary;
+failed Fast commits restore the previous cell after one warning. Fast reset
+now applies captured startup defaults in place, preserving row order,
+selection and scroll.
+
+Owner runtime retest accepted Fast Impact editing, bounds, one-time rejection,
+navigation, calculations, colors, layout persistence, in-place reset and
+legacy fallback. Full Data Verification passed 316/316 with 201 canonical
+Impact rows. v44.7.4 is accepted.
 
 ## Fast Workflow Grid - Tensile Candidate
 

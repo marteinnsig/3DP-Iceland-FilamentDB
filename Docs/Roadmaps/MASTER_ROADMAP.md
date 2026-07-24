@@ -1,13 +1,13 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.3 — Fast Workflow Grid — Tensile**
+Current canonical release: **v44.7.4 — Fast Workflow Grid — Impact**
 
-Last runtime-accepted baseline: **v44.7.3 — Fast Workflow Grid — Tensile**
+Last runtime-accepted baseline: **v44.7.4 — Fast Workflow Grid — Impact**
 
 Current application candidate: **None**
 
-Current roadmap increment: **None — next planned item is v44.7.4 Fast Workflow
-Grid — Impact**
+Current roadmap increment: **None — next planned item is v44.7.5 Fast Workflow
+Grid — Stiffness**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1594,10 +1594,14 @@ changes priority.
   - First runtime edit found a sort/selection reset; the accepted in-place refresh preserves both.
   - Owner accepted the full runtime checklist, reported a snappier view and Full Data Verification passed 315/315.
 - **v44.7.4 — Fast Workflow Grid — Impact**
-  - State: Planned.
-  - Feedback disposition: In progress.
+  - State: **Complete**.
+  - Feedback disposition: Partially solved; Stiffness and Settings remain.
   - Reuse the accepted Fast Workflow Grid core with Impact-specific 0–100 validation, colors and calculations.
   - Preserve filters, measurement dates, SQLite auto-save, selection and a visible legacy fallback.
+  - Candidate reuses accepted in-place refresh and separate keyed layout state; formulas remain unchanged.
+  - First runtime review found negative input, repeated invalid warnings and reset-time row reordering.
+  - Accepted correction rejects negatives, restores rejected cells once and resets layout without rebuilding rows.
+  - Owner runtime retest and Full Data Verification 316/316 passed.
 - **v44.7.5 — Fast Workflow Grid — Stiffness**
   - State: Planned.
   - Feedback disposition: In progress.

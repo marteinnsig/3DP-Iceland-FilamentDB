@@ -431,6 +431,13 @@ autosave, layout restart and fallback were accepted with Full Data Verification
 315/315. First runtime editing found commit-time row rebuild returned MAT0206
 selection to MAT0102; the accepted correction refreshes computed cells in
 place. Owner reported Fast Tensile noticeably snappier than the legacy grid.
+v44.7.4 applies the accepted core to Impact with unchanged bounded input,
+formulas, colors and canonical persistence; runtime acceptance remains
+required. First runtime review found negative Tensile input, repeated Impact
+invalid-value warnings and reset-time canonical reordering. The candidate now
+enforces non-negative canonical samples, restores rejected cells after one
+warning and resets Fast layouts in place. Owner runtime retest and Full Data
+Verification 316/316 accepted the complete Fast Impact increment.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,
