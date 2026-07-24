@@ -1,4 +1,5 @@
 using FilamentDbApp.Models;
+using FilamentDbApp.Services;
 using Microsoft.Data.Sqlite;
 using System.Data;
 using System.Globalization;
@@ -32,12 +33,7 @@ public sealed partial class LocalDatabase
 
         CopyLegacyDatabaseToConfiguredFolderIfNeeded(folder);
 
-        // v10 introduced real relational tables and foreign keys. Older local cache files
-        // can contain legacy tables with the same names but incompatible primary keys.
-        // When that happens SQLite reports "foreign key mismatch" during clear/import.
-        // The local cache is disposable, so the safest migration for this early version
-        // is to reset incompatible cache files and rebuild them from Excel.
-        ResetIncompatibleCacheIfNeeded();
+        new ActiveDatabaseCompatibilityService().EnsureSupportedOrPreserve(DatabasePath, SchemaVersion);
 
         if (File.Exists(DatabasePath) && (NativeMeasurementMigrationIsPending() || DatabaseSchemaUpgradeIsPending()))
             CreateRequiredBackupBeforeCanonicalMigration();
@@ -635,39 +631,6 @@ public sealed partial class LocalDatabase
 
 
     private string ConnectionString => $"Data Source={DatabasePath}";
-
-    private void ResetIncompatibleCacheIfNeeded()
-    {
-        if (!File.Exists(DatabasePath)) return;
-
-        try
-        {
-            using var connection = new SqliteConnection(ConnectionString);
-            connection.Open();
-
-            var schemaVersion = ReadSchemaVersion(connection);
-            var materialsHasPrimaryKey = TableHasPrimaryKey(connection, "Materials", "MaterialId");
-            var importsHasExpectedColumn = TableHasColumn(connection, "Imports", "SchemaVersion");
-
-            if (!string.IsNullOrWhiteSpace(schemaVersion) && materialsHasPrimaryKey && importsHasExpectedColumn)
-            {
-                return;
-            }
-        }
-        catch
-        {
-            // If the existing cache cannot be inspected, reset it. The source of truth is Excel.
-        }
-
-        try
-        {
-            File.Delete(DatabasePath);
-        }
-        catch
-        {
-            // If deletion fails, Initialize/ClearCache will still surface the real error.
-        }
-    }
 
     private static string? ReadSchemaVersion(SqliteConnection connection)
     {

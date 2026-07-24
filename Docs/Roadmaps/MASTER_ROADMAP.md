@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.5.0 — Retired Excel Import Surface**
+Current canonical release: **v44.5.1 — Active SQLite Compatibility Safety**
 
-Last runtime-accepted baseline: **v44.5.0 — Retired Excel Import Surface**
+Last runtime-accepted baseline: **v44.5.1 — Active SQLite Compatibility Safety**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -818,7 +818,8 @@ direct install, explicit SQLite restore and portable runtime.**
 ### v44.5 — Legacy compatibility audit and bounded maintainability
 
 Status: **First bounded increment complete and runtime accepted as v44.5.0 —
-Retired Excel Import Surface.**
+Retired Excel Import Surface. Second bounded increment complete and runtime
+accepted as v44.5.1 — Active SQLite Compatibility Safety.**
 
 - The unreachable original-Excel database import handler and its
   caller-exclusive importer services are removed. Lower-level SQLite legacy
@@ -826,6 +827,12 @@ Retired Excel Import Surface.**
 - Governed Excel disaster recovery and JSON empty-database migration snapshots
   remain supported and unchanged.
 - Runtime Full Data Verification passed 301/301 with zero failures.
+- v44.5.1 replaces the pre-backup active-database deletion path with read-only
+  inspection, retained SHA-256-verified evidence and fail-closed startup.
+  Supported migration paths remain unchanged; newer, malformed and unsupported
+  active databases are never silently deleted, replaced or restored.
+- Runtime Full Data Verification passed 302/302 with zero failures after the
+  isolated SQLite fixture connections were made non-pooled.
 
 - Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state ownership.
 - Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete UI, dead handlers/services and stale documentation in small reviewed increments.

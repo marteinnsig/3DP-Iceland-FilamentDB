@@ -1,5 +1,15 @@
 # Milestone History
 
+# v44.5.1 - Active SQLite Compatibility Safety
+
+Replaced the pre-backup automatic active-database deletion path with read-only
+compatibility inspection, SHA-256-verified evidence retention and fail-closed
+startup. Supported migrations remain unchanged; newer, malformed and unreadable
+SQLite files remain byte-for-byte intact. Runtime Full Data Verification passed
+302/302.
+
+---
+
 # v44.5.0 - Retired Excel Import Surface
 
 Completed the first bounded legacy compatibility audit increment by removing

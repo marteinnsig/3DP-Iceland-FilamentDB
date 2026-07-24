@@ -16791,6 +16791,12 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             retiredOriginalExcelImportSurfaceReady && excelRecoveryReady && canonicalWorkingStoresReady && releaseIdentityReady
                 ? "Unreachable original-Excel database import UI/service surface is absent; governed Excel disaster-recovery export, verification and guarded restore remain available"
                 : "Retired original-Excel import isolation, governed Excel disaster recovery, canonical SQLite ownership or release identity failed"));
+        var activeDatabaseCompatibilityVerification = new ActiveDatabaseCompatibilityService().RunContractVerification(_database.CurrentSchemaVersion);
+        checks.Add(new VerificationCheck("v44.5.1 Active SQLite preservation release gate",
+            activeDatabaseCompatibilityVerification.Passed && retiredOriginalExcelImportSurfaceReady && localRestoreContractReady && releaseIdentityReady,
+            activeDatabaseCompatibilityVerification.Passed && retiredOriginalExcelImportSurfaceReady && localRestoreContractReady && releaseIdentityReady
+                ? activeDatabaseCompatibilityVerification.Detail
+                : "Active SQLite preservation, prior legacy-import isolation, guarded restore or release identity failed: " + activeDatabaseCompatibilityVerification.Detail));
         var compatibilityCatalog = _database.GetLocalBackupCatalog();
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&

@@ -1,3 +1,18 @@
+## v44.5.1 - Active SQLite Compatibility Safety
+
+- Replaced automatic deletion of an incompatible active SQLite file with
+  read-only inspection, exact evidence-copy retention and fail-closed startup.
+- Blocks newer schemas before an older application can initialize or rewrite
+  their schema marker.
+- Added isolated supported, canonical-only, newer and unreadable fixture
+  verification with active-file and evidence SHA-256 parity.
+- Disabled pooling on compatibility-inspection and fixture connections after
+  runtime Verification exposed a retained Windows handle before evidence copy.
+- Preserved supported migration backups, explicit restore, updater boundaries
+  and the no-automatic-SQLite-restore contract.
+- Runtime Full Data Verification passed 302/302 with zero failures after the
+  pooling-handle correction.
+
 ## v44.5.0 - Retired Excel Import Surface
 
 - Removed the unreachable original-Excel database import handler and its

@@ -1,4 +1,31 @@
-# Current Build Notes - v44.5.0
+# Current Build Notes - v44.5.1
+
+## Active SQLite Compatibility Safety
+
+v44.5.1 replaces the early startup `File.Delete(DatabasePath)` compatibility
+reset with a cohesive read-only inspection and evidence-preservation service.
+Supported existing schemas keep the established required-backup and migration
+path. A newer, malformed, unreadable or structurally unsupported active
+database is left byte-for-byte unchanged, copied to a deterministic
+`filamentdb_startup_blocked_*.sqlite` evidence file with SHA-256 verification,
+and startup stops with the exact retained path.
+
+The contract verification uses isolated supported, canonical-only, newer and
+unreadable fixtures. It requires supported startup to remain available and
+every unsupported fixture to be blocked with both its active bytes and evidence
+copy unchanged. No automatic SQLite restore, deletion or replacement is added.
+Updater rollback remains application-only because the active SQLite file is
+not moved or overwritten before startup health acknowledgement.
+
+The first compile probe exposed two missing explicit `System.IO` type
+qualifications in the new service; those were corrected. Isolated Debug and
+Release builds then passed with zero warnings and zero errors. The first
+runtime Verification run exposed a Windows SQLite pooling handle that remained
+on the isolated canonical-only fixture after read-only inspection. Service
+inspection and fixture connections now disable pooling so every handle is
+closed before evidence-copy/hash validation. Runtime Full Data Verification and
+explicit startup/recovery acceptance then passed 302/302 with zero failures on
+2026-07-24; v44.5.1 is runtime accepted.
 
 ## Retired Excel Import Surface
 

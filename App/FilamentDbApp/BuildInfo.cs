@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "LEGACY-IMPORT-AUDIT";
-    public const string ReleaseTitle = "Retired Excel Import Surface";
+    public const string ReleaseCode = "SQLITE-PRESERVATION";
+    public const string ReleaseTitle = "Active SQLite Compatibility Safety";
 
     public static string Version
     {

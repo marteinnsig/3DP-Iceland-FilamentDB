@@ -1,3 +1,13 @@
+## v44.5.1 - Active SQLite Compatibility Safety
+
+- Inspects the active SQLite database read-only before startup migration.
+- Retains an exact SHA-256-verified evidence copy instead of deleting an
+  unsupported, newer, malformed or unreadable database.
+- Stops startup without moving, replacing or restoring the active database.
+- Keeps supported migration backups and updater application/SQLite boundaries
+  unchanged.
+- Runtime Full Data Verification passed 302/302 with zero failures.
+
 ## v44.5.0 - Retired Excel Import Surface
 
 - Removes the unreachable original-Excel database import handler and its

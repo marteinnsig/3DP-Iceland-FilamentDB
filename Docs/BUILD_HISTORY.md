@@ -1,3 +1,12 @@
+## v44.5.1 - Active SQLite Compatibility Safety
+
+Removed the legacy startup `File.Delete(DatabasePath)` behavior. Active SQLite
+compatibility is inspected read-only; unsupported files remain unchanged while
+an exact verified evidence copy is retained and startup fails closed. An
+initial runtime fixture handle exposed SQLite pooling retention, corrected with
+non-pooled inspection/fixture connections. Full Data Verification then passed
+302/302; v44.5.1 is accepted.
+
 ## v44.5.0 - Retired Excel Import Surface
 
 Removed only the unreachable original-Excel database import handler and its
