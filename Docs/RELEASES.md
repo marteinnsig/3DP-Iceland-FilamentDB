@@ -1,3 +1,15 @@
+## v44.4.1 - Measured Materials Responsiveness
+
+- Makes the accepted viewport-only Fast Materials view the startup default.
+- Keeps all Materials visible in one comparison list while rendering only the
+  visible cell viewport.
+- Uses the existing canonical validation and SQLite auto-save workflow.
+- Retains the native WPF DataGrid behind a checked Tools toggle as fallback.
+- Full Data Verification passed 300/300; clean-VM direct install, explicit
+  SQLite restore and portable runtime are accepted.
+- Authenticode remains deferred; trusted ECDSA package verification is
+  mandatory and Windows may display Unknown publisher.
+
 ## v44.3.1 - Backup, Recovery and Update Evidence Clarity
 
 - Shows healthy schema-v29 empty-profile backups as explicitly restorable but

@@ -1,4 +1,37 @@
-# Current Build Notes - v44.3.1
+# Current Build Notes - v44.4.1
+
+## Measured Materials Responsiveness
+
+v44.4.1 replaces only the wide daily-use Materials DataGrid presentation with
+a viewport-only owner-drawn view after repeated runtime measurements showed
+approximately 10–15 second cold horizontal jumps in the 54-column WPF
+DataGrid. The accepted view draws only visible rows and columns and keeps the
+full canonical Materials list, direct text/ComboBox/checkbox editing, precise
+checkbox hit bounds, selection, sorting, keyboard navigation, clipboard,
+filters, search and machine-local keyed width/order persistence.
+
+Edits enter the existing canonical validation and SQLite auto-save workflow;
+there is no second data model or automatic restore path. The previous native
+DataGrid remains available through the checked Tools toggle as an immediate
+session fallback. The standalone rendering prototype retains explicit
+snapshot Apply/Discard/Cancel behavior and is not the daily-use path.
+
+Visual Studio runtime acceptance confirmed sub-second cold jumps and drags,
+normal vertical scrolling, editing/persistence, automatic filter/search
+synchronization, fallback switching and WPF-style headers. Full Data
+Verification passed 300/300. Debug/Release, NuGet vulnerability and Candidate
+release gates pass. The direct-canonical first-install package contains a
+68,169,842-byte installer
+(`9DACC8B5B2E1DD2CE300AEFDC538C3FCC8327410E4BD89E7301D518C707F6A44`)
+and a 95,547,867-byte portable ZIP
+(`3AB0CA35C049DD121CDA46EA3D58748622B41C01603598762279BAC49541C16D`).
+The 95,918,523-byte trusted ECDSA package SHA-256 is
+`25F9BC6E1737EE6A1A51199279D55738AB1842AA6E40053D305D9F06DFE3D489`.
+Authenticode remains deferred, so Windows may show Unknown publisher.
+Clean-VM runtime acceptance completed on 2026-07-24: direct install, explicit
+SQLite restore, startup-default Fast Materials editing/filtering/scrolling,
+native DataGrid fallback, portable runtime and Full Data Verification all
+passed. v44.4.1 is the canonical runtime-accepted release.
 
 ## Backup, Recovery and Update Evidence Clarity candidate
 

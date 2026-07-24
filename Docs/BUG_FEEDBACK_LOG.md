@@ -176,3 +176,175 @@ about 201 identical Dispatcher refresh callbacks were queued for 200 rows. v41.8
 coalesces them into one downstream refresh. Runtime acceptance confirmed Verification
 PASS and reduced observed Debug startup from about 19-20 seconds to about 5 seconds;
 the accepted trace rendered the first usable Materials view at 4.49 seconds.
+
+improvement — backup filename convention:
+Use a professional, human-readable backup filename such as
+`Product-YYYY-MM-DD_HHmmss.bak` instead of exposing a plain `.sqlite` filename.
+The `.bak` extension is a presentation/naming convention only: the file remains
+a canonical SQLite backup and must retain integrity/schema verification,
+collision-safe timestamps, explicit restore handling and backwards-compatible
+discovery/restore of existing `.sqlite` backup files. Do not rename or delete
+existing backups automatically.
+
+improvement — user-reorderable workflow columns (v44.2 candidate):
+Allow users to drag and reorder columns in the Materials, Tensile, Impact and
+Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
+bound field identity rather than column index. Preserve required fields,
+validated frozen-column behavior and backwards compatibility when columns are
+added or removed. Invalid/stale layouts must fall back safely, and each grid
+should offer Reset columns to default. Do not store presentation layout in the
+canonical SQLite engineering backup.
+
+improvement — optional clean uninstall (v44.3 candidate):
+Keep normal uninstall data-preserving. Add a clearly separate, default-unchecked
+`Delete all 3DPIceland user data and reset this Windows profile` option with a
+second Default-No confirmation that lists every exact target. If explicitly
+accepted, remove only validated 3DPIceland-owned current-user paths for the
+SQLite database, backups/recovery evidence, local UI preferences, updater
+transactions/rollback/health evidence and supported legacy app-data locations.
+Never delete a parent folder, unrelated files or an unresolved path. A custom or
+OneDrive storage location requires an additional explicit warning and must be
+proven to be the configured 3DPIceland storage folder. Treat stored Windows/FTPS
+credentials as a separate default-unchecked choice rather than deleting them
+silently. Record which targets were removed, retained, missing or locked, and
+state clearly that accepted data deletion is permanent and cannot be undone.
+
+improvement — canonical Base Material selection:
+Replace free-text Base Material editing in Materials with a dropdown sourced
+from the SQLite-governed Base Material Catalog maintained in Settings. Store the
+canonical catalog value rather than display position so sorting or catalog edits
+cannot change existing records. This should prevent spelling, casing and
+near-duplicate classifications while preserving keyboard-friendly selection.
+Existing/imported Base Material values that are absent from the current catalog
+must remain visible and must not be silently cleared or remapped; show them as
+an explicit legacy/unmapped value and require an intentional catalog addition or
+user-selected replacement. Refresh dropdown choices after an accepted Settings
+change and preserve MaterialID, import/export and report compatibility.
+
+improvement — MaterialID-aware print-job price calculator:
+Evaluate bringing the existing standalone Printing Price Calculator from
+`price/index.html` into the desktop application as a bounded job-quotation
+workflow. Replace its free-text `Material Used` input with a canonical MaterialID
+selector from the active Materials list. When a material is selected, populate
+`Filament Cost per kg` from the material's governed landed-cost data, with the
+material name/manufacturer and cost provenance visible beside the value.
+
+Research and define the unit/currency contract before implementation. If the
+stored landed cost is a whole-spool value, calculate cost per kg only from the
+recorded net spool weight; never assume a 1 kg spool. Convert currency only from
+an explicit governed exchange-rate source and show the source currency, rate and
+checked date. Missing landed cost, weight or conversion data must remain
+`Not recorded` and require manual user input rather than a silent MSRP/default
+fallback. Selecting a material may prefill the calculator but must not overwrite
+the canonical Material record.
+
+Preserve the calculator's existing inputs and formulas for filament grams,
+material-efficiency factor, labor, machine time, packaging, landed job cost,
+target margin and quote output unless formula-by-formula verification approves a
+change. Record the selected MaterialID and effective cost-per-kg provenance in
+the exported quote. Review the existing Print Farm Academy attribution and reuse
+rights before moving or adapting its credited methodology into the application.
+
+Approved calculator settings/profile design:
+Move reusable formula inputs into governed Settings rather than requiring
+re-entry for every job. Keep business-wide values such as Material Efficiency
+Factor, Labor Hourly Rate, Electricity Cost per kWh and default currency in a
+global pricing-settings group. Add a typed Printer Profiles catalog with stable
+PrinterID, printer name, purchase cost, additional upfront cost, annual
+maintenance/repair, estimated life, estimated uptime, average power consumption
+and printer-cost buffer factor.
+
+Allow multiple printer profiles and one explicit default printer. The calculator
+must offer a printer dropdown populated from this catalog while still allowing a
+different printer to be selected for each job. Archive rather than hard-delete a
+profile that has historical quote references. Validate ranges/units and show
+missing values honestly; do not silently borrow values from another printer.
+
+Each generated quote must store an immutable calculation snapshot so later
+Settings changes cannot alter historical results. The snapshot/export should
+include MaterialID and landed-cost provenance, PrinterID and printer name, every
+effective calculation input, calculation/formula version, currency, any governed
+exchange-rate evidence and calculation timestamp. Printer profiles and global
+pricing settings are configuration data; they must not recalculate or overwrite
+canonical Material purchasing records.
+
+improvement — delayed official exchange-rate refresh:
+Add an optional, non-blocking exchange-rate refresh after the application is
+fully usable (initial candidate delay: about 60 seconds). This must never delay
+startup, require credentials or fail application readiness when offline. Prefer
+an official subscription-free source; the European Central Bank publishes
+working-day EUR reference rates, including ISK, with downloadable XML. Evaluate
+an official Central Bank of Iceland feed as the preferred ISK-native source if a
+stable documented endpoint and reuse contract are confirmed before coding.
+
+Store exchange rates as governed Settings/reference data with source name,
+source URL, base currency, effective date, fetched-at UTC, exact rate and status
+(`Current`, `Weekend / no new rate`, `Stale`, `Unavailable`, `Manual`). Refresh
+at most once per effective day unless the user presses `Refresh rates`; use a
+short timeout, bounded retry and the last verified cached rates when the network
+or parser fails. Show last successful update, age and source in Settings, and
+allow automatic refresh to be disabled. Validate TLS, content type, supported
+currency codes, positive finite values, duplicate entries and plausible payload
+date before replacing the cached set.
+
+Automatic refresh updates only the reference-rate catalog. It must never
+silently rewrite historical purchasing records, landed costs or prior quotes.
+Every calculation/quote that converts currency must snapshot the exact source
+rate and effective date it used. Missing or stale conversion must be visible and
+must require an explicit user decision rather than silently using 1:1 or another
+currency. Document that official reference rates are informational and may not
+match the card/bank rate actually charged; an entered transaction-specific rate
+remains authoritative for landed-cost evidence.
+
+Approved purchase/lot exchange-rate ownership:
+Bind the effective exchange-rate snapshot to each purchase line, receipt lot or
+spool acquisition record, not to MaterialID. The same MaterialID may therefore
+have multiple historical purchases with different original prices, currencies
+and exchange rates. A newly downloaded rate may only prefill a new, unsaved
+purchase transaction; it must never recalculate or overwrite a saved purchase,
+received spool/lot, historical landed cost, inventory valuation evidence or
+quote.
+
+Each purchase snapshot must preserve original amount/currency, exact rate,
+source, effective date, fetched-or-entered timestamp, converted ISK amount,
+shipping/tax/fee inputs and resulting landed cost. For job pricing, prefer the
+landed cost of the explicitly selected spool/lot. When no lot is selected, use
+only a separately approved and visibly identified inventory costing method such
+as weighted average; expose the contributing scope and provenance. Never apply
+the latest exchange rate to an old foreign-currency purchase price or silently
+fall back to 1:1, MSRP or the most recent purchase.
+
+improvement — governed Production and Development build profiles:
+Research and classify all accumulated diagnostics, verification probes, startup
+measurements, debug-only commands and owner/developer menus by measured runtime
+cost and operational ownership. Introduce deterministic build profiles rather
+than deleting instrumentation code:
+
+- `Development / Verification`: includes the complete diagnostic, profiling and
+  verification surface needed during an active development or runtime-acceptance
+  session.
+- `Production / Clean`: excludes or disables proven expensive development-only
+  probes and hides developer-only commands/menus unless they are explicitly
+  enabled by an approved build option.
+
+Keep the instrumentation definitions, expected outputs and enablement contract
+in source control so a later development session can reproduce the required
+measurement surface without reimplementing it. Prefer an explicit MSBuild
+property/compile constant and visible build identity over manual commenting,
+source deletion or dynamically downloaded diagnostic code. A Production artifact
+must state which profile it uses, and packaging/Verification must reject an
+unknown or contradictory profile.
+
+Do not assume diagnostics are expensive: measure startup, steady-state CPU,
+memory, SQLite reads and menu/open costs first. Production/Clean must retain
+mandatory crash/error logging, release identity, privacy/schema/integrity checks,
+update/recovery transaction evidence, backup/restore safety, security/package
+verification and the minimum support diagnostics needed to investigate a user
+failure. It must not weaken release acceptance or make a failure untraceable.
+
+For public/user-facing distributions, keep normal workflow menus focused and
+hide diagnostic/developer actions by default. If an owner explicitly requests a
+diagnostic-enabled Production package, expose that choice in build metadata and
+the About/Diagnostics surface; do not silently change the executable's support
+or security contract. Clean-profile distribution must continue to exclude owner
+data, credentials and deployment identity in every build profile.

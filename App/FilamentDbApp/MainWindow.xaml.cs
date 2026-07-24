@@ -154,6 +154,7 @@ public partial class MainWindow : Window
         RunStartupPhase("AI Assistant workspace", InitializeAiAssistantWorkspace);
         RunStartupPhase("Native settings initialization", InitializeNativeSettingsGridEditor);
         RunStartupPhase("Native Materials initialization", InitializeNativeMaterialManager);
+        RunStartupPhase("Fast Materials default view", ActivateDefaultFastMaterialsView);
         RunStartupPhase("Manufacturer workspace initialization", InitializeManufacturerManager);
         RunStartupPhase("Inventory workspace initialization", InitializeInventorySpoolManager);
         RunStartupPhase("Experimental workspace initialization", InitializeExperimentalMaterialManager);
@@ -15986,6 +15987,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("Daily workflow live counts", true, "Material header, native grid and footer counts are derived from the current SQLite-backed collections and filtered view"));
         checks.Add(new VerificationCheck("Daily workflow entry contrast", true, "Tensile and impact entry cells use readable dark text across yellow and green value bands"));
         checks.Add(new VerificationCheck("Materials workflow column layout", true, "High-use website, video and test-status columns appear directly after Color; Diameter is hidden from the daily grid"));
+        var fastMaterialsViewReady = FindName("FastMaterialsViewHost") is ContentControl &&
+                                     FindName("FastMaterialsViewMenuItem") is MenuItem { IsCheckable: true } &&
+                                     FindName("NativeMaterialsGrid") is DataGrid &&
+                                     FastMaterialsViewDefaultEnabled;
+        checks.Add(new VerificationCheck("Fast Materials view fallback contract", fastMaterialsViewReady,
+            fastMaterialsViewReady
+                ? "Fast view is the startup default; a checkable Tools toggle and the native DataGrid remain available as fallback"
+                : "Fast-view default, Tools toggle or native fallback DataGrid contract is missing"));
         var experimental = _database.GetExperimentalFrameworkStats();
         checks.Add(new VerificationCheck("Experimental definition foundation", experimental.Definitions >= 10 && experimental.ActiveDefinitions >= 10,
             $"Definitions {experimental.Definitions}, active {experimental.ActiveDefinitions}; generic parameter catalog is SQLite-backed"));
@@ -22151,6 +22160,7 @@ private List<string> GetVisibleAiMaterialLabels()
             };
 
             view.Refresh();
+            _embeddedMaterialsPrototypeView?.ReloadFromCanonical("the current Materials filter/search result");
             if (_lastSelectedNativeMaterial is not null && !grid.Items.Contains(_lastSelectedNativeMaterial))
             {
                 _lastSelectedNativeMaterial.IsCurrentSelection = false;

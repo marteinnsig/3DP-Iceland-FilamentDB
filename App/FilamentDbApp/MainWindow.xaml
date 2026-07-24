@@ -187,6 +187,8 @@
                 <MenuItem Header="Clear Local Cache" Click="ClearCache_Click" />
                 <Separator />
                 <MenuItem Header="Database Engine Stats" Click="ShowDatabaseStats_Click" />
+                <MenuItem Header="Materials Rendering Prototype..." Click="ShowMaterialsRenderingPrototype_Click" />
+                <MenuItem Name="FastMaterialsViewMenuItem" Header="Use Fast Materials View (Preview)" IsCheckable="True" Click="ToggleFastMaterialsView_Click" />
                 <MenuItem Header="Update Readiness..." Click="UpdateReadiness_Click" />
                 <MenuItem Header="Check for Updates..." Click="CheckForUpdates_Click" />
                 <MenuItem Header="Publish Application Release..." Click="PublishApplicationRelease_Click" />
@@ -324,6 +326,7 @@
                     </WrapPanel>
 
                     <GroupBox Grid.Row="3" Header="Materials - source of truth for native modules">
+                        <Grid>
                         <DataGrid Name="NativeMaterialsGrid" Style="{StaticResource HighPerformanceDataGrid}" SelectionMode="Single" SelectionUnit="CellOrRowHeader"
                                   AutoGenerateColumns="False"
                                   CanUserAddRows="False"
@@ -439,6 +442,8 @@
                                 <DataGridTextColumn Header="Validation" Binding="{Binding ValidationSummary}" Width="180" IsReadOnly="True"/>
                             </DataGrid.Columns>
                         </DataGrid>
+                            <ContentControl Name="FastMaterialsViewHost" Visibility="Collapsed" Margin="8"/>
+                        </Grid>
                     </GroupBox>
                 </Grid>
             </TabItem>

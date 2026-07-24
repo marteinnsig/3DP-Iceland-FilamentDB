@@ -87,6 +87,35 @@ public sealed class WorkflowPreferencesService
         _preferences.LastSelectedMaterialId = materialId?.Trim() ?? string.Empty;
     }
 
+    public IReadOnlyList<WorkflowColumnLayout> GetFastMaterialsGridLayout() =>
+        _preferences.FastMaterialsGridLayout
+            .Where(item =>
+                !string.IsNullOrWhiteSpace(item.Key) &&
+                double.IsFinite(item.Width) &&
+                item.Width >= 50 &&
+                item.Width <= 500 &&
+                item.DisplayIndex >= 0)
+            .GroupBy(item => item.Key, StringComparer.Ordinal)
+            .Select(group => group.First())
+            .OrderBy(item => item.DisplayIndex)
+            .ToList();
+
+    public void SetFastMaterialsGridLayout(IEnumerable<WorkflowColumnLayout> layout)
+    {
+        _preferences.FastMaterialsGridLayout = layout
+            .Where(item =>
+                !string.IsNullOrWhiteSpace(item.Key) &&
+                double.IsFinite(item.Width) &&
+                item.Width >= 50 &&
+                item.Width <= 500 &&
+                item.DisplayIndex >= 0)
+            .GroupBy(item => item.Key, StringComparer.Ordinal)
+            .Select(group => group.First())
+            .OrderBy(item => item.DisplayIndex)
+            .ToList();
+        Save();
+    }
+
     public bool HasSavedGridWidths(DataGrid grid) =>
         !string.IsNullOrWhiteSpace(grid.Name) &&
         ((_preferences.GridColumnLayouts.TryGetValue(grid.Name, out var layouts) && layouts.Count > 0) ||
@@ -256,6 +285,7 @@ public sealed class WorkflowPreferencesService
         public WindowPreference? Window { get; set; }
         public string WebsiteExportFolder { get; set; } = string.Empty;
         public string LastSelectedMaterialId { get; set; } = string.Empty;
+        public List<WorkflowColumnLayout> FastMaterialsGridLayout { get; set; } = new();
         public Dictionary<string, List<double>> GridColumnWidths { get; set; } = new(StringComparer.Ordinal);
         public Dictionary<string, List<GridColumnPreference>> GridColumnLayouts { get; set; } = new(StringComparer.Ordinal);
     }
@@ -276,3 +306,5 @@ public sealed class WorkflowPreferencesService
         public bool IsMaximized { get; set; }
     }
 }
+
+public sealed record WorkflowColumnLayout(string Key, double Width, int DisplayIndex);

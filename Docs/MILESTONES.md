@@ -1,5 +1,14 @@
 # Milestone History
 
+# v44.4.1 - Measured Materials Responsiveness
+
+Viewport-only Materials rendering is runtime accepted in Visual Studio and on
+a clean VM with Full Data Verification PASS 300/300. Direct install, explicit
+SQLite restore and portable runtime passed; the native DataGrid remains an
+immediate fallback.
+
+---
+
 # v44.3.1 - Backup, Recovery and Update Evidence Clarity
 
 Completed clean-profile backup honesty and separated application-update

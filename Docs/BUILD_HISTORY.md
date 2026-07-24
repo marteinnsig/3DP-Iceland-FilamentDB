@@ -1,3 +1,13 @@
+## v44.4.1 - Measured Materials Responsiveness
+
+Measured the wide Materials DataGrid bottleneck, rejected configuration-only
+experiments and introduced a bounded viewport-only renderer as the daily-use
+default with the native DataGrid retained as fallback. Runtime acceptance
+covered cold/repeated scrolling, direct canonical edits, filters, selection,
+sorting, clipboard, persisted layout and visual parity. Full Data Verification
+passed 300/300. Clean-VM direct install, explicit SQLite restore, fast-view
+runtime, native fallback and portable runtime passed; v44.4.1 is canonical.
+
 ## v44.3.1 - Backup, Recovery and Update Evidence Clarity
 
 Completed honest empty-profile backup classification and four separate

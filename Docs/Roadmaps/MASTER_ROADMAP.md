@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.3.1 — Backup, Recovery and Update Evidence Clarity**
+Current canonical release: **v44.4.1 — Measured Materials Responsiveness**
 
-Last runtime-accepted baseline: **v44.3.1 — Backup, Recovery and Update Evidence Clarity**
+Last runtime-accepted baseline: **v44.4.1 — Measured Materials Responsiveness**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -20,7 +20,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v41 | Engineering Intelligence | ★★★★★ | Complete — governed downstream handoffs delivered |
 | v42 | Website & Approved Template Architecture | ★★★★☆ | Foundation delivered early |
 | v43 | Deployment Platform | ★★★★☆ | Complete — canonical v43.8.9 runtime accepted |
-| v44 | Daily Use, Reliability & Maintainability | ★★★★★ | In progress — v44.0 through v44.3 complete |
+| v44 | Daily Use, Reliability & Maintainability | ★★★★★ | In progress — v44.0 through v44.4 complete |
 
 ## Reconciliation of the older plans
 
@@ -795,6 +795,10 @@ Status: **Complete — v44.3.1 clean-VM runtime accepted with separate read-only
 
 ### v44.4 — Measured responsiveness and presentation polish
 
+Status: **Complete — v44.4.1 viewport-only Fast Materials view is Visual
+Studio and clean-VM runtime accepted with Full Data Verification PASS 300/300,
+direct install, explicit SQLite restore and portable runtime.**
+
 - Investigate the measured approximately 15-second first horizontal page jump
   in the wide Materials DataGrid. Arrow scrolling is responsive; large native
   thumb/track jumps into unrealized columns are slow. v44.2 A/B testing ruled
@@ -805,6 +809,11 @@ Status: **Complete — v44.3.1 clean-VM runtime accepted with separate read-only
 - Profile first-open and repeated-open latency for top-level Tools/Help menus before changing command construction or UI-thread work.
 - Treat splash logo-line animation as optional presentation polish. It must follow measured splash lifetime, support high DPI and never delay startup.
 - Record before/after Release timings on the same machine; reject optimization work that adds complexity without a meaningful observed gain.
+- Accepted implementation draws only visible Materials rows/columns, preserves
+  direct canonical SQLite auto-save and daily editing/filter/search behavior,
+  and retains the native WPF DataGrid as a session fallback.
+- The abandoned v44.4.0 artifacts remain non-canonical; v44.4.1 is the
+  runtime-accepted canonical release.
 
 ### v44.5 — Legacy compatibility audit and bounded maintainability
 

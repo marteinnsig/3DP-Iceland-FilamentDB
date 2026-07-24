@@ -1,3 +1,17 @@
+## v44.4.1 - Measured Materials Responsiveness
+
+- Added a viewport-only Fast Materials view for the measured 54-column
+  DataGrid cold-jump bottleneck.
+- Preserved canonical SQLite auto-save, filtering, selection, editing,
+  keyboard, clipboard and separately persisted fast-view column layout.
+- Kept the native WPF DataGrid as a Tools-toggle fallback.
+- Added the fast-view/default/fallback Verification contract; Full Data
+  Verification passed 300/300 in Visual Studio runtime testing.
+- Retained alternating row colors and aligned the owner-drawn headers with the
+  existing WPF grids.
+- Clean-VM direct install, explicit SQLite restore, portable runtime and Full
+  Data Verification passed.
+
 ## v44.3.1 - Backup, Recovery and Update Evidence Clarity
 
 - Classified integrity-valid schema-current zero-Material backups as explicit
