@@ -19,6 +19,15 @@ Screenshot / export / report attached:
 
 ## Open findings
 
+Date: 2026-07-24
+Area: Verification Center / System Diagnostics exports
+Type: Workflow friction / UI polish
+Severity: Minor
+What happened: Verification Center and System Diagnostics both export files using the generic `3DPIceland_FilamentDB_Diagnostics_YYYYMMDD_HHMMSS.txt` filename, even though they contain different report types. This makes attached files easy to confuse.
+Expected behavior: Use terminology consistently across the window title, export action, document header and filename. Verification Center should export `3DPIceland_FilamentDB_Verification_YYYYMMDD_HHMMSS.txt`; System Diagnostics should export `3DPIceland_FilamentDB_System_Diagnostics_YYYYMMDD_HHMMSS.txt`.
+Steps to reproduce: Export one file from Verification Center and one from System Diagnostics, then compare their filenames.
+Screenshot / export / report attached: Observed in the v44.5.1 runtime diagnostics/verification handoff.
+
 
 
 ## Triage categories
