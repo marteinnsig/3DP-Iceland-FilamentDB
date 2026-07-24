@@ -1,13 +1,13 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.6.2 — Canonical Measurement Date Foundation**
+Current canonical release: **v44.7.3 — Fast Workflow Grid — Tensile**
 
-Last runtime-accepted baseline: **v44.6.2 — Canonical Measurement Date Foundation**
+Last runtime-accepted baseline: **v44.7.3 — Fast Workflow Grid — Tensile**
 
 Current application candidate: **None**
 
-Current roadmap increment: **None — next planned item is v44.7.1 Category
-Rankings Scope Controls**
+Current roadmap increment: **None — next planned item is v44.7.4 Fast Workflow
+Grid — Impact**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1585,24 +1585,49 @@ changes priority.
   - Row `Validation` ownership and dataset-level duplicate checks researched.
   - Added concise contextual UI help without changing validation calculations.
   - Owner runtime screenshot review and Full Data Verification passed.
-- **v44.7.3 — Workflow Layout Reset**
+- **v44.7.3 — Fast Workflow Grid — Tensile**
+  - State: **Complete**.
+  - Feedback disposition: Partially solved; remaining workflow grids are planned below.
+  - Runtime testing showed repeated editable-DataGrid layout fixes were not reliable outside Materials.
+  - Generalize the accepted viewport-only Materials renderer and migrate Tensile first.
+  - Preserve canonical rows, formulas, validation, filters, auto-save and SQLite; retain a visible legacy fallback.
+  - First runtime edit found a sort/selection reset; the accepted in-place refresh preserves both.
+  - Owner accepted the full runtime checklist, reported a snappier view and Full Data Verification passed 315/315.
+- **v44.7.4 — Fast Workflow Grid — Impact**
   - State: Planned.
-  - Feedback disposition: Partially solved.
-  - Finish the v44.2 column-state contract with an explicit safe reset-to-default action.
-  - Verify stale-layout fallback.
-- **v44.7.4 — Backup Filename Compatibility**
+  - Feedback disposition: In progress.
+  - Reuse the accepted Fast Workflow Grid core with Impact-specific 0–100 validation, colors and calculations.
+  - Preserve filters, measurement dates, SQLite auto-save, selection and a visible legacy fallback.
+- **v44.7.5 — Fast Workflow Grid — Stiffness**
+  - State: Planned.
+  - Feedback disposition: In progress.
+  - Reuse the accepted core with revolutions/degrees limits, computed outputs and unchanged formulas.
+  - Preserve filters, measurement dates, SQLite auto-save, selection and a visible legacy fallback.
+- **v44.7.6 — Fast Workflow Grid — Settings**
+  - State: Planned.
+  - Feedback disposition: In progress.
+  - Migrate Settings Value editing and Base Material Catalog entry only after mapping their distinct CRUD contracts.
+  - Preserve FTPS validation, canonical SQLite settings and a visible legacy fallback during acceptance.
+- **v44.7.7 — Backup Filename Compatibility**
   - State: Planned.
   - Feedback disposition: Open.
   - Research a human-readable presentation name.
   - Retain SQLite bytes, existing `.sqlite` discovery, explicit restore and all evidence.
   - Never rename or delete existing backups automatically.
-- **v44.7.5 — Public Measurement Date Provenance**
+- **v44.7.8 — Public Measurement Date Provenance**
   - State: Planned.
   - Feedback disposition: Open.
   - Add canonical Tensile, Impact and Stiffness measured dates to the reviewed public material model.
   - Show dates on applicable website/report surfaces with `Not recorded` honesty.
   - Preserve per-material publication opt-in and explicit public allowlists.
   - Require Preview/Production HTML/PDF parity before publication.
+- **v44.7.9 — Canonical MaterialID Default Row Order**
+  - State: Planned.
+  - Feedback disposition: Open.
+  - Research view ownership and saved user-sort behavior across Materials, Tensile, Impact and Stiffness.
+  - Default unsorted views to numeric MaterialID ascending: lowest first and newest/highest last.
+  - Preserve explicit user sorting, filters, canonical row identity, SQLite order and legacy fallback behavior.
+  - Verify first load, reset, editing, filters, restart persistence and both fast/legacy grid paths.
 
 ### Later v44 owner-value sequence
 

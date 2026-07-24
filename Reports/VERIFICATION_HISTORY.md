@@ -1,3 +1,20 @@
+# v44.7.3 - Fast Workflow Grid - Tensile
+
+Date: 2026-07-24
+
+- PASS: Full Data Verification reported 315/315 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: release identity aligned at v44.7.3, assembly 44.7.3.0 and
+  `FAST-WORKFLOW-TENSILE`.
+- PASS: all 201 canonical Materials retained aligned Tensile, Impact and
+  Stiffness rows; schema remained v31.
+- PASS: Fast Tensile retained canonical calculations, validation, filters,
+  measurement dates, SQLite auto-save and visible legacy fallback.
+- PASS: owner runtime testing accepted editing, navigation, colors,
+  calculations, copy/paste, reset, restart persistence and fallback.
+- ACCEPTED: the owner reported Fast Tensile noticeably snappier than the
+  legacy DataGrid; v44.7.3 is runtime accepted.
+
 # v44.6.1 - Canonical Release Documentation Audit
 
 Date: 2026-07-24

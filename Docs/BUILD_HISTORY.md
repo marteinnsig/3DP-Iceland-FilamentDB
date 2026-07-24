@@ -2,6 +2,21 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.3 - Fast Workflow Grid - Tensile Candidate
+
+Candidate begins the approved migration away from problematic editable WPF
+DataGrids. The accepted viewport-only Materials renderer now has reusable row,
+column, editing and layout contracts. Tensile is the first migration: it uses
+the existing canonical measurement rows, calculations, validation, filters,
+test-status refresh and SQLite auto-save. Fast Tensile owns separate keyed
+layout state, starts by default and retains a visible one-click legacy-grid
+fallback until runtime acceptance. Sample and computed-cell visual meaning is
+retained. The first runtime sort/selection reset was corrected with in-place
+cell refresh. Impact, Stiffness and Settings remain unchanged pending
+sequential acceptance. Debug/Release and security/static gates passed. Owner
+runtime testing accepted the full checklist, reported a noticeably snappier
+view and Full Data Verification passed 315/315. v44.7.3 is accepted.
+
 ## v44.7.2 - Validation Help Clarity
 
 Candidate adds concise Materials help defining row Validation as the presence

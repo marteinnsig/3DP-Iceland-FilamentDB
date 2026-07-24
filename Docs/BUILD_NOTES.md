@@ -1,4 +1,31 @@
-# Current Build Notes - v44.6.2
+# Current Build Notes - v44.7.3
+
+## Fast Workflow Grid - Tensile Candidate
+
+v44.7.3 begins the approved phased migration from editable WPF DataGrids to
+the accepted viewport-only Fast Materials rendering approach. Fast Tensile is
+the first candidate and starts by default while retaining a visible `Use
+Legacy Grid` fallback.
+
+The candidate edits the existing canonical tensile row objects and calls the
+unchanged calculation, validation, summary, test-status and SQLite auto-save
+paths. It retains measurement filters, sample color bands, computed-cell
+distinction, keyboard navigation, copy/paste and first-measurement date
+assignment. Fast Tensile owns separate keyed column width/order state and
+persists resize/reorder immediately; reset is Default-No.
+
+Impact, Stiffness and Settings are deliberately unchanged pending sequential
+migration. Debug and Release pass with zero warnings/errors, the
+documentation/static checks pass and NuGet reports no vulnerable packages.
+Owner runtime testing accepted the full checklist, described the Fast Tensile
+view as noticeably snappier than the legacy grid and Full Data Verification
+passed 315/315. v44.7.3 is accepted.
+
+The first runtime edit exposed that refreshing computed output rebuilt the
+visible row list, discarded its current sort and moved selection from MAT0206
+to the first canonical row. The accepted correction refreshes cell snapshots
+in place, preserving visible order, selected row and selected cell after
+commit.
 
 ## Canonical Measurement Date Foundation
 

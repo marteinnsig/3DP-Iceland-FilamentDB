@@ -128,8 +128,9 @@ public partial class MainWindow
             directCanonicalEditing);
     }
 
-    private void SelectMaterialsPrototypeRow(NativeMaterialRow row)
+    private void SelectMaterialsPrototypeRow(object source)
     {
+        if (source is not NativeMaterialRow row) return;
         foreach (var materialRow in _nativeMaterialRows)
         {
             materialRow.IsCurrentSelection = ReferenceEquals(materialRow, row);
@@ -148,7 +149,7 @@ public partial class MainWindow
             .Select(row =>
             {
                 var cells = columns.Select(column => PrototypeCellText(row, column.PropertyName)).ToArray();
-                return new MaterialsPrototypeRow(row, row.MaterialID, cells, cells.ToArray());
+                return new MaterialsPrototypeRow(row, row.MaterialID, cells, cells.ToArray(), () => row.IsRowValid);
             })
             .ToList();
 
@@ -198,7 +199,7 @@ public partial class MainWindow
         return true;
     }
 
-    private static string PrototypeCellText(NativeMaterialRow row, string? propertyName)
+    private static string PrototypeCellText(object row, string? propertyName)
     {
         if (string.IsNullOrWhiteSpace(propertyName)) return string.Empty;
         var value = GetPropertyValue(row, propertyName);
@@ -217,19 +218,29 @@ public partial class MainWindow
         CheckBox
     }
 
+    private enum FastGridCellKind
+    {
+        Standard,
+        TensileSample,
+        Computed,
+        Spacer
+    }
+
     private sealed record MaterialsPrototypeColumn(
         string Header,
         double Width,
         string? PropertyName,
         bool IsReadOnly,
         MaterialsPrototypeEditorKind EditorKind,
-        IReadOnlyList<string> Choices);
+        IReadOnlyList<string> Choices,
+        FastGridCellKind CellKind = FastGridCellKind.Standard);
 
     private sealed record MaterialsPrototypeRow(
-        NativeMaterialRow Source,
+        object Source,
         string MaterialId,
         string[] Cells,
-        string[] OriginalCells);
+        string[] OriginalCells,
+        Func<bool> IsValid);
 
     private sealed record MaterialsPrototypeChange(
         MaterialsPrototypeRow Row,
@@ -248,8 +259,9 @@ public partial class MainWindow
         private readonly Func<IReadOnlyList<MaterialsPrototypeChange>, bool> _applyChanges;
         private readonly Action<IReadOnlyList<WorkflowColumnLayout>> _saveLayout;
         private readonly Func<IReadOnlyList<MaterialsPrototypeColumn>, List<MaterialsPrototypeRow>> _reloadRows;
-        private readonly Action<NativeMaterialRow> _selectRow;
+        private readonly Action<object> _selectRow;
         private readonly bool _directCanonicalEditing;
+        private readonly bool _reloadAfterApply;
         private readonly TextBlock _status;
         private readonly Button _applyButton;
         private readonly Button _reloadButton;
@@ -262,8 +274,9 @@ public partial class MainWindow
             Func<IReadOnlyList<MaterialsPrototypeChange>, bool> applyChanges,
             Action<IReadOnlyList<WorkflowColumnLayout>> saveLayout,
             Func<IReadOnlyList<MaterialsPrototypeColumn>, List<MaterialsPrototypeRow>> reloadRows,
-            Action<NativeMaterialRow> selectRow,
-            bool directCanonicalEditing)
+            Action<object> selectRow,
+            bool directCanonicalEditing,
+            bool reloadAfterApply = false)
         {
             _columns = columns as List<MaterialsPrototypeColumn> ?? columns.ToList();
             _rows = rows as List<MaterialsPrototypeRow> ?? rows.ToList();
@@ -272,6 +285,7 @@ public partial class MainWindow
             _reloadRows = reloadRows;
             _selectRow = selectRow;
             _directCanonicalEditing = directCanonicalEditing;
+            _reloadAfterApply = reloadAfterApply;
             var root = new DockPanel { Background = Brushes.White };
             var explanation = new TextBlock
             {
@@ -328,6 +342,7 @@ public partial class MainWindow
             _surface.CellActivated += Surface_CellActivated;
             _surface.SelectedRowChanged += Surface_SelectedRowChanged;
             _surface.SnapshotChanged += (_, _) => HandleSnapshotChanged();
+            _surface.LayoutChanged += (_, _) => _saveLayout(_surface.CaptureLayout());
             _surface.EnsureCellVisible += Surface_EnsureCellVisible;
             _editorLayer = new Canvas();
             _scrollViewer = new ScrollViewer
@@ -615,12 +630,33 @@ public partial class MainWindow
             var changes = GetChanges();
             if (changes.Count == 0) return;
             if (!_applyChanges(changes)) return;
+            if (_reloadAfterApply)
+            {
+                RefreshCurrentRowsFromSources();
+                UpdateApplyState();
+                _status.Text = $"Saved {changes.Count:N0} changed field(s) through the canonical auto-save workflow.";
+                return;
+            }
             foreach (var row in _rows)
             {
                 Array.Copy(row.Cells, row.OriginalCells, row.Cells.Length);
             }
             UpdateApplyState();
             _status.Text = $"Saved {changes.Count:N0} changed field(s) through the canonical Materials auto-save workflow.";
+        }
+
+        private void RefreshCurrentRowsFromSources()
+        {
+            foreach (var row in _rows)
+            {
+                for (var columnIndex = 0; columnIndex < _columns.Count; columnIndex++)
+                {
+                    var value = PrototypeCellText(row.Source, _columns[columnIndex].PropertyName);
+                    row.Cells[columnIndex] = value;
+                    row.OriginalCells[columnIndex] = value;
+                }
+            }
+            _surface.InvalidateVisual();
         }
 
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
@@ -738,6 +774,7 @@ public partial class MainWindow
         private const double HeaderHeight = 32;
         private const double RowHeight = 25;
         private const double CellPadding = 5;
+        private readonly TensileSampleValueBrushConverter _tensileBrushConverter = new();
         private readonly List<MaterialsPrototypeColumn> _columns;
         private readonly List<MaterialsPrototypeRow> _rows;
         private readonly double[] _columnOffsets;
@@ -761,6 +798,7 @@ public partial class MainWindow
         public event EventHandler<MaterialsPrototypeRenderEventArgs>? FrameRendered;
         public event EventHandler<MaterialsPrototypeCellEventArgs>? CellActivated;
         public event EventHandler? SnapshotChanged;
+        public event EventHandler? LayoutChanged;
         public event Action<Rect>? EnsureCellVisible;
         public event Action<int>? SelectedRowChanged;
 
@@ -1115,6 +1153,10 @@ public partial class MainWindow
             {
                 SortRows(sortColumn);
             }
+            else
+            {
+                LayoutChanged?.Invoke(this, EventArgs.Empty);
+            }
             e.Handled = true;
         }
 
@@ -1230,14 +1272,27 @@ public partial class MainWindow
             {
                 var y = HeaderHeight + rowIndex * RowHeight;
                 var rowBrush = rowIndex == _selectedRow
-                    ? selectedBrush
-                    : !_rows[rowIndex].Source.IsRowValid ? invalidBrush
-                    : rowIndex % 2 == 0 ? Brushes.White : new SolidColorBrush(Color.FromRgb(248, 250, 252));
+                     ? selectedBrush
+                     : !_rows[rowIndex].IsValid() ? invalidBrush
+                     : rowIndex % 2 == 0 ? Brushes.White : new SolidColorBrush(Color.FromRgb(248, 250, 252));
                 for (var columnIndex = firstColumn; columnIndex <= lastColumn && columnIndex < _columns.Count; columnIndex++)
                 {
                     var x = _columnOffsets[columnIndex];
                     var width = _columnWidths[columnIndex];
-                    drawingContext.DrawRectangle(rowBrush, gridPen, new Rect(x, y, width, RowHeight));
+                    var cellBrush = rowIndex == _selectedRow || !_rows[rowIndex].IsValid()
+                        ? rowBrush
+                        : _columns[columnIndex].CellKind switch
+                        {
+                            FastGridCellKind.TensileSample => (Brush)_tensileBrushConverter.Convert(
+                                _rows[rowIndex].Cells[columnIndex],
+                                typeof(Brush),
+                                null!,
+                                CultureInfo.CurrentCulture),
+                            FastGridCellKind.Computed => new SolidColorBrush(Color.FromRgb(241, 245, 249)),
+                            FastGridCellKind.Spacer => new SolidColorBrush(Color.FromRgb(203, 213, 225)),
+                            _ => rowBrush
+                        };
+                    drawingContext.DrawRectangle(cellBrush, gridPen, new Rect(x, y, width, RowHeight));
                     if (_columns[columnIndex].EditorKind == MaterialsPrototypeEditorKind.CheckBox)
                     {
                         DrawCheckBox(drawingContext, _rows[rowIndex].Cells[columnIndex] == "✓", x, y, width, RowHeight, textBrush);

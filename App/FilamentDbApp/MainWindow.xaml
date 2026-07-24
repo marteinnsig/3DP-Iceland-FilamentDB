@@ -183,6 +183,7 @@
                 <MenuItem Header="Rebuild Computed Fields" Click="RebuildNativeMaterialDisplayNames_Click" />
                 <MenuItem Header="Materials Rendering Prototype..." Click="ShowMaterialsRenderingPrototype_Click" />
                 <MenuItem Name="FastMaterialsViewMenuItem" Header="Use Fast Materials View (Preview)" IsCheckable="True" Click="ToggleFastMaterialsView_Click" />
+                <MenuItem Header="Reset Current Workflow Columns to Default..." Click="ResetCurrentWorkflowColumns_Click" />
                 <MenuItem Header="Update Readiness..." Click="UpdateReadiness_Click" />
                 <MenuItem Header="Check for Updates..." Click="CheckForUpdates_Click" />
                 <MenuItem Header="Publish Application Release..." Click="PublishApplicationRelease_Click" />
@@ -1761,9 +1762,18 @@
                         <TextBlock Name="NativeTensileHelpText" Text="Identity fields are synced from Material Manager; raw sample values are editable; MPa, standard deviation, CV, sample count and confidence are computed read-only fields using the Excel tensile cross-section setting." Foreground="#64748B" TextWrapping="Wrap"/>
                     </StackPanel>
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
-                        <TextBlock Name="NativeTensileSummaryText" Text="Tensile measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                <Button Name="FastTensileToggleButton" Content="Use Legacy Grid" Click="ToggleFastTensileView_Click" Padding="10,4" Margin="0,0,8,0"
+                                        ToolTip="Temporary fallback while the Fast Tensile grid is under runtime acceptance."/>
+                                <Button Content="Reset Columns" Click="ResetFastTensileColumns_Click" Padding="10,4"/>
+                            </StackPanel>
+                            <TextBlock Name="NativeTensileSummaryText" Text="Tensile measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
+                        </DockPanel>
                     </Border>
                     <GroupBox Grid.Row="2" Header="Native Tensile Measurements - editable raw samples with computed Excel-style outputs">
+                        <Grid>
+                            <ContentControl Name="FastTensileViewHost" Margin="8"/>
                         <DataGrid Name="NativeTensileGrid" Style="{StaticResource HighPerformanceDataGrid}" SelectionMode="Single" SelectionUnit="CellOrRowHeader" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" AlternationCount="2" AlternatingRowBackground="#F8FAFC" RowBackground="#FFFFFF" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="8" CellEditEnding="NativeTensileGrid_CellEditEnding" CurrentCellChanged="NativeTensileGrid_CurrentCellChanged" BeginningEdit="InputDataGrid_BeginningEdit" PreparingCellForEdit="MeasurementGrid_PreparingCellForEdit">
                             <DataGrid.RowStyle>
                                 <Style TargetType="DataGridRow">
@@ -1827,6 +1837,7 @@
                                 <DataGridTextColumn Header="Validation" Binding="{Binding ValidationSummary}" Width="150" IsReadOnly="True"/>
                             </DataGrid.Columns>
                         </DataGrid>
+                        </Grid>
                     </GroupBox>
                 </Grid>
             </TabItem>
@@ -1842,7 +1853,10 @@
                         <TextBlock Name="NativeImpactHelpText" Text="Enter the raw needle percentage values from the impact rig. kJ/m², standard deviation, CV, samples and confidence are computed read-only using the Excel impact formula and Settings Manager values." Foreground="#64748B" TextWrapping="Wrap"/>
                     </StackPanel>
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
-                        <TextBlock Name="NativeImpactSummaryText" Text="Impact measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="Reset Columns" Tag="NativeImpactGrid" Click="ResetWorkflowGridColumns_Click" Padding="10,4"/>
+                            <TextBlock Name="NativeImpactSummaryText" Text="Impact measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
+                        </DockPanel>
                     </Border>
                     <GroupBox Grid.Row="2" Header="Native Impact Measurements - editable raw needle percentage samples with computed Excel-style outputs">
                         <DataGrid Name="NativeImpactGrid" Style="{StaticResource HighPerformanceDataGrid}" SelectionMode="Single" SelectionUnit="CellOrRowHeader" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" AlternationCount="2" AlternatingRowBackground="#F8FAFC" RowBackground="#FFFFFF" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="8" CellEditEnding="NativeImpactGrid_CellEditEnding" CurrentCellChanged="NativeImpactGrid_CurrentCellChanged" BeginningEdit="InputDataGrid_BeginningEdit" PreparingCellForEdit="MeasurementGrid_PreparingCellForEdit">
@@ -1927,7 +1941,10 @@
                         <TextBlock Name="NativeStiffnessHelpText" Text="Enter only Revolutions and Degrees. Deflection mm and Modulus MPa are computed read-only using the Excel stiffness formulas and Settings Manager values." Foreground="#64748B" TextWrapping="Wrap"/>
                     </StackPanel>
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
-                        <TextBlock Name="NativeStiffnessSummaryText" Text="Stiffness measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="Reset Columns" Tag="NativeStiffnessGrid" Click="ResetWorkflowGridColumns_Click" Padding="10,4"/>
+                            <TextBlock Name="NativeStiffnessSummaryText" Text="Stiffness measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
+                        </DockPanel>
                     </Border>
                     <GroupBox Grid.Row="2" Header="Native Stiffness Measurements - editable revolutions/degrees with computed Excel-style outputs">
                         <DataGrid Name="NativeStiffnessGrid" Style="{StaticResource HighPerformanceDataGrid}" SelectionMode="Single" SelectionUnit="CellOrRowHeader" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" AlternationCount="2" AlternatingRowBackground="#F8FAFC" RowBackground="#FFFFFF" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="8" CellEditEnding="NativeStiffnessGrid_CellEditEnding" BeginningEdit="InputDataGrid_BeginningEdit" PreparingCellForEdit="MeasurementGrid_PreparingCellForEdit">

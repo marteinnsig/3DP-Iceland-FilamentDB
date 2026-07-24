@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,12 +14,12 @@ public sealed class WorkflowPreferencesService
 
     public WorkflowPreferencesService()
     {
-        var folder = Path.Combine(
+        var folder = IOPath.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "3DPIceland",
             "FilamentDbApp");
-        Directory.CreateDirectory(folder);
-        _settingsPath = Path.Combine(folder, "workflow-preferences.json");
+        IODirectory.CreateDirectory(folder);
+        _settingsPath = IOPath.Combine(folder, "workflow-preferences.json");
         Load();
     }
 
@@ -88,21 +89,15 @@ public sealed class WorkflowPreferencesService
     }
 
     public IReadOnlyList<WorkflowColumnLayout> GetFastMaterialsGridLayout() =>
-        _preferences.FastMaterialsGridLayout
-            .Where(item =>
-                !string.IsNullOrWhiteSpace(item.Key) &&
-                double.IsFinite(item.Width) &&
-                item.Width >= 50 &&
-                item.Width <= 500 &&
-                item.DisplayIndex >= 0)
-            .GroupBy(item => item.Key, StringComparer.Ordinal)
-            .Select(group => group.First())
-            .OrderBy(item => item.DisplayIndex)
-            .ToList();
+        GetFastGridLayout("Materials");
 
-    public void SetFastMaterialsGridLayout(IEnumerable<WorkflowColumnLayout> layout)
+    public IReadOnlyList<WorkflowColumnLayout> GetFastGridLayout(string workspace)
     {
-        _preferences.FastMaterialsGridLayout = layout
+        var layout = string.Equals(workspace, "Materials", StringComparison.Ordinal) &&
+                     !_preferences.FastGridLayouts.ContainsKey(workspace)
+            ? _preferences.FastMaterialsGridLayout
+            : _preferences.FastGridLayouts.GetValueOrDefault(workspace) ?? new List<WorkflowColumnLayout>();
+        return layout
             .Where(item =>
                 !string.IsNullOrWhiteSpace(item.Key) &&
                 double.IsFinite(item.Width) &&
@@ -113,6 +108,35 @@ public sealed class WorkflowPreferencesService
             .Select(group => group.First())
             .OrderBy(item => item.DisplayIndex)
             .ToList();
+    }
+
+    public void SetFastMaterialsGridLayout(IEnumerable<WorkflowColumnLayout> layout) =>
+        SetFastGridLayout("Materials", layout);
+
+    public void SetFastGridLayout(string workspace, IEnumerable<WorkflowColumnLayout> layout)
+    {
+        var normalized = layout
+            .Where(item =>
+                !string.IsNullOrWhiteSpace(item.Key) &&
+                double.IsFinite(item.Width) &&
+                item.Width >= 50 &&
+                item.Width <= 500 &&
+                item.DisplayIndex >= 0)
+            .GroupBy(item => item.Key, StringComparer.Ordinal)
+            .Select(group => group.First())
+            .OrderBy(item => item.DisplayIndex)
+            .ToList();
+        _preferences.FastGridLayouts[workspace] = normalized;
+        if (string.Equals(workspace, "Materials", StringComparison.Ordinal))
+        {
+            _preferences.FastMaterialsGridLayout = normalized;
+        }
+        Save();
+    }
+
+    public void ClearFastMaterialsGridLayout()
+    {
+        _preferences.FastMaterialsGridLayout.Clear();
         Save();
     }
 
@@ -198,7 +222,7 @@ public sealed class WorkflowPreferencesService
             .Select(column => new GridColumnPreference
             {
                 Key = GetColumnKey(column),
-                Width = column.ActualWidth,
+                Width = ResolveColumnWidth(column),
                 DisplayIndex = column.DisplayIndex
             })
             .Where(layout => double.IsFinite(layout.Width))
@@ -207,9 +231,80 @@ public sealed class WorkflowPreferencesService
         // Keep the legacy list populated for downgrade compatibility.
         _preferences.GridColumnWidths[grid.Name] = grid.Columns
             .OrderBy(column => column.DisplayIndex)
-            .Select(column => column.ActualWidth)
+            .Select(ResolveColumnWidth)
             .Where(double.IsFinite)
             .ToList();
+    }
+
+    public static IReadOnlyList<WorkflowColumnLayout> CaptureGridLayout(DataGrid grid) =>
+        grid.Columns
+            .Select(column => new WorkflowColumnLayout(
+                GetColumnKey(column),
+                ResolveColumnWidth(column),
+                column.DisplayIndex))
+            .Where(layout =>
+                !string.IsNullOrWhiteSpace(layout.Key) &&
+                double.IsFinite(layout.Width) &&
+                layout.Width >= 20 &&
+                layout.Width <= 1200 &&
+                layout.DisplayIndex >= 0)
+            .ToList();
+
+    public void ResetGrid(DataGrid grid, IReadOnlyList<WorkflowColumnLayout> defaultLayout)
+    {
+        if (string.IsNullOrWhiteSpace(grid.Name) || defaultLayout.Count == 0) return;
+
+        _preferences.GridColumnLayouts.Remove(grid.Name);
+        _preferences.GridColumnWidths.Remove(grid.Name);
+        ApplyLayout(grid, defaultLayout);
+        CaptureGrid(grid);
+        Save();
+    }
+
+    private static void ApplyLayout(DataGrid grid, IReadOnlyList<WorkflowColumnLayout> layout)
+    {
+        var savedByKey = layout
+            .Where(item => !string.IsNullOrWhiteSpace(item.Key))
+            .GroupBy(item => item.Key, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+
+        foreach (var column in grid.Columns)
+        {
+            if (!savedByKey.TryGetValue(GetColumnKey(column), out var saved)) continue;
+            if (double.IsFinite(saved.Width) && saved.Width >= 20 && saved.Width <= 1200)
+            {
+                column.Width = new DataGridLength(saved.Width);
+            }
+        }
+
+        var ordered = grid.Columns
+            .Select((column, originalIndex) =>
+            {
+                var savedIndex = savedByKey.TryGetValue(GetColumnKey(column), out var saved)
+                    ? saved.DisplayIndex
+                    : int.MaxValue;
+                return (Column: column, OriginalIndex: originalIndex, SavedIndex: savedIndex);
+            })
+            .OrderBy(item => item.SavedIndex)
+            .ThenBy(item => item.OriginalIndex)
+            .Select(item => item.Column)
+            .ToList();
+        for (var index = 0; index < ordered.Count; index++)
+        {
+            ordered[index].DisplayIndex = index;
+        }
+    }
+
+    private static double ResolveColumnWidth(DataGridColumn column)
+    {
+        if (column.Width.UnitType == DataGridLengthUnitType.Pixel &&
+            double.IsFinite(column.Width.Value) &&
+            column.Width.Value >= 20)
+        {
+            return column.Width.Value;
+        }
+
+        return column.ActualWidth;
     }
 
     private static string GetColumnKey(DataGridColumn column)
@@ -240,7 +335,7 @@ public sealed class WorkflowPreferencesService
         try
         {
             var json = JsonSerializer.Serialize(_preferences, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(_settingsPath, json);
+            SafeFileOperations.WriteAllTextAtomic(_settingsPath, json, new UTF8Encoding(false));
         }
         catch (IOException)
         {
@@ -261,8 +356,8 @@ public sealed class WorkflowPreferencesService
     {
         try
         {
-            if (!File.Exists(_settingsPath)) return;
-            _preferences = JsonSerializer.Deserialize<WorkflowPreferences>(File.ReadAllText(_settingsPath)) ?? new WorkflowPreferences();
+            if (!IOFile.Exists(_settingsPath)) return;
+            _preferences = JsonSerializer.Deserialize<WorkflowPreferences>(IOFile.ReadAllText(_settingsPath)) ?? new WorkflowPreferences();
         }
         catch (JsonException)
         {
@@ -286,6 +381,7 @@ public sealed class WorkflowPreferencesService
         public string WebsiteExportFolder { get; set; } = string.Empty;
         public string LastSelectedMaterialId { get; set; } = string.Empty;
         public List<WorkflowColumnLayout> FastMaterialsGridLayout { get; set; } = new();
+        public Dictionary<string, List<WorkflowColumnLayout>> FastGridLayouts { get; set; } = new(StringComparer.Ordinal);
         public Dictionary<string, List<double>> GridColumnWidths { get; set; } = new(StringComparer.Ordinal);
         public Dictionary<string, List<GridColumnPreference>> GridColumnLayouts { get; set; } = new(StringComparer.Ordinal);
     }

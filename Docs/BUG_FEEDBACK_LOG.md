@@ -30,16 +30,32 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 13 |
-| In progress | 0 |
-| Partially solved | 4 |
+| Open | 14 |
+| In progress | 1 |
+| Partially solved | 3 |
 | Solved | 29 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **50** |
+| **Total tracked findings** | **51** |
 
 ## Tracked findings
+
+Date: 2026-07-24
+Area: Materials / Tensile / Impact / Stiffness default row ordering
+Type: Workflow friction / UI polish
+Severity: Minor
+Status: Open
+Resolution: Add a researched default sort that orders canonical MaterialID values numerically ascending across the four daily grids.
+Preserve explicit user sorting and saved layout behavior; do not use lexical ordering that places `MAT10` before `MAT2`, and do not
+renumber, rewrite or move canonical rows in SQLite.
+Verification evidence: Requires caller/view ownership research plus first-load, reset, filter, edit, restart and fallback-grid runtime
+acceptance with the lowest MaterialID at the top and newest/highest MaterialID at the bottom.
+What happened: Default views in Materials, Tensile, Impact and Stiffness are not consistently presented in ascending MaterialID order.
+Expected behavior: On an unsorted/default view, show the lowest numeric MaterialID first and the newest/highest MaterialID last in all
+four workflows.
+Steps to reproduce: Open each of Materials, Tensile, Impact and Stiffness without applying a manual sort and compare the row order.
+Screenshot / export / report attached: User feedback on 2026-07-24.
 
 Date: 2026-07-24
 Area: Application-wide user help and workflow guidance
@@ -406,9 +422,15 @@ discovery/restore of existing `.sqlite` backup files. Do not rename or delete
 existing backups automatically.
 
 improvement — user-reorderable workflow columns (v44.2 candidate):
-Status: Partially solved
-Resolution: Machine-local keyed column width/order persistence was runtime accepted in v44.2.0. The requested explicit `Reset columns to default` action is not proven delivered and remains open.
-Verification evidence: v44.2.0 Full Data Verification 298/298 PASS; v44.6.2 also accepted editing after column reordering.
+Status: In progress
+Resolution: v44.7.3 supersedes repeated editable-DataGrid reset fixes with an
+approved phased Fast Workflow Grid migration. Tensile is the first candidate;
+the legacy Tensile grid remains a visible fallback until runtime acceptance.
+Verification evidence: Debug/Release pass. Runtime editing, calculation,
+autosave, layout restart and fallback were accepted with Full Data Verification
+315/315. First runtime editing found commit-time row rebuild returned MAT0206
+selection to MAT0102; the accepted correction refreshes computed cells in
+place. Owner reported Fast Tensile noticeably snappier than the legacy grid.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

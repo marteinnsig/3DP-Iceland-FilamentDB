@@ -1,6 +1,19 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.3 - Fast Workflow Grid - Tensile
+
+- Runtime-accepted first Fast Workflow Grid migration.
+- Makes the viewport-only Fast Tensile view the default while retaining a
+  visible one-click legacy-grid fallback.
+- Preserves canonical tensile rows, formulas, validation, filters, sample
+  colors, measurement dates and SQLite auto-save.
+- Persists keyed Fast Tensile layout immediately after resize/reorder.
+- Owner runtime testing accepted the full checklist and found the view
+  noticeably more responsive than the legacy grid.
+- Debug/Release, documentation and vulnerability gates passed; Full Data
+  Verification passed 315/315.
+
 ## v44.7.2 - Validation Help Clarity
 
 - Runtime-accepted bounded Materials guidance release.

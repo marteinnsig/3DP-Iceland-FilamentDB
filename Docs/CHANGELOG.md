@@ -2,6 +2,32 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.3 - Fast Workflow Grid - Tensile Candidate
+
+- Generalized the accepted Fast Materials renderer so canonical workflow rows
+  can reuse its viewport-only rendering and editing contracts.
+- Added Fast Tensile as the startup-default Tensile view with a visible
+  one-click legacy-grid fallback.
+- Reused canonical tensile row objects, formulas, filters, validation,
+  measurement-date assignment, summaries, test-status refresh and SQLite
+  auto-save.
+- Retained tensile sample color bands, computed-cell distinction, keyboard
+  navigation and single-cell copy/paste.
+- Fixed the first runtime finding where committing MAT0206 rebuilt the visible
+  list, restored canonical order and moved selection to MAT0102. Computed
+  values now refresh in place without changing row order or selection.
+- Added separate keyed Fast Tensile column width/order persistence and a
+  Default-No reset.
+- Retained immediate native DataGrid layout persistence as fallback safety.
+- Left Impact, Stiffness and Settings on their accepted paths until sequential
+  runtime migration.
+- Preserved SQLite, reports, publishing, updater and recovery behavior.
+- Debug and Release passed with zero warnings/errors; documentation/static and
+  vulnerability gates passed.
+- Owner runtime testing accepted the complete checklist and reported that Fast
+  Tensile is noticeably snappier than the legacy grid.
+- Full Data Verification passed 315/315; v44.7.3 is accepted.
+
 ## v44.7.2 - Validation Help Clarity
 
 - Added concise Materials help defining the five required row-identity fields.

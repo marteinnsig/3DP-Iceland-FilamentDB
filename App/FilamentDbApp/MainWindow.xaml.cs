@@ -114,6 +114,10 @@ public partial class MainWindow : Window
     {
         Interval = TimeSpan.FromMilliseconds(450)
     };
+    private readonly DispatcherTimer _workflowLayoutSaveDebounceTimer = new()
+    {
+        Interval = TimeSpan.FromMilliseconds(250)
+    };
     private readonly DispatcherTimer _transientStatusTimer = new()
     {
         Interval = TimeSpan.FromSeconds(3)
@@ -129,6 +133,9 @@ public partial class MainWindow : Window
     private bool _measurementWorkspaceWarmUpQueued;
     private bool _measurementWorkspaceWarmUpCompleted;
     private string _measurementWorkspaceWarmUpError = string.Empty;
+    private readonly Dictionary<string, IReadOnlyList<WorkflowColumnLayout>> _defaultWorkflowGridLayouts =
+        new(StringComparer.Ordinal);
+    private DataGrid? _pendingWorkflowLayoutGrid;
     private readonly List<VideoPlannerRow> _recommendationVideoIdeas = new();
     private IReadOnlyList<AnalyticsDisplayRow> _currentAnalyticsRows = Array.Empty<AnalyticsDisplayRow>();
     private string _currentAnalyticsModeLabel = "All filament samples";
@@ -140,6 +147,7 @@ public partial class MainWindow : Window
         RunStartupPhase("Website template manager", RefreshWebsiteTemplateManager);
         _nativeMaterialSearchDebounceTimer.Tick += NativeMaterialSearchDebounceTimer_Tick;
         _nativeMaterialEditDebounceTimer.Tick += NativeMaterialEditDebounceTimer_Tick;
+        _workflowLayoutSaveDebounceTimer.Tick += WorkflowLayoutSaveDebounceTimer_Tick;
         _transientStatusTimer.Tick += (_, _) =>
         {
             _transientStatusTimer.Stop();
@@ -159,6 +167,7 @@ public partial class MainWindow : Window
         RunStartupPhase("Experimental workspace initialization", InitializeExperimentalMaterialManager);
         RunStartupPhase("Purchasing workspace initialization", InitializePurchaseOrderManager);
         RunStartupPhase("Tensile workspace initialization", InitializeNativeTensileMeasurements);
+        RunStartupPhase("Fast Tensile candidate view", ActivateDefaultFastTensileView);
         RunStartupPhase("Impact workspace initialization", InitializeNativeImpactMeasurements);
         RunStartupPhase("Stiffness workspace initialization", InitializeNativeStiffnessMeasurements);
         UpdateNativeWorkflowStatus("Auto-save ready");
@@ -300,6 +309,7 @@ public partial class MainWindow : Window
         foreach (var gridName in WorkflowGridNames)
         {
             if (FindName(gridName) is not DataGrid grid) continue;
+            _defaultWorkflowGridLayouts[gridName] = WorkflowPreferencesService.CaptureGridLayout(grid);
             if (_workflowPreferencesService.HasSavedGridWidths(grid))
             {
                 _workflowPreferencesService.RestoreGrid(grid);
@@ -327,6 +337,10 @@ public partial class MainWindow : Window
             grid.PreviewMouseDoubleClick -= WorkflowGrid_PreviewMouseDoubleClick;
             grid.PreviewMouseDoubleClick += WorkflowGrid_PreviewMouseDoubleClick;
             grid.ContextMenu = CreateWorkflowCellContextMenu(grid);
+            grid.ColumnReordered -= WorkflowGrid_ColumnReordered;
+            grid.ColumnReordered += WorkflowGrid_ColumnReordered;
+            grid.RemoveHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(WorkflowGrid_ColumnResizeCompleted));
+            grid.AddHandler(Thumb.DragCompletedEvent, new DragCompletedEventHandler(WorkflowGrid_ColumnResizeCompleted), true);
 
             // Bind clipboard commands directly on the DataGrid as well as handling
             // PreviewKeyDown. WPF editing controls can otherwise consume Ctrl+C/Ctrl+V
@@ -2495,6 +2509,134 @@ public partial class MainWindow : Window
             });
         }
     }
+
+    private void WorkflowGrid_ColumnReordered(object? sender, DataGridColumnEventArgs e)
+    {
+        if (sender is DataGrid grid) QueueWorkflowLayoutSave(grid);
+    }
+
+    private void WorkflowGrid_ColumnResizeCompleted(object sender, DragCompletedEventArgs e)
+    {
+        if (sender is not DataGrid grid ||
+            FindVisualParent<DataGridColumnHeader>(e.OriginalSource as DependencyObject) is null)
+        {
+            return;
+        }
+
+        QueueWorkflowLayoutSave(grid);
+    }
+
+    private void QueueWorkflowLayoutSave(DataGrid grid)
+    {
+        _pendingWorkflowLayoutGrid = grid;
+        _workflowLayoutSaveDebounceTimer.Stop();
+        _workflowLayoutSaveDebounceTimer.Start();
+    }
+
+    private void WorkflowLayoutSaveDebounceTimer_Tick(object? sender, EventArgs e)
+    {
+        _workflowLayoutSaveDebounceTimer.Stop();
+        var grid = _pendingWorkflowLayoutGrid;
+        _pendingWorkflowLayoutGrid = null;
+        if (grid is null || string.IsNullOrWhiteSpace(grid.Name)) return;
+
+        _workflowPreferencesService.CaptureGrid(grid);
+        _workflowPreferencesService.Save();
+        ShowTransientStatus($"{grid.Name} column layout saved.");
+    }
+
+    private void ResetCurrentWorkflowColumns_Click(object sender, RoutedEventArgs e)
+    {
+        var header = (WorkspaceTabs.SelectedItem as TabItem)?.Header?.ToString() ?? string.Empty;
+        if (header == "Materials" && FastMaterialsViewMenuItem.IsChecked)
+        {
+            if (_embeddedMaterialsPrototypeView is not null &&
+                !_embeddedMaterialsPrototypeView.ConfirmCanClose())
+            {
+                return;
+            }
+
+            if (!ConfirmWorkflowLayoutReset("Fast Materials")) return;
+            _workflowPreferencesService.ClearFastMaterialsGridLayout();
+            CloseEmbeddedFastMaterialsView();
+            ActivateFastMaterialsView();
+            ShowTransientStatus("Fast Materials columns reset to defaults.");
+            return;
+        }
+
+        var gridName = header switch
+        {
+            "Materials" => "NativeMaterialsGrid",
+            "Tensile Measurements" => "NativeTensileGrid",
+            "Impact Measurements" => "NativeImpactGrid",
+            "Stiffness Measurements" => "NativeStiffnessGrid",
+            "Settings Manager" => "NativeSettingsGrid",
+            "Manufacturers" => "ManufacturersGrid",
+            _ => string.Empty
+        };
+        if (string.IsNullOrWhiteSpace(gridName) ||
+            FindName(gridName) is not DataGrid grid ||
+            !_defaultWorkflowGridLayouts.TryGetValue(gridName, out var defaultLayout))
+        {
+            MessageBox.Show(
+                this,
+                "The current workspace does not own a resettable workflow grid.",
+                "Reset Workflow Columns",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        if (!ConfirmWorkflowLayoutReset(header)) return;
+        ResetWorkflowGridToDefaults(grid, defaultLayout, header);
+    }
+
+    private void ResetWorkflowGridColumns_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: string gridName } ||
+            FindName(gridName) is not DataGrid grid ||
+            !_defaultWorkflowGridLayouts.TryGetValue(gridName, out var defaultLayout))
+        {
+            MessageBox.Show(
+                this,
+                "This workflow grid does not have a captured default layout.",
+                "Reset Workflow Columns",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        var workspace = gridName switch
+        {
+            "NativeTensileGrid" => "Tensile Measurements",
+            "NativeImpactGrid" => "Impact Measurements",
+            "NativeStiffnessGrid" => "Stiffness Measurements",
+            _ => gridName
+        };
+        if (!ConfirmWorkflowLayoutReset(workspace)) return;
+        ResetWorkflowGridToDefaults(grid, defaultLayout, workspace);
+    }
+
+    private void ResetWorkflowGridToDefaults(
+        DataGrid grid,
+        IReadOnlyList<WorkflowColumnLayout> defaultLayout,
+        string workspace)
+    {
+        _workflowLayoutSaveDebounceTimer.Stop();
+        _pendingWorkflowLayoutGrid = null;
+        _workflowPreferencesService.ResetGrid(grid, defaultLayout);
+        grid.UpdateLayout();
+        ShowTransientStatus($"{workspace} columns reset to defaults.");
+    }
+
+    private bool ConfirmWorkflowLayoutReset(string workspace) =>
+        MessageBox.Show(
+            this,
+            $"Reset column widths and order for {workspace} to application defaults? Other workspaces are not changed.",
+            "Reset Workflow Columns",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question,
+            MessageBoxResult.No) == MessageBoxResult.Yes;
 
     private static readonly string[] MeasurementDateDetailLabels =
     {
@@ -17165,6 +17307,28 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             materialValidationHelpReady && releaseIdentityReady
                 ? "Materials explains the five required row-identity fields and OK meaning while the established ValidationSummary rules remain unchanged"
                 : "Material row Validation help text, established required-field rules or release identity failed"));
+        var workflowLayoutResetReady =
+            WorkflowGridNames.Contains("NativeTensileGrid", StringComparer.Ordinal) &&
+            WorkflowGridNames.Contains("NativeImpactGrid", StringComparer.Ordinal) &&
+            WorkflowGridNames.Contains("NativeStiffnessGrid", StringComparer.Ordinal) &&
+            typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.CaptureGridLayout)) is not null &&
+            typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.ResetGrid)) is not null &&
+            typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.ClearFastMaterialsGridLayout)) is not null &&
+            typeof(MainWindow).GetMethod(nameof(WorkflowGrid_ColumnResizeCompleted), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(WorkflowGrid_ColumnReordered), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ResetCurrentWorkflowColumns_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ResetWorkflowGridColumns_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        var fastTensileReady =
+            typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.GetFastGridLayout)) is not null &&
+            typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.SetFastGridLayout)) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ActivateDefaultFastTensileView), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ApplyFastTensileChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ToggleFastTensileView_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v44.7.3 Fast Workflow Grid - Tensile candidate release gate",
+            workflowLayoutResetReady && fastTensileReady && releaseIdentityReady,
+            workflowLayoutResetReady && fastTensileReady && releaseIdentityReady
+                ? "Fast Tensile owns separate keyed layout state, canonical measurement apply/save integration and a visible legacy-grid fallback"
+                : "Fast Tensile layout, canonical apply, fallback, retained layout safety or release identity failed"));
 
         return checks;
     }
