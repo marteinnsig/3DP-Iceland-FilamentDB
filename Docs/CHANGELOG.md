@@ -1,4 +1,15 @@
-## v44.5.5 - Retired Legacy Write Entry Points (candidate)
+## v44.5.6 - Retired Workbook Metadata Readers (candidate)
+
+- Removed imported-workbook sheet status from Material Detail.
+- Removed the legacy Database Engine Stats UI and original import metadata from
+  System Diagnostics.
+- Removed the two caller-exclusive database readers and display models.
+- Preserved legacy tables for a separate backup-first schema migration.
+- Preserved compatibility inspection, governed Excel disaster recovery,
+  explicit SQLite restore and JSON migration snapshots.
+- Awaiting runtime Full Data Verification and UI acceptance.
+
+## v44.5.5 - Retired Legacy Write Entry Points
 
 - Removed caller-free `ReplaceWorkbook`, `ReplaceMaterials` and `ClearCache`
   public database write entry points.
@@ -7,7 +18,8 @@
 - Preserved governed Excel disaster recovery, explicit SQLite restore and JSON
   migration snapshots.
 - Added a Verification gate for the retired write/read-compatibility boundary.
-- Awaiting runtime Full Data Verification and UI acceptance.
+- Runtime Full Data Verification passed 306/306 with zero failures; Material
+  Detail, diagnostics and recovery surfaces were accepted.
 
 ## v44.5.4 - Measurement Help Clarity
 

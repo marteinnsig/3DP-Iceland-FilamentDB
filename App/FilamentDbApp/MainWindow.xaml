@@ -181,7 +181,6 @@
             <MenuItem Header="_Tools">
                 <MenuItem Header="Validate Materials" Click="ValidateNativeMaterials_Click" />
                 <MenuItem Header="Rebuild Computed Fields" Click="RebuildNativeMaterialDisplayNames_Click" />
-                <MenuItem Header="Database Engine Stats" Click="ShowDatabaseStats_Click" />
                 <MenuItem Header="Materials Rendering Prototype..." Click="ShowMaterialsRenderingPrototype_Click" />
                 <MenuItem Name="FastMaterialsViewMenuItem" Header="Use Fast Materials View (Preview)" IsCheckable="True" Click="ToggleFastMaterialsView_Click" />
                 <MenuItem Header="Update Readiness..." Click="UpdateReadiness_Click" />
@@ -954,18 +953,6 @@
                                                         </Border>
                                                     </DataTemplate>
                                                 </ListView.ItemTemplate>
-                                            </ListView>
-
-                                            <TextBlock Text="Imported test sheets" FontWeight="SemiBold" Margin="0,0,0,6" />
-                                            <ListView x:Name="MechanicalSheetStatusList" Margin="0,0,0,16" BorderBrush="#E2E8F0" BorderThickness="1">
-                                                <ListView.View>
-                                                    <GridView>
-                                                        <GridViewColumn Header="Test" DisplayMemberBinding="{Binding TestType}" Width="85" />
-                                                        <GridViewColumn Header="Sheet" DisplayMemberBinding="{Binding SheetName}" Width="165" />
-                                                        <GridViewColumn Header="Status" DisplayMemberBinding="{Binding StatusText}" Width="90" />
-                                                        <GridViewColumn Header="Values" DisplayMemberBinding="{Binding NonEmptyValues}" Width="70" />
-                                                    </GridView>
-                                                </ListView.View>
                                             </ListView>
 
                                             <TextBlock Text="Summary metrics" FontWeight="SemiBold" Margin="0,0,0,6" />

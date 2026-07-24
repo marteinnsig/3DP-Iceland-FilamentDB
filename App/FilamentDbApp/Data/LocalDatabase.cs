@@ -2343,26 +2343,6 @@ INSERT INTO VideoIdeaQueue (
         return value == DBNull.Value ? string.Empty : value?.ToString() ?? string.Empty;
     }
 
-    public DatabaseStats GetDatabaseStats()
-    {
-        using var connection = new SqliteConnection(ConnectionString);
-        connection.Open();
-
-        var latest = GetLatestImport(connection);
-        return new DatabaseStats
-        {
-            Materials = CountRows(connection, "Materials"),
-            Manufacturers = CountRows(connection, "Manufacturers"),
-            ImportedSheets = CountRows(connection, "ExcelSheets"),
-            ImportedRows = CountRows(connection, "ExcelSheetRows"),
-            ImportedCells = CountRows(connection, "ExcelSheetCells"),
-            TestSummaryValues = CountRows(connection, "TestSummaryValues"),
-            LastImportedFile = latest.FileName,
-            LastImportedAtUtc = latest.ImportedAtUtc
-        };
-    }
-
-
     public TensileTestResult? GetTensileTestResult(string materialId)
     {
         if (string.IsNullOrWhiteSpace(materialId)) return null;
@@ -2632,52 +2612,6 @@ ORDER BY
         }
 
         return metrics;
-    }
-
-    public IReadOnlyList<MechanicalSheetStatus> GetMechanicalSheetStatus(string materialId)
-    {
-        var result = new List<MechanicalSheetStatus>();
-        if (string.IsNullOrWhiteSpace(materialId)) return result;
-
-        using var connection = new SqliteConnection(ConnectionString);
-        connection.Open();
-
-        using var command = connection.CreateCommand();
-        command.CommandText = @"
-SELECT s.SheetName,
-       s.Purpose,
-       COUNT(r.RowId) AS MatchingRows,
-       COUNT(c.CellValue) AS NonEmptyValues
-FROM ExcelSheets s
-LEFT JOIN ExcelSheetRows r ON r.SheetId = s.SheetId AND r.MaterialId = $materialId
-LEFT JOIN ExcelSheetCells c ON c.RowId = r.RowId
-WHERE s.Purpose LIKE 'Mechanical test%'
-GROUP BY s.SheetId, s.SheetName, s.Purpose
-ORDER BY s.SheetName;";
-        AddParameter(command, "$materialId", materialId);
-
-        using var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            var sheetName = reader["SheetName"]?.ToString() ?? string.Empty;
-            result.Add(new MechanicalSheetStatus
-            {
-                TestType = SheetNameToTestType(sheetName),
-                SheetName = sheetName,
-                HasRowsForMaterial = Convert.ToInt32(reader["MatchingRows"] ?? 0) > 0,
-                NonEmptyValues = Convert.ToInt32(reader["NonEmptyValues"] ?? 0)
-            });
-        }
-
-        return result;
-    }
-
-    private static string SheetNameToTestType(string sheetName)
-    {
-        if (sheetName.Contains("Tensile", StringComparison.OrdinalIgnoreCase)) return "Tensile";
-        if (sheetName.Contains("Impact", StringComparison.OrdinalIgnoreCase)) return "Impact";
-        if (sheetName.Contains("Stiffness", StringComparison.OrdinalIgnoreCase)) return "Stiffness";
-        return sheetName;
     }
 
     private static void ClearEngineTables(SqliteConnection connection, SqliteTransaction transaction)

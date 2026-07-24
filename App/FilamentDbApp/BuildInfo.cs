@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "RETIRED-LEGACY-WRITE-ENTRYPOINTS";
-    public const string ReleaseTitle = "Retired Legacy Write Entry Points";
+    public const string ReleaseCode = "RETIRED-WORKBOOK-METADATA-READERS";
+    public const string ReleaseTitle = "Retired Workbook Metadata Readers";
 
     public static string Version
     {

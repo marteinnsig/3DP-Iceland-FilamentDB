@@ -1960,7 +1960,6 @@ public partial class MainWindow : Window
         {
             ResetEngineeringDashboard();
             TensileSummaryList.ItemsSource = null;
-            MechanicalSheetStatusList.ItemsSource = null;
             MechanicalMetricsList.ItemsSource = null;
             return;
         }
@@ -1974,16 +1973,6 @@ public partial class MainWindow : Window
         RenderChartScores(tensile, summaryMetrics);
         TensileSummaryList.ItemsSource = BuildTensileSummaryFields(tensile);
 
-        var sheetStatuses = _database.GetMechanicalSheetStatus(materialId)
-            .Select(s => new
-            {
-                s.TestType,
-                s.SheetName,
-                StatusText = s.HasRowsForMaterial ? "Imported" : "No row",
-                s.NonEmptyValues
-            })
-            .ToList();
-
         var metrics = summaryMetrics
             .Select(m => new
             {
@@ -1994,7 +1983,6 @@ public partial class MainWindow : Window
             })
             .ToList();
 
-        MechanicalSheetStatusList.ItemsSource = sheetStatuses;
         MechanicalMetricsList.ItemsSource = metrics;
     }
 
@@ -2539,7 +2527,6 @@ public partial class MainWindow : Window
         DetailSubtitleText.Text = "Click a material row to see all imported fields.";
         GroupedDetailsPanel.Children.Clear();
         TensileSummaryList.ItemsSource = null;
-        MechanicalSheetStatusList.ItemsSource = null;
         MechanicalMetricsList.ItemsSource = null;
         ResetEngineeringDashboard();
         ResetChartScores();
@@ -13491,29 +13478,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
     }
 
 
-    private void ShowDatabaseStats_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var stats = _database.GetDatabaseStats();
-            var message = $"Materials: {stats.Materials}\n" +
-                          $"Manufacturers: {stats.Manufacturers}\n" +
-                          $"Imported workbook sheets: {stats.ImportedSheets}\n" +
-                          $"Imported sheet rows: {stats.ImportedRows}\n" +
-                          $"Imported non-empty cells: {stats.ImportedCells}\n" +
-                          $"Test summary values: {stats.TestSummaryValues}\n" +
-                          $"Last imported file: {stats.LastImportedFile ?? "None"}\n" +
-                          $"Last imported UTC: {stats.LastImportedAtUtc ?? "None"}\n\n" +
-                          $"Database path:\n{_database.DatabasePath}";
-
-            MessageBox.Show(this, message, "Database Engine Stats", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(this, ex.Message, "Could not read database stats", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-    }
-
     private void UpdateReadiness_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new OpenFileDialog
@@ -14149,22 +14113,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Native impact rows: " + _nativeImpactRows.Count);
         sb.AppendLine("Native stiffness rows: " + _nativeStiffnessRows.Count);
         sb.AppendLine("Native settings rows: " + _nativeSettingsRows.Count);
-        try
-        {
-            var stats = _database.GetDatabaseStats();
-            sb.AppendLine("Legacy normalized Materials rows (non-canonical): " + stats.Materials);
-            sb.AppendLine("SQLite manufacturers: " + stats.Manufacturers);
-            sb.AppendLine("Imported sheets: " + stats.ImportedSheets);
-            sb.AppendLine("Imported rows: " + stats.ImportedRows);
-            sb.AppendLine("Imported non-empty cells: " + stats.ImportedCells);
-            sb.AppendLine("Test summary values: " + stats.TestSummaryValues);
-            sb.AppendLine("Last imported file: " + (stats.LastImportedFile ?? "None"));
-            sb.AppendLine("Last imported UTC: " + (stats.LastImportedAtUtc ?? "None"));
-        }
-        catch (Exception ex)
-        {
-            sb.AppendLine("SQLite stats unavailable: " + ex.Message);
-        }
         sb.AppendLine();
 
         sb.AppendLine("Calculation Engine");
@@ -16791,14 +16739,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var retiredLegacyWriteEntryPointsReady =
             typeof(LocalDatabase).GetMethod("ReplaceWorkbook") is null &&
             typeof(LocalDatabase).GetMethod("ReplaceMaterials") is null &&
-            typeof(LocalDatabase).GetMethod("ClearCache") is null &&
-            typeof(LocalDatabase).GetMethod("GetDatabaseStats") is not null &&
-            typeof(LocalDatabase).GetMethod("GetMechanicalSheetStatus") is not null;
+            typeof(LocalDatabase).GetMethod("ClearCache") is null;
         checks.Add(new VerificationCheck("v44.5.5 Retired legacy write entry points release gate",
             retiredLegacyWriteEntryPointsReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady,
             retiredLegacyWriteEntryPointsReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
                 ? "Caller-free workbook/material/cache replacement entry points are absent while legacy-table readers, schema compatibility, governed Excel disaster recovery and explicit SQLite restore remain available"
                 : "A retired legacy write entry point remains or a required read/compatibility/recovery boundary failed"));
+        var retiredWorkbookMetadataReadersReady =
+            typeof(LocalDatabase).GetMethod("GetDatabaseStats") is null &&
+            typeof(LocalDatabase).GetMethod("GetMechanicalSheetStatus") is null &&
+            typeof(MainWindow).GetMethod("ShowDatabaseStats_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetField("MechanicalSheetStatusList", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public) is null;
+        checks.Add(new VerificationCheck("v44.5.6 Retired workbook metadata readers release gate",
+            retiredWorkbookMetadataReadersReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady,
+            retiredWorkbookMetadataReadersReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
+                ? "Original-workbook sheet metadata is absent from Material Detail, Tools and diagnostics while supported-schema inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
+                : "A workbook metadata reader/UI surface remains or a required compatibility/recovery boundary failed"));
         var compatibilityCatalog = _database.GetLocalBackupCatalog();
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
