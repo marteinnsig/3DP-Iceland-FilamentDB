@@ -1,6 +1,19 @@
-# Current Build Notes - v44.5.3
+# Current Build Notes - v44.5.4
 
-## Canonical Storage Terminology candidate
+## Measurement Help Clarity candidate
+
+v44.5.4 removes literal duplicated sentence fragments from the Tensile,
+Impact and Stiffness measurement workspace instructions. The three help
+surfaces now have stable names and a Verification gate checks their complete
+accepted wording so the duplication cannot silently return.
+
+Only XAML help text, release identity, Verification coverage and documentation
+are changed. Measurement inputs, calculations, SQLite/JSON compatibility,
+Excel disaster recovery, restore, updater, reports, website and FTPS behavior
+are unchanged. Runtime Full Data Verification and visual acceptance are
+required.
+
+## Canonical Storage Terminology
 
 v44.5.3 removes stale user-visible `JSON transition`, mixed-storage and
 general Excel-import wording from About and the native measurement status
@@ -13,7 +26,8 @@ disaster-recovery export/verification/explicit restore, SQLite backup and
 explicit restore, updater, reports, website and FTPS behavior are unchanged.
 A new Verification gate requires canonical SQLite terminology together with
 all four JSON migration readers and both recovery boundaries. Runtime Full
-Data Verification and UI acceptance are required.
+Data Verification passed 304/304 with zero failures on 2026-07-24; v44.5.3 is
+runtime accepted.
 
 ## Canonical SQLite UI Boundaries
 

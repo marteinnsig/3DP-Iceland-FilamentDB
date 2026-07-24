@@ -8,10 +8,10 @@
     <ApplicationIcon>Assets\3dp-iceland-labs-icon.ico</ApplicationIcon>
     <AssemblyName>3DPIcelandFilamentDB</AssemblyName>
     <RootNamespace>FilamentDbApp</RootNamespace>
-    <Version>44.5.3</Version>
-    <AssemblyVersion>44.5.3.0</AssemblyVersion>
-    <FileVersion>44.5.3.0</FileVersion>
-    <InformationalVersion>44.5.3-CANONICAL-STORAGE-TERMINOLOGY</InformationalVersion>
+    <Version>44.5.4</Version>
+    <AssemblyVersion>44.5.4.0</AssemblyVersion>
+    <FileVersion>44.5.4.0</FileVersion>
+    <InformationalVersion>44.5.4-MEASUREMENT-HELP-CLARITY</InformationalVersion>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Copyright>Copyright © 2026 Marteinn Sigurðsson / 3DPIceland Labs</Copyright>
   </PropertyGroup>

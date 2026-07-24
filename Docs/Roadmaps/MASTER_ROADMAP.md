@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.5.2 — Canonical SQLite UI Boundaries**
+Current canonical release: **v44.5.3 — Canonical Storage Terminology**
 
-Last runtime-accepted baseline: **v44.5.2 — Canonical SQLite UI Boundaries**
+Last runtime-accepted baseline: **v44.5.3 — Canonical Storage Terminology**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -821,8 +821,9 @@ Status: **First bounded increment complete and runtime accepted as v44.5.0 —
 Retired Excel Import Surface. Second bounded increment complete and runtime
 accepted as v44.5.1 — Active SQLite Compatibility Safety. Third bounded
 increment complete and runtime accepted as v44.5.2 — Canonical SQLite UI
-Boundaries. Fourth bounded increment implemented for runtime acceptance as
-v44.5.3 — Canonical Storage Terminology.**
+Boundaries. Fourth bounded increment complete and runtime accepted as v44.5.3
+— Canonical Storage Terminology. Fifth bounded increment implemented for
+runtime acceptance as v44.5.4 — Measurement Help Clarity.**
 
 - The unreachable original-Excel database import handler and its
   caller-exclusive importer services are removed. Lower-level SQLite legacy
@@ -845,6 +846,9 @@ v44.5.3 — Canonical Storage Terminology.**
   corrects remaining user-visible `JSON transition`/general Excel-import
   terminology while retaining the supported JSON empty-database migration,
   governed Excel disaster recovery and explicit SQLite restore paths.
+- Runtime Full Data Verification passed 304/304 with zero failures. v44.5.4
+  removes literal duplicated instruction fragments from the three native
+  measurement workspaces without changing calculation or storage behavior.
 
 - Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state ownership.
 - Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete UI, dead handlers/services and stale documentation in small reviewed increments.

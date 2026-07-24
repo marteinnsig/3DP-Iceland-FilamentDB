@@ -20,6 +20,15 @@ Screenshot / export / report attached:
 ## Open findings
 
 Date: 2026-07-24
+Area: Tensile / Impact / Stiffness Measurements
+Type: UI polish
+Severity: Minor
+What happened: The instructional sentence at the top of each native measurement workspace is duplicated inside the XAML text itself.
+Expected behavior: Each Tensile, Impact and Stiffness instruction appears once, followed by its calculation/read-only field guidance.
+Steps to reproduce: Open each of the three measurement tabs and read the instruction directly below the page heading.
+Screenshot / export / report attached: v44.5.3 runtime screenshots `codex-clipboard-ca877ee8-7358-4c0d-85d4-28a91426487f.png`, `codex-clipboard-967228f4-533e-4771-a97e-ae142b6fb715.png` and `codex-clipboard-050971f8-3092-468c-8e14-4f1fafee3f63.png`.
+
+Date: 2026-07-24
 Area: Verification Center / System Diagnostics exports
 Type: Workflow friction / UI polish
 Severity: Minor

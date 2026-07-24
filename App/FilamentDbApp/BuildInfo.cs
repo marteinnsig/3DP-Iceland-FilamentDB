@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "CANONICAL-STORAGE-TERMINOLOGY";
-    public const string ReleaseTitle = "Canonical Storage Terminology";
+    public const string ReleaseCode = "MEASUREMENT-HELP-CLARITY";
+    public const string ReleaseTitle = "Measurement Help Clarity";
 
     public static string Version
     {

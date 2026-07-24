@@ -1765,7 +1765,7 @@
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Margin="0,0,0,10">
                         <TextBlock Text="Tensile Measurements" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,4"/>
-                        <TextBlock Text="Identity fields are synced from Material Manager/imported materials; Identity fields are synced from Material Manager/imported materials; raw sample values are editable; MPa, standard deviation, CV, sample count and confidence are computed read-only fields using the Excel tensile cross-section setting." Foreground="#64748B" TextWrapping="Wrap"/>
+                        <TextBlock Name="NativeTensileHelpText" Text="Identity fields are synced from Material Manager; raw sample values are editable; MPa, standard deviation, CV, sample count and confidence are computed read-only fields using the Excel tensile cross-section setting." Foreground="#64748B" TextWrapping="Wrap"/>
                     </StackPanel>
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
                         <TextBlock Name="NativeTensileSummaryText" Text="Tensile measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
@@ -1845,7 +1845,7 @@
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Margin="0,0,0,10">
                         <TextBlock Text="Impact Measurements" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,4"/>
-                        <TextBlock Text="Enter the raw needle percentage values from the impact rig. Enter the raw needle percentage values from the impact rig. kJ/m², standard deviation, CV, samples and confidence are computed read-only using the Excel impact formula and Settings Manager values." Foreground="#64748B" TextWrapping="Wrap"/>
+                        <TextBlock Name="NativeImpactHelpText" Text="Enter the raw needle percentage values from the impact rig. kJ/m², standard deviation, CV, samples and confidence are computed read-only using the Excel impact formula and Settings Manager values." Foreground="#64748B" TextWrapping="Wrap"/>
                     </StackPanel>
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
                         <TextBlock Name="NativeImpactSummaryText" Text="Impact measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
@@ -1929,7 +1929,7 @@
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Margin="0,0,0,10">
                         <TextBlock Text="Stiffness Measurements" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,4"/>
-                        <TextBlock Text="Enter only Revolutions and Degrees. Enter only Revolutions and Degrees. Deflection mm and Modulus MPa are computed read-only using the Excel stiffness formulas and Settings Manager values." Foreground="#64748B" TextWrapping="Wrap"/>
+                        <TextBlock Name="NativeStiffnessHelpText" Text="Enter only Revolutions and Degrees. Deflection mm and Modulus MPa are computed read-only using the Excel stiffness formulas and Settings Manager values." Foreground="#64748B" TextWrapping="Wrap"/>
                     </StackPanel>
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
                         <TextBlock Name="NativeStiffnessSummaryText" Text="Stiffness measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>

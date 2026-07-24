@@ -1,11 +1,19 @@
-## v44.5.3 - Canonical Storage Terminology (candidate)
+## v44.5.4 - Measurement Help Clarity (candidate)
+
+- Removed duplicated instruction fragments from Tensile, Impact and Stiffness.
+- Added stable names and Verification coverage for all three help surfaces.
+- Preserved measurement calculations, storage and recovery behavior.
+- Awaiting runtime Full Data Verification and visual acceptance.
+
+## v44.5.3 - Canonical Storage Terminology
 
 - Replaced remaining user-visible `JSON transition`, mixed-storage and general
   Excel-import wording with canonical SQLite terminology.
 - Preserved all four supported JSON empty-database migration readers.
 - Preserved governed Excel disaster recovery and explicit SQLite restore.
 - Added a Verification gate for terminology and compatibility-path retention.
-- Awaiting runtime Full Data Verification and UI acceptance.
+- Runtime Full Data Verification passed 304/304 with zero failures; About and
+  all three measurement storage summaries were visually accepted.
 
 ## v44.5.2 - Canonical SQLite UI Boundaries
 

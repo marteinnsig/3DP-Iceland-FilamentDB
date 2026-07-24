@@ -16779,6 +16779,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             canonicalStorageTerminologyReady && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
                 ? "Visible storage terminology identifies SQLite as canonical while supported JSON empty-database migration, governed Excel disaster recovery and explicit SQLite restore remain available"
                 : "Canonical storage terminology or a required migration/recovery boundary failed"));
+        var measurementHelpClarityReady =
+            NativeTensileHelpText.Text == "Identity fields are synced from Material Manager; raw sample values are editable; MPa, standard deviation, CV, sample count and confidence are computed read-only fields using the Excel tensile cross-section setting." &&
+            NativeImpactHelpText.Text == "Enter the raw needle percentage values from the impact rig. kJ/m², standard deviation, CV, samples and confidence are computed read-only using the Excel impact formula and Settings Manager values." &&
+            NativeStiffnessHelpText.Text == "Enter only Revolutions and Degrees. Deflection mm and Modulus MPa are computed read-only using the Excel stiffness formulas and Settings Manager values.";
+        checks.Add(new VerificationCheck("v44.5.4 Measurement help clarity release gate",
+            measurementHelpClarityReady && releaseIdentityReady,
+            measurementHelpClarityReady && releaseIdentityReady
+                ? "Tensile, Impact and Stiffness each expose one concise instruction followed by their unchanged read-only calculation guidance"
+                : "A native measurement instruction is duplicated, missing or inconsistent with the accepted wording"));
         var compatibilityCatalog = _database.GetLocalBackupCatalog();
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
