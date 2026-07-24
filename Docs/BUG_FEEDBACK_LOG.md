@@ -37,6 +37,15 @@ Expected behavior: Use terminology consistently across the window title, export 
 Steps to reproduce: Export one file from Verification Center and one from System Diagnostics, then compare their filenames.
 Screenshot / export / report attached: Observed in the v44.5.1 runtime diagnostics/verification handoff.
 
+Date: 2026-07-24
+Area: Build history / release documentation governance
+Type: Workflow friction / Data issue
+Severity: Minor
+What happened: There is no canonical total for completed builds or documented releases. `BUILD_HISTORY.md`, `CHANGELOG.md`, `RELEASES.md` and `MILESTONES.md` contain different numbers of version headings, duplicate version identifiers and different historical coverage, so the total depends on which document is counted.
+Expected behavior: Define exactly what counts as a build, candidate, runtime-accepted release and canonical release. Generate one canonical version/release index from governed metadata, show totals by status, and validate the documentation files against it. The check should flag duplicate version headings, missing entries, conflicting titles/statuses and version-order anomalies without rewriting historical records silently.
+Steps to reproduce: Count unique version headings and duplicates independently in `BUILD_HISTORY.md`, `CHANGELOG.md`, `RELEASES.md` and `MILESTONES.md`; the totals do not match.
+Screenshot / export / report attached: Repository audit on 2026-07-24 found 289 unique versions in Build History, 317 in Changelog, 47 in Releases and 57 in Milestones.
+
 
 
 ## Triage categories
