@@ -43,6 +43,15 @@
 - Routed Archive and Unarchive into the normal Materials auto-save queue.
 - Owner runtime retest confirmed correct editing, selection, CRUD, tab redraw,
   201/201 SQLite parity and Full Data Verification 321/321; Stage 3 is complete.
+- Replaced General Settings and Base Material Catalog DataGrid-derived columns
+  with explicit six- and 23-column Fast contracts.
+- Preserved Value-only General Settings editing and the three governed Base
+  Material ComboBox choice sets.
+- Added Verification coverage for Settings schema counts, unique keys,
+  Value-only editability, ComboBox ownership and canonical row parity.
+- Owner runtime testing accepted Settings validation/save/rollback,
+  Base Material editing/CRUD, layouts and tab redraw; Full Data Verification
+  passed 322/322 and Stage 4 is complete.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 

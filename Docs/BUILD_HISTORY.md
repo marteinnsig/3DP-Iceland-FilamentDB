@@ -34,6 +34,12 @@ were at 201 while SQLite Materials remained at 203. Delete now persists
 measurement removals first and the parent MaterialID removal immediately.
 Owner retest confirmed 201/201 UI/SQLite parity and Full Data Verification
 passed 321/321. Stage 3 is accepted.
+Stage 4 gives General Settings an explicit six-column Value-only Fast contract
+and Base Materials an explicit 23-column contract with three governed
+ComboBoxes. Both retain canonical row sources and no longer derive Fast schemas
+from legacy DataGrid columns.
+Owner runtime testing accepted Stage 4 and Full Data Verification passed
+322/322.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

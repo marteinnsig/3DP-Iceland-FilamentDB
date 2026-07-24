@@ -38,6 +38,18 @@ Date: 2026-07-24
   canonical Materials.
 - ACCEPTED: v44.7.7 Stage 3 is runtime accepted.
 
+# v44.7.7 - Legacy Grid Retirement - Stage 4
+
+Date: 2026-07-24
+
+- PASS: Full Data Verification reported 322/322 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: General Settings and Base Materials used explicit Fast contracts and
+  canonical row collections.
+- PASS: validation/save/rollback, ComboBoxes, CRUD, layouts and tab redraw
+  passed owner runtime testing.
+- ACCEPTED: v44.7.7 Stage 4 is runtime accepted.
+
 # v44.7.6 - Fast Workflow Grid - Settings
 
 Date: 2026-07-24

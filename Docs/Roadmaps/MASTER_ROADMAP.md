@@ -1633,7 +1633,8 @@ changes priority.
   - First runtime review found reorder, stale Duplicate selection, white tab return and premature measurement sync.
   - Corrections preserve Fast row state/selection and require successful Materials save before measurement sync.
   - Follow-up found deferred Delete left 201 UI rows versus 203 SQLite rows; child-first immediate save is required.
-  - Stage 4 replaces the Settings and Base Material DataGrid adapters with explicit Fast contracts.
+  - Stage 4 Settings contracts are runtime accepted with Full Data Verification 322/322.
+  - Stage 5 removes retired legacy DataGrid XAML, toggle handlers and grid-only edit paths.
   - Replace those adapters with explicit Fast contracts before deleting legacy XAML, handlers and commit paths.
   - Preserve canonical SQLite, formulas, filters, validation, settings CRUD and layout behavior at every stage.
   - Require runtime acceptance after each removal stage.

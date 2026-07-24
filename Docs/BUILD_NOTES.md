@@ -83,6 +83,21 @@ SQLite returned to 201 canonical Materials and all Stage 3 behavior remained
 correct. Full Data Verification passed 321/321. Stage 3 is accepted; Stage 4
 will replace the Settings and Base Material DataGrid adapters.
 
+Stage 4 replaces General Settings and Base Material Catalog column derivation
+with explicit Fast contracts. General Settings owns six columns with only
+`Value` editable. Base Materials owns 23 editable columns and the three
+accepted Cooling, Enclosure and Profile-kind ComboBox choice sets. Both views
+continue to read their canonical row collections directly.
+
+No Fast Settings builder reads `NativeSettingsGrid.Columns` or
+`BaseMaterialsGrid.Columns`. Legacy Settings XAML and edit handlers remain
+collapsed pending runtime validation/save/CRUD and Verification acceptance.
+
+Owner runtime testing accepted General Settings validation/save, Deployment
+rollback, Base Material editing/ComboBoxes/CRUD, layouts and tab redraw. Full
+Data Verification passed 322/322. Stage 4 is accepted; Stage 5 can remove the
+retired legacy DataGrid XAML, toggles and grid-only event paths.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on

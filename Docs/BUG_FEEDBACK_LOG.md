@@ -487,6 +487,11 @@ measurement children. Delete now saves child removal first and parent removal
 immediately; Archive/Unarchive queue normal auto-save.
 Owner retest confirmed the test Materials were absent, UI/SQLite parity was
 restored at 201 and Full Data Verification passed 321/321. Stage 3 is complete.
+Stage 4 candidate now uses explicit General Settings and Base Material Fast
+schemas with canonical row collections. Legacy Settings XAML remains collapsed
+until runtime acceptance.
+Owner runtime acceptance and Full Data Verification 322/322 completed Stage 4.
+Stage 5 can remove legacy DataGrid XAML and grid-only event paths.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

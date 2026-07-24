@@ -17460,6 +17460,28 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             legacyGridRetirementUiReady && releaseIdentityReady
                 ? "Materials Fast schema and visible rows come from an explicit contract and the canonical filtered collection"
                 : "Materials schema, editors, stable keys, canonical visible-row source, prior stage or release identity failed"));
+        var fastNativeSettingsContractColumns = BuildFastNativeSettingsColumns();
+        var fastBaseMaterialContractColumns = BuildFastBaseMaterialColumns();
+        var fastSettingsContractsReady =
+            fastNativeSettingsContractColumns.Count == 6 &&
+            fastNativeSettingsContractColumns.Count(column => !column.IsReadOnly) == 1 &&
+            fastNativeSettingsContractColumns.Single(column => !column.IsReadOnly).PropertyName == "Value" &&
+            fastBaseMaterialContractColumns.Count == 23 &&
+            fastBaseMaterialContractColumns.Count(column =>
+                column.EditorKind == MaterialsPrototypeEditorKind.ComboBox) == 3 &&
+            fastNativeSettingsContractColumns.Select(PrototypeColumnKey)
+                .Distinct(StringComparer.Ordinal).Count() == 6 &&
+            fastBaseMaterialContractColumns.Select(PrototypeColumnKey)
+                .Distinct(StringComparer.Ordinal).Count() == 23 &&
+            BuildFastNativeSettingsRows(fastNativeSettingsContractColumns).Count == _nativeSettingsRows.Count &&
+            BuildFastBaseMaterialRows(fastBaseMaterialContractColumns).Count == _nativeBaseMaterialRows.Count;
+        checks.Add(new VerificationCheck("v44.7.7 Settings Fast-contract retirement stage gate",
+            fastSettingsContractsReady && fastMaterialsContractReady &&
+            measurementFastContractsReady && legacyGridRetirementUiReady && releaseIdentityReady,
+            fastSettingsContractsReady && fastMaterialsContractReady &&
+            measurementFastContractsReady && legacyGridRetirementUiReady && releaseIdentityReady
+                ? "General Settings and Base Materials use explicit Fast schemas and canonical row collections"
+                : "A Settings schema, Value-only boundary, ComboBox contract, row source, prior stage or release identity failed"));
 
         return checks;
     }
