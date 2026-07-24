@@ -14,7 +14,6 @@ public partial class MainWindow
         _embeddedFastStiffnessView = CreateFastStiffnessView();
         FastStiffnessViewHost.Content = _embeddedFastStiffnessView;
         FastStiffnessViewHost.Visibility = Visibility.Visible;
-        NativeStiffnessGrid.Visibility = Visibility.Collapsed;
     }
 
     private void ResetFastStiffnessColumns_Click(object sender, RoutedEventArgs e)

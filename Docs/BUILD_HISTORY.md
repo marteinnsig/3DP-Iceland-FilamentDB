@@ -57,6 +57,13 @@ available as the final measurement deletion checkpoint. Impact runtime
 testing passed across editing, validation, calculations, navigation, filters,
 layout and restart persistence. Full Data Verification passed 325/325;
 Stage 5B-Impact is accepted.
+Stage 5B-Stiffness removes the final legacy measurement DataGrid XAML and all
+named grid-specific bind/edit/commit/filter/layout/close references. The
+obsolete legacy measurement DataGrid warm-up is removed with it. Fast
+Stiffness remains on the accepted explicit canonical contract; runtime
+testing passed across editing, validation, calculations, navigation, filters,
+layout and restart persistence. Full Data Verification passed 326/326;
+Stage 5B-Stiffness and measurement-grid retirement are accepted.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

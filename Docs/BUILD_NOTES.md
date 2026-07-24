@@ -142,6 +142,23 @@ reset, persistence and restart behavior. Tensile and Stiffness remained normal
 and Full Data Verification passed 325/325. Stage 5B-Impact is accepted;
 Stiffness is the final measurement deletion checkpoint.
 
+Stage 5B-Stiffness removes the complete `NativeStiffnessGrid` XAML, its edit
+and commit paths, ItemsSource/refresh/filter calls, workflow-layout ownership
+and close-time edit checks. Because no legacy measurement DataGrid remains,
+the obsolete deferred DataGrid visual-tree warm-up is also removed. Fast
+Stiffness keeps its accepted explicit 18-column contract, canonical filtered
+row source, validation, calculations and SQLite save path.
+
+This final measurement deletion remains a UI/runtime candidate until Stiffness
+editing, navigation, reset, filtering, persistence, close/restart behavior and
+Full Data Verification pass owner testing.
+
+Owner runtime testing accepted Stiffness editing, validation, calculations,
+navigation, filters, column reset, persistence and restart behavior. Tensile
+and Impact remained normal and Full Data Verification passed 326/326.
+Stage 5B-Stiffness is accepted; all three legacy measurement DataGrids and
+their obsolete warm-up lifecycle are retired.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on

@@ -72,6 +72,18 @@
   validation, calculations and SQLite persistence.
 - Owner runtime testing accepted Impact after complete legacy deletion and
   Full Data Verification passed 325/325.
+- Removed the complete legacy Stiffness DataGrid XAML and its grid-specific
+  bind/edit/commit/filter/layout/close lifecycle.
+- Removed the obsolete deferred legacy measurement DataGrid warm-up after the
+  final measurement fallback grid was deleted.
+- Added Verification coverage requiring the Stiffness legacy XAML, named
+  lifecycle and obsolete warm-up methods to be absent.
+- Retained the accepted Fast Stiffness schema, canonical filtered rows,
+  validation, calculations and SQLite persistence.
+- Owner runtime testing accepted Stiffness after complete legacy deletion and
+  Full Data Verification passed 326/326.
+- Completed retirement of all three legacy measurement DataGrids and their
+  obsolete deferred visual-tree warm-up.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 

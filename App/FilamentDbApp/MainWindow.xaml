@@ -1825,54 +1825,6 @@
                     <GroupBox Grid.Row="2" Header="Native Stiffness Measurements - editable revolutions/degrees with computed Excel-style outputs">
                         <Grid>
                             <ContentControl Name="FastStiffnessViewHost" Margin="8"/>
-                        <DataGrid Name="NativeStiffnessGrid" Style="{StaticResource HighPerformanceDataGrid}" SelectionMode="Single" SelectionUnit="CellOrRowHeader" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" AlternationCount="2" AlternatingRowBackground="#F8FAFC" RowBackground="#FFFFFF" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="8" CellEditEnding="NativeStiffnessGrid_CellEditEnding" BeginningEdit="InputDataGrid_BeginningEdit" PreparingCellForEdit="MeasurementGrid_PreparingCellForEdit">
-                            <DataGrid.RowStyle>
-                                <Style TargetType="DataGridRow">
-                                    <Setter Property="Background" Value="#FFFFFF"/>
-                                    <Style.Triggers>
-                                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                                            <Setter Property="Background" Value="#F8FAFC"/>
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding ValidationSummary}" Value="Invalid revolutions">
-                                            <Setter Property="Background" Value="#FEF2F2"/>
-                                            <Setter Property="ToolTip" Value="Revolutions must be numeric."/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ValidationSummary}" Value="Invalid degrees">
-                                            <Setter Property="Background" Value="#FEF2F2"/>
-                                            <Setter Property="ToolTip" Value="Degrees must be numeric."/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ValidationSummary}" Value="Revolutions over limit">
-                                            <Setter Property="Background" Value="#FEF2F2"/>
-                                            <Setter Property="ToolTip" Value="Revolutions must be 10 or lower."/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ValidationSummary}" Value="Degrees over limit">
-                                            <Setter Property="Background" Value="#FEF2F2"/>
-                                            <Setter Property="ToolTip" Value="Degrees must be 359 or lower."/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGrid.RowStyle>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Material ID" Binding="{Binding MaterialID}" Width="90" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer}" Width="130" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Product Line" Binding="{Binding ProductLine}" Width="130" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Marketing Name" Binding="{Binding MarketingName}" Width="140" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Base Material" Binding="{Binding BaseMaterial}" Width="110" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Category" Binding="{Binding MaterialCategory}" Width="110" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Variant / Finish" Binding="{Binding VariantFinish}" Width="120" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Reinforcement" Binding="{Binding Reinforcement}" Width="110" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Color" Binding="{Binding Color}" Width="90" IsReadOnly="True"/>
-                                <DataGridTemplateColumn Header="" Width="12" IsReadOnly="True" CellStyle="{StaticResource TensileSpacerCellStyle}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text=""/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Revolutions" Binding="{Binding Revolutions, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="95"/>
-                                <DataGridTextColumn Header="Degrees" Binding="{Binding Degrees, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="85"/>
-                                <DataGridTemplateColumn Header="" Width="12" IsReadOnly="True" CellStyle="{StaticResource TensileSpacerCellStyle}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text=""/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Test Notes" Binding="{Binding TestNotes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="220"/>
-                                <DataGridTextColumn Header="Measured date" Binding="{Binding MeasuredDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="110"/>
-                                <DataGridTextColumn Header="Deflection mm" Binding="{Binding DeflectionMm}" Width="110" IsReadOnly="True" CellStyle="{StaticResource TensileComputedCellStyle}"/>
-                                <DataGridTextColumn Header="Modulus MPa" Binding="{Binding ModulusMpa}" Width="110" IsReadOnly="True" CellStyle="{StaticResource TensileComputedCellStyle}"/>
-                                <DataGridTextColumn Header="Validation" Binding="{Binding ValidationSummary}" Width="150" IsReadOnly="True"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
                         </Grid>
                     </GroupBox>
                 </Grid>

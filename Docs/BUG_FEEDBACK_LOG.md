@@ -524,6 +524,10 @@ Stage 5B-Impact candidate removes the complete legacy Impact DataGrid and
 named lifecycle references while retaining the accepted Fast/canonical paths.
 Owner runtime acceptance and Full Data Verification 325/325 completed the
 Impact deletion checkpoint. Stiffness remains unchanged and is next.
+Stage 5B-Stiffness candidate removes the final legacy measurement DataGrid,
+named grid lifecycle and now-obsolete deferred DataGrid warm-up while
+retaining the accepted Fast/canonical paths. Owner runtime acceptance and Full
+Data Verification 326/326 completed Stiffness and measurement-grid retirement.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

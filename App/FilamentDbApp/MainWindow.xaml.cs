@@ -130,9 +130,6 @@ public partial class MainWindow : Window
     private DataRow? _currentMaterialDetailRow;
     private bool _isUpdatingRecommendationSelection;
     private RecommendationRow? _selectedRecommendationForVideoPlanner;
-    private bool _measurementWorkspaceWarmUpQueued;
-    private bool _measurementWorkspaceWarmUpCompleted;
-    private string _measurementWorkspaceWarmUpError = string.Empty;
     private readonly Dictionary<string, IReadOnlyList<WorkflowColumnLayout>> _defaultWorkflowGridLayouts =
         new(StringComparer.Ordinal);
     private DataGrid? _pendingWorkflowLayoutGrid;
@@ -154,7 +151,6 @@ public partial class MainWindow : Window
             StatusText.Text = "Ready.";
         };
         Loaded += MainWindow_Loaded;
-        ContentRendered += MainWindow_ContentRenderedForMeasurementWarmUp;
         Closing += MainWindow_Closing;
         RunStartupPhase("Analytics controls", InitializeAnalyticsControls);
         RunStartupPhase("Saved video ideas", LoadSavedVideoIdeas);
@@ -181,83 +177,6 @@ public partial class MainWindow : Window
     {
         using var phase = App.StartupPerformance.Measure(phaseName);
         action();
-    }
-
-    private void MainWindow_ContentRenderedForMeasurementWarmUp(object? sender, EventArgs e)
-    {
-        ContentRendered -= MainWindow_ContentRenderedForMeasurementWarmUp;
-        QueueMeasurementWorkspaceWarmUp();
-    }
-
-    private async void QueueMeasurementWorkspaceWarmUp()
-    {
-        if (_measurementWorkspaceWarmUpQueued || _measurementWorkspaceWarmUpCompleted) return;
-        _measurementWorkspaceWarmUpQueued = true;
-
-        try
-        {
-            // Keep the first usable Materials render fast. Each measurement workspace is
-            // realized separately only after higher-priority startup/UI work is finished.
-            foreach (var target in new[]
-                     {
-                         (TabHeader: "Stiffness Measurements", GridName: "NativeStiffnessGrid")
-                     })
-            {
-                await Dispatcher.InvokeAsync(
-                    () => WarmMeasurementWorkspace(target.TabHeader, target.GridName),
-                    DispatcherPriority.ContextIdle);
-            }
-
-            _measurementWorkspaceWarmUpCompleted = true;
-            App.StartupPerformance.Mark("Measurement workspace warm-up completed");
-        }
-        catch (TaskCanceledException)
-        {
-            // Normal during application shutdown.
-        }
-        catch (Exception ex)
-        {
-            // Warm-up is an optional responsiveness optimization and must never prevent
-            // the already usable application from continuing normally.
-            _measurementWorkspaceWarmUpError = ex.Message;
-            App.StartupPerformance.Mark("Measurement workspace warm-up failed");
-        }
-        finally
-        {
-            _measurementWorkspaceWarmUpQueued = false;
-        }
-    }
-
-    private void WarmMeasurementWorkspace(string tabHeader, string gridName)
-    {
-        if (!IsLoaded || !IsVisible) return;
-
-        var targetTab = WorkspaceTabs.Items.OfType<TabItem>()
-            .FirstOrDefault(item => string.Equals(item.Header?.ToString(), tabHeader, StringComparison.Ordinal));
-        if (targetTab is null || FindName(gridName) is not DataGrid grid) return;
-
-        using var phase = App.StartupPerformance.Measure($"{tabHeader} first-use warm-up");
-        var selectionBeforeWarmUp = WorkspaceTabs.SelectedItem;
-
-        try
-        {
-            // Selecting and restoring inside the same Dispatcher callback lets WPF create
-            // the tab's visual tree and DataGrid viewport without presenting an intermediate
-            // tab frame to the user.
-            WorkspaceTabs.SelectedItem = targetTab;
-            targetTab.ApplyTemplate();
-            grid.ApplyTemplate();
-            WorkspaceTabs.UpdateLayout();
-            grid.UpdateLayout();
-        }
-        finally
-        {
-            if (selectionBeforeWarmUp is not null && !ReferenceEquals(selectionBeforeWarmUp, targetTab))
-            {
-                WorkspaceTabs.SelectedItem = selectionBeforeWarmUp;
-                WorkspaceTabs.UpdateLayout();
-            }
-        }
     }
 
     private void ApplyWorkspaceTabPriorityOrder()
@@ -290,7 +209,6 @@ public partial class MainWindow : Window
     {
         "NativeMaterialsGrid",
         "ManufacturersGrid",
-        "NativeStiffnessGrid",
         "NativeSettingsGrid",
         "ExperimentalTensileGrid",
         "ExperimentalImpactGrid",
@@ -1067,12 +985,6 @@ public partial class MainWindow : Window
                 MarkNativeMaterialsDirty();
                 QueueNativeMaterialDependentIntelligenceRefresh();
                 break;
-            case "NativeStiffnessGrid":
-                ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
-                RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-                MarkNativeStiffnessDirty();
-                RefreshNativeStiffnessSummary();
-                break;
             case "NativeSettingsGrid":
             case "BaseMaterialsGrid":
                 RefreshNativeInputModulesFromMaterialManager(markDirty: false);
@@ -1156,11 +1068,6 @@ public partial class MainWindow : Window
         if (gridName is "ExperimentalTensileGrid" or "ExperimentalImpactGrid")
         {
             return Regex.IsMatch(propertyName, "^Sample(10|[1-9])$", RegexOptions.CultureInvariant);
-        }
-
-        if (gridName == "NativeStiffnessGrid")
-        {
-            return propertyName is "Revolutions" or "Degrees";
         }
 
         if (gridName == "ExperimentalStiffnessGrid")
@@ -2564,7 +2471,6 @@ public partial class MainWindow : Window
         var gridName = header switch
         {
             "Materials" => "NativeMaterialsGrid",
-            "Stiffness Measurements" => "NativeStiffnessGrid",
             "Settings Manager" => "NativeSettingsGrid",
             "Manufacturers" => "ManufacturersGrid",
             _ => string.Empty
@@ -2603,7 +2509,6 @@ public partial class MainWindow : Window
 
         var workspace = gridName switch
         {
-            "NativeStiffnessGrid" => "Stiffness Measurements",
             _ => gridName
         };
         if (!ConfirmWorkflowLayoutReset(workspace)) return;
@@ -13512,7 +13417,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private void PersistCanonicalStateForExcelRecovery()
     {
-        foreach (var gridName in new[] { "NativeMaterialsGrid", "NativeStiffnessGrid", "NativeSettingsGrid", "BaseMaterialsGrid" })
+        foreach (var gridName in new[] { "NativeMaterialsGrid", "NativeSettingsGrid", "BaseMaterialsGrid" })
         {
             if (FindName(gridName) is not DataGrid grid) continue;
             grid.CommitEdit(DataGridEditingUnit.Cell, true);
@@ -15224,21 +15129,18 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             startupRefreshCoalescingReady
                 ? "Bulk native Material collection replacement produced one coalesced downstream UI refresh path"
                 : "The consolidated native Material refresh phase was not recorded"));
-        var completedMeasurementWarmUps = new[]
-        {
-            "Tensile Measurements first-use warm-up",
-            "Impact Measurements first-use warm-up",
-            "Stiffness Measurements first-use warm-up"
-        }.Count(App.StartupPerformance.HasEntry);
-        var measurementWarmUpReady = string.IsNullOrWhiteSpace(_measurementWorkspaceWarmUpError) &&
-                                     (_measurementWorkspaceWarmUpQueued || _measurementWorkspaceWarmUpCompleted) &&
-                                     completedMeasurementWarmUps <= 3;
-        checks.Add(new VerificationCheck("Deferred measurement workspace warm-up", measurementWarmUpReady,
-            !string.IsNullOrWhiteSpace(_measurementWorkspaceWarmUpError)
-                ? "Warm-up error: " + _measurementWorkspaceWarmUpError
-                : _measurementWorkspaceWarmUpCompleted
-                    ? "Tensile, Impact and Stiffness visual trees were realized after first usable Materials rendering"
-                    : $"Healthy deferred warm-up in progress ({completedMeasurementWarmUps}/3 workspaces completed); optional preload does not block Verification"));
+        var legacyMeasurementWarmUpRetired =
+            typeof(MainWindow).GetMethod(
+                "WarmMeasurementWorkspace",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "QueueMeasurementWorkspaceWarmUp",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null;
+        checks.Add(new VerificationCheck("Deferred measurement workspace warm-up",
+            legacyMeasurementWarmUpRetired,
+            legacyMeasurementWarmUpRetired
+                ? "Legacy DataGrid visual-tree warm-up is absent; Fast measurement views initialize directly"
+                : "A retired legacy measurement DataGrid warm-up path remains"));
         var advisorCandidate = new EngineeringAdvisorCandidate
         {
             Label = "Advisor probe A",
@@ -16794,10 +16696,13 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             startupRefreshCoalescingReady && startupInstrumentationReady && releaseIdentityReady
                 ? "Repeated bulk-load collection callbacks are suppressed and replaced by one measured downstream refresh"
                 : "Startup refresh coalescing, instrumentation or release identity alignment failed"));
-        checks.Add(new VerificationCheck("v41.8.2 deferred measurement warm-up release gate", measurementWarmUpReady && startupRefreshCoalescingReady && startupInstrumentationReady && releaseIdentityReady,
-            measurementWarmUpReady && startupRefreshCoalescingReady && startupInstrumentationReady && releaseIdentityReady
-                ? "Measurement tabs are pre-realized after first render without changing canonical data or blocking initial Materials visibility"
-                : "Measurement warm-up or a prior startup release gate failed"));
+        checks.Add(new VerificationCheck("v41.8.2 deferred measurement warm-up release gate",
+            legacyMeasurementWarmUpRetired && startupRefreshCoalescingReady &&
+            startupInstrumentationReady && releaseIdentityReady,
+            legacyMeasurementWarmUpRetired && startupRefreshCoalescingReady &&
+            startupInstrumentationReady && releaseIdentityReady
+                ? "Accepted Fast measurement views initialize directly; retired DataGrid pre-realization is absent"
+                : "Legacy measurement warm-up retirement or a prior startup release gate failed"));
         checks.Add(new VerificationCheck("v42.1 public report publishing foundation release gate", publicReportPublishingReady && publicReportVerification.Passed && releaseIdentityReady,
             publicReportPublishingReady && publicReportVerification.Passed && releaseIdentityReady
                 ? "Allowlisted selected-Material Engineering static preview, stable MaterialID route, canonical HTML/PDF contract and safety checks passed"
@@ -17301,7 +17206,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Materials explains the five required row-identity fields and OK meaning while the established ValidationSummary rules remain unchanged"
                 : "Material row Validation help text, established required-field rules or release identity failed"));
         var workflowLayoutResetReady =
-            WorkflowGridNames.Contains("NativeStiffnessGrid", StringComparer.Ordinal) &&
             typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.CaptureGridLayout)) is not null &&
             typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.ResetGrid)) is not null &&
             typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.ClearFastMaterialsGridLayout)) is not null &&
@@ -17505,6 +17409,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             measurementFastContractsReady && releaseIdentityReady
                 ? "Impact legacy DataGrid XAML and grid-specific edit/commit lifecycle are absent"
                 : "Impact legacy XAML/lifecycle remains, a prior deletion/contract failed or release identity is misaligned"));
+        var stiffnessLegacyGridRetired =
+            FindName("NativeStiffnessGrid") is null &&
+            typeof(MainWindow).GetMethod(
+                "NativeStiffnessGrid_CellEditEnding",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "CommitNativeStiffnessGridEdits",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            legacyMeasurementWarmUpRetired;
+        checks.Add(new VerificationCheck("v44.7.7 Stiffness legacy-grid deletion stage gate",
+            stiffnessLegacyGridRetired && impactLegacyGridRetired &&
+            tensileLegacyGridRetired && measurementFastContractsReady && releaseIdentityReady,
+            stiffnessLegacyGridRetired && impactLegacyGridRetired &&
+            tensileLegacyGridRetired && measurementFastContractsReady && releaseIdentityReady
+                ? "Stiffness legacy DataGrid XAML, grid lifecycle and obsolete measurement warm-up are absent"
+                : "Stiffness legacy lifecycle remains, a prior deletion/contract failed or release identity is misaligned"));
 
         return checks;
     }
@@ -22738,7 +22658,6 @@ private List<string> GetVisibleAiMaterialLabels()
     private void ApplyNativeMeasurementFilters()
     {
         var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
-        ApplyNativeMeasurementFilterToGrid("NativeStiffnessGrid", visibleMaterialIds);
         _embeddedFastTensileView?.ReloadFromCanonical("the current Materials filter/search result");
         _embeddedFastImpactView?.ReloadFromCanonical("the current Materials filter/search result");
         _embeddedFastStiffnessView?.ReloadFromCanonical("the current Materials filter/search result");
@@ -23465,16 +23384,7 @@ private List<string> GetVisibleAiMaterialLabels()
         }
         _workflowPreferencesService.Save();
 
-        var measurementEditPending = new[] { "NativeStiffnessGrid" }
-            .Select(FindName)
-            .OfType<DataGrid>()
-            .Select(grid => CollectionViewSource.GetDefaultView(grid.ItemsSource))
-            .OfType<IEditableCollectionView>()
-            .Any(view => view.IsEditingItem || view.IsAddingNew);
-
-        CommitNativeStiffnessGridEdits();
-
-        if (measurementEditPending || _nativeTensileDirty || _nativeImpactDirty || _nativeStiffnessDirty)
+        if (_nativeTensileDirty || _nativeImpactDirty || _nativeStiffnessDirty)
         {
             try
             {
@@ -27013,16 +26923,6 @@ private List<string> GetVisibleAiMaterialLabels()
         _suppressNativeStiffnessDirty = true;
         ReplaceNativeStiffnessRows(BuildNativeStiffnessRowsFromCanonicalStorage());
         _suppressNativeStiffnessDirty = false;
-        if (FindName("NativeStiffnessGrid") is DataGrid grid)
-        {
-            grid.ItemsSource = _nativeStiffnessRows;
-            // Measurement tabs can be materialized after MainWindow.Loaded. Ensure the
-            // shared one-click editor is attached when this lazy grid actually exists.
-            grid.PreviewMouseLeftButtonDown -= WorkflowGrid_PreviewMouseLeftButtonDown;
-            grid.PreviewMouseLeftButtonDown += WorkflowGrid_PreviewMouseLeftButtonDown;
-            grid.RemoveHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler(InputDataGrid_PreviewKeyDown));
-            grid.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler(InputDataGrid_PreviewKeyDown), true);
-        }
         ApplyNativeMeasurementFilters();
         SetNativeStiffnessDirty(false);
         RefreshNativeStiffnessSummary();
@@ -27094,7 +26994,6 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         if (_nativeMaterialRows.Count == 0) return;
 
-        CommitNativeStiffnessGridEdits();
         ApplyNativeMaterialComputedFieldsToAllRows();
 
         var materialRows = _nativeMaterialRows
@@ -27129,7 +27028,6 @@ private List<string> GetVisibleAiMaterialLabels()
 
         ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
         RefreshNativeStiffnessSummary();
-        if (FindName("NativeStiffnessGrid") is DataGrid grid) grid.Items.Refresh();
         ApplyNativeMeasurementFilters();
         if (markDirty) MarkNativeStiffnessDirty();
     }
@@ -27141,32 +27039,8 @@ private List<string> GetVisibleAiMaterialLabels()
         ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
     }
 
-    private void NativeStiffnessGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-    {
-        if (e.EditingElement is TextBox editor)
-            editor.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
-        var editedRow = e.Row.Item as NativeStiffnessMeasurementRow;
-        var editedHeader = e.Column.Header?.ToString();
-        var assignMeasuredDate = sender is DataGrid stiffnessGrid &&
-                                 editedRow is not null &&
-                                 IsFirstMeasurementValueEdit(stiffnessGrid, e, new[] { editedRow.Revolutions, editedRow.Degrees });
-        if (sender is DataGrid undoGrid) CaptureInputDataGridUndo(undoGrid, e);
-        Dispatcher.BeginInvoke(new Action(() =>
-    {
-        if (!string.Equals(editedHeader, "Measured date", StringComparison.OrdinalIgnoreCase) &&
-            assignMeasuredDate && editedRow is not null && editedRow.MeasuredDate is null)
-            editedRow.MeasuredDate = DateTime.Today;
-        ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
-        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        MarkNativeStiffnessDirty();
-        SaveNativeStiffnessSilent();
-        RefreshNativeStiffnessSummary();
-    }), System.Windows.Threading.DispatcherPriority.Background);
-    }
-
     private void SaveNativeStiffness_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeStiffnessGridEdits();
         ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
         SaveNativeMeasurementsToSqlite();
@@ -27192,32 +27066,20 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void RecalculateNativeStiffness_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeStiffnessGridEdits();
         ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        if (FindName("NativeStiffnessGrid") is DataGrid grid) grid.Items.Refresh();
         MarkNativeStiffnessDirty();
         RefreshNativeStiffnessSummary();
     }
 
     private void ValidateNativeStiffness_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeStiffnessGridEdits();
         ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
         var invalid = _nativeStiffnessRows.Where(r => r.ValidationSummary != "OK").ToList();
         MessageBox.Show(invalid.Count == 0 ? $"Stiffness validation passed for {_nativeStiffnessRows.Count} rows." : $"Stiffness validation found {invalid.Count} rows with invalid input values.", "Stiffness Measurements Validation", MessageBoxButton.OK, invalid.Count == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
     }
 
     private void RefreshNativeStiffnessSummary_Click(object sender, RoutedEventArgs e) => RefreshNativeStiffnessSummary();
-
-    private void CommitNativeStiffnessGridEdits()
-    {
-        if (FindName("NativeStiffnessGrid") is DataGrid grid)
-        {
-            grid.CommitEdit(DataGridEditingUnit.Cell, true);
-            grid.CommitEdit(DataGridEditingUnit.Row, true);
-        }
-    }
 
     private void MarkNativeStiffnessDirty() => SetNativeStiffnessDirty(true);
 
