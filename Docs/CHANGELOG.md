@@ -104,6 +104,12 @@
   retaining Settings collections, SQLite save, validation and recalculation.
 - Owner runtime testing accepted Settings after complete legacy-grid deletion
   and Full Data Verification passed 327/327.
+- Removed the hidden Materials preview toggle, fallback handler/state and
+  legacy-view reactivation method.
+- Made the accepted Fast Materials view the only activatable Materials UI;
+  legacy XAML deletion remains runtime-gated.
+- Owner runtime testing accepted Fast-only Materials behavior, 201-row
+  canonical parity and Full Data Verification 327/327.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 

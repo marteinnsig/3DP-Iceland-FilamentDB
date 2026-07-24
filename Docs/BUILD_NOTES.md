@@ -193,6 +193,17 @@ validation, Base Material text/ComboBox editing, exact Fast selection CRUD,
 column reset, persistence, tab return and restart behavior. Full Data
 Verification passed 327/327. Stage 5E is accepted.
 
+Stage 5F removes the hidden Materials Fast-preview toggle, fallback handler,
+default-enable flag and legacy-view reactivation method. Fast Materials is now
+the only activatable Materials UI. The legacy Materials XAML and grid-specific
+selection/edit/CRUD callers remain temporarily for the next runtime-gated
+deletion stage. Runtime acceptance is pending.
+
+Owner runtime testing accepted Fast-only Materials startup, editing,
+checkboxes, exact-selection CRUD, filters and measurement propagation, local
+reset, layout persistence, tab return, close/restart save and 201-row
+canonical parity. Full Data Verification passed 327/327. Stage 5F is accepted.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on

@@ -182,8 +182,6 @@
                 <MenuItem Header="Validate Materials" Click="ValidateNativeMaterials_Click" />
                 <MenuItem Header="Rebuild Computed Fields" Click="RebuildNativeMaterialDisplayNames_Click" />
                 <MenuItem Header="Materials Rendering Prototype..." Click="ShowMaterialsRenderingPrototype_Click" />
-                <MenuItem Name="FastMaterialsViewMenuItem" Header="Use Fast Materials View (Preview)" IsCheckable="True"
-                          Click="ToggleFastMaterialsView_Click" Visibility="Collapsed" />
                 <MenuItem Header="Update Readiness..." Click="UpdateReadiness_Click" />
                 <MenuItem Header="Check for Updates..." Click="CheckForUpdates_Click" />
                 <MenuItem Header="Publish Application Release..." Click="PublishApplicationRelease_Click" />

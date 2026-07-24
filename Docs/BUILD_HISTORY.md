@@ -82,6 +82,12 @@ callers. Fast canonical selection now solely owns Base Material deletion.
 Owner runtime testing accepted Settings editing, validation, exact Fast
 selection CRUD, layout and restart persistence. Full Data Verification passed
 327/327; Stage 5E is accepted.
+Stage 5F removes the hidden Materials preview toggle, fallback handler/state
+and legacy-view reactivation method. Fast Materials becomes the only
+activatable Materials UI; legacy XAML and grid-only lifecycle remain for the
+next checkpoint. Owner runtime testing accepted editing, exact-selection CRUD,
+filters, reset, layout, tab return and restart persistence with 201 canonical
+rows. Full Data Verification passed 327/327; Stage 5F is accepted.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

@@ -566,6 +566,10 @@ Stage 5E candidate removes both legacy Settings DataGrids and grid-specific
 bind/edit/layout/recovery/selection fallback code. Fast canonical selection
 solely owns Base Material delete. Owner runtime acceptance and Full Data
 Verification 327/327 completed the Settings legacy-grid deletion checkpoint.
+Stage 5F candidate removes the hidden Materials preview toggle, fallback
+handler/state and legacy-view reactivation method. Fast Materials becomes the
+only activatable UI. Owner runtime acceptance and Full Data Verification
+327/327 passed; legacy Materials XAML/lifecycle are the next checkpoint.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

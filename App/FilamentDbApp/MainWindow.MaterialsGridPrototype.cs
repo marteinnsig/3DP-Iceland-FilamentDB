@@ -38,32 +38,11 @@ public partial class MainWindow
             Array.Empty<string>(),
             cellKind);
 
-    private static readonly bool FastMaterialsViewDefaultEnabled = true;
     private MaterialsRenderingPrototypeView? _embeddedMaterialsPrototypeView;
     private bool _fastMaterialsCloseGuardAttached;
 
-    private void ToggleFastMaterialsView_Click(object sender, RoutedEventArgs e)
-    {
-        if (FastMaterialsViewMenuItem.IsChecked)
-        {
-            ActivateFastMaterialsView();
-            return;
-        }
-
-        if (_embeddedMaterialsPrototypeView is not null &&
-            !_embeddedMaterialsPrototypeView.ConfirmCanClose())
-        {
-            FastMaterialsViewMenuItem.IsChecked = true;
-            return;
-        }
-
-        CloseEmbeddedFastMaterialsView();
-    }
-
     private void ActivateDefaultFastMaterialsView()
     {
-        if (!FastMaterialsViewDefaultEnabled) return;
-        FastMaterialsViewMenuItem.IsChecked = true;
         ActivateFastMaterialsView();
     }
 
@@ -104,14 +83,6 @@ public partial class MainWindow
         {
             e.Cancel = true;
         }
-    }
-
-    private void CloseEmbeddedFastMaterialsView()
-    {
-        FastMaterialsViewHost.Content = null;
-        FastMaterialsViewHost.Visibility = Visibility.Collapsed;
-        NativeMaterialsGrid.Visibility = Visibility.Visible;
-        _embeddedMaterialsPrototypeView = null;
     }
 
     private void ShowMaterialsRenderingPrototype_Click(object sender, RoutedEventArgs e)
