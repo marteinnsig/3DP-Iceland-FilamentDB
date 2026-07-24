@@ -1,3 +1,78 @@
+> Canonical role: engineering build, verification and runtime evidence narrative.
+> `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
+> ledger.
+
+## v44.6.1 - Canonical Release Documentation Audit
+
+The release-documentation audit established explicit ownership for the four
+historical release documents and reconciled v44.5.2-v44.6.0 into the build,
+release and milestone records that had stopped at v44.5.1. A standalone
+read-only gate compares recent canonical headings and bounds every known
+historical within-file duplicate through a checked-in baseline. New duplicates
+or recent gaps fail; old history is reported but never rewritten. Debug/Release
+passed with zero warnings/errors, the audit and vulnerability gate passed, and
+runtime Full Data Verification passed 311/311. v44.6.1 is accepted.
+
+## v44.6.0 - Recovery Center Clarity
+
+Removed the persistent verbose updater-evidence box and replaced the
+compatibility glossary with one concise Recovery Center sentence. Exact
+selected-backup details, guarded Default-No restore and complete updater
+evidence in diagnostics remain unchanged. Runtime Full Data Verification passed
+311/311 and v44.6.0 is accepted.
+
+## v44.5.9 - Supported Migration Naming
+
+Renamed canonical SQLite projection, supported empty-target JSON migration and
+built-in default methods according to current ownership. Runtime testing with
+MAT0206 also exposed and corrected whole-revolution stiffness calculation and
+close-time active-cell persistence. Full Data Verification passed 310/310.
+
+## v44.5.8 - Retired Transition UI Residue
+
+Removed caller-free load/import-sync handlers, their confirmation helpers and
+unused JSON save-state allocations while preserving the supported empty-target
+JSON migration readers and governed recovery. Runtime Full Data Verification
+passed 309/309.
+
+## v44.5.7 - Legacy Workbook Schema Retirement
+
+Advanced SQLite to schema v30 and transactionally retired the 13 original
+workbook/normalized tables after retained verified backup. Canonical
+Tensile/Impact/Stiffness consumers and schema-v30 recovery were corrected and
+runtime accepted with Full Data Verification 308/308.
+
+## v44.5.6 - Retired Workbook Metadata Readers
+
+Removed original-workbook metadata readers and their Material Detail, Tools and
+diagnostics surfaces. Governed Excel disaster recovery and compatibility
+inspection remained intact. Runtime Full Data Verification passed 307/307.
+
+## v44.5.5 - Retired Legacy Write Entry Points
+
+Removed caller-free broad workbook/material/cache replacement entry points
+while retaining still-required read compatibility and recovery boundaries.
+Runtime Full Data Verification passed 306/306.
+
+## v44.5.4 - Measurement Help Clarity
+
+Removed duplicated Tensile, Impact and Stiffness help fragments without
+changing calculation or storage behavior. Runtime Full Data Verification passed
+305/305.
+
+## v44.5.3 - Canonical Storage Terminology
+
+Replaced stale transition/import wording with canonical SQLite terminology
+while retaining supported JSON migration and governed recovery. Runtime Full
+Data Verification passed 304/304.
+
+## v44.5.2 - Canonical SQLite UI Boundaries
+
+Removed misleading cache UI, retired `MaterialsImport` backup-first and renamed
+the Settings action to its actual built-in-default ownership. Supported JSON
+migration, recovery and updater behavior remained unchanged. Runtime Full Data
+Verification passed 303/303.
+
 ## v44.5.1 - Active SQLite Compatibility Safety
 
 Removed the legacy startup `File.Delete(DatabasePath)` behavior. Active SQLite

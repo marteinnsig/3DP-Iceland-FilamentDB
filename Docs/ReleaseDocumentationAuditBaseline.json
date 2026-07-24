@@ -1,0 +1,307 @@
+{
+  "schema": "3dpiceland.release-documentation-audit.v1",
+  "documents": [
+    {
+      "path": "Docs/CHANGELOG.md",
+      "role": "Exhaustive chronological implementation and acceptance record",
+      "ownershipMarker": "Canonical role: chronological implementation and acceptance record."
+    },
+    {
+      "path": "Docs/BUILD_HISTORY.md",
+      "role": "Engineering build, verification and runtime evidence narrative",
+      "ownershipMarker": "Canonical role: engineering build, verification and runtime evidence narrative."
+    },
+    {
+      "path": "Docs/RELEASES.md",
+      "role": "Curated canonical and runtime-accepted release ledger",
+      "ownershipMarker": "Canonical role: curated canonical and runtime-accepted release ledger."
+    },
+    {
+      "path": "Docs/MILESTONES.md",
+      "role": "Product milestones and major delivery outcomes",
+      "ownershipMarker": "Canonical role: product milestones and major delivery outcomes."
+    }
+  ],
+  "canonicalSeries": [
+    {
+      "version": "44.5.2",
+      "title": "Canonical SQLite UI Boundaries",
+      "requiredDocuments": [
+        "Docs/CHANGELOG.md",
+        "Docs/BUILD_HISTORY.md",
+        "Docs/RELEASES.md",
+        "Docs/MILESTONES.md"
+      ]
+    },
+    {
+      "version": "44.5.3",
+      "title": "Canonical Storage Terminology",
+      "requiredDocuments": [
+        "Docs/CHANGELOG.md",
+        "Docs/BUILD_HISTORY.md",
+        "Docs/RELEASES.md",
+        "Docs/MILESTONES.md"
+      ]
+    },
+    {
+      "version": "44.5.4",
+      "title": "Measurement Help Clarity",
+      "requiredDocuments": [
+        "Docs/CHANGELOG.md",
+        "Docs/BUILD_HISTORY.md",
+        "Docs/RELEASES.md",
+        "Docs/MILESTONES.md"
+      ]
+    },
+    {
+      "version": "44.5.5",
+      "title": "Retired Legacy Write Entry Points",
+      "requiredDocuments": [
+        "Docs/CHANGELOG.md",
+        "Docs/BUILD_HISTORY.md",
+        "Docs/RELEASES.md",
+        "Docs/MILESTONES.md"
+      ]
+    },
+    {
+      "version": "44.5.6",
+      "title": "Retired Workbook Metadata Readers",
+      "requiredDocuments": [
+        "Docs/CHANGELOG.md",
+        "Docs/BUILD_HISTORY.md",
+        "Docs/RELEASES.md",
+        "Docs/MILESTONES.md"
+      ]
+    },
+    {
+      "version": "44.5.7",
+      "title": "Legacy Workbook Schema Retirement",
+      "requiredDocuments": [
+        "Docs/CHANGELOG.md",
+        "Docs/BUILD_HISTORY.md",
+        "Docs/RELEASES.md",
+        "Docs/MILESTONES.md"
+      ]
+    },
+    {
+      "version": "44.5.8",
+      "title": "Retired Transition UI Residue",
+      "requiredDocuments": [
+        "Docs/CHANGELOG.md",
+        "Docs/BUILD_HISTORY.md",
+        "Docs/RELEASES.md",
+        "Docs/MILESTONES.md"
+      ]
+    },
+    {
+      "version": "44.5.9",
+      "title": "Supported Migration Naming",
+      "requiredDocuments": [
+        "Docs/CHANGELOG.md",
+        "Docs/BUILD_HISTORY.md",
+        "Docs/RELEASES.md",
+        "Docs/MILESTONES.md"
+      ]
+    },
+    {
+      "version": "44.6.0",
+      "title": "Recovery Center Clarity",
+      "requiredDocuments": [
+        "Docs/CHANGELOG.md",
+        "Docs/BUILD_HISTORY.md",
+        "Docs/RELEASES.md",
+        "Docs/MILESTONES.md"
+      ]
+    },
+    {
+      "version": "44.6.1",
+      "title": "Canonical Release Documentation Audit",
+      "requiredDocuments": [
+        "Docs/CHANGELOG.md",
+        "Docs/BUILD_HISTORY.md",
+        "Docs/RELEASES.md",
+        "Docs/MILESTONES.md"
+      ]
+    }
+  ],
+  "knownHistoricalCrossDocumentTitles": [
+    {"version": "43.8.8", "allowedTitles": ["Production Consolidation", "Remote Update Production Consolidation"]},
+    {"version": "40.17.2", "allowedTitles": ["Manufacturer Best Value Display Detail", "Manufacturer Best Value Pricing Source Fix"]},
+    {"version": "40.14.2", "allowedTitles": ["Documentation Engine Build Fix", "Manufacturers Export Build Fix"]},
+    {"version": "40.8.0", "allowedTitles": ["Experimental Charts & Visualization", "EXPERIMENTAL-CHARTS-VISUALIZATION"]},
+    {"version": "40.7.1", "allowedTitles": ["Experimental Impact Flat Delta Fix", "EXPERIMENTAL-IMPACT-FLAT-DELTA-FIX"]},
+    {"version": "40.7.0", "allowedTitles": ["Experimental Analytics Engine", "EXPERIMENTAL-ANALYTICS-ENGINE"]},
+    {"version": "39.1.3", "allowedTitles": ["Materials Workflow Column Layout", "MATERIALS-WORKFLOW-COLUMN-LAYOUT"]},
+    {"version": "39.1.2", "allowedTitles": ["Purchase to Material Storage Sync", "PURCHASE-TO-MATERIAL-STORAGE-SYNC"]},
+    {"version": "38.4.0", "allowedTitles": ["Purchasing Platform Foundation", "PURCHASING-PLATFORM-FOUNDATION"]},
+    {"version": "38.3.1", "allowedTitles": ["Purchase Workflow Architecture & Receiving", "PURCHASE-WORKFLOW-RECEIVING"]},
+    {"version": "38.2.0", "allowedTitles": ["Inventory Engine", "INVENTORY-ENGINE"]},
+    {"version": "38.1.0", "allowedTitles": ["Purchasing & Inventory Foundation", "PURCHASING-FOUNDATION"]},
+    {"version": "38.2.4", "allowedTitles": ["Multi-Spool Inventory", "MULTI-SPOOL-INVENTORY"]},
+    {"version": "38.3.0", "allowedTitles": ["Purchase Order Foundation", "PURCHASE-ORDER-FOUNDATION"]},
+    {"version": "37.2.5", "allowedTitles": ["PKG-001 Lean Package and Documentation Consolidation", "WORKFLOW-004 DataGrid Column Layout Completion"]},
+    {"version": "37.2.4", "allowedTitles": ["UI-005 Status Messages & Final Visual Polish", "WORKFLOW-003D Material Selection Persistence Fix"]},
+    {"version": "37.2.3", "allowedTitles": ["UI-004 Dialog and Page Header Consistency", "WORKFLOW-003C Bulk Update Safety Refinement"]},
+    {"version": "37.2.2", "allowedTitles": ["UI-003 Tooltip Consistency Pass", "WORKFLOW-003B Bulk Update Engine"]},
+    {"version": "37.2.0", "allowedTitles": ["UI-001 Interface Consistency Foundation", "WORKFLOW-003 Single-Cell Productivity Tools"]},
+    {"version": "37.1.5", "allowedTitles": ["DATA-ENTRY-005", "WORKFLOW-002E Workflow Clipboard Shortcut Routing Fix"]},
+    {"version": "37.1.4", "allowedTitles": ["DATA-ENTRY-004 Compact Detail & Test Notes Flow", "WORKFLOW-002D", "WORKFLOW-002D Startup Row/Cell Selection Compatibility Fix"]},
+    {"version": "37.1.2", "allowedTitles": ["DATA-ENTRY-002 Material Detail Workflow Layout", "WORKFLOW-002B", "WORKFLOW-002B DataGrid Selection Initialization Crash Fix"]},
+    {"version": "37.1.1", "allowedTitles": ["DATA-ENTRY-001A", "DATA-ENTRY-001A Responsive Search & Notes Cleanup", "WORKFLOW-002A DataGrid Safe Cell Activation Fix"]},
+    {"version": "36.3.0", "allowedTitles": ["WEB-ROUTING-001", "WEB-ROUTING-001 Automatic Website Template Routing"]},
+    {"version": "36.2.2", "allowedTitles": ["STABILITY-003B", "STABILITY-003B Manufacturers Overview HTML Repair"]},
+    {"version": "36.2.1", "allowedTitles": ["STABILITY-003A", "STABILITY-003A Manufacturers Visible HTML Refresh Fix"]},
+    {"version": "36.2.0", "allowedTitles": ["STABILITY-003", "STABILITY-003 Native Export & Long-Session Stability"]},
+    {"version": "36.1.0", "allowedTitles": ["STABILITY-002", "STABILITY-002 Material Detail & Measurement Synchronization"]},
+    {"version": "36.0.2", "allowedTitles": ["UI-001", "UI-001 Website Export Hidden Control Cleanup"]},
+    {"version": "36.0", "allowedTitles": ["STABILITY-001", "STABILITY-001 – Stability & Data Integrity"]},
+    {"version": "27.3.4", "allowedTitles": ["Native Material Manager Safe Editing / Validation", "Safe Editing Validation"]},
+    {"version": "19.3", "allowedTitles": ["Recommendation Workflow", "Step 2 - Recommendation Workflow Step 2"]}
+  ],
+  "knownHistoricalDuplicates": [
+    {
+      "document": "Docs/BUILD_HISTORY.md",
+      "version": "40.17.2",
+      "maxOccurrences": 2,
+      "allowedTitles": ["Manufacturer Best Value Display Detail", "Manufacturer Best Value Pricing Source Fix"]
+    },
+    {
+      "document": "Docs/BUILD_HISTORY.md",
+      "version": "40.14.2",
+      "maxOccurrences": 2,
+      "allowedTitles": ["Documentation Engine Build Fix", "Manufacturers Export Build Fix"]
+    },
+    {
+      "document": "Docs/BUILD_HISTORY.md",
+      "version": "40.2.7",
+      "maxOccurrences": 2,
+      "allowedTitles": ["Experimental Build Fix"]
+    },
+    {
+      "document": "Docs/BUILD_HISTORY.md",
+      "version": "40.2.2",
+      "maxOccurrences": 2,
+      "allowedTitles": ["Experimental Add Crash Fix"]
+    },
+    {
+      "document": "Docs/BUILD_HISTORY.md",
+      "version": "37.2.4",
+      "maxOccurrences": 2,
+      "allowedTitles": ["UI-005 Status Messages & Final Visual Polish", "WORKFLOW-003D Material Selection Persistence Fix"]
+    },
+    {
+      "document": "Docs/BUILD_HISTORY.md",
+      "version": "37.2.3",
+      "maxOccurrences": 2,
+      "allowedTitles": ["UI-004 Dialog and Page Header Consistency", "WORKFLOW-003C Bulk Update Safety Refinement"]
+    },
+    {
+      "document": "Docs/BUILD_HISTORY.md",
+      "version": "34.2.6",
+      "maxOccurrences": 2,
+      "allowedTitles": ["RELEASE-003B Header Version Fix"]
+    },
+    {
+      "document": "Docs/BUILD_HISTORY.md",
+      "version": "27.8.3.2",
+      "maxOccurrences": 2,
+      "allowedTitles": [".1 - Duplicate Helper Cleanup", "Native Tensile Calculation Migration"]
+    },
+    {
+      "document": "Docs/BUILD_HISTORY.md",
+      "version": "19.3",
+      "maxOccurrences": 2,
+      "allowedTitles": ["Recommendation Workflow", "Step 2 - Recommendation Workflow Step 2"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "40.17.2",
+      "maxOccurrences": 2,
+      "allowedTitles": ["Manufacturer Best Value Display Detail", "Manufacturer Best Value Pricing Source Fix"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "40.14.2",
+      "maxOccurrences": 2,
+      "allowedTitles": ["Documentation Engine Build Fix", "Manufacturers Export Build Fix"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "40.2.7",
+      "maxOccurrences": 2,
+      "allowedTitles": ["Experimental Build Fix"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "40.2.2",
+      "maxOccurrences": 2,
+      "allowedTitles": ["Experimental Add Crash Fix"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "37.2.4",
+      "maxOccurrences": 2,
+      "allowedTitles": ["UI-005 Status Messages & Final Visual Polish", "WORKFLOW-003D Material Selection Persistence Fix"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "37.2.3",
+      "maxOccurrences": 2,
+      "allowedTitles": ["UI-004 Dialog and Page Header Consistency", "WORKFLOW-003C Bulk Update Safety Refinement"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "37.2.2",
+      "maxOccurrences": 2,
+      "allowedTitles": ["UI-003 Tooltip Consistency Pass", "WORKFLOW-003B Bulk Update Engine"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "37.2.0",
+      "maxOccurrences": 2,
+      "allowedTitles": ["UI-001 Interface Consistency Foundation", "WORKFLOW-003 Single-Cell Productivity Tools"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "37.1.5",
+      "maxOccurrences": 2,
+      "allowedTitles": ["DATA-ENTRY-005", "WORKFLOW-002E Workflow Clipboard Shortcut Routing Fix"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "37.1.1",
+      "maxOccurrences": 2,
+      "allowedTitles": ["DATA-ENTRY-001A", "WORKFLOW-002A DataGrid Safe Cell Activation Fix"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "34.2.6",
+      "maxOccurrences": 2,
+      "allowedTitles": ["RELEASE-003B Header Version Fix"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "27.8.3.2",
+      "maxOccurrences": 2,
+      "allowedTitles": [".1 - Duplicate Helper Cleanup", "Native Tensile Calculation Migration"]
+    },
+    {
+      "document": "Docs/CHANGELOG.md",
+      "version": "19.3",
+      "maxOccurrences": 2,
+      "allowedTitles": ["Recommendation Workflow", "Step 2 - Recommendation Workflow Step 2"]
+    },
+    {
+      "document": "Docs/RELEASES.md",
+      "version": "32.0.3",
+      "maxOccurrences": 3,
+      "allowedTitles": ["DOCS-001 Full Changelog Reconstruction"]
+    },
+    {
+      "document": "Docs/MILESTONES.md",
+      "version": "40.17.2",
+      "maxOccurrences": 2,
+      "allowedTitles": ["Manufacturer Best Value Display Detail", "Manufacturer Best Value Pricing Source Fix"]
+    }
+  ]
+}

@@ -1,4 +1,32 @@
-# Current Build Notes - v44.6.0
+# Current Build Notes - v44.6.1
+
+## Canonical Release Documentation Audit
+
+v44.6.1 defines separate canonical roles for CHANGELOG, BUILD_HISTORY, RELEASES
+and MILESTONES and reconciles the accepted v44.5.2-v44.6.0 sequence into the
+three documents that had stopped at v44.5.1.
+
+`Tools/Test-ReleaseDocumentation.ps1` is a read-only repository audit. It
+requires one consistently titled recent release entry in every governed
+document and blocks new within-file duplicate identifiers. Existing historical
+duplicates are listed explicitly in
+`Docs/ReleaseDocumentationAuditBaseline.json`; they remain warnings bounded by
+their current occurrence count and approved titles. The audit never edits,
+deletes, renumbers or reorders history and is now required by Candidate and
+Production release gates.
+
+No runtime data, SQLite/schema, JSON migration, Excel disaster recovery,
+backup/restore, updater, website/report or FTPS behavior changes. Debug/Release,
+the standalone documentation audit, static/security gates and Full Data
+Verification are required.
+
+Runtime acceptance passed Full Data Verification 311/311 with zero failures on
+2026-07-24. Release identity aligned at assembly 44.6.1.0, all 201 canonical
+Materials produced aligned measurement rows and summaries, schema v30 remained
+active, Recovery Center retained six Ready backups and diagnostics reported
+zero incomplete updater transactions. The concise Recovery Center presentation
+and exact selected-backup Ready detail were visually accepted. v44.6.1 is
+runtime accepted.
 
 ## Recovery Center Clarity
 

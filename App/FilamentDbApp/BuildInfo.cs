@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "RECOVERY-CENTER-CLARITY";
-    public const string ReleaseTitle = "Recovery Center Clarity";
+    public const string ReleaseCode = "CANONICAL-RELEASE-DOCUMENTATION-AUDIT";
+    public const string ReleaseTitle = "Canonical Release Documentation Audit";
 
     public static string Version
     {

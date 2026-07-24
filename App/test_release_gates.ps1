@@ -13,6 +13,7 @@ $feedPath = (Resolve-Path -LiteralPath $Feed).Path
 $project = Join-Path $PSScriptRoot "FilamentDbApp\FilamentDbApp.csproj"
 $verifier = Join-Path $repository "Tools\UpdatePackageVerifier\UpdatePackageVerifier.csproj"
 $deploymentService = Join-Path $PSScriptRoot "FilamentDbApp\Services\ApplicationDeploymentService.cs"
+$releaseDocumentationAudit = Join-Path $repository "Tools\Test-ReleaseDocumentation.ps1"
 
 function Assert-ReleaseGate([bool]$Condition, [string]$Failure) {
     if (-not $Condition) { throw $Failure }
@@ -29,6 +30,9 @@ Assert-ReleaseGate ($LASTEXITCODE -eq 0) "NuGet vulnerability audit failed."
 $null = $vulnerabilityJson | ConvertFrom-Json
 $vulnerabilityText = $vulnerabilityJson -join [Environment]::NewLine
 Assert-ReleaseGate ($vulnerabilityText -notmatch '"severity"\s*:') "NuGet vulnerability audit found one or more vulnerable packages."
+
+& $releaseDocumentationAudit -RepositoryRoot $repository
+Assert-ReleaseGate ($LASTEXITCODE -eq 0) "Canonical release documentation audit failed."
 
 $feedBytes = [IO.File]::ReadAllBytes($feedPath)
 Assert-ReleaseGate ($feedBytes.Length -gt 0 -and $feedBytes[0] -eq [byte][char]'{') "latest.json must be non-empty BOM-less JSON beginning with '{'."
@@ -63,4 +67,4 @@ $deploymentSource = Get-Content -LiteralPath $deploymentService -Raw
 Assert-ReleaseGate ($deploymentSource.Contains("OrderBy(target => StablePaths.Values.Contains(target.RemotePath, StringComparer.Ordinal) ? 1 : 0)")) "Application deployment no longer proves versioned-route-first/stable-route-last ordering."
 Assert-ReleaseGate ($deploymentSource.Contains('new PublishTarget(packagePath, "/updates/" + packageName, feed.PackageBytes), new PublishTarget(fullFeed, "/updates/latest.json"')) "Update publishing no longer proves package-first/latest.json-last ordering."
 
-Write-Host "$ReleaseState release gates PASS: clean-tree policy, NuGet vulnerabilities, BOM-less feed, bytes, SHA-256, ECDSA signature, governed inventory, SQLite schema, and stable-route-last publishing."
+Write-Host "$ReleaseState release gates PASS: clean-tree policy, NuGet vulnerabilities, canonical release documentation, BOM-less feed, bytes, SHA-256, ECDSA signature, governed inventory, SQLite schema, and stable-route-last publishing."

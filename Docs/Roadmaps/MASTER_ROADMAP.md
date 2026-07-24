@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.5.6 — Retired Workbook Metadata Readers**
+Current canonical release: **v44.6.1 — Canonical Release Documentation Audit**
 
-Last runtime-accepted baseline: **v44.5.6 — Retired Workbook Metadata Readers**
+Last runtime-accepted baseline: **v44.6.1 — Canonical Release Documentation Audit**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -896,7 +896,9 @@ Migration Naming.
 ### v44.6 — Feedback-driven feature evaluation
 
 Status: **First bounded clarity increment complete and runtime accepted as
-v44.6.0 — Recovery Center Clarity.**
+v44.6.0 — Recovery Center Clarity. Second bounded maintainability increment
+complete and runtime accepted as v44.6.1 — Canonical Release Documentation
+Audit.**
 
 - v44.6.0 removes verbose updater evidence from the always-visible Recovery
   Center surface and keeps one concise compatibility summary plus exact details
@@ -904,6 +906,12 @@ v44.6.0 — Recovery Center Clarity.**
   evidence retention and Default-No behavior remain unchanged.
 - Runtime Full Data Verification passed 311/311 with zero failures; selected
   backup verification and retained diagnostics evidence were runtime accepted.
+- v44.6.1 defines separate ownership for CHANGELOG, BUILD_HISTORY, RELEASES and
+  MILESTONES, reconciles the accepted v44.5.2-v44.6.0 sequence and introduces a
+  read-only baseline-aware release-documentation gate. It does not rewrite
+  known historical collisions and does not change runtime/storage behavior.
+- Runtime Full Data Verification passed 311/311 with zero failures; schema v30,
+  six Ready backups and zero incomplete updater transactions were confirmed.
 
 - Use `Docs/BUG_FEEDBACK_LOG.md`, daily operation and VM/release observations as the intake queue.
 - Evaluate per-MaterialID printing profiles only when there is a concrete daily-use/report need beyond the delivered base-material profile foundation. Preserve typed units, provenance and `Not recorded` honesty.

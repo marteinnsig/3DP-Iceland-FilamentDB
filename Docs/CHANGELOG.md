@@ -1,3 +1,24 @@
+> Canonical role: chronological implementation and acceptance record.
+> `RELEASES.md` is the curated release ledger; this file retains detailed
+> implementation history.
+
+## v44.6.1 - Canonical Release Documentation Audit
+
+- Defined distinct canonical ownership for CHANGELOG, BUILD_HISTORY, RELEASES
+  and MILESTONES.
+- Reconciled the accepted v44.5.2-v44.6.0 sequence into the three release
+  documents that had stopped at v44.5.1.
+- Added a read-only repository audit and explicit bounded baseline for known
+  historical duplicate version identifiers.
+- New duplicate identifiers, missing recent canonical entries and recent title
+  conflicts now fail the documentation gate; historical entries are never
+  edited, deleted, renumbered or reordered automatically.
+- Connected the audit to Candidate/Production release gates without changing
+  runtime, SQLite, recovery, updater, website/report or FTPS behavior.
+- Runtime accepted with Full Data Verification 311/311, schema v30, six Ready
+  backups, zero incomplete updater transactions and unchanged guarded Recovery
+  Center behavior.
+
 ## v44.6.0 - Recovery Center Clarity
 
 - Removed the always-visible verbose updater transaction/evidence box from

@@ -1,3 +1,73 @@
+> Canonical role: curated canonical and runtime-accepted release ledger.
+> Detailed implementation chronology remains in `CHANGELOG.md`.
+
+## v44.6.1 - Canonical Release Documentation Audit
+
+- Canonical documentation-maintainability release.
+- Reconciles v44.5.2-v44.6.0 across the canonical release documents.
+- Adds a read-only duplicate, coverage and title-consistency audit.
+- Baselines known historical collisions without rewriting release history.
+- Debug/Release and documentation/security gates passed; runtime Full Data
+  Verification passed 311/311.
+
+## v44.6.0 - Recovery Center Clarity
+
+- Replaced the persistent verbose updater-evidence box with concise Recovery
+  Center guidance and selected-backup details.
+- Preserved guarded restore and complete evidence in diagnostics.
+- Runtime Full Data Verification passed 311/311.
+
+## v44.5.9 - Supported Migration Naming
+
+- Clarified canonical SQLite, supported JSON migration and built-in-default
+  method ownership.
+- Corrected partial stiffness calculation and close-time measurement persistence
+  exposed by runtime testing.
+- Runtime Full Data Verification passed 310/310.
+
+## v44.5.8 - Retired Transition UI Residue
+
+- Removed unreachable transition handlers and unused JSON save-state residue.
+- Preserved supported migration readers and recovery boundaries.
+- Runtime Full Data Verification passed 309/309.
+
+## v44.5.7 - Legacy Workbook Schema Retirement
+
+- Advanced SQLite to schema v30 and retired 13 original-workbook tables after a
+  retained verified backup.
+- Moved remaining engineering consumers to canonical measurements.
+- Runtime Full Data Verification passed 308/308.
+
+## v44.5.6 - Retired Workbook Metadata Readers
+
+- Removed original-workbook metadata readers and display-only UI.
+- Preserved governed Excel disaster recovery and compatibility inspection.
+- Runtime Full Data Verification passed 307/307.
+
+## v44.5.5 - Retired Legacy Write Entry Points
+
+- Removed caller-free broad legacy replace/clear entry points.
+- Preserved supported read compatibility and recovery.
+- Runtime Full Data Verification passed 306/306.
+
+## v44.5.4 - Measurement Help Clarity
+
+- Removed duplicated measurement instructions without changing calculations or
+  storage.
+- Runtime Full Data Verification passed 305/305.
+
+## v44.5.3 - Canonical Storage Terminology
+
+- Aligned visible storage wording with canonical SQLite and retained supported
+  JSON migration/recovery boundaries.
+- Runtime Full Data Verification passed 304/304.
+
+## v44.5.2 - Canonical SQLite UI Boundaries
+
+- Removed misleading cache actions and retired `MaterialsImport` backup-first.
+- Preserved supported migration and recovery paths.
+- Runtime Full Data Verification passed 303/303.
+
 ## v44.5.1 - Active SQLite Compatibility Safety
 
 - Inspects the active SQLite database read-only before startup migration.
