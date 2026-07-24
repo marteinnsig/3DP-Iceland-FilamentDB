@@ -30,16 +30,32 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 15 |
+| Open | 16 |
 | In progress | 1 |
 | Partially solved | 3 |
 | Solved | 30 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **53** |
+| **Total tracked findings** | **54** |
 
 ## Tracked findings
+
+Date: 2026-07-24
+Area: Settings Manager / Base Material Catalog
+Type: Workflow friction / Data issue
+Severity: Important
+Status: Open
+Resolution: Add an explicit destructive-action confirmation before `Delete Selected Base Material` executes, with `No` as the
+default focused response. Identify the selected Base Material in the warning and make cancellation leave canonical SQLite, selection
+and dependent calculations unchanged.
+Verification evidence: Requires Yes/No/default-focus, keyboard dismissal, cancellation, confirmed deletion, restart and Full Data
+Verification runtime tests.
+What happened: `Delete Selected Base Material` can delete the selected catalog entry without a warning or default-No confirmation.
+Expected behavior: Show a clear warning naming the selected Base Material and perform no mutation unless the user explicitly selects
+`Yes`; pressing Enter, Escape or closing the dialog must follow the safe default-No path.
+Steps to reproduce: Open Settings Manager, select a Base Material and click `Delete Selected Base Material`.
+Screenshot / export / report attached: User feedback on 2026-07-24.
 
 Date: 2026-07-24
 Area: Tools menu / workflow column reset
@@ -546,6 +562,10 @@ Stage 5D candidate removes the hidden Settings legacy-grid toggle, handler and
 fallback activation state. Fast Settings becomes the only activatable path;
 owner runtime acceptance and Full Data Verification 326/326 passed. Legacy
 Settings XAML and grid lifecycle are the next deletion checkpoint.
+Stage 5E candidate removes both legacy Settings DataGrids and grid-specific
+bind/edit/layout/recovery/selection fallback code. Fast canonical selection
+solely owns Base Material delete. Owner runtime acceptance and Full Data
+Verification 327/327 completed the Settings legacy-grid deletion checkpoint.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

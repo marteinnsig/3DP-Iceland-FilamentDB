@@ -76,6 +76,12 @@ activatable Settings UI; legacy XAML and grid-only lifecycle remain for the
 next checkpoint. Owner runtime testing accepted Settings editing, validation,
 Base Material CRUD, reset, persistence and cross-tab behavior. Full Data
 Verification passed 326/326; Stage 5D is accepted.
+Stage 5E removes the complete legacy General Settings and Base Material
+DataGrid XAML plus grid-only bind/edit/layout/recovery and selection fallback
+callers. Fast canonical selection now solely owns Base Material deletion.
+Owner runtime testing accepted Settings editing, validation, exact Fast
+selection CRUD, layout and restart persistence. Full Data Verification passed
+327/327; Stage 5E is accepted.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

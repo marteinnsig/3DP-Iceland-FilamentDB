@@ -155,7 +155,7 @@ public partial class MainWindow : Window
         RunStartupPhase("Analytics controls", InitializeAnalyticsControls);
         RunStartupPhase("Saved video ideas", LoadSavedVideoIdeas);
         RunStartupPhase("AI Assistant workspace", InitializeAiAssistantWorkspace);
-        RunStartupPhase("Native settings initialization", InitializeNativeSettingsGridEditor);
+        RunStartupPhase("Native settings initialization", InitializeNativeSettingsManager);
         RunStartupPhase("Native Materials initialization", InitializeNativeMaterialManager);
         RunStartupPhase("Fast Materials default view", ActivateDefaultFastMaterialsView);
         RunStartupPhase("Manufacturer workspace initialization", InitializeManufacturerManager);
@@ -209,7 +209,6 @@ public partial class MainWindow : Window
     {
         "NativeMaterialsGrid",
         "ManufacturersGrid",
-        "NativeSettingsGrid",
         "ExperimentalTensileGrid",
         "ExperimentalImpactGrid",
         "ExperimentalStiffnessGrid"
@@ -984,10 +983,6 @@ public partial class MainWindow : Window
                 RefreshNativeInputModulesFromMaterialManager(markDirty: false);
                 MarkNativeMaterialsDirty();
                 QueueNativeMaterialDependentIntelligenceRefresh();
-                break;
-            case "NativeSettingsGrid":
-            case "BaseMaterialsGrid":
-                RefreshNativeInputModulesFromMaterialManager(markDirty: false);
                 break;
         }
 
@@ -13329,7 +13324,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private void PersistCanonicalStateForExcelRecovery()
     {
-        foreach (var gridName in new[] { "NativeMaterialsGrid", "NativeSettingsGrid", "BaseMaterialsGrid" })
+        foreach (var gridName in new[] { "NativeMaterialsGrid" })
         {
             if (FindName(gridName) is not DataGrid grid) continue;
             grid.CommitEdit(DataGridEditingUnit.Cell, true);
@@ -17346,6 +17341,25 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             tensileLegacyGridRetired && measurementFastContractsReady && releaseIdentityReady
                 ? "Stiffness legacy DataGrid XAML, grid lifecycle and obsolete measurement warm-up are absent"
                 : "Stiffness legacy lifecycle remains, a prior deletion/contract failed or release identity is misaligned"));
+        var settingsLegacyGridsRetired =
+            FindName("NativeSettingsGrid") is null &&
+            FindName("BaseMaterialsGrid") is null &&
+            typeof(MainWindow).GetMethod(
+                "BindNativeSettingsGrids",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "NativeSettingsGrid_CellEditEnding",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "BaseMaterialsGrid_CellEditEnding",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null;
+        checks.Add(new VerificationCheck("v44.7.7 Settings legacy-grid deletion stage gate",
+            settingsLegacyGridsRetired && fastSettingsReady &&
+            stiffnessLegacyGridRetired && releaseIdentityReady,
+            settingsLegacyGridsRetired && fastSettingsReady &&
+            stiffnessLegacyGridRetired && releaseIdentityReady
+                ? "Settings legacy DataGrid XAML and grid-specific bind/edit/selection lifecycle are absent"
+                : "Settings legacy lifecycle remains, a Fast contract failed or release identity is misaligned"));
 
         return checks;
     }
@@ -21652,7 +21666,7 @@ private List<string> GetVisibleAiMaterialLabels()
     private readonly ObservableCollection<NativeSettingRow> _nativeSettingsRows = new();
     private readonly ObservableCollection<NativeBaseMaterialRow> _nativeBaseMaterialRows = new();
 
-    private void InitializeNativeSettingsGridEditor()
+    private void InitializeNativeSettingsManager()
     {
         LoadBuiltInNativeSettingsDefaults();
         LoadCanonicalNativeSettings();
@@ -21684,7 +21698,6 @@ private List<string> GetVisibleAiMaterialLabels()
             foreach (var row in canonicalBaseMaterials) _nativeBaseMaterialRows.Add(FromBaseMaterialRecord(row));
         }
         EnsurePurchasingCurrencySettings();
-        BindNativeSettingsGrids();
         RefreshFtpsEndpointSummary();
     }
 
@@ -21806,19 +21819,6 @@ private List<string> GetVisibleAiMaterialLabels()
         }
     }
 
-    private void BindNativeSettingsGrids()
-    {
-        if (FindName("NativeSettingsGrid") is DataGrid settingsGrid)
-        {
-            settingsGrid.ItemsSource = _nativeSettingsRows;
-        }
-
-        if (FindName("BaseMaterialsGrid") is DataGrid baseGrid)
-        {
-            baseGrid.ItemsSource = _nativeBaseMaterialRows;
-        }
-    }
-
     private string NativeSettingsFilePath()
     {
         return StorageWorkingFilePath("native-settings-manager.json");
@@ -21930,22 +21930,6 @@ private List<string> GetVisibleAiMaterialLabels()
     }
 
 
-    private void NativeSettingsGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-    {
-        if (sender is DataGrid undoGrid) CaptureInputDataGridUndo(undoGrid, e);
-        Dispatcher.BeginInvoke(new Action(() =>
-        {
-            if (e.Row.Item is NativeSettingRow edited && string.Equals(edited.Section, "Deployment", StringComparison.OrdinalIgnoreCase))
-            {
-                try { SaveDeploymentSettingsFromManager(); }
-                catch (Exception ex) { MessageBox.Show(this, ex.Message, "Deployment Settings", MessageBoxButton.OK, MessageBoxImage.Warning); }
-            }
-            RefreshNativeInputModulesFromMaterialManager(markDirty: false);
-            RefreshPurchaseCurrencyChoices();
-            SyncPurchaseOrderCurrencyRatesFromSettings();
-        }), System.Windows.Threading.DispatcherPriority.Background);
-    }
-
     private void SyncPurchaseOrderCurrencyRatesFromSettings()
     {
         var changed = false;
@@ -21966,18 +21950,6 @@ private List<string> GetVisibleAiMaterialLabels()
         SavePurchaseOrders();
         SchedulePurchaseOrderGridRefresh();
         RefreshPurchaseOrderSummary();
-    }
-
-    private void BaseMaterialsGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-    {
-        if (sender is DataGrid undoGrid) CaptureInputDataGridUndo(undoGrid, e);
-        Dispatcher.BeginInvoke(new Action(() =>
-        {
-            SaveBaseMaterialCatalogToDatabase();
-            ApplyNativeMaterialComputedFieldsToAllRows();
-            RefreshNativeMaterialGridValidation();
-            RefreshNativeInputModulesFromMaterialManager(markDirty: false);
-        }), System.Windows.Threading.DispatcherPriority.Background);
     }
 
     private void SaveNativeSettings_Click(object sender, RoutedEventArgs e)
@@ -22016,32 +21988,6 @@ private List<string> GetVisibleAiMaterialLabels()
         RefreshFastSettingsViews();
     }
 
-    private void AddNativeSettingRow_Click(object sender, RoutedEventArgs e)
-    {
-        _nativeSettingsRows.Add(new NativeSettingRow
-        {
-            Section = "Custom",
-            Parameter = "New setting",
-            Value = "",
-            Unit = "",
-            UsedBy = "",
-            Notes = ""
-        });
-    }
-
-    private void DeleteNativeSettingRow_Click(object sender, RoutedEventArgs e)
-    {
-        if (FindName("NativeSettingsGrid") is DataGrid grid && grid.SelectedItem is NativeSettingRow row)
-        {
-            if (string.Equals(row.Section, "Deployment", StringComparison.OrdinalIgnoreCase))
-            {
-                MessageBox.Show(this, "Governed Deployment rows cannot be deleted.", "Settings Manager", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-            _nativeSettingsRows.Remove(row);
-        }
-    }
-
     private void AddBaseMaterialRow_Click(object sender, RoutedEventArgs e)
     {
         _nativeBaseMaterialRows.Add(new NativeBaseMaterialRow
@@ -22055,8 +22001,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void DeleteBaseMaterialRow_Click(object sender, RoutedEventArgs e)
     {
-        var row = _selectedFastBaseMaterialRow ??
-                  (FindName("BaseMaterialsGrid") is DataGrid grid ? grid.SelectedItem as NativeBaseMaterialRow : null);
+        var row = _selectedFastBaseMaterialRow;
         if (row is not null)
         {
             _nativeBaseMaterialRows.Remove(row);

@@ -181,6 +181,18 @@ and Deployment validation, Base Material editing/CRUD, column reset,
 persistence and cross-tab behavior. Full Data Verification passed 326/326.
 Stage 5D is accepted.
 
+Stage 5E removes both legacy Settings DataGrid XAML blocks and their
+grid-specific bind, edit, undo, layout, recovery-commit and selection fallback
+callers. Base Material deletion now uses only the Fast view's canonical
+selection. General Settings and Base Material collections, validation, SQLite
+save, downstream recalculation and Fast refresh paths remain unchanged.
+Runtime acceptance is pending.
+
+Owner runtime testing accepted General and Deployment Settings editing,
+validation, Base Material text/ComboBox editing, exact Fast selection CRUD,
+column reset, persistence, tab return and restart behavior. Full Data
+Verification passed 327/327. Stage 5E is accepted.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on

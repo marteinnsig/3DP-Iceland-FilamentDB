@@ -1643,6 +1643,7 @@ changes priority.
   - All three legacy measurement grids and the obsolete deferred DataGrid warm-up are retired.
   - Stage 5C global reset retirement and local Materials reset ownership are accepted with Verification 326/326.
   - Stage 5D Settings fallback activation retirement is accepted with Full Data Verification 326/326.
+  - Stage 5E Settings legacy-grid deletion is accepted with Full Data Verification 327/327.
   - Replace those adapters with explicit Fast contracts before deleting legacy XAML, handlers and commit paths.
   - Preserve canonical SQLite, formulas, filters, validation, settings CRUD and layout behavior at every stage.
   - Require runtime acceptance after each removal stage.

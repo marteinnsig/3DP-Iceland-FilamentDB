@@ -21,8 +21,6 @@ public partial class MainWindow
         FastBaseMaterialsViewHost.Content = _embeddedFastBaseMaterialsView;
         FastNativeSettingsViewHost.Visibility = Visibility.Visible;
         FastBaseMaterialsViewHost.Visibility = Visibility.Visible;
-        NativeSettingsGrid.Visibility = Visibility.Collapsed;
-        BaseMaterialsGrid.Visibility = Visibility.Collapsed;
     }
 
     private void ResetFastSettingsColumns_Click(object sender, RoutedEventArgs e)

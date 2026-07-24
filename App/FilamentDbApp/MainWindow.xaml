@@ -1986,26 +1986,6 @@
                         <GroupBox Grid.Row="0" Header="Measurement / Calculation Settings - only Value is editable" Margin="0,0,0,10">
                             <Grid>
                                 <ContentControl Name="FastNativeSettingsViewHost" Margin="8"/>
-                            <DataGrid Name="NativeSettingsGrid" SelectionMode="Single" SelectionUnit="CellOrRowHeader"
-                                      BeginningEdit="InputDataGrid_BeginningEdit" CellEditEnding="NativeSettingsGrid_CellEditEnding"
-                                      IsReadOnly="False"
-                                      AutoGenerateColumns="False"
-                                      CanUserAddRows="True"
-                                      CanUserDeleteRows="True"
-                                      HeadersVisibility="Column"
-                                      GridLinesVisibility="Horizontal"
-                                      VerticalScrollBarVisibility="Auto"
-                                      HorizontalScrollBarVisibility="Auto"
-                                      Margin="8">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Section" Binding="{Binding Section}" Width="140" IsReadOnly="True"/>
-                                    <DataGridTextColumn Header="Parameter" Binding="{Binding Parameter}" Width="220" IsReadOnly="True"/>
-                                    <DataGridTextColumn Header="Value" Binding="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="130" IsReadOnly="False"/>
-                                    <DataGridTextColumn Header="Unit" Binding="{Binding Unit}" Width="90" IsReadOnly="True"/>
-                                    <DataGridTextColumn Header="Used By" Binding="{Binding UsedBy}" Width="160" IsReadOnly="True"/>
-                                    <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="*" IsReadOnly="True"/>
-                                </DataGrid.Columns>
-                            </DataGrid>
                             </Grid>
                         </GroupBox>
 
@@ -2019,48 +1999,6 @@
                         <GroupBox Grid.Row="2" Header="Base Material Catalog / Lookup">
                             <Grid>
                                 <ContentControl Name="FastBaseMaterialsViewHost" Margin="8"/>
-                            <DataGrid Name="BaseMaterialsGrid"
-                                      BeginningEdit="InputDataGrid_BeginningEdit" CellEditEnding="BaseMaterialsGrid_CellEditEnding"
-                                      AutoGenerateColumns="False"
-                                      CanUserAddRows="True"
-                                      CanUserDeleteRows="True"
-                                      HeadersVisibility="Column"
-                                      GridLinesVisibility="Horizontal"
-                                      VerticalScrollBarVisibility="Auto"
-                                      HorizontalScrollBarVisibility="Auto"
-                                      Margin="8">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Base Material" Binding="{Binding BaseMaterial, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
-                                    <DataGridTextColumn Header="Category" Binding="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="220"/>
-                                    <DataGridTextColumn Header="Sort Order" Binding="{Binding SortOrder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
-                                    <DataGridTextColumn Header="Nozzle min °C" Binding="{Binding NozzleTemperatureMinC}" Width="105"/>
-                                    <DataGridTextColumn Header="Nozzle rec. °C" Binding="{Binding NozzleTemperatureRecommendedC}" Width="110"/>
-                                    <DataGridTextColumn Header="Nozzle max °C" Binding="{Binding NozzleTemperatureMaxC}" Width="105"/>
-                                    <DataGridTextColumn Header="Bed min °C" Binding="{Binding BedTemperatureMinC}" Width="95"/>
-                                    <DataGridTextColumn Header="Bed rec. °C" Binding="{Binding BedTemperatureRecommendedC}" Width="100"/>
-                                    <DataGridTextColumn Header="Bed max °C" Binding="{Binding BedTemperatureMaxC}" Width="95"/>
-                                    <DataGridTextColumn Header="Speed min mm/s" Binding="{Binding PrintSpeedMinMmPerS}" Width="115"/>
-                                    <DataGridTextColumn Header="Speed rec. mm/s" Binding="{Binding PrintSpeedRecommendedMmPerS}" Width="120"/>
-                                    <DataGridTextColumn Header="Speed max mm/s" Binding="{Binding PrintSpeedMaxMmPerS}" Width="115"/>
-                                    <DataGridTextColumn Header="Cooling min %" Binding="{Binding CoolingMinPercent}" Width="105"/>
-                                    <DataGridTextColumn Header="Cooling rec. %" Binding="{Binding CoolingRecommendedPercent}" Width="110"/>
-                                    <DataGridTextColumn Header="Cooling max %" Binding="{Binding CoolingMaxPercent}" Width="105"/>
-                                    <DataGridComboBoxColumn Header="Cooling guidance" SelectedItemBinding="{Binding CoolingGuidance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="145">
-                                        <DataGridComboBoxColumn.ItemsSource><x:Array Type="{x:Type sys:String}"><sys:String>Off</sys:String><sys:String>Low</sys:String><sys:String>Moderate</sys:String><sys:String>High</sys:String><sys:String>Required</sys:String></x:Array></DataGridComboBoxColumn.ItemsSource>
-                                    </DataGridComboBoxColumn>
-                                    <DataGridTextColumn Header="Drying °C" Binding="{Binding DryingTemperatureC}" Width="95"/>
-                                    <DataGridTextColumn Header="Drying hours" Binding="{Binding DryingTimeHours}" Width="100"/>
-                                    <DataGridComboBoxColumn Header="Enclosure" SelectedItemBinding="{Binding EnclosureRequirement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="175">
-                                        <DataGridComboBoxColumn.ItemsSource><x:Array Type="{x:Type sys:String}"><sys:String>Not required</sys:String><sys:String>Recommended</sys:String><sys:String>Required</sys:String><sys:String>Heated chamber recommended</sys:String></x:Array></DataGridComboBoxColumn.ItemsSource>
-                                    </DataGridComboBoxColumn>
-                                    <DataGridTextColumn Header="Printer / G-code reference" Binding="{Binding PrinterProfileReference}" Width="190"/>
-                                    <DataGridTextColumn Header="Slicer profile reference" Binding="{Binding SlicerProfileReference}" Width="180"/>
-                                    <DataGridTextColumn Header="Profile ID" Binding="{Binding ProfileId}" Width="145"/>
-                                    <DataGridComboBoxColumn Header="Profile kind" SelectedItemBinding="{Binding ProfileKind, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="155">
-                                        <DataGridComboBoxColumn.ItemsSource><x:Array Type="{x:Type sys:String}"><sys:String>Slicer provided</sys:String><sys:String>Manufacturer provided</sys:String><sys:String>User provided</sys:String></x:Array></DataGridComboBoxColumn.ItemsSource>
-                                    </DataGridComboBoxColumn>
-                                </DataGrid.Columns>
-                            </DataGrid>
                             </Grid>
                         </GroupBox>
                     </Grid>

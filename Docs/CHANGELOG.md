@@ -98,6 +98,12 @@
   activatable Settings UI; legacy XAML deletion remains runtime-gated.
 - Owner runtime testing accepted Fast-only Settings behavior and Full Data
   Verification passed 326/326.
+- Removed both legacy Settings DataGrid XAML blocks and their grid-specific
+  bind, edit, undo, layout, recovery-commit and selection fallback callers.
+- Made Fast canonical selection the sole owner of Base Material deletion while
+  retaining Settings collections, SQLite save, validation and recalculation.
+- Owner runtime testing accepted Settings after complete legacy-grid deletion
+  and Full Data Verification passed 327/327.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 
