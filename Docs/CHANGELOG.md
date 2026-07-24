@@ -1,9 +1,21 @@
-## v44.5.4 - Measurement Help Clarity (candidate)
+## v44.5.5 - Retired Legacy Write Entry Points (candidate)
+
+- Removed caller-free `ReplaceWorkbook`, `ReplaceMaterials` and `ClearCache`
+  public database write entry points.
+- Preserved imported-workbook tables and active readers required by Material
+  Detail, diagnostics and supported-schema compatibility inspection.
+- Preserved governed Excel disaster recovery, explicit SQLite restore and JSON
+  migration snapshots.
+- Added a Verification gate for the retired write/read-compatibility boundary.
+- Awaiting runtime Full Data Verification and UI acceptance.
+
+## v44.5.4 - Measurement Help Clarity
 
 - Removed duplicated instruction fragments from Tensile, Impact and Stiffness.
 - Added stable names and Verification coverage for all three help surfaces.
 - Preserved measurement calculations, storage and recovery behavior.
-- Awaiting runtime Full Data Verification and visual acceptance.
+- Runtime Full Data Verification passed 305/305 with zero failures; all three
+  corrected measurement instructions were visually accepted.
 
 ## v44.5.3 - Canonical Storage Terminology
 

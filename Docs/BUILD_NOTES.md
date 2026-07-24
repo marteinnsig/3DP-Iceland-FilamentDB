@@ -1,6 +1,23 @@
-# Current Build Notes - v44.5.4
+# Current Build Notes - v44.5.5
 
-## Measurement Help Clarity candidate
+## Retired Legacy Write Entry Points candidate
+
+v44.5.5 removes the caller-free `ReplaceWorkbook`, `ReplaceMaterials` and
+`ClearCache` public write entry points from `LocalDatabase`. These broad
+operations belonged to the retired original-workbook/cache workflow and could
+replace or clear normalized Materials, Manufacturers and imported workbook
+metadata if accidentally reconnected.
+
+The `Imports`, `ExcelSheets`, `ExcelSheetRows` and related tables are retained:
+Material Detail and diagnostics still read them, and active-database
+compatibility inspection still requires the supported legacy schema shape.
+Their read paths are unchanged. Governed Excel disaster recovery, explicit
+SQLite restore, JSON migration snapshots, updater, reports, website and FTPS
+behavior are unchanged. A Verification gate proves the write entry points are
+absent while the readers and recovery boundaries remain available. Runtime
+Full Data Verification and UI acceptance are required.
+
+## Measurement Help Clarity
 
 v44.5.4 removes literal duplicated sentence fragments from the Tensile,
 Impact and Stiffness measurement workspace instructions. The three help
@@ -10,8 +27,9 @@ accepted wording so the duplication cannot silently return.
 Only XAML help text, release identity, Verification coverage and documentation
 are changed. Measurement inputs, calculations, SQLite/JSON compatibility,
 Excel disaster recovery, restore, updater, reports, website and FTPS behavior
-are unchanged. Runtime Full Data Verification and visual acceptance are
-required.
+are unchanged. Runtime Full Data Verification passed 305/305 with zero failures
+on 2026-07-24; all three help surfaces were visually accepted and v44.5.4 is
+runtime accepted.
 
 ## Canonical Storage Terminology
 

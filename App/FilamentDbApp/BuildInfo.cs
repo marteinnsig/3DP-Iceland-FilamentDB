@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "MEASUREMENT-HELP-CLARITY";
-    public const string ReleaseTitle = "Measurement Help Clarity";
+    public const string ReleaseCode = "RETIRED-LEGACY-WRITE-ENTRYPOINTS";
+    public const string ReleaseTitle = "Retired Legacy Write Entry Points";
 
     public static string Version
     {

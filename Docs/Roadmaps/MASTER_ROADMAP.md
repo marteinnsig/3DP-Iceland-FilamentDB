@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.5.3 — Canonical Storage Terminology**
+Current canonical release: **v44.5.4 — Measurement Help Clarity**
 
-Last runtime-accepted baseline: **v44.5.3 — Canonical Storage Terminology**
+Last runtime-accepted baseline: **v44.5.4 — Measurement Help Clarity**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -822,8 +822,10 @@ Retired Excel Import Surface. Second bounded increment complete and runtime
 accepted as v44.5.1 — Active SQLite Compatibility Safety. Third bounded
 increment complete and runtime accepted as v44.5.2 — Canonical SQLite UI
 Boundaries. Fourth bounded increment complete and runtime accepted as v44.5.3
-— Canonical Storage Terminology. Fifth bounded increment implemented for
-runtime acceptance as v44.5.4 — Measurement Help Clarity.**
+— Canonical Storage Terminology. Fifth bounded increment complete and runtime
+accepted as v44.5.4 — Measurement Help Clarity. Sixth bounded increment
+implemented for runtime acceptance as v44.5.5 — Retired Legacy Write Entry
+Points.**
 
 - The unreachable original-Excel database import handler and its
   caller-exclusive importer services are removed. Lower-level SQLite legacy
@@ -849,6 +851,10 @@ runtime acceptance as v44.5.4 — Measurement Help Clarity.**
 - Runtime Full Data Verification passed 304/304 with zero failures. v44.5.4
   removes literal duplicated instruction fragments from the three native
   measurement workspaces without changing calculation or storage behavior.
+- Runtime Full Data Verification passed 305/305 with zero failures. v44.5.5
+  retires the caller-free workbook, normalized-material and broad cache
+  replacement entry points while preserving the still-read legacy tables,
+  compatibility inspection and governed recovery paths.
 
 - Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state ownership.
 - Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete UI, dead handlers/services and stale documentation in small reviewed increments.

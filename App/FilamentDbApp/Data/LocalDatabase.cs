@@ -1524,61 +1524,6 @@ SELECT Section,Parameter,Value,COALESCE(Unit,''),UsedBy,Notes,UpdatedAtUtc FROM 
         transaction.Commit();
     }
 
-    public void ReplaceWorkbook(WorkbookImportData workbook)
-    {
-        CreateAutomaticBackupBeforeWrite();
-
-        using var connection = new SqliteConnection(ConnectionString);
-        connection.Open();
-        using var transaction = connection.BeginTransaction();
-
-        ClearEngineTables(connection, transaction);
-        var importId = InsertImportRecord(connection, transaction, workbook);
-        InsertMaterials(connection, transaction, workbook.Materials);
-        InsertLookups(connection, transaction, workbook.Materials);
-        InsertWorkbookSheets(connection, transaction, importId, workbook.Sheets);
-        InsertTensileResultsFromWebsiteExport(
-            connection,
-            transaction,
-            workbook.Sheets.FirstOrDefault(s => string.Equals(s.SheetName, "06 Website Export", StringComparison.OrdinalIgnoreCase)),
-            workbook.Sheets.FirstOrDefault(s => string.Equals(s.SheetName, "01 Tensile Measurements", StringComparison.OrdinalIgnoreCase)));
-        InsertImpactSamples(connection, transaction, workbook.Sheets.FirstOrDefault(s => string.Equals(s.SheetName, "02 Impact Measurements", StringComparison.OrdinalIgnoreCase)));
-        InsertStiffnessMeasurements(connection, transaction, workbook.Sheets.FirstOrDefault(s => string.Equals(s.SheetName, "03 Stiffness Measurements", StringComparison.OrdinalIgnoreCase)));
-        InsertWebsiteExportSummaries(connection, transaction, workbook.Sheets.FirstOrDefault(s => string.Equals(s.SheetName, "06 Website Export", StringComparison.OrdinalIgnoreCase)));
-
-        transaction.Commit();
-    }
-
-    public void ReplaceMaterials(DataTable materials)
-    {
-        CreateAutomaticBackupBeforeWrite();
-
-        using var connection = new SqliteConnection(ConnectionString);
-        connection.Open();
-        using var transaction = connection.BeginTransaction();
-
-        ClearEngineTables(connection, transaction);
-        InsertMaterials(connection, transaction, materials);
-        InsertLookups(connection, transaction, materials);
-
-        transaction.Commit();
-    }
-
-    public void ClearCache()
-    {
-        CreateAutomaticBackupBeforeWrite();
-
-        using var connection = new SqliteConnection(ConnectionString);
-        connection.Open();
-        using var transaction = connection.BeginTransaction();
-
-        ClearEngineTables(connection, transaction);
-
-        transaction.Commit();
-    }
-
-
-
     public DeploymentSettingsRecord LoadDeploymentSettings()
     {
         using var connection = new SqliteConnection(ConnectionString);

@@ -16761,7 +16761,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             typeof(MainWindow).GetMethod("SyncNativeMaterialsFromImported_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
             typeof(LocalDatabase).GetMethod("LoadMaterials") is null &&
             _database.LegacyMaterialsImportIsRetired() &&
-            typeof(LocalDatabase).GetMethod("ClearCache") is not null;
+            typeof(LocalDatabase).GetMethod("ClearCache") is null;
         checks.Add(new VerificationCheck("v44.5.2 Canonical SQLite UI boundaries release gate",
             canonicalSqliteTerminologyReady && activeDatabaseCompatibilityVerification.Passed && retiredOriginalExcelImportSurfaceReady && releaseIdentityReady,
             canonicalSqliteTerminologyReady && activeDatabaseCompatibilityVerification.Passed && retiredOriginalExcelImportSurfaceReady && releaseIdentityReady
@@ -16788,6 +16788,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             measurementHelpClarityReady && releaseIdentityReady
                 ? "Tensile, Impact and Stiffness each expose one concise instruction followed by their unchanged read-only calculation guidance"
                 : "A native measurement instruction is duplicated, missing or inconsistent with the accepted wording"));
+        var retiredLegacyWriteEntryPointsReady =
+            typeof(LocalDatabase).GetMethod("ReplaceWorkbook") is null &&
+            typeof(LocalDatabase).GetMethod("ReplaceMaterials") is null &&
+            typeof(LocalDatabase).GetMethod("ClearCache") is null &&
+            typeof(LocalDatabase).GetMethod("GetDatabaseStats") is not null &&
+            typeof(LocalDatabase).GetMethod("GetMechanicalSheetStatus") is not null;
+        checks.Add(new VerificationCheck("v44.5.5 Retired legacy write entry points release gate",
+            retiredLegacyWriteEntryPointsReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady,
+            retiredLegacyWriteEntryPointsReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
+                ? "Caller-free workbook/material/cache replacement entry points are absent while legacy-table readers, schema compatibility, governed Excel disaster recovery and explicit SQLite restore remain available"
+                : "A retired legacy write entry point remains or a required read/compatibility/recovery boundary failed"));
         var compatibilityCatalog = _database.GetLocalBackupCatalog();
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
