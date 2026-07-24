@@ -1606,21 +1606,9 @@ public partial class MainWindow : Window
         var toolbar = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 8) };
         var status = new TextBlock { Text = "Loading local SQLite backups…", VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(8, 0, 0, 0) };
         var details = new TextBox { IsReadOnly = true, TextWrapping = TextWrapping.Wrap, Height = 90, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new Thickness(0, 8, 0, 0) };
-        var updateEvidence = new TextBox
-        {
-            Text = BuildLatestApplicationUpdateEvidenceSummary(),
-            IsReadOnly = true,
-            TextWrapping = TextWrapping.Wrap,
-            Height = 145,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-            Background = new SolidColorBrush(Color.FromRgb(248, 250, 252)),
-            BorderBrush = new SolidColorBrush(Color.FromRgb(203, 213, 225)),
-            Padding = new Thickness(10, 8, 10, 8),
-            Margin = new Thickness(0, 0, 0, 8)
-        };
         var glossary = new TextBlock
         {
-            Text = BuildRecoveryCompatibilityGlossary(),
+            Text = BuildRecoveryCenterCompatibilitySummary(),
             TextWrapping = TextWrapping.Wrap,
             Foreground = new SolidColorBrush(Color.FromRgb(51, 65, 85)),
             Background = new SolidColorBrush(Color.FromRgb(248, 250, 252)),
@@ -1671,7 +1659,6 @@ public partial class MainWindow : Window
             {
                 var catalog = await Task.Run(() => _database.GetLocalBackupCatalog());
                 rows.Clear(); foreach (var item in catalog) rows.Add(item);
-                updateEvidence.Text = BuildLatestApplicationUpdateEvidenceSummary();
                 var emptyReady = rows.Count(item => string.Equals(item.CompatibilityStatus, "Ready — empty profile", StringComparison.Ordinal));
                 status.Text = $"{rows.Count:N0} local SQLite backup(s); {emptyReady:N0} healthy empty-profile backup(s); select one for exact details.";
             }
@@ -1744,13 +1731,15 @@ public partial class MainWindow : Window
         restoreExcelButton.Click += (_, _) => { window.Close(); RestoreExcelDisasterRecovery_Click(this, new RoutedEventArgs()); };
         openButton.Click += (_, _) => OpenBackupFolderFromDiagnostics();
         DockPanel.SetDock(toolbar, Dock.Top); root.Children.Add(toolbar);
-        DockPanel.SetDock(updateEvidence, Dock.Top); root.Children.Add(updateEvidence);
         DockPanel.SetDock(glossary, Dock.Top); root.Children.Add(glossary);
         DockPanel.SetDock(details, Dock.Bottom); root.Children.Add(details);
         root.Children.Add(grid); window.Content = root;
         window.Show();
         await RefreshAsync();
     }
+
+    private static string BuildRecoveryCenterCompatibilitySummary() =>
+        "Ready backups can be restored. Older backups require verification; incompatible or damaged backups remain blocked.";
 
     private static string BuildRecoveryCompatibilityGlossary() =>
         "Compatibility: Ready = integrity/schema accepted with canonical Materials. " +
@@ -17045,6 +17034,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             emptyProfileCompatibilityReady && updateEvidenceClarityReady && guardedRestoreContractSurfaceReady && releaseIdentityReady
                 ? "Healthy schema-current zero-data backups are explicit restore-ready empty profiles; transaction, health acknowledgement, application rollback snapshot and SQLite backup evidence are separate read-only boundaries; guarded/default-No restore boundaries remain intact"
                 : "Empty-profile classification, compatibility glossary, update-evidence boundaries, guarded restore boundary or release identity failed"));
+        var recoveryCenterClarityReady =
+            BuildRecoveryCenterCompatibilitySummary() ==
+                "Ready backups can be restored. Older backups require verification; incompatible or damaged backups remain blocked." &&
+            typeof(MainWindow).GetMethod("BuildLatestApplicationUpdateEvidenceSummary", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("BuildRecoveryCompatibilityGlossary", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("ShowRecoveryCenter_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v44.6.0 Recovery Center clarity release gate",
+            recoveryCenterClarityReady && recoveryCompatibilityReady && updateEvidenceClarityReady && guardedRestoreContractSurfaceReady && releaseIdentityReady,
+            recoveryCenterClarityReady && recoveryCompatibilityReady && updateEvidenceClarityReady && guardedRestoreContractSurfaceReady && releaseIdentityReady
+                ? "Recovery Center shows one concise compatibility summary and selected-backup details; verbose update evidence remains available through diagnostics without weakening guarded restore"
+                : "Recovery Center summary, selected-backup compatibility, update evidence diagnostics or guarded restore boundary failed"));
 
         return checks;
     }

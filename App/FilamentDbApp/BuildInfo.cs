@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "SUPPORTED-MIGRATION-NAMING";
-    public const string ReleaseTitle = "Supported Migration Naming";
+    public const string ReleaseCode = "RECOVERY-CENTER-CLARITY";
+    public const string ReleaseTitle = "Recovery Center Clarity";
 
     public static string Version
     {

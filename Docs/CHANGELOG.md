@@ -1,3 +1,17 @@
+## v44.6.0 - Recovery Center Clarity
+
+- Removed the always-visible verbose updater transaction/evidence box from
+  Backup and Recovery Center.
+- Replaced the persistent compatibility glossary with one concise sentence.
+- Preserved exact selected-backup details, compatibility classification,
+  guarded Default-No restore and all updater evidence in System Diagnostics and
+  Verification.
+- No schema, backup, evidence, restore, updater, website/report or FTPS behavior
+  changed.
+- Runtime accepted with Full Data Verification 311/311, concise Recovery Center
+  presentation, selected-backup verification and updater evidence retained in
+  System Diagnostics.
+
 ## v44.5.9 - Supported Migration Naming
 
 - Renamed internal loaders so canonical SQLite projection, supported

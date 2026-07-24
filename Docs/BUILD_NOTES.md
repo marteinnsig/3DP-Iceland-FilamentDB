@@ -1,4 +1,29 @@
-# Current Build Notes - v44.5.9
+# Current Build Notes - v44.6.0
+
+## Recovery Center Clarity
+
+v44.6.0 removes the 145-pixel verbose application-update evidence box from the
+Backup and Recovery Center and replaces the persistent multi-status glossary
+with one concise compatibility sentence. Exact file path and compatibility
+detail continue to appear only after a backup is selected.
+
+The updater transaction, health acknowledgement, application rollback snapshot
+and SQLite backup evidence builders remain unchanged and available through
+System Diagnostics and Verification. Restore eligibility, isolated migration
+verification, explicit Default-No confirmation, pre-restore recovery backup,
+post-restore evidence, Excel disaster recovery and the rule prohibiting
+automatic SQLite restore are unchanged.
+
+No database/schema, backup, evidence, updater, website/report or FTPS behavior
+changes. Debug/Release, static/security checks, Full Data Verification and
+visual Recovery Center acceptance are required.
+
+Runtime acceptance passed Full Data Verification 311/311 with zero failures on
+2026-07-24. Recovery Center displayed the concise compatibility summary,
+expanded catalog and exact selected-backup Ready detail; Verify Selected passed.
+System Diagnostics retained application update transaction and SQLite backup
+evidence, confirmed schema v30, six Ready backups, snapshot-folder governance
+PASS and zero incomplete transactions. v44.6.0 is runtime accepted.
 
 ## Supported Migration Naming
 

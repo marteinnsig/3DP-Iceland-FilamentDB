@@ -895,6 +895,16 @@ Migration Naming.
 
 ### v44.6 — Feedback-driven feature evaluation
 
+Status: **First bounded clarity increment complete and runtime accepted as
+v44.6.0 — Recovery Center Clarity.**
+
+- v44.6.0 removes verbose updater evidence from the always-visible Recovery
+  Center surface and keeps one concise compatibility summary plus exact details
+  for the selected backup. System Diagnostics, Verification, guarded restore,
+  evidence retention and Default-No behavior remain unchanged.
+- Runtime Full Data Verification passed 311/311 with zero failures; selected
+  backup verification and retained diagnostics evidence were runtime accepted.
+
 - Use `Docs/BUG_FEEDBACK_LOG.md`, daily operation and VM/release observations as the intake queue.
 - Evaluate per-MaterialID printing profiles only when there is a concrete daily-use/report need beyond the delivered base-material profile foundation. Preserve typed units, provenance and `Not recorded` honesty.
 - Evaluate bilingual website presentation only when translation ownership and ongoing parity are affordable; reuse the one renderer/publisher and never fork a second website engine.
