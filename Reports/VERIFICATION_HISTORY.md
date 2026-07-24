@@ -1,3 +1,17 @@
+# v44.7.6 - Fast Workflow Grid - Settings
+
+Date: 2026-07-24
+
+- PASS: Full Data Verification completed with all applicable checks passing.
+- PASS: release identity aligned at v44.7.6, assembly 44.7.6.0 and
+  `FAST-WORKFLOW-SETTINGS`.
+- PASS: Fast general Settings and Base Material Catalog retained their
+  canonical validation, save and CRUD contracts with visible legacy fallback.
+- PASS: Impact/Stiffness separator persistence and Materials-filter
+  propagation to Fast Tensile, Impact and Stiffness passed owner runtime tests.
+- PASS: Debug/Release, static checks and NuGet vulnerability scan passed.
+- ACCEPTED: v44.7.6 is runtime accepted.
+
 # v44.7.5 - Fast Workflow Grid - Stiffness
 
 Date: 2026-07-24

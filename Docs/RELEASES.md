@@ -1,6 +1,18 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.6 - Fast Workflow Grid - Settings
+
+- Runtime-accepted final Fast Workflow Grid input-workspace migration.
+- Adds Fast general Settings and Base Material Catalog views while retaining a
+  shared visible legacy fallback.
+- Preserves distinct validation/save/CRUD contracts, Credential Manager
+  password ownership and canonical SQLite behavior.
+- Corrects lazy-tab rendering, stable duplicate-spacer layout identities and
+  Materials-filter propagation to all three Fast measurement grids.
+- Debug/Release, documentation, static and vulnerability gates passed; owner
+  runtime acceptance and Full Data Verification passed.
+
 ## v44.7.5 - Fast Workflow Grid - Stiffness
 
 - Runtime-accepted third Fast Workflow Grid migration.

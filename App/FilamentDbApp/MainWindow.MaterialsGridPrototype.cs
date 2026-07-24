@@ -114,6 +114,7 @@ public partial class MainWindow
                       ?? Array.Empty<string>()
                     : Array.Empty<string>()))
             .ToList();
+        columns = AssignStablePrototypeLayoutKeys(columns);
         columns = ApplyFastMaterialsLayout(columns, _workflowPreferencesService.GetFastMaterialsGridLayout());
 
         var rows = BuildMaterialsPrototypeRows(columns);
@@ -158,6 +159,18 @@ public partial class MainWindow
         IReadOnlyList<WorkflowColumnLayout> savedLayout)
     {
         if (savedLayout.Count == 0) return columns;
+        var legacyDuplicateKeyPresent = columns
+            .Where(column => column.LayoutKey?.Contains('#', StringComparison.Ordinal) == true)
+            .Select(PrototypeColumnBaseKey)
+            .Distinct(StringComparer.Ordinal)
+            .Any(baseKey => savedLayout.Any(item => string.Equals(item.Key, baseKey, StringComparison.Ordinal)));
+        if (legacyDuplicateKeyPresent)
+        {
+            // Layouts written before duplicate columns received stable identities
+            // cannot place individual spacer columns safely. Fall back once to the
+            // canonical order; the next layout write uses the new unique keys.
+            return columns;
+        }
         var savedByKey = savedLayout
             .Where(item => item.DisplayIndex < columns.Count)
             .ToDictionary(item => item.Key, StringComparer.Ordinal);
@@ -178,9 +191,35 @@ public partial class MainWindow
     }
 
     private static string PrototypeColumnKey(MaterialsPrototypeColumn column) =>
+        column.LayoutKey ?? PrototypeColumnBaseKey(column);
+
+    private static string PrototypeColumnBaseKey(MaterialsPrototypeColumn column) =>
         !string.IsNullOrWhiteSpace(column.PropertyName)
             ? $"binding:{column.PropertyName}"
             : $"header:{column.Header}";
+
+    private static List<MaterialsPrototypeColumn> AssignStablePrototypeLayoutKeys(
+        List<MaterialsPrototypeColumn> columns)
+    {
+        var totals = columns
+            .GroupBy(PrototypeColumnBaseKey, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
+        var occurrences = new Dictionary<string, int>(StringComparer.Ordinal);
+
+        return columns.Select(column =>
+        {
+            var baseKey = PrototypeColumnBaseKey(column);
+            occurrences.TryGetValue(baseKey, out var occurrence);
+            occurrence++;
+            occurrences[baseKey] = occurrence;
+            return column with
+            {
+                LayoutKey = totals[baseKey] > 1
+                    ? $"{baseKey}#{occurrence}"
+                    : baseKey
+            };
+        }).ToList();
+    }
 
     private bool ApplyMaterialsPrototypeChanges(IReadOnlyList<MaterialsPrototypeChange> changes)
     {
@@ -234,7 +273,8 @@ public partial class MainWindow
         bool IsReadOnly,
         MaterialsPrototypeEditorKind EditorKind,
         IReadOnlyList<string> Choices,
-        FastGridCellKind CellKind = FastGridCellKind.Standard);
+        FastGridCellKind CellKind = FastGridCellKind.Standard,
+        string? LayoutKey = null);
 
     private sealed record MaterialsPrototypeRow(
         object Source,
@@ -1438,6 +1478,11 @@ public partial class MainWindow
             Brush brush,
             double pixelsPerDip)
         {
+            var safePixelsPerDip = double.IsFinite(pixelsPerDip) && pixelsPerDip > 0
+                ? pixelsPerDip
+                : 1d;
+            var safeWidth = double.IsFinite(width) && width > 0 ? width : 1d;
+            var safeHeight = double.IsFinite(height) && height > 0 ? height : RowHeight;
             var text = new FormattedText(
                 value ?? string.Empty,
                 CultureInfo.CurrentCulture,
@@ -1445,13 +1490,15 @@ public partial class MainWindow
                 typeface,
                 12,
                 brush,
-                pixelsPerDip)
+                safePixelsPerDip)
             {
-                MaxTextWidth = Math.Max(1, width - CellPadding * 2),
-                MaxTextHeight = Math.Max(1, height - 4),
+                MaxTextWidth = Math.Max(1, safeWidth - CellPadding * 2),
+                MaxTextHeight = Math.Max(1, safeHeight - 4),
                 Trimming = TextTrimming.CharacterEllipsis
             };
-            drawingContext.DrawText(text, new Point(x + CellPadding, y + Math.Max(2, (height - text.Height) / 2)));
+            var safeX = double.IsFinite(x) ? x : 0;
+            var safeY = double.IsFinite(y) ? y : 0;
+            drawingContext.DrawText(text, new Point(safeX + CellPadding, safeY + Math.Max(2, (safeHeight - text.Height) / 2)));
         }
 
         private static void DrawCheckBox(

@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "FAST-WORKFLOW-STIFFNESS";
-    public const string ReleaseTitle = "Fast Workflow Grid - Stiffness Candidate";
+    public const string ReleaseCode = "FAST-WORKFLOW-SETTINGS";
+    public const string ReleaseTitle = "Fast Workflow Grid - Settings Candidate";
 
     public static string Version
     {

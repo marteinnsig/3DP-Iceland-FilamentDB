@@ -2,6 +2,30 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.6 - Fast Workflow Grid - Settings
+
+Candidate migrates both editable Settings Manager tables to the accepted Fast
+Workflow Grid. General Settings keeps Value-only editing, manual/close save and
+immediate transactional Deployment validation. Base Material Catalog keeps all
+text/ComboBox fields, canonical SQLite replacement, downstream recalculation
+and add/delete selection. Both views own separate layouts, in-place reset and a
+shared visible legacy fallback. Password, SQLite schema, reports, FTPS
+publishing, updater and recovery remain unchanged. Debug/Release, Verification
+and owner runtime acceptance are required. First runtime materialization hit a
+`FormattedText` argument-range crash from transient lazy-tab render geometry;
+the shared renderer now normalizes DPI and geometry before text construction.
+Follow-up showed blank constructor-created surfaces and misplaced toolbar
+actions. Settings now activates Fast views only after tab realization, with
+toggle/reset actions owned by the correct toolbar. Cross-tab review also found
+duplicate blank spacer keys grouping Impact/Stiffness separators. Stable
+occurrence-qualified identities and one-time stale-layout fallback correct
+canonical placement and restart persistence. Materials filter propagation now
+also reloads all three Fast measurement snapshots after their legacy
+collection views receive the shared visible MaterialID set.
+Owner runtime retest accepted both Settings views, legacy fallback, separator
+persistence and shared filter propagation. Full Data Verification passed;
+v44.7.6 is accepted.
+
 ## v44.7.5 - Fast Workflow Grid - Stiffness Candidate
 
 Candidate applies the accepted viewport-only workflow grid to Stiffness while

@@ -2,6 +2,34 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.6 - Fast Workflow Grid - Settings
+
+- Added startup-default Fast views for general Settings and Base Material
+  Catalog with a shared visible legacy fallback.
+- Kept only general `Value` editable and preserved manual/close-time canonical
+  save.
+- Preserved immediate Deployment validation/SQLite save with transactional
+  rollback of rejected host, port or username edits.
+- Preserved all Base Material text/ComboBox fields, immediate SQLite save,
+  Materials recalculation and Fast-aware add/delete selection.
+- Added separate keyed layouts and Default-No in-place reset for both views.
+- Prevented a first-open Settings crash by normalizing transient DPI, width,
+  height and coordinates before shared WPF `FormattedText` construction.
+- Deferred Fast Settings construction until the Settings tab is realized,
+  correcting blank first-render surfaces.
+- Moved Fast Settings toggle/reset actions from an accidentally matched
+  Materials toolbar into the Settings Manager toolbar.
+- Assigned stable occurrence-qualified layout identities to duplicate unbound
+  columns such as measurement spacers.
+- Added one-time canonical fallback for legacy ambiguous spacer layouts so
+  Impact/Stiffness separators restore and subsequently persist independently.
+- Propagated the existing Materials visible-MaterialID filter result into
+  already-created Fast Tensile, Impact and Stiffness snapshots.
+- Preserved Credential Manager password ownership, SQLite schema, reports,
+  publishing, updater and recovery.
+- Debug/Release, static/security gates, Full Data Verification and owner
+  runtime acceptance passed.
+
 ## v44.7.5 - Fast Workflow Grid - Stiffness Candidate
 
 - Added Fast Stiffness as the startup-default Stiffness view with a visible

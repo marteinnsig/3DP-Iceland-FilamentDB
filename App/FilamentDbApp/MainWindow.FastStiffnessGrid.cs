@@ -85,7 +85,7 @@ public partial class MainWindow
     }
 
     private List<MaterialsPrototypeColumn> BuildFastStiffnessColumns() =>
-        NativeStiffnessGrid.Columns
+        AssignStablePrototypeLayoutKeys(NativeStiffnessGrid.Columns
             .OrderBy(column => column.DisplayIndex)
             .Select(column =>
             {
@@ -104,7 +104,7 @@ public partial class MainWindow
                     Array.Empty<string>(),
                     cellKind);
             })
-            .ToList();
+            .ToList());
 
     private List<MaterialsPrototypeRow> BuildFastStiffnessRows(
         IReadOnlyList<MaterialsPrototypeColumn> columns) =>

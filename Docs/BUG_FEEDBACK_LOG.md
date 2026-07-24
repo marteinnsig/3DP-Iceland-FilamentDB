@@ -444,6 +444,20 @@ runtime acceptance remains required. First Stiffness runtime review found a
 leading blank region and editors one column left; the shared surface now uses
 explicit left/top alignment and WPF coordinate translation. Owner runtime
 retest and Full Data Verification 317/317 accepted Fast Stiffness.
+v44.7.6 applies the accepted core to general Settings Value editing and the
+Base Material Catalog while preserving distinct save, FTPS validation and CRUD
+contracts. First Settings open raised an
+unhandled `FormattedText` argument-range exception; shared Fast rendering now
+normalizes transient lazy-tab DPI and geometry before drawing text. Follow-up
+showed blank Fast content and missing Settings controls: activation is now
+deferred until tab realization and controls have explicit Settings ownership.
+Cross-tab review found duplicate blank spacer keys grouping Impact/Stiffness
+separators; stable unique identities and stale-layout fallback now preserve
+their canonical positions and later user layout. Materials filters refreshed
+only legacy measurement views; Fast Tensile, Impact and Stiffness now reload
+from the same established visible MaterialID set. Owner runtime retesting
+accepted Settings editing/fallback, separator persistence and shared filter
+scope; Full Data Verification passed. v44.7.6 is complete.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

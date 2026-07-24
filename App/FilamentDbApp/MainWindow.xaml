@@ -259,7 +259,7 @@
         </StatusBar>
 
 
-        <TabControl Margin="14" x:Name="WorkspaceTabs"><TabItem Header="Materials">
+        <TabControl Margin="14" x:Name="WorkspaceTabs" SelectionChanged="WorkspaceTabs_SelectionChanged"><TabItem Header="Materials">
                 <Grid Margin="12">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -2151,6 +2151,9 @@
                     </StackPanel>
 
                     <WrapPanel Grid.Row="1" Margin="0,0,0,10">
+                        <Button Name="FastSettingsToggleButton" Content="Use Legacy Grids" Click="ToggleFastSettingsViews_Click" Padding="12,6" Margin="0,0,8,8"
+                                ToolTip="Temporary fallback while Fast Settings is under runtime acceptance."/>
+                        <Button Content="Reset Fast Columns" Click="ResetFastSettingsColumns_Click" Padding="12,6" Margin="0,0,16,8"/>
                         <Button Click="SaveNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE74E;"/><TextBlock Text="Save Settings"/></StackPanel></Button>
                         <Button Click="LoadNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE8E5;"/><TextBlock Text="Load Settings"/></StackPanel></Button>
                         <Button Click="ResetNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" ToolTip="Replace current general settings with the built-in defaults."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE777;"/><TextBlock Text="Restore Built-in Defaults"/></StackPanel></Button>
@@ -2166,6 +2169,8 @@
                         </Grid.RowDefinitions>
 
                         <GroupBox Grid.Row="0" Header="Measurement / Calculation Settings - only Value is editable" Margin="0,0,0,10">
+                            <Grid>
+                                <ContentControl Name="FastNativeSettingsViewHost" Margin="8"/>
                             <DataGrid Name="NativeSettingsGrid" SelectionMode="Single" SelectionUnit="CellOrRowHeader"
                                       BeginningEdit="InputDataGrid_BeginningEdit" CellEditEnding="NativeSettingsGrid_CellEditEnding"
                                       IsReadOnly="False"
@@ -2186,6 +2191,7 @@
                                     <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="*" IsReadOnly="True"/>
                                 </DataGrid.Columns>
                             </DataGrid>
+                            </Grid>
                         </GroupBox>
 
                         <TextBlock Grid.Row="1"
@@ -2196,6 +2202,8 @@
                                    Margin="0,0,0,6"/>
 
                         <GroupBox Grid.Row="2" Header="Base Material Catalog / Lookup">
+                            <Grid>
+                                <ContentControl Name="FastBaseMaterialsViewHost" Margin="8"/>
                             <DataGrid Name="BaseMaterialsGrid"
                                       BeginningEdit="InputDataGrid_BeginningEdit" CellEditEnding="BaseMaterialsGrid_CellEditEnding"
                                       AutoGenerateColumns="False"
@@ -2238,6 +2246,7 @@
                                     </DataGridComboBoxColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
+                            </Grid>
                         </GroupBox>
                     </Grid>
                 </Grid>

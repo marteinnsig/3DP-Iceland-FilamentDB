@@ -2277,6 +2277,22 @@ public partial class MainWindow : Window
         return metrics;
     }
 
+    private void WorkspaceTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (!ReferenceEquals(e.Source, WorkspaceTabs) ||
+            WorkspaceTabs.SelectedItem is not TabItem selectedTab ||
+            !string.Equals(selectedTab.Header?.ToString(), "Settings Manager", StringComparison.Ordinal) ||
+            !_fastSettingsEnabled ||
+            _embeddedFastNativeSettingsView is not null)
+        {
+            return;
+        }
+
+        _ = Dispatcher.BeginInvoke(
+            System.Windows.Threading.DispatcherPriority.Loaded,
+            ActivateDefaultFastSettingsViews);
+    }
+
     private static TestSummaryMetric? FindMetric(IEnumerable<TestSummaryMetric> metrics, params string[] terms)
     {
         return metrics.FirstOrDefault(metric =>
@@ -17369,6 +17385,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             workflowLayoutResetReady && fastTensileReady && fastImpactReady && fastStiffnessReady && stiffnessBoundsReady && releaseIdentityReady
                 ? "Fast Stiffness owns separate keyed layout state, bounded canonical input/save integration and a visible legacy-grid fallback"
                 : "Fast Stiffness layout, bounded canonical apply, fallback, retained accepted Fast-grid contracts or release identity failed"));
+        var fastSettingsReady =
+            typeof(MainWindow).GetMethod(nameof(ActivateDefaultFastSettingsViews), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ApplyFastNativeSettingsChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ApplyFastBaseMaterialChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ToggleFastSettingsViews_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ResetFastSettingsColumns_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v44.7.6 Fast Workflow Grid - Settings candidate release gate",
+            workflowLayoutResetReady && fastTensileReady && fastImpactReady && fastStiffnessReady && fastSettingsReady && releaseIdentityReady,
+            workflowLayoutResetReady && fastTensileReady && fastImpactReady && fastStiffnessReady && fastSettingsReady && releaseIdentityReady
+                ? "Fast Settings owns separate general/Base Material layouts, canonical apply contracts and a visible dual-grid fallback"
+                : "Fast Settings layout, canonical general/Base Material apply, fallback, retained accepted Fast-grid contracts or release identity failed"));
 
         return checks;
     }
@@ -22022,6 +22049,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
         ApplyNativeMaterialComputedFieldsToAllRows();
         RefreshNativeMaterialGridValidation();
+        RefreshFastSettingsViews();
     }
 
     private void ResetNativeSettings_Click(object sender, RoutedEventArgs e)
@@ -22035,6 +22063,7 @@ private List<string> GetVisibleAiMaterialLabels()
         LoadBuiltInNativeSettingsDefaults();
         LoadDeploymentSettingsIntoManager();
         SaveCanonicalNativeSettings();
+        RefreshFastSettingsViews();
     }
 
     private void AddNativeSettingRow_Click(object sender, RoutedEventArgs e)
@@ -22071,13 +22100,22 @@ private List<string> GetVisibleAiMaterialLabels()
             Category = "Standard",
             SortOrder = ""
         });
+        RefreshFastSettingsViews();
     }
 
     private void DeleteBaseMaterialRow_Click(object sender, RoutedEventArgs e)
     {
-        if (FindName("BaseMaterialsGrid") is DataGrid grid && grid.SelectedItem is NativeBaseMaterialRow row)
+        var row = _selectedFastBaseMaterialRow ??
+                  (FindName("BaseMaterialsGrid") is DataGrid grid ? grid.SelectedItem as NativeBaseMaterialRow : null);
+        if (row is not null)
         {
             _nativeBaseMaterialRows.Remove(row);
+            _selectedFastBaseMaterialRow = null;
+            SaveBaseMaterialCatalogToDatabase();
+            ApplyNativeMaterialComputedFieldsToAllRows();
+            RefreshNativeMaterialGridValidation();
+            RefreshNativeInputModulesFromMaterialManager(markDirty: false);
+            RefreshFastSettingsViews();
         }
     }
 
@@ -22593,6 +22631,9 @@ private List<string> GetVisibleAiMaterialLabels()
         ApplyNativeMeasurementFilterToGrid("NativeTensileGrid", visibleMaterialIds);
         ApplyNativeMeasurementFilterToGrid("NativeImpactGrid", visibleMaterialIds);
         ApplyNativeMeasurementFilterToGrid("NativeStiffnessGrid", visibleMaterialIds);
+        _embeddedFastTensileView?.ReloadFromCanonical("the current Materials filter/search result");
+        _embeddedFastImpactView?.ReloadFromCanonical("the current Materials filter/search result");
+        _embeddedFastStiffnessView?.ReloadFromCanonical("the current Materials filter/search result");
     }
 
     private HashSet<string> GetVisibleNativeMaterialIdsFromCurrentFilters()

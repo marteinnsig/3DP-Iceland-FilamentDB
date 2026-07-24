@@ -1,13 +1,12 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.5 — Fast Workflow Grid — Stiffness**
+Current canonical release: **v44.7.6 — Fast Workflow Grid — Settings**
 
-Last runtime-accepted baseline: **v44.7.5 — Fast Workflow Grid — Stiffness**
+Last runtime-accepted baseline: **v44.7.6 — Fast Workflow Grid — Settings**
 
-Current application candidate: **None**
+Current application candidate: **None — v44.7.6 is runtime accepted**
 
-Current roadmap increment: **None — next planned item is v44.7.6 Fast Workflow
-Grid — Settings**
+Current roadmap increment: **v44.7.7 — Backup Filename Compatibility**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1612,12 +1611,19 @@ changes priority.
   - First runtime view found narrow-content leading space and offset editors; coordinate alignment was corrected.
   - Owner runtime retest and Full Data Verification 317/317 passed.
 - **v44.7.6 — Fast Workflow Grid — Settings**
-  - State: Planned.
-  - Feedback disposition: In progress.
+  - State: **Complete**.
+  - Feedback disposition: Solved.
   - Migrate Settings Value editing and Base Material Catalog entry only after mapping their distinct CRUD contracts.
   - Preserve FTPS validation, canonical SQLite settings and a visible legacy fallback during acceptance.
+  - Candidate provides separate general/Base Material Fast views and keyed layouts.
+  - Preserve Value-only general edits, Base Material ComboBoxes, immediate catalog save and add/delete selection.
+  - First runtime open found a lazy-tab text-render argument crash; normalized DPI/geometry now awaits retest.
+  - Follow-up blank rendering and misplaced controls are corrected by realized-tab activation and explicit toolbar ownership.
+  - Cross-tab duplicate spacer identities now fall back safely and persist independently.
+  - Materials filter propagation now refreshes all three Fast measurement snapshots from the shared visible MaterialID set.
+  - Owner runtime acceptance and Full Data Verification passed.
 - **v44.7.7 — Backup Filename Compatibility**
-  - State: Planned.
+  - State: Current research item.
   - Feedback disposition: Open.
   - Research a human-readable presentation name.
   - Retain SQLite bytes, existing `.sqlite` discovery, explicit restore and all evidence.

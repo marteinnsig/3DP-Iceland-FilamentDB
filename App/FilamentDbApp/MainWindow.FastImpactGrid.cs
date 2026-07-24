@@ -85,7 +85,7 @@ public partial class MainWindow
     }
 
     private List<MaterialsPrototypeColumn> BuildFastImpactColumns() =>
-        NativeImpactGrid.Columns
+        AssignStablePrototypeLayoutKeys(NativeImpactGrid.Columns
             .OrderBy(column => column.DisplayIndex)
             .Select(column =>
             {
@@ -113,7 +113,7 @@ public partial class MainWindow
                     Array.Empty<string>(),
                     cellKind);
             })
-            .ToList();
+            .ToList());
 
     private List<MaterialsPrototypeRow> BuildFastImpactRows(
         IReadOnlyList<MaterialsPrototypeColumn> columns) =>

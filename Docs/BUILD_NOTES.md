@@ -1,4 +1,56 @@
-# Current Build Notes - v44.7.5
+# Current Build Notes - v44.7.6
+
+## Fast Workflow Grid - Settings
+
+v44.7.6 completes the planned input-workspace migration with two Fast views on
+Settings Manager. General Settings exposes only `Value` for editing and
+preserves manual/close-time canonical save. Deployment host, port and username
+retain immediate validation and SQLite save; rejected edits restore both the
+row object and Fast cell. Password ownership remains Windows Credential
+Manager.
+
+Fast Base Material Catalog exposes all existing text and governed ComboBox
+fields. Edits retain immediate canonical SQLite replacement and downstream
+Materials recalculation. Existing add/delete buttons use Fast row selection
+and reload both views safely. Each view owns separate keyed layout state,
+Default-No reset and a shared visible legacy fallback. SQLite schema, reports,
+FTPS publishing, updater and recovery remain unchanged. Debug/Release,
+static/security gates, Full Data Verification and owner runtime acceptance are
+required.
+
+The first Settings-tab runtime materialization failed in WPF `FormattedText`
+with `ArgumentOutOfRangeException`. Unlike previously visible Fast grids, the
+two Settings surfaces are created while their tab is unrealized and can
+receive a transient non-positive DPI/geometry value during the first render.
+The shared text renderer now normalizes DPI, width, height and coordinates
+before constructing `FormattedText`, preventing lazy-tab render state from
+terminating the application.
+
+The crash guard exposed that constructor-created Settings surfaces could still
+render blank because they had no realized tab presentation context; the Fast
+toolbar buttons were also inserted into the Materials toolbar by an overly
+broad XAML patch. Fast Settings activation now occurs only after the Settings
+tab is selected at Loaded dispatcher priority. Legacy grids remain available
+until activation, and toggle/reset ownership is explicitly inside the Settings
+toolbar.
+
+Cross-tab review then exposed legacy Fast layout ambiguity: every unbound blank
+spacer used the same `header:` key, so Impact/Stiffness restore grouped all
+spacers before editable inputs and could not persist a moved spacer. Duplicate
+columns now receive stable occurrence-qualified identities from canonical
+column order. A legacy ambiguous layout falls back once to canonical order;
+the next preference write uses the unique identities.
+
+Runtime cross-tab testing also found that Materials filters refreshed the
+legacy measurement collection views but not the already-created Fast
+measurement snapshots. `ApplyNativeMeasurementFilters` now reloads Fast
+Tensile, Impact and Stiffness after applying their shared visible MaterialID
+set, preserving the established filter owner and canonical results.
+
+Owner runtime retesting accepted both Settings views, validation/save
+behavior, legacy fallback, separator persistence and shared Materials filter
+propagation. Full Data Verification passed. Debug/Release and static/security
+gates passed; v44.7.6 is accepted.
 
 ## Fast Workflow Grid - Stiffness Candidate
 
