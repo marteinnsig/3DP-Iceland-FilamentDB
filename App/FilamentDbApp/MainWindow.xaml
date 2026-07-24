@@ -181,11 +181,6 @@
             <MenuItem Header="_Tools">
                 <MenuItem Header="Validate Materials" Click="ValidateNativeMaterials_Click" />
                 <MenuItem Header="Rebuild Computed Fields" Click="RebuildNativeMaterialDisplayNames_Click" />
-                <MenuItem Header="Sync Imported Materials" Click="SyncNativeMaterialsFromImported_Click" />
-                <Separator />
-                <MenuItem Header="Reload Local Cache" Click="RefreshCache_Click" />
-                <MenuItem Header="Clear Local Cache" Click="ClearCache_Click" />
-                <Separator />
                 <MenuItem Header="Database Engine Stats" Click="ShowDatabaseStats_Click" />
                 <MenuItem Header="Materials Rendering Prototype..." Click="ShowMaterialsRenderingPrototype_Click" />
                 <MenuItem Name="FastMaterialsViewMenuItem" Header="Use Fast Materials View (Preview)" IsCheckable="True" Click="ToggleFastMaterialsView_Click" />
@@ -193,7 +188,7 @@
                 <MenuItem Header="Check for Updates..." Click="CheckForUpdates_Click" />
                 <MenuItem Header="Publish Application Release..." Click="PublishApplicationRelease_Click" />
                 <MenuItem Header="Publish Application Update..." Click="PublishApplicationUpdate_Click" />
-                <MenuItem Header="Open Storage Folder" Click="OpenCacheFolder_Click" />
+                <MenuItem Header="Open Storage Folder" Click="OpenStorageFolder_Click" />
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="Documentation" Click="Documentation_Click" />
@@ -2131,7 +2126,7 @@
                     <WrapPanel Grid.Row="1" Margin="0,0,0,10">
                         <Button Click="SaveNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE74E;"/><TextBlock Text="Save Settings"/></StackPanel></Button>
                         <Button Click="LoadNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE8E5;"/><TextBlock Text="Load Settings"/></StackPanel></Button>
-                        <Button Click="ResetNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" ToolTip="Replace current settings with the original Excel defaults."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE777;"/><TextBlock Text="Restore Excel Defaults"/></StackPanel></Button>
+                        <Button Click="ResetNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" ToolTip="Replace current general settings with the built-in defaults."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE777;"/><TextBlock Text="Restore Built-in Defaults"/></StackPanel></Button>
                         <Button Content="Add Base Material" Click="AddBaseMaterialRow_Click" Padding="12,6" Margin="16,0,8,8"/>
                         <Button Content="Delete Selected Base Material" Click="DeleteBaseMaterialRow_Click" Padding="12,6" Margin="0,0,8,8" ToolTip="Delete the selected base-material definition from Settings."/>
                     </WrapPanel>

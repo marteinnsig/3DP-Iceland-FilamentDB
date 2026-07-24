@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "SQLITE-PRESERVATION";
-    public const string ReleaseTitle = "Active SQLite Compatibility Safety";
+    public const string ReleaseCode = "SQLITE-UI-BOUNDARIES";
+    public const string ReleaseTitle = "Canonical SQLite UI Boundaries";
 
     public static string Version
     {

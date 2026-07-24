@@ -35,8 +35,9 @@ public sealed partial class LocalDatabase
 
         new ActiveDatabaseCompatibilityService().EnsureSupportedOrPreserve(DatabasePath, SchemaVersion);
 
-        if (File.Exists(DatabasePath) && (NativeMeasurementMigrationIsPending() || DatabaseSchemaUpgradeIsPending()))
-            CreateRequiredBackupBeforeCanonicalMigration();
+        var legacyMaterialsImportRetirementPending = IOFile.Exists(DatabasePath) && LegacyMaterialsImportRetirementIsPending();
+        if (IOFile.Exists(DatabasePath) && (NativeMeasurementMigrationIsPending() || DatabaseSchemaUpgradeIsPending() || legacyMaterialsImportRetirementPending))
+            CreateRequiredBackupBeforeCanonicalMigration(retainAllEvidence: legacyMaterialsImportRetirementPending);
 
         Initialize();
     }
@@ -109,7 +110,7 @@ public sealed partial class LocalDatabase
         }
         catch
         {
-            // Migration is best effort. The user can import Excel again if the cache cannot be copied.
+            // Migration is best effort. The source remains untouched if the configured copy cannot be created.
         }
     }
 
@@ -168,13 +169,13 @@ public sealed partial class LocalDatabase
         return new FileInfo(backupPath);
     }
 
-    private void CreateRequiredBackupBeforeCanonicalMigration()
+    private void CreateRequiredBackupBeforeCanonicalMigration(bool retainAllEvidence = false)
     {
         if (_requiredCanonicalMigrationBackupCreated) return;
         if (!File.Exists(DatabasePath) || new FileInfo(DatabasePath).Length == 0)
             throw new InvalidOperationException("The SQLite database is unavailable for the required migration backup.");
         CreateConsistentDatabaseBackup(AutomaticBackupPrefix);
-        CleanupAutomaticBackups();
+        if (!retainAllEvidence) CleanupAutomaticBackups();
         _requiredCanonicalMigrationBackupCreated = true;
     }
 
@@ -200,6 +201,21 @@ public sealed partial class LocalDatabase
         }
         catch { return true; }
     }
+
+    private bool LegacyMaterialsImportRetirementIsPending()
+    {
+        try
+        {
+            using var connection = new SqliteConnection(ConnectionString);
+            connection.Open();
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='MaterialsImport';";
+            return Convert.ToInt32(command.ExecuteScalar(), CultureInfo.InvariantCulture) > 0;
+        }
+        catch { return true; }
+    }
+
+    public bool LegacyMaterialsImportIsRetired() => !LegacyMaterialsImportRetirementIsPending();
 
     private void CreateThrottledAutomaticBackupBeforeWrite()
     {
@@ -1201,9 +1217,7 @@ VALUES (1, '', 21, '', CURRENT_TIMESTAMP);
 
 INSERT OR REPLACE INTO AppMeta (Key, Value) VALUES ('SchemaVersion', '29');
 
-CREATE TABLE IF NOT EXISTS MaterialsImport (
-    ImportId INTEGER PRIMARY KEY AUTOINCREMENT
-);";
+DROP TABLE IF EXISTS MaterialsImport;";
         command.ExecuteNonQuery();
         EnsureNativeSettingsRowsKeySchema(connection);
         EnsureColumn(connection, "Manufacturers", "DisplayName", "TEXT");
@@ -1519,8 +1533,6 @@ SELECT Section,Parameter,Value,COALESCE(Unit,''),UsedBy,Notes,UpdatedAtUtc FROM 
         using var transaction = connection.BeginTransaction();
 
         ClearEngineTables(connection, transaction);
-        ReplaceMaterialsImportTable(connection, transaction, workbook.Materials);
-
         var importId = InsertImportRecord(connection, transaction, workbook);
         InsertMaterials(connection, transaction, workbook.Materials);
         InsertLookups(connection, transaction, workbook.Materials);
@@ -1546,7 +1558,6 @@ SELECT Section,Parameter,Value,COALESCE(Unit,''),UsedBy,Notes,UpdatedAtUtc FROM 
         using var transaction = connection.BeginTransaction();
 
         ClearEngineTables(connection, transaction);
-        ReplaceMaterialsImportTable(connection, transaction, materials);
         InsertMaterials(connection, transaction, materials);
         InsertLookups(connection, transaction, materials);
 
@@ -1563,41 +1574,7 @@ SELECT Section,Parameter,Value,COALESCE(Unit,''),UsedBy,Notes,UpdatedAtUtc FROM 
 
         ClearEngineTables(connection, transaction);
 
-        using (var drop = connection.CreateCommand())
-        {
-            drop.Transaction = transaction;
-            drop.CommandText = "DROP TABLE IF EXISTS MaterialsImport;";
-            drop.ExecuteNonQuery();
-        }
-
         transaction.Commit();
-    }
-
-    public DataTable LoadMaterials()
-    {
-        using var connection = new SqliteConnection(ConnectionString);
-        connection.Open();
-
-        var table = new DataTable("Materials");
-
-        using var existsCommand = connection.CreateCommand();
-        existsCommand.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='MaterialsImport';";
-        var exists = existsCommand.ExecuteScalar();
-        if (exists is null) return table;
-
-        var dataColumns = GetTableColumns(connection, "MaterialsImport")
-            .Where(c => !string.Equals(c, "ImportId", StringComparison.OrdinalIgnoreCase))
-            .ToList();
-
-        if (dataColumns.Count == 0) return table;
-
-        using var command = connection.CreateCommand();
-        var selectColumns = string.Join(", ", dataColumns.Select(Quote));
-        command.CommandText = $"SELECT {selectColumns} FROM MaterialsImport ORDER BY ImportId";
-        using var reader = command.ExecuteReader();
-        table.Load(reader);
-
-        return table;
     }
 
 
@@ -2782,43 +2759,6 @@ ORDER BY s.SheetName;";
             command.Transaction = transaction;
             command.CommandText = $"DELETE FROM {table};";
             command.ExecuteNonQuery();
-        }
-    }
-
-    private static void ReplaceMaterialsImportTable(SqliteConnection connection, SqliteTransaction transaction, DataTable materials)
-    {
-        using (var drop = connection.CreateCommand())
-        {
-            drop.Transaction = transaction;
-            drop.CommandText = "DROP TABLE IF EXISTS MaterialsImport";
-            drop.ExecuteNonQuery();
-        }
-
-        var columnNames = materials.Columns.Cast<DataColumn>().Select(c => c.ColumnName).ToList();
-
-        using (var create = connection.CreateCommand())
-        {
-            create.Transaction = transaction;
-            var columnSql = string.Join(",\n    ", columnNames.Select(c => Quote(c) + " TEXT"));
-            create.CommandText = $"CREATE TABLE MaterialsImport (ImportId INTEGER PRIMARY KEY AUTOINCREMENT{(columnSql.Length > 0 ? ",\n    " + columnSql : string.Empty)});";
-            create.ExecuteNonQuery();
-        }
-
-        foreach (DataRow row in materials.Rows)
-        {
-            using var insert = connection.CreateCommand();
-            insert.Transaction = transaction;
-
-            var names = string.Join(", ", columnNames.Select(Quote));
-            var parameters = string.Join(", ", columnNames.Select((_, i) => $"$p{i}"));
-            insert.CommandText = $"INSERT INTO MaterialsImport ({names}) VALUES ({parameters});";
-
-            for (var i = 0; i < columnNames.Count; i++)
-            {
-                insert.Parameters.AddWithValue($"$p{i}", row[columnNames[i]]?.ToString() ?? string.Empty);
-            }
-
-            insert.ExecuteNonQuery();
         }
     }
 

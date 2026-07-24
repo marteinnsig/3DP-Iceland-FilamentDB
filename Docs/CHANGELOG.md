@@ -1,3 +1,16 @@
+## v44.5.2 - Canonical SQLite UI Boundaries (candidate)
+
+- Removed misleading Reload Local Cache and Clear Local Cache menu actions.
+- Retired the owner-approved `MaterialsImport` table after the required verified
+  SQLite migration backup; retained backups remain untouched evidence.
+- Removed its sync command, reader/writer and automatic empty-database fallback.
+- Preserved other legacy tables for separate caller-by-caller audit.
+- Renamed Settings restoration to built-in defaults, matching its actual
+  code-owned source.
+- Removed a dead unbound Excel-material reset handler/helper and added a
+  Verification ownership/table-retirement gate.
+- Awaiting runtime Full Data Verification and UI acceptance.
+
 ## v44.5.1 - Active SQLite Compatibility Safety
 
 - Replaced automatic deletion of an incompatible active SQLite file with

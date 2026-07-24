@@ -819,7 +819,9 @@ direct install, explicit SQLite restore and portable runtime.**
 
 Status: **First bounded increment complete and runtime accepted as v44.5.0 —
 Retired Excel Import Surface. Second bounded increment complete and runtime
-accepted as v44.5.1 — Active SQLite Compatibility Safety.**
+accepted as v44.5.1 — Active SQLite Compatibility Safety. Third bounded
+increment implemented for runtime acceptance as v44.5.2 — Canonical SQLite UI
+Boundaries.**
 
 - The unreachable original-Excel database import handler and its
   caller-exclusive importer services are removed. Lower-level SQLite legacy
@@ -833,6 +835,11 @@ accepted as v44.5.1 — Active SQLite Compatibility Safety.**
   active databases are never silently deleted, replaced or restored.
 - Runtime Full Data Verification passed 302/302 with zero failures after the
   isolated SQLite fixture connections were made non-pooled.
+- v44.5.2 removes misleading reload/clear cache UI and dead Excel-default reset
+  ownership. With explicit owner approval, `MaterialsImport` and its active
+  sync/automatic fallback are retired after a required verified SQLite backup.
+  Backups, other legacy tables, JSON migration snapshots and governed recovery
+  remain intact.
 
 - Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state ownership.
 - Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete UI, dead handlers/services and stale documentation in small reviewed increments.

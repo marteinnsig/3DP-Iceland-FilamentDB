@@ -1,4 +1,28 @@
-# Current Build Notes - v44.5.1
+# Current Build Notes - v44.5.2
+
+## Canonical SQLite UI Boundaries candidate
+
+v44.5.2 removes the misleading Reload Local Cache and Clear Local Cache menu
+surfaces. Reload only inspected the retired `MaterialsImport` projection and
+did not reload canonical Materials. Clear was a broad legacy-engine operation
+that also cleared the currently governed `Manufacturers` table, so it was not a
+safe general cache command.
+
+The obsolete `MaterialsImport` table, its active sync command, automatic
+empty-database fallback, reader and writer are retired with explicit owner
+approval. Startup detects the table, creates and verifies the established
+required SQLite migration backup, then drops only `MaterialsImport`. Existing
+backups retain the retired rows as evidence and are never deleted
+automatically. Settings now accurately offers `Restore Built-in Defaults`; it
+never read Excel. Open Storage Folder uses matching handler/error terminology.
+A dead unbound Excel-material reset handler and helper are removed.
+
+JSON migration snapshots, governed Excel disaster recovery, SQLite restore,
+updater, reports, website and FTPS behavior are unchanged. A new Verification
+gate proves that misleading cache UI/dead reset handlers and the
+`MaterialsImport` runtime surface are absent after backup-first retirement.
+Other legacy tables remain separate audit items. Runtime Full Data Verification
+and UI acceptance are required.
 
 ## Active SQLite Compatibility Safety
 

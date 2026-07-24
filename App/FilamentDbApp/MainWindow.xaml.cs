@@ -149,7 +149,6 @@ public partial class MainWindow : Window
         ContentRendered += MainWindow_ContentRenderedForMeasurementWarmUp;
         Closing += MainWindow_Closing;
         RunStartupPhase("Analytics controls", InitializeAnalyticsControls);
-        RunStartupPhase("Cached material status read", LoadCachedMaterials);
         RunStartupPhase("Saved video ideas", LoadSavedVideoIdeas);
         RunStartupPhase("AI Assistant workspace", InitializeAiAssistantWorkspace);
         RunStartupPhase("Native settings initialization", InitializeNativeSettingsGridEditor);
@@ -1527,30 +1526,6 @@ public partial class MainWindow : Window
             column.MinWidth = 55;
             column.MaxWidth = 280;
             column.Width = new DataGridLength(width);
-        }
-    }
-
-    private void LoadCachedMaterials()
-    {
-        try
-        {
-            var table = _database.LoadMaterials();
-
-            StatusText.Text = table.Rows.Count > 0
-                ? $"Loaded application data from SQLite. Native Material Manager is the live source of truth."
-                : "No material data is available yet.";
-
-            if (table.Rows.Count > 0 && !table.Columns.Contains("Variant / Finish"))
-            {
-                StatusText.Text += "  Note: cached data does not include Variant / Finish yet — import the Excel file again or click Clear Cache.";
-            }
-
-            FooterText.Text = $"SQLite database: {_database.DatabasePath}";
-            UpdateCountText();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(this, ex.Message, "Could not load local cache", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -6638,8 +6613,8 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         report.Check(CanWriteToFolder(outputFolder), "Output folder is writable", $"Output folder is not writable: {outputFolder}");
         report.Check(exportRows.Count > 0, $"Materials selected for DATA export: {exportRows.Count}", "No materials are available for export");
         report.Check(allRows.Count > 0 || exportRows.Count > 0,
-            $"Source rows loaded: UI cache {allRows.Count}, native export set {exportRows.Count}",
-            "No material cache rows or native rows are loaded");
+            $"Source rows loaded: legacy projection {allRows.Count}, canonical export set {exportRows.Count}",
+            "No legacy projection rows or canonical MaterialID rows are loaded");
 
         var summaryVerification = EvaluateNativeMaterialSummaryVerification();
         report.Check(summaryVerification.Available && summaryVerification.Passed,
@@ -6738,14 +6713,14 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             $"Materials without YouTube review: {rows.Count(row => string.IsNullOrWhiteSpace(row.YouTubeReviewUrl))}");
     }
 
-    private string BuildWebsiteExportSummary(IReadOnlyList<NativeMaterialRow> exportRows, int uiCacheCount, bool includeManufacturers)
+    private string BuildWebsiteExportSummary(IReadOnlyList<NativeMaterialRow> exportRows, int legacyProjectionCount, bool includeManufacturers)
     {
         var activeRows = exportRows.Where(row => !row.IsArchived).ToList();
         var sb = new StringBuilder();
         sb.AppendLine("Export Summary");
         sb.AppendLine("--------------");
         sb.AppendLine($"Materials exported to DATA block: {activeRows.Count}");
-        sb.AppendLine($"UI cache rows (informational): {uiCacheCount}");
+        sb.AppendLine($"Legacy projection rows (informational): {legacyProjectionCount}");
         sb.AppendLine($"Manufacturers: {activeRows.Select(row => row.Manufacturer?.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).Distinct(StringComparer.OrdinalIgnoreCase).Count()}");
         sb.AppendLine($"Base materials: {activeRows.Select(row => row.BaseMaterial?.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).Distinct(StringComparer.OrdinalIgnoreCase).Count()}");
         sb.AppendLine($"Product lines: {activeRows.Select(row => row.ProductLine?.Trim()).Where(value => !string.IsNullOrWhiteSpace(value)).Distinct(StringComparer.OrdinalIgnoreCase).Count()}");
@@ -6776,7 +6751,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         sb.AppendLine("Export Summary");
         sb.AppendLine("--------------");
         sb.AppendLine($"Visible materials exported: {visibleRows.Count}");
-        sb.AppendLine($"Total materials in cache: {allRows.Count}");
+        sb.AppendLine($"Legacy projection materials: {allRows.Count}");
         sb.AppendLine($"Manufacturers: {CountManufacturers(allRows)}");
         sb.AppendLine($"Base materials: {CountDistinctValues(allRows, "Base Material", "Material Type", "Type")}");
         sb.AppendLine($"Product lines: {CountDistinctValues(allRows, "Product Line", "ProductLine")}");
@@ -8103,7 +8078,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             """;
     }
 
-    private string BuildWebsiteExportManifest(IReadOnlyList<NativeMaterialRow> exportRows, int uiCacheCount, string htmlPath, string manufacturerRedirectPath, DateTime generatedAt, string templateSource, bool isProduction, string backupPath, string manufacturerRedirectBackupPath, PublicReportWebsiteStageResult? reportStage = null)
+    private string BuildWebsiteExportManifest(IReadOnlyList<NativeMaterialRow> exportRows, int legacyProjectionCount, string htmlPath, string manufacturerRedirectPath, DateTime generatedAt, string templateSource, bool isProduction, string backupPath, string manufacturerRedirectBackupPath, PublicReportWebsiteStageResult? reportStage = null)
     {
         var sb = new StringBuilder();
         sb.AppendLine(isProduction ? "3DP Iceland Labs Website Export Production Manifest" : "3DP Iceland Labs Website Export Preview Manifest");
@@ -8114,7 +8089,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         sb.AppendLine($"Manufacturers redirect: {manufacturerRedirectPath} -> {(isProduction ? "../index.html#manufacturers" : "../index-test.html#manufacturers")}");
         sb.AppendLine($"Methodology whitepaper: {System.IO.Path.Combine(System.IO.Path.GetDirectoryName(htmlPath) ?? string.Empty, DocumentationEngineService.WhitepaperFileName)}");
         sb.AppendLine($"Materials exported to DATA block: {exportRows.Count}");
-        sb.AppendLine($"UI cache rows (informational): {uiCacheCount}");
+        sb.AppendLine($"Legacy projection rows (informational): {legacyProjectionCount}");
         if (reportStage is not null)
         {
             sb.AppendLine($"Public reports portal: {reportStage.PortalPath}");
@@ -8392,7 +8367,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         sb.AppendLine($"Output HTML: {htmlPath}");
         sb.AppendLine($"Manufacturers exported: {CountManufacturers(allRows)}");
         sb.AppendLine($"Visible materials: {visibleRows.Count}");
-        sb.AppendLine($"Total materials in cache: {allRows.Count}");
+        sb.AppendLine($"Legacy projection materials: {allRows.Count}");
         sb.AppendLine();
         sb.AppendLine("Safety:");
         if (isProduction)
@@ -13447,8 +13422,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         FinishExportSheet(ws, headers.Length);
     }
 
-    private void RefreshCache_Click(object sender, RoutedEventArgs e) => LoadCachedMaterials();
-
     private void ClearSearch_Click(object sender, RoutedEventArgs e)
     {
         if (FindName("NativeMaterialSearchBox") is TextBox searchBox)
@@ -13457,22 +13430,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         }
         ApplyNativeMaterialFilters();
     }
-
-    private void ClearCache_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            _database.ClearCache();
-            UpdateCountText();
-            StatusText.Text = "Legacy engine cache tables cleared. Canonical SQLite Materials and governed recovery data remain separately owned.";
-            FooterText.Text = $"SQLite database: {_database.DatabasePath}";
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(this, ex.Message, "Could not clear cache", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-    }
-
 
     private void ChooseStorageFolder_Click(object sender, RoutedEventArgs e)
     {
@@ -13489,7 +13446,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             _database.MoveDatabaseToFolder(dialog.FolderName);
             _database = new LocalDatabase();
 
-            LoadCachedMaterials();
             LoadSavedVideoIdeas();
 
             MessageBox.Show(this,
@@ -13504,7 +13460,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         }
     }
 
-    private void OpenCacheFolder_Click(object sender, RoutedEventArgs e)
+    private void OpenStorageFolder_Click(object sender, RoutedEventArgs e)
     {
         try
         {
@@ -13516,7 +13472,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         }
         catch (Exception ex)
         {
-            MessageBox.Show(this, ex.Message, "Could not open cache folder", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, ex.Message, "Could not open storage folder", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -13928,7 +13884,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             websiteStatusLabel.Text = GetWebsiteVerificationVisibilityText();
             websiteStatusLabel.Foreground = GetWebsiteVerificationVisibilityBrush();
         }));
-        toolbar.Children.Add(MakeButton("Export Report", (_, _) => ExportSystemDiagnosticsReport(reportBox.Text)));
+        toolbar.Children.Add(MakeButton("Export Report", (_, _) => ExportDiagnosticsReport(reportBox.Text, isVerificationReport: true)));
         toolbar.Children.Add(statusLabel);
         toolbar.Children.Add(websiteStatusLabel);
 
@@ -14093,7 +14049,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             UpdateNativeWorkflowStatus("Recalculated native measurement results", saved: true);
             reportBox.Text = BuildSystemDiagnosticsReport();
         }));
-        toolbar.Children.Add(MakeButton("Export Report", (_, _) => ExportSystemDiagnosticsReport(reportBox.Text)));
+        toolbar.Children.Add(MakeButton("Export Report", (_, _) => ExportDiagnosticsReport(reportBox.Text, isVerificationReport: false)));
 
         DockPanel.SetDock(toolbar, Dock.Top);
         root.Children.Add(toolbar);
@@ -14196,7 +14152,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         try
         {
             var stats = _database.GetDatabaseStats();
-            sb.AppendLine("SQLite materials: " + stats.Materials);
+            sb.AppendLine("Legacy normalized Materials rows (non-canonical): " + stats.Materials);
             sb.AppendLine("SQLite manufacturers: " + stats.Manufacturers);
             sb.AppendLine("Imported sheets: " + stats.ImportedSheets);
             sb.AppendLine("Imported rows: " + stats.ImportedRows);
@@ -14219,7 +14175,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Tensile calculation migration: Active");
         sb.AppendLine("Impact calculation migration: Active");
         sb.AppendLine("Results service: " + _resultsService.GetType().Name);
-        sb.AppendLine("Cached material count: " + _nativeMaterialRows.Count);
+        sb.AppendLine("Canonical MaterialID count: " + _nativeMaterialRows.Count);
         sb.AppendLine();
 
         sb.AppendLine(BuildNativeTensileVerificationReport());
@@ -16797,6 +16753,20 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             activeDatabaseCompatibilityVerification.Passed && retiredOriginalExcelImportSurfaceReady && localRestoreContractReady && releaseIdentityReady
                 ? activeDatabaseCompatibilityVerification.Detail
                 : "Active SQLite preservation, prior legacy-import isolation, guarded restore or release identity failed: " + activeDatabaseCompatibilityVerification.Detail));
+        var canonicalSqliteTerminologyReady =
+            typeof(MainWindow).GetMethod("RefreshCache_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("ClearCache_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("ResetNativeMaterials_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("OpenStorageFolder_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("SyncNativeMaterialsFromImported_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(LocalDatabase).GetMethod("LoadMaterials") is null &&
+            _database.LegacyMaterialsImportIsRetired() &&
+            typeof(LocalDatabase).GetMethod("ClearCache") is not null;
+        checks.Add(new VerificationCheck("v44.5.2 Canonical SQLite UI boundaries release gate",
+            canonicalSqliteTerminologyReady && activeDatabaseCompatibilityVerification.Passed && retiredOriginalExcelImportSurfaceReady && releaseIdentityReady,
+            canonicalSqliteTerminologyReady && activeDatabaseCompatibilityVerification.Passed && retiredOriginalExcelImportSurfaceReady && releaseIdentityReady
+                ? "Misleading cache UI, legacy-material sync/fallback and dead Excel-default reset are absent; MaterialsImport is retired after verified backup while canonical SQLite, storage-folder UI and lower-level compatibility storage remain available"
+                : "Canonical SQLite UI terminology, MaterialsImport retirement, active-database preservation or release identity failed"));
         var compatibilityCatalog = _database.GetLocalBackupCatalog();
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
@@ -17812,20 +17782,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         }
     }
 
-    private void ExportSystemDiagnosticsReport(string reportText)
+    private void ExportDiagnosticsReport(string reportText, bool isVerificationReport)
     {
         try
         {
+            var reportName = isVerificationReport ? "Verification" : "System_Diagnostics";
+            var reportTitle = isVerificationReport ? "Verification Center" : "System Diagnostics";
             var dialog = new SaveFileDialog
             {
-                Title = "Export System Diagnostics Report",
+                Title = $"Export {reportTitle} Report",
                 Filter = "Text file (*.txt)|*.txt",
-                FileName = "3DPIceland_FilamentDB_Diagnostics_" + DateTime.Now.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture) + ".txt"
+                FileName = $"3DPIceland_FilamentDB_{reportName}_{DateTime.Now.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture)}.txt"
             };
 
             if (dialog.ShowDialog(this) != true) return;
             SafeFileOperations.WriteAllTextAtomic(dialog.FileName, reportText, Encoding.UTF8);
-            MessageBox.Show(this, "Diagnostics report exported.", "System Diagnostics", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, $"{reportTitle} report exported.", reportTitle, MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex)
         {
@@ -21591,7 +21563,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void ResetNativeSettings_Click(object sender, RoutedEventArgs e)
     {
-        var result = MessageBox.Show(this, "Restore all Settings Manager grids from the original Excel defaults?\n\nCurrent unsaved settings will be replaced.", "Restore Excel Defaults?", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+        var result = MessageBox.Show(this, "Restore general Settings Manager rows from the built-in defaults?\n\nCurrent unsaved general settings will be replaced. Deployment settings and the canonical Base Material Catalog remain separately owned.", "Restore Built-in Defaults?", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
         if (result != MessageBoxResult.Yes)
         {
             return;
@@ -22451,9 +22423,7 @@ private List<string> GetVisibleAiMaterialLabels()
             }
         }
 
-        var seedRows = GetImportedNativeMaterialRows();
-        _database.ReplaceNativeMaterialManagerRows(seedRows.Select(NativeMaterialRecordFromRow));
-        return seedRows;
+        return GetDefaultNativeMaterialRows();
     }
 
     private static NativeMaterialRecord NativeMaterialRecordFromRow(NativeMaterialRow row)
@@ -22732,24 +22702,6 @@ private List<string> GetVisibleAiMaterialLabels()
         return material;
     }
 
-    private List<NativeMaterialRow> GetImportedNativeMaterialRows()
-    {
-        var table = _database.LoadMaterials();
-
-        if (table is null || table.Rows.Count == 0 || !table.Columns.Contains("Material ID"))
-        {
-            return new List<NativeMaterialRow>();
-        }
-
-        return table.Rows
-            .Cast<DataRow>()
-            .Select(NativeMaterialRowFromDataRow)
-            .Where(row => !string.IsNullOrWhiteSpace(row.MaterialID))
-            .OrderBy(row => double.TryParse(row.SortOrder, NumberStyles.Any, CultureInfo.InvariantCulture, out var sort) ? sort : double.MaxValue)
-            .ThenBy(row => row.MaterialID, StringComparer.CurrentCultureIgnoreCase)
-            .ToList();
-    }
-
     private void ReplaceNativeMaterialRows(IEnumerable<NativeMaterialRow> rows)
     {
         var previousSuppress = _suppressNativeMaterialDirty;
@@ -22969,12 +22921,6 @@ private List<string> GetVisibleAiMaterialLabels()
         return issues.Count == 0
             ? header + Environment.NewLine + Environment.NewLine + archiveNote + Environment.NewLine + Environment.NewLine + "No blocking material manager issues found."
             : header + Environment.NewLine + Environment.NewLine + archiveNote + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, issues.Select(issue => "- " + issue));
-    }
-
-    private void ResetNativeMaterialsToExcelDefaults()
-    {
-        var importedRows = GetImportedNativeMaterialRows();
-        ReplaceNativeMaterialRows(importedRows.Count > 0 ? importedRows : GetDefaultNativeMaterialRows());
     }
 
     private string GenerateNextNativeMaterialId()
@@ -25204,25 +25150,6 @@ private List<string> GetVisibleAiMaterialLabels()
         RefreshNativeMaterialGridValidation();
     }
 
-    private void ResetNativeMaterials_Click(object sender, RoutedEventArgs e)
-    {
-        if (!ConfirmDiscardNativeMaterialChanges("restoring Excel defaults"))
-        {
-            return;
-        }
-
-        var result = MessageBox.Show(this, "Restore Material Manager from the imported Excel 00 Materials data?\n\nCurrent native material rows will be replaced.", "Restore Material Manager?", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
-        if (result != MessageBoxResult.Yes)
-        {
-            return;
-        }
-
-        ResetNativeMaterialsToExcelDefaults();
-        SyncNativeTensileRowsWithMaterialManager(markDirty: true);
-        SetNativeMaterialsDirty(false);
-        RefreshNativeMaterialGridValidation();
-    }
-
     private void FocusNewNativeMaterial(NativeMaterialRow row)
     {
         if (FindName("NativeMaterialsGrid") is not DataGrid grid) return;
@@ -25378,33 +25305,6 @@ private List<string> GetVisibleAiMaterialLabels()
         SyncNativeTensileRowsWithMaterialManager(markDirty: true);
         MarkNativeMaterialsDirty();
         RefreshNativeMaterialGridValidation();
-    }
-
-    private void SyncNativeMaterialsFromImported_Click(object sender, RoutedEventArgs e)
-    {
-        if (!ConfirmDiscardNativeMaterialChanges("syncing imported Excel materials"))
-        {
-            return;
-        }
-
-        var rows = GetImportedNativeMaterialRows();
-        if (rows.Count == 0)
-        {
-            MessageBox.Show("No imported 00 Materials data is available yet. Import the Excel workbook first, then sync again.", "Material Manager", MessageBoxButton.OK, MessageBoxImage.Information);
-            return;
-        }
-
-        var result = MessageBox.Show(this, $"Replace the native Material Manager rows with {rows.Count} rows from the currently imported 00 Materials data?\n\nA backup will be created before the replacement.", "Sync Imported Materials?", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
-        if (result != MessageBoxResult.Yes)
-        {
-            return;
-        }
-
-        ReplaceNativeMaterialRows(rows);
-        SyncNativeTensileRowsWithMaterialManager(markDirty: true);
-        SetNativeMaterialsDirty(true);
-        RefreshNativeMaterialGridValidation();
-        ShowTransientStatus("Imported materials synchronized successfully.");
     }
 
     private void RebuildNativeMaterialDisplayNames_Click(object sender, RoutedEventArgs e)
