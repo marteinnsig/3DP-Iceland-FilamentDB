@@ -1,6 +1,18 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.5 - Fast Workflow Grid - Stiffness
+
+- Runtime-accepted third Fast Workflow Grid migration.
+- Makes Fast Stiffness the default while retaining a visible legacy-grid
+  fallback.
+- Preserves canonical Stiffness rows, 0–10 revolutions, 0–359 degrees,
+  measurement dates, formulas, filters and SQLite auto-save.
+- Corrects narrow-grid alignment and uses WPF surface-to-overlay coordinates
+  so editors remain over their actual cells.
+- Debug/Release, documentation and vulnerability gates passed; owner runtime
+  acceptance and Full Data Verification passed 317/317.
+
 ## v44.7.4 - Fast Workflow Grid - Impact
 
 - Runtime-accepted second Fast Workflow Grid migration.

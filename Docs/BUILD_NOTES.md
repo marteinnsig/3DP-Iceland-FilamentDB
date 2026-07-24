@@ -1,4 +1,31 @@
-# Current Build Notes - v44.7.4
+# Current Build Notes - v44.7.5
+
+## Fast Workflow Grid - Stiffness Candidate
+
+v44.7.5 applies the accepted Fast Workflow Grid core to Stiffness. Fast
+Stiffness starts by default and retains a visible `Use Legacy Grid` fallback.
+It edits the existing canonical Stiffness rows and reuses unchanged deflection
+and modulus formulas, filters, summaries, measurement dates, test-status
+refresh and SQLite auto-save.
+
+Revolutions are bounded to 0–10 and Degrees to 0–359 at both Fast validation
+and canonical row boundaries. Rejected values restore the prior cell once.
+Computed cells refresh in place, and layout reset preserves row order,
+selection and scroll. Stiffness owns separate keyed layout state with immediate
+resize/reorder persistence. Debug/Release, static/security gates, Full Data
+Verification and owner runtime acceptance are required.
+
+The first Stiffness runtime view exposed a narrow-content coordinate issue:
+the render surface was offset inside a viewport wider than its columns while
+the overlay editor used a manual scroll-origin calculation. Editors therefore
+appeared one column left and an empty leading region was visible. The surface
+is now left/top aligned and editor placement uses WPF coordinate translation
+from the rendered cell to the overlay, including scroll and DPI offsets.
+
+Owner runtime retest accepted Stiffness bounds, editing, navigation,
+calculations, dates, persistence, in-place reset, fallback and the corrected
+narrow-grid/editor alignment. Full Data Verification passed 317/317 with 201
+canonical Stiffness rows. v44.7.5 is accepted.
 
 ## Fast Workflow Grid - Impact Candidate
 

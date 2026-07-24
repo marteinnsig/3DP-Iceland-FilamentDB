@@ -507,8 +507,11 @@ public partial class MainWindow
                 editor.LostKeyboardFocus += (_, _) => CloseEditor(commit: true);
             }
             editor.PreviewKeyDown += Editor_PreviewKeyDown;
-            Canvas.SetLeft(editor, e.CellBounds.X - _scrollViewer.HorizontalOffset);
-            Canvas.SetTop(editor, e.CellBounds.Y - _scrollViewer.VerticalOffset);
+            var editorPosition = _surface.TranslatePoint(
+                new Point(e.CellBounds.X, e.CellBounds.Y),
+                _editorLayer);
+            Canvas.SetLeft(editor, editorPosition.X);
+            Canvas.SetTop(editor, editorPosition.Y);
             Panel.SetZIndex(editor, 10);
             _editorLayer.Children.Add(editor);
             _activeEditor = editor;
@@ -834,6 +837,8 @@ public partial class MainWindow
             Height = _contentHeight;
             ClipToBounds = true;
             Focusable = true;
+            HorizontalAlignment = HorizontalAlignment.Left;
+            VerticalAlignment = VerticalAlignment.Top;
         }
 
         private void RebuildColumnOffsets()

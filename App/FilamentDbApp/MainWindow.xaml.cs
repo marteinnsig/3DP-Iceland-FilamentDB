@@ -171,6 +171,7 @@ public partial class MainWindow : Window
         RunStartupPhase("Impact workspace initialization", InitializeNativeImpactMeasurements);
         RunStartupPhase("Fast Impact candidate view", ActivateDefaultFastImpactView);
         RunStartupPhase("Stiffness workspace initialization", InitializeNativeStiffnessMeasurements);
+        RunStartupPhase("Fast Stiffness candidate view", ActivateDefaultFastStiffnessView);
         UpdateNativeWorkflowStatus("Auto-save ready");
         RunStartupPhase("Application statistics refresh", RefreshApplicationStatistics);
         App.StartupPerformance.Mark("MainWindow constructor completed");
@@ -17348,6 +17349,26 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             workflowLayoutResetReady && fastTensileReady && fastImpactReady && nativeMeasurementLowerBoundsReady && releaseIdentityReady
                 ? "Fast Impact owns separate keyed layout state, bounded canonical measurement apply/save, non-negative input and a visible legacy-grid fallback"
                 : "Fast Impact layout, bounded non-negative apply, fallback, retained Fast Tensile contract or release identity failed"));
+        var fastStiffnessReady =
+            typeof(MainWindow).GetMethod(nameof(ActivateDefaultFastStiffnessView), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ApplyFastStiffnessChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ToggleFastStiffnessView_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ResetFastStiffnessColumns_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        var stiffnessBoundsProbe = new NativeStiffnessMeasurementRow
+        {
+            Revolutions = "5",
+            Degrees = "180"
+        };
+        stiffnessBoundsProbe.Revolutions = "-1";
+        stiffnessBoundsProbe.Degrees = "360";
+        var stiffnessBoundsReady =
+            stiffnessBoundsProbe.Revolutions == "5" &&
+            stiffnessBoundsProbe.Degrees == "180";
+        checks.Add(new VerificationCheck("v44.7.5 Fast Workflow Grid - Stiffness candidate release gate",
+            workflowLayoutResetReady && fastTensileReady && fastImpactReady && fastStiffnessReady && stiffnessBoundsReady && releaseIdentityReady,
+            workflowLayoutResetReady && fastTensileReady && fastImpactReady && fastStiffnessReady && stiffnessBoundsReady && releaseIdentityReady
+                ? "Fast Stiffness owns separate keyed layout state, bounded canonical input/save integration and a visible legacy-grid fallback"
+                : "Fast Stiffness layout, bounded canonical apply, fallback, retained accepted Fast-grid contracts or release identity failed"));
 
         return checks;
     }
@@ -26859,12 +26880,12 @@ private List<string> GetVisibleAiMaterialLabels()
             var candidate = value ?? "";
             if (MainWindow.TryParseMeasurement(candidate, out var number))
             {
-                if (propertyName == nameof(Revolutions) && number > 10)
+                if (propertyName == nameof(Revolutions) && (number < 0 || number > 10))
                 {
                     OnPropertyChanged(propertyName);
                     return;
                 }
-                if (propertyName == nameof(Degrees) && number > 359)
+                if (propertyName == nameof(Degrees) && (number < 0 || number > 359))
                 {
                     OnPropertyChanged(propertyName);
                     return;

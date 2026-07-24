@@ -2,6 +2,26 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.5 - Fast Workflow Grid - Stiffness Candidate
+
+- Added Fast Stiffness as the startup-default Stiffness view with a visible
+  one-click legacy-grid fallback.
+- Reused accepted Fast rendering, editing, navigation, rejected-cell rollback,
+  in-place refresh/reset and immediate layout-persistence contracts.
+- Preserved canonical Stiffness rows, formulas, filters, summaries,
+  measurement dates, test-status refresh and SQLite auto-save.
+- Enforced revolutions 0–10 and degrees 0–359 at Fast and canonical row
+  boundaries.
+- Added separate keyed Fast Stiffness width/order state and Default-No reset.
+- Fixed narrow-grid rendering that left a leading blank region and positioned
+  Revolutions/Degrees editors one column left. The surface is explicitly
+  left/top aligned and editors use WPF surface-to-overlay coordinates.
+- Preserved SQLite schema, reports, publishing, updater and recovery behavior.
+- Debug/Release and static/security gates passed.
+- Owner runtime retest accepted bounds, editing, calculations, layout,
+  fallback and corrected editor alignment.
+- Full Data Verification passed 317/317; v44.7.5 is accepted.
+
 ## v44.7.4 - Fast Workflow Grid - Impact Candidate
 
 - Added Fast Impact as the startup-default Impact view with a visible

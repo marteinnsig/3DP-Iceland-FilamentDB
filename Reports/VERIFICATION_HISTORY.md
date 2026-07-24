@@ -1,3 +1,18 @@
+# v44.7.5 - Fast Workflow Grid - Stiffness
+
+Date: 2026-07-24
+
+- PASS: Full Data Verification reported 317/317 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: release identity aligned at v44.7.5, assembly 44.7.5.0 and
+  `FAST-WORKFLOW-STIFFNESS`.
+- PASS: 201 canonical Stiffness rows remained aligned with 201 Materials.
+- PASS: Fast Stiffness retained bounded non-negative input, canonical
+  calculations, dates, filters, SQLite auto-save and legacy fallback.
+- PASS: narrow-grid alignment and Revolutions/Degrees editor placement passed
+  owner runtime retest.
+- ACCEPTED: v44.7.5 is runtime accepted.
+
 # v44.7.4 - Fast Workflow Grid - Impact
 
 Date: 2026-07-24

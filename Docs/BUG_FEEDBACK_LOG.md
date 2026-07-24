@@ -438,6 +438,12 @@ invalid-value warnings and reset-time canonical reordering. The candidate now
 enforces non-negative canonical samples, restores rejected cells after one
 warning and resets Fast layouts in place. Owner runtime retest and Full Data
 Verification 316/316 accepted the complete Fast Impact increment.
+v44.7.5 applies the accepted core to Stiffness with canonical 0–10
+revolutions, 0–359 degrees, unchanged formulas and separate layout state;
+runtime acceptance remains required. First Stiffness runtime review found a
+leading blank region and editors one column left; the shared surface now uses
+explicit left/top alignment and WPF coordinate translation. Owner runtime
+retest and Full Data Verification 317/317 accepted Fast Stiffness.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

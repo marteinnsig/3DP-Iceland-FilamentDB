@@ -1,13 +1,13 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.4 — Fast Workflow Grid — Impact**
+Current canonical release: **v44.7.5 — Fast Workflow Grid — Stiffness**
 
-Last runtime-accepted baseline: **v44.7.4 — Fast Workflow Grid — Impact**
+Last runtime-accepted baseline: **v44.7.5 — Fast Workflow Grid — Stiffness**
 
 Current application candidate: **None**
 
-Current roadmap increment: **None — next planned item is v44.7.5 Fast Workflow
-Grid — Stiffness**
+Current roadmap increment: **None — next planned item is v44.7.6 Fast Workflow
+Grid — Settings**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1603,10 +1603,14 @@ changes priority.
   - Accepted correction rejects negatives, restores rejected cells once and resets layout without rebuilding rows.
   - Owner runtime retest and Full Data Verification 316/316 passed.
 - **v44.7.5 — Fast Workflow Grid — Stiffness**
-  - State: Planned.
-  - Feedback disposition: In progress.
+  - State: **Complete**.
+  - Feedback disposition: Partially solved; Settings remains.
   - Reuse the accepted core with revolutions/degrees limits, computed outputs and unchanged formulas.
   - Preserve filters, measurement dates, SQLite auto-save, selection and a visible legacy fallback.
+  - Candidate enforces 0–10 revolutions and 0–359 degrees at Fast and canonical row boundaries.
+  - Rejected input, computed refresh and reset reuse the accepted in-place contracts.
+  - First runtime view found narrow-content leading space and offset editors; coordinate alignment was corrected.
+  - Owner runtime retest and Full Data Verification 317/317 passed.
 - **v44.7.6 — Fast Workflow Grid — Settings**
   - State: Planned.
   - Feedback disposition: In progress.

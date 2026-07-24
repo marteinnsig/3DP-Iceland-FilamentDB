@@ -2,6 +2,22 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.5 - Fast Workflow Grid - Stiffness Candidate
+
+Candidate applies the accepted viewport-only workflow grid to Stiffness while
+retaining canonical rows, 0–10 revolutions, 0–359 degrees, measurement dates,
+unchanged deflection/modulus formulas, filters, summaries, test-status refresh
+and SQLite auto-save. It starts by default, owns separate keyed layout state
+and retains a visible legacy fallback. Rejected input restores once; in-place
+cell refresh and reset preserve sorting, selection and scroll. SQLite schema,
+reports, FTPS, updater and recovery remain unchanged. Debug/Release,
+Verification and owner runtime acceptance are required. First runtime review
+found narrow Stiffness content offset from the editor overlay; explicit
+left/top surface alignment and WPF coordinate translation correct both the
+leading gap and editor placement. Owner runtime retest accepted the complete
+Stiffness workflow and Full Data Verification passed 317/317. v44.7.5 is
+accepted.
+
 ## v44.7.4 - Fast Workflow Grid - Impact Candidate
 
 Candidate applies the accepted viewport-only workflow grid to Impact while
