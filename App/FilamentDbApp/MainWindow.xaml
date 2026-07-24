@@ -276,6 +276,11 @@
                         <TextBlock Text="Manage native material records, pricing, purchase details and website metadata. Archived materials remain available here but are excluded from active exports."
                                    Foreground="#64748B"
                                    TextWrapping="Wrap"/>
+                        <TextBlock x:Name="NativeMaterialValidationHelpText"
+                                   Text="Validation checks required row identity: Material ID, Manufacturer, Product Line, Base Material and computed Website Display Name. OK means all are present."
+                                   Foreground="#475569"
+                                   TextWrapping="Wrap"
+                                   Margin="0,4,0,0"/>
                     </StackPanel>
 
                     <WrapPanel Grid.Row="1" Margin="0,0,0,10">
@@ -346,7 +351,7 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsRowValid}" Value="False">
                                             <Setter Property="Background" Value="#FEF2F2"/>
-                                            <Setter Property="ToolTip" Value="Required material fields are missing."/>
+                                            <Setter Property="ToolTip" Value="Validation requires Material ID, Manufacturer, Product Line, Base Material and computed Website Display Name."/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding IsCurrentSelection}" Value="True">
                                             <Setter Property="Background" Value="#DBEAFE"/>

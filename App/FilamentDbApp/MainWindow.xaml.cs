@@ -17142,6 +17142,29 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             categoryRankingScopeReady && releaseIdentityReady
                 ? "Category Rankings supports safe 5, 10, 50, 100 and All row scopes while preserving the existing score selectors, ordering and canonical visible MaterialID source"
                 : "Category Rankings row-scope mapping or release identity failed"));
+        const string expectedMaterialValidationHelp =
+            "Validation checks required row identity: Material ID, Manufacturer, Product Line, Base Material and computed Website Display Name. OK means all are present.";
+        var materialValidationHelpReady =
+            NativeMaterialValidationHelpText?.Text == expectedMaterialValidationHelp &&
+            new NativeMaterialRow
+            {
+                MaterialID = "MAT-VALIDATION",
+                Manufacturer = "Maker",
+                ProductLine = "Line",
+                BaseMaterial = "PLA",
+                WebsiteDisplayName = "Maker Line PLA"
+            }.ValidationSummary == "OK" &&
+            new NativeMaterialRow
+            {
+                MaterialID = "MAT-VALIDATION",
+                Manufacturer = "Maker",
+                BaseMaterial = "PLA"
+            }.ValidationSummary == "Missing: Product Line, Display Name";
+        checks.Add(new VerificationCheck("v44.7.2 Material row Validation help clarity release gate",
+            materialValidationHelpReady && releaseIdentityReady,
+            materialValidationHelpReady && releaseIdentityReady
+                ? "Materials explains the five required row-identity fields and OK meaning while the established ValidationSummary rules remain unchanged"
+                : "Material row Validation help text, established required-field rules or release identity failed"));
 
         return checks;
     }

@@ -2,6 +2,19 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.2 - Validation Help Clarity
+
+- Added concise Materials help defining the five required row-identity fields.
+- Clarified that `OK` means those fields are present, not that measurements,
+  pricing or every other material field have been verified.
+- Expanded the invalid-row tooltip with the same exact required-field scope.
+- Preserved ValidationSummary calculations, dataset duplicate checks,
+  auto-save blocking and manual-save warning behavior.
+- Added a Verification gate for the help contract and established OK/missing
+  results.
+- Debug/Release, documentation and vulnerability gates passed. Owner runtime
+  screenshot review and Full Data Verification PASS completed the release.
+
 ## v44.7.1 - Category Rankings Scope Controls
 
 - Added 5, 10, 50, 100 and All choices to Category Rankings rows per group.

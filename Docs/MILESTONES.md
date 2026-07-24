@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.2 - Validation Help Clarity
+
+Adds concise always-visible Materials guidance for the five required
+row-identity fields and the exact meaning of `OK`. Existing validation
+calculations, duplicate checks and save behavior remain unchanged. Owner
+runtime screenshot review and Full Data Verification passed.
+
+---
+
 # v44.7.1 - Category Rankings Scope Controls
 
 Adds bounded 5, 10, 50, 100 and All Category Rankings scopes without changing

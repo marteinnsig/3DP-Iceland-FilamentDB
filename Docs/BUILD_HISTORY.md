@@ -2,6 +2,17 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.2 - Validation Help Clarity
+
+Candidate adds concise Materials help defining row Validation as the presence
+of Material ID, Manufacturer, Product Line, Base Material and computed Website
+Display Name. `OK` means those five fields are present; it does not claim that
+measurements, pricing or other material data are fully verified. Existing
+validation calculations, duplicate checks and save boundaries remain
+unchanged. Debug/Release passed with zero warnings/errors, the documentation
+and vulnerability gates passed, and owner runtime screenshot review plus Full
+Data Verification passed. v44.7.2 is accepted.
+
 ## v44.7.1 - Category Rankings Scope Controls
 
 Candidate adds bounded 5, 10, 50, 100 and All row scopes to Category Rankings.

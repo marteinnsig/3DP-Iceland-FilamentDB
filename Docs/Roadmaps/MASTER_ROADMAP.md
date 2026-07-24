@@ -1580,10 +1580,11 @@ changes priority.
   - Added the proven 5/10/50/100/All choice with runtime-accepted `All` performance.
   - Ranking formulas remained unchanged; Full Data Verification 313/313 passed.
 - **v44.7.2 — Validation Help Clarity**
-  - State: Planned.
-  - Feedback disposition: Open.
-  - Document what row `Validation` means.
-  - Add concise contextual UI help without changing validation calculations.
+  - State: **Complete**.
+  - Feedback disposition: Solved.
+  - Row `Validation` ownership and dataset-level duplicate checks researched.
+  - Added concise contextual UI help without changing validation calculations.
+  - Owner runtime screenshot review and Full Data Verification passed.
 - **v44.7.3 — Workflow Layout Reset**
   - State: Planned.
   - Feedback disposition: Partially solved.
@@ -1650,6 +1651,19 @@ changes priority.
 - **v45.2 — Governed Development/Verification and Production/Clean profiles**
   - State: Research only until diagnostics have measured cost.
   - Mandatory crash, recovery, security and support evidence can never be removed.
+
+### Dedicated v46 user-help milestone
+
+- **v46.0 — Comprehensive User Help and Workflow Guide**
+  - State: Planned dedicated milestone.
+  - Feedback disposition: Open.
+  - Treat this as a full information-architecture and user-documentation project, not incidental tooltip work.
+  - Inventory every supported tab, command, prerequisite, validation state and cross-tab handoff before writing guidance.
+  - Document the complete workflow from Purchasing, Inventory and Materials through measurement entry and engineering review.
+  - Continue through reports, website Preview, public-selection boundaries and guarded Production/FTPS publishing.
+  - Provide a start-to-finish guide, per-tab reference, contextual in-app entry points and troubleshooting/recovery boundaries.
+  - Preserve canonical calculations, SQLite ownership, public allowlists, default-No publishing and guarded recovery behavior.
+  - Entry condition: approved help structure and verified mapping to current runtime behavior.
 
 ### Intentionally unscheduled
 

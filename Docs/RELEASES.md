@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.2 - Validation Help Clarity
+
+- Runtime-accepted bounded Materials guidance release.
+- Defines row Validation as the presence of Material ID, Manufacturer, Product
+  Line, Base Material and computed Website Display Name.
+- Clarifies that `OK` covers those identity fields without claiming broader
+  measurement, pricing or dataset verification.
+- Preserves validation calculations, duplicate checks and save boundaries.
+- Debug/Release, documentation and vulnerability gates passed; owner runtime
+  screenshot review and Full Data Verification passed.
+
 ## v44.7.1 - Category Rankings Scope Controls
 
 - Runtime-accepted bounded Category Rankings release.

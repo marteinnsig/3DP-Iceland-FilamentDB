@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "CATEGORY-RANKING-SCOPE";
-    public const string ReleaseTitle = "Category Rankings Scope Controls";
+    public const string ReleaseCode = "VALIDATION-HELP-CLARITY";
+    public const string ReleaseTitle = "Validation Help Clarity";
 
     public static string Version
     {

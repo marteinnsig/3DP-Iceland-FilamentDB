@@ -33,13 +33,32 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 13 |
 | In progress | 0 |
 | Partially solved | 4 |
-| Solved | 28 |
+| Solved | 29 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **49** |
+| **Total tracked findings** | **50** |
 
 ## Tracked findings
+
+Date: 2026-07-24
+Area: Application-wide user help and workflow guidance
+Type: Workflow friction / UI polish
+Severity: Idea
+Status: Open
+Resolution: Planned as the dedicated v46.0 user-help milestone. Cover every supported tab and the complete owner workflow
+from Purchasing, Materials and Inventory through measurement entry, validation, analysis, reports, website Preview and guarded
+Production publishing. Research current UI ownership and accepted behavior before writing; do not let help text redefine calculations,
+data ownership, public allowlists, FTPS confirmation or recovery boundaries.
+Verification evidence: Requires a complete tab/action inventory, owner review, in-app navigation testing, documentation link validation
+and visual/runtime acceptance.
+What happened: The application has many connected workflows, but no single structured user guide explains what every tab does or how
+data should move through the platform from purchase entry to measurements, reports and website publication.
+Expected behavior: Provide a well-organized user-help system with a start-to-finish workflow, per-tab reference, field-entry guidance,
+prerequisites, validation meanings, safe publishing steps, recovery boundaries and links from relevant UI contexts.
+Steps to reproduce: Follow a new user from recording a purchase through creating/linking a material, entering measurements, reviewing
+results, generating reports and publishing the website; guidance is currently distributed or implicit.
+Screenshot / export / report attached: User feedback on 2026-07-24.
 
 Date: 2026-07-24
 Area: Tensile / Impact / Stiffness Measurements
@@ -298,9 +317,9 @@ on top under the logo, - maybe this is not needed at both places - but later in 
 it states 197 materials, -
 
 qustion;: what does "validation" mean for each line of material?
-Status: Open
-Resolution: Retained as a documentation/UI-help task. Define the exact validation states and expose concise contextual help without changing validation rules.
-Verification evidence: None.
+Status: Solved
+Resolution: Solved in version v44.7.2 — Materials explains the five required row-identity fields and the exact meaning of OK.
+Verification evidence: Owner runtime screenshot acceptance and Full Data Verification PASS.
 
 Bug: in material report, the reports says on top "Total Materials: 176" not the actual number
 Status: Solved
