@@ -182,7 +182,8 @@
                 <MenuItem Header="Validate Materials" Click="ValidateNativeMaterials_Click" />
                 <MenuItem Header="Rebuild Computed Fields" Click="RebuildNativeMaterialDisplayNames_Click" />
                 <MenuItem Header="Materials Rendering Prototype..." Click="ShowMaterialsRenderingPrototype_Click" />
-                <MenuItem Name="FastMaterialsViewMenuItem" Header="Use Fast Materials View (Preview)" IsCheckable="True" Click="ToggleFastMaterialsView_Click" />
+                <MenuItem Name="FastMaterialsViewMenuItem" Header="Use Fast Materials View (Preview)" IsCheckable="True"
+                          Click="ToggleFastMaterialsView_Click" Visibility="Collapsed" />
                 <MenuItem Header="Reset Current Workflow Columns to Default..." Click="ResetCurrentWorkflowColumns_Click" />
                 <MenuItem Header="Update Readiness..." Click="UpdateReadiness_Click" />
                 <MenuItem Header="Check for Updates..." Click="CheckForUpdates_Click" />
@@ -1764,7 +1765,7 @@
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
                         <DockPanel>
                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                <Button Name="FastTensileToggleButton" Content="Use Legacy Grid" Click="ToggleFastTensileView_Click" Padding="10,4" Margin="0,0,8,0"
+                                <Button Name="FastTensileToggleButton" Content="Use Legacy Grid" Click="ToggleFastTensileView_Click" Padding="10,4" Margin="0,0,8,0" Visibility="Collapsed"
                                         ToolTip="Temporary fallback while the Fast Tensile grid is under runtime acceptance."/>
                                 <Button Content="Reset Columns" Click="ResetFastTensileColumns_Click" Padding="10,4"/>
                             </StackPanel>
@@ -1855,7 +1856,7 @@
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
                         <DockPanel>
                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                <Button Name="FastImpactToggleButton" Content="Use Legacy Grid" Click="ToggleFastImpactView_Click" Padding="10,4" Margin="0,0,8,0"
+                                <Button Name="FastImpactToggleButton" Content="Use Legacy Grid" Click="ToggleFastImpactView_Click" Padding="10,4" Margin="0,0,8,0" Visibility="Collapsed"
                                         ToolTip="Temporary fallback while the Fast Impact grid is under runtime acceptance."/>
                                 <Button Content="Reset Columns" Click="ResetFastImpactColumns_Click" Padding="10,4"/>
                             </StackPanel>
@@ -1950,7 +1951,7 @@
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
                         <DockPanel>
                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                <Button Name="FastStiffnessToggleButton" Content="Use Legacy Grid" Click="ToggleFastStiffnessView_Click" Padding="10,4" Margin="0,0,8,0"
+                                <Button Name="FastStiffnessToggleButton" Content="Use Legacy Grid" Click="ToggleFastStiffnessView_Click" Padding="10,4" Margin="0,0,8,0" Visibility="Collapsed"
                                         ToolTip="Temporary fallback while the Fast Stiffness grid is under runtime acceptance."/>
                                 <Button Content="Reset Columns" Click="ResetFastStiffnessColumns_Click" Padding="10,4"/>
                             </StackPanel>
@@ -2151,7 +2152,7 @@
                     </StackPanel>
 
                     <WrapPanel Grid.Row="1" Margin="0,0,0,10">
-                        <Button Name="FastSettingsToggleButton" Content="Use Legacy Grids" Click="ToggleFastSettingsViews_Click" Padding="12,6" Margin="0,0,8,8"
+                        <Button Name="FastSettingsToggleButton" Content="Use Legacy Grids" Click="ToggleFastSettingsViews_Click" Padding="12,6" Margin="0,0,8,8" Visibility="Collapsed"
                                 ToolTip="Temporary fallback while Fast Settings is under runtime acceptance."/>
                         <Button Content="Reset Fast Columns" Click="ResetFastSettingsColumns_Click" Padding="12,6" Margin="0,0,16,8"/>
                         <Button Click="SaveNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE74E;"/><TextBlock Text="Save Settings"/></StackPanel></Button>

@@ -1,4 +1,33 @@
-# Current Build Notes - v44.7.6
+# Current Build Notes - v44.7.7
+
+## Legacy Grid Retirement - UI Candidate
+
+v44.7.7 is a staged retirement of the accepted Fast-workflow legacy DataGrid
+fallbacks. Stage 1 removes every visible legacy/preview switch from Materials,
+Tensile, Impact, Stiffness and Settings while retaining Reset Columns and all
+canonical editing actions.
+
+The legacy DataGrids remain collapsed internal adapters during this stage
+because Fast views still derive column definitions, ComboBox choices and some
+visible row projections from them. Removing those grids before introducing
+explicit Fast contracts would break the accepted views. Later stages will
+replace those dependencies before deleting legacy XAML, event handlers and
+commit paths.
+
+SQLite, formulas, validation, filters, Settings CRUD, reports, FTPS, updater
+and recovery behavior remain unchanged. Runtime acceptance is required before
+the first adapter is removed.
+
+The first Verification run exposed a release-metadata mismatch rather than a
+workflow regression: assembly/version fields were 44.7.7 while informational
+metadata still identified v44.7.6. That single identity failure cascaded
+through 77 aggregate release gates. Informational metadata is now aligned to
+`44.7.7-LEGACY-GRID-RETIREMENT`.
+
+Owner runtime testing accepted the Fast-only UI presentation and retained
+editing/filter behavior. After the identity correction, Full Data Verification
+passed 319/319. Stage 1 is accepted; Stage 2 will replace the three measurement
+DataGrid adapters before removing their legacy XAML and event paths.
 
 ## Fast Workflow Grid - Settings
 

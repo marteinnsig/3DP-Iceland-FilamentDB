@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "FAST-WORKFLOW-SETTINGS";
-    public const string ReleaseTitle = "Fast Workflow Grid - Settings Candidate";
+    public const string ReleaseCode = "LEGACY-GRID-RETIREMENT";
+    public const string ReleaseTitle = "Legacy Grid Retirement - UI Candidate";
 
     public static string Version
     {

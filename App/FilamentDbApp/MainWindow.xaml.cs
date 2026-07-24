@@ -17396,6 +17396,19 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             workflowLayoutResetReady && fastTensileReady && fastImpactReady && fastStiffnessReady && fastSettingsReady && releaseIdentityReady
                 ? "Fast Settings owns separate general/Base Material layouts, canonical apply contracts and a visible dual-grid fallback"
                 : "Fast Settings layout, canonical general/Base Material apply, fallback, retained accepted Fast-grid contracts or release identity failed"));
+        var legacyGridRetirementUiReady =
+            FastMaterialsViewMenuItem.Visibility == Visibility.Collapsed &&
+            FastTensileToggleButton.Visibility == Visibility.Collapsed &&
+            FastImpactToggleButton.Visibility == Visibility.Collapsed &&
+            FastStiffnessToggleButton.Visibility == Visibility.Collapsed &&
+            FastSettingsToggleButton.Visibility == Visibility.Collapsed;
+        checks.Add(new VerificationCheck("v44.7.7 Legacy Grid Retirement UI-stage release gate",
+            legacyGridRetirementUiReady && fastTensileReady && fastImpactReady && fastStiffnessReady &&
+            fastSettingsReady && releaseIdentityReady,
+            legacyGridRetirementUiReady && fastTensileReady && fastImpactReady && fastStiffnessReady &&
+            fastSettingsReady && releaseIdentityReady
+                ? "Legacy/preview switches are hidden while accepted Fast contracts and temporary collapsed adapters remain intact"
+                : "A legacy/preview switch remains visible, an accepted Fast contract failed or release identity is misaligned"));
 
         return checks;
     }

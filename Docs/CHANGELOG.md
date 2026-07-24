@@ -2,6 +2,21 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.7 - Legacy Grid Retirement - UI Candidate
+
+- Hid Materials preview switching and all `Use Legacy Grid(s)` buttons.
+- Retained Reset Columns and every canonical edit/save action.
+- Retained collapsed legacy DataGrids temporarily as internal Fast column and
+  row adapters.
+- Deferred legacy XAML/handler deletion until explicit Fast contracts replace
+  those dependencies and Stage 1 passes runtime acceptance.
+- Aligned informational and assembly release identity after the first
+  Verification run exposed one cascading metadata mismatch.
+- Owner runtime testing accepted the Fast-only UI and Full Data Verification
+  passed 319/319; Stage 1 is complete.
+- Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
+  FTPS, updater and recovery behavior.
+
 ## v44.7.6 - Fast Workflow Grid - Settings
 
 - Added startup-default Fast views for general Settings and Base Material

@@ -458,6 +458,16 @@ only legacy measurement views; Fast Tensile, Impact and Stiffness now reload
 from the same established visible MaterialID set. Owner runtime retesting
 accepted Settings editing/fallback, separator persistence and shared filter
 scope; Full Data Verification passed. v44.7.6 is complete.
+v44.7.7 retires the now-accepted legacy fallback in runtime-gated stages.
+Stage 1 hides all legacy/preview switches while retaining collapsed DataGrids
+as temporary Fast schema/row adapters. Later stages must introduce explicit
+Fast contracts before removing legacy XAML and handlers.
+The first v44.7.7 Verification run reported 77 cascading FAIL results from one
+release-identity mismatch: informational metadata remained v44.7.6 while the
+assembly was v44.7.7. The metadata is aligned; no canonical data or workflow
+failure was reported.
+Owner runtime acceptance and Full Data Verification 319/319 completed Stage 1.
+Stage 2 will replace measurement DataGrid schema/row adapters.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

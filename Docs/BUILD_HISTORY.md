@@ -2,6 +2,19 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.7 - Legacy Grid Retirement - UI Candidate
+
+Stage 1 hides the accepted Fast-workflow legacy/preview switches across
+Materials, Tensile, Impact, Stiffness and Settings. Reset Columns and canonical
+editing actions remain visible. Legacy DataGrids remain collapsed internal
+column/row adapters until explicit Fast contracts replace those dependencies
+in later runtime-gated stages.
+The first Verification run failed 77 aggregate gates because informational
+metadata remained on v44.7.6 while assembly metadata was v44.7.7; the candidate
+identity is now aligned.
+Owner runtime testing accepted Stage 1 and Full Data Verification passed
+319/319. Stage 2 is the measurement-adapter replacement checkpoint.
+
 ## v44.7.6 - Fast Workflow Grid - Settings
 
 Candidate migrates both editable Settings Manager tables to the accepted Fast

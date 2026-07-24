@@ -1,3 +1,17 @@
+# v44.7.7 - Legacy Grid Retirement - Stage 1
+
+Date: 2026-07-24
+
+- PASS: Full Data Verification reported 319/319 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: release identity aligned at v44.7.7, assembly 44.7.7.0 and
+  `LEGACY-GRID-RETIREMENT`.
+- PASS: Materials preview and all measurement/Settings legacy switches were
+  absent from the owner-visible UI.
+- PASS: Fast editing, filters, Settings behavior and Reset Columns remained
+  operational with temporary collapsed adapters.
+- ACCEPTED: v44.7.7 Stage 1 is runtime accepted.
+
 # v44.7.6 - Fast Workflow Grid - Settings
 
 Date: 2026-07-24

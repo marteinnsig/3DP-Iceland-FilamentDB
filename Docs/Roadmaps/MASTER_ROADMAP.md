@@ -4,9 +4,9 @@ Current canonical release: **v44.7.6 — Fast Workflow Grid — Settings**
 
 Last runtime-accepted baseline: **v44.7.6 — Fast Workflow Grid — Settings**
 
-Current application candidate: **None — v44.7.6 is runtime accepted**
+Current application candidate: **v44.7.7 — Legacy Grid Retirement**
 
-Current roadmap increment: **v44.7.7 — Backup Filename Compatibility**
+Current roadmap increment: **v44.7.7 — Legacy Grid Retirement**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1622,20 +1622,30 @@ changes priority.
   - Cross-tab duplicate spacer identities now fall back safely and persist independently.
   - Materials filter propagation now refreshes all three Fast measurement snapshots from the shared visible MaterialID set.
   - Owner runtime acceptance and Full Data Verification passed.
-- **v44.7.7 — Backup Filename Compatibility**
-  - State: Current research item.
+- **v44.7.7 — Legacy Grid Retirement**
+  - State: Current staged candidate.
+  - Feedback disposition: In progress.
+  - Remove accepted Fast-workflow legacy fallback controls first.
+  - Keep legacy DataGrids hidden temporarily while they still supply Fast column and row adapters.
+  - Stage 1 UI retirement is runtime accepted with Full Data Verification 319/319.
+  - Stage 2 replaces measurement-grid adapters with explicit Fast contracts.
+  - Replace those adapters with explicit Fast contracts before deleting legacy XAML, handlers and commit paths.
+  - Preserve canonical SQLite, formulas, filters, validation, settings CRUD and layout behavior at every stage.
+  - Require runtime acceptance after each removal stage.
+- **v44.7.8 — Backup Filename Compatibility**
+  - State: Planned.
   - Feedback disposition: Open.
   - Research a human-readable presentation name.
   - Retain SQLite bytes, existing `.sqlite` discovery, explicit restore and all evidence.
   - Never rename or delete existing backups automatically.
-- **v44.7.8 — Public Measurement Date Provenance**
+- **v44.7.9 — Public Measurement Date Provenance**
   - State: Planned.
   - Feedback disposition: Open.
   - Add canonical Tensile, Impact and Stiffness measured dates to the reviewed public material model.
   - Show dates on applicable website/report surfaces with `Not recorded` honesty.
   - Preserve per-material publication opt-in and explicit public allowlists.
   - Require Preview/Production HTML/PDF parity before publication.
-- **v44.7.9 — Canonical MaterialID Default Row Order**
+- **v44.7.10 — Canonical MaterialID Default Row Order**
   - State: Planned.
   - Feedback disposition: Open.
   - Research view ownership and saved user-sort behavior across Materials, Tensile, Impact and Stiffness.
