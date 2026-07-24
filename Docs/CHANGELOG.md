@@ -1,3 +1,18 @@
+## v44.5.8 - Retired Transition UI Residue
+
+- Removed nine private load/import-sync click handlers with no XAML or code
+  callers.
+- Removed their four caller-exclusive discard-confirm helpers.
+- Removed six unused JSON state allocations from measurement save paths;
+  canonical SQLite saving is unchanged.
+- Preserved all five supported empty-canonical JSON migration snapshot readers,
+  built-in Settings defaults, governed Excel disaster recovery, explicit SQLite
+  restore, updater, website/report and FTPS behavior.
+- Added a Verification gate proving the obsolete handlers remain absent while
+  required migration readers remain present.
+- Runtime accepted with Full Data Verification 309/309, schema v30, successful
+  measurement auto-save/restart evidence and current backups Ready.
+
 ## v44.5.7 - Legacy Workbook Schema Retirement
 
 - Advanced canonical SQLite to schema v30.

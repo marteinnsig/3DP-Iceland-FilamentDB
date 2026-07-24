@@ -1,4 +1,32 @@
-# Current Build Notes - v44.5.7
+# Current Build Notes - v44.5.8
+
+## Retired Transition UI Residue
+
+The JSON/default/cache caller audit distinguishes five retained
+`native-*.json` empty-canonical migration snapshots from active current JSON
+owners such as workflow preferences, AI collections, updater transactions and
+report/publish manifests. Built-in Settings defaults remain a governed
+Default-No SQLite reset/seed path and are not part of the retired original
+Excel import.
+
+v44.5.8 removes nine private load/import-sync click handlers that have no XAML
+or code caller, plus their four caller-exclusive unsaved-change confirmation
+helpers. It also removes six unused measurement JSON state allocations; the
+save methods already write only to canonical SQLite. The five migration
+snapshot readers remain available for empty canonical targets, and no snapshot,
+backup or evidence file is read, changed or deleted by this increment.
+
+Schema v30, governed Excel disaster recovery, explicit SQLite restore, updater,
+website/report and FTPS behavior are unchanged. Debug/Release, static/security
+checks, Full Data Verification and runtime measurement edit/save/restart
+acceptance are required.
+
+Runtime acceptance passed Full Data Verification 309/309 with zero failures on
+2026-07-24. System Diagnostics confirmed schema v30, 200 canonical Materials,
+four Ready backups, zero incomplete update transactions and successful
+Stiffness auto-save after restart. About displayed the exact v44.5.8 release
+identity and Recovery Center retained the supported migration evidence while
+classifying current schema v30 backups Ready. v44.5.8 is runtime accepted.
 
 ## Legacy Workbook Schema Retirement
 

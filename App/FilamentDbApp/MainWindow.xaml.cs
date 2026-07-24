@@ -16853,6 +16853,26 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
                 ? "Schema v30 contains no original-workbook tables; engineering metrics use canonical measurement rows while pre-v30 migration inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
                 : "Legacy workbook tables/readers remain or canonical metrics, migration compatibility or recovery boundaries failed"));
+        var retiredTransitionUiResidueReady =
+            typeof(MainWindow).GetMethod("LoadNativeMaterials_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("LoadNativeTensile_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("LoadNativeImpact_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("LoadNativeStiffness_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("SyncNativeTensileFromImported_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("SyncNativeImpactFromImported_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("SyncNativeStiffnessFromImported_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("SyncNativeImpactFromMaterials_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("SyncNativeStiffnessFromMaterials_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("LoadNativeMaterialsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeTensileRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeImpactRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeStiffnessRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("NativeSettingsFilePath", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v44.5.8 Retired transition UI residue release gate",
+            retiredTransitionUiResidueReady && legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady,
+            retiredTransitionUiResidueReady && legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
+                ? "Caller-free load/import-sync handlers and unused JSON save-state allocations are absent while supported empty-canonical JSON migration readers and governed recovery remain available"
+                : "Transition UI residue remains or a supported JSON migration/recovery boundary is missing"));
         var compatibilityCatalog = _database.GetLocalBackupCatalog();
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
@@ -22829,17 +22849,6 @@ private List<string> GetVisibleAiMaterialLabels()
         RefreshNativeMaterialSummary();
     }
 
-    private bool ConfirmDiscardNativeMaterialChanges(string actionName)
-    {
-        if (!_nativeMaterialDirty)
-        {
-            return true;
-        }
-
-        var result = MessageBox.Show($"Material Manager has unsaved changes. Continue with {actionName} and discard those changes?", "Unsaved Material Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-        return result == MessageBoxResult.Yes;
-    }
-
     private void RefreshNativeMaterialGridValidation()
     {
         if (FindName("NativeMaterialsGrid") is not DataGrid grid)
@@ -25216,28 +25225,6 @@ private List<string> GetVisibleAiMaterialLabels()
         }
     }
 
-    private void LoadNativeMaterials_Click(object sender, RoutedEventArgs e)
-    {
-        if (!ConfirmDiscardNativeMaterialChanges("loading saved materials"))
-        {
-            return;
-        }
-
-        var rows = LoadNativeMaterialsFromTransitionStorage();
-        if (rows.Count == 0)
-        {
-            MessageBox.Show("No saved native materials were found in SQLite or a legacy snapshot.", "Material Manager", MessageBoxButton.OK, MessageBoxImage.Information);
-            return;
-        }
-
-        CreateDatabaseBackupBeforeMajorMaterialChange("syncing imported materials");
-
-        ReplaceNativeMaterialRows(rows);
-        SyncNativeTensileRowsWithMaterialManager(markDirty: true);
-        SetNativeMaterialsDirty(false);
-        RefreshNativeMaterialGridValidation();
-    }
-
     private void FocusNewNativeMaterial(NativeMaterialRow row)
     {
         if (FindName("NativeMaterialsGrid") is not DataGrid grid) return;
@@ -25780,7 +25767,6 @@ private List<string> GetVisibleAiMaterialLabels()
         CommitNativeTensileGridEdits();
         ApplyNativeTensileComputedFields(_nativeTensileRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        var state = new NativeTensileMeasurementsState { SavedAtUtc = DateTime.UtcNow.ToString("O"), Rows = _nativeTensileRows.ToList() };
         SaveNativeMeasurementsToSqlite();
         SetNativeTensileDirty(false);
         UpdateNativeWorkflowStatus("Tensile saved ✓", saved: true);
@@ -25792,7 +25778,6 @@ private List<string> GetVisibleAiMaterialLabels()
         try
         {
             ShowNativeSavingStatus("Tensile");
-            var state = new NativeTensileMeasurementsState { SavedAtUtc = DateTime.UtcNow.ToString("O"), Rows = _nativeTensileRows.ToList() };
             SaveNativeMeasurementsToSqlite();
             SetNativeTensileDirty(false);
             ShowNativeSavedStatus("Tensile");
@@ -25801,22 +25786,6 @@ private List<string> GetVisibleAiMaterialLabels()
         {
             ShowNativeSaveBlockedStatus("Tensile", ex.Message);
         }
-    }
-
-    private void LoadNativeTensile_Click(object sender, RoutedEventArgs e)
-    {
-        if (!ConfirmDiscardNativeTensileChanges("loading tensile measurements")) return;
-        ReplaceNativeTensileRows(GetImportedNativeTensileRows());
-        SetNativeTensileDirty(false);
-        RefreshNativeTensileSummary();
-    }
-
-    private void SyncNativeTensileFromImported_Click(object sender, RoutedEventArgs e)
-    {
-        if (!ConfirmDiscardNativeTensileChanges("syncing imported tensile measurements")) return;
-        ReplaceNativeTensileRows(GetImportedNativeTensileRows());
-        SetNativeTensileDirty(true);
-        RefreshNativeTensileSummary();
     }
 
     private void RecalculateNativeTensile_Click(object sender, RoutedEventArgs e)
@@ -25855,12 +25824,6 @@ private List<string> GetVisibleAiMaterialLabels()
         _nativeTensileDirty = dirty;
         if (FindName("SaveNativeTensileButton") is Button saveButton) saveButton.IsEnabled = dirty;
         RefreshNativeTensileSummary();
-    }
-
-    private bool ConfirmDiscardNativeTensileChanges(string actionName)
-    {
-        if (!_nativeTensileDirty) return true;
-        return MessageBox.Show($"Native Tensile Measurements has unsaved changes. Continue with {actionName} and discard those changes?", "Unsaved Tensile Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
     }
 
     private void RefreshNativeTensileSummary()
@@ -26248,7 +26211,6 @@ private List<string> GetVisibleAiMaterialLabels()
         CommitNativeImpactGridEdits();
         ApplyNativeImpactComputedFields(_nativeImpactRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        var state = new NativeImpactMeasurementsState { SavedAtUtc = DateTime.UtcNow.ToString("O"), Rows = _nativeImpactRows.ToList() };
         SaveNativeMeasurementsToSqlite();
         SetNativeImpactDirty(false);
         UpdateNativeWorkflowStatus("Impact saved ✓", saved: true);
@@ -26260,7 +26222,6 @@ private List<string> GetVisibleAiMaterialLabels()
         try
         {
             ShowNativeSavingStatus("Impact");
-            var state = new NativeImpactMeasurementsState { SavedAtUtc = DateTime.UtcNow.ToString("O"), Rows = _nativeImpactRows.ToList() };
             SaveNativeMeasurementsToSqlite();
             SetNativeImpactDirty(false);
             ShowNativeSavedStatus("Impact");
@@ -26269,29 +26230,6 @@ private List<string> GetVisibleAiMaterialLabels()
         {
             ShowNativeSaveBlockedStatus("Impact", ex.Message);
         }
-    }
-
-    private void LoadNativeImpact_Click(object sender, RoutedEventArgs e)
-    {
-        if (!ConfirmDiscardNativeImpactChanges("loading impact measurements")) return;
-        ReplaceNativeImpactRows(GetImportedNativeImpactRows());
-        SetNativeImpactDirty(false);
-        RefreshNativeImpactSummary();
-    }
-
-    private void SyncNativeImpactFromMaterials_Click(object sender, RoutedEventArgs e)
-    {
-        SyncNativeImpactRowsWithMaterialManager(markDirty: true);
-        RefreshNativeImpactSummary();
-    }
-
-    private void SyncNativeImpactFromImported_Click(object sender, RoutedEventArgs e)
-    {
-        if (!ConfirmDiscardNativeImpactChanges("syncing imported impact measurements")) return;
-        ReplaceNativeImpactRows(GetImportedNativeImpactRows());
-        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        SetNativeImpactDirty(true);
-        RefreshNativeImpactSummary();
     }
 
     private void RecalculateNativeImpact_Click(object sender, RoutedEventArgs e)
@@ -26330,12 +26268,6 @@ private List<string> GetVisibleAiMaterialLabels()
         _nativeImpactDirty = dirty;
         if (FindName("SaveNativeImpactButton") is Button saveButton) saveButton.IsEnabled = dirty;
         RefreshNativeImpactSummary();
-    }
-
-    private bool ConfirmDiscardNativeImpactChanges(string actionName)
-    {
-        if (!_nativeImpactDirty) return true;
-        return MessageBox.Show($"Native Impact Measurements has unsaved changes. Continue with {actionName} and discard those changes?", "Unsaved Impact Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
     }
 
     private void RefreshNativeImpactSummary()
@@ -26625,7 +26557,6 @@ private List<string> GetVisibleAiMaterialLabels()
         CommitNativeStiffnessGridEdits();
         ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        var state = new NativeStiffnessMeasurementsState { SavedAtUtc = DateTime.UtcNow.ToString("O"), Rows = _nativeStiffnessRows.ToList() };
         SaveNativeMeasurementsToSqlite();
         SetNativeStiffnessDirty(false);
         UpdateNativeWorkflowStatus("Stiffness saved ✓", saved: true);
@@ -26637,7 +26568,6 @@ private List<string> GetVisibleAiMaterialLabels()
         try
         {
             ShowNativeSavingStatus("Stiffness");
-            var state = new NativeStiffnessMeasurementsState { SavedAtUtc = DateTime.UtcNow.ToString("O"), Rows = _nativeStiffnessRows.ToList() };
             SaveNativeMeasurementsToSqlite();
             SetNativeStiffnessDirty(false);
             ShowNativeSavedStatus("Stiffness");
@@ -26646,29 +26576,6 @@ private List<string> GetVisibleAiMaterialLabels()
         {
             ShowNativeSaveBlockedStatus("Stiffness", ex.Message);
         }
-    }
-
-    private void LoadNativeStiffness_Click(object sender, RoutedEventArgs e)
-    {
-        if (!ConfirmDiscardNativeStiffnessChanges("loading stiffness measurements")) return;
-        ReplaceNativeStiffnessRows(GetImportedNativeStiffnessRows());
-        SetNativeStiffnessDirty(false);
-        RefreshNativeStiffnessSummary();
-    }
-
-    private void SyncNativeStiffnessFromMaterials_Click(object sender, RoutedEventArgs e)
-    {
-        SyncNativeStiffnessRowsWithMaterialManager(markDirty: true);
-        RefreshNativeStiffnessSummary();
-    }
-
-    private void SyncNativeStiffnessFromImported_Click(object sender, RoutedEventArgs e)
-    {
-        if (!ConfirmDiscardNativeStiffnessChanges("syncing imported stiffness measurements")) return;
-        ReplaceNativeStiffnessRows(GetImportedNativeStiffnessRows());
-        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        SetNativeStiffnessDirty(true);
-        RefreshNativeStiffnessSummary();
     }
 
     private void RecalculateNativeStiffness_Click(object sender, RoutedEventArgs e)
@@ -26707,12 +26614,6 @@ private List<string> GetVisibleAiMaterialLabels()
         _nativeStiffnessDirty = dirty;
         if (FindName("SaveNativeStiffnessButton") is Button saveButton) saveButton.IsEnabled = dirty;
         RefreshNativeStiffnessSummary();
-    }
-
-    private bool ConfirmDiscardNativeStiffnessChanges(string actionName)
-    {
-        if (!_nativeStiffnessDirty) return true;
-        return MessageBox.Show($"Native Stiffness Measurements has unsaved changes. Continue with {actionName} and discard those changes?", "Unsaved Stiffness Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes;
     }
 
     private void RefreshNativeStiffnessSummary()

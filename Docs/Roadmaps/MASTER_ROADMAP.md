@@ -829,6 +829,9 @@ Seventh bounded increment complete and runtime accepted as v44.5.6 — Retired
 Workbook Metadata Readers. Eighth bounded increment complete and runtime
 accepted as v44.5.7 — Legacy Workbook Schema Retirement.**
 
+Ninth bounded increment complete and runtime accepted as v44.5.8 — Retired
+Transition UI Residue.
+
 - The unreachable original-Excel database import handler and its
   caller-exclusive importer services are removed. Lower-level SQLite legacy
   tables/readers remain for existing-data compatibility.
@@ -866,6 +869,11 @@ accepted as v44.5.7 — Legacy Workbook Schema Retirement.**
   workbook/normalized measurement tables after a retained verified backup.
   Canonical Impact/Stiffness values and scores remain visible, and schema v30
   backups are restore-ready.
+- Runtime Full Data Verification passed 309/309 with zero failures. v44.5.8
+  removes caller-free load/import-sync handlers, their
+  caller-exclusive confirmation helpers and unused JSON save-state allocations.
+  Supported empty-canonical JSON migration readers and all governed recovery
+  paths remain intact.
 
 - Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state ownership.
 - Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete UI, dead handlers/services and stale documentation in small reviewed increments.

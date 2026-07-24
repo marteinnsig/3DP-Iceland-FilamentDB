@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "LEGACY-WORKBOOK-SCHEMA-RETIREMENT";
-    public const string ReleaseTitle = "Legacy Workbook Schema Retirement";
+    public const string ReleaseCode = "RETIRED-TRANSITION-UI-RESIDUE";
+    public const string ReleaseTitle = "Retired Transition UI Residue";
 
     public static string Version
     {
