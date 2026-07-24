@@ -2449,93 +2449,6 @@ public partial class MainWindow : Window
         ShowTransientStatus($"{grid.Name} column layout saved.");
     }
 
-    private void ResetCurrentWorkflowColumns_Click(object sender, RoutedEventArgs e)
-    {
-        var header = (WorkspaceTabs.SelectedItem as TabItem)?.Header?.ToString() ?? string.Empty;
-        if (header == "Materials" && FastMaterialsViewMenuItem.IsChecked)
-        {
-            if (_embeddedMaterialsPrototypeView is not null &&
-                !_embeddedMaterialsPrototypeView.ConfirmCanClose())
-            {
-                return;
-            }
-
-            if (!ConfirmWorkflowLayoutReset("Fast Materials")) return;
-            _workflowPreferencesService.ClearFastMaterialsGridLayout();
-            CloseEmbeddedFastMaterialsView();
-            ActivateFastMaterialsView();
-            ShowTransientStatus("Fast Materials columns reset to defaults.");
-            return;
-        }
-
-        var gridName = header switch
-        {
-            "Materials" => "NativeMaterialsGrid",
-            "Settings Manager" => "NativeSettingsGrid",
-            "Manufacturers" => "ManufacturersGrid",
-            _ => string.Empty
-        };
-        if (string.IsNullOrWhiteSpace(gridName) ||
-            FindName(gridName) is not DataGrid grid ||
-            !_defaultWorkflowGridLayouts.TryGetValue(gridName, out var defaultLayout))
-        {
-            MessageBox.Show(
-                this,
-                "The current workspace does not own a resettable workflow grid.",
-                "Reset Workflow Columns",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
-            return;
-        }
-
-        if (!ConfirmWorkflowLayoutReset(header)) return;
-        ResetWorkflowGridToDefaults(grid, defaultLayout, header);
-    }
-
-    private void ResetWorkflowGridColumns_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is not FrameworkElement { Tag: string gridName } ||
-            FindName(gridName) is not DataGrid grid ||
-            !_defaultWorkflowGridLayouts.TryGetValue(gridName, out var defaultLayout))
-        {
-            MessageBox.Show(
-                this,
-                "This workflow grid does not have a captured default layout.",
-                "Reset Workflow Columns",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
-            return;
-        }
-
-        var workspace = gridName switch
-        {
-            _ => gridName
-        };
-        if (!ConfirmWorkflowLayoutReset(workspace)) return;
-        ResetWorkflowGridToDefaults(grid, defaultLayout, workspace);
-    }
-
-    private void ResetWorkflowGridToDefaults(
-        DataGrid grid,
-        IReadOnlyList<WorkflowColumnLayout> defaultLayout,
-        string workspace)
-    {
-        _workflowLayoutSaveDebounceTimer.Stop();
-        _pendingWorkflowLayoutGrid = null;
-        _workflowPreferencesService.ResetGrid(grid, defaultLayout);
-        grid.UpdateLayout();
-        ShowTransientStatus($"{workspace} columns reset to defaults.");
-    }
-
-    private bool ConfirmWorkflowLayoutReset(string workspace) =>
-        MessageBox.Show(
-            this,
-            $"Reset column widths and order for {workspace} to application defaults? Other workspaces are not changed.",
-            "Reset Workflow Columns",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question,
-            MessageBoxResult.No) == MessageBoxResult.Yes;
-
     private static readonly string[] MeasurementDateDetailLabels =
     {
         "Tensile measured",
@@ -17211,8 +17124,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.ClearFastMaterialsGridLayout)) is not null &&
             typeof(MainWindow).GetMethod(nameof(WorkflowGrid_ColumnResizeCompleted), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
             typeof(MainWindow).GetMethod(nameof(WorkflowGrid_ColumnReordered), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod(nameof(ResetCurrentWorkflowColumns_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod(nameof(ResetWorkflowGridColumns_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+            typeof(MainWindow).GetMethod(
+                "ResetCurrentWorkflowColumns_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "ResetWorkflowGridColumns_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                nameof(ResetFastMaterialsColumns_Click),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         var fastTensileReady =
             typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.GetFastGridLayout)) is not null &&
             typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.SetFastGridLayout)) is not null &&

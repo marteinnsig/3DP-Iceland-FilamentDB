@@ -81,6 +81,22 @@ public partial class MainWindow
         }
     }
 
+    private void ResetFastMaterialsColumns_Click(object sender, RoutedEventArgs e)
+    {
+        var confirmation = MessageBox.Show(
+            this,
+            "Reset Materials column widths and order to the application defaults?",
+            "Reset Materials Columns",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question,
+            MessageBoxResult.No);
+        if (confirmation != MessageBoxResult.Yes) return;
+
+        _workflowPreferencesService.ClearFastMaterialsGridLayout();
+        _embeddedMaterialsPrototypeView?.ResetLayout(BuildFastMaterialsColumns());
+        ShowTransientStatus("Materials columns reset to defaults.");
+    }
+
     private void MainWindow_FastMaterialsViewClosing(object? sender, System.ComponentModel.CancelEventArgs e)
     {
         if (_embeddedMaterialsPrototypeView is not null &&

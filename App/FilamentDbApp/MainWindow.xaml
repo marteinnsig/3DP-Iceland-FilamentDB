@@ -184,7 +184,6 @@
                 <MenuItem Header="Materials Rendering Prototype..." Click="ShowMaterialsRenderingPrototype_Click" />
                 <MenuItem Name="FastMaterialsViewMenuItem" Header="Use Fast Materials View (Preview)" IsCheckable="True"
                           Click="ToggleFastMaterialsView_Click" Visibility="Collapsed" />
-                <MenuItem Header="Reset Current Workflow Columns to Default..." Click="ResetCurrentWorkflowColumns_Click" />
                 <MenuItem Header="Update Readiness..." Click="UpdateReadiness_Click" />
                 <MenuItem Header="Check for Updates..." Click="CheckForUpdates_Click" />
                 <MenuItem Header="Publish Application Release..." Click="PublishApplicationRelease_Click" />
@@ -298,6 +297,7 @@
                                 ToolTip="Return the selected archived material to active lists and exports."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE777;"/><TextBlock Text="Unarchive"/></StackPanel></Button>
                         <Button Click="DeleteNativeMaterial_Click" Style="{StaticResource IconActionButton}" Margin="0,0,16,8"
                                 ToolTip="Permanently delete the selected material and its measurement rows."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE74D;"/><TextBlock Text="Delete"/></StackPanel></Button>
+                        <Button Content="Reset Columns" Click="ResetFastMaterialsColumns_Click" Padding="10,4" Margin="0,0,16,8"/>
                         <TextBlock Name="NativeMaterialSummaryText" Text="Materials load from canonical SQLite storage." VerticalAlignment="Center" Foreground="#64748B" Margin="8,0,0,8"/>
                         <TextBlock Name="NativeMaterialCountText" Text="0 materials" VerticalAlignment="Center" Foreground="#2563EB" FontWeight="SemiBold" Margin="14,0,0,8"/>
                         <TextBlock Name="NativeMaterialSelectionText" Text="Selected MaterialID: none" VerticalAlignment="Center" Foreground="#1E3A8A" FontWeight="SemiBold" Margin="14,0,0,8"/>

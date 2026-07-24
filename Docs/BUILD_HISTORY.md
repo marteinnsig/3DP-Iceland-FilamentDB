@@ -64,6 +64,12 @@ Stiffness remains on the accepted explicit canonical contract; runtime
 testing passed across editing, validation, calculations, navigation, filters,
 layout and restart persistence. Full Data Verification passed 326/326;
 Stage 5B-Stiffness and measurement-grid retirement are accepted.
+Stage 5C removes the retired global Tools workflow-column reset command and its
+uncalled generic handler family. Materials gains a local Fast reset action;
+accepted per-workspace reset behavior and saved layouts remain unchanged.
+Owner runtime testing accepted menu removal, local reset behavior, saved
+layouts and restart persistence. Full Data Verification passed 326/326;
+Stage 5C is accepted.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

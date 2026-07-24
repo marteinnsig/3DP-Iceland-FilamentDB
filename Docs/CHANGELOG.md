@@ -84,6 +84,14 @@
   Full Data Verification passed 326/326.
 - Completed retirement of all three legacy measurement DataGrids and their
   obsolete deferred visual-tree warm-up.
+- Removed the retired global Tools workflow-column reset command and its
+  uncalled generic reset handler family.
+- Added a local Materials `Reset Columns` action to retain the accepted reset
+  capability at its owning Fast workspace.
+- Retained each accepted Fast workspace's local Reset Columns action,
+  confirmation and saved-layout ownership.
+- Owner runtime testing accepted global-menu retirement, local resets and
+  restart persistence; Full Data Verification passed 326/326.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 

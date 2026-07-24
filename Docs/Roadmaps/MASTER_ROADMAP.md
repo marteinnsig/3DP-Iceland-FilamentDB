@@ -1641,6 +1641,7 @@ changes priority.
   - Stage 5B-Impact deletion is runtime accepted with Full Data Verification 325/325.
   - Stage 5B-Stiffness deletion is runtime accepted with Full Data Verification 326/326.
   - All three legacy measurement grids and the obsolete deferred DataGrid warm-up are retired.
+  - Stage 5C global reset retirement and local Materials reset ownership are accepted with Verification 326/326.
   - Replace those adapters with explicit Fast contracts before deleting legacy XAML, handlers and commit paths.
   - Preserve canonical SQLite, formulas, filters, validation, settings CRUD and layout behavior at every stage.
   - Require runtime acceptance after each removal stage.

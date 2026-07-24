@@ -33,13 +33,27 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 15 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 29 |
+| Solved | 30 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **52** |
+| **Total tracked findings** | **53** |
 
 ## Tracked findings
+
+Date: 2026-07-24
+Area: Tools menu / workflow column reset
+Type: Workflow friction / UI polish
+Severity: Minor
+Status: Solved
+Resolution: Removed the retired `Reset Current Workflow Columns to Default...` command and its uncalled handler family.
+Materials receives a local `Reset Columns` action; existing Fast reset buttons, saved layouts and default-No confirmation remain.
+Verification evidence: Owner runtime testing accepted Tools-menu removal, local Fast resets, saved layouts and restart behavior.
+Full Data Verification passed 326/326.
+What happened: The Tools menu still exposes a legacy workflow-column reset command after the measurement legacy grids were retired.
+Expected behavior: Column reset should be owned only by each accepted Fast workflow through its local `Reset Columns` action.
+Steps to reproduce: Open the Tools menu and observe `Reset Current Workflow Columns to Default...`.
+Screenshot / export / report attached: `codex-clipboard-e19b2469-4bcd-4ab8-b6b3-a4c7c3762791.png`.
 
 Date: 2026-07-24
 Area: Settings Manager command clarity and column reset naming

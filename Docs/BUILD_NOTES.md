@@ -159,6 +159,17 @@ and Impact remained normal and Full Data Verification passed 326/326.
 Stage 5B-Stiffness is accepted; all three legacy measurement DataGrids and
 their obsolete warm-up lifecycle are retired.
 
+Stage 5C removes the retired Tools-menu `Reset Current Workflow Columns to
+Default...` command and its now-uncalled generic reset handler family.
+Materials receives a local Fast `Reset Columns` action so the accepted reset
+capability remains available at its owning workspace. Existing Fast reset
+buttons, saved Fast layouts and local default-No confirmation behavior remain
+unchanged. Runtime menu, reset and restart acceptance is pending.
+
+Owner runtime testing accepted Tools-menu removal, Materials and measurement
+reset actions, default-No cancellation, saved-layout persistence and restart
+behavior. Full Data Verification passed 326/326. Stage 5C is accepted.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on
