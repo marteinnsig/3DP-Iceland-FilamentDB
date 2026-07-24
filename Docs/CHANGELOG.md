@@ -1,4 +1,13 @@
-## v44.5.2 - Canonical SQLite UI Boundaries (candidate)
+## v44.5.3 - Canonical Storage Terminology (candidate)
+
+- Replaced remaining user-visible `JSON transition`, mixed-storage and general
+  Excel-import wording with canonical SQLite terminology.
+- Preserved all four supported JSON empty-database migration readers.
+- Preserved governed Excel disaster recovery and explicit SQLite restore.
+- Added a Verification gate for terminology and compatibility-path retention.
+- Awaiting runtime Full Data Verification and UI acceptance.
+
+## v44.5.2 - Canonical SQLite UI Boundaries
 
 - Removed misleading Reload Local Cache and Clear Local Cache menu actions.
 - Retired the owner-approved `MaterialsImport` table after the required verified
@@ -9,7 +18,8 @@
   code-owned source.
 - Removed a dead unbound Excel-material reset handler/helper and added a
   Verification ownership/table-retirement gate.
-- Awaiting runtime Full Data Verification and UI acceptance.
+- Runtime Full Data Verification passed 303/303 with zero failures; distinct
+  Verification and System Diagnostics export filenames were runtime accepted.
 
 ## v44.5.1 - Active SQLite Compatibility Safety
 

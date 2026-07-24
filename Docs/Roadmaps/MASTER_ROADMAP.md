@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.5.1 — Active SQLite Compatibility Safety**
+Current canonical release: **v44.5.2 — Canonical SQLite UI Boundaries**
 
-Last runtime-accepted baseline: **v44.5.1 — Active SQLite Compatibility Safety**
+Last runtime-accepted baseline: **v44.5.2 — Canonical SQLite UI Boundaries**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -820,8 +820,9 @@ direct install, explicit SQLite restore and portable runtime.**
 Status: **First bounded increment complete and runtime accepted as v44.5.0 —
 Retired Excel Import Surface. Second bounded increment complete and runtime
 accepted as v44.5.1 — Active SQLite Compatibility Safety. Third bounded
-increment implemented for runtime acceptance as v44.5.2 — Canonical SQLite UI
-Boundaries.**
+increment complete and runtime accepted as v44.5.2 — Canonical SQLite UI
+Boundaries. Fourth bounded increment implemented for runtime acceptance as
+v44.5.3 — Canonical Storage Terminology.**
 
 - The unreachable original-Excel database import handler and its
   caller-exclusive importer services are removed. Lower-level SQLite legacy
@@ -840,6 +841,10 @@ Boundaries.**
   sync/automatic fallback are retired after a required verified SQLite backup.
   Backups, other legacy tables, JSON migration snapshots and governed recovery
   remain intact.
+- Runtime Full Data Verification passed 303/303 with zero failures. v44.5.3
+  corrects remaining user-visible `JSON transition`/general Excel-import
+  terminology while retaining the supported JSON empty-database migration,
+  governed Excel disaster recovery and explicit SQLite restore paths.
 
 - Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state ownership.
 - Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete UI, dead handlers/services and stale documentation in small reviewed increments.

@@ -16767,6 +16767,18 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             canonicalSqliteTerminologyReady && activeDatabaseCompatibilityVerification.Passed && retiredOriginalExcelImportSurfaceReady && releaseIdentityReady
                 ? "Misleading cache UI, legacy-material sync/fallback and dead Excel-default reset are absent; MaterialsImport is retired after verified backup while canonical SQLite, storage-folder UI and lower-level compatibility storage remain available"
                 : "Canonical SQLite UI terminology, MaterialsImport retirement, active-database preservation or release identity failed"));
+        var canonicalStorageTerminologyReady =
+            CanonicalStorageStatusText.Contains("SQLite canonical", StringComparison.Ordinal) &&
+            CanonicalStorageStatusText.Contains("legacy JSON migration snapshot retained", StringComparison.Ordinal) &&
+            typeof(MainWindow).GetMethod("LoadNativeMaterialsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeTensileRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeImpactRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeStiffnessRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v44.5.3 Canonical storage terminology release gate",
+            canonicalStorageTerminologyReady && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady,
+            canonicalStorageTerminologyReady && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
+                ? "Visible storage terminology identifies SQLite as canonical while supported JSON empty-database migration, governed Excel disaster recovery and explicit SQLite restore remain available"
+                : "Canonical storage terminology or a required migration/recovery boundary failed"));
         var compatibilityCatalog = _database.GetLocalBackupCatalog();
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
@@ -17843,11 +17855,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             "3DPIceland Engineering Platform\n" +
             "Version " + BuildInfo.ShortLabel + " - " + BuildInfo.ReleaseTitle + "\n\n" +
             "A native Windows desktop application for managing 3DPIceland Labs filament data, mechanical measurements, settings, website exports, and creator workflow tools.\n\n" +
-            "Current migration status:\n" +
+            "Current storage status:\n" +
             "• Materials, Tensile, Impact, and Stiffness are native input modules.\n" +
-            "• Materials are the source of truth and sync by MaterialID.\n" +
-            "• Excel remains available for import/export backup during the transition.\n" +
-            "• SQLite/JSON storage is used locally while the native calculation and website export engines continue to mature.\n\n" +
+            "• Canonical application data is stored in SQLite and joined by MaterialID.\n" +
+            "• Governed Excel disaster-recovery export and explicit restore remain available.\n" +
+            "• Legacy JSON snapshots are retained only for supported empty-database migration compatibility.\n\n" +
             "License: GNU General Public License v3.0 only (GPL-3.0-only).\n" +
             "This program comes with ABSOLUTELY NO WARRANTY.\n" +
             "See LICENSE and THIRD-PARTY-NOTICES.md in the application folder.\n\n" +
@@ -21775,9 +21787,11 @@ private List<string> GetVisibleAiMaterialLabels()
     private sealed class NativeMaterialsState
     {
         public string SavedAtUtc { get; set; } = "";
-        public string StorageMode { get; set; } = "JSON + SQLite transition";
+        public string StorageMode { get; set; } = CanonicalStorageStatusText;
         public List<NativeMaterialRow> Materials { get; set; } = new();
     }
+
+    private const string CanonicalStorageStatusText = "SQLite canonical; legacy JSON migration snapshot retained";
 
     private readonly ObservableCollection<NativeMaterialRow> _nativeMaterialRows = new();
     private bool _nativeMaterialDirty;
@@ -25464,7 +25478,7 @@ private List<string> GetVisibleAiMaterialLabels()
     private sealed class NativeTensileMeasurementsState
     {
         public string SavedAtUtc { get; set; } = "";
-        public string StorageMode { get; set; } = "JSON transition / Excel parity calculations";
+        public string StorageMode { get; set; } = CanonicalStorageStatusText;
         public List<NativeTensileMeasurementRow> Rows { get; set; } = new();
     }
 
@@ -25780,7 +25794,7 @@ private List<string> GetVisibleAiMaterialLabels()
         if (FindName("NativeTensileSummaryText") is not TextBlock text) return;
         var tested = _nativeTensileRows.Count(r => ToNumbers(r.SampleValues(true)).Any() || ToNumbers(r.SampleValues(false)).Any());
         var invalid = _nativeTensileRows.Count(r => r.ValidationSummary != "OK");
-        text.Text = $"Rows: {_nativeTensileRows.Count} | With samples: {tested} | Invalid: {invalid} | Storage: JSON transition | {(_nativeTensileDirty ? "Unsaved changes" : "Saved")}";
+        text.Text = $"Rows: {_nativeTensileRows.Count} | With samples: {tested} | Invalid: {invalid} | Storage: {CanonicalStorageStatusText} | {(_nativeTensileDirty ? "Unsaved changes" : "Saved")}";
     }
 
     private void ApplyNativeTensileComputedFields(IEnumerable<NativeTensileMeasurementRow> rows)
@@ -25995,7 +26009,7 @@ private List<string> GetVisibleAiMaterialLabels()
     private sealed class NativeImpactMeasurementsState
     {
         public string SavedAtUtc { get; set; } = "";
-        public string StorageMode { get; set; } = "JSON transition / Excel parity calculations";
+        public string StorageMode { get; set; } = CanonicalStorageStatusText;
         public List<NativeImpactMeasurementRow> Rows { get; set; } = new();
     }
 
@@ -26255,7 +26269,7 @@ private List<string> GetVisibleAiMaterialLabels()
         if (FindName("NativeImpactSummaryText") is not TextBlock text) return;
         var tested = _nativeImpactRows.Count(NativeImpactRowHasMeasurementData);
         var invalid = _nativeImpactRows.Count(r => r.ValidationSummary != "OK");
-        text.Text = $"Rows: {_nativeImpactRows.Count} | With samples: {tested} | Invalid: {invalid} | Storage: JSON transition | {(_nativeImpactDirty ? "Unsaved changes" : "Saved")}";
+        text.Text = $"Rows: {_nativeImpactRows.Count} | With samples: {tested} | Invalid: {invalid} | Storage: {CanonicalStorageStatusText} | {(_nativeImpactDirty ? "Unsaved changes" : "Saved")}";
     }
 
     private static bool NativeImpactRowHasMeasurementData(NativeImpactMeasurementRow row)
@@ -26375,7 +26389,7 @@ private List<string> GetVisibleAiMaterialLabels()
     private sealed class NativeStiffnessMeasurementsState
     {
         public string SavedAtUtc { get; set; } = "";
-        public string StorageMode { get; set; } = "JSON transition / Excel parity calculations";
+        public string StorageMode { get; set; } = CanonicalStorageStatusText;
         public List<NativeStiffnessMeasurementRow> Rows { get; set; } = new();
     }
 
@@ -26632,7 +26646,7 @@ private List<string> GetVisibleAiMaterialLabels()
         if (FindName("NativeStiffnessSummaryText") is not TextBlock text) return;
         var tested = _nativeStiffnessRows.Count(NativeStiffnessRowHasMeasurementData);
         var invalid = _nativeStiffnessRows.Count(r => r.ValidationSummary != "OK");
-        text.Text = $"Rows: {_nativeStiffnessRows.Count} | With stiffness input: {tested} | Invalid: {invalid} | Storage: JSON transition | {(_nativeStiffnessDirty ? "Unsaved changes" : "Saved")}";
+        text.Text = $"Rows: {_nativeStiffnessRows.Count} | With stiffness input: {tested} | Invalid: {invalid} | Storage: {CanonicalStorageStatusText} | {(_nativeStiffnessDirty ? "Unsaved changes" : "Saved")}";
     }
 
     private static bool NativeStiffnessRowHasMeasurementData(NativeStiffnessMeasurementRow row)
