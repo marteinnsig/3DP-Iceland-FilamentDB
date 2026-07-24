@@ -3,6 +3,17 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.6.2 - Canonical Measurement Date Foundation
+
+Introduces a canonical date for when a native test set or Experimental run was
+measured, without inventing dates for historic records. First real input can
+assign today, manual corrections remain possible, and later edits preserve the
+original date. Compact native grids, manual editing after column reordering,
+restart persistence and Full Data Verification 312/312 passed; v44.6.2 is
+accepted.
+
+---
+
 # v44.6.1 - Canonical Release Documentation Audit
 
 Established bounded release-document ownership, reconciled the accepted

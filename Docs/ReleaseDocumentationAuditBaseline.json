@@ -122,6 +122,16 @@
         "Docs/RELEASES.md",
         "Docs/MILESTONES.md"
       ]
+    },
+    {
+      "version": "44.6.2",
+      "title": "Canonical Measurement Date Foundation",
+      "requiredDocuments": [
+        "Docs/CHANGELOG.md",
+        "Docs/BUILD_HISTORY.md",
+        "Docs/RELEASES.md",
+        "Docs/MILESTONES.md"
+      ]
     }
   ],
   "knownHistoricalCrossDocumentTitles": [

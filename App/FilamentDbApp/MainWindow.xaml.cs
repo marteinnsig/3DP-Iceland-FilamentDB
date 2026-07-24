@@ -865,12 +865,19 @@ public partial class MainWindow : Window
             presenter = FindVisualChild<DataGridCellsPresenter>(row);
         }
 
-        var cell = presenter?.ItemContainerGenerator.ContainerFromIndex(column.DisplayIndex) as DataGridCell;
+        // DataGridCellsPresenter generates containers in the grid's logical Columns
+        // collection order. DisplayIndex is only the visual position and changes when
+        // the user drags a column. Using it here can activate a different (often
+        // read-only) cell after reordering even though the requested cell is highlighted.
+        var columnIndex = grid.Columns.IndexOf(column);
+        if (columnIndex < 0) return null;
+
+        var cell = presenter?.ItemContainerGenerator.ContainerFromIndex(columnIndex) as DataGridCell;
         if (cell is null)
         {
             grid.ScrollIntoView(item, column);
             grid.UpdateLayout();
-            cell = presenter?.ItemContainerGenerator.ContainerFromIndex(column.DisplayIndex) as DataGridCell;
+            cell = presenter?.ItemContainerGenerator.ContainerFromIndex(columnIndex) as DataGridCell;
         }
 
         return cell;
@@ -2366,8 +2373,23 @@ public partial class MainWindow : Window
     private void RenderGroupedDetails(DataRow row)
     {
         GroupedDetailsPanel.Children.Clear();
+        var materialId = GetCell(row, "Material ID", "MaterialID").Trim();
+        var groups = _detailService.BuildGroupedFields(row).ToList();
+        var measurementDateFields = BuildMeasurementDateDetailFields(materialId);
+        var testInformationIndex = groups.FindIndex(group => string.Equals(group.Name, "Test Information", StringComparison.Ordinal));
+        if (testInformationIndex >= 0)
+        {
+            var testInformation = groups[testInformationIndex];
+            groups[testInformationIndex] = new MaterialDetailGroup(
+                testInformation.Name,
+                testInformation.Fields.Concat(measurementDateFields).ToList());
+        }
+        else
+        {
+            groups.Add(new MaterialDetailGroup("Test Information", measurementDateFields));
+        }
 
-        foreach (var group in _detailService.BuildGroupedFields(row))
+        foreach (var group in groups)
         {
             var groupBorder = new Border
             {
@@ -2472,6 +2494,30 @@ public partial class MainWindow : Window
                 Foreground = System.Windows.Media.Brushes.DimGray
             });
         }
+    }
+
+    private static readonly string[] MeasurementDateDetailLabels =
+    {
+        "Tensile measured",
+        "Impact measured",
+        "Stiffness measured"
+    };
+
+    private IReadOnlyList<MaterialDetailField> BuildMeasurementDateDetailFields(string materialId)
+    {
+        string Display(string testType)
+        {
+            if (string.IsNullOrWhiteSpace(materialId)) return "Not recorded";
+            var date = ParseIsoMeasuredDate(_database.GetNativeMeasurementDate(materialId, testType));
+            return date.HasValue ? FormatDisplayedMeasuredDate(date) : "Not recorded";
+        }
+
+        return new[]
+        {
+            new MaterialDetailField(MeasurementDateDetailLabels[0], Display("Tensile")),
+            new MaterialDetailField(MeasurementDateDetailLabels[1], Display("Impact")),
+            new MaterialDetailField(MeasurementDateDetailLabels[2], Display("Stiffness"))
+        };
     }
 
     private static void PopulateFilterBox(ComboBox comboBox, DataTable table, string[] possibleColumnNames)
@@ -14164,7 +14210,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Recovery Center catalog: " + recoveryCatalog.Count + " SQLite backup(s)");
         foreach (var group in recoveryCatalog.GroupBy(item => item.CompatibilityStatus).OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase))
             sb.AppendLine("- " + group.Key + ": " + group.Count());
-        sb.AppendLine("Compatibility policy: schema 27-29 require isolated migration dry-run; schema 30 ready; older/newer/corrupt blocked");
+        sb.AppendLine("Compatibility policy: schema 27-30 require isolated migration dry-run; schema 31 ready; older/newer/corrupt blocked");
         sb.AppendLine();
 
         sb.AppendLine("Website Export Routing");
@@ -14690,14 +14736,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             header.StartsWith("Cooling ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Drying ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Profile ", StringComparison.OrdinalIgnoreCase));
-        var printingSettingsReady = _database.CurrentSchemaVersion == 30 &&
+        var printingSettingsReady = _database.CurrentSchemaVersion == 31 &&
                                     persistedBaseMaterials.Count == _nativeBaseMaterialRows.Count &&
                                     persistedBaseMaterials.Select(x => x.BaseMaterial).OrderBy(x => x).SequenceEqual(
                                         _nativeBaseMaterialRows.Select(x => x.BaseMaterial).OrderBy(x => x), StringComparer.OrdinalIgnoreCase) &&
                                     perMaterialPrintingColumnsAbsent;
         checks.Add(new VerificationCheck("Base material printing settings foundation", printingSettingsReady,
             printingSettingsReady
-                ? $"Schema v30; {_nativeBaseMaterialRows.Count} SQLite-canonical base-material baselines; per-MaterialID printing columns absent"
+                ? $"Schema v31; {_nativeBaseMaterialRows.Count} SQLite-canonical base-material baselines; per-MaterialID printing columns absent"
                 : "SQLite Base Material Catalog parity, schema version or Materials-column boundary failed"));
         var printingPublicNames = new[] { "NozzleTemperature", "BedTemperature", "PrintSpeed", "Cooling", "Drying", "EnclosureRequirement", "PrinterProfileReference", "Slicer", "PrintingSettings", "PrintingProfile" };
         var printingSettingsRemainInternal = printingPublicNames.All(name =>
@@ -16237,7 +16283,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                                            !string.IsNullOrWhiteSpace(deploymentSettings.FtpsUserName) &&
                                            deploymentSettings.FtpsPort is >= 1 and <= 65535;
         checks.Add(new VerificationCheck("SQLite-governed explicit FTPS publishing contract",
-            _database.CurrentSchemaVersion == 30 &&
+            _database.CurrentSchemaVersion == 31 &&
             (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
             FtpsWebsitePublisherService.MainRemotePath == "/index.html" &&
             FtpsWebsitePublisherService.ManufacturerRemotePath == "/manufacturers/index.html" &&
@@ -16696,7 +16742,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             printingSettingsReady && printingSettingsRemainInternal && incrementalFtpsPublishingReady && releaseIdentityReady
                 ? "Canonical baseline profile identity, cooling/drying units, slicer identity, provenance, source and checked-date contracts passed; public allowlists unchanged"
                 : "Printing-profile governance, provenance, internal-only boundary, prior publishing gate or release identity did not pass"));
-        var deploymentSettingsReady = _database.CurrentSchemaVersion == 30 &&
+        var deploymentSettingsReady = _database.CurrentSchemaVersion == 31 &&
                                       (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
                                       typeof(WindowsCredentialService).GetMethod("ReadPassword", new[] { typeof(string), typeof(string) }) is not null;
         checks.Add(new VerificationCheck("v42.15 Deployment Settings Governance release gate", deploymentSettingsReady && incrementalFtpsPublishingReady && releaseIdentityReady,
@@ -16716,7 +16762,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 : "Native measurement marker, SQLite/UI count parity or release identity failed"));
         var canonicalGeneralSettings = _database.LoadNativeSettingsRows();
         var expectedGeneralSettings = _nativeSettingsRows.Count(row => !string.Equals(row.Section, "Deployment", StringComparison.OrdinalIgnoreCase));
-        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == 30 &&
+        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == 31 &&
                                           _database.LoadNativeMaterialManagerRows().Count == _nativeMaterialRows.Count &&
                                           canonicalGeneralSettings.Count == expectedGeneralSettings &&
                                           canonicalGeneralSettings.Select(row => (row.Section, row.Parameter, row.Unit, row.UsedBy)).Distinct().Count() == canonicalGeneralSettings.Count;
@@ -16725,7 +16771,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? $"SQLite owns {_nativeMaterialRows.Count} Materials rows and {canonicalGeneralSettings.Count} general Settings rows; legacy JSON is snapshot-only"
                 : "Materials/Settings SQLite parity, settings key uniqueness, schema or release identity failed"));
         var latestLocalBackup = _database.GetLocalBackupCatalog()
-            .FirstOrDefault(item => item.CanRestore && item.IsIntegrityValid && item.SchemaVersion is > 0 and <= 30 && item.Materials > 0);
+            .FirstOrDefault(item => item.CanRestore && item.IsIntegrityValid && item.SchemaVersion is > 0 and <= 31 && item.Materials > 0);
         var latestLocalBackupValid = false;
         var latestLocalBackupDetail = "No restore-ready SQLite backup with canonical Materials is available";
         if (latestLocalBackup is not null)
@@ -16733,7 +16779,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             try
             {
                 var inspection = _database.InspectDatabaseBackup(latestLocalBackup.FilePath);
-                latestLocalBackupValid = inspection.IsIntegrityValid && inspection.SchemaVersion is > 0 and <= 30 && inspection.Materials > 0;
+                latestLocalBackupValid = inspection.IsIntegrityValid && inspection.SchemaVersion is > 0 and <= 31 && inspection.Materials > 0;
                 latestLocalBackupDetail = $"{IOPath.GetFileName(latestLocalBackup.FilePath)}: integrity {inspection.IntegrityResult}, schema v{inspection.SchemaVersion}, materials {inspection.Materials:N0}";
             }
             catch (Exception ex) { latestLocalBackupDetail = IOPath.GetFileName(latestLocalBackup.FilePath) + ": " + ex.Message; }
@@ -16750,7 +16796,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var excelRecoverySnapshot = _database.CreateExcelRecoverySnapshot();
         var excelRecoveryRows = excelRecoverySnapshot.Tables.Sum(table => table.Rows.Count);
         var excelRecoveryReady = excelRecoverySnapshot.FormatVersion == ExcelRecoverySnapshot.CurrentFormatVersion &&
-                                 excelRecoverySnapshot.SourceSchemaVersion == 30 &&
+                                 excelRecoverySnapshot.SourceSchemaVersion == 31 &&
                                  excelRecoverySnapshot.Tables.Count == 21 &&
                                  excelRecoverySnapshot.Tables.All(table => !string.IsNullOrWhiteSpace(table.TableName) && table.Columns.Count > 0 && table.Rows.All(row => row.Count == table.Columns.Count) && ExcelDisasterRecoveryService.ComputeTableHash(table).Length == 64) &&
                                  excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMaterialManagerRows").Rows.Count == _nativeMaterialRows.Count &&
@@ -16833,14 +16879,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Original-workbook sheet metadata is absent from Material Detail, Tools and diagnostics while supported-schema inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
                 : "A workbook metadata reader/UI surface remains or a required compatibility/recovery boundary failed"));
         var legacyWorkbookSchemaRetiredReady =
-            _database.CurrentSchemaVersion == 30 &&
+            _database.CurrentSchemaVersion == 31 &&
             _database.LegacyWorkbookTablesAreRetired() &&
             typeof(LocalDatabase).GetMethod("GetTestSummaryMetrics") is null &&
             typeof(MainWindow).GetMethod("GetCanonicalTestSummaryMetrics", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("v44.5.7 Legacy workbook schema retirement release gate",
             legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady,
             legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
-                ? "Schema v30 contains no original-workbook tables; engineering metrics use canonical measurement rows while pre-v30 migration inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
+                ? "Schema v31 contains no original-workbook tables; engineering metrics use canonical measurement rows while supported migration inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
                 : "Legacy workbook tables/readers remain or canonical metrics, migration compatibility or recovery boundaries failed"));
         var retiredTransitionUiResidueReady =
             typeof(MainWindow).GetMethod("LoadNativeMaterials_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
@@ -16899,14 +16945,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
                                          compatibilityCatalog.Where(item => item.SchemaVersion is > 0 and < 27).All(item => item.CompatibilityStatus == "Legacy / incomplete" && !item.CanRestore) &&
-                                         compatibilityCatalog.Where(item => item.SchemaVersion is >= 27 and <= 29).All(item => item.CompatibilityStatus == "Migration required" && !item.CanRestore) &&
-                                         compatibilityCatalog.Where(item => item.SchemaVersion > 30).All(item => item.CompatibilityStatus == "Newer / incompatible" && !item.CanRestore) &&
+                                         compatibilityCatalog.Where(item => item.SchemaVersion is >= 27 and <= 30).All(item => item.CompatibilityStatus == "Migration required" && !item.CanRestore) &&
+                                         compatibilityCatalog.Where(item => item.SchemaVersion > 31).All(item => item.CompatibilityStatus == "Newer / incompatible" && !item.CanRestore) &&
                                          typeof(LocalDatabase).GetMethod("GetLocalBackupCatalog") is not null &&
                                          typeof(LocalDatabase).GetMethod("VerifyBackupCompatibility") is not null &&
                                          typeof(MainWindow).GetMethod("ShowRecoveryCenter_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("v43.3 Recovery Compatibility Center release gate", recoveryCompatibilityReady && localRestoreContractReady && excelRecoveryReady && releaseIdentityReady,
             recoveryCompatibilityReady && localRestoreContractReady && excelRecoveryReady && releaseIdentityReady
-                ? $"{compatibilityCatalog.Count} local SQLite backups classified; schema 27-29 require isolated dry-run, schema 30 ready, legacy/newer/corrupt blocked; verify-only and guarded restore UI available"
+                ? $"{compatibilityCatalog.Count} local SQLite backups classified; schema 27-30 require isolated dry-run, schema 31 ready, legacy/newer/corrupt blocked; verify-only and guarded restore UI available"
                 : "Recovery catalog, compatibility classification, migration dry-run contract, guarded restore UI or release identity failed"));
         var backupRecoveryUiReady = BackupAndRecoveryCenterActions.SequenceEqual(new[]
         {
@@ -17017,7 +17063,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var recoveryClarityGlossary = BuildRecoveryCompatibilityGlossary();
         var emptyProfileCompatibilityReady =
             compatibilityCatalog
-                .Where(item => item.IsIntegrityValid && item.SchemaVersion == 30 && item.Materials == 0)
+                .Where(item => item.IsIntegrityValid && item.SchemaVersion == 31 && item.Materials == 0)
                 .All(item => item.CompatibilityStatus == "Ready — empty profile" && item.CanRestore) &&
             recoveryClarityGlossary.Contains("Ready — empty profile", StringComparison.Ordinal) &&
             recoveryClarityGlossary.Contains("not full-data release evidence", StringComparison.Ordinal) &&
@@ -17045,6 +17091,41 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             recoveryCenterClarityReady && recoveryCompatibilityReady && updateEvidenceClarityReady && guardedRestoreContractSurfaceReady && releaseIdentityReady
                 ? "Recovery Center shows one concise compatibility summary and selected-backup details; verbose update evidence remains available through diagnostics without weakening guarded restore"
                 : "Recovery Center summary, selected-backup compatibility, update evidence diagnostics or guarded restore boundary failed"));
+        var nativeMetadataTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMeasurementNotes");
+        var experimentalRunsTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "ExperimentalRuns");
+        var measurementDateEditProbe = new NativeStiffnessMeasurementRow();
+        measurementDateEditProbe.MeasuredDateText = "01.";
+        var partialDateRetained = measurementDateEditProbe.MeasuredDateText == "01." && measurementDateEditProbe.MeasuredDate is null;
+        measurementDateEditProbe.MeasuredDateText = "01.01.2024";
+        var completedDateParsed = measurementDateEditProbe.MeasuredDate == new DateTime(2024, 1, 1) &&
+                                  measurementDateEditProbe.MeasuredDateText == "01.01.2024";
+        measurementDateEditProbe.MeasuredDateText = "";
+        var clearedDateAccepted = measurementDateEditProbe.MeasuredDate is null && measurementDateEditProbe.MeasuredDateText == "";
+        var measurementDateReady =
+            _database.CurrentSchemaVersion == 31 &&
+            nativeMetadataTable.Columns.Contains("MeasuredDate", StringComparer.OrdinalIgnoreCase) &&
+            experimentalRunsTable.Columns.Contains("MeasuredDate", StringComparer.OrdinalIgnoreCase) &&
+            typeof(ExperimentalRunRecord).GetProperty(nameof(ExperimentalRunRecord.MeasuredDate)) is not null &&
+            typeof(NativeTensilePersistenceRecord).GetProperty(nameof(NativeTensilePersistenceRecord.MeasuredDate)) is not null &&
+            typeof(NativeImpactPersistenceRecord).GetProperty(nameof(NativeImpactPersistenceRecord.MeasuredDate)) is not null &&
+            typeof(NativeStiffnessPersistenceRecord).GetProperty(nameof(NativeStiffnessPersistenceRecord.MeasuredDate)) is not null &&
+            MeasurementDateDetailLabels.SequenceEqual(new[] { "Tensile measured", "Impact measured", "Stiffness measured" }, StringComparer.Ordinal) &&
+            typeof(MainWindow).GetMethod(nameof(BuildMeasurementDateDetailFields), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            ToIsoMeasuredDate(new DateTime(2026, 7, 24)) == "2026-07-24" &&
+            ParseIsoMeasuredDate("2026-07-24") == new DateTime(2026, 7, 24) &&
+            ParseIsoMeasuredDate("24.7.2026") is null &&
+            FormatDisplayedMeasuredDate(new DateTime(2026, 7, 24)) == "24.07.2026" &&
+            TryParseDisplayedMeasuredDate("1.1.2024", out var displayedDate) && displayedDate == new DateTime(2024, 1, 1) &&
+            !TryParseDisplayedMeasuredDate("1/1/0202", out _) &&
+            partialDateRetained && completedDateParsed && clearedDateAccepted &&
+            ShouldAssignMeasuredDate(null, new[] { "1" }) &&
+            !ShouldAssignMeasuredDate(null, Array.Empty<string>()) &&
+            !ShouldAssignMeasuredDate(new DateTime(2026, 7, 23), new[] { "1" });
+        checks.Add(new VerificationCheck("v44.6.2 Canonical measurement date foundation release gate",
+            measurementDateReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && releaseIdentityReady,
+            measurementDateReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && releaseIdentityReady
+                ? "Schema v31 stores nullable ISO measurement dates for native Tensile, Impact and Stiffness metadata plus Experimental runs; first-input assignment preserves existing dates and Excel disaster recovery includes both columns"
+                : "Measurement-date schema, ISO conversion, first-input preservation, migration compatibility, Excel recovery or release identity failed"));
 
         return checks;
     }
@@ -24542,7 +24623,21 @@ private List<string> GetVisibleAiMaterialLabels()
         Dispatcher.BeginInvoke(new Action(() =>
         {
             RecalculateExperimentalMeasurements(runId);
-            SaveExperimentalMeasurements();
+            var run = _experimentalRunRows.FirstOrDefault(item =>
+                string.Equals(item.ExperimentalRunId, runId, StringComparison.OrdinalIgnoreCase));
+            var hasMeasurementInput = _experimentalMeasurementRows
+                .Where(item => string.Equals(item.ExperimentalRunId, runId, StringComparison.OrdinalIgnoreCase))
+                .SelectMany(item => item.SampleValues())
+                .Any(value => !string.IsNullOrWhiteSpace(value));
+            if (run is not null && ShouldAssignMeasuredDate(run.MeasuredDate, hasMeasurementInput ? new[] { "measured" } : Array.Empty<string>()))
+            {
+                run.MeasuredDate = DateTime.Today;
+                SaveExperimentalRuns();
+            }
+            else
+            {
+                SaveExperimentalMeasurements();
+            }
             RefreshExperimentalSeriesResults();
             RefreshExperimentalStatus();
         }), DispatcherPriority.ContextIdle);
@@ -25578,6 +25673,23 @@ private List<string> GetVisibleAiMaterialLabels()
         public string ConfidenceUpright { get; set; } = "";
         public string ConfidenceFlat { get; set; } = "";
         public string TestNotes { get; set; } = "";
+        private DateTime? _measuredDate;
+        private string _measuredDateText = "";
+        public DateTime? MeasuredDate { get => _measuredDate; set { var date = value?.Date; if (_measuredDate == date && _measuredDateText == FormatDisplayedMeasuredDate(date)) return; _measuredDate = date; _measuredDateText = FormatDisplayedMeasuredDate(date); OnPropertyChanged(nameof(MeasuredDate)); OnPropertyChanged(nameof(MeasuredDateText)); } }
+        [JsonIgnore]
+        public string MeasuredDateText
+        {
+            get => _measuredDateText;
+            set
+            {
+                var candidate = value ?? "";
+                if (_measuredDateText == candidate) return;
+                _measuredDateText = candidate;
+                if (string.IsNullOrWhiteSpace(candidate)) { _measuredDate = null; OnPropertyChanged(nameof(MeasuredDate)); }
+                else if (TryParseDisplayedMeasuredDate(candidate, out var parsed)) { _measuredDate = parsed.Date; _measuredDateText = FormatDisplayedMeasuredDate(_measuredDate); OnPropertyChanged(nameof(MeasuredDate)); }
+                OnPropertyChanged(nameof(MeasuredDateText));
+            }
+        }
 
         [JsonIgnore]
         public string ValidationSummary
@@ -25644,12 +25756,49 @@ private List<string> GetVisibleAiMaterialLabels()
         MaterialId = row.MaterialID, UprightSamples = row.SampleValues(true).ToList(), FlatSamples = row.SampleValues(false).ToList(),
         UprightMpa = row.MpaUpright, FlatMpa = row.MpaFlat, StdDevUpright = row.StdDevUpright, StdDevFlat = row.StdDevFlat,
         CvUpright = row.CvUpright, CvFlat = row.CvFlat, SamplesUpright = row.SamplesUpright, SamplesFlat = row.SamplesFlat,
-        ConfidenceUpright = row.ConfidenceUpright, ConfidenceFlat = row.ConfidenceFlat, TestNotes = row.TestNotes
+        ConfidenceUpright = row.ConfidenceUpright, ConfidenceFlat = row.ConfidenceFlat, TestNotes = row.TestNotes,
+        MeasuredDate = ToIsoMeasuredDate(row.MeasuredDate)
     };
     private static NativeImpactPersistenceRecord ToImpactPersistence(NativeImpactMeasurementRow row) => new()
-    { MaterialId = row.MaterialID, UprightSamples = row.SampleValues(true).ToList(), FlatSamples = row.SampleValues(false).ToList(), TestNotes = row.TestNotes };
+    { MaterialId = row.MaterialID, UprightSamples = row.SampleValues(true).ToList(), FlatSamples = row.SampleValues(false).ToList(), TestNotes = row.TestNotes, MeasuredDate = ToIsoMeasuredDate(row.MeasuredDate) };
     private static NativeStiffnessPersistenceRecord ToStiffnessPersistence(NativeStiffnessMeasurementRow row) => new()
-    { MaterialId = row.MaterialID, Revolutions = row.Revolutions, Degrees = row.Degrees, TestNotes = row.TestNotes };
+    { MaterialId = row.MaterialID, Revolutions = row.Revolutions, Degrees = row.Degrees, TestNotes = row.TestNotes, MeasuredDate = ToIsoMeasuredDate(row.MeasuredDate) };
+
+    private static string ToIsoMeasuredDate(DateTime? value) =>
+        value?.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? "";
+
+    private static DateTime? ParseIsoMeasuredDate(string value) =>
+        DateTime.TryParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed)
+            ? parsed.Date
+            : null;
+
+    private static string FormatDisplayedMeasuredDate(DateTime? value) =>
+        value?.Date.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture) ?? "";
+
+    private static bool TryParseDisplayedMeasuredDate(string value, out DateTime date) =>
+        DateTime.TryParseExact(value.Trim(), new[] { "d.M.yyyy", "dd.MM.yyyy" }, CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
+
+    private static bool ShouldAssignMeasuredDate(DateTime? currentDate, IEnumerable<string> inputs) =>
+        currentDate is null && inputs.Any(value => !string.IsNullOrWhiteSpace(value));
+
+    private bool IsFirstMeasurementValueEdit(DataGrid grid, DataGridCellEditEndingEventArgs e, IEnumerable<string> currentInputs)
+    {
+        var propertyName = GetBoundPropertyName(e.Column);
+        if (!IsNativeMeasurementNumericInputColumn(grid.Name, propertyName) ||
+            e.EditAction != DataGridEditAction.Commit ||
+            e.EditingElement is not TextBox editor ||
+            string.IsNullOrWhiteSpace(editor.Text))
+            return false;
+
+        var oldValue = _pendingGridEdit is not null &&
+                       ReferenceEquals(_pendingGridEdit.Target, e.Row.Item) &&
+                       string.Equals(_pendingGridEdit.PropertyName, propertyName, StringComparison.Ordinal)
+            ? Convert.ToString(_pendingGridEdit.OldValue, CultureInfo.CurrentCulture)
+            : null;
+
+        return string.IsNullOrWhiteSpace(oldValue) &&
+               currentInputs.Count(value => !string.IsNullOrWhiteSpace(value)) == 1;
+    }
 
     private void SaveNativeMeasurementsToSqlite() => _database.MigrateNativeMeasurementsToSqlite(
         _nativeTensileRows.Select(ToTensilePersistence).ToList(),
@@ -25796,6 +25945,7 @@ private List<string> GetVisibleAiMaterialLabels()
             {
                 row.TestNotes = imported.TestNotes ?? "";
             }
+            row.MeasuredDate = ParseIsoMeasuredDate(_database.GetNativeMeasurementDate(row.MaterialID, "Tensile"));
         }
 
         ApplyNativeTensileComputedFields(rows);
@@ -25811,9 +25961,17 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void NativeTensileGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
     {
+        var editedRow = e.Row.Item as NativeTensileMeasurementRow;
+        var editedHeader = e.Column.Header?.ToString();
+        var assignMeasuredDate = sender is DataGrid tensileGrid &&
+                                 editedRow is not null &&
+                                 IsFirstMeasurementValueEdit(tensileGrid, e, editedRow.SampleValues(true).Concat(editedRow.SampleValues(false)));
         if (sender is DataGrid undoGrid) CaptureInputDataGridUndo(undoGrid, e);
         Dispatcher.BeginInvoke(new Action(() =>
     {
+        if (!string.Equals(editedHeader, "Measured date", StringComparison.Ordinal) &&
+            assignMeasuredDate && editedRow is not null && editedRow.MeasuredDate is null)
+            editedRow.MeasuredDate = DateTime.Today;
         // Do not call DataGrid.Items.Refresh() from edit callbacks.
         // Refreshing the item collection while WPF is committing a cell edit can throw
         // InvalidOperationException. Computed columns update through PropertyChanged instead.
@@ -26087,6 +26245,23 @@ private List<string> GetVisibleAiMaterialLabels()
         public string ConfidenceUpright { get; set; } = "";
         public string ConfidenceFlat { get; set; } = "";
         public string TestNotes { get; set; } = "";
+        private DateTime? _measuredDate;
+        private string _measuredDateText = "";
+        public DateTime? MeasuredDate { get => _measuredDate; set { var date = value?.Date; if (_measuredDate == date && _measuredDateText == FormatDisplayedMeasuredDate(date)) return; _measuredDate = date; _measuredDateText = FormatDisplayedMeasuredDate(date); OnPropertyChanged(nameof(MeasuredDate)); OnPropertyChanged(nameof(MeasuredDateText)); } }
+        [JsonIgnore]
+        public string MeasuredDateText
+        {
+            get => _measuredDateText;
+            set
+            {
+                var candidate = value ?? "";
+                if (_measuredDateText == candidate) return;
+                _measuredDateText = candidate;
+                if (string.IsNullOrWhiteSpace(candidate)) { _measuredDate = null; OnPropertyChanged(nameof(MeasuredDate)); }
+                else if (TryParseDisplayedMeasuredDate(candidate, out var parsed)) { _measuredDate = parsed.Date; _measuredDateText = FormatDisplayedMeasuredDate(_measuredDate); OnPropertyChanged(nameof(MeasuredDate)); }
+                OnPropertyChanged(nameof(MeasuredDateText));
+            }
+        }
 
         [JsonIgnore]
         public string ValidationSummary
@@ -26177,7 +26352,11 @@ private List<string> GetVisibleAiMaterialLabels()
             row.SetSample(string.Equals(sample.Orientation, "Upright", StringComparison.OrdinalIgnoreCase), sample.SampleNumber, sample.RawValue);
         }
 
-        foreach (var row in rows) row.TestNotes = _database.GetNativeMeasurementNote(row.MaterialID, "Impact");
+        foreach (var row in rows)
+        {
+            row.TestNotes = _database.GetNativeMeasurementNote(row.MaterialID, "Impact");
+            row.MeasuredDate = ParseIsoMeasuredDate(_database.GetNativeMeasurementDate(row.MaterialID, "Impact"));
+        }
 
         ApplyNativeImpactComputedFields(rows);
         return rows;
@@ -26257,9 +26436,17 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void NativeImpactGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
     {
+        var editedRow = e.Row.Item as NativeImpactMeasurementRow;
+        var editedHeader = e.Column.Header?.ToString();
+        var assignMeasuredDate = sender is DataGrid impactGrid &&
+                                 editedRow is not null &&
+                                 IsFirstMeasurementValueEdit(impactGrid, e, editedRow.SampleValues(true).Concat(editedRow.SampleValues(false)));
         if (sender is DataGrid undoGrid) CaptureInputDataGridUndo(undoGrid, e);
         Dispatcher.BeginInvoke(new Action(() =>
     {
+        if (!string.Equals(editedHeader, "Measured date", StringComparison.OrdinalIgnoreCase) &&
+            assignMeasuredDate && editedRow is not null && editedRow.MeasuredDate is null)
+            editedRow.MeasuredDate = DateTime.Today;
         ApplyNativeImpactComputedFields(_nativeImpactRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
         MarkNativeImpactDirty();
@@ -26401,12 +26588,29 @@ private List<string> GetVisibleAiMaterialLabels()
 
         private string _revolutions = "";
         private string _degrees = "";
+        private DateTime? _measuredDate;
+        private string _measuredDateText = "";
 
         public string Revolutions { get => _revolutions; set => SetInput(ref _revolutions, value, nameof(Revolutions)); }
         public string Degrees { get => _degrees; set => SetInput(ref _degrees, value, nameof(Degrees)); }
         public string DeflectionMm { get; set; } = "";
         public string ModulusMpa { get; set; } = "";
         public string TestNotes { get; set; } = "";
+        public DateTime? MeasuredDate { get => _measuredDate; set { var date = value?.Date; if (_measuredDate == date && _measuredDateText == FormatDisplayedMeasuredDate(date)) return; _measuredDate = date; _measuredDateText = FormatDisplayedMeasuredDate(date); OnPropertyChanged(nameof(MeasuredDate)); OnPropertyChanged(nameof(MeasuredDateText)); } }
+        [JsonIgnore]
+        public string MeasuredDateText
+        {
+            get => _measuredDateText;
+            set
+            {
+                var candidate = value ?? "";
+                if (_measuredDateText == candidate) return;
+                _measuredDateText = candidate;
+                if (string.IsNullOrWhiteSpace(candidate)) { _measuredDate = null; OnPropertyChanged(nameof(MeasuredDate)); }
+                else if (TryParseDisplayedMeasuredDate(candidate, out var parsed)) { _measuredDate = parsed.Date; _measuredDateText = FormatDisplayedMeasuredDate(_measuredDate); OnPropertyChanged(nameof(MeasuredDate)); }
+                OnPropertyChanged(nameof(MeasuredDateText));
+            }
+        }
 
         [JsonIgnore]
         public string ValidationSummary
@@ -26483,7 +26687,16 @@ private List<string> GetVisibleAiMaterialLabels()
         _suppressNativeStiffnessDirty = true;
         ReplaceNativeStiffnessRows(BuildNativeStiffnessRowsFromCanonicalStorage());
         _suppressNativeStiffnessDirty = false;
-        if (FindName("NativeStiffnessGrid") is DataGrid grid) grid.ItemsSource = _nativeStiffnessRows;
+        if (FindName("NativeStiffnessGrid") is DataGrid grid)
+        {
+            grid.ItemsSource = _nativeStiffnessRows;
+            // Measurement tabs can be materialized after MainWindow.Loaded. Ensure the
+            // shared one-click editor is attached when this lazy grid actually exists.
+            grid.PreviewMouseLeftButtonDown -= WorkflowGrid_PreviewMouseLeftButtonDown;
+            grid.PreviewMouseLeftButtonDown += WorkflowGrid_PreviewMouseLeftButtonDown;
+            grid.RemoveHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler(InputDataGrid_PreviewKeyDown));
+            grid.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler(InputDataGrid_PreviewKeyDown), true);
+        }
         ApplyNativeMeasurementFilters();
         SetNativeStiffnessDirty(false);
         RefreshNativeStiffnessSummary();
@@ -26544,6 +26757,7 @@ private List<string> GetVisibleAiMaterialLabels()
             row.Revolutions = input.Revolutions;
             row.Degrees = input.Degrees;
             row.TestNotes = input.TestNotes ?? "";
+            row.MeasuredDate = ParseIsoMeasuredDate(_database.GetNativeMeasurementDate(row.MaterialID, "Stiffness"));
         }
 
         ApplyNativeStiffnessComputedFields(rows);
@@ -26603,27 +26817,25 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void NativeStiffnessGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
     {
+        if (e.EditingElement is TextBox editor)
+            editor.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+        var editedRow = e.Row.Item as NativeStiffnessMeasurementRow;
+        var editedHeader = e.Column.Header?.ToString();
+        var assignMeasuredDate = sender is DataGrid stiffnessGrid &&
+                                 editedRow is not null &&
+                                 IsFirstMeasurementValueEdit(stiffnessGrid, e, new[] { editedRow.Revolutions, editedRow.Degrees });
         if (sender is DataGrid undoGrid) CaptureInputDataGridUndo(undoGrid, e);
         Dispatcher.BeginInvoke(new Action(() =>
     {
+        if (!string.Equals(editedHeader, "Measured date", StringComparison.OrdinalIgnoreCase) &&
+            assignMeasuredDate && editedRow is not null && editedRow.MeasuredDate is null)
+            editedRow.MeasuredDate = DateTime.Today;
         ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
         MarkNativeStiffnessDirty();
         SaveNativeStiffnessSilent();
         RefreshNativeStiffnessSummary();
     }), System.Windows.Threading.DispatcherPriority.Background);
-    }
-
-    private void NativeStiffnessGrid_CurrentCellChanged(object sender, EventArgs e)
-    {
-        if (!_suppressNativeStiffnessDirty)
-        {
-            ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
-            RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-            MarkNativeStiffnessDirty();
-            SaveNativeStiffnessSilent();
-            RefreshNativeStiffnessSummary();
-        }
     }
 
     private void SaveNativeStiffness_Click(object sender, RoutedEventArgs e)

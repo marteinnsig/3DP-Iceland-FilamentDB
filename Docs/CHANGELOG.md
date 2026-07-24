@@ -2,6 +2,45 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.6.2 - Canonical Measurement Date Foundation
+
+- Added nullable canonical measurement dates for native Tensile, Impact and
+  Stiffness test sets and for Experimental runs.
+- A date is assigned from the local calendar only when the first actual
+  measurement input is entered. Existing dates are preserved; legacy rows are
+  not backfilled and dates remain manually editable.
+- Advanced SQLite to schema v31 with additive columns in
+  `NativeMeasurementNotes` and `ExperimentalRuns`.
+- Preserved schema-v30 canonical migration, governed Excel disaster recovery,
+  explicit SQLite restore, updater, website/report and FTPS behavior.
+- Runtime review exposed and corrected premature native date assignment on
+  cell activation and per-keystroke year normalization during manual editing.
+- Replaced direct nullable-`DateTime` grid binding with a blank-safe
+  `dd.MM.yyyy` text projection so clearing a date persists `null` without
+  locking the DataGrid row in WPF validation.
+- Added read-only Tensile, Impact and Stiffness measured dates to Material
+  Detail > General > Test Information, with `Not recorded` for missing dates.
+- Synchronized blank-safe date text during editing so Stiffness auto-save
+  cannot run before a completed manual date or deliberate clearing reaches the
+  canonical model.
+- Rejected the Stiffness template-editor experiment after runtime keyboard and
+  row-height failures. Restored the standard compact DataGridTextColumn and
+  explicitly commits its blank-safe text binding before auto-save.
+- Retained partial date text during editing so a complete manual Stiffness date
+  can be formed before canonical parsing; only valid full dates or blank input
+  change stored metadata.
+- Rejected the visually inconsistent DatePicker experiment. Removed the
+  Stiffness-only synchronous navigation save that blocked first-click editing,
+  restoring the same compact DataGridTextColumn and edit-ending save pattern
+  used by Tensile and Impact.
+- Attach shared first-click and keyboard workflow handlers when the lazy
+  Stiffness grid is initialized, so one click enters editing before typing.
+- Corrected shared cell lookup after user column reordering so logical and
+  visual column positions cannot activate different editors.
+- Runtime accepted with compact Stiffness rows matching Tensile/Impact,
+  editable dates before and after reordering, restart persistence and Full
+  Data Verification 312/312 PASS.
+
 ## v44.6.1 - Canonical Release Documentation Audit
 
 - Defined distinct canonical ownership for CHANGELOG, BUILD_HISTORY, RELEASES

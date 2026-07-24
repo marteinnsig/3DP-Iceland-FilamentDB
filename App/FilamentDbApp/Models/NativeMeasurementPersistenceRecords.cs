@@ -16,6 +16,7 @@ public sealed class NativeTensilePersistenceRecord
     public string ConfidenceUpright { get; set; } = string.Empty;
     public string ConfidenceFlat { get; set; } = string.Empty;
     public string TestNotes { get; set; } = string.Empty;
+    public string MeasuredDate { get; set; } = string.Empty;
 }
 
 public sealed class NativeImpactPersistenceRecord
@@ -24,6 +25,7 @@ public sealed class NativeImpactPersistenceRecord
     public List<string> UprightSamples { get; set; } = new();
     public List<string> FlatSamples { get; set; } = new();
     public string TestNotes { get; set; } = string.Empty;
+    public string MeasuredDate { get; set; } = string.Empty;
 }
 
 public sealed class NativeStiffnessPersistenceRecord
@@ -32,4 +34,5 @@ public sealed class NativeStiffnessPersistenceRecord
     public string Revolutions { get; set; } = string.Empty;
     public string Degrees { get; set; } = string.Empty;
     public string TestNotes { get; set; } = string.Empty;
+    public string MeasuredDate { get; set; } = string.Empty;
 }

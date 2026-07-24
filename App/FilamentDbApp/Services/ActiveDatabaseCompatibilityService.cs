@@ -23,10 +23,10 @@ public sealed class ActiveDatabaseCompatibilityService
                 return new ActiveDatabaseCompatibilityInspection(false, schemaVersion, $"The active SQLite database schema v{schemaVersion} is newer than supported schema v{supportedSchemaVersion}.");
 
             var canonicalMaterialsHavePrimaryKey = TableHasPrimaryKey(connection, "NativeMaterialManagerRows", "MaterialId");
-            if (schemaVersion == supportedSchemaVersion && !canonicalMaterialsHavePrimaryKey)
+            if (schemaVersion >= 30 && !canonicalMaterialsHavePrimaryKey)
                 return new ActiveDatabaseCompatibilityInspection(false, schemaVersion, "The active SQLite database does not have the required canonical Materials table shape.");
 
-            if (schemaVersion < supportedSchemaVersion)
+            if (schemaVersion < 30)
             {
                 var materialsHasPrimaryKey = TableHasPrimaryKey(connection, "Materials", "MaterialId");
                 var importsHasExpectedColumn = TableHasColumn(connection, "Imports", "SchemaVersion");
@@ -37,7 +37,9 @@ public sealed class ActiveDatabaseCompatibilityService
             return new ActiveDatabaseCompatibilityInspection(true, schemaVersion,
                 schemaVersion == supportedSchemaVersion
                     ? $"Schema v{schemaVersion} has the required canonical startup shape."
-                    : $"Schema v{schemaVersion} has the required pre-v30 migration shape.");
+                    : schemaVersion >= 30
+                        ? $"Schema v{schemaVersion} has the required canonical migration shape."
+                        : $"Schema v{schemaVersion} has the required pre-v30 migration shape.");
         }
         catch (Exception ex)
         {
@@ -69,7 +71,7 @@ public sealed class ActiveDatabaseCompatibilityService
             var supported = Inspect(supportedPath, supportedSchemaVersion);
 
             var legacyMigrationPath = IOPath.Combine(root, "legacy-migration.sqlite");
-            CreateFixture(legacyMigrationPath, supportedSchemaVersion - 1, includeRequiredLegacyShape: true);
+            CreateFixture(legacyMigrationPath, supportedSchemaVersion - 1, includeRequiredLegacyShape: false);
             var legacyMigration = Inspect(legacyMigrationPath, supportedSchemaVersion);
 
             var malformedCanonicalPath = IOPath.Combine(root, "malformed-canonical.sqlite");
@@ -93,7 +95,7 @@ public sealed class ActiveDatabaseCompatibilityService
             return new ActiveDatabaseCompatibilityContractVerification(
                 passed,
                 passed
-                    ? "Canonical schema and pre-v30 migration shape remain available; malformed canonical, newer and unreadable active databases are blocked unchanged with retained evidence copies."
+                    ? "Canonical schema and supported migration shapes remain available; malformed canonical, newer and unreadable active databases are blocked unchanged with retained evidence copies."
                     : "Active-database compatibility preservation contract failed.");
         }
         catch (Exception ex)

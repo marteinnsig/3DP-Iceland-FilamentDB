@@ -667,6 +667,7 @@
                 <DataGridTextColumn Header="Value" Binding="{Binding ParameterValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
                 <DataGridTextColumn Header="Unit" Binding="{Binding ParameterUnit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="80"/>
                 <DataGridTextColumn Header="Status" Binding="{Binding Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                <DataGridTextColumn Header="Measured date" Binding="{Binding MeasuredDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="110"/>
                 <DataGridCheckBoxColumn Header="Baseline" Binding="{Binding IsBaseline, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75"/>
                 <DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="65"/>
                 <DataGridTextColumn Header="Run Notes" Binding="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="*"/>
@@ -1807,6 +1808,7 @@
                                 <DataGridTextColumn Header="Flat 10" Binding="{Binding Flat10, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75" CellStyle="{StaticResource TensileSampleCellStyle}"/>
                                 <DataGridTemplateColumn Header="" Width="12" IsReadOnly="True" CellStyle="{StaticResource TensileSpacerCellStyle}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text=""/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Test Notes" Binding="{Binding TestNotes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="220"/>
+                                <DataGridTextColumn Header="Measured date" Binding="{Binding MeasuredDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="110"/>
                                 <DataGridTextColumn Header="MPa - Upright" Binding="{Binding MpaUpright}" Width="100" IsReadOnly="True" CellStyle="{StaticResource TensileComputedCellStyle}"/>
                                 <DataGridTextColumn Header="MPa - Flat" Binding="{Binding MpaFlat}" Width="90" IsReadOnly="True" CellStyle="{StaticResource TensileComputedCellStyle}"/>
                                 <DataGridTextColumn Header="Std Dev - Upright" Binding="{Binding StdDevUpright}" Width="120" IsReadOnly="True" CellStyle="{StaticResource TensileComputedCellStyle}"/>
@@ -1891,6 +1893,7 @@
                                 <DataGridTextColumn Header="Flat % 10" Binding="{Binding Flat10, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="75" CellStyle="{StaticResource ImpactSampleCellStyle}"/>
                                 <DataGridTemplateColumn Header="" Width="12" IsReadOnly="True" CellStyle="{StaticResource TensileSpacerCellStyle}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text=""/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Test Notes" Binding="{Binding TestNotes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="220"/>
+                                <DataGridTextColumn Header="Measured date" Binding="{Binding MeasuredDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="110"/>
                                 <DataGridTextColumn Header="kJ/m² - Upright" Binding="{Binding KjUpright}" Width="115" IsReadOnly="True" CellStyle="{StaticResource TensileComputedCellStyle}"/>
                                 <DataGridTextColumn Header="kJ/m² - Flat" Binding="{Binding KjFlat}" Width="105" IsReadOnly="True" CellStyle="{StaticResource TensileComputedCellStyle}"/>
                                 <DataGridTextColumn Header="Std Dev - Upright" Binding="{Binding StdDevUpright}" Width="120" IsReadOnly="True" CellStyle="{StaticResource TensileComputedCellStyle}"/>
@@ -1922,7 +1925,7 @@
                         <TextBlock Name="NativeStiffnessSummaryText" Text="Stiffness measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
                     </Border>
                     <GroupBox Grid.Row="2" Header="Native Stiffness Measurements - editable revolutions/degrees with computed Excel-style outputs">
-                        <DataGrid Name="NativeStiffnessGrid" Style="{StaticResource HighPerformanceDataGrid}" SelectionMode="Single" SelectionUnit="CellOrRowHeader" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" AlternationCount="2" AlternatingRowBackground="#F8FAFC" RowBackground="#FFFFFF" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="8" CellEditEnding="NativeStiffnessGrid_CellEditEnding" CurrentCellChanged="NativeStiffnessGrid_CurrentCellChanged" BeginningEdit="InputDataGrid_BeginningEdit" PreparingCellForEdit="MeasurementGrid_PreparingCellForEdit">
+                        <DataGrid Name="NativeStiffnessGrid" Style="{StaticResource HighPerformanceDataGrid}" SelectionMode="Single" SelectionUnit="CellOrRowHeader" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" AlternationCount="2" AlternatingRowBackground="#F8FAFC" RowBackground="#FFFFFF" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="8" CellEditEnding="NativeStiffnessGrid_CellEditEnding" BeginningEdit="InputDataGrid_BeginningEdit" PreparingCellForEdit="MeasurementGrid_PreparingCellForEdit">
                             <DataGrid.RowStyle>
                                 <Style TargetType="DataGridRow">
                                     <Setter Property="Background" Value="#FFFFFF"/>
@@ -1964,6 +1967,7 @@
                                 <DataGridTextColumn Header="Degrees" Binding="{Binding Degrees, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="85"/>
                                 <DataGridTemplateColumn Header="" Width="12" IsReadOnly="True" CellStyle="{StaticResource TensileSpacerCellStyle}"><DataGridTemplateColumn.CellTemplate><DataTemplate><TextBlock Text=""/></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Test Notes" Binding="{Binding TestNotes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="220"/>
+                                <DataGridTextColumn Header="Measured date" Binding="{Binding MeasuredDateText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="110"/>
                                 <DataGridTextColumn Header="Deflection mm" Binding="{Binding DeflectionMm}" Width="110" IsReadOnly="True" CellStyle="{StaticResource TensileComputedCellStyle}"/>
                                 <DataGridTextColumn Header="Modulus MPa" Binding="{Binding ModulusMpa}" Width="110" IsReadOnly="True" CellStyle="{StaticResource TensileComputedCellStyle}"/>
                                 <DataGridTextColumn Header="Validation" Binding="{Binding ValidationSummary}" Width="150" IsReadOnly="True"/>

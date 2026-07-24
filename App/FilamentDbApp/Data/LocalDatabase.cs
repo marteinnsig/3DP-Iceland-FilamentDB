@@ -11,7 +11,7 @@ namespace FilamentDbApp.Data;
 
 public sealed partial class LocalDatabase
 {
-    private const int SchemaVersion = 30;
+    private const int SchemaVersion = 31;
     private const int MinimumStandaloneBackupSchemaVersion = 27;
     private const int MaxAutomaticBackups = 20;
     private const string AutomaticBackupPrefix = "filamentdb_";
@@ -942,6 +942,7 @@ CREATE TABLE IF NOT EXISTS NativeMeasurementNotes (
     MaterialId TEXT NOT NULL,
     TestType TEXT NOT NULL,
     TestNotes TEXT,
+    MeasuredDate TEXT,
     UpdatedAtUtc TEXT NOT NULL,
     PRIMARY KEY (MaterialId, TestType)
 );
@@ -1218,6 +1219,7 @@ CREATE TABLE IF NOT EXISTS ExperimentalRuns (
     IsBaseline INTEGER NOT NULL DEFAULT 0,
     IsActive INTEGER NOT NULL DEFAULT 1,
     Notes TEXT,
+    MeasuredDate TEXT,
     CreatedAtUtc TEXT NOT NULL,
     UpdatedAtUtc TEXT NOT NULL,
     FOREIGN KEY (MaterialExperimentId) REFERENCES MaterialExperiments(MaterialExperimentId) ON DELETE CASCADE
@@ -1293,6 +1295,7 @@ DROP TABLE IF EXISTS MaterialsImport;";
         EnsureWebsiteTemplateSeed(connection);
 
         EnsureColumn(connection, "MaterialExperiments", "PublishOnWebsite", "INTEGER NOT NULL DEFAULT 0");
+        EnsureColumn(connection, "ExperimentalRuns", "MeasuredDate", "TEXT");
         EnsureColumn(connection, "ExperimentalMeasurements", "Orientation", "TEXT");
         EnsureColumn(connection, "ExperimentalMeasurements", "RawUnit", "TEXT");
         EnsureColumn(connection, "ExperimentalMeasurements", "ResultUnit", "TEXT");
@@ -1306,6 +1309,7 @@ DROP TABLE IF EXISTS MaterialsImport;";
         EnsureColumn(connection, "ExperimentalMeasurements", "ResultCv", "TEXT");
         EnsureColumn(connection, "ExperimentalMeasurements", "ResultCount", "TEXT");
         EnsureColumn(connection, "ExperimentalMeasurements", "ResultConfidence", "TEXT");
+        EnsureColumn(connection, "NativeMeasurementNotes", "MeasuredDate", "TEXT");
         EnsureColumn(connection, "VideoIdeaQueue", "PublishDate", "TEXT");
         EnsureColumn(connection, "VideoIdeaQueue", "TargetWeek", "TEXT");
         EnsureColumn(connection, "VideoIdeaQueue", "Series", "TEXT");
@@ -1439,7 +1443,7 @@ DROP TABLE IF EXISTS MaterialsImport;";
         update.Transaction = transaction;
         update.CommandText = """
             INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('LegacyWorkbookTablesRetiredV1', 'complete');
-            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('SchemaVersion', '30');
+            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('SchemaVersion', '31');
             """;
         update.ExecuteNonQuery();
         transaction.Commit();
@@ -2521,25 +2525,27 @@ LIMIT 1;";
             var names = new[] { "$id", "$um", "$fm", "$su", "$sf", "$cu", "$cf", "$nu", "$nf", "$fu", "$ff", "$notes", "$now" };
             for (var x = 0; x < names.Length; x++) result.Parameters.AddWithValue(names[x], values[x] ?? string.Empty);
             result.ExecuteNonQuery();
-            InsertNativeNote(connection, transaction, row.MaterialId, "Tensile", row.TestNotes ?? string.Empty, now);
+            var hasSamples = row.UprightSamples.Concat(row.FlatSamples).Any(value => !string.IsNullOrWhiteSpace(value));
+            InsertNativeMetadata(connection, transaction, row.MaterialId, "Tensile", row.TestNotes ?? string.Empty, row.MeasuredDate, hasSamples, now);
         }
         foreach (var row in impact.Where(x => !string.IsNullOrWhiteSpace(x.MaterialId)))
         {
             InsertNativeSamples(connection, transaction, "NativeImpactSamples", row.MaterialId, row.UprightSamples, row.FlatSamples, now);
-            InsertNativeNote(connection, transaction, row.MaterialId, "Impact", row.TestNotes, now);
+            var hasSamples = row.UprightSamples.Concat(row.FlatSamples).Any(value => !string.IsNullOrWhiteSpace(value));
+            InsertNativeMetadata(connection, transaction, row.MaterialId, "Impact", row.TestNotes, row.MeasuredDate, hasSamples, now);
         }
         foreach (var row in stiffness.Where(x => !string.IsNullOrWhiteSpace(x.MaterialId)))
         {
-            if (string.IsNullOrWhiteSpace(row.Revolutions) && string.IsNullOrWhiteSpace(row.Degrees) && string.IsNullOrWhiteSpace(row.TestNotes)) continue;
+            if (string.IsNullOrWhiteSpace(row.Revolutions) && string.IsNullOrWhiteSpace(row.Degrees) && string.IsNullOrWhiteSpace(row.TestNotes) && string.IsNullOrWhiteSpace(row.MeasuredDate)) continue;
             using var insert = connection.CreateCommand(); insert.Transaction = transaction;
             insert.CommandText = "INSERT INTO NativeStiffnessMeasurements VALUES ($id,$rev,$deg,$notes,$now);";
             insert.Parameters.AddWithValue("$id", row.MaterialId); insert.Parameters.AddWithValue("$rev", row.Revolutions ?? string.Empty); insert.Parameters.AddWithValue("$deg", row.Degrees ?? string.Empty); insert.Parameters.AddWithValue("$notes", row.TestNotes ?? string.Empty); insert.Parameters.AddWithValue("$now", now); insert.ExecuteNonQuery();
-            InsertNativeNote(connection, transaction, row.MaterialId, "Stiffness", row.TestNotes ?? string.Empty, now);
+            InsertNativeMetadata(connection, transaction, row.MaterialId, "Stiffness", row.TestNotes ?? string.Empty, row.MeasuredDate, true, now);
         }
         static int ExpectedSamples(IEnumerable<IReadOnlyList<string>> sets) => sets.Sum(set => set.Count(value => !string.IsNullOrWhiteSpace(value)));
         var expectedTensile = ExpectedSamples(tensile.SelectMany(row => new[] { (IReadOnlyList<string>)row.UprightSamples, row.FlatSamples }));
         var expectedImpact = ExpectedSamples(impact.SelectMany(row => new[] { (IReadOnlyList<string>)row.UprightSamples, row.FlatSamples }));
-        var expectedStiffness = stiffness.Count(row => !string.IsNullOrWhiteSpace(row.MaterialId) && (!string.IsNullOrWhiteSpace(row.Revolutions) || !string.IsNullOrWhiteSpace(row.Degrees) || !string.IsNullOrWhiteSpace(row.TestNotes)));
+        var expectedStiffness = stiffness.Count(row => !string.IsNullOrWhiteSpace(row.MaterialId) && (!string.IsNullOrWhiteSpace(row.Revolutions) || !string.IsNullOrWhiteSpace(row.Degrees) || !string.IsNullOrWhiteSpace(row.TestNotes) || !string.IsNullOrWhiteSpace(row.MeasuredDate)));
         int Count(string table) { using var count = connection.CreateCommand(); count.Transaction = transaction; count.CommandText = $"SELECT COUNT(*) FROM {table};"; return Convert.ToInt32(count.ExecuteScalar(), CultureInfo.InvariantCulture); }
         if (Count("NativeTensileSamples") != expectedTensile || Count("NativeImpactSamples") != expectedImpact || Count("NativeStiffnessMeasurements") != expectedStiffness)
             throw new InvalidOperationException("Native measurement SQLite reconciliation failed before commit; the transaction was rolled back.");
@@ -2559,12 +2565,12 @@ LIMIT 1;";
             }
     }
 
-    private static void InsertNativeNote(SqliteConnection connection, SqliteTransaction transaction, string materialId, string testType, string notes, string now)
+    private static void InsertNativeMetadata(SqliteConnection connection, SqliteTransaction transaction, string materialId, string testType, string notes, string measuredDate, bool hasMeasurement, string now)
     {
-        if (string.IsNullOrWhiteSpace(notes)) return;
+        if (!hasMeasurement && string.IsNullOrWhiteSpace(notes) && string.IsNullOrWhiteSpace(measuredDate)) return;
         using var insert = connection.CreateCommand(); insert.Transaction = transaction;
-        insert.CommandText = "INSERT INTO NativeMeasurementNotes VALUES ($id,$type,$notes,$now);";
-        insert.Parameters.AddWithValue("$id", materialId); insert.Parameters.AddWithValue("$type", testType); insert.Parameters.AddWithValue("$notes", notes); insert.Parameters.AddWithValue("$now", now); insert.ExecuteNonQuery();
+        insert.CommandText = "INSERT INTO NativeMeasurementNotes (MaterialId,TestType,TestNotes,MeasuredDate,UpdatedAtUtc) VALUES ($id,$type,$notes,$date,$now);";
+        insert.Parameters.AddWithValue("$id", materialId); insert.Parameters.AddWithValue("$type", testType); insert.Parameters.AddWithValue("$notes", notes); insert.Parameters.AddWithValue("$date", measuredDate ?? string.Empty); insert.Parameters.AddWithValue("$now", now); insert.ExecuteNonQuery();
     }
 
     public IReadOnlyList<(string MaterialId, string Orientation, int SampleNumber, string RawValue)> GetTensileSamples()
@@ -2649,6 +2655,24 @@ ORDER BY MaterialId;";
         using var command = connection.CreateCommand();
         command.CommandText = "SELECT TestNotes FROM NativeMeasurementNotes WHERE MaterialId=$id AND TestType=$type LIMIT 1;";
         command.Parameters.AddWithValue("$id", materialId); command.Parameters.AddWithValue("$type", testType);
+        return command.ExecuteScalar()?.ToString() ?? string.Empty;
+    }
+
+    private static DateTime? ParseIsoDate(string value) =>
+        DateTime.TryParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed)
+            ? parsed.Date
+            : null;
+
+    private static string ToIsoDate(DateTime? value) =>
+        value?.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? string.Empty;
+
+    public string GetNativeMeasurementDate(string materialId, string testType)
+    {
+        using var connection = new SqliteConnection(ConnectionString); connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = "SELECT MeasuredDate FROM NativeMeasurementNotes WHERE MaterialId=$id AND TestType=$type LIMIT 1;";
+        command.Parameters.AddWithValue("$id", materialId);
+        command.Parameters.AddWithValue("$type", testType);
         return command.ExecuteScalar()?.ToString() ?? string.Empty;
     }
 
@@ -3181,6 +3205,7 @@ VALUES ($id,$material,$definition,$value,$unit,$baseline,$notes,$publish,$active
             IsBaseline = ReadString(reader, "IsBaseline") != "0",
             IsActive = ReadString(reader, "IsActive") != "0",
             Notes = ReadString(reader, "Notes"),
+            MeasuredDate = ParseIsoDate(ReadString(reader, "MeasuredDate")),
             CreatedAtUtc = ReadString(reader, "CreatedAtUtc"),
             UpdatedAtUtc = ReadString(reader, "UpdatedAtUtc")
         });
@@ -3201,8 +3226,8 @@ VALUES ($id,$material,$definition,$value,$unit,$baseline,$notes,$publish,$active
         using var insert = connection.CreateCommand();
         insert.Transaction = transaction;
         insert.CommandText = @"INSERT INTO ExperimentalRuns
-(ExperimentalRunId, MaterialExperimentId, ParameterValue, ParameterUnit, Status, IsBaseline, IsActive, Notes, CreatedAtUtc, UpdatedAtUtc)
-VALUES ($id,$series,$value,$unit,$status,$baseline,$active,$notes,$created,$updated);";
+(ExperimentalRunId, MaterialExperimentId, ParameterValue, ParameterUnit, Status, IsBaseline, IsActive, Notes, MeasuredDate, CreatedAtUtc, UpdatedAtUtc)
+VALUES ($id,$series,$value,$unit,$status,$baseline,$active,$notes,$measured,$created,$updated);";
         foreach (var x in runs)
         {
             var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
@@ -3217,6 +3242,7 @@ VALUES ($id,$series,$value,$unit,$status,$baseline,$active,$notes,$created,$upda
             insert.Parameters.AddWithValue("$baseline", x.IsBaseline ? 1 : 0);
             insert.Parameters.AddWithValue("$active", x.IsActive ? 1 : 0);
             insert.Parameters.AddWithValue("$notes", x.Notes ?? string.Empty);
+            insert.Parameters.AddWithValue("$measured", ToIsoDate(x.MeasuredDate));
             insert.Parameters.AddWithValue("$created", x.CreatedAtUtc);
             insert.Parameters.AddWithValue("$updated", x.UpdatedAtUtc);
             insert.ExecuteNonQuery();

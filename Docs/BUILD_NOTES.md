@@ -1,4 +1,79 @@
-# Current Build Notes - v44.6.1
+# Current Build Notes - v44.6.2
+
+## Canonical Measurement Date Foundation
+
+v44.6.2 adds one nullable measured date per native MaterialID/TestType and one
+per Experimental run. SQLite stores invariant `yyyy-MM-dd` values in additive
+schema-v31 columns; the UI displays them consistently as `dd.MM.yyyy`.
+
+Today is assigned only after the first non-empty measurement input when no date
+already exists. Historical rows remain blank, later measurement edits preserve
+the recorded date, and users may enter or correct a date manually. Clearing
+measurement values does not silently erase the date.
+
+Schema-v30 canonical databases remain supported migration inputs. Governed
+Excel disaster recovery dynamically includes the new columns; no automatic
+SQLite restore, evidence deletion, updater, website/report or FTPS behavior is
+changed.
+
+The first runtime review reached Full Data Verification 312/312 and proved
+schema-v31 backup readiness and persistence, but exposed two UI acceptance
+issues. Merely entering an existing native measurement cell could assign today,
+and per-keystroke `DateTime` conversion normalized a partially edited year.
+The bounded correction now assigns today only when the first previously empty
+numeric measurement is committed on an otherwise empty native test row, and
+date text is converted on focus loss so a complete historic date can be entered
+before parsing. Experimental first-input behavior remains unchanged.
+
+A second runtime review exposed WPF's nullable-`DateTime` validation lock when
+the date cell was cleared. The UI now binds to a nullable-safe text projection:
+blank text explicitly stores no measured date, complete `d.M.yyyy` input is
+normalized to `dd.MM.yyyy`, and invalid partial text cannot trap the DataGrid
+row or block editing in measurement and notes cells.
+
+Stiffness runtime review then showed that focus-loss source timing could let
+auto-save run before a manually entered date reached the model. The blank-safe
+text projection now updates the model during editing for all four date
+surfaces; incomplete text remains harmless, while a completed or cleared value
+is available before the save callback.
+
+Template-based Stiffness editing was rejected after runtime showed that the
+shared DataGrid workflow could focus its embedded TextBox without delivering
+normal text input and also changed row height. Stiffness is again a standard
+compact DataGridTextColumn like Tensile and Impact. Its `CellEditEnding`
+explicitly commits the text binding before auto-save, preserving reliable
+manual dates without a separate grid system.
+
+The standard editor then proved that edit-mode was active, but the calculated
+text property discarded every partial date before a complete value could be
+formed. Measurement rows now retain the in-progress display text independently
+while typing. Canonical `DateTime?` changes only when a complete `d.M.yyyy`
+value is valid or the editor is deliberately cleared.
+
+The DatePicker experiment was rejected because it did not match the compact
+Tensile/Impact presentation. Final comparison found a Stiffness-only
+`CurrentCellChanged` save firing synchronously during selection, before the
+shared first-click workflow could open the editor. Stiffness now uses the same
+compact DataGridTextColumn as Tensile/Impact and saves completed edits through
+`CellEditEnding`; navigation alone no longer triggers a Stiffness write.
+
+Runtime then confirmed typing worked but the first click only selected the cell.
+The Stiffness measurement tab can be materialized after `MainWindow.Loaded`, so
+its shared first-click/keyboard handlers are now attached during Stiffness grid
+initialization as well as the normal loaded-window configuration.
+
+Final runtime review exposed one shared DataGrid lookup defect after a user
+reordered columns: the editor used visual `DisplayIndex` against containers
+generated in logical column order, so a different read-only cell could receive
+edit mode while Measured date appeared selected. Cell lookup now uses the
+logical column index. Runtime acceptance confirmed manual Stiffness date entry
+before and after column reordering, compact row height matching Tensile/Impact,
+restart persistence and Full Data Verification 312/312 PASS.
+
+Material Detail now consumes the same canonical metadata read-only under
+General > Test Information. Separate Tensile, Impact and Stiffness measured
+dates are displayed as `dd.MM.yyyy`; missing historical dates remain honestly
+`Not recorded`. This does not add dates to public report allowlists.
 
 ## Canonical Release Documentation Audit
 

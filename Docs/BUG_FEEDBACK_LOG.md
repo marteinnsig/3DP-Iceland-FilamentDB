@@ -46,6 +46,25 @@ Expected behavior: Define exactly what counts as a build, candidate, runtime-acc
 Steps to reproduce: Count unique version headings and duplicates independently in `BUILD_HISTORY.md`, `CHANGELOG.md`, `RELEASES.md` and `MILESTONES.md`; the totals do not match.
 Screenshot / export / report attached: Repository audit on 2026-07-24 found 289 unique versions in Build History, 317 in Changelog, 47 in Releases and 57 in Milestones.
 
+Date: 2026-07-24
+Area: Tensile / Impact / Stiffness / Experimental measurements and Material Details
+Type: Workflow friction / Data issue
+Severity: Idea
+What happened: Measurement-entry rows do not record when each test was performed, so the application has little historical context for measurement age, test sequence or retesting.
+Expected behavior: Store a canonical measured date per test type and per experimental run rather than one shared Material date. Auto-fill the date when the first measurement value is entered, but do not silently replace it during later corrections or delete it when values are cleared. Allow intentional manual editing for measurements entered after the fact. Keep `Measured date` explicitly separate from record `Last edited` metadata, display a clear local date while storing an unambiguous ISO date in SQLite, and preserve it through governed Excel disaster-recovery export/restore.
+Steps to reproduce: Enter Tensile, Impact or Stiffness measurements for a MaterialID and inspect the measurement rows and Material Details; no canonical measured date or test history is available.
+Screenshot / export / report attached: User feedback on 2026-07-24.
+Potential downstream use: Material Details test timeline; first/last measured dates and testing span; measurement freshness; oldest/newest filters; retest queues; report provenance; comparisons over time. Public reports must expose dates only through an explicit reviewed allowlist.
+
+Date: 2026-07-24
+Area: Bug / Feedback Log governance
+Type: Workflow friction / UI polish
+Severity: Minor
+What happened: Feedback items do not have a consistent status or resolution record, making it difficult to distinguish open work from completed work or identify which accepted release solved an item.
+Expected behavior: Preserve every original feedback description and append structured lifecycle metadata. New items should use `Status: Open`; supported states should include `Open`, `In progress`, `Partially solved`, `Solved`, `Deferred`, `Duplicate` and `Not planned`. After runtime acceptance, a solved item should receive a simple canonical resolution such as `Solved in version v44.5.1 — 2026-07-24`, optionally followed by `Verification evidence: Full Data Verification 302/302 PASS`. Use ISO dates and only canonical runtime-accepted versions; never mark a failed or unaccepted candidate as solved. Partially completed items remain open or explicitly `Partially solved`.
+Steps to reproduce: Review older entries in `BUG_FEEDBACK_LOG.md`; completed and outstanding items cannot be distinguished consistently from the entry itself.
+Screenshot / export / report attached: User feedback on 2026-07-24.
+
 
 
 ## Triage categories

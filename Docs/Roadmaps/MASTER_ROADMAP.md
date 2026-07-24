@@ -1,8 +1,10 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.6.1 — Canonical Release Documentation Audit**
+Current canonical release: **v44.6.2 — Canonical Measurement Date Foundation**
 
-Last runtime-accepted baseline: **v44.6.1 — Canonical Release Documentation Audit**
+Last runtime-accepted baseline: **v44.6.2 — Canonical Measurement Date Foundation**
+
+Current candidate: **None — select the next bounded item from BUG_FEEDBACK_LOG**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -912,6 +914,14 @@ Audit.**
   known historical collisions and does not change runtime/storage behavior.
 - Runtime Full Data Verification passed 311/311 with zero failures; schema v30,
   six Ready backups and zero incomplete updater transactions were confirmed.
+- v44.6.2 adds nullable canonical measured dates
+  to native test sets and Experimental runs. It assigns today only on first
+  real measurement input, preserves existing/manual dates, does not backfill
+  historical data and advances SQLite additively to schema v31 while retaining
+  schema-v30 canonical migration and governed recovery boundaries.
+- Runtime Full Data Verification passed 312/312; compact Stiffness editing,
+  manual date entry after column reordering and restart persistence were
+  accepted.
 
 - Use `Docs/BUG_FEEDBACK_LOG.md`, daily operation and VM/release observations as the intake queue.
 - Evaluate per-MaterialID printing profiles only when there is a concrete daily-use/report need beyond the delivered base-material profile foundation. Preserve typed units, provenance and `Not recorded` honesty.

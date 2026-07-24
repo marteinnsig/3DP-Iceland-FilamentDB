@@ -1,6 +1,16 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.6.2 - Canonical Measurement Date Foundation
+
+- Runtime-accepted bounded data-entry release.
+- Adds preserved, manually editable measurement dates to native test sets and
+  Experimental runs.
+- Uses schema v31 additive nullable columns and retains schema-v30 migration,
+  Excel disaster recovery and explicit restore compatibility.
+- Runtime Full Data Verification passed 312/312; compact Stiffness editing,
+  column reordering and restart persistence were accepted.
+
 ## v44.6.1 - Canonical Release Documentation Audit
 
 - Canonical documentation-maintainability release.

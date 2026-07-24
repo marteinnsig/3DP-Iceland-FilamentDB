@@ -2,6 +2,19 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.6.2 - Canonical Measurement Date Foundation
+
+Adds an explicit nullable measured date to each native material/test-type set
+and each Experimental run. Storage uses invariant `yyyy-MM-dd`; WPF displays
+`dd.MM.yyyy`. First-input auto-assignment never overwrites an
+existing date and does not infer dates for historical data. SQLite schema v31
+is additive and schema-v30 canonical databases migrate without using the
+retired pre-v30 workbook shape. Runtime corrections made blank dates safe,
+preserved partial manual input, aligned compact Stiffness editing with
+Tensile/Impact and corrected editor activation after column reordering.
+Debug/Release passed with zero warnings/errors and runtime Full Data
+Verification passed 312/312. v44.6.2 is accepted.
+
 ## v44.6.1 - Canonical Release Documentation Audit
 
 The release-documentation audit established explicit ownership for the four
