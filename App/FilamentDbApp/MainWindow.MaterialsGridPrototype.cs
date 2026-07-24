@@ -124,25 +124,7 @@ public partial class MainWindow
 
     private MaterialsRenderingPrototypeView CreateMaterialsRenderingPrototypeView(bool directCanonicalEditing)
     {
-        var columns = NativeMaterialsGrid.Columns
-            .OrderBy(column => column.DisplayIndex)
-            .Select(column => new MaterialsPrototypeColumn(
-                column.Header?.ToString() ?? string.Empty,
-                Math.Clamp(column.ActualWidth > 0 ? column.ActualWidth : column.Width.DisplayValue, 60, 420),
-                GetBoundPropertyName(column),
-                column.IsReadOnly,
-                column switch
-                {
-                    DataGridCheckBoxColumn => MaterialsPrototypeEditorKind.CheckBox,
-                    DataGridComboBoxColumn => MaterialsPrototypeEditorKind.ComboBox,
-                    _ => MaterialsPrototypeEditorKind.Text
-                },
-                column is DataGridComboBoxColumn comboBoxColumn
-                    ? comboBoxColumn.ItemsSource?.Cast<object>().Select(item => item?.ToString() ?? string.Empty).ToArray()
-                      ?? Array.Empty<string>()
-                    : Array.Empty<string>()))
-            .ToList();
-        columns = AssignStablePrototypeLayoutKeys(columns);
+        var columns = BuildFastMaterialsColumns();
         columns = ApplyFastMaterialsLayout(columns, _workflowPreferencesService.GetFastMaterialsGridLayout());
 
         var rows = BuildMaterialsPrototypeRows(columns);
@@ -156,6 +138,83 @@ public partial class MainWindow
             SelectMaterialsPrototypeRow,
             directCanonicalEditing);
     }
+
+    private static List<MaterialsPrototypeColumn> BuildFastMaterialsColumns() =>
+        AssignStablePrototypeLayoutKeys(
+        [
+            FastMaterialsColumn("Material ID", 90, "MaterialID", true),
+            FastMaterialsColumn("Public reports", 95, "PublishPublicReports", false, MaterialsPrototypeEditorKind.CheckBox),
+            FastMaterialsColumn("Public test details", 115, "PublishPublicTestDetails", false, MaterialsPrototypeEditorKind.CheckBox),
+            FastMaterialsColumn("Manufacturer", 140, "Manufacturer", false),
+            FastMaterialsColumn("Product Line", 140, "ProductLine", false),
+            FastMaterialsColumn("Marketing Name", 160, "MarketingName", false),
+            FastMaterialsColumn("Base Material", 110, "BaseMaterial", false),
+            FastMaterialsColumn("Category", 120, "MaterialCategory", true),
+            FastMaterialsColumn("Variant / Finish", 130, "VariantFinish", false),
+            FastMaterialsColumn("Reinforcement", 120, "Reinforcement", false),
+            FastMaterialsColumn("Color", 100, "Color", false),
+            FastMaterialsColumn("Manufacturer Website", 260, "ManufacturerWebsite", false),
+            FastMaterialsColumn("YouTube Review URL", 260, "YouTubeReviewUrl", false),
+            FastMaterialsColumn("Video", 80, "Video", true),
+            FastMaterialsColumn("Tested Status", 120, "TestedStatus", true),
+            FastMaterialsColumn("In Tensile", 90, "InTensile", true),
+            FastMaterialsColumn("In Impact", 90, "InImpact", true),
+            FastMaterialsColumn("In Stiffness", 95, "InStiffness", true),
+            FastMaterialsColumn("Notes", 220, "Notes", false),
+            FastMaterialsColumn("Spool Weight g / spool", 110, "SpoolWeightG", false),
+            FastMaterialsColumn("Manufacturer SKU", 140, "ManufacturerSku", false),
+            FastMaterialsColumn("Inventory ID", 120, "InventoryId", false),
+            FastMaterialsColumn("Purchase ID", 120, "PurchaseId", false),
+            FastMaterialsColumn("Purchased From", 150, "PurchasedFrom", false),
+            FastMaterialsColumn("Supplier URL", 190, "SupplierUrl", false),
+            FastMaterialsColumn("Purchase Date", 110, "PurchaseDate", false),
+            FastMaterialsColumn("Order Number", 130, "OrderNumber", false),
+            FastMaterialsColumn("Batch Number", 120, "BatchNumber", false),
+            FastMaterialsColumn("Storage Location", 140, "StorageLocation", false),
+            FastMaterialsColumn("Inventory Status", 120, "InventoryStatus", false, MaterialsPrototypeEditorKind.ComboBox,
+                ["Unopened", "Opened", "Empty"]),
+            FastMaterialsColumn("Inventory Qty", 90, "Quantity", true),
+            FastMaterialsColumn("Remaining Weight g / spool", 130, "RemainingWeightG", false),
+            FastMaterialsColumn("Purchase Price", 110, "PurchasePriceAmount", false),
+            FastMaterialsColumn("Currency", 90, "PurchaseCurrency", false, MaterialsPrototypeEditorKind.ComboBox,
+                ["ISK", "USD", "EUR", "GBP", "DKK", "SEK", "NOK"]),
+            FastMaterialsColumn("Shipping", 100, "ShippingAmount", false),
+            FastMaterialsColumn("VAT", 90, "VatAmount", false),
+            FastMaterialsColumn("MSRP Amount", 105, "MsrpAmount", false),
+            FastMaterialsColumn("MSRP Currency", 105, "MsrpCurrency", false, MaterialsPrototypeEditorKind.ComboBox,
+                ["USD", "ISK", "EUR", "GBP"]),
+            FastMaterialsColumn("MSRP USD", 95, "MsrpUsd", true),
+            FastMaterialsColumn("Landed Cost", 105, "LandedCostAmount", false),
+            FastMaterialsColumn("Landed Currency", 115, "LandedCostCurrency", false, MaterialsPrototypeEditorKind.ComboBox,
+                ["USD", "ISK", "EUR", "GBP"]),
+            FastMaterialsColumn("Landed USD", 95, "LandedCostUsd", true),
+            FastMaterialsColumn("MSRP USD/kg", 105, "MsrpUsdPerKg", true),
+            FastMaterialsColumn("Landed USD/kg", 115, "LandedCostUsdPerKg", true),
+            FastMaterialsColumn("Price Checked", 110, "PriceCheckedDate", false),
+            FastMaterialsColumn("Thumbnail Filename", 170, "ThumbnailFilename", false),
+            FastMaterialsColumn("Sort Order", 90, "SortOrder", true),
+            FastMaterialsColumn("Source Priority", 130, "SourcePriority", true),
+            FastMaterialsColumn("Archived / exclude from website export", 190, "IsArchived", false,
+                MaterialsPrototypeEditorKind.CheckBox),
+            FastMaterialsColumn("Website Display Name", 240, "WebsiteDisplayName", true),
+            FastMaterialsColumn("Material Key", 260, "MaterialKey", true),
+            FastMaterialsColumn("Validation", 180, "ValidationSummary", true)
+        ]);
+
+    private static MaterialsPrototypeColumn FastMaterialsColumn(
+        string header,
+        double width,
+        string propertyName,
+        bool isReadOnly,
+        MaterialsPrototypeEditorKind editorKind = MaterialsPrototypeEditorKind.Text,
+        IReadOnlyList<string>? choices = null) =>
+        new(
+            header,
+            width,
+            propertyName,
+            isReadOnly,
+            editorKind,
+            choices ?? Array.Empty<string>());
 
     private void SelectMaterialsPrototypeRow(object source)
     {
@@ -171,16 +230,18 @@ public partial class MainWindow
     }
 
     private List<MaterialsPrototypeRow> BuildMaterialsPrototypeRows(
-        IReadOnlyList<MaterialsPrototypeColumn> columns) =>
-        NativeMaterialsGrid.Items
-            .Cast<object>()
-            .OfType<NativeMaterialRow>()
+        IReadOnlyList<MaterialsPrototypeColumn> columns)
+    {
+        var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
+        return _nativeMaterialRows
+            .Where(row => visibleMaterialIds.Contains(row.MaterialID))
             .Select(row =>
             {
                 var cells = columns.Select(column => PrototypeCellText(row, column.PropertyName)).ToArray();
                 return new MaterialsPrototypeRow(row, row.MaterialID, cells, cells.ToArray(), () => row.IsRowValid);
             })
             .ToList();
+    }
 
     private static List<MaterialsPrototypeColumn> ApplyFastMaterialsLayout(
         List<MaterialsPrototypeColumn> columns,
@@ -440,6 +501,7 @@ public partial class MainWindow
             Loaded += (_, _) =>
             {
                 _surface.SetViewport(0, 0, _scrollViewer.ViewportWidth, _scrollViewer.ViewportHeight);
+                _surface.InvalidateVisual();
             };
         }
 
@@ -779,6 +841,14 @@ public partial class MainWindow
 
         public bool ReloadFromCanonical(string reason)
         {
+            return SynchronizeFromCanonical(reason, preferredSelection: null, resetVerticalOffset: true);
+        }
+
+        public bool SynchronizeFromCanonical(
+            string reason,
+            object? preferredSelection = null,
+            bool resetVerticalOffset = false)
+        {
             CloseEditor(commit: true);
             var changes = GetChanges();
             if (changes.Count > 0)
@@ -797,26 +867,37 @@ public partial class MainWindow
                 if (result == MessageBoxResult.Yes && !_applyChanges(changes)) return false;
             }
 
+            var selectedSource = preferredSelection ?? _surface.SelectedSource;
             var reloaded = _reloadRows(_columns);
+            var reloadedBySource = reloaded.ToDictionary(row => row.Source);
+            var existingSources = _rows.Select(row => row.Source).ToList();
+            if (existingSources.Count == reloaded.Count &&
+                existingSources.All(reloadedBySource.ContainsKey))
+            {
+                RefreshCurrentRowsFromSources();
+                _surface.SelectSource(selectedSource);
+                UpdateApplyState();
+                _status.Text = $"Refreshed {_rows.Count:N0} row(s) from {reason}.";
+                return true;
+            }
+
+            var ordered = existingSources
+                .Where(reloadedBySource.ContainsKey)
+                .Select(source => reloadedBySource[source])
+                .ToList();
+            var retainedSources = ordered.Select(row => row.Source).ToHashSet();
+            ordered.AddRange(reloaded.Where(row => !retainedSources.Contains(row.Source)));
             _rows.Clear();
-            _rows.AddRange(reloaded);
-            _surface.ReplaceRows();
+            _rows.AddRange(ordered);
+            _surface.ReplaceRows(selectedSource);
             var horizontalOffset = _scrollViewer.HorizontalOffset;
-            _scrollViewer.ScrollToVerticalOffset(0);
+            var verticalOffset = resetVerticalOffset ? 0 : _scrollViewer.VerticalOffset;
+            _scrollViewer.ScrollToVerticalOffset(verticalOffset);
             _surface.SetViewport(
                 horizontalOffset,
-                0,
+                verticalOffset,
                 _scrollViewer.ViewportWidth,
                 _scrollViewer.ViewportHeight);
-            _ = Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded, () =>
-            {
-                _scrollViewer.ScrollToVerticalOffset(0);
-                _surface.SetViewport(
-                    _scrollViewer.HorizontalOffset,
-                    0,
-                    _scrollViewer.ViewportWidth,
-                    _scrollViewer.ViewportHeight);
-            });
             UpdateApplyState();
             _status.Text = $"Reloaded {_rows.Count:N0} row(s) from {reason}.";
             return true;
@@ -1001,10 +1082,28 @@ public partial class MainWindow
             LayoutChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public void ReplaceRows()
+        public object? SelectedSource =>
+            _selectedRow >= 0 && _selectedRow < _rows.Count
+                ? _rows[_selectedRow].Source
+                : null;
+
+        public void SelectSource(object? source)
         {
-            _selectedRow = -1;
-            _selectedColumn = -1;
+            if (source is null) return;
+            var rowIndex = _rows.FindIndex(row => ReferenceEquals(row.Source, source));
+            if (rowIndex < 0) return;
+            _selectedRow = rowIndex;
+            _selectedColumn = Math.Max(0, _selectedColumn);
+            EnsureCellVisible?.Invoke(CurrentCellBounds());
+            InvalidateVisual();
+        }
+
+        public void ReplaceRows(object? selectedSource = null)
+        {
+            _selectedRow = selectedSource is null
+                ? -1
+                : _rows.FindIndex(row => ReferenceEquals(row.Source, selectedSource));
+            if (_selectedRow < 0) _selectedColumn = -1;
             _contentHeight = Math.Max(HeaderHeight + RowHeight, HeaderHeight + _rows.Count * RowHeight);
             Height = Math.Max(_contentHeight, _viewportHeight);
             InvalidateMeasure();

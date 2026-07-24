@@ -23,6 +23,26 @@
   filtered row parity and canonical source-object ownership.
 - Owner runtime testing accepted all three measurement contracts and Full Data
   Verification passed 320/320; Stage 2 is complete.
+- Replaced the Materials DataGrid-derived schema with an explicit 52-column
+  Fast contract preserving read-only, checkbox and ComboBox boundaries.
+- Replaced `NativeMaterialsGrid.Items` with the canonical Materials collection
+  scoped by the established filter/search MaterialID set.
+- Added Verification coverage for Materials schema count, editor kinds, stable
+  keys, filtered row parity and canonical source ownership.
+- Preserved current Materials row order and selection when edits do not change
+  the active filter scope.
+- Made Duplicate/Archive/Unarchive/Delete prefer the owner-visible Fast
+  selection over the stale hidden DataGrid selection.
+- Forced Fast surface redraw after tab reload and preserved selection across
+  canonical scope synchronization.
+- Delayed new MaterialID measurement synchronization until Materials SQLite
+  persistence succeeds, preventing close-time foreign-key failures.
+- Kept blocked Materials saves dirty so the close guard remains honest.
+- Made Delete persist measurement-child removal before immediate parent
+  MaterialID removal, preserving SQLite foreign-key and Verification parity.
+- Routed Archive and Unarchive into the normal Materials auto-save queue.
+- Owner runtime retest confirmed correct editing, selection, CRUD, tab redraw,
+  201/201 SQLite parity and Full Data Verification 321/321; Stage 3 is complete.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 

@@ -45,6 +45,44 @@ calculations, layout reset/persistence and Materials-filter propagation. Full
 Data Verification passed 320/320. Stage 2 is accepted; Stage 3 will replace the
 Materials DataGrid column/item adapter.
 
+Stage 3 replaces Materials column derivation with an explicit 52-column Fast
+contract, including the accepted read-only boundaries, three checkboxes and
+four governed ComboBox choice sets. Visible rows now come directly from the
+canonical Materials collection intersected with the established filter/search
+MaterialID set.
+
+The Fast Materials builder no longer reads `NativeMaterialsGrid.Columns` or
+`.Items`. Legacy Materials XAML and event paths remain collapsed pending this
+checkpoint's runtime editing, filtering, selection, layout and Verification
+acceptance.
+
+Initial Stage 3 runtime testing found four ownership regressions. Fast edits
+and checkbox changes triggered a full canonical-order reload, Duplicate read
+the hidden DataGrid selection instead of the Fast selection, returning from a
+measurement tab could leave the rendering surface white until manual reload,
+and Add/Duplicate synchronized new measurement rows before the new MaterialID
+existed in SQLite. The latter could cause a close-time measurement foreign-key
+failure and SQLite/UI parity Verification failures.
+
+Same-scope refresh now updates cells in place and preserves current row order
+and selection. Scope changes retain surviving order and selection. CRUD
+selection prefers the Fast canonical selection, tab reload invalidates the
+surface, and Materials must save successfully before new measurement rows are
+synchronized. Blocked Materials saves remain dirty instead of being reported
+as saved.
+
+The runtime corrections passed, but Verification still reported 309/321
+because the UI had returned to 201 Materials while SQLite retained 203. Delete
+had persisted removed measurement children but deferred the parent Materials
+save. Delete now completes the required child-first measurement save followed
+by immediate Materials persistence. Archive/Unarchive also enter the normal
+auto-save queue.
+
+Owner retest confirmed the two test Materials were no longer present, UI and
+SQLite returned to 201 canonical Materials and all Stage 3 behavior remained
+correct. Full Data Verification passed 321/321. Stage 3 is accepted; Stage 4
+will replace the Settings and Base Material DataGrid adapters.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on

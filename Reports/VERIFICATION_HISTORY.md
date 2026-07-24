@@ -24,6 +24,20 @@ Date: 2026-07-24
   Materials-filter propagation passed owner runtime testing.
 - ACCEPTED: v44.7.7 Stage 2 is runtime accepted.
 
+# v44.7.7 - Legacy Grid Retirement - Stage 3
+
+Date: 2026-07-24
+
+- PASS: Full Data Verification reported 321/321 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: Materials used an explicit 52-column Fast contract and canonical
+  filtered row source.
+- PASS: editing, selection, filters, layouts, CRUD and tab redraw passed owner
+  runtime testing.
+- PASS: child-first Delete persistence restored UI/SQLite parity at 201
+  canonical Materials.
+- ACCEPTED: v44.7.7 Stage 3 is runtime accepted.
+
 # v44.7.6 - Fast Workflow Grid - Settings
 
 Date: 2026-07-24

@@ -17437,6 +17437,29 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             measurementFastContractsReady && legacyGridRetirementUiReady && releaseIdentityReady
                 ? "Tensile, Impact and Stiffness Fast schemas and visible rows come from explicit contracts and canonical collections"
                 : "A measurement Fast schema, stable key, canonical visible-row source, UI retirement or release identity failed"));
+        var fastMaterialsContractColumns = BuildFastMaterialsColumns();
+        var fastMaterialsContractRows = BuildMaterialsPrototypeRows(fastMaterialsContractColumns);
+        var fastMaterialsContractReady =
+            fastMaterialsContractColumns.Count == 52 &&
+            fastMaterialsContractColumns.Select(PrototypeColumnKey).Distinct(StringComparer.Ordinal).Count() == 52 &&
+            fastMaterialsContractColumns.Count(column => column.EditorKind == MaterialsPrototypeEditorKind.CheckBox) == 3 &&
+            fastMaterialsContractColumns.Count(column => column.EditorKind == MaterialsPrototypeEditorKind.ComboBox) == 4 &&
+            fastMaterialsContractRows.Count == visibleMeasurementMaterialIds.Count &&
+            fastMaterialsContractRows.All(row => row.Source is NativeMaterialRow source &&
+                                                 _nativeMaterialRows.Contains(source)) &&
+            typeof(MaterialsRenderingPrototypeView).GetMethod(
+                nameof(MaterialsRenderingPrototypeView.SynchronizeFromCanonical)) is not null &&
+            typeof(MainWindow).GetMethod(
+                nameof(SaveNativeMaterialsSilent),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)?.ReturnType ==
+                typeof(bool);
+        checks.Add(new VerificationCheck("v44.7.7 Materials Fast-contract retirement stage gate",
+            fastMaterialsContractReady && measurementFastContractsReady &&
+            legacyGridRetirementUiReady && releaseIdentityReady,
+            fastMaterialsContractReady && measurementFastContractsReady &&
+            legacyGridRetirementUiReady && releaseIdentityReady
+                ? "Materials Fast schema and visible rows come from an explicit contract and the canonical filtered collection"
+                : "Materials schema, editors, stable keys, canonical visible-row source, prior stage or release identity failed"));
 
         return checks;
     }
@@ -22647,7 +22670,8 @@ private List<string> GetVisibleAiMaterialLabels()
             };
 
             view.Refresh();
-            _embeddedMaterialsPrototypeView?.ReloadFromCanonical("the current Materials filter/search result");
+            _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
+                "the current Materials filter/search result");
             if (_lastSelectedNativeMaterial is not null && !grid.Items.Contains(_lastSelectedNativeMaterial))
             {
                 _lastSelectedNativeMaterial.IsCurrentSelection = false;
@@ -22775,6 +22799,13 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private NativeMaterialRow? GetSelectedNativeMaterial(DataGrid grid)
     {
+        if (_embeddedMaterialsPrototypeView is not null &&
+            _lastSelectedNativeMaterial is not null &&
+            _nativeMaterialRows.Contains(_lastSelectedNativeMaterial))
+        {
+            return _lastSelectedNativeMaterial;
+        }
+
         if (grid.SelectedItem is NativeMaterialRow selected && _nativeMaterialRows.Contains(selected))
         {
             _lastSelectedNativeMaterial = selected;
@@ -23357,8 +23388,10 @@ private List<string> GetVisibleAiMaterialLabels()
         RefreshNativeMaterialGridValidation();
         RefreshNativeMaterialSummary();
         RefreshInventorySummary();
-        RefreshNativeInputModulesFromMaterialManager(markDirty: false);
-        SaveNativeMaterialsSilent();
+        if (SaveNativeMaterialsSilent())
+        {
+            RefreshNativeInputModulesFromMaterialManager(markDirty: false);
+        }
         QueueNativeMaterialDependentIntelligenceRefresh();
     }
 
@@ -25684,7 +25717,7 @@ private List<string> GetVisibleAiMaterialLabels()
         ShowTransientStatus("Materials saved successfully.");
     }
 
-    private void SaveNativeMaterialsSilent()
+    private bool SaveNativeMaterialsSilent()
     {
         try
         {
@@ -25703,28 +25736,34 @@ private List<string> GetVisibleAiMaterialLabels()
                     : "SQLite save blocked: validation issues";
             }
 
-            SetNativeMaterialsDirty(false);
             if (sqliteUpdated)
             {
+                SetNativeMaterialsDirty(false);
                 ShowNativeSavedStatus("Materials");
             }
             else
             {
                 ShowNativeSaveBlockedStatus("Materials", sqliteBlockedReason);
             }
+            return sqliteUpdated;
         }
         catch (Exception ex)
         {
             ShowNativeSaveBlockedStatus("Materials", ex.Message);
+            return false;
         }
     }
 
     private void FocusNewNativeMaterial(NativeMaterialRow row)
     {
-        if (FindName("NativeMaterialsGrid") is not DataGrid grid) return;
-
-        grid.SelectedItem = row;
         _lastSelectedNativeMaterial = row;
+        SelectMaterialsPrototypeRow(row);
+        _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
+            "the changed canonical Materials collection",
+            row);
+
+        if (FindName("NativeMaterialsGrid") is not DataGrid grid) return;
+        grid.SelectedItem = row;
         grid.ScrollIntoView(row);
         Dispatcher.BeginInvoke(new Action(() =>
         {
@@ -25761,10 +25800,10 @@ private List<string> GetVisibleAiMaterialLabels()
 
         ApplyNativeMaterialComputedFields(row, _nativeMaterialRows.Count);
         _nativeMaterialRows.Add(row);
-        SyncNativeTensileRowsWithMaterialManager(markDirty: true);
         MarkNativeMaterialsDirty();
         RefreshNativeMaterialGridValidation();
         FocusNewNativeMaterial(row);
+        QueueNativeMaterialEditRefresh();
     }
 
     private void DuplicateNativeMaterial_Click(object sender, RoutedEventArgs e)
@@ -25813,10 +25852,10 @@ private List<string> GetVisibleAiMaterialLabels()
 
         ApplyNativeMaterialComputedFields(copy, _nativeMaterialRows.Count);
         _nativeMaterialRows.Add(copy);
-        SyncNativeTensileRowsWithMaterialManager(markDirty: true);
         MarkNativeMaterialsDirty();
         RefreshNativeMaterialGridValidation();
         FocusNewNativeMaterial(copy);
+        QueueNativeMaterialEditRefresh();
     }
 
     private void ArchiveNativeMaterial_Click(object sender, RoutedEventArgs e)
@@ -25833,6 +25872,7 @@ private List<string> GetVisibleAiMaterialLabels()
         MarkNativeMaterialsDirty();
         grid.Items.Refresh();
         RefreshNativeMaterialSummary();
+        QueueNativeMaterialEditRefresh();
         ShowTransientStatus("Material archived successfully.");
     }
 
@@ -25850,6 +25890,7 @@ private List<string> GetVisibleAiMaterialLabels()
         MarkNativeMaterialsDirty();
         grid.Items.Refresh();
         RefreshNativeMaterialSummary();
+        QueueNativeMaterialEditRefresh();
         ShowTransientStatus("Material restored successfully.");
     }
 
@@ -25874,6 +25915,25 @@ private List<string> GetVisibleAiMaterialLabels()
         SyncNativeTensileRowsWithMaterialManager(markDirty: true);
         MarkNativeMaterialsDirty();
         RefreshNativeMaterialGridValidation();
+        _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
+            "the deleted canonical MaterialID");
+        try
+        {
+            SaveNativeMeasurementsToSqlite();
+            SetNativeTensileDirty(false);
+            SetNativeImpactDirty(false);
+            SetNativeStiffnessDirty(false);
+            if (!SaveNativeMaterialsSilent())
+            {
+                ShowNativeSaveBlockedStatus(
+                    "Materials",
+                    "Deleted measurement references were saved, but the MaterialID removal remains unsaved");
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowNativeSaveBlockedStatus("Materials", ex.Message);
+        }
     }
 
     private void RebuildNativeMaterialDisplayNames_Click(object sender, RoutedEventArgs e)

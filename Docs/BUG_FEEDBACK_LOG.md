@@ -473,6 +473,20 @@ filtered measurement collections. Legacy measurement XAML remains collapsed
 until this ownership passes runtime acceptance.
 Owner runtime acceptance and Full Data Verification 320/320 completed Stage 2.
 Stage 3 will replace the Materials DataGrid schema/row adapter.
+Stage 3 candidate now uses an explicit Materials Fast schema and canonical
+filtered row source. Legacy Materials XAML remains collapsed until runtime
+acceptance.
+Initial runtime testing found edit-time reordering, stale hidden-grid Duplicate
+selection, a white Materials surface after tab return and a close-time SQLite
+foreign-key failure after unsaved Add/Duplicate measurement synchronization.
+The candidate now preserves same-scope row state, uses Fast selection, redraws
+on load and synchronizes measurements only after successful Materials save.
+Runtime behavior then passed, but Verification found 201 UI Materials versus
+203 SQLite Materials because Delete deferred parent persistence after removing
+measurement children. Delete now saves child removal first and parent removal
+immediately; Archive/Unarchive queue normal auto-save.
+Owner retest confirmed the test Materials were absent, UI/SQLite parity was
+restored at 201 and Full Data Verification passed 321/321. Stage 3 is complete.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

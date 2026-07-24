@@ -21,6 +21,19 @@ acceptance.
 Owner runtime testing accepted Stage 2 and Full Data Verification passed
 320/320. Stage 3 moves the Materials Fast view to an explicit schema and
 canonical filtered row source.
+Stage 3 now provides an explicit 52-column Materials Fast contract with
+canonical filtered rows, checkbox/ComboBox ownership and stable layout keys.
+The Fast builder no longer consumes legacy Materials columns or items.
+Runtime review found edit-time reordering, hidden-grid Duplicate selection,
+white tab return and premature new-Material measurement synchronization. The
+candidate now preserves row state during same-scope refresh, prefers Fast
+selection, redraws on tab load and gates measurement sync on successful
+Materials persistence.
+Follow-up Verification exposed deferred Delete persistence: UI/measurements
+were at 201 while SQLite Materials remained at 203. Delete now persists
+measurement removals first and the parent MaterialID removal immediately.
+Owner retest confirmed 201/201 UI/SQLite parity and Full Data Verification
+passed 321/321. Stage 3 is accepted.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 
