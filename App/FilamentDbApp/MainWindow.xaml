@@ -1765,8 +1765,6 @@
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
                         <DockPanel>
                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                <Button Name="FastTensileToggleButton" Content="Use Legacy Grid" Click="ToggleFastTensileView_Click" Padding="10,4" Margin="0,0,8,0" Visibility="Collapsed"
-                                        ToolTip="Temporary fallback while the Fast Tensile grid is under runtime acceptance."/>
                                 <Button Content="Reset Columns" Click="ResetFastTensileColumns_Click" Padding="10,4"/>
                             </StackPanel>
                             <TextBlock Name="NativeTensileSummaryText" Text="Tensile measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
@@ -1856,8 +1854,6 @@
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
                         <DockPanel>
                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                <Button Name="FastImpactToggleButton" Content="Use Legacy Grid" Click="ToggleFastImpactView_Click" Padding="10,4" Margin="0,0,8,0" Visibility="Collapsed"
-                                        ToolTip="Temporary fallback while the Fast Impact grid is under runtime acceptance."/>
                                 <Button Content="Reset Columns" Click="ResetFastImpactColumns_Click" Padding="10,4"/>
                             </StackPanel>
                             <TextBlock Name="NativeImpactSummaryText" Text="Impact measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
@@ -1951,8 +1947,6 @@
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
                         <DockPanel>
                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                <Button Name="FastStiffnessToggleButton" Content="Use Legacy Grid" Click="ToggleFastStiffnessView_Click" Padding="10,4" Margin="0,0,8,0" Visibility="Collapsed"
-                                        ToolTip="Temporary fallback while the Fast Stiffness grid is under runtime acceptance."/>
                                 <Button Content="Reset Columns" Click="ResetFastStiffnessColumns_Click" Padding="10,4"/>
                             </StackPanel>
                             <TextBlock Name="NativeStiffnessSummaryText" Text="Stiffness measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>

@@ -52,6 +52,12 @@
 - Owner runtime testing accepted Settings validation/save/rollback,
   Base Material editing/CRUD, layouts and tab redraw; Full Data Verification
   passed 322/322 and Stage 4 is complete.
+- Removed Tensile, Impact and Stiffness legacy toggle controls, click handlers,
+  fallback state and reset branches.
+- Added Verification coverage requiring the three measurement fallback
+  controls and handlers to be absent.
+- Owner runtime testing accepted Fast-only measurement workflows and Full Data
+  Verification passed 323/323; Stage 5A is complete.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 

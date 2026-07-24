@@ -17340,17 +17340,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.GetFastGridLayout)) is not null &&
             typeof(WorkflowPreferencesService).GetMethod(nameof(WorkflowPreferencesService.SetFastGridLayout)) is not null &&
             typeof(MainWindow).GetMethod(nameof(ActivateDefaultFastTensileView), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod(nameof(ApplyFastTensileChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod(nameof(ToggleFastTensileView_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+            typeof(MainWindow).GetMethod(nameof(ApplyFastTensileChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("v44.7.3 Fast Workflow Grid - Tensile candidate release gate",
             workflowLayoutResetReady && fastTensileReady && releaseIdentityReady,
             workflowLayoutResetReady && fastTensileReady && releaseIdentityReady
-                ? "Fast Tensile owns separate keyed layout state, canonical measurement apply/save integration and a visible legacy-grid fallback"
-                : "Fast Tensile layout, canonical apply, fallback, retained layout safety or release identity failed"));
+                ? "Fast Tensile owns separate keyed layout state and canonical measurement apply/save integration"
+                : "Fast Tensile layout, canonical apply, retained layout safety or release identity failed"));
         var fastImpactReady =
             typeof(MainWindow).GetMethod(nameof(ActivateDefaultFastImpactView), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
             typeof(MainWindow).GetMethod(nameof(ApplyFastImpactChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod(nameof(ToggleFastImpactView_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
             typeof(MainWindow).GetMethod(nameof(ResetFastImpactColumns_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         var tensileNegativeProbe = new NativeTensileMeasurementRow { Upright1 = "44" };
         tensileNegativeProbe.Upright1 = "-44";
@@ -17363,12 +17361,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("v44.7.4 Fast Workflow Grid - Impact candidate release gate",
             workflowLayoutResetReady && fastTensileReady && fastImpactReady && nativeMeasurementLowerBoundsReady && releaseIdentityReady,
             workflowLayoutResetReady && fastTensileReady && fastImpactReady && nativeMeasurementLowerBoundsReady && releaseIdentityReady
-                ? "Fast Impact owns separate keyed layout state, bounded canonical measurement apply/save, non-negative input and a visible legacy-grid fallback"
-                : "Fast Impact layout, bounded non-negative apply, fallback, retained Fast Tensile contract or release identity failed"));
+                ? "Fast Impact owns separate keyed layout state, bounded canonical measurement apply/save and non-negative input"
+                : "Fast Impact layout, bounded non-negative apply, retained Fast Tensile contract or release identity failed"));
         var fastStiffnessReady =
             typeof(MainWindow).GetMethod(nameof(ActivateDefaultFastStiffnessView), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
             typeof(MainWindow).GetMethod(nameof(ApplyFastStiffnessChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod(nameof(ToggleFastStiffnessView_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
             typeof(MainWindow).GetMethod(nameof(ResetFastStiffnessColumns_Click), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         var stiffnessBoundsProbe = new NativeStiffnessMeasurementRow
         {
@@ -17383,8 +17380,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("v44.7.5 Fast Workflow Grid - Stiffness candidate release gate",
             workflowLayoutResetReady && fastTensileReady && fastImpactReady && fastStiffnessReady && stiffnessBoundsReady && releaseIdentityReady,
             workflowLayoutResetReady && fastTensileReady && fastImpactReady && fastStiffnessReady && stiffnessBoundsReady && releaseIdentityReady
-                ? "Fast Stiffness owns separate keyed layout state, bounded canonical input/save integration and a visible legacy-grid fallback"
-                : "Fast Stiffness layout, bounded canonical apply, fallback, retained accepted Fast-grid contracts or release identity failed"));
+                ? "Fast Stiffness owns separate keyed layout state and bounded canonical input/save integration"
+                : "Fast Stiffness layout, bounded canonical apply, retained accepted Fast-grid contracts or release identity failed"));
         var fastSettingsReady =
             typeof(MainWindow).GetMethod(nameof(ActivateDefaultFastSettingsViews), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
             typeof(MainWindow).GetMethod(nameof(ApplyFastNativeSettingsChanges), System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
@@ -17398,9 +17395,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 : "Fast Settings layout, canonical general/Base Material apply, fallback, retained accepted Fast-grid contracts or release identity failed"));
         var legacyGridRetirementUiReady =
             FastMaterialsViewMenuItem.Visibility == Visibility.Collapsed &&
-            FastTensileToggleButton.Visibility == Visibility.Collapsed &&
-            FastImpactToggleButton.Visibility == Visibility.Collapsed &&
-            FastStiffnessToggleButton.Visibility == Visibility.Collapsed &&
             FastSettingsToggleButton.Visibility == Visibility.Collapsed;
         checks.Add(new VerificationCheck("v44.7.7 Legacy Grid Retirement UI-stage release gate",
             legacyGridRetirementUiReady && fastTensileReady && fastImpactReady && fastStiffnessReady &&
@@ -17482,6 +17476,26 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             measurementFastContractsReady && legacyGridRetirementUiReady && releaseIdentityReady
                 ? "General Settings and Base Materials use explicit Fast schemas and canonical row collections"
                 : "A Settings schema, Value-only boundary, ComboBox contract, row source, prior stage or release identity failed"));
+        var measurementFallbackCodeRetired =
+            FindName("FastTensileToggleButton") is null &&
+            FindName("FastImpactToggleButton") is null &&
+            FindName("FastStiffnessToggleButton") is null &&
+            typeof(MainWindow).GetMethod(
+                "ToggleFastTensileView_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "ToggleFastImpactView_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "ToggleFastStiffnessView_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null;
+        checks.Add(new VerificationCheck("v44.7.7 Measurement fallback-code retirement stage gate",
+            measurementFallbackCodeRetired && fastSettingsContractsReady &&
+            measurementFastContractsReady && releaseIdentityReady,
+            measurementFallbackCodeRetired && fastSettingsContractsReady &&
+            measurementFastContractsReady && releaseIdentityReady
+                ? "Measurement legacy toggle controls, handlers and fallback state are absent"
+                : "A measurement fallback control/handler remains, a prior Fast contract failed or release identity is misaligned"));
 
         return checks;
     }

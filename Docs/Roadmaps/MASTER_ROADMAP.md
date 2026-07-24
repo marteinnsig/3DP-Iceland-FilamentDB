@@ -1635,6 +1635,8 @@ changes priority.
   - Follow-up found deferred Delete left 201 UI rows versus 203 SQLite rows; child-first immediate save is required.
   - Stage 4 Settings contracts are runtime accepted with Full Data Verification 322/322.
   - Stage 5 removes retired legacy DataGrid XAML, toggle handlers and grid-only edit paths.
+  - Stage 5A toggle/handler retirement is runtime accepted with Full Data Verification 323/323.
+  - Stage 5B removes collapsed measurement XAML and grid-only callers.
   - Replace those adapters with explicit Fast contracts before deleting legacy XAML, handlers and commit paths.
   - Preserve canonical SQLite, formulas, filters, validation, settings CRUD and layout behavior at every stage.
   - Require runtime acceptance after each removal stage.
@@ -1658,6 +1660,14 @@ changes priority.
   - Default unsorted views to numeric MaterialID ascending: lowest first and newest/highest last.
   - Preserve explicit user sorting, filters, canonical row identity, SQLite order and legacy fallback behavior.
   - Verify first load, reset, editing, filters, restart persistence and both fast/legacy grid paths.
+- **v44.7.11 — Settings Manager Command Clarity**
+  - State: Planned.
+  - Feedback disposition: Open.
+  - Trace persisted SQLite ownership and callers for `Load Settings` and `Restore Built-in Defaults`.
+  - Make reload versus default-No replacement behavior explicit; correct overlap only if runtime evidence proves a defect.
+  - Preserve Deployment Settings and Base Material Catalog ownership, cancellation and restart behavior.
+  - Rename `Reset Fast Columns` to `Reset Columns` without changing the accepted layout-reset scope.
+  - Verify custom values, load, restore, cancellation, restart and column-layout reset at runtime.
 
 ### Later v44 owner-value sequence
 

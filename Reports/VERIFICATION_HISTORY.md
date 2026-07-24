@@ -50,6 +50,18 @@ Date: 2026-07-24
   passed owner runtime testing.
 - ACCEPTED: v44.7.7 Stage 4 is runtime accepted.
 
+# v44.7.7 - Legacy Grid Retirement - Stage 5A
+
+Date: 2026-07-24
+
+- PASS: Full Data Verification reported 323/323 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: measurement legacy toggle controls, handlers, fallback state and reset
+  branches were absent.
+- PASS: editing, navigation, reset, filters, layouts and close-time save passed
+  owner runtime testing.
+- ACCEPTED: v44.7.7 Stage 5A is runtime accepted.
+
 # v44.7.6 - Fast Workflow Grid - Settings
 
 Date: 2026-07-24

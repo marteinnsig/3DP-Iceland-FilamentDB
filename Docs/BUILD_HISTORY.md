@@ -40,6 +40,11 @@ ComboBoxes. Both retain canonical row sources and no longer derive Fast schemas
 from legacy DataGrid columns.
 Owner runtime testing accepted Stage 4 and Full Data Verification passed
 322/322.
+Stage 5A removes all measurement legacy toggle controls, handlers, fallback
+state and reset branches. Fast measurement views are the only activatable
+paths; collapsed legacy XAML awaits the Stage 5B deletion checkpoint.
+Owner runtime testing accepted Stage 5A and Full Data Verification passed
+323/323.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

@@ -98,6 +98,20 @@ rollback, Base Material editing/ComboBoxes/CRUD, layouts and tab redraw. Full
 Data Verification passed 322/322. Stage 4 is accepted; Stage 5 can remove the
 retired legacy DataGrid XAML, toggles and grid-only event paths.
 
+Stage 5A removes the Tensile, Impact and Stiffness legacy toggle controls,
+toggle handlers, fallback state and legacy reset branches. The three accepted
+Fast views are now the only activatable measurement UI paths.
+
+The collapsed measurement DataGrid XAML and grid-only startup/edit/close
+callers remain for Stage 5B. Removing them is deliberately gated behind one
+runtime pass proving that eliminating the fallback activation paths did not
+affect Fast editing, reset, filters, persistence or close-time save.
+
+Owner runtime testing accepted measurement editing, navigation, reset,
+filters, layout persistence and close-time save with Fast as the only
+activatable path. Full Data Verification passed 323/323. Stage 5A is accepted;
+Stage 5B can remove collapsed measurement XAML and grid-only lifecycle code.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on

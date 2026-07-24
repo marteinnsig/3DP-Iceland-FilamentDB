@@ -7,46 +7,18 @@ public partial class MainWindow
 {
     private MaterialsRenderingPrototypeView? _embeddedFastImpactView;
     private List<MaterialsPrototypeColumn>? _defaultFastImpactColumns;
-    private bool _fastImpactEnabled = true;
 
     private void ActivateDefaultFastImpactView()
     {
-        if (!_fastImpactEnabled || _embeddedFastImpactView is not null) return;
+        if (_embeddedFastImpactView is not null) return;
         _embeddedFastImpactView = CreateFastImpactView();
         FastImpactViewHost.Content = _embeddedFastImpactView;
         FastImpactViewHost.Visibility = Visibility.Visible;
         NativeImpactGrid.Visibility = Visibility.Collapsed;
-        FastImpactToggleButton.Content = "Use Legacy Grid";
-    }
-
-    private void ToggleFastImpactView_Click(object sender, RoutedEventArgs e)
-    {
-        if (_fastImpactEnabled)
-        {
-            _embeddedFastImpactView?.ConfirmCanClose();
-            _embeddedFastImpactView = null;
-            FastImpactViewHost.Content = null;
-            FastImpactViewHost.Visibility = Visibility.Collapsed;
-            NativeImpactGrid.Visibility = Visibility.Visible;
-            FastImpactToggleButton.Content = "Use Fast Grid";
-            _fastImpactEnabled = false;
-            return;
-        }
-
-        _fastImpactEnabled = true;
-        ActivateDefaultFastImpactView();
     }
 
     private void ResetFastImpactColumns_Click(object sender, RoutedEventArgs e)
     {
-        if (!_fastImpactEnabled)
-        {
-            ResetWorkflowGridColumns_Click(
-                new Button { Tag = nameof(NativeImpactGrid) },
-                e);
-            return;
-        }
-
         var confirmation = MessageBox.Show(
             this,
             "Reset Fast Impact column widths and order to the application defaults?",

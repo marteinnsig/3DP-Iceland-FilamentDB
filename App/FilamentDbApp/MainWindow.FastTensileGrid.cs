@@ -7,46 +7,18 @@ public partial class MainWindow
 {
     private MaterialsRenderingPrototypeView? _embeddedFastTensileView;
     private List<MaterialsPrototypeColumn>? _defaultFastTensileColumns;
-    private bool _fastTensileEnabled = true;
 
     private void ActivateDefaultFastTensileView()
     {
-        if (!_fastTensileEnabled || _embeddedFastTensileView is not null) return;
+        if (_embeddedFastTensileView is not null) return;
         _embeddedFastTensileView = CreateFastTensileView();
         FastTensileViewHost.Content = _embeddedFastTensileView;
         FastTensileViewHost.Visibility = Visibility.Visible;
         NativeTensileGrid.Visibility = Visibility.Collapsed;
-        FastTensileToggleButton.Content = "Use Legacy Grid";
-    }
-
-    private void ToggleFastTensileView_Click(object sender, RoutedEventArgs e)
-    {
-        if (_fastTensileEnabled)
-        {
-            _embeddedFastTensileView?.ConfirmCanClose();
-            _embeddedFastTensileView = null;
-            FastTensileViewHost.Content = null;
-            FastTensileViewHost.Visibility = Visibility.Collapsed;
-            NativeTensileGrid.Visibility = Visibility.Visible;
-            FastTensileToggleButton.Content = "Use Fast Grid";
-            _fastTensileEnabled = false;
-            return;
-        }
-
-        _fastTensileEnabled = true;
-        ActivateDefaultFastTensileView();
     }
 
     private void ResetFastTensileColumns_Click(object sender, RoutedEventArgs e)
     {
-        if (!_fastTensileEnabled)
-        {
-            ResetWorkflowGridColumns_Click(
-                new Button { Tag = nameof(NativeTensileGrid) },
-                e);
-            return;
-        }
-
         var confirmation = MessageBox.Show(
             this,
             "Reset Fast Tensile column widths and order to the application defaults?",

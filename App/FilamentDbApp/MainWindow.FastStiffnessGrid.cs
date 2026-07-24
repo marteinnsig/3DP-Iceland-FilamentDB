@@ -7,46 +7,18 @@ public partial class MainWindow
 {
     private MaterialsRenderingPrototypeView? _embeddedFastStiffnessView;
     private List<MaterialsPrototypeColumn>? _defaultFastStiffnessColumns;
-    private bool _fastStiffnessEnabled = true;
 
     private void ActivateDefaultFastStiffnessView()
     {
-        if (!_fastStiffnessEnabled || _embeddedFastStiffnessView is not null) return;
+        if (_embeddedFastStiffnessView is not null) return;
         _embeddedFastStiffnessView = CreateFastStiffnessView();
         FastStiffnessViewHost.Content = _embeddedFastStiffnessView;
         FastStiffnessViewHost.Visibility = Visibility.Visible;
         NativeStiffnessGrid.Visibility = Visibility.Collapsed;
-        FastStiffnessToggleButton.Content = "Use Legacy Grid";
-    }
-
-    private void ToggleFastStiffnessView_Click(object sender, RoutedEventArgs e)
-    {
-        if (_fastStiffnessEnabled)
-        {
-            _embeddedFastStiffnessView?.ConfirmCanClose();
-            _embeddedFastStiffnessView = null;
-            FastStiffnessViewHost.Content = null;
-            FastStiffnessViewHost.Visibility = Visibility.Collapsed;
-            NativeStiffnessGrid.Visibility = Visibility.Visible;
-            FastStiffnessToggleButton.Content = "Use Fast Grid";
-            _fastStiffnessEnabled = false;
-            return;
-        }
-
-        _fastStiffnessEnabled = true;
-        ActivateDefaultFastStiffnessView();
     }
 
     private void ResetFastStiffnessColumns_Click(object sender, RoutedEventArgs e)
     {
-        if (!_fastStiffnessEnabled)
-        {
-            ResetWorkflowGridColumns_Click(
-                new Button { Tag = nameof(NativeStiffnessGrid) },
-                e);
-            return;
-        }
-
         var confirmation = MessageBox.Show(
             this,
             "Reset Fast Stiffness column widths and order to the application defaults?",

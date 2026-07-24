@@ -30,16 +30,34 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 14 |
+| Open | 15 |
 | In progress | 1 |
 | Partially solved | 3 |
 | Solved | 29 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **51** |
+| **Total tracked findings** | **52** |
 
 ## Tracked findings
+
+Date: 2026-07-24
+Area: Settings Manager command clarity and column reset naming
+Type: Workflow friction / UI polish
+Severity: Minor
+Status: Open
+Resolution: Research the exact persisted-data ownership and mutation paths behind `Load Settings` and `Restore Built-in Defaults`.
+Make their distinct purpose, confirmation and result explicit; if they are unintentionally equivalent, correct the caller behavior
+without changing canonical SQLite settings or deployment/Base Material ownership. Rename `Reset Fast Columns` to `Reset Columns` while
+preserving the accepted settings-column layout reset scope.
+Verification evidence: Requires persisted custom-value, load, built-in restore, cancellation, restart and column-layout runtime tests.
+What happened: `Load Settings` and `Restore Built-in Defaults` appear to perform the same action by replacing entered values with
+defaults. The `Reset Fast Columns` label also exposes an implementation detail rather than the user action.
+Expected behavior: Loading should clearly reload the intended saved canonical values, restoring defaults should be a distinct
+default-No destructive replacement, and the layout action should be labeled `Reset Columns`.
+Steps to reproduce: Enter non-default Settings values, use each command separately and compare the resulting values; inspect the
+Settings Manager toolbar label for the column reset action.
+Screenshot / export / report attached: User feedback on 2026-07-24.
 
 Date: 2026-07-24
 Area: Materials / Tensile / Impact / Stiffness default row ordering
@@ -492,6 +510,12 @@ schemas with canonical row collections. Legacy Settings XAML remains collapsed
 until runtime acceptance.
 Owner runtime acceptance and Full Data Verification 322/322 completed Stage 4.
 Stage 5 can remove legacy DataGrid XAML and grid-only event paths.
+Stage 5A candidate removes measurement legacy toggle controls, handlers and
+fallback state. Collapsed measurement XAML remains until this activation-path
+retirement passes runtime acceptance.
+Owner runtime acceptance and Full Data Verification 323/323 completed Stage
+5A. Stage 5B can remove collapsed measurement XAML and grid-only lifecycle
+code.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,
