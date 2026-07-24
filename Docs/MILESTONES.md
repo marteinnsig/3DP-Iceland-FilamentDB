@@ -1,5 +1,14 @@
 # Milestone History
 
+# v44.5.0 - Retired Excel Import Surface
+
+Completed the first bounded legacy compatibility audit increment by removing
+the unreachable original-Excel database import UI/service surface while
+preserving governed Excel disaster recovery, SQLite compatibility data and JSON
+migration snapshots. Runtime Full Data Verification passed 301/301.
+
+---
+
 # v44.4.1 - Measured Materials Responsiveness
 
 Viewport-only Materials rendering is runtime accepted in Visual Studio and on

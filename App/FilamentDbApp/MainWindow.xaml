@@ -297,7 +297,7 @@
                                 ToolTip="Return the selected archived material to active lists and exports."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE777;"/><TextBlock Text="Unarchive"/></StackPanel></Button>
                         <Button Click="DeleteNativeMaterial_Click" Style="{StaticResource IconActionButton}" Margin="0,0,16,8"
                                 ToolTip="Permanently delete the selected material and its measurement rows."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE74D;"/><TextBlock Text="Delete"/></StackPanel></Button>
-                        <TextBlock Name="NativeMaterialSummaryText" Text="Materials loaded from Excel defaults." VerticalAlignment="Center" Foreground="#64748B" Margin="8,0,0,8"/>
+                        <TextBlock Name="NativeMaterialSummaryText" Text="Materials load from canonical SQLite storage." VerticalAlignment="Center" Foreground="#64748B" Margin="8,0,0,8"/>
                         <TextBlock Name="NativeMaterialCountText" Text="0 materials" VerticalAlignment="Center" Foreground="#2563EB" FontWeight="SemiBold" Margin="14,0,0,8"/>
                         <TextBlock Name="NativeMaterialSelectionText" Text="Selected MaterialID: none" VerticalAlignment="Center" Foreground="#1E3A8A" FontWeight="SemiBold" Margin="14,0,0,8"/>
                     </WrapPanel>
@@ -1288,7 +1288,7 @@
                                         <StackPanel Grid.Column="4" Margin="10,0,10,0" VerticalAlignment="Bottom">
                                             <Button Content="Refresh planner" Click="RefreshVideoPlanner_Click" Padding="10,5" />
                                         </StackPanel>
-                                        <TextBlock Grid.Column="5" x:Name="VideoPlannerStatusText" Text="Import Excel data to build the video planner." VerticalAlignment="Center" TextWrapping="Wrap" Foreground="#1E3A8A" />
+                                        <TextBlock Grid.Column="5" x:Name="VideoPlannerStatusText" Text="Load Materials data to build the video planner." VerticalAlignment="Center" TextWrapping="Wrap" Foreground="#1E3A8A" />
                                     </Grid>
                                 </Border>
 
@@ -1540,7 +1540,7 @@
                                         </StackPanel>
                                         <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Bottom">
                                             <Button Content="Refresh recommendations" Click="RefreshRecommendations_Click" Padding="10,5" Margin="0,0,12,0" />
-                                            <TextBlock x:Name="RecommendationStatusText" Text="Import Excel data to build recommendations." VerticalAlignment="Center" TextWrapping="Wrap" Foreground="#1E3A8A" />
+                                            <TextBlock x:Name="RecommendationStatusText" Text="Load Materials data to build recommendations." VerticalAlignment="Center" TextWrapping="Wrap" Foreground="#1E3A8A" />
                                         </StackPanel>
                                     </Grid>
                                 </Border>

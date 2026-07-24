@@ -1,3 +1,13 @@
+## v44.5.0 - Retired Excel Import Surface
+
+- Removes the unreachable original-Excel database import handler and its
+  caller-exclusive importer services.
+- Preserves governed Excel disaster recovery, lower-level SQLite compatibility
+  data and JSON empty-database migration snapshots.
+- Replaces stale instructions that pointed to the unavailable import command.
+- Adds a Verification ownership gate for the retired/current Excel boundaries.
+- Runtime Full Data Verification passed 301/301 with zero failures.
+
 ## v44.4.1 - Measured Materials Responsiveness
 
 - Makes the accepted viewport-only Fast Materials view the startup default.

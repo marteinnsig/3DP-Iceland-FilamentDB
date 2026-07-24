@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.4.1 — Measured Materials Responsiveness**
+Current canonical release: **v44.5.0 — Retired Excel Import Surface**
 
-Last runtime-accepted baseline: **v44.4.1 — Measured Materials Responsiveness**
+Last runtime-accepted baseline: **v44.5.0 — Retired Excel Import Surface**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -816,6 +816,16 @@ direct install, explicit SQLite restore and portable runtime.**
   runtime-accepted canonical release.
 
 ### v44.5 — Legacy compatibility audit and bounded maintainability
+
+Status: **First bounded increment complete and runtime accepted as v44.5.0 —
+Retired Excel Import Surface.**
+
+- The unreachable original-Excel database import handler and its
+  caller-exclusive importer services are removed. Lower-level SQLite legacy
+  tables/readers remain for existing-data compatibility.
+- Governed Excel disaster recovery and JSON empty-database migration snapshots
+  remain supported and unchanged.
+- Runtime Full Data Verification passed 301/301 with zero failures.
 
 - Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state ownership.
 - Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete UI, dead handlers/services and stale documentation in small reviewed increments.

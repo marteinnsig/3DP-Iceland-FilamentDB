@@ -1,4 +1,25 @@
-# Current Build Notes - v44.4.1
+# Current Build Notes - v44.5.0
+
+## Retired Excel Import Surface
+
+v44.5.0 is the first bounded Legacy Compatibility Audit increment. It removes
+the unreachable original-Excel database import click handler and its two
+caller-exclusive importer services. The lower-level SQLite compatibility
+tables, models, readers and writers remain intact so existing migrated data and
+pre-canonical fallback behavior are not retired by inference.
+
+Governed Excel disaster-recovery export, manifest/hash verification,
+transactional restore and required SQLite recovery backup are unchanged. JSON
+migration snapshots, Recovery Center, SQLite restore, updater, reports,
+website and FTPS behavior are also unchanged. Stale empty-data messages now
+refer to loading canonical Materials rather than an unavailable original-Excel
+import command.
+
+A new Verification check requires the retired handler to remain absent while
+the governed Excel backup, verification and guarded-restore entry points remain
+available. Isolated Debug and Release builds pass with zero warnings and zero
+errors. Runtime Full Data Verification passed 301/301 with zero failures on
+2026-07-24; v44.5.0 is runtime accepted.
 
 ## Measured Materials Responsiveness
 

@@ -1554,52 +1554,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private void ImportExcel_Click(object sender, RoutedEventArgs e)
-    {
-        var dialog = new OpenFileDialog
-        {
-            Title = "Select 3DP Iceland Labs Excel Database",
-            Filter = "Excel macro-enabled workbook (*.xlsm)|*.xlsm|Excel workbook (*.xlsx)|*.xlsx|All files (*.*)|*.*"
-        };
-
-        if (dialog.ShowDialog(this) != true) return;
-
-        try
-        {
-            StatusText.Text = "Importing workbook…";
-
-            var importer = new ExcelWorkbookImporter();
-            var workbook = importer.ImportWorkbook(dialog.FileName);
-            _database.ReplaceWorkbook(workbook);
-
-            // Excel remains the source of truth during the migration. After a workbook import,
-            // refresh native measurement transition rows from the imported workbook cache so the
-            // native tabs immediately show the same raw inputs as Excel.
-            ReplaceNativeTensileRows(GetImportedNativeTensileRows());
-            SetNativeTensileDirty(false);
-            RefreshNativeTensileSummary();
-            ReplaceNativeImpactRows(GetImportedNativeImpactRows());
-            SetNativeImpactDirty(false);
-            RefreshNativeImpactSummary();
-            ReplaceNativeStiffnessRows(GetImportedNativeStiffnessRows());
-            SetNativeStiffnessDirty(false);
-            RefreshNativeStiffnessSummary();
-            RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: false);
-
-            var stats = _database.GetDatabaseStats();
-            var hasVariantFinish = workbook.Materials.Columns.Contains("Variant / Finish");
-            StatusText.Text = $"Imported {workbook.Materials.Rows.Count} materials, {workbook.Sheets.Count} workbook sheets, and {stats.TestSummaryValues} summary metrics from {System.IO.Path.GetFileName(dialog.FileName)}"
-                + (hasVariantFinish ? " — Variant / Finish imported OK." : " — WARNING: Variant / Finish column was not found in the selected workbook.");
-            FooterText.Text = $"SQLite database: {_database.DatabasePath}";
-            RefreshApplicationStatistics();
-        }
-        catch (Exception ex)
-        {
-            StatusText.Text = "Import failed.";
-            MessageBox.Show(this, ex.Message, "Import failed", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
     private void RestoreSqliteBackup_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new OpenFileDialog
@@ -2628,10 +2582,10 @@ public partial class MainWindow : Window
         if (RecommendationVideoIdeaList is not null) RecommendationVideoIdeaList.ItemsSource = null;
         _recommendationVideoIdeas.Clear();
         UpdateProductionDashboard();
-        if (VideoPlannerStatusText is not null) VideoPlannerStatusText.Text = "Import Excel data to build the video planner.";
+        if (VideoPlannerStatusText is not null) VideoPlannerStatusText.Text = "Load Materials data to build the video planner.";
         if (PerformanceRecommendationList is not null) PerformanceRecommendationList.ItemsSource = null;
         if (ApplicationRecommendationList is not null) ApplicationRecommendationList.ItemsSource = null;
-        if (RecommendationStatusText is not null) RecommendationStatusText.Text = "Import Excel data to build recommendations.";
+        if (RecommendationStatusText is not null) RecommendationStatusText.Text = "Load Materials data to build recommendations.";
         ResetSelectedMaterialIntelligence();
         ResetRecommendationDetailPanel();
     }
@@ -3412,7 +3366,7 @@ public partial class MainWindow : Window
         if (visibleRows.Count == 0)
         {
             RankingsGrid.ItemsSource = null;
-            RankingStatusText.Text = "Import Excel data to build rankings.";
+            RankingStatusText.Text = "Load Materials data to build rankings.";
             RankingSummaryText.Text = "No rankings yet";
             return;
         }
@@ -3640,7 +3594,7 @@ public partial class MainWindow : Window
         if (visibleRows.Count == 0)
         {
             CategoryRankingsGrid.ItemsSource = null;
-            CategoryRankingStatusText.Text = "Import Excel data to build category rankings.";
+            CategoryRankingStatusText.Text = "Load Materials data to build category rankings.";
             CategoryRankingSummaryText.Text = "No category rankings yet";
             return;
         }
@@ -3902,7 +3856,7 @@ public partial class MainWindow : Window
         if (visibleRows.Count == 0)
         {
             AwardsGrid.ItemsSource = null;
-            AwardsStatusText.Text = "Import Excel data to build awards.";
+            AwardsStatusText.Text = "Load Materials data to build awards.";
             AwardsSummaryText.Text = "No awards yet";
             return;
         }
@@ -4189,7 +4143,7 @@ public partial class MainWindow : Window
         if (visibleRows.Count == 0)
         {
             VideoPlannerList.ItemsSource = null;
-            VideoPlannerStatusText.Text = "Import Excel data to build the video planner.";
+            VideoPlannerStatusText.Text = "Load Materials data to build the video planner.";
             return;
         }
 
@@ -5507,7 +5461,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         {
             PerformanceRecommendationList.ItemsSource = null;
             ApplicationRecommendationList.ItemsSource = null;
-            RecommendationStatusText.Text = "Import Excel data to build recommendations.";
+            RecommendationStatusText.Text = "Load Materials data to build recommendations.";
             ResetRecommendationDetailPanel();
             return;
         }
@@ -6504,7 +6458,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         {
             if (GetNativeWebsiteExportCandidateRows().Count == 0)
             {
-                WebsiteExportPreviewLog.Text = "No material data is loaded. Import the Excel database or load native MaterialID rows before generating a website export.";
+                WebsiteExportPreviewLog.Text = "No material data is loaded. Load canonical MaterialID rows before generating a website export.";
                 WebsiteExportSummaryText.Text = "No data loaded";
                 return false;
             }
@@ -13510,8 +13464,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         {
             _database.ClearCache();
             UpdateCountText();
-            StatusText.Text = "Local cache cleared — import the Excel workbook to reload data.";
-            FooterText.Text = $"SQLite cache: {_database.DatabasePath}";
+            StatusText.Text = "Legacy engine cache tables cleared. Canonical SQLite Materials and governed recovery data remain separately owned.";
+            FooterText.Text = $"SQLite database: {_database.DatabasePath}";
         }
         catch (Exception ex)
         {
@@ -16826,6 +16780,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             excelRecoveryReady && localRestoreContractReady && canonicalWorkingStoresReady && releaseIdentityReady
                 ? $"Format v{excelRecoverySnapshot.FormatVersion}; {excelRecoverySnapshot.Tables.Count} canonical tables; {excelRecoveryRows:N0} rows; lossless typed chunk encoding, per-table SHA-256, transactional restore and SQLite recovery backup"
                 : "Excel recovery manifest/table/row/hash contract, transactional restore, local SQLite recovery or release identity failed"));
+        var retiredOriginalExcelImportSurfaceReady =
+            typeof(MainWindow).GetMethod("ImportExcel_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(ExcelDisasterRecoveryService).GetMethod("AddRecoveryPackage") is not null &&
+            typeof(ExcelDisasterRecoveryService).GetMethod("LoadAndVerify") is not null &&
+            typeof(MainWindow).GetMethod("ExportNativeExcel_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("RestoreExcelDisasterRecovery_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v44.5 Retired Original Excel Import Surface release gate",
+            retiredOriginalExcelImportSurfaceReady && excelRecoveryReady && canonicalWorkingStoresReady && releaseIdentityReady,
+            retiredOriginalExcelImportSurfaceReady && excelRecoveryReady && canonicalWorkingStoresReady && releaseIdentityReady
+                ? "Unreachable original-Excel database import UI/service surface is absent; governed Excel disaster-recovery export, verification and guarded restore remain available"
+                : "Retired original-Excel import isolation, governed Excel disaster recovery, canonical SQLite ownership or release identity failed"));
         var compatibilityCatalog = _database.GetLocalBackupCatalog();
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
@@ -21086,7 +21051,7 @@ private List<string> GetVisibleAiMaterialLabels()
         var visibleRows = GetCanonicalVisibleMaterialRows();
         if (visibleRows.Count == 0)
         {
-            return "AI Assistant\n\nNo visible materials are loaded. Import Excel data or clear filters and try again.";
+            return "AI Assistant\n\nNo visible materials are loaded. Load Materials data or clear filters and try again.";
         }
 
         var rows = visibleRows

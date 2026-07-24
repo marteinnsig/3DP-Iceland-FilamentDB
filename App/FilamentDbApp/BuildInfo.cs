@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "FAST-MATERIALS-VIEW";
-    public const string ReleaseTitle = "Measured Materials Responsiveness";
+    public const string ReleaseCode = "LEGACY-IMPORT-AUDIT";
+    public const string ReleaseTitle = "Retired Excel Import Surface";
 
     public static string Version
     {

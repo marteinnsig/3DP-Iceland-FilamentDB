@@ -1,3 +1,11 @@
+## v44.5.0 - Retired Excel Import Surface
+
+Removed only the unreachable original-Excel database import handler and its
+caller-exclusive importer services. Lower-level SQLite compatibility data,
+legacy JSON migration snapshots and governed Excel disaster recovery remain
+intact. Runtime Full Data Verification passed 301/301 with zero failures;
+v44.5.0 is accepted.
+
 ## v44.4.1 - Measured Materials Responsiveness
 
 Measured the wide Materials DataGrid bottleneck, rejected configuration-only
