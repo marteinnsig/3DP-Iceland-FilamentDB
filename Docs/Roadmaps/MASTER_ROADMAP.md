@@ -4,7 +4,10 @@ Current canonical release: **v44.6.2 — Canonical Measurement Date Foundation**
 
 Last runtime-accepted baseline: **v44.6.2 — Canonical Measurement Date Foundation**
 
-Current candidate: **None — select the next bounded item from BUG_FEEDBACK_LOG**
+Current application candidate: **None**
+
+Current roadmap increment: **None — next planned item is v44.7.1 Category
+Rankings Scope Controls**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -103,7 +106,8 @@ Delivered in v41.0–v41.6:
 - Cross-linked canonical MSRP, Inventory Engine output and active SQLite manufacturer context in engineering recommendations.
 - Manufacturer and category rank, peer-count and group-average positioning from existing score profiles.
 - Canonical report, whitepaper and Video Planner handoffs over existing governed Engineering Intelligence outputs.
-- Internally calibrated consistency-score interpretation and documented purpose-built equipment limitations across all downstream surfaces.
+- Internally calibrated consistency-score interpretation and documented purpose-built equipment limitations across all downstream
+  surfaces.
 
 Completion:
 
@@ -464,34 +468,54 @@ Delivered in v43.1-v43.3.1:
 ### v43.3 — Recovery Compatibility Center
 
 - Inventory automatic, manual, pre-restore, pre-Excel-restore and external local SQLite backups in one UI.
-- Show schema, integrity and canonical row counts with Ready, Migration required, Legacy/incomplete, newer/incompatible or corrupt status.
+- Show schema, integrity and canonical row counts with Ready, Migration required, Legacy/incomplete, newer/incompatible or corrupt
+  status.
 - Treat schema v27 as the minimum standalone SQLite recovery boundary; older backups require external transition evidence.
 - Verify schema v27-v28 migrations on self-deleting temporary copies and require integrity plus canonical count preservation.
-- Rerun compatibility verification before guarded restore and preserve the established recovery snapshot, atomic replacement and restart contracts.
+- Rerun compatibility verification before guarded restore and preserve the established recovery snapshot, atomic replacement and restart
+  contracts.
 - Keep remote website Production restore and publishing unchanged.
 
 ### v43.3.1 — Backup and Recovery Center UI
 
 - Status: complete and runtime accepted on 2026-07-22.
 - Replace scattered File commands with one Backup and Recovery Center entry.
-- Place manual SQLite backup, SQLite verify/restore, governed Excel backup/restore and Open Storage Folder in the center; omit the retired legacy Excel database import.
+- Place manual SQLite backup, SQLite verify/restore, governed Excel backup/restore and Open Storage Folder in the center; omit the
+  retired legacy Excel database import.
 - Remove manual-backup and duplicate database/backup-folder buttons from System Diagnostics.
 - Retain Choose Storage Folder as configuration and keep diagnostics verification/reporting controls unchanged.
 
 ### v43.4 — Safe Application Update and Rollback
 
-Status: first read-only signed-package verification increment runtime accepted on 2026-07-22; application-file staging/apply/rollback remains scheduled before installer work.
+Status: first read-only signed-package verification increment runtime accepted on 2026-07-22; application-file staging/apply/rollback
+remains scheduled before installer work.
 
-- Keep application binaries, SQLite user data and published website state as three separate update/recovery boundaries. v43.4 changes only the application-binary boundary and reuses the accepted SQLite backup/migration checks; FTPS publishing and remote rollback remain unchanged.
-- Define one versioned release manifest containing release identity, minimum/current supported database schema, complete governed file inventory, byte lengths and SHA-256 hashes. Integrity hashes alone are not publisher authentication: production auto-update must additionally require Authenticode or a detached signature rooted in an embedded trusted public key.
-- Download or select an update into a unique staging folder outside the live application directory. Reject downgrade, same-version, newer-unsupported-schema, missing/extra governed files, path traversal, hash mismatch, invalid signature and incomplete package states before shutdown.
-- Create and verify a manual SQLite recovery backup before any update that may start a newer schema. Never package, copy or overwrite the active database, backup history, Credential Manager secrets or configured storage-folder pointer as application files.
-- Use a small external updater/helper because the running single-file EXE cannot safely replace itself. The helper must preserve the current app package as a versioned rollback snapshot, install by same-volume atomic renames where possible, record a durable transaction manifest and restart the staged version.
-- Require a startup health acknowledgement from the new version. If process launch, startup/schema compatibility or the bounded post-update health contract fails or times out, the helper restores the prior app package and relaunches it; the pre-update SQLite recovery backup remains available for guarded data rollback rather than being restored silently.
-- Preserve the last known-good application package independently of the rotating SQLite backup set. Cleanup must never remove the active version, an incomplete transaction or the only known-good rollback package.
-- First implementation increment should provide manifest/package verification and update-readiness diagnostics without applying untrusted packages. Apply/update automation follows only after the signing trust root and helper transaction tests are runtime approved.
-- Add Verification Center gates for manifest parsing, path containment, hash/signature policy, version/schema decisions, update-state recovery and strict separation from SQLite/website publishing.
-- Installer and portable modes must later consume this same manifest, package layout and rollback contract rather than inventing a second deployment path.
+- Keep application binaries, SQLite user data and published website state as three separate update/recovery boundaries. v43.4 changes
+  only the application-binary boundary and reuses the accepted SQLite backup/migration checks; FTPS publishing and remote rollback
+  remain unchanged.
+- Define one versioned release manifest containing release identity, minimum/current supported database schema, complete governed file
+  inventory, byte lengths and SHA-256 hashes. Integrity hashes alone are not publisher authentication: production auto-update must
+  additionally require Authenticode or a detached signature rooted in an embedded trusted public key.
+- Download or select an update into a unique staging folder outside the live application directory. Reject downgrade, same-version,
+  newer-unsupported-schema, missing/extra governed files, path traversal, hash mismatch, invalid signature and incomplete package states
+  before shutdown.
+- Create and verify a manual SQLite recovery backup before any update that may start a newer schema. Never package, copy or overwrite
+  the active database, backup history, Credential Manager secrets or configured storage-folder pointer as application files.
+- Use a small external updater/helper because the running single-file EXE cannot safely replace itself. The helper must preserve the
+  current app package as a versioned rollback snapshot, install by same-volume atomic renames where possible, record a durable
+  transaction manifest and restart the staged version.
+- Require a startup health acknowledgement from the new version. If process launch, startup/schema compatibility or the bounded
+  post-update health contract fails or times out, the helper restores the prior app package and relaunches it; the pre-update SQLite
+  recovery backup remains available for guarded data rollback rather than being restored silently.
+- Preserve the last known-good application package independently of the rotating SQLite backup set. Cleanup must never remove the active
+  version, an incomplete transaction or the only known-good rollback package.
+- First implementation increment should provide manifest/package verification and update-readiness diagnostics without applying
+  untrusted packages. Apply/update automation follows only after the signing trust root and helper transaction tests are runtime
+  approved.
+- Add Verification Center gates for manifest parsing, path containment, hash/signature policy, version/schema decisions, update-state
+  recovery and strict separation from SQLite/website publishing.
+- Installer and portable modes must later consume this same manifest, package layout and rollback contract rather than inventing a
+  second deployment path.
 
 #### v43 delivery sequence and status
 
@@ -509,32 +533,47 @@ Status: first read-only signed-package verification increment runtime accepted o
 
 ### v43.4.1 — Release Signing and Package Creation
 
-Status: complete and runtime accepted on 2026-07-22. Production CNG trust root, canonical signed package command and authoritative application-verifier probe passed. Private-key rotation/recovery remains required before unattended updater deployment.
+Status: complete and runtime accepted on 2026-07-22. Production CNG trust root, canonical signed package command and authoritative
+application-verifier probe passed. Private-key rotation/recovery remains required before unattended updater deployment.
 
-- Generate a dedicated ECDSA P-256 production release keypair. Embed only the public key in the application; keep the private key outside the repository, application package, SQLite storage/backup folder and normal build output.
-- Add an explicit release-packaging command that consumes the private key, produces the existing versioned manifest, hashes the complete governed Release file inventory and writes the detached manifest signature into the update ZIP.
-- Refuse dirty, mismatched-version, incomplete or unexpected build output. Include licensing/notices and required runtime assets while excluding SQLite data, backups, credentials, storage configuration, reports, publish staging and developer files.
-- Prove that the production application accepts a correctly signed newer package and blocks a modified payload, modified manifest, wrong key, missing signature, downgrade, same version, path traversal and unsupported SQLite schema.
+- Generate a dedicated ECDSA P-256 production release keypair. Embed only the public key in the application; keep the private key
+  outside the repository, application package, SQLite storage/backup folder and normal build output.
+- Add an explicit release-packaging command that consumes the private key, produces the existing versioned manifest, hashes the complete
+  governed Release file inventory and writes the detached manifest signature into the update ZIP.
+- Refuse dirty, mismatched-version, incomplete or unexpected build output. Include licensing/notices and required runtime assets while
+  excluding SQLite data, backups, credentials, storage configuration, reports, publish staging and developer files.
+- Prove that the production application accepts a correctly signed newer package and blocks a modified payload, modified manifest, wrong
+  key, missing signature, downgrade, same version, path traversal and unsupported SQLite schema.
 - Keep package inspection read-only; no live application-file replacement is authorized in v43.4.1.
 
 ### v43.5 — Transactional Application Update and Rollback
 
-v43.5.0 status: complete and runtime accepted on 2026-07-22. Isolated transaction engine, external helper, signed ten-file package and commit/rollback Verification passed. Live application mutation remains intentionally disabled. v43.5.1 will add process wait/launch, startup health acknowledgement and guarded Apply.
+v43.5.0 status: complete and runtime accepted on 2026-07-22. Isolated transaction engine, external helper, signed ten-file package and
+commit/rollback Verification passed. Live application mutation remains intentionally disabled. v43.5.1 will add process wait/launch,
+startup health acknowledgement and guarded Apply.
 
-v43.5.1 status: complete and runtime accepted on 2026-07-22. A signed 11-file v43.5.1 portable base applied the signed v43.5.2 candidate, created a verified SQLite backup, committed durable transaction state, restarted and acknowledged exact version/schema health; Verification passed 293/293. Repository/Visual Studio build outputs remain explicitly excluded as update targets.
+v43.5.1 status: complete and runtime accepted on 2026-07-22. A signed 11-file v43.5.1 portable base applied the signed v43.5.2
+candidate, created a verified SQLite backup, committed durable transaction state, restarted and acknowledged exact version/schema
+health; Verification passed 293/293. Repository/Visual Studio build outputs remain explicitly excluded as update targets.
 
 - Add a minimal external updater/helper so the running single-file application never attempts to overwrite itself.
 - Require successful signed-package readiness and a verified SQLite recovery backup before shutdown or application-file mutation.
-- Stage on the same volume, preserve the active version as last-known-good and use durable transaction state plus atomic directory/file renames where supported.
-- Restart the new version and require a bounded startup health acknowledgement covering release identity, executable inventory and SQLite schema/startup compatibility.
-- Automatically restore and relaunch the prior application package if staging, replacement, launch or health acknowledgement fails. Never silently roll SQLite data back; retain the verified pre-update database backup for guarded recovery.
+- Stage on the same volume, preserve the active version as last-known-good and use durable transaction state plus atomic directory/file
+  renames where supported.
+- Restart the new version and require a bounded startup health acknowledgement covering release identity, executable inventory and
+  SQLite schema/startup compatibility.
+- Automatically restore and relaunch the prior application package if staging, replacement, launch or health acknowledgement fails.
+  Never silently roll SQLite data back; retain the verified pre-update database backup for guarded recovery.
 - Test success, crash/power-loss boundaries and rollback from each durable transaction phase before runtime acceptance.
 
 ### v43.6 — Update and Deployment Diagnostics
 
-v43.6.0 status: complete and runtime accepted on 2026-07-22. Visual Studio Debug confirmed canonical identity, read-only history with one prior Committed transaction, zero incomplete transactions and Verification PASS 294/294. The extension preserves the v1 transaction schema and v43.5.1 process/package contracts.
+v43.6.0 status: complete and runtime accepted on 2026-07-22. Visual Studio Debug confirmed canonical identity, read-only history with
+one prior Committed transaction, zero incomplete transactions and Verification PASS 294/294. The extension preserves the v1 transaction
+schema and v43.5.1 process/package contracts.
 
-- Show active, staged and last-known-good application versions, package/signature identity, SQLite pre-update backup and durable transaction status.
+- Show active, staged and last-known-good application versions, package/signature identity, SQLite pre-update backup and durable
+  transaction status.
 - Detect and safely resume or roll back an incomplete update after process termination or machine restart.
 - Record concise update/rollback history without credentials or private signing material.
 - Add cleanup rules that preserve the active version, incomplete transactions and the only known-good rollback package.
@@ -542,203 +581,439 @@ v43.6.0 status: complete and runtime accepted on 2026-07-22. Visual Studio Debug
 
 ### Later v43 — Installer and Portable Deployment
 
-v43.7.0 status: per-user installer, exact six-file governed portable ZIP and isolated application-release deployment plan are runtime accepted. Clean VM install/restart, SQLite transfer, credential isolation, branding, Verification Center, live `/downloads` publish and browser download passed. Remote signed-update discovery/download remains follow-on work.
+v43.7.0 status: per-user installer, exact six-file governed portable ZIP and isolated application-release deployment plan are runtime
+accepted. Clean VM install/restart, SQLite transfer, credential isolation, branding, Verification Center, live `/downloads` publish and
+browser download passed. Remote signed-update discovery/download remains follow-on work.
 
 - Build installer and portable modes only after v43.5-v43.6 runtime acceptance.
-- Both modes must consume the same signed package, manifest, governed file inventory, data separation and rollback contract; no second updater architecture.
+- Both modes must consume the same signed package, manifest, governed file inventory, data separation and rollback contract; no second
+  updater architecture.
 - Preserve the configured SQLite storage folder independently of application install location and uninstall behavior.
 
 ## Pre-v44 Repository Privacy, Provenance and Hygiene Audit
 
-Status: **Complete; Audits 1-7 passed. Option A replaced GitHub history with one sanitized root commit, and the repository is approved for public visibility subject to the retained-copy cautions recorded below.**
+Status: **Complete; Audits 1-7 passed. Option A replaced GitHub history with one sanitized root commit, and the repository is approved
+for public visibility subject to the retained-copy cautions recorded below.**
 
-Purpose: prove that the application, distributable packages, local workspace and complete Git/GitHub history are safe before any public-repository or open-platform work begins. Preserve accepted runtime behavior and use small backwards-compatible corrections only. Each gate must record search scope, exact evidence, risk classification, decision and verification result before the next gate starts.
+Purpose: prove that the application, distributable packages, local workspace and complete Git/GitHub history are safe before any
+public-repository or open-platform work begins. Preserve accepted runtime behavior and use small backwards-compatible corrections only.
+Each gate must record search scope, exact evidence, risk classification, decision and verification result before the next gate starts.
 
 ### Audit 1 — Historical 176-material dataset
 
-Status: complete; **gate failed for repository privacy, while runtime/distributable clean-profile isolation remains proven. Remediation is blocked on complete-history Audit 6.**
+Status: complete; **gate failed for repository privacy, while runtime/distributable clean-profile isolation remains proven. Remediation
+is blocked on complete-history Audit 6.**
 
-- Search current tracked/untracked source, generated SQL, migrations, scripts, embedded resources, tests, docs and retained artifacts for the historical 176-material dataset, representative private material markers and any alternate serialized form.
+- Search current tracked/untracked source, generated SQL, migrations, scripts, embedded resources, tests, docs and retained artifacts
+  for the historical 176-material dataset, representative private material markers and any alternate serialized form.
 - Inspect SQLite creation/seed paths separately from user-owned databases; never copy or expose the owner database during this audit.
 - Classify every match as executable seed, inactive historical code, documentation, build output or false positive.
-- Gate: no distributable/runtime path may create private Materials on a clean profile. Do not delete evidence until Git-history exposure is assessed in Audit 6.
+- Gate: no distributable/runtime path may create private Materials on a clean profile. Do not delete evidence until Git-history exposure
+  is assessed in Audit 6.
 
 Audit 1 evidence (2026-07-22):
 
-- `App/FilamentDbApp/MainWindow.xaml.cs` contains exactly 176 historical `NativeMaterialRow` literals (`[private-material-id-removed]` through a non-contiguous final `[private-material-id-removed]`) inside `#if false`. The compiler excludes them and `GetDefaultNativeMaterialRows()` returns an empty list, but the private dataset text is tracked and visible in current GitHub `master`.
-- `App/FilamentDbApp/Assets/website-template-index.html` is a tracked 590,345-byte data-bearing snapshot. Its `const DATA` payload contains 200 unique MaterialIDs (`[private-material-id-removed]`-`[private-material-id-removed]`) plus measurement/sample, pricing and video-link fields. Packaging excludes this file, but current-tree repository privacy fails.
-- Retained local signed packages v43.4.1, v43.5.0 and v43.5.1 contain the same 590,345-byte website snapshot. Their application EXEs did not expose the known `[private-material-id-removed]` or private-name markers in UTF-8/UTF-16 scans. The production v43.8.8 signed package contains neither known marker and preserves the accepted zero-data clean-install boundary.
-- No tracked or current non-build `.sqlite`, `.sqlite3`, `.db`, `.sql`, `.csv`, `.tsv`, `.xlsx` or `.xls` data file was found. SQLite inserts in `LocalDatabase` are parameterized persistence/import paths, not hard-coded material seeds.
-- Immediate safety decision: keep the GitHub repository private; do not publish or mirror it. Do not remove current files or rewrite history until Audit 6 establishes every reachable copy and an approved remediation sequence.
+- `App/FilamentDbApp/MainWindow.xaml.cs` contains exactly 176 historical `NativeMaterialRow` literals (`[private-material-id-removed]`
+  through a non-contiguous final `[private-material-id-removed]`) inside `#if false`. The compiler excludes them and
+  `GetDefaultNativeMaterialRows()` returns an empty list, but the private dataset text is tracked and visible in current GitHub
+  `master`.
+- `App/FilamentDbApp/Assets/website-template-index.html` is a tracked 590,345-byte data-bearing snapshot. Its `const DATA` payload
+  contains 200 unique MaterialIDs (`[private-material-id-removed]`-`[private-material-id-removed]`) plus measurement/sample, pricing and
+  video-link fields. Packaging excludes this file, but current-tree repository privacy fails.
+- Retained local signed packages v43.4.1, v43.5.0 and v43.5.1 contain the same 590,345-byte website snapshot. Their application EXEs did
+  not expose the known `[private-material-id-removed]` or private-name markers in UTF-8/UTF-16 scans. The production v43.8.8 signed
+  package contains neither known marker and preserves the accepted zero-data clean-install boundary.
+- No tracked or current non-build `.sqlite`, `.sqlite3`, `.db`, `.sql`, `.csv`, `.tsv`, `.xlsx` or `.xls` data file was found. SQLite
+  inserts in `LocalDatabase` are parameterized persistence/import paths, not hard-coded material seeds.
+- Immediate safety decision: keep the GitHub repository private; do not publish or mirror it. Do not remove current files or rewrite
+  history until Audit 6 establishes every reachable copy and an approved remediation sequence.
 
 ### Audit 2 — Embedded HTML and website snapshots
 
-Status: complete; **gate passed for current installer/portable/update payload isolation, but failed for current-tree repository privacy. Remediation remains blocked on complete-history Audit 6.**
+Status: complete; **gate passed for current installer/portable/update payload isolation, but failed for current-tree repository privacy.
+Remediation remains blocked on complete-history Audit 6.**
 
-- Inventory literal HTML, HTML templates, JavaScript payloads, compiled resources and `.html` files in source, build scripts and package inputs.
+- Inventory literal HTML, HTML templates, JavaScript payloads, compiled resources and `.html` files in source, build scripts and package
+  inputs.
 - Distinguish small renderer contract fixtures from historical website snapshots or data-bearing templates.
-- Gate: no private website snapshot, embedded dataset or obsolete HTML artifact may enter installer, portable or update packages; required renderer fixtures must be minimal and documented.
+- Gate: no private website snapshot, embedded dataset or obsolete HTML artifact may enter installer, portable or update packages;
+  required renderer fixtures must be minimal and documented.
 
 Audit 2 evidence (2026-07-22):
 
-- Exactly two tracked `.html` files exist. `App/FilamentDbApp/Assets/website-template-index.html` is the 590,345-byte obsolete/data-bearing snapshot identified by Audit 1: one `const DATA` payload, 200 unique MaterialIDs and private engineering/pricing/link data. It is not referenced by the project or runtime template loader; the canonical active main-site template is SQLite-governed. Keeping this snapshot in current Git nevertheless fails repository privacy.
-- `App/FilamentDbApp/Assets/Website/MethodologyPortal.html` is a 20,400-byte intentionally embedded static methodology fragment. It contains no `const DATA`, MaterialID, price/cost field, FTPS identity or application dataset. Its three YouTube methodology links are public content, and `BuildMethodologyPortalHtml()` loads the named embedded resource for the website methodology section and Verification checks.
-- HTML-like source in `MainWindow.xaml.cs`, website services and reporting services is renderer/validation code, not a stored customer dataset. Report builders HTML-encode typed model values; the Verification Center website-link fixture uses only synthetic `MAT-PUBLIC-*` identities. The 176 real MaterialID literals counted in `MainWindow.xaml.cs` belong solely to the separately identified disabled Audit 1 block, not to an HTML fixture.
-- The v43.8.8 signed update ZIP contains only the application EXE, updater EXE, governed icon/logo, license, notices and signed manifest. The v43.8.8 portable ZIP contains the same governed application files without the manifest. Neither package contains an `.html` file or the obsolete snapshot; the installer is built from that already-verified extracted payload.
-- Deployment construction explicitly rejects `website-template-index.html`, SQLite/database/spreadsheet/tabular data files, `native-*` files and known private seed markers. This is a useful second boundary, while the signed packager's exact governed inventory is the primary package boundary.
-- Decision: retain the two HTML files and existing evidence unchanged until Audit 6 maps Git-history exposure. In remediation, remove the obsolete data snapshot from the current tree/history as approved, retain the data-free embedded methodology fragment, and preserve the current SQLite template and governed packaging contracts.
+- Exactly two tracked `.html` files exist. `App/FilamentDbApp/Assets/website-template-index.html` is the 590,345-byte
+  obsolete/data-bearing snapshot identified by Audit 1: one `const DATA` payload, 200 unique MaterialIDs and private
+  engineering/pricing/link data. It is not referenced by the project or runtime template loader; the canonical active main-site template
+  is SQLite-governed. Keeping this snapshot in current Git nevertheless fails repository privacy.
+- `App/FilamentDbApp/Assets/Website/MethodologyPortal.html` is a 20,400-byte intentionally embedded static methodology fragment. It
+  contains no `const DATA`, MaterialID, price/cost field, FTPS identity or application dataset. Its three YouTube methodology links are
+  public content, and `BuildMethodologyPortalHtml()` loads the named embedded resource for the website methodology section and
+  Verification checks.
+- HTML-like source in `MainWindow.xaml.cs`, website services and reporting services is renderer/validation code, not a stored customer
+  dataset. Report builders HTML-encode typed model values; the Verification Center website-link fixture uses only synthetic
+  `MAT-PUBLIC-*` identities. The 176 real MaterialID literals counted in `MainWindow.xaml.cs` belong solely to the separately identified
+  disabled Audit 1 block, not to an HTML fixture.
+- The v43.8.8 signed update ZIP contains only the application EXE, updater EXE, governed icon/logo, license, notices and signed
+  manifest. The v43.8.8 portable ZIP contains the same governed application files without the manifest. Neither package contains an
+  `.html` file or the obsolete snapshot; the installer is built from that already-verified extracted payload.
+- Deployment construction explicitly rejects `website-template-index.html`, SQLite/database/spreadsheet/tabular data files, `native-*`
+  files and known private seed markers. This is a useful second boundary, while the signed packager's exact governed inventory is the
+  primary package boundary.
+- Decision: retain the two HTML files and existing evidence unchanged until Audit 6 maps Git-history exposure. In remediation, remove
+  the obsolete data snapshot from the current tree/history as approved, retain the data-free embedded methodology fragment, and preserve
+  the current SQLite template and governed packaging contracts.
 
 ### Audit 3 — FTPS identities, endpoints and credentials
 
-Status: complete; **clean-profile credential isolation and v43.8.8 package gates pass, but current-tree repository privacy fails because the private FTPS username remains in tracked historical documentation and a negative deployment marker. Remediation remains blocked on complete-history Audit 6.**
+Status: complete; **clean-profile credential isolation and v43.8.8 package gates pass, but current-tree repository privacy fails because
+the private FTPS username remains in tracked historical documentation and a negative deployment marker. Remediation remains blocked on
+complete-history Audit 6.**
 
-- Search case-insensitively for `3dpiceland`, `[private-ftps-identity-removed]`, `www.iskort.is`, FTP/FTPS URIs, usernames, passwords, tokens and connection strings across tracked/untracked files and package inputs.
-- Classify public governed endpoints separately from private account identities and secrets. Confirm clean-profile FTPS host/user remain empty and passwords remain only in Windows Credential Manager.
-- Gate: public HTTPS product endpoints may be explicit; private usernames, passwords and owner-specific defaults must not exist in distributable code or repository content.
+- Search case-insensitively for `3dpiceland`, `[private-ftps-identity-removed]`, `www.iskort.is`, FTP/FTPS URIs, usernames, passwords,
+  tokens and connection strings across tracked/untracked files and package inputs.
+- Classify public governed endpoints separately from private account identities and secrets. Confirm clean-profile FTPS host/user remain
+  empty and passwords remain only in Windows Credential Manager.
+- Gate: public HTTPS product endpoints may be explicit; private usernames, passwords and owner-specific defaults must not exist in
+  distributable code or repository content.
 
 Audit 3 evidence (2026-07-22):
 
-- Clean SQLite schema creation inserts `DeploymentSettings` with an empty FTPS host, port 21 and empty username. `DeploymentSettingsRecord` has the same empty host/user defaults. Verification explicitly checks that a clean profile excludes the private deployment identity; the successful VM clean-install observation agrees with this code path.
-- No password column or password configuration value exists. The password box falls back to a host/user-scoped Windows generic credential, and `WindowsCredentialService` uses `CredWriteW` only after a successful encrypted connection and `CredReadW` for later publishes. Password bytes are cleared after the native write. Source and non-build workspace scans found no non-empty password/secret/token/API-key assignment, credential-bearing FTP URI, `.env`, private-key, certificate-bundle or similarly named secret artifact.
-- Exact private username matches in the current tree are limited to: a negative deployment-package rejection marker, the historical v39.2 changelog entry, the historical v40.15 build note and this audit plan/evidence. It is not a model default, SQLite seed, connection constructor default or public report value. The build note that says existing installations seed that identity describes the earlier compatibility state and is stale for clean-profile behavior after the deployment-isolation correction.
-- `www.iskort.is` / `iskort.is` HTTPS references are intentional public product routes: website/report links, installer/support pages, downloads and the signed update feed. The update client enforces HTTPS, exact `www.iskort.is` host and `/3dp/updates/` root before accepting a package URL. These public browser endpoints are not authentication material.
-- The v43.8.8 signed update ZIP, portable ZIP and installer contain no detectable private username marker. Text deployment/feed metadata contains no private username; the feed intentionally contains the public HTTPS update route. The package payload contains no FTP/FTPS credential URI.
-- Repository-level gate result: FAIL until the private username is removed from current tracked prose and the rejection rule is converted to a non-identifying policy or hashed/test-safe fixture. Runtime/distributable gate result: PASS. No credential rotation is presently indicated because no password, token or private key was found, but Audit 6 must still scan every reachable historical blob and ref before that conclusion is final.
-- Decision: do not alter FTPS runtime behavior, endpoints, documentation history or rejection markers yet. Retain evidence until Audit 6 maps GitHub exposure; then apply the smallest approved current-tree and, if necessary, history remediation while preserving empty clean-profile defaults and Windows Credential Manager storage.
+- Clean SQLite schema creation inserts `DeploymentSettings` with an empty FTPS host, port 21 and empty username.
+  `DeploymentSettingsRecord` has the same empty host/user defaults. Verification explicitly checks that a clean profile excludes the
+  private deployment identity; the successful VM clean-install observation agrees with this code path.
+- No password column or password configuration value exists. The password box falls back to a host/user-scoped Windows generic
+  credential, and `WindowsCredentialService` uses `CredWriteW` only after a successful encrypted connection and `CredReadW` for later
+  publishes. Password bytes are cleared after the native write. Source and non-build workspace scans found no non-empty
+  password/secret/token/API-key assignment, credential-bearing FTP URI, `.env`, private-key, certificate-bundle or similarly named
+  secret artifact.
+- Exact private username matches in the current tree are limited to: a negative deployment-package rejection marker, the historical
+  v39.2 changelog entry, the historical v40.15 build note and this audit plan/evidence. It is not a model default, SQLite seed,
+  connection constructor default or public report value. The build note that says existing installations seed that identity describes
+  the earlier compatibility state and is stale for clean-profile behavior after the deployment-isolation correction.
+- `www.iskort.is` / `iskort.is` HTTPS references are intentional public product routes: website/report links, installer/support pages,
+  downloads and the signed update feed. The update client enforces HTTPS, exact `www.iskort.is` host and `/3dp/updates/` root before
+  accepting a package URL. These public browser endpoints are not authentication material.
+- The v43.8.8 signed update ZIP, portable ZIP and installer contain no detectable private username marker. Text deployment/feed metadata
+  contains no private username; the feed intentionally contains the public HTTPS update route. The package payload contains no FTP/FTPS
+  credential URI.
+- Repository-level gate result: FAIL until the private username is removed from current tracked prose and the rejection rule is
+  converted to a non-identifying policy or hashed/test-safe fixture. Runtime/distributable gate result: PASS. No credential rotation is
+  presently indicated because no password, token or private key was found, but Audit 6 must still scan every reachable historical blob
+  and ref before that conclusion is final.
+- Decision: do not alter FTPS runtime behavior, endpoints, documentation history or rejection markers yet. Retain evidence until Audit 6
+  maps GitHub exposure; then apply the smallest approved current-tree and, if necessary, history remediation while preserving empty
+  clean-profile defaults and Windows Credential Manager storage.
 
 ### Audit 4 — `System.IO`, path aliases and repeat compile failures
 
-Status: complete; **gate passed. The recurring failure is a compile-time WPF namespace ambiguity/editing-convention issue, not a missing `System.IO` dependency.**
+Status: complete; **gate passed. The recurring failure is a compile-time WPF namespace ambiguity/editing-convention issue, not a missing
+`System.IO` dependency.**
 
-- Collect every compile error/fix pattern involving `Path`, `File`, `Directory`, `System.IO`, conflicting WPF types and the existing `IOPath` alias.
-- Determine whether failures come from missing namespace imports, ambiguous type names, partial-class conventions or inconsistent editing practice.
-- Define one repository convention and enforce it with the smallest suitable mechanism: shared/global using, explicit alias, analyzer/build check and/or repository guidance.
-- Consider a durable Codex memory note only after the convention is proven; memory supplements repository enforcement and must not be the sole safeguard.
+- Collect every compile error/fix pattern involving `Path`, `File`, `Directory`, `System.IO`, conflicting WPF types and the existing
+  `IOPath` alias.
+- Determine whether failures come from missing namespace imports, ambiguous type names, partial-class conventions or inconsistent
+  editing practice.
+- Define one repository convention and enforce it with the smallest suitable mechanism: shared/global using, explicit alias,
+  analyzer/build check and/or repository guidance.
+- Consider a durable Codex memory note only after the convention is proven; memory supplements repository enforcement and must not be
+  the sole safeguard.
 - Gate: Debug/Release builds and a targeted ambiguity probe pass without one-off namespace repair.
 
 Audit 4 evidence and remediation (2026-07-22):
 
-- `MainWindow.xaml.cs` imports both `System.IO` and `System.Windows.Shapes`. Both namespaces define `Path`; a newly added bare `Path.*` expression therefore produces compiler error CS0104. `File` and `Directory` have no current WPF collision, and no missing `System.IO` assembly/package was found. This explains why the issue repeatedly appeared immediately after source edits and disappeared after qualification.
-- Git history confirms the same repair pattern: v34.2.3 `Path Diagnostics Build Fix` changed bare `Path.GetFullPath`/separator calls to `System.IO.Path`; v43.5 updater work introduced a file-local `IOPath` alias for new transaction paths. Current `MainWindow.xaml.cs` had no remaining bare `Path.*` call before this remediation, but mixed fully-qualified and alias styles made recurrence likely.
-- Added project-wide `IOPath`, `IOFile` and `IODirectory` aliases in `GlobalUsings.cs`; removed the redundant file-local `IOPath` alias. Added a compile-only `IoNamespaceConventionProbe` that deliberately imports `System.Windows.Shapes`, resolves WPF `Path`, and exercises all three IO aliases. Any future removal/breakage of the convention now fails Debug/Release compilation.
-- Added root `AGENTS.md` repository guidance requiring the aliases for new filesystem code, explicit qualification for WPF shapes, and isolated `ArtifactsPath` builds when the running application locks normal output. This repository-owned guidance is the durable project memory; a separate assistant-memory-only rule is intentionally not the sole safeguard.
-- Initial normal Debug build encountered MSB3027/MSB3021 because the running `3DPIcelandFilamentDB` process (PID 61340) held `bin/Debug/net9.0-windows/UpdateCore.dll`. This was an output-file lock, not a C# or `System.IO` failure. The application was not stopped. Release independently passed 0 warnings / 0 errors.
-- After restoring to an isolated temporary `ArtifactsPath`, Debug and Release both passed with 0 warnings / 0 errors while the application remained running. The targeted ambiguity probe compiled in both configurations. No runtime, SQLite, website, report, FTPS or deployment behavior changed, so no new runtime Verification Center check was added for this compile-only convention.
+- `MainWindow.xaml.cs` imports both `System.IO` and `System.Windows.Shapes`. Both namespaces define `Path`; a newly added bare `Path.*`
+  expression therefore produces compiler error CS0104. `File` and `Directory` have no current WPF collision, and no missing `System.IO`
+  assembly/package was found. This explains why the issue repeatedly appeared immediately after source edits and disappeared after
+  qualification.
+- Git history confirms the same repair pattern: v34.2.3 `Path Diagnostics Build Fix` changed bare `Path.GetFullPath`/separator calls to
+  `System.IO.Path`; v43.5 updater work introduced a file-local `IOPath` alias for new transaction paths. Current `MainWindow.xaml.cs`
+  had no remaining bare `Path.*` call before this remediation, but mixed fully-qualified and alias styles made recurrence likely.
+- Added project-wide `IOPath`, `IOFile` and `IODirectory` aliases in `GlobalUsings.cs`; removed the redundant file-local `IOPath` alias.
+  Added a compile-only `IoNamespaceConventionProbe` that deliberately imports `System.Windows.Shapes`, resolves WPF `Path`, and
+  exercises all three IO aliases. Any future removal/breakage of the convention now fails Debug/Release compilation.
+- Added root `AGENTS.md` repository guidance requiring the aliases for new filesystem code, explicit qualification for WPF shapes, and
+  isolated `ArtifactsPath` builds when the running application locks normal output. This repository-owned guidance is the durable
+  project memory; a separate assistant-memory-only rule is intentionally not the sole safeguard.
+- Initial normal Debug build encountered MSB3027/MSB3021 because the running `3DPIcelandFilamentDB` process (PID 61340) held
+  `bin/Debug/net9.0-windows/UpdateCore.dll`. This was an output-file lock, not a C# or `System.IO` failure. The application was not
+  stopped. Release independently passed 0 warnings / 0 errors.
+- After restoring to an isolated temporary `ArtifactsPath`, Debug and Release both passed with 0 warnings / 0 errors while the
+  application remained running. The targeted ambiguity probe compiled in both configurations. No runtime, SQLite, website, report, FTPS
+  or deployment behavior changed, so no new runtime Verification Center check was added for this compile-only convention.
 
 ### Audit 5 — Workspace structure and obsolete files
 
-Status: complete; **inventory/decision gate passed. No file was moved, consolidated or deleted; privacy-sensitive cleanup remains blocked on Audit 6 and approved execution belongs to Audit 7.**
+Status: complete; **inventory/decision gate passed. No file was moved, consolidated or deleted; privacy-sensitive cleanup remains
+blocked on Audit 6 and approved execution belongs to Audit 7.**
 
-- Inventory the repository root and major subtrees by ownership, tracked status, size, duplication, generated output and last relevant use.
-- Identify obsolete scripts/docs/assets, duplicate canonical documents, misplaced outputs and candidates for consolidation without deleting user data or accepted evidence.
-- Gate: present a keep/move/consolidate/delete table first. Destructive cleanup requires explicit target validation and must leave build, Verification and packaging contracts intact.
+- Inventory the repository root and major subtrees by ownership, tracked status, size, duplication, generated output and last relevant
+  use.
+- Identify obsolete scripts/docs/assets, duplicate canonical documents, misplaced outputs and candidates for consolidation without
+  deleting user data or accepted evidence.
+- Gate: present a keep/move/consolidate/delete table first. Destructive cleanup requires explicit target validation and must leave
+  build, Verification and packaging contracts intact.
 
 Audit 5 evidence (2026-07-22):
 
-- Git tracks 224 files totaling 6,325,314 bytes; there are no non-ignored untracked files, no case-colliding tracked paths and no exact duplicate tracked-file hashes. The Git worktree was clean and `master == origin/master` at audit start.
-- The non-Git workspace is approximately 1.31 GB. `App/artifacts` owns 611,261,621 bytes of retained releases, while ignored `bin`, `obj`, `.vs` and `App/FilamentDbApp/artifacts/codex-build` outputs account for approximately 697 MB and are reproducible. The running application may lock normal Debug output, as confirmed in Audit 4.
-- The v43.8.8 `feed` and `signed` update ZIPs are byte-identical (SHA-256 `670AEA149958B561B061A8F532E477423F32E00EFD6E95306B1FC93058D71A5D`). Their duplication follows publishing-stage folder ownership rather than differing content. The older v43.4.1, v43.5.0 and v43.5.1 archives each retain the private website snapshot; current v43.8.8 archives do not.
-- Release identity is inconsistent only in secondary documentation: `FilamentDbApp.csproj`, `BuildInfo` and current build notes identify v43.8.8, but `Docs/VERSION.txt` still says v43.5.1; README development focus still says v40.20.0; `PROJECT_STATUS`, `RELEASES`, regression/daily-use checklists and known-limitations introductions retain older release baselines. These files are not package inputs, but they are misleading maintenance surfaces.
-- Three tracked SVGs under `App/FilamentDbApp/Assets/Documentation` have no filename reference in source, project metadata or documentation. They were created for v40.14 whitepaper work but are neither embedded nor copied by the current project. The icon/logo assets and embedded methodology fragment all have active owners and must stay.
-- `App/build_release.bat` has not changed since v29.2 and performs only a direct main-app publish; it bypasses the updater, exact signed inventory, verifier and deployment/feed workflow. It must not be treated as a production release command. `run_from_source.bat` remains a valid convenience launcher; the three PowerShell scripts are the current governed signed/update/deployment pipeline even when not linked from README.
-- `MainWindow.xaml.cs` is approximately 1.68 MB and `LocalDatabase.cs` approximately 198 KB. Their size is a maintainability risk, but splitting partial classes/services is a separate code-refactoring project with regression risk—not workspace cleanup—and is intentionally outside Audit 5.
+- Git tracks 224 files totaling 6,325,314 bytes; there are no non-ignored untracked files, no case-colliding tracked paths and no exact
+  duplicate tracked-file hashes. The Git worktree was clean and `master == origin/master` at audit start.
+- The non-Git workspace is approximately 1.31 GB. `App/artifacts` owns 611,261,621 bytes of retained releases, while ignored `bin`,
+  `obj`, `.vs` and `App/FilamentDbApp/artifacts/codex-build` outputs account for approximately 697 MB and are reproducible. The running
+  application may lock normal Debug output, as confirmed in Audit 4.
+- The v43.8.8 `feed` and `signed` update ZIPs are byte-identical (SHA-256
+  `670AEA149958B561B061A8F532E477423F32E00EFD6E95306B1FC93058D71A5D`). Their duplication follows publishing-stage folder ownership
+  rather than differing content. The older v43.4.1, v43.5.0 and v43.5.1 archives each retain the private website snapshot; current
+  v43.8.8 archives do not.
+- Release identity is inconsistent only in secondary documentation: `FilamentDbApp.csproj`, `BuildInfo` and current build notes identify
+  v43.8.8, but `Docs/VERSION.txt` still says v43.5.1; README development focus still says v40.20.0; `PROJECT_STATUS`, `RELEASES`,
+  regression/daily-use checklists and known-limitations introductions retain older release baselines. These files are not package
+  inputs, but they are misleading maintenance surfaces.
+- Three tracked SVGs under `App/FilamentDbApp/Assets/Documentation` have no filename reference in source, project metadata or
+  documentation. They were created for v40.14 whitepaper work but are neither embedded nor copied by the current project. The icon/logo
+  assets and embedded methodology fragment all have active owners and must stay.
+- `App/build_release.bat` has not changed since v29.2 and performs only a direct main-app publish; it bypasses the updater, exact signed
+  inventory, verifier and deployment/feed workflow. It must not be treated as a production release command. `run_from_source.bat`
+  remains a valid convenience launcher; the three PowerShell scripts are the current governed signed/update/deployment pipeline even
+  when not linked from README.
+- `MainWindow.xaml.cs` is approximately 1.68 MB and `LocalDatabase.cs` approximately 198 KB. Their size is a maintainability risk, but
+  splitting partial classes/services is a separate code-refactoring project with regression risk—not workspace cleanup—and is
+  intentionally outside Audit 5.
 
 Audit 5 decision table:
 
-| Decision | Exact scope | Reason and prerequisite |
-| --- | --- | --- |
-| Keep | `App` source/projects, `UpdateCore`, updater, `Tools`, installer definition, root governance/license files | Active build, verification, update and deployment ownership. |
-| Keep | Active icon/logo files, embedded `MethodologyPortal.html`, `run_from_source.bat`, all three governed PowerShell release scripts | All have a current runtime, documentation, convenience or release-pipeline owner. |
-| Keep | v43.8.8 production installer, portable, signed package, feed and deployment metadata | Canonical reproducible release evidence. Retain current folder separation until the publish workflow documents whether the identical feed ZIP may be generated on demand. |
-| Keep for now | Changelog, build history, milestone history, releases inventory, project history and specialist roadmaps/docs | They overlap by design but have non-identical content and historical references. Consolidation requires a documentation-governance pass, not blind deduplication. |
-| Consolidate/update | `Docs/VERSION.txt`, README current focus, `PROJECT_STATUS.md`, `RELEASES.md`, old regression/daily-use checklist headers and `KNOWN_LIMITATIONS.md` introduction | Align secondary documentation to canonical v43.8.8 or label it explicitly historical. Perform in Audit 7 after history/privacy decisions so one release-document pass is sufficient. |
-| Replace or delete | `App/build_release.bat` | Obsolete unsafe production affordance because it bypasses the governed updater/package verifier. Prefer removal or a wrapper that calls the canonical signed workflow; decide in Audit 7 and re-run packaging verification. |
-| Move or delete | Three unreferenced `Assets/Documentation/*.svg` files | No current project/source/doc owner. If historically useful, move under documentation assets; otherwise delete after Audit 6 confirms history/evidence needs. |
-| Delete after Audit 6 | Tracked `Assets/website-template-index.html` and retained v43.4.1/v43.5.0/v43.5.1 local ZIPs | They contain private dataset snapshots. Preserve until the complete Git-history exposure map and remediation evidence are complete. |
-| Delete when app is closed | Ignored `.vs`, all `bin/obj`, and `App/FilamentDbApp/artifacts/codex-build` outputs | Approximately 697 MB of reproducible local output. Validate resolved paths and avoid locked running-app files; canonical `App/artifacts/v43_8_8-production` is excluded from this cleanup. |
-| Ignore/remove locally | Empty untracked `.agents` directory | No files, Git content or runtime owner; immaterial and safe to leave. |
-| Defer | Splitting `MainWindow.xaml.cs` and `LocalDatabase.cs` | Valuable future maintainability work, but not file hygiene and not safe to combine with privacy/history remediation. |
+- **Decision:** Keep
+  - **Exact scope:** `App` source/projects, `UpdateCore`, updater, `Tools`, installer definition, root governance/license files
+  - **Reason and prerequisite:** Active build, verification, update and deployment ownership.
 
-- Decision: make no destructive workspace change in Audit 5. Audit 6 must first establish which current and historical blobs are GitHub-visible. Audit 7 may then execute explicitly approved, path-validated cleanup, followed by Debug/Release, Verification Center and complete signed-package/deployment verification.
+- **Decision:** Keep
+  - **Exact scope:** Active icon/logo files, embedded `MethodologyPortal.html`, `run_from_source.bat`, all three governed PowerShell
+    release scripts
+  - **Reason and prerequisite:** All have a current runtime, documentation, convenience or release-pipeline owner.
+
+- **Decision:** Keep
+  - **Exact scope:** v43.8.8 production installer, portable, signed package, feed and deployment metadata
+  - **Reason and prerequisite:** Canonical reproducible release evidence. Retain current folder separation until the publish workflow
+    documents whether the identical feed ZIP may be generated on demand.
+
+- **Decision:** Keep for now
+  - **Exact scope:** Changelog, build history, milestone history, releases inventory, project history and specialist roadmaps/docs
+  - **Reason and prerequisite:** They overlap by design but have non-identical content and historical references. Consolidation requires
+    a documentation-governance pass, not blind deduplication.
+
+- **Decision:** Consolidate/update
+  - **Exact scope:** `Docs/VERSION.txt`, README current focus, `PROJECT_STATUS.md`, `RELEASES.md`, old regression/daily-use checklist
+    headers and `KNOWN_LIMITATIONS.md` introduction
+  - **Reason and prerequisite:** Align secondary documentation to canonical v43.8.8 or label it explicitly historical. Perform in Audit
+    7 after history/privacy decisions so one release-document pass is sufficient.
+
+- **Decision:** Replace or delete
+  - **Exact scope:** `App/build_release.bat`
+  - **Reason and prerequisite:** Obsolete unsafe production affordance because it bypasses the governed updater/package verifier. Prefer
+    removal or a wrapper that calls the canonical signed workflow; decide in Audit 7 and re-run packaging verification.
+
+- **Decision:** Move or delete
+  - **Exact scope:** Three unreferenced `Assets/Documentation/*.svg` files
+  - **Reason and prerequisite:** No current project/source/doc owner. If historically useful, move under documentation assets; otherwise
+    delete after Audit 6 confirms history/evidence needs.
+
+- **Decision:** Delete after Audit 6
+  - **Exact scope:** Tracked `Assets/website-template-index.html` and retained v43.4.1/v43.5.0/v43.5.1 local ZIPs
+  - **Reason and prerequisite:** They contain private dataset snapshots. Preserve until the complete Git-history exposure map and
+    remediation evidence are complete.
+
+- **Decision:** Delete when app is closed
+  - **Exact scope:** Ignored `.vs`, all `bin/obj`, and `App/FilamentDbApp/artifacts/codex-build` outputs
+  - **Reason and prerequisite:** Approximately 697 MB of reproducible local output. Validate resolved paths and avoid locked running-app
+    files; canonical `App/artifacts/v43_8_8-production` is excluded from this cleanup.
+
+- **Decision:** Ignore/remove locally
+  - **Exact scope:** Empty untracked `.agents` directory
+  - **Reason and prerequisite:** No files, Git content or runtime owner; immaterial and safe to leave.
+
+- **Decision:** Defer
+  - **Exact scope:** Splitting `MainWindow.xaml.cs` and `LocalDatabase.cs`
+  - **Reason and prerequisite:** Valuable future maintainability work, but not file hygiene and not safe to combine with privacy/history
+    remediation.
+
+- Decision: make no destructive workspace change in Audit 5. Audit 6 must first establish which current and historical blobs are
+  GitHub-visible. Audit 7 may then execute explicitly approved, path-validated cleanup, followed by Debug/Release, Verification Center
+  and complete signed-package/deployment verification.
 
 ### Audit 6 — Complete Git history and GitHub exposure
 
-Status: complete; **gate failed. Private material datasets, a private FTPS identity, personal workstation paths, Visual Studio user-state and one diagnostics export remain reachable from GitHub `master` history. No literal password, token or private key was found.**
+Status: complete; **gate failed. Private material datasets, a private FTPS identity, personal workstation paths, Visual Studio
+user-state and one diagnostics export remain reachable from GitHub `master` history. No literal password, token or private key was
+found.**
 
-- Search every reachable commit, branch and tag—not only `master` HEAD—for the 176-material dataset, private website snapshots, FTPS usernames, credentials, personal paths, databases, spreadsheets, generated reports and other non-public content.
-- Compare local refs with GitHub-visible branches/tags and scan historical blobs by content, filename and size. Treat deletion from the current tree as insufficient if a blob remains reachable in history.
+- Search every reachable commit, branch and tag—not only `master` HEAD—for the 176-material dataset, private website snapshots, FTPS
+  usernames, credentials, personal paths, databases, spreadsheets, generated reports and other non-public content.
+- Compare local refs with GitHub-visible branches/tags and scan historical blobs by content, filename and size. Treat deletion from the
+  current tree as insufficient if a blob remains reachable in history.
 - Classify findings as public-safe, privacy-sensitive, secret requiring rotation, or historical data requiring removal.
-- Gate: produce a remediation decision before changing history. Any `git filter-repo`/BFG rewrite, force-push, tag deletion, collaborator coordination or credential rotation is a separate destructive operation requiring explicit approval, backup and post-rewrite verification.
+- Gate: produce a remediation decision before changing history. Any `git filter-repo`/BFG rewrite, force-push, tag deletion,
+  collaborator coordination or credential rotation is a separate destructive operation requiring explicit approval, backup and
+  post-rewrite verification.
 
 Audit 6 evidence (2026-07-22):
 
-- Live remote refs contain `master` at the audited head plus an unrelated one-commit `main` branch containing only `LICENSE`; no tags exist. Remote symbolic `HEAD` points to `master`. The local cached `origin/HEAD` still points to `origin/main` and is stale, but this does not change reachability. `master` has 364 commits, `main` has one unrelated root commit, and all sensitive commits are contained by `origin/master`.
-- All reachable refs comprise 365 commits and 3,277 unique blobs (340,925,830 logical bytes across historical blob versions). The scan covered text and binary blobs by content, filename, extension and size rather than checking only current paths.
-- Private material markers occur in 222 unique blob versions. v27.3 commit `[historical-commit-removed]` introduced the 176-row `GetDefaultNativeMaterialRows()` source dataset as an active populated fallback; it remained executable throughout the older history and was only compile-disabled by `[historical-commit-removed]` on 2026-07-22. Current `master` still tracks the text inside `#if false`.
-- Five unique historical website-snapshot blobs are reachable across the old and current path prefixes. They contain respectively 163, 176 or 200 unique MaterialIDs and include measurement data; the 200-material variants also include pricing fields. The current tracked 590,345-byte variant is one of these reachable blobs.
-- The private FTPS username occurs in 154 blob versions across historical SFTP/FTPS code/defaults, UI, settings, documentation and the later negative deployment marker. It was introduced with the former SFTP workflow and later removed from clean-profile runtime defaults, but current prose/marker references and all earlier identity-bearing blobs remain reachable.
-- Commit `[historical-commit-removed]` accidentally added Visual Studio `.vs` databases, indexes, caches, layout and user-state. Commit `[historical-commit-removed]` removed them from the current tree, but their blobs remain reachable. Three of those opaque/binary blobs expose the personal Windows user path and may retain additional IDE-indexed source context that cannot be proven safe by plain-text scanning.
-- Commit `[historical-commit-removed]` added `3DPIceland_FilamentDB_Diagnostics_20260720_071430.txt`; `[historical-commit-removed]` later deleted it. The reachable export contains personal database/executable/storage paths, project row counts, two MaterialID references and detailed verification/system state. It contains neither the FTPS username nor a password marker.
-- No historical application `.sqlite`, `.sqlite3`, general application `.db`, Excel workbook, CSV/TSV, SQL dump, release ZIP/archive, certificate bundle or private-key file was found. The only `.db` paths are historical Visual Studio Copilot index databases. No private-key header, GitHub/AWS/Slack token signature, credential-bearing FTP URI, literal password/secret assignment or password-bearing connection string was found across reachable blobs. Apparent password hits were variable/member/method expressions in the Credential Manager flow, not stored values.
-- Current tracked files contain domain-owned `iskort.is` contact addresses intended for product/site contact. Separately, Git commit author/committer metadata exposes non-noreply personal/local email domains; changing visible file content will not remove that metadata.
-- Current-tree deletion alone is insufficient: every prior commit remains downloadable from `origin/master`. Removing only branch `main` would not affect the exposure because it contains only the unrelated license root; removing only the affected current files would also leave all historical blobs reachable.
+- Live remote refs contain `master` at the audited head plus an unrelated one-commit `main` branch containing only `LICENSE`; no tags
+  exist. Remote symbolic `HEAD` points to `master`. The local cached `origin/HEAD` still points to `origin/main` and is stale, but this
+  does not change reachability. `master` has 364 commits, `main` has one unrelated root commit, and all sensitive commits are contained
+  by `origin/master`.
+- All reachable refs comprise 365 commits and 3,277 unique blobs (340,925,830 logical bytes across historical blob versions). The scan
+  covered text and binary blobs by content, filename, extension and size rather than checking only current paths.
+- Private material markers occur in 222 unique blob versions. v27.3 commit `[historical-commit-removed]` introduced the 176-row
+  `GetDefaultNativeMaterialRows()` source dataset as an active populated fallback; it remained executable throughout the older history
+  and was only compile-disabled by `[historical-commit-removed]` on 2026-07-22. Current `master` still tracks the text inside `#if
+  false`.
+- Five unique historical website-snapshot blobs are reachable across the old and current path prefixes. They contain respectively 163,
+  176 or 200 unique MaterialIDs and include measurement data; the 200-material variants also include pricing fields. The current tracked
+  590,345-byte variant is one of these reachable blobs.
+- The private FTPS username occurs in 154 blob versions across historical SFTP/FTPS code/defaults, UI, settings, documentation and the
+  later negative deployment marker. It was introduced with the former SFTP workflow and later removed from clean-profile runtime
+  defaults, but current prose/marker references and all earlier identity-bearing blobs remain reachable.
+- Commit `[historical-commit-removed]` accidentally added Visual Studio `.vs` databases, indexes, caches, layout and user-state. Commit
+  `[historical-commit-removed]` removed them from the current tree, but their blobs remain reachable. Three of those opaque/binary blobs
+  expose the personal Windows user path and may retain additional IDE-indexed source context that cannot be proven safe by plain-text
+  scanning.
+- Commit `[historical-commit-removed]` added `3DPIceland_FilamentDB_Diagnostics_20260720_071430.txt`; `[historical-commit-removed]`
+  later deleted it. The reachable export contains personal database/executable/storage paths, project row counts, two MaterialID
+  references and detailed verification/system state. It contains neither the FTPS username nor a password marker.
+- No historical application `.sqlite`, `.sqlite3`, general application `.db`, Excel workbook, CSV/TSV, SQL dump, release ZIP/archive,
+  certificate bundle or private-key file was found. The only `.db` paths are historical Visual Studio Copilot index databases. No
+  private-key header, GitHub/AWS/Slack token signature, credential-bearing FTP URI, literal password/secret assignment or
+  password-bearing connection string was found across reachable blobs. Apparent password hits were variable/member/method expressions in
+  the Credential Manager flow, not stored values.
+- Current tracked files contain domain-owned `iskort.is` contact addresses intended for product/site contact. Separately, Git commit
+  author/committer metadata exposes non-noreply personal/local email domains; changing visible file content will not remove that
+  metadata.
+- Current-tree deletion alone is insufficient: every prior commit remains downloadable from `origin/master`. Removing only branch `main`
+  would not affect the exposure because it contains only the unrelated license root; removing only the affected current files would also
+  leave all historical blobs reachable.
 
 Audit 6 remediation decision:
 
-| Option | Result | Trade-off / decision |
-| --- | --- | --- |
-| A — New clean root (recommended) | Build one sanitized root commit from the approved current tree, force-replace `master`, remove the unrelated `main` branch, and publish only after remote verification | Strongest and easiest-to-prove privacy boundary for this young private repository; intentionally discards public Git history while a secure local bundle can retain evidence. |
-| B — Targeted `git filter-repo` rewrite | Remove both website-snapshot path histories, `.vs/**`, the diagnostics export, private FTPS identity text, personal paths/metadata and every historical active/disabled material-seed block while preserving other commits | Preserves more history but requires custom blob transformation for many evolving `MainWindow.xaml.cs` versions, author metadata rewriting and a materially harder residual-content proof. Higher risk of missing a variant. |
+- **Option:** A — New clean root (recommended)
+  - **Result:** Build one sanitized root commit from the approved current tree, force-replace `master`, remove the unrelated `main`
+    branch, and publish only after remote verification
+  - **Trade-off / decision:** Strongest and easiest-to-prove privacy boundary for this young private repository; intentionally discards
+    public Git history while a secure local bundle can retain evidence.
 
-- Recommended sequence, requiring explicit approval before execution: keep the repository private; freeze pushes; create and verify an offline sensitive Git bundle with restricted local storage; sanitize the current tree under Audit 7; choose Option A unless historical commit continuity is essential; force-push the replacement `master`; delete obsolete remote refs; have any other clones discarded/recloned; re-scan every live remote ref/blob; account for GitHub cached objects/forks/pull-request refs before public visibility; then run Debug/Release, Verification Center, signed-package verifier and deployment checks.
-- Credential decision: no mandatory rotation is indicated by this scan because no password/token/private key was found. The FTPS username and public endpoint are exposed identifiers, not authentication secrets. Optional password rotation after the rewrite remains a defense-in-depth choice, especially if the same password has ever been shared elsewhere.
-- Until that sequence passes, repository-public-readiness is **NO**. No history rewrite, force-push, branch deletion, file deletion, credential change or remote visibility change was performed by Audit 6.
+- **Option:** B — Targeted `git filter-repo` rewrite
+  - **Result:** Remove both website-snapshot path histories, `.vs/**`, the diagnostics export, private FTPS identity text, personal
+    paths/metadata and every historical active/disabled material-seed block while preserving other commits
+  - **Trade-off / decision:** Preserves more history but requires custom blob transformation for many evolving `MainWindow.xaml.cs`
+    versions, author metadata rewriting and a materially harder residual-content proof. Higher risk of missing a variant.
+
+- Recommended sequence, requiring explicit approval before execution: keep the repository private; freeze pushes; create and verify an
+  offline sensitive Git bundle with restricted local storage; sanitize the current tree under Audit 7; choose Option A unless historical
+  commit continuity is essential; force-push the replacement `master`; delete obsolete remote refs; have any other clones
+  discarded/recloned; re-scan every live remote ref/blob; account for GitHub cached objects/forks/pull-request refs before public
+  visibility; then run Debug/Release, Verification Center, signed-package verifier and deployment checks.
+- Credential decision: no mandatory rotation is indicated by this scan because no password/token/private key was found. The FTPS
+  username and public endpoint are exposed identifiers, not authentication secrets. Optional password rotation after the rewrite remains
+  a defense-in-depth choice, especially if the same password has ever been shared elsewhere.
+- Until that sequence passes, repository-public-readiness is **NO**. No history rewrite, force-push, branch deletion, file deletion,
+  credential change or remote visibility change was performed by Audit 6.
 
 ### Audit 7 — Remediation and public-readiness closure
 
-Status: complete; the owner approved Option A (new clean root) on 2026-07-22, and every current-tree, build, package, replacement-root and remote verification gate passed.
+Status: complete; the owner approved Option A (new clean root) on 2026-07-22, and every current-tree, build, package, replacement-root
+and remote verification gate passed.
 
-- Apply only approved remediations, smallest first; keep website/report/FTPS runtime engines outside scope unless a confirmed exposure requires a targeted correction.
-- Re-run current-tree scan, full-history scan, secret scan, Debug/Release, updater self-test, signed-package verifier and Verification Center.
+- Apply only approved remediations, smallest first; keep website/report/FTPS runtime engines outside scope unless a confirmed exposure
+  requires a targeted correction.
+- Re-run current-tree scan, full-history scan, secret scan, Debug/Release, updater self-test, signed-package verifier and Verification
+  Center.
 - Record residual risks, intentionally public endpoints, retained historical evidence and any required key/credential rotation.
-- Gate: workspace clean, `master == origin/master`, no unapproved sensitive GitHub content, and a documented public-repository readiness decision.
+- Gate: workspace clean, `master == origin/master`, no unapproved sensitive GitHub content, and a documented public-repository readiness
+  decision.
 
 Audit 7 approved execution record (2026-07-22):
 
-- Created a complete offline bundle of all pre-rewrite refs under the owner's private Documents archive, verified it with `git bundle verify`, and recorded its size and SHA-256 outside the repository workflow. This bundle is privacy-sensitive evidence: never publish, upload or copy it into the repository.
-- Moved the retained v43.4.1, v43.5.0 and v43.5.1 signed archives containing the historical website snapshot into the same private archive boundary. Source removal and destination SHA-256 equality were verified; canonical v43.8.8 production artifacts remain in place.
-- Removed the historical compiled-source material literals entirely. `GetDefaultNativeMaterialRows()` now has only the zero-row clean-profile implementation; the existing Verification Center gate continues to assert that count is zero.
-- Removed the private data-bearing website snapshot, three unreferenced documentation SVGs and the obsolete direct-publish batch file. The governed PowerShell signed-package, verifier and deployment workflow remains canonical.
-- Removed the obsolete packaging-script marker list that repeated private material identifiers. Added `Tools/Sanitize-CurrentTreeForCleanRoot.ps1`, whose sensitive FTPS identity is supplied only as an execution parameter, so future reproducible sanitation does not retain the value.
-- Replaced private FTPS identity text, private material literals and selected historical identifiers in retained documentation with explicit redaction markers. Public product-domain references remain intentional; passwords continue to be Windows Credential Manager-owned and are not stored in Git.
-- Aligned the primary README, release inventory and version identity with canonical v43.8.8. Older milestone/checklist content remains explicitly historical rather than being rewritten as current behavior.
-- Debug and Release isolated builds both passed with 0 warnings and 0 errors. The updater self-test passed commit, injected rollback, failed-health rollback, Prepared restart, SnapshotReady/Installed/RollingBack/RollbackFailed recovery, read-only history, traversal rejection and SQLite-backup-reference preservation. The canonical signed v43.8.8 package passed the production verifier with six governed files and supported SQLite schema v29.
-- The previously runtime-accepted v43.8.8 Verification Center result remains applicable: the only application-source cleanup removed text inside an already compiler-excluded block and preserved the existing zero-row verification assertion. No executable website/report/FTPS engine or SQLite behavior changed in Audit 7.
-- Created one parentless root commit with non-personal noreply metadata, force-replaced remote `master` using an exact force-with-lease, deleted obsolete remote `main`, refreshed remote `HEAD` to `master`, and removed obsolete local references/reflogs after remote confirmation.
-- A fresh clone of the rewritten GitHub repository exposed exactly one commit, only `origin/master`, no tags, no sensitive identity/material/personal-path/secret markers and no old audited commit object. The final amended root was re-pushed and rechecked against the same gates.
-- Public-readiness decision: **YES** for the current reachable repository. Residual operational caution: GitHub may retain inaccessible caches for an unspecified period, and every pre-rewrite clone plus the private archive bundle still contains the old history. Never publish those copies; any collaborator must discard the old clone and re-clone. The public product domain is intentionally retained, while the private FTPS username and all credentials remain excluded.
+- Created a complete offline bundle of all pre-rewrite refs under the owner's private Documents archive, verified it with `git bundle
+  verify`, and recorded its size and SHA-256 outside the repository workflow. This bundle is privacy-sensitive evidence: never publish,
+  upload or copy it into the repository.
+- Moved the retained v43.4.1, v43.5.0 and v43.5.1 signed archives containing the historical website snapshot into the same private
+  archive boundary. Source removal and destination SHA-256 equality were verified; canonical v43.8.8 production artifacts remain in
+  place.
+- Removed the historical compiled-source material literals entirely. `GetDefaultNativeMaterialRows()` now has only the zero-row
+  clean-profile implementation; the existing Verification Center gate continues to assert that count is zero.
+- Removed the private data-bearing website snapshot, three unreferenced documentation SVGs and the obsolete direct-publish batch file.
+  The governed PowerShell signed-package, verifier and deployment workflow remains canonical.
+- Removed the obsolete packaging-script marker list that repeated private material identifiers. Added
+  `Tools/Sanitize-CurrentTreeForCleanRoot.ps1`, whose sensitive FTPS identity is supplied only as an execution parameter, so future
+  reproducible sanitation does not retain the value.
+- Replaced private FTPS identity text, private material literals and selected historical identifiers in retained documentation with
+  explicit redaction markers. Public product-domain references remain intentional; passwords continue to be Windows Credential
+  Manager-owned and are not stored in Git.
+- Aligned the primary README, release inventory and version identity with canonical v43.8.8. Older milestone/checklist content remains
+  explicitly historical rather than being rewritten as current behavior.
+- Debug and Release isolated builds both passed with 0 warnings and 0 errors. The updater self-test passed commit, injected rollback,
+  failed-health rollback, Prepared restart, SnapshotReady/Installed/RollingBack/RollbackFailed recovery, read-only history, traversal
+  rejection and SQLite-backup-reference preservation. The canonical signed v43.8.8 package passed the production verifier with six
+  governed files and supported SQLite schema v29.
+- The previously runtime-accepted v43.8.8 Verification Center result remains applicable: the only application-source cleanup removed
+  text inside an already compiler-excluded block and preserved the existing zero-row verification assertion. No executable
+  website/report/FTPS engine or SQLite behavior changed in Audit 7.
+- Created one parentless root commit with non-personal noreply metadata, force-replaced remote `master` using an exact force-with-lease,
+  deleted obsolete remote `main`, refreshed remote `HEAD` to `master`, and removed obsolete local references/reflogs after remote
+  confirmation.
+- A fresh clone of the rewritten GitHub repository exposed exactly one commit, only `origin/master`, no tags, no sensitive
+  identity/material/personal-path/secret markers and no old audited commit object. The final amended root was re-pushed and rechecked
+  against the same gates.
+- Public-readiness decision: **YES** for the current reachable repository. Residual operational caution: GitHub may retain inaccessible
+  caches for an unspecified period, and every pre-rewrite clone plus the private archive bundle still contains the old history. Never
+  publish those copies; any collaborator must discard the old clone and re-clone. The public product domain is intentionally retained,
+  while the private FTPS username and all credentials remain excluded.
 
 ## v43.8.9 SQLite Dependency Security
 
-Status: complete and canonical; automated gates, local Verification Center, guarded clean-VM update, restored-data runtime and final VM Verification Center passed.
+Status: complete and canonical; automated gates, local Verification Center, guarded clean-VM update, restored-data runtime and final VM
+Verification Center passed.
 
 - Keep the application on `net9.0-windows` and update `Microsoft.Data.Sqlite` only within the supported 9.0 servicing line.
 - Explicitly select a non-affected SQLitePCLRaw native bundle so NuGet minimum-version resolution cannot retain 2.1.10 or 2.1.11.
-- Do not change schema v29, SQLite ownership, backup/restore behavior, interrupted-update recovery, website/report/FTPS engines or automatic-restore policy.
-- Gates: resolved dependency inventory contains no vulnerable package; Debug and Release build with zero warnings/errors; updater self-test and package verifier pass; clean-profile/static privacy checks pass; Verification Center and VM database/runtime acceptance are required before canonical release, commit and push.
-- Local hygiene: remove only reproducible ignored `.vs`, `bin`, `obj` and noncanonical build-output directories after validation. Preserve `App/artifacts/v43_8_8-production`, all user SQLite/backups/configuration/evidence and the private pre-clean-root archive.
+- Do not change schema v29, SQLite ownership, backup/restore behavior, interrupted-update recovery, website/report/FTPS engines or
+  automatic-restore policy.
+- Gates: resolved dependency inventory contains no vulnerable package; Debug and Release build with zero warnings/errors; updater
+  self-test and package verifier pass; clean-profile/static privacy checks pass; Verification Center and VM database/runtime acceptance
+  are required before canonical release, commit and push.
+- Local hygiene: remove only reproducible ignored `.vs`, `bin`, `obj` and noncanonical build-output directories after validation.
+  Preserve `App/artifacts/v43_8_8-production`, all user SQLite/backups/configuration/evidence and the private pre-clean-root archive.
 
 Automated evidence (2026-07-22):
 
-- NuGet resolved `Microsoft.Data.Sqlite` 9.0.18 and the complete SQLitePCLRaw native/provider graph at 2.1.12. `dotnet list package --vulnerable --include-transitive` reports no known vulnerable package from the configured sources; the former high-severity 2.1.10 native library is absent.
-- Isolated Debug and Release builds passed with 0 warnings and 0 errors. The updater self-test passed commit, rollback, every interrupted-state recovery phase, traversal rejection and SQLite-backup-reference preservation.
-- A pre-release v43.8.9 signed candidate passed the production application verifier with exactly six governed files and schema v29, then passed clean-VM update and restored-data runtime acceptance. The byte-identical tested artifact was promoted to `App/artifacts/v43_8_9-production`.
-- Removed all enumerated reproducible ignored `.vs`, `bin`, `obj`, legacy application-local build artifacts and isolated test output. No locked target failed. Preserved canonical `v43_8_8-production` and `v43_8_9-production`; user data and the private Git archive were outside every cleanup target.
-- Visual Studio subsequently reported NU1105 for `UpdateCore` because the application referenced it while the project was absent from the solution membership and the prior IDE cache had hidden that gap. Command-line restore/build proved both projects valid; `UpdateCore` was then added explicitly to the solution with Debug/Release configurations to make clean-cache Visual Studio restore deterministic.
-- Local Release runtime acceptance passed on 2026-07-22: Verification Center reported PASS 296/296 for `v43.8.9 SQLITE-DEPENDENCY-SECURITY`, assembly 43.8.9.0, informational identity aligned, schema v29 and the owner's 200-material SQLite database operating normally. The exported diagnostics contained 296 PASS lines and zero FAIL lines.
-- Documentation path hygiene consolidated all 45 lowercase `docs/` files into the canonical `Docs/` tree without filename collisions or content deletion. All active path references now use exact GitHub case, and README has one canonical v43.8.9 identity instead of the stale v41.6 declaration.
-- The first v43.8.8 VM update discovery failed before mutation because generated `latest.json` began with the Windows PowerShell UTF-8 BOM (`EF BB BF`). The generator now writes BOM-less UTF-8 explicitly, and the v43.8.9 client defensively accepts one standard UTF-8 BOM. This is a parser-compatibility extension only; package bytes, SHA-256, trusted manifest, schema and default-No apply gates remain mandatory.
-- Final VM acceptance passed on 2026-07-22. A fresh zero-Materials v43.8.8 installation consumed the corrected feed, updated to v43.8.9 without an error, recorded the transaction as `Committed` with zero incomplete transactions and preserved the zero-data boundary. A verified schema-v29 owner backup restored 200 Materials, 3,728 tensile samples, 3,752 impact samples and 191 stiffness rows; creating a canonical post-restore SQLite backup satisfied all recovery evidence gates. Verification Center then reported PASS 296/296 with zero FAIL lines. v43.8.9 is the canonical release.
+- NuGet resolved `Microsoft.Data.Sqlite` 9.0.18 and the complete SQLitePCLRaw native/provider graph at 2.1.12. `dotnet list package
+  --vulnerable --include-transitive` reports no known vulnerable package from the configured sources; the former high-severity 2.1.10
+  native library is absent.
+- Isolated Debug and Release builds passed with 0 warnings and 0 errors. The updater self-test passed commit, rollback, every
+  interrupted-state recovery phase, traversal rejection and SQLite-backup-reference preservation.
+- A pre-release v43.8.9 signed candidate passed the production application verifier with exactly six governed files and schema v29, then
+  passed clean-VM update and restored-data runtime acceptance. The byte-identical tested artifact was promoted to
+  `App/artifacts/v43_8_9-production`.
+- Removed all enumerated reproducible ignored `.vs`, `bin`, `obj`, legacy application-local build artifacts and isolated test output. No
+  locked target failed. Preserved canonical `v43_8_8-production` and `v43_8_9-production`; user data and the private Git archive were
+  outside every cleanup target.
+- Visual Studio subsequently reported NU1105 for `UpdateCore` because the application referenced it while the project was absent from
+  the solution membership and the prior IDE cache had hidden that gap. Command-line restore/build proved both projects valid;
+  `UpdateCore` was then added explicitly to the solution with Debug/Release configurations to make clean-cache Visual Studio restore
+  deterministic.
+- Local Release runtime acceptance passed on 2026-07-22: Verification Center reported PASS 296/296 for `v43.8.9
+  SQLITE-DEPENDENCY-SECURITY`, assembly 43.8.9.0, informational identity aligned, schema v29 and the owner's 200-material SQLite
+  database operating normally. The exported diagnostics contained 296 PASS lines and zero FAIL lines.
+- Documentation path hygiene consolidated all 45 lowercase `docs/` files into the canonical `Docs/` tree without filename collisions or
+  content deletion. All active path references now use exact GitHub case, and README has one canonical v43.8.9 identity instead of the
+  stale v41.6 declaration.
+- The first v43.8.8 VM update discovery failed before mutation because generated `latest.json` began with the Windows PowerShell UTF-8
+  BOM (`EF BB BF`). The generator now writes BOM-less UTF-8 explicitly, and the v43.8.9 client defensively accepts one standard UTF-8
+  BOM. This is a parser-compatibility extension only; package bytes, SHA-256, trusted manifest, schema and default-No apply gates remain
+  mandatory.
+- Final VM acceptance passed on 2026-07-22. A fresh zero-Materials v43.8.8 installation consumed the corrected feed, updated to v43.8.9
+  without an error, recorded the transaction as `Committed` with zero incomplete transactions and preserved the zero-data boundary. A
+  verified schema-v29 owner backup restored 200 Materials, 3,728 tensile samples, 3,752 impact samples and 191 stiffness rows; creating
+  a canonical post-restore SQLite backup satisfied all recovery evidence gates. Verification Center then reported PASS 296/296 with zero
+  FAIL lines. v43.8.9 is the canonical release.
 
 ## Planned — v44 Daily Use, Reliability & Maintainability
 
@@ -752,48 +1027,70 @@ Non-goals:
 
 - No public application API without a real identified consumer and a separately approved authentication/hosting/support contract.
 - No general plugin or arbitrary scripting host; the compatibility and security surface is disproportionate for the current product.
-- No assumed manufacturer API integration. Filament manufacturers generally expose pages, datasheets, email and occasional files rather than a stable shared service contract; add only a proven source-specific import when a real source and workflow exist.
-- No bidirectional cloud synchronization. SQLite conflict resolution, identity, offline state and multi-instance editing would create more risk than value; current local/OneDrive storage plus verified backup/restore remains canonical.
-- No broad CSV/JSON platform for its own sake. Add a typed export/import only when a specific user workflow cannot be served safely by SQLite backup, governed Excel recovery or an existing report.
+- No assumed manufacturer API integration. Filament manufacturers generally expose pages, datasheets, email and occasional files rather
+  than a stable shared service contract; add only a proven source-specific import when a real source and workflow exist.
+- No bidirectional cloud synchronization. SQLite conflict resolution, identity, offline state and multi-instance editing would create
+  more risk than value; current local/OneDrive storage plus verified backup/restore remains canonical.
+- No broad CSV/JSON platform for its own sake. Add a typed export/import only when a specific user workflow cannot be served safely by
+  SQLite backup, governed Excel recovery or an existing report.
 
 ### v44.0 — Baseline and release-workflow closure
 
-Status: **Complete — direct v43.8.9 installer/portable runtime accepted and promoted byte-identically through clean-tree Production gates; stable-route publication remains a separate explicit default-No operational action.**
+Status: **Complete — direct v43.8.9 installer/portable runtime accepted and promoted byte-identically through clean-tree Production
+gates; stable-route publication remains a separate explicit default-No operational action.**
 
 - Start from canonical v43.8.9, clean `master == origin/master`, Debug/Release 0/0 and Verification 296/296.
-- Decision: adopt the direct v43.8.9 installer/portable first-install route built from the byte-identical canonical signed package. Both Candidate modes pass fresh-VM runtime acceptance. Production promotion must preserve the exact tested artifact bytes; stable routes remain on the accepted v43.8.8 plus guarded-update route until that promotion and publish are separately verified.
-- Candidate versus Production state is explicit in packaging parameters, console output, update-feed metadata and deployment-plan metadata. Production packaging rejects dirty trees; every signed ZIP, feed, installer, portable ZIP and plan fails if its destination already exists.
-- Deterministic `App/test_release_gates.ps1` covers NuGet vulnerability results, BOM-less update feed, exact feed/ZIP bytes and SHA-256, ECDSA signature, governed inventory, schema and stable-route-last publishing.
-- Keep Authenticode deferred while distribution is private; retain the trusted ECDSA package signature and document the Windows Unknown Publisher trade-off.
+- Decision: adopt the direct v43.8.9 installer/portable first-install route built from the byte-identical canonical signed package. Both
+  Candidate modes pass fresh-VM runtime acceptance. Production promotion must preserve the exact tested artifact bytes; stable routes
+  remain on the accepted v43.8.8 plus guarded-update route until that promotion and publish are separately verified.
+- Candidate versus Production state is explicit in packaging parameters, console output, update-feed metadata and deployment-plan
+  metadata. Production packaging rejects dirty trees; every signed ZIP, feed, installer, portable ZIP and plan fails if its destination
+  already exists.
+- Deterministic `App/test_release_gates.ps1` covers NuGet vulnerability results, BOM-less update feed, exact feed/ZIP bytes and SHA-256,
+  ECDSA signature, governed inventory, schema and stable-route-last publishing.
+- Keep Authenticode deferred while distribution is private; retain the trusted ECDSA package signature and document the Windows Unknown
+  Publisher trade-off.
 
 ### v44.1 — Verification profiles and diagnostic honesty
 
-Status: **Complete — Application Readiness 207/207 plus 90 N/A and immediate post-restore Full Data Verification 297/297 runtime accepted on v44.1.2.**
+Status: **Complete — Application Readiness 207/207 plus 90 N/A and immediate post-restore Full Data Verification 297/297 runtime
+accepted on v44.1.2.**
 
 - Separate **Application Readiness** from **Full Data Verification** without weakening either gate.
-- A legitimate fresh profile with zero Materials should report application/schema/assets/update/recovery readiness as PASS and data-dependent calculation/report checks as `Not applicable — no canonical data`, not as 90 product failures.
+- A legitimate fresh profile with zero Materials should report application/schema/assets/update/recovery readiness as PASS and
+  data-dependent calculation/report checks as `Not applicable — no canonical data`, not as 90 product failures.
 - Full release acceptance with restored/owner data remains the complete 296/296 gate (or its explicitly versioned successor).
 - Show profile name, applicable/pass/fail/not-applicable counts and exact reasons in Verification exports.
-- Keep clean-profile isolation, zero compiled seed rows, empty deployment identity and no automatic SQLite restore as mandatory checks in every profile.
+- Keep clean-profile isolation, zero compiled seed rows, empty deployment identity and no automatic SQLite restore as mandatory checks
+  in every profile.
 
 ### v44.2 — Daily-use UI state and selected MaterialID clarity
 
-Status: **Complete — machine-local layout/MaterialID persistence, selected-row clarity and precise checkbox hit bounds runtime accepted; Verification PASS 298/298.**
+Status: **Complete — machine-local layout/MaterialID persistence, selected-row clarity and precise checkbox hit bounds runtime accepted;
+Verification PASS 298/298.**
 
 - Persist user-resized column widths, column order, window size and other proven daily layout preferences as machine-local UI state.
-- Do not place machine-specific presentation state in the portable SQLite engineering backup unless a later explicit portability choice is approved.
-- Keep the current Materials selection visually unmistakable after focus moves; Material Detail, Reports and other downstream tabs must show the same selected MaterialID.
-- Evaluate tab/filter persistence one preference at a time. Never restore a stale selection that is absent from the current filtered/canonical dataset.
+- Do not place machine-specific presentation state in the portable SQLite engineering backup unless a later explicit portability choice
+  is approved.
+- Keep the current Materials selection visually unmistakable after focus moves; Material Detail, Reports and other downstream tabs must
+  show the same selected MaterialID.
+- Evaluate tab/filter persistence one preference at a time. Never restore a stale selection that is absent from the current
+  filtered/canonical dataset.
 - Add reset-to-default and invalid-state fallback so old preferences cannot block startup or hide required fields.
 
 ### v44.3 — Backup, Recovery and update evidence clarity
 
-Status: **Complete — v44.3.1 clean-VM runtime accepted with separate read-only update-evidence boundaries and Verification PASS 209/209 plus 90 N/A.**
+Status: **Complete — v44.3.1 clean-VM runtime accepted with separate read-only update-evidence boundaries and Verification PASS 209/209
+plus 90 N/A.**
 
-- Explain `Ready`, `Migration required`, `Legacy / incomplete`, `Newer / incompatible`, `Corrupt` and valid zero-data backup states directly in Recovery Center.
-- Distinguish a healthy empty clean-profile backup from corruption and explain why full-data release gates require a canonical backup containing Materials.
-- Surface the most recent update transaction, health acknowledgement, application rollback snapshot and SQLite evidence as separate read-only boundaries.
-- Preserve all existing contracts: recovery snapshot before restore, atomic/transactional data replacement, no automatic SQLite restore, default-No application-file recovery and no automatic evidence deletion.
+- Explain `Ready`, `Migration required`, `Legacy / incomplete`, `Newer / incompatible`, `Corrupt` and valid zero-data backup states
+  directly in Recovery Center.
+- Distinguish a healthy empty clean-profile backup from corruption and explain why full-data release gates require a canonical backup
+  containing Materials.
+- Surface the most recent update transaction, health acknowledgement, application rollback snapshot and SQLite evidence as separate
+  read-only boundaries.
+- Preserve all existing contracts: recovery snapshot before restore, atomic/transactional data replacement, no automatic SQLite restore,
+  default-No application-file recovery and no automatic evidence deletion.
 
 ### v44.4 — Measured responsiveness and presentation polish
 
@@ -807,10 +1104,13 @@ direct install, explicit SQLite restore and portable runtime.**
   out saved `DisplayIndex`; disabling column virtualization fixed scrolling but
   caused an unacceptable startup stall, and a custom ScrollViewer timer was
   rejected after an unresponsive halfway state.
-- Use existing startup phase diagnostics to detect regressions; perform more lazy initialization or concurrency work only when a measured bottleneck materially affects first usable Materials time.
+- Use existing startup phase diagnostics to detect regressions; perform more lazy initialization or concurrency work only when a
+  measured bottleneck materially affects first usable Materials time.
 - Profile first-open and repeated-open latency for top-level Tools/Help menus before changing command construction or UI-thread work.
-- Treat splash logo-line animation as optional presentation polish. It must follow measured splash lifetime, support high DPI and never delay startup.
-- Record before/after Release timings on the same machine; reject optimization work that adds complexity without a meaningful observed gain.
+- Treat splash logo-line animation as optional presentation polish. It must follow measured splash lifetime, support high DPI and never
+  delay startup.
+- Record before/after Release timings on the same machine; reject optimization work that adds complexity without a meaningful observed
+  gain.
 - Accepted implementation draws only visible Materials rows/columns, preserves
   direct canonical SQLite auto-save and daily editing/filter/search behavior,
   and retains the native WPF DataGrid as a session fallback.
@@ -890,9 +1190,12 @@ Migration Naming.
   retained its active-cell edit across restart, whole-revolution stiffness
   reached Material Detail/Charts and report coverage parity returned to PASS.
 
-- Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state ownership.
-- Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete UI, dead handlers/services and stale documentation in small reviewed increments.
-- Reduce `MainWindow.xaml.cs` and `LocalDatabase.cs` only while touching an owned feature: extract cohesive services/partial classes with no behavioral rewrite and one Verification/runtime gate per increment.
+- Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state
+  ownership.
+- Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete
+  UI, dead handlers/services and stale documentation in small reviewed increments.
+- Reduce `MainWindow.xaml.cs` and `LocalDatabase.cs` only while touching an owned feature: extract cohesive services/partial classes
+  with no behavioral rewrite and one Verification/runtime gate per increment.
 - Keep the project-wide `IOPath`/`IOFile`/`IODirectory` convention and compile probe; do not reintroduce bare ambiguous `Path.*` calls.
 
 ### v44.6 — Feedback-driven feature evaluation
@@ -900,7 +1203,8 @@ Migration Naming.
 Status: **First bounded clarity increment complete and runtime accepted as
 v44.6.0 — Recovery Center Clarity. Second bounded maintainability increment
 complete and runtime accepted as v44.6.1 — Canonical Release Documentation
-Audit.**
+Audit. Third bounded feedback increment complete and runtime accepted as
+v44.6.2 — Canonical Measurement Date Foundation.**
 
 - v44.6.0 removes verbose updater evidence from the always-visible Recovery
   Center surface and keeps one concise compatibility summary plus exact details
@@ -924,9 +1228,12 @@ Audit.**
   accepted.
 
 - Use `Docs/BUG_FEEDBACK_LOG.md`, daily operation and VM/release observations as the intake queue.
-- Evaluate per-MaterialID printing profiles only when there is a concrete daily-use/report need beyond the delivered base-material profile foundation. Preserve typed units, provenance and `Not recorded` honesty.
-- Evaluate bilingual website presentation only when translation ownership and ongoing parity are affordable; reuse the one renderer/publisher and never fork a second website engine.
-- Evaluate new report types only after their canonical source data exists. No inferred printer profiles, test sessions, durability history or manufacturer claims.
+- Evaluate per-MaterialID printing profiles only when there is a concrete daily-use/report need beyond the delivered base-material
+  profile foundation. Preserve typed units, provenance and `Not recorded` honesty.
+- Evaluate bilingual website presentation only when translation ownership and ongoing parity are affordable; reuse the one
+  renderer/publisher and never fork a second website engine.
+- Evaluate new report types only after their canonical source data exists. No inferred printer profiles, test sessions, durability
+  history or manufacturer claims.
 
 ### v44 delivery discipline
 
@@ -937,31 +1244,102 @@ Audit.**
 5. Obtain visual/runtime acceptance where UI, restore, installer or updater behavior changes.
 6. Commit/push only after the increment passes; do not accumulate a large v44 rewrite.
 
-### Disposition of all previously open proposals
+### Historical disposition archive — non-authoritative
 
-| Proposal | Disposition | Reason / trigger |
-|---|---|---|
-| Public API | Retired from v44; demand-only backburner | No identified consumer; would require authentication, hosting, versioning, monitoring and support. |
-| Broad CSV/JSON exchange | Demand-only | Existing SQLite/Excel/report paths cover current recovery and sharing; require a concrete typed workflow first. |
-| Plugin and scripting architecture | Retired from v44 | Excessive execution, compatibility and support surface for the current desktop product. |
-| External research/manufacturer API integrations | Demand-only | Implement only against a real stable source and explicit rights/provenance; do not assume manufacturers provide APIs. |
-| Cloud synchronization | Retired from v44 | Conflicts with single-writer SQLite and adds identity/conflict/offline complexity; verified local/OneDrive backup remains safer. |
-| Experimental and Data Quality reports | Backburner | Useful only when requested; canonical sources exist partly, but current six-report portfolio is complete. |
-| Batch/history, printer-profile and durability reports | Blocked by missing canonical data | Do not infer missing sessions, profiles or long-term history. |
-| Per-MaterialID printing profiles | v44.6 evaluation queue | Base-material profiles are delivered; add variants only for a proven workflow with typed provenance. |
-| Persistent Materials selection | v44.2 | Concrete daily-use clarity improvement with low architectural scope. |
-| Column widths/layout persistence | v44.2 | Concrete cross-machine observation; keep machine-local by default. |
-| Remaining startup optimization | v44.4 conditional | Existing v41.8 work succeeded; continue only from measured regressions/bottlenecks. |
-| GUI menu responsiveness | v44.4 | Profile first; presentation-only change. |
-| Splash logo animation | Optional v44.4 polish | No functional value; never place ahead of reliability/usability. |
-| Manufacturer submission server | Retired until real operational need | Current browser/email handoff is sufficient; no public-to-SQLite write path. |
-| Bilingual website | v44.6 evaluation queue | Requires durable translation ownership and parity budget. |
-| Website logo/branding | Delivered | Canonical governed logo assets already render in application/reports; verify public placement only as part of a requested presentation change. |
-| Legacy Excel/compatibility audit | v44.5 | Valuable security/maintenance cleanup, but requires caller-by-caller proof before removal. |
-| Split large application/database files | Incremental v44.5 only | No standalone rewrite; extract only cohesive touched ownership with regression proof. |
-| Fresh-install Verification failures | v44.1 | Observed in VM: zero-data readiness and full-data coverage need honest separate profiles. |
-| Recovery catalog wording | v44.3 | Observed in VM: valid empty backups were easy to mistake for failed update transactions. |
-| Direct v43.8.9 installer/portable refresh | v44.0 decision | Current v43.8.8 installer plus guarded update is accepted; rebuild only for clearer first-install experience. |
+The material below preserves earlier proposal decisions and detailed idea
+contracts. It is historical context, not the current execution order. The
+authoritative completed-state summary and estimated next-version sequence are
+at the end of this document.
+
+#### Disposition of previously open proposals
+
+- **Proposal:** Public API
+  - **Disposition:** Retired from v44; demand-only backburner
+  - **Reason / trigger:** No identified consumer; would require authentication, hosting, versioning, monitoring and support.
+
+- **Proposal:** Broad CSV/JSON exchange
+  - **Disposition:** Demand-only
+  - **Reason / trigger:** Existing SQLite/Excel/report paths cover current recovery and sharing; require a concrete typed workflow
+    first.
+
+- **Proposal:** Plugin and scripting architecture
+  - **Disposition:** Retired from v44
+  - **Reason / trigger:** Excessive execution, compatibility and support surface for the current desktop product.
+
+- **Proposal:** External research/manufacturer API integrations
+  - **Disposition:** Demand-only
+  - **Reason / trigger:** Implement only against a real stable source and explicit rights/provenance; do not assume manufacturers
+    provide APIs.
+
+- **Proposal:** Cloud synchronization
+  - **Disposition:** Retired from v44
+  - **Reason / trigger:** Conflicts with single-writer SQLite and adds identity/conflict/offline complexity; verified local/OneDrive
+    backup remains safer.
+
+- **Proposal:** Experimental and Data Quality reports
+  - **Disposition:** Backburner
+  - **Reason / trigger:** Useful only when requested; canonical sources exist partly, but current six-report portfolio is complete.
+
+- **Proposal:** Batch/history, printer-profile and durability reports
+  - **Disposition:** Blocked by missing canonical data
+  - **Reason / trigger:** Do not infer missing sessions, profiles or long-term history.
+
+- **Proposal:** Per-MaterialID printing profiles
+  - **Disposition:** v44.6 evaluation queue
+  - **Reason / trigger:** Base-material profiles are delivered; add variants only for a proven workflow with typed provenance.
+
+- **Proposal:** Persistent Materials selection
+  - **Disposition:** v44.2
+  - **Reason / trigger:** Concrete daily-use clarity improvement with low architectural scope.
+
+- **Proposal:** Column widths/layout persistence
+  - **Disposition:** v44.2
+  - **Reason / trigger:** Concrete cross-machine observation; keep machine-local by default.
+
+- **Proposal:** Remaining startup optimization
+  - **Disposition:** v44.4 conditional
+  - **Reason / trigger:** Existing v41.8 work succeeded; continue only from measured regressions/bottlenecks.
+
+- **Proposal:** GUI menu responsiveness
+  - **Disposition:** v44.4
+  - **Reason / trigger:** Profile first; presentation-only change.
+
+- **Proposal:** Splash logo animation
+  - **Disposition:** Optional v44.4 polish
+  - **Reason / trigger:** No functional value; never place ahead of reliability/usability.
+
+- **Proposal:** Manufacturer submission server
+  - **Disposition:** Retired until real operational need
+  - **Reason / trigger:** Current browser/email handoff is sufficient; no public-to-SQLite write path.
+
+- **Proposal:** Bilingual website
+  - **Disposition:** v44.6 evaluation queue
+  - **Reason / trigger:** Requires durable translation ownership and parity budget.
+
+- **Proposal:** Website logo/branding
+  - **Disposition:** Delivered
+  - **Reason / trigger:** Canonical governed logo assets already render in application/reports; verify public placement only as part of
+    a requested presentation change.
+
+- **Proposal:** Legacy Excel/compatibility audit
+  - **Disposition:** v44.5
+  - **Reason / trigger:** Valuable security/maintenance cleanup, but requires caller-by-caller proof before removal.
+
+- **Proposal:** Split large application/database files
+  - **Disposition:** Incremental v44.5 only
+  - **Reason / trigger:** No standalone rewrite; extract only cohesive touched ownership with regression proof.
+
+- **Proposal:** Fresh-install Verification failures
+  - **Disposition:** v44.1
+  - **Reason / trigger:** Observed in VM: zero-data readiness and full-data coverage need honest separate profiles.
+
+- **Proposal:** Recovery catalog wording
+  - **Disposition:** v44.3
+  - **Reason / trigger:** Observed in VM: valid empty backups were easy to mistake for failed update transactions.
+
+- **Proposal:** Direct v43.8.9 installer/portable refresh
+  - **Disposition:** v44.0 decision
+  - **Reason / trigger:** Current v43.8.8 installer plus guarded update is accepted; rebuild only for clearer first-install experience.
 
 All v44 work must preserve canonical MaterialID identity, SQLite ownership,
 Verified Material Summary publication boundaries, signed/default-No update
@@ -970,8 +1348,9 @@ contracts, privacy-clean distribution and backwards compatibility.
 ## Idea source archive and demand-only backburner
 
 The detailed notes below preserve the original intent of ideas raised during
-development. Their authoritative disposition and priority are in the v44 table
-above; presence here is not authorization to implement them.
+development. Their current disposition and estimated priority are in the
+canonical delivery-status section at the end of this document; presence here
+is not authorization to implement them.
 
 ### Future report extensions
 
@@ -1131,3 +1510,170 @@ other legacy code paths encountered during the audit.
 - Completed release detail goes into history documents, not this roadmap.
 - New roadmap items must identify their canonical data source and verification boundary.
 - A major milestone is complete only when its required Verification Center gates pass.
+
+---
+
+## Canonical delivery status and next-version plan
+
+Last reviewed: **2026-07-24**
+
+This is the authoritative execution summary. Earlier proposal tables and idea
+descriptions above are retained as context only. Estimated versions below are
+planning slots, not implementation promises. Only the first `Current` item may
+start without a new scope decision; every later item must still begin with
+caller/data-ownership research and may be reordered when daily-use evidence
+changes priority.
+
+### Completed v44 delivery
+
+- **v44.0 — Baseline and release-workflow closure**
+  - Complete.
+  - Governed installer/portable and Production gates accepted.
+- **v44.1 — Verification profiles and diagnostic honesty**
+  - Complete.
+  - Clean-profile Application Readiness and restored-data Full Verification separated.
+- **v44.2 — Daily-use UI state and MaterialID clarity**
+  - Complete.
+  - Machine-local geometry/column state and selected MaterialID accepted.
+  - Full Data Verification 298/298 PASS.
+- **v44.3 — Backup, Recovery and update-evidence clarity**
+  - Complete.
+  - Guarded recovery boundaries accepted.
+  - Application Readiness 209/209 plus 90 N/A PASS.
+- **v44.4 — Measured Materials responsiveness**
+  - Complete.
+  - Fast Materials view, native fallback and clean-VM paths accepted.
+  - Full Data Verification 300/300 PASS.
+- **v44.5.0–v44.5.9 — Legacy compatibility audit and bounded maintainability**
+  - Complete.
+  - Obsolete Excel/workbook/UI residue retired while governed recovery and supported migration remain.
+  - Final Full Data Verification 310/310 PASS.
+- **v44.6.0 — Recovery Center Clarity**
+  - Complete.
+  - Concise UI with exact selected-backup detail and retained diagnostics evidence.
+  - Full Data Verification 311/311 PASS.
+- **v44.6.1 — Canonical Release Documentation Audit**
+  - Complete.
+  - Governed document roles and baseline-aware audit.
+  - Full Data Verification 311/311 PASS.
+- **v44.6.2 — Canonical Measurement Date Foundation**
+  - Complete.
+  - Schema v31 dates, Material Detail visibility, restart/reorder editing and compact native grids accepted.
+  - Full Data Verification 312/312 PASS.
+- **v44.7.0 — Feedback Backlog Governance and Roadmap Reset**
+  - Complete as a documentation-only roadmap increment.
+  - All 49 retained feedback items have lifecycle metadata.
+  - Owner review, 136-column formatting and canonical documentation audit passed.
+
+### Near-term bounded sequence
+
+- **v44.7.0 — Feedback Backlog Governance and Roadmap Reset**
+  - State: **Complete**.
+  - Feedback disposition: Bug/Feedback Log governance.
+  - Give every retained feedback item a lifecycle state and resolution/evidence where known.
+  - Maintain one counted summary and one authoritative future sequence.
+  - Documentation-only; no runtime behavior change.
+- **v44.7.1 — Category Rankings scope controls**
+  - State: **Next planned**.
+  - Feedback disposition: Open.
+  - Research current grouping first.
+  - Add only the proven 5/10/50/100/All choice with safe `All` performance.
+  - Keep ranking formulas unchanged.
+- **v44.7.2 — Validation Help Clarity**
+  - State: Planned.
+  - Feedback disposition: Open.
+  - Document what row `Validation` means.
+  - Add concise contextual UI help without changing validation calculations.
+- **v44.7.3 — Workflow Layout Reset**
+  - State: Planned.
+  - Feedback disposition: Partially solved.
+  - Finish the v44.2 column-state contract with an explicit safe reset-to-default action.
+  - Verify stale-layout fallback.
+- **v44.7.4 — Backup Filename Compatibility**
+  - State: Planned.
+  - Feedback disposition: Open.
+  - Research a human-readable presentation name.
+  - Retain SQLite bytes, existing `.sqlite` discovery, explicit restore and all evidence.
+  - Never rename or delete existing backups automatically.
+- **v44.7.5 — Public Measurement Date Provenance**
+  - State: Planned.
+  - Feedback disposition: Open.
+  - Add canonical Tensile, Impact and Stiffness measured dates to the reviewed public material model.
+  - Show dates on applicable website/report surfaces with `Not recorded` honesty.
+  - Preserve per-material publication opt-in and explicit public allowlists.
+  - Require Preview/Production HTML/PDF parity before publication.
+
+### Later v44 owner-value sequence
+
+- **v44.8.0 — Low-value Material fields audit**
+  - Feedback disposition: Open.
+  - Trace `Manufacturer SKU` and video-thumbnail-name callers before any hide/retire decision.
+  - Preserve recovery and report compatibility.
+- **v44.8.1 — Application icon/branding review**
+  - Feedback disposition: Open.
+  - Evaluate a transparent-background icon against Windows visibility, installer, About, reports and governed assets.
+  - Entry condition: approved visual asset and runtime screenshots.
+- **v44.8.2 — AI Assistant Workflow Clarity**
+  - Feedback disposition: Partially solved.
+  - Explain the feature, prove filtered MaterialID scope and simplify collections.
+  - This does **not** include an external AI API.
+- **v44.9.0 — Price-to-Engineering Analytics**
+  - Feedback disposition: Partially solved.
+  - Define governed USD/kg provenance and one honest price/performance metric.
+  - Missing cost remains `Not recorded`.
+  - Entry condition: approved currency, unit and formula contract.
+- **v44.9.1 — Usage and Test-History Research**
+  - Feedback disposition: Open.
+  - Define ownership for print hours, test hours, material usage and sample-count history.
+  - Do not add schema until an actual capture/report workflow is known.
+- **v44.10.0 — Canonical Base Material Selection**
+  - Feedback disposition: Open.
+  - Use a backwards-compatible dropdown sourced from the governed catalog.
+  - Preserve explicit legacy/unmapped values and never silently remap.
+  - Entry condition: caller, import/export and migration audit complete.
+- **v44.11.0 — Experimental Workflow Extension**
+  - Feedback disposition: Partially solved.
+  - Evaluate owner-visible gaps on top of canonical Series/Runs.
+  - Do not duplicate Materials or create dynamic schema columns.
+
+### Larger post-v44 candidates
+
+- **v45.0 — MaterialID-aware Print Job Pricing and immutable quote snapshots**
+  - State: Open design.
+  - Requires formula/reuse-rights, unit, currency-provenance and Printer Profile approval before coding.
+  - Historical quote snapshots must be immutable.
+- **v45.1 — Optional official exchange-rate reference catalog**
+  - State: Deferred/conditional.
+  - Requires a stable official endpoint and reuse contract.
+  - May prefill only new unsaved purchase data.
+  - Must never rewrite saved purchases, lots or quotes.
+- **v45.2 — Governed Development/Verification and Production/Clean profiles**
+  - State: Research only until diagnostics have measured cost.
+  - Mandatory crash, recovery, security and support evidence can never be removed.
+
+### Intentionally unscheduled
+
+- The unresolved one-day Variant-edit crash remains an immediate defect
+  investigation, not a feature version. If reproduced with diagnostics it takes
+  priority as the next bounded patch; it is not marked solved by similarity to
+  another crash fix.
+- External AI API connectivity remains deferred until a concrete consumer,
+  privacy/credential boundary and support contract are approved.
+- Optional destructive clean uninstall remains deferred. Normal uninstall stays
+  data-preserving; no evidence, backups, SQLite or credentials may be deleted
+  automatically.
+- Bilingual website, manufacturer/API integrations, cloud sync, plugins,
+  general scripting and broad exchange platforms remain demand-only or retired
+  under the dispositions above.
+
+### How the next item is selected
+
+1. Finish and accept the `Current` item.
+2. Re-read `Docs/BUG_FEEDBACK_LOG.md`; a new reproducible bug may supersede the
+   planned feature order.
+3. Promote exactly one `Planned` item to `Current` and record purpose,
+   non-goals, canonical source, compatibility boundary and rollback plan.
+4. Implement one small increment; do not bundle adjacent future versions.
+5. Require Debug/Release, applicable static/security/package gates, Verification
+   and runtime/visual acceptance before marking it complete or advancing the
+   canonical release.
