@@ -1,4 +1,24 @@
-## v44.5.6 - Retired Workbook Metadata Readers (candidate)
+## v44.5.7 - Legacy Workbook Schema Retirement
+
+- Advanced canonical SQLite to schema v30.
+- Added retained verified backup-first, transactional removal of all 13
+  original-workbook/normalized legacy tables.
+- Moved engineering metric consumers from `TestSummaryValues` to canonical
+  in-memory measurement rows and made database measurement readers canonical.
+- Updated active-database inspection for canonical v30 and supported pre-v30
+  migration shapes.
+- Preserved governed Excel disaster recovery, explicit SQLite restore and JSON
+  migration snapshots.
+- Corrected the first runtime candidate after it exposed schema-v29 acceptance
+  assumptions, a missing post-migration v30 restore-ready backup and blank
+  Impact/Stiffness metric adapters.
+- Added direct canonical SQLite fallback for Impact/Stiffness dashboard metrics
+  and aligned the local restore release gate with restore-ready schema v30
+  backups after the second runtime run reached 300/308.
+- Runtime accepted with Full Data Verification 308/308, canonical
+  Impact/Stiffness values and scores visible, and schema v30 backups Ready.
+
+## v44.5.6 - Retired Workbook Metadata Readers
 
 - Removed imported-workbook sheet status from Material Detail.
 - Removed the legacy Database Engine Stats UI and original import metadata from
@@ -7,7 +27,8 @@
 - Preserved legacy tables for a separate backup-first schema migration.
 - Preserved compatibility inspection, governed Excel disaster recovery,
   explicit SQLite restore and JSON migration snapshots.
-- Awaiting runtime Full Data Verification and UI acceptance.
+- Runtime Full Data Verification passed 307/307 with zero failures; Material
+  Detail, diagnostics and governed Excel disaster-recovery export were accepted.
 
 ## v44.5.5 - Retired Legacy Write Entry Points
 

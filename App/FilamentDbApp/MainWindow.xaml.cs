@@ -1965,7 +1965,7 @@ public partial class MainWindow : Window
         }
 
         var tensile = _database.GetTensileTestResult(materialId);
-        var summaryMetrics = _database.GetTestSummaryMetrics(materialId)
+        var summaryMetrics = GetCanonicalTestSummaryMetrics(materialId)
             .Where(m => m.TestType is "Tensile" or "Impact" or "Stiffness" or "Rating")
             .ToList();
 
@@ -2057,7 +2057,7 @@ public partial class MainWindow : Window
         DashboardVideoStatusText.Text = BuildStatusLine("YouTube Review", IsTruthy(DataTableHelpers.FirstValue(row, "YouTube Available", "Video Available")) || HasAnyValue(row, "YouTube Review URL", "YouTube URL"));
 
         DashboardStatusText.Text = hasDashboardData
-            ? "Engineering values are imported from workbook summary metrics and linked by Material ID. The raw imported metrics remain available below."
+            ? "Engineering values come from canonical SQLite measurement rows linked by MaterialID. Canonical metric details remain available below."
             : "No mechanical results are currently linked to this material.";
     }
 
@@ -2139,7 +2139,7 @@ public partial class MainWindow : Window
 
         if (cvValues.Count == 0 && sampleValues.Count == 0)
         {
-            return new ReliabilityRating(0, string.Empty, "No reliability data imported for this test yet.");
+            return new ReliabilityRating(0, string.Empty, "No canonical reliability data is available for this test yet.");
         }
 
         var score = ConsistencyCalibrationService.CalculateScore(
@@ -2175,6 +2175,94 @@ public partial class MainWindow : Window
             .ToList();
 
         return parts.Count == 0 ? "—" : string.Join(" • ", parts);
+    }
+
+    private IReadOnlyList<TestSummaryMetric> GetCanonicalTestSummaryMetrics(string materialId)
+    {
+        var metrics = new List<TestSummaryMetric>();
+        void Add(string testType, string name, string? value, string unit)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return;
+            metrics.Add(new TestSummaryMetric
+            {
+                TestType = testType,
+                MetricName = name,
+                MetricValue = value,
+                Unit = unit,
+                SourceSheet = "Canonical SQLite",
+                SourceColumn = name
+            });
+        }
+
+        var tensile = _nativeTensileRows.FirstOrDefault(row => string.Equals(row.MaterialID, materialId, StringComparison.OrdinalIgnoreCase));
+        if (tensile is not null)
+        {
+            ApplyNativeTensileComputedFields(new[] { tensile });
+            Add("Tensile", "Upright MPa", tensile.MpaUpright, "MPa");
+            Add("Tensile", "Flat MPa", tensile.MpaFlat, "MPa");
+            Add("Tensile", "Upright CV", tensile.CvUpright, "%");
+            Add("Tensile", "Flat CV", tensile.CvFlat, "%");
+            Add("Tensile", "Upright Samples", tensile.SamplesUpright, "");
+            Add("Tensile", "Flat Samples", tensile.SamplesFlat, "");
+        }
+
+        var impact = _nativeImpactRows.FirstOrDefault(row =>
+            string.Equals(row.MaterialID, materialId, StringComparison.OrdinalIgnoreCase) &&
+            NativeImpactRowHasMeasurementData(row));
+        if (impact is null)
+        {
+            var canonicalSamples = _database.GetImpactSamples()
+                .Where(sample => string.Equals(sample.MaterialId, materialId, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            if (canonicalSamples.Count > 0)
+            {
+                impact = new NativeImpactMeasurementRow { MaterialID = materialId };
+                foreach (var sample in canonicalSamples)
+                {
+                    impact.SetSample(
+                        string.Equals(sample.Orientation, "Upright", StringComparison.OrdinalIgnoreCase),
+                        sample.SampleNumber,
+                        sample.RawValue);
+                }
+            }
+        }
+        if (impact is not null)
+        {
+            ApplyNativeImpactComputedFields(new[] { impact });
+            Add("Impact", "Upright kJ", impact.KjUpright, "kJ/m²");
+            Add("Impact", "Flat kJ", impact.KjFlat, "kJ/m²");
+            Add("Impact", "Upright CV", impact.CvUpright, "%");
+            Add("Impact", "Flat CV", impact.CvFlat, "%");
+            Add("Impact", "Upright Samples", impact.SamplesUpright, "");
+            Add("Impact", "Flat Samples", impact.SamplesFlat, "");
+        }
+
+        var stiffness = _nativeStiffnessRows.FirstOrDefault(row =>
+            string.Equals(row.MaterialID, materialId, StringComparison.OrdinalIgnoreCase) &&
+            NativeStiffnessRowHasMeasurementData(row));
+        if (stiffness is null)
+        {
+            var canonicalInput = _database.GetStiffnessMeasurements()
+                .FirstOrDefault(input => string.Equals(input.MaterialId, materialId, StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrWhiteSpace(canonicalInput.MaterialId))
+            {
+                stiffness = new NativeStiffnessMeasurementRow
+                {
+                    MaterialID = materialId,
+                    Revolutions = canonicalInput.Revolutions,
+                    Degrees = canonicalInput.Degrees,
+                    TestNotes = canonicalInput.TestNotes ?? ""
+                };
+            }
+        }
+        if (stiffness is not null)
+        {
+            ApplyNativeStiffnessComputedFields(new[] { stiffness });
+            Add("Stiffness", "Modulus MPa", stiffness.ModulusMpa, "MPa");
+            Add("Stiffness", "Deflection mm", stiffness.DeflectionMm, "mm");
+        }
+
+        return metrics;
     }
 
     private static TestSummaryMetric? FindMetric(IEnumerable<TestSummaryMetric> metrics, params string[] terms)
@@ -2873,7 +2961,7 @@ public partial class MainWindow : Window
             ? row["Material ID"]?.ToString()?.Trim() ?? string.Empty
             : string.Empty;
         var tensile = _database.GetTensileTestResult(materialId);
-        var metrics = _database.GetTestSummaryMetrics(materialId)
+        var metrics = GetCanonicalTestSummaryMetrics(materialId)
             .Where(m => m.TestType is "Tensile" or "Impact" or "Stiffness" or "Rating")
             .ToList();
 
@@ -3095,7 +3183,7 @@ public partial class MainWindow : Window
             : string.Empty;
 
         var tensile = _database.GetTensileTestResult(materialId);
-        var metrics = _database.GetTestSummaryMetrics(materialId)
+        var metrics = GetCanonicalTestSummaryMetrics(materialId)
             .Where(m => m.TestType is "Tensile" or "Impact" or "Stiffness" or "Rating")
             .ToList();
         var profile = _scoringService.BuildProfile(tensile, metrics);
@@ -4175,7 +4263,7 @@ public partial class MainWindow : Window
         // per-material database reads when that governed summary is already available.
         var tensile = verifiedSummary is null ? _database.GetTensileTestResult(materialId) : null;
         var metrics = verifiedSummary is null
-            ? _database.GetTestSummaryMetrics(materialId)
+            ? GetCanonicalTestSummaryMetrics(materialId)
                 .Where(m => m.TestType is "Tensile" or "Impact" or "Stiffness" or "Rating")
                 .ToList()
             : new List<TestSummaryMetric>();
@@ -7563,7 +7651,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             if (string.IsNullOrWhiteSpace(materialId)) continue;
 
             verifiedSummaries.TryGetValue(materialId, out var summary);
-            var metrics = _database.GetTestSummaryMetrics(materialId)
+            var metrics = GetCanonicalTestSummaryMetrics(materialId)
                 .Where(metric => metric.TestType is "Tensile" or "Impact" or "Stiffness" or "Rating")
                 .ToList();
             var profile = _scoringService.BuildProfile(_database.GetTensileTestResult(materialId), metrics);
@@ -14087,7 +14175,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Recovery Center catalog: " + recoveryCatalog.Count + " SQLite backup(s)");
         foreach (var group in recoveryCatalog.GroupBy(item => item.CompatibilityStatus).OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase))
             sb.AppendLine("- " + group.Key + ": " + group.Count());
-        sb.AppendLine("Compatibility policy: schema 27+ standalone; schema 27-28 require isolated migration dry-run; schema 29 ready; older/newer/corrupt blocked");
+        sb.AppendLine("Compatibility policy: schema 27-29 require isolated migration dry-run; schema 30 ready; older/newer/corrupt blocked");
         sb.AppendLine();
 
         sb.AppendLine("Website Export Routing");
@@ -14613,14 +14701,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             header.StartsWith("Cooling ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Drying ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Profile ", StringComparison.OrdinalIgnoreCase));
-        var printingSettingsReady = _database.CurrentSchemaVersion == 29 &&
+        var printingSettingsReady = _database.CurrentSchemaVersion == 30 &&
                                     persistedBaseMaterials.Count == _nativeBaseMaterialRows.Count &&
                                     persistedBaseMaterials.Select(x => x.BaseMaterial).OrderBy(x => x).SequenceEqual(
                                         _nativeBaseMaterialRows.Select(x => x.BaseMaterial).OrderBy(x => x), StringComparer.OrdinalIgnoreCase) &&
                                     perMaterialPrintingColumnsAbsent;
         checks.Add(new VerificationCheck("Base material printing settings foundation", printingSettingsReady,
             printingSettingsReady
-                ? $"Schema v29; {_nativeBaseMaterialRows.Count} SQLite-canonical base-material baselines; per-MaterialID printing columns absent"
+                ? $"Schema v30; {_nativeBaseMaterialRows.Count} SQLite-canonical base-material baselines; per-MaterialID printing columns absent"
                 : "SQLite Base Material Catalog parity, schema version or Materials-column boundary failed"));
         var printingPublicNames = new[] { "NozzleTemperature", "BedTemperature", "PrintSpeed", "Cooling", "Drying", "EnclosureRequirement", "PrinterProfileReference", "Slicer", "PrintingSettings", "PrintingProfile" };
         var printingSettingsRemainInternal = printingPublicNames.All(name =>
@@ -16160,7 +16248,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                                            !string.IsNullOrWhiteSpace(deploymentSettings.FtpsUserName) &&
                                            deploymentSettings.FtpsPort is >= 1 and <= 65535;
         checks.Add(new VerificationCheck("SQLite-governed explicit FTPS publishing contract",
-            _database.CurrentSchemaVersion == 29 &&
+            _database.CurrentSchemaVersion == 30 &&
             (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
             FtpsWebsitePublisherService.MainRemotePath == "/index.html" &&
             FtpsWebsitePublisherService.ManufacturerRemotePath == "/manufacturers/index.html" &&
@@ -16619,7 +16707,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             printingSettingsReady && printingSettingsRemainInternal && incrementalFtpsPublishingReady && releaseIdentityReady
                 ? "Canonical baseline profile identity, cooling/drying units, slicer identity, provenance, source and checked-date contracts passed; public allowlists unchanged"
                 : "Printing-profile governance, provenance, internal-only boundary, prior publishing gate or release identity did not pass"));
-        var deploymentSettingsReady = _database.CurrentSchemaVersion == 29 &&
+        var deploymentSettingsReady = _database.CurrentSchemaVersion == 30 &&
                                       (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
                                       typeof(WindowsCredentialService).GetMethod("ReadPassword", new[] { typeof(string), typeof(string) }) is not null;
         checks.Add(new VerificationCheck("v42.15 Deployment Settings Governance release gate", deploymentSettingsReady && incrementalFtpsPublishingReady && releaseIdentityReady,
@@ -16639,7 +16727,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 : "Native measurement marker, SQLite/UI count parity or release identity failed"));
         var canonicalGeneralSettings = _database.LoadNativeSettingsRows();
         var expectedGeneralSettings = _nativeSettingsRows.Count(row => !string.Equals(row.Section, "Deployment", StringComparison.OrdinalIgnoreCase));
-        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == 29 &&
+        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == 30 &&
                                           _database.LoadNativeMaterialManagerRows().Count == _nativeMaterialRows.Count &&
                                           canonicalGeneralSettings.Count == expectedGeneralSettings &&
                                           canonicalGeneralSettings.Select(row => (row.Section, row.Parameter, row.Unit, row.UsedBy)).Distinct().Count() == canonicalGeneralSettings.Count;
@@ -16648,7 +16736,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? $"SQLite owns {_nativeMaterialRows.Count} Materials rows and {canonicalGeneralSettings.Count} general Settings rows; legacy JSON is snapshot-only"
                 : "Materials/Settings SQLite parity, settings key uniqueness, schema or release identity failed"));
         var latestLocalBackup = _database.GetLocalBackupCatalog()
-            .FirstOrDefault(item => item.CanRestore && item.IsIntegrityValid && item.SchemaVersion is > 0 and <= 29 && item.Materials > 0);
+            .FirstOrDefault(item => item.CanRestore && item.IsIntegrityValid && item.SchemaVersion is > 0 and <= 30 && item.Materials > 0);
         var latestLocalBackupValid = false;
         var latestLocalBackupDetail = "No restore-ready SQLite backup with canonical Materials is available";
         if (latestLocalBackup is not null)
@@ -16656,7 +16744,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             try
             {
                 var inspection = _database.InspectDatabaseBackup(latestLocalBackup.FilePath);
-                latestLocalBackupValid = inspection.IsIntegrityValid && inspection.SchemaVersion is > 0 and <= 29 && inspection.Materials > 0;
+                latestLocalBackupValid = inspection.IsIntegrityValid && inspection.SchemaVersion is > 0 and <= 30 && inspection.Materials > 0;
                 latestLocalBackupDetail = $"{IOPath.GetFileName(latestLocalBackup.FilePath)}: integrity {inspection.IntegrityResult}, schema v{inspection.SchemaVersion}, materials {inspection.Materials:N0}";
             }
             catch (Exception ex) { latestLocalBackupDetail = IOPath.GetFileName(latestLocalBackup.FilePath) + ": " + ex.Message; }
@@ -16673,7 +16761,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var excelRecoverySnapshot = _database.CreateExcelRecoverySnapshot();
         var excelRecoveryRows = excelRecoverySnapshot.Tables.Sum(table => table.Rows.Count);
         var excelRecoveryReady = excelRecoverySnapshot.FormatVersion == ExcelRecoverySnapshot.CurrentFormatVersion &&
-                                 excelRecoverySnapshot.SourceSchemaVersion == 29 &&
+                                 excelRecoverySnapshot.SourceSchemaVersion == 30 &&
                                  excelRecoverySnapshot.Tables.Count == 21 &&
                                  excelRecoverySnapshot.Tables.All(table => !string.IsNullOrWhiteSpace(table.TableName) && table.Columns.Count > 0 && table.Rows.All(row => row.Count == table.Columns.Count) && ExcelDisasterRecoveryService.ComputeTableHash(table).Length == 64) &&
                                  excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMaterialManagerRows").Rows.Count == _nativeMaterialRows.Count &&
@@ -16755,18 +16843,28 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             retiredWorkbookMetadataReadersReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
                 ? "Original-workbook sheet metadata is absent from Material Detail, Tools and diagnostics while supported-schema inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
                 : "A workbook metadata reader/UI surface remains or a required compatibility/recovery boundary failed"));
+        var legacyWorkbookSchemaRetiredReady =
+            _database.CurrentSchemaVersion == 30 &&
+            _database.LegacyWorkbookTablesAreRetired() &&
+            typeof(LocalDatabase).GetMethod("GetTestSummaryMetrics") is null &&
+            typeof(MainWindow).GetMethod("GetCanonicalTestSummaryMetrics", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v44.5.7 Legacy workbook schema retirement release gate",
+            legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady,
+            legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
+                ? "Schema v30 contains no original-workbook tables; engineering metrics use canonical measurement rows while pre-v30 migration inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
+                : "Legacy workbook tables/readers remain or canonical metrics, migration compatibility or recovery boundaries failed"));
         var compatibilityCatalog = _database.GetLocalBackupCatalog();
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
                                          compatibilityCatalog.Where(item => item.SchemaVersion is > 0 and < 27).All(item => item.CompatibilityStatus == "Legacy / incomplete" && !item.CanRestore) &&
-                                         compatibilityCatalog.Where(item => item.SchemaVersion is 27 or 28).All(item => item.CompatibilityStatus == "Migration required" && !item.CanRestore) &&
-                                         compatibilityCatalog.Where(item => item.SchemaVersion > 29).All(item => item.CompatibilityStatus == "Newer / incompatible" && !item.CanRestore) &&
+                                         compatibilityCatalog.Where(item => item.SchemaVersion is >= 27 and <= 29).All(item => item.CompatibilityStatus == "Migration required" && !item.CanRestore) &&
+                                         compatibilityCatalog.Where(item => item.SchemaVersion > 30).All(item => item.CompatibilityStatus == "Newer / incompatible" && !item.CanRestore) &&
                                          typeof(LocalDatabase).GetMethod("GetLocalBackupCatalog") is not null &&
                                          typeof(LocalDatabase).GetMethod("VerifyBackupCompatibility") is not null &&
                                          typeof(MainWindow).GetMethod("ShowRecoveryCenter_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("v43.3 Recovery Compatibility Center release gate", recoveryCompatibilityReady && localRestoreContractReady && excelRecoveryReady && releaseIdentityReady,
             recoveryCompatibilityReady && localRestoreContractReady && excelRecoveryReady && releaseIdentityReady
-                ? $"{compatibilityCatalog.Count} local SQLite backups classified; schema 27-28 require isolated dry-run, schema 29 ready, legacy/newer/corrupt blocked; verify-only and guarded restore UI available"
+                ? $"{compatibilityCatalog.Count} local SQLite backups classified; schema 27-29 require isolated dry-run, schema 30 ready, legacy/newer/corrupt blocked; verify-only and guarded restore UI available"
                 : "Recovery catalog, compatibility classification, migration dry-run contract, guarded restore UI or release identity failed"));
         var backupRecoveryUiReady = BackupAndRecoveryCenterActions.SequenceEqual(new[]
         {
@@ -16877,7 +16975,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var recoveryClarityGlossary = BuildRecoveryCompatibilityGlossary();
         var emptyProfileCompatibilityReady =
             compatibilityCatalog
-                .Where(item => item.IsIntegrityValid && item.SchemaVersion == 29 && item.Materials == 0)
+                .Where(item => item.IsIntegrityValid && item.SchemaVersion == 30 && item.Materials == 0)
                 .All(item => item.CompatibilityStatus == "Ready — empty profile" && item.CanRestore) &&
             recoveryClarityGlossary.Contains("Ready — empty profile", StringComparison.Ordinal) &&
             recoveryClarityGlossary.Contains("not full-data release evidence", StringComparison.Ordinal) &&

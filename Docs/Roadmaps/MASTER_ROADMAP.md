@@ -1,8 +1,8 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.5.5 — Retired Legacy Write Entry Points**
+Current canonical release: **v44.5.6 — Retired Workbook Metadata Readers**
 
-Last runtime-accepted baseline: **v44.5.5 — Retired Legacy Write Entry Points**
+Last runtime-accepted baseline: **v44.5.6 — Retired Workbook Metadata Readers**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -825,8 +825,9 @@ Boundaries. Fourth bounded increment complete and runtime accepted as v44.5.3
 — Canonical Storage Terminology. Fifth bounded increment complete and runtime
 accepted as v44.5.4 — Measurement Help Clarity. Sixth bounded increment
 complete and runtime accepted as v44.5.5 — Retired Legacy Write Entry Points.
-Seventh bounded increment implemented for runtime acceptance as v44.5.6 —
-Retired Workbook Metadata Readers.**
+Seventh bounded increment complete and runtime accepted as v44.5.6 — Retired
+Workbook Metadata Readers. Eighth bounded increment complete and runtime
+accepted as v44.5.7 — Legacy Workbook Schema Retirement.**
 
 - The unreachable original-Excel database import handler and its
   caller-exclusive importer services are removed. Lower-level SQLite legacy
@@ -860,6 +861,11 @@ Retired Workbook Metadata Readers.**
   removes original-workbook sheet metadata from Material Detail, Tools and
   diagnostics. Legacy tables remain intact for the separate backup-first schema
   migration increment.
+- Runtime Full Data Verification passed 308/308 with zero failures. v44.5.7
+  advances SQLite to schema v30 and transactionally drops all 13 original
+  workbook/normalized measurement tables after a retained verified backup.
+  Canonical Impact/Stiffness values and scores remain visible, and schema v30
+  backups are restore-ready.
 
 - Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state ownership.
 - Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete UI, dead handlers/services and stale documentation in small reviewed increments.

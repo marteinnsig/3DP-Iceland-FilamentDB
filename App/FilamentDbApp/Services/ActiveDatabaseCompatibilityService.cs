@@ -22,12 +22,22 @@ public sealed class ActiveDatabaseCompatibilityService
             if (schemaVersion > supportedSchemaVersion)
                 return new ActiveDatabaseCompatibilityInspection(false, schemaVersion, $"The active SQLite database schema v{schemaVersion} is newer than supported schema v{supportedSchemaVersion}.");
 
-            var materialsHasPrimaryKey = TableHasPrimaryKey(connection, "Materials", "MaterialId");
-            var importsHasExpectedColumn = TableHasColumn(connection, "Imports", "SchemaVersion");
-            if (!materialsHasPrimaryKey || !importsHasExpectedColumn)
-                return new ActiveDatabaseCompatibilityInspection(false, schemaVersion, "The active SQLite database does not have the required legacy compatibility table shape.");
+            var canonicalMaterialsHavePrimaryKey = TableHasPrimaryKey(connection, "NativeMaterialManagerRows", "MaterialId");
+            if (schemaVersion == supportedSchemaVersion && !canonicalMaterialsHavePrimaryKey)
+                return new ActiveDatabaseCompatibilityInspection(false, schemaVersion, "The active SQLite database does not have the required canonical Materials table shape.");
 
-            return new ActiveDatabaseCompatibilityInspection(true, schemaVersion, $"Schema v{schemaVersion} has the required startup compatibility shape.");
+            if (schemaVersion < supportedSchemaVersion)
+            {
+                var materialsHasPrimaryKey = TableHasPrimaryKey(connection, "Materials", "MaterialId");
+                var importsHasExpectedColumn = TableHasColumn(connection, "Imports", "SchemaVersion");
+                if (!materialsHasPrimaryKey || !importsHasExpectedColumn)
+                    return new ActiveDatabaseCompatibilityInspection(false, schemaVersion, "The older active SQLite database does not have the required pre-v30 migration shape.");
+            }
+
+            return new ActiveDatabaseCompatibilityInspection(true, schemaVersion,
+                schemaVersion == supportedSchemaVersion
+                    ? $"Schema v{schemaVersion} has the required canonical startup shape."
+                    : $"Schema v{schemaVersion} has the required pre-v30 migration shape.");
         }
         catch (Exception ex)
         {
@@ -55,13 +65,17 @@ public sealed class ActiveDatabaseCompatibilityService
         try
         {
             var supportedPath = IOPath.Combine(root, "supported.sqlite");
-            CreateFixture(supportedPath, supportedSchemaVersion, includeRequiredLegacyShape: true);
+            CreateFixture(supportedPath, supportedSchemaVersion, includeRequiredLegacyShape: false);
             var supported = Inspect(supportedPath, supportedSchemaVersion);
 
-            var canonicalOnlyPath = IOPath.Combine(root, "canonical-only.sqlite");
-            CreateFixture(canonicalOnlyPath, supportedSchemaVersion, includeRequiredLegacyShape: false);
-            var canonicalOnlyHash = ComputeSha256(canonicalOnlyPath);
-            var canonicalOnlyBlocked = BlocksAndPreserves(canonicalOnlyPath, supportedSchemaVersion, canonicalOnlyHash);
+            var legacyMigrationPath = IOPath.Combine(root, "legacy-migration.sqlite");
+            CreateFixture(legacyMigrationPath, supportedSchemaVersion - 1, includeRequiredLegacyShape: true);
+            var legacyMigration = Inspect(legacyMigrationPath, supportedSchemaVersion);
+
+            var malformedCanonicalPath = IOPath.Combine(root, "malformed-canonical.sqlite");
+            CreateFixture(malformedCanonicalPath, supportedSchemaVersion, includeRequiredLegacyShape: false, includeCanonicalShape: false);
+            var malformedCanonicalHash = ComputeSha256(malformedCanonicalPath);
+            var malformedCanonicalBlocked = BlocksAndPreserves(malformedCanonicalPath, supportedSchemaVersion, malformedCanonicalHash);
 
             var newerPath = IOPath.Combine(root, "newer.sqlite");
             CreateFixture(newerPath, supportedSchemaVersion + 1, includeRequiredLegacyShape: true);
@@ -74,11 +88,12 @@ public sealed class ActiveDatabaseCompatibilityService
             var unreadableBlocked = BlocksAndPreserves(unreadablePath, supportedSchemaVersion, unreadableHash);
 
             var passed = supported.IsSupported && supported.SchemaVersion == supportedSchemaVersion &&
-                         canonicalOnlyBlocked && newerBlocked && unreadableBlocked;
+                         legacyMigration.IsSupported && legacyMigration.SchemaVersion == supportedSchemaVersion - 1 &&
+                         malformedCanonicalBlocked && newerBlocked && unreadableBlocked;
             return new ActiveDatabaseCompatibilityContractVerification(
                 passed,
                 passed
-                    ? "Supported schema remains available; canonical-only, newer and unreadable active databases are blocked unchanged with retained evidence copies."
+                    ? "Canonical schema and pre-v30 migration shape remain available; malformed canonical, newer and unreadable active databases are blocked unchanged with retained evidence copies."
                     : "Active-database compatibility preservation contract failed.");
         }
         catch (Exception ex)
@@ -112,7 +127,7 @@ public sealed class ActiveDatabaseCompatibilityService
         }
     }
 
-    private static void CreateFixture(string path, int schemaVersion, bool includeRequiredLegacyShape)
+    private static void CreateFixture(string path, int schemaVersion, bool includeRequiredLegacyShape, bool includeCanonicalShape = true)
     {
         using var connection = new SqliteConnection($"Data Source={path};Pooling=False");
         connection.Open();
@@ -120,7 +135,7 @@ public sealed class ActiveDatabaseCompatibilityService
         command.CommandText = $"""
             CREATE TABLE AppMeta (Key TEXT PRIMARY KEY, Value TEXT NOT NULL);
             INSERT INTO AppMeta(Key, Value) VALUES ('SchemaVersion', '{schemaVersion.ToString(CultureInfo.InvariantCulture)}');
-            CREATE TABLE NativeMaterialManagerRows (MaterialId TEXT PRIMARY KEY);
+            {(includeCanonicalShape ? "CREATE TABLE NativeMaterialManagerRows (MaterialId TEXT PRIMARY KEY);" : string.Empty)}
             {(includeRequiredLegacyShape ? "CREATE TABLE Materials (MaterialId TEXT PRIMARY KEY); CREATE TABLE Imports (ImportId INTEGER PRIMARY KEY, SchemaVersion INTEGER NOT NULL);" : string.Empty)}
             """;
         command.ExecuteNonQuery();

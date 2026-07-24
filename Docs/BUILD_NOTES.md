@@ -1,6 +1,55 @@
-# Current Build Notes - v44.5.6
+# Current Build Notes - v44.5.7
 
-## Retired Workbook Metadata Readers candidate
+## Legacy Workbook Schema Retirement
+
+v44.5.7 advances the canonical database to schema v30. On an existing v29
+database it first creates the established integrity-verified SQLite backup and
+retains all evidence, then transactionally drops the 13 original workbook,
+normalized Materials and pre-canonical measurement/summary tables.
+
+Engineering dashboard, Charts, Compare and report fallback metrics now consume
+the live canonical Tensile, Impact and Stiffness rows rather than
+`TestSummaryValues`. Tensile/sample/stiffness database readers are canonical
+only. Schema v29 and older supported databases must still present their legacy
+migration shape during read-only compatibility inspection; malformed v30,
+newer and unreadable databases remain blocked unchanged with evidence copies.
+If an older database has not completed canonical measurement migration, table
+retirement is deferred rather than deleting its only source.
+
+Governed Excel disaster-recovery export and explicit restore remain supported;
+they contain only the allowlisted canonical tables and are independent of the
+retired workbook schema. Explicit SQLite restore, JSON migration snapshots,
+updater, reports, website and FTPS behavior remain unchanged. Runtime Full Data
+Verification, recovery export and visual Engineering/Charts/Compare acceptance
+are required.
+
+The first runtime run correctly reached schema v30 and removed the legacy
+tables, but Full Data Verification failed 292/308. Acceptance checks and
+Recovery Center classification still hard-coded schema v29, no post-migration
+v30 restore-ready backup had been created, and the first canonical metric
+adapter left Impact/Stiffness blank in Mechanical and Charts. The correction
+updates all gates/policy text to v30, retains both the pre-migration evidence
+backup and a separately verified post-migration v30 backup, and recalculates
+canonical Tensile/Impact/Stiffness fields before building the shared metric
+contract. Runtime re-acceptance is required.
+
+The second runtime run proved schema v30 backup classification in Recovery
+Center and improved Full Data Verification to 300/308. It also proved that
+MAT0102 still had 16 canonical Impact samples and one canonical Stiffness input
+row even though Mechanical and Charts displayed blanks. The follow-up reads
+those canonical rows directly when the initialized UI collections have no
+usable measurement row, and the local restore release gate now accepts the
+current schema v30 backup that Recovery Center already classifies as Ready.
+Debug and Release compile with zero warnings and errors.
+
+Final runtime acceptance passed Full Data Verification 308/308 with zero
+failures on 2026-07-24. Mechanical displayed canonical Impact and Stiffness
+values for MAT0102, Charts displayed both scores, and Recovery Center displayed
+schema v30 backups as Ready. System Diagnostics confirmed schema v30, 200
+canonical Materials, three Ready backups and no incomplete update transaction.
+v44.5.7 is runtime accepted.
+
+## Retired Workbook Metadata Readers
 
 v44.5.6 removes the original-workbook `Imported test sheets` list from Material
 Detail, the legacy Database Engine Stats tool and original import counts/source
@@ -15,7 +64,9 @@ must create and verify a retained SQLite backup before dropping tables.
 
 A Verification gate proves the workbook metadata readers and UI surfaces are
 absent while compatibility and recovery boundaries remain available. Runtime
-Full Data Verification and Material Detail/diagnostics acceptance are required.
+Full Data Verification passed 307/307 with zero failures on 2026-07-24;
+Material Detail, diagnostics and governed Excel disaster-recovery export were
+accepted and v44.5.6 is runtime accepted.
 
 ## Retired Legacy Write Entry Points
 

@@ -11,7 +11,7 @@ namespace FilamentDbApp.Data;
 
 public sealed partial class LocalDatabase
 {
-    private const int SchemaVersion = 29;
+    private const int SchemaVersion = 30;
     private const int MinimumStandaloneBackupSchemaVersion = 27;
     private const int MaxAutomaticBackups = 20;
     private const string AutomaticBackupPrefix = "filamentdb_";
@@ -22,6 +22,13 @@ public sealed partial class LocalDatabase
         "Manufacturers", "NativeMaterialManagerRows", "BaseMaterialCatalog", "NativeSettingsRows", "DeploymentSettings", "WebsiteTemplates", "VideoIdeaQueue", "Suppliers",
         "PurchaseOrders", "PurchaseOrderLines", "InventorySpoolItems", "PurchaseDocuments", "ExperimentDefinitions", "MaterialExperiments", "ExperimentalRuns", "ExperimentalMeasurements",
         "NativeTensileSamples", "NativeTensileResults", "NativeImpactSamples", "NativeStiffnessMeasurements", "NativeMeasurementNotes"
+    };
+    private static readonly string[] LegacyWorkbookTablesDropOrder =
+    {
+        "ExcelSheetCells", "ExcelSheetRows", "ExcelSheetColumns", "ExcelSheets",
+        "TestSummaryValues", "StiffnessMeasurements", "ImpactSamples",
+        "TensileSamples", "TensileResults", "MaterialAttributes", "LookupValues",
+        "Materials", "Imports"
     };
     public string DatabasePath { get; }
 
@@ -36,10 +43,14 @@ public sealed partial class LocalDatabase
         new ActiveDatabaseCompatibilityService().EnsureSupportedOrPreserve(DatabasePath, SchemaVersion);
 
         var legacyMaterialsImportRetirementPending = IOFile.Exists(DatabasePath) && LegacyMaterialsImportRetirementIsPending();
-        if (IOFile.Exists(DatabasePath) && (NativeMeasurementMigrationIsPending() || DatabaseSchemaUpgradeIsPending() || legacyMaterialsImportRetirementPending))
-            CreateRequiredBackupBeforeCanonicalMigration(retainAllEvidence: legacyMaterialsImportRetirementPending);
+        var legacyWorkbookRetirementPending = IOFile.Exists(DatabasePath) && LegacyWorkbookTablesRetirementIsPending();
+        var postRetirementBackupPending = IOFile.Exists(DatabasePath) && LegacyWorkbookPostRetirementBackupIsPending();
+        if (IOFile.Exists(DatabasePath) && (NativeMeasurementMigrationIsPending() || DatabaseSchemaUpgradeIsPending() || legacyMaterialsImportRetirementPending || legacyWorkbookRetirementPending))
+            CreateRequiredBackupBeforeCanonicalMigration(retainAllEvidence: legacyMaterialsImportRetirementPending || legacyWorkbookRetirementPending);
 
         Initialize();
+        if ((legacyWorkbookRetirementPending || postRetirementBackupPending) && LegacyWorkbookTablesAreRetired())
+            CreateAndRecordLegacyWorkbookPostRetirementBackup();
     }
 
     private LocalDatabase(string databasePath)
@@ -216,6 +227,50 @@ public sealed partial class LocalDatabase
     }
 
     public bool LegacyMaterialsImportIsRetired() => !LegacyMaterialsImportRetirementIsPending();
+
+    private bool LegacyWorkbookTablesRetirementIsPending()
+    {
+        try
+        {
+            using var connection = new SqliteConnection(ConnectionString);
+            connection.Open();
+            using var command = connection.CreateCommand();
+            command.CommandText = $"SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name IN ({string.Join(",", LegacyWorkbookTablesDropOrder.Select((_, index) => $"$table{index}"))});";
+            for (var index = 0; index < LegacyWorkbookTablesDropOrder.Length; index++)
+                command.Parameters.AddWithValue($"$table{index}", LegacyWorkbookTablesDropOrder[index]);
+            return Convert.ToInt32(command.ExecuteScalar(), CultureInfo.InvariantCulture) > 0;
+        }
+        catch { return true; }
+    }
+
+    public bool LegacyWorkbookTablesAreRetired() => !LegacyWorkbookTablesRetirementIsPending();
+
+    private bool LegacyWorkbookPostRetirementBackupIsPending()
+    {
+        try
+        {
+            using var connection = new SqliteConnection(ConnectionString);
+            connection.Open();
+            using var command = connection.CreateCommand();
+            command.CommandText = "SELECT Value FROM AppMeta WHERE Key='LegacyWorkbookPostRetirementBackupV1' LIMIT 1;";
+            return !string.Equals(command.ExecuteScalar()?.ToString(), "complete", StringComparison.Ordinal);
+        }
+        catch { return false; }
+    }
+
+    private void CreateAndRecordLegacyWorkbookPostRetirementBackup()
+    {
+        var backup = CreateConsistentDatabaseBackup(AutomaticBackupPrefix);
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var marker = connection.CreateCommand();
+        marker.CommandText = """
+            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('LegacyWorkbookPostRetirementBackupV1', 'complete');
+            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('LegacyWorkbookPostRetirementBackupPath', $path);
+            """;
+        marker.Parameters.AddWithValue("$path", backup.FullName);
+        marker.ExecuteNonQuery();
+    }
 
     private void CreateThrottledAutomaticBackupBeforeWrite()
     {
@@ -1215,8 +1270,6 @@ INSERT OR IGNORE INTO ExperimentDefinitions (ExperimentDefinitionId, Name, Param
 INSERT OR IGNORE INTO DeploymentSettings (SettingsId, FtpsHost, FtpsPort, FtpsUserName, UpdatedAtUtc)
 VALUES (1, '', 21, '', CURRENT_TIMESTAMP);
 
-INSERT OR REPLACE INTO AppMeta (Key, Value) VALUES ('SchemaVersion', '29');
-
 DROP TABLE IF EXISTS MaterialsImport;";
         command.ExecuteNonQuery();
         EnsureNativeSettingsRowsKeySchema(connection);
@@ -1349,6 +1402,47 @@ DROP TABLE IF EXISTS MaterialsImport;";
         EnsureColumn(connection, "NativeMaterialManagerRows", "IsArchived", "INTEGER NOT NULL DEFAULT 0");
         EnsureColumn(connection, "NativeMaterialManagerRows", "UpdatedAtUtc", "TEXT NOT NULL DEFAULT ''");
         EnsureColumn(connection, "InventorySpoolItems", "PurchaseOrderLineId", "TEXT");
+        RetireLegacyWorkbookTablesIfCanonicalReady(connection);
+    }
+
+    private static void RetireLegacyWorkbookTablesIfCanonicalReady(SqliteConnection connection)
+    {
+        var canonicalReady = false;
+        using (var canonical = connection.CreateCommand())
+        {
+            canonical.CommandText = "SELECT Value FROM AppMeta WHERE Key='NativeMeasurementsCanonicalV1' LIMIT 1;";
+            var marker = canonical.ExecuteScalar()?.ToString();
+            canonicalReady = string.Equals(marker, "complete", StringComparison.Ordinal);
+        }
+        if (!canonicalReady)
+        {
+            using var legacyRows = connection.CreateCommand();
+            legacyRows.CommandText = """
+                SELECT
+                    (SELECT COUNT(*) FROM Materials) +
+                    (SELECT COUNT(*) FROM TensileSamples) +
+                    (SELECT COUNT(*) FROM ImpactSamples) +
+                    (SELECT COUNT(*) FROM StiffnessMeasurements);
+                """;
+            if (Convert.ToInt64(legacyRows.ExecuteScalar(), CultureInfo.InvariantCulture) > 0) return;
+        }
+
+        using var transaction = connection.BeginTransaction();
+        foreach (var table in LegacyWorkbookTablesDropOrder)
+        {
+            using var drop = connection.CreateCommand();
+            drop.Transaction = transaction;
+            drop.CommandText = $"DROP TABLE IF EXISTS {Quote(table)};";
+            drop.ExecuteNonQuery();
+        }
+        using var update = connection.CreateCommand();
+        update.Transaction = transaction;
+        update.CommandText = """
+            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('LegacyWorkbookTablesRetiredV1', 'complete');
+            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('SchemaVersion', '30');
+            """;
+        update.ExecuteNonQuery();
+        transaction.Commit();
     }
 
 
@@ -2351,17 +2445,12 @@ INSERT INTO VideoIdeaQueue (
         connection.Open();
 
         using var command = connection.CreateCommand();
-        command.CommandText = (NativeMeasurementsAreCanonical(connection) ? @"
+        command.CommandText = @"
 SELECT MaterialId, UprightMpa, FlatMpa, StdDevUpright, StdDevFlat, CvUpright, CvFlat,
        SamplesUpright, SamplesFlat, ConfidenceUpright, ConfidenceFlat, TestNotes
 FROM NativeTensileResults
 WHERE MaterialId = $materialId
-LIMIT 1;" : @"
-SELECT MaterialId, UprightMpa, FlatMpa, StdDevUpright, StdDevFlat, CvUpright, CvFlat,
-       SamplesUpright, SamplesFlat, ConfidenceUpright, ConfidenceFlat, TestNotes
-FROM TensileResults
-WHERE MaterialId = $materialId
-LIMIT 1;");
+LIMIT 1;";
         AddParameter(command, "$materialId", materialId);
 
         using var reader = command.ExecuteReader();
@@ -2485,12 +2574,9 @@ LIMIT 1;");
         connection.Open();
 
         using var command = connection.CreateCommand();
-        command.CommandText = NativeMeasurementsAreCanonical(connection) ? @"
+        command.CommandText = @"
 SELECT MaterialId, Orientation, SampleNumber, RawValue
 FROM NativeTensileSamples
-ORDER BY MaterialId, Orientation, SampleNumber;" : @"
-SELECT MaterialId, Orientation, SampleNumber, RawValue
-FROM TensileSamples
 ORDER BY MaterialId, Orientation, SampleNumber;";
 
         using var reader = command.ExecuteReader();
@@ -2514,12 +2600,9 @@ ORDER BY MaterialId, Orientation, SampleNumber;";
         connection.Open();
 
         using var command = connection.CreateCommand();
-        command.CommandText = NativeMeasurementsAreCanonical(connection) ? @"
+        command.CommandText = @"
 SELECT MaterialId, Orientation, SampleNumber, RawValue
 FROM NativeImpactSamples
-ORDER BY MaterialId, Orientation, SampleNumber;" : @"
-SELECT MaterialId, Orientation, SampleNumber, RawValue
-FROM ImpactSamples
 ORDER BY MaterialId, Orientation, SampleNumber;";
 
         using var reader = command.ExecuteReader();
@@ -2542,12 +2625,9 @@ ORDER BY MaterialId, Orientation, SampleNumber;";
         connection.Open();
 
         using var command = connection.CreateCommand();
-        command.CommandText = NativeMeasurementsAreCanonical(connection) ? @"
+        command.CommandText = @"
 SELECT MaterialId, Revolutions, Degrees, TestNotes
 FROM NativeStiffnessMeasurements
-ORDER BY MaterialId;" : @"
-SELECT MaterialId, Revolutions, Degrees, TestNotes
-FROM StiffnessMeasurements
 ORDER BY MaterialId;";
 
         using var reader = command.ExecuteReader();
@@ -2572,47 +2652,6 @@ ORDER BY MaterialId;";
         return command.ExecuteScalar()?.ToString() ?? string.Empty;
     }
 
-
-    public IReadOnlyList<TestSummaryMetric> GetTestSummaryMetrics(string materialId)
-    {
-        var metrics = new List<TestSummaryMetric>();
-        if (string.IsNullOrWhiteSpace(materialId)) return metrics;
-
-        using var connection = new SqliteConnection(ConnectionString);
-        connection.Open();
-
-        using var command = connection.CreateCommand();
-        command.CommandText = @"
-SELECT TestType, MetricName, MetricValue, Unit, SourceSheet, SourceColumn
-FROM TestSummaryValues
-WHERE MaterialId = $materialId
-ORDER BY
-    CASE TestType
-        WHEN 'Tensile' THEN 1
-        WHEN 'Impact' THEN 2
-        WHEN 'Stiffness' THEN 3
-        WHEN 'Rating' THEN 4
-        ELSE 5
-    END,
-    MetricName;";
-        AddParameter(command, "$materialId", materialId);
-
-        using var reader = command.ExecuteReader();
-        while (reader.Read())
-        {
-            metrics.Add(new TestSummaryMetric
-            {
-                TestType = reader["TestType"]?.ToString() ?? string.Empty,
-                MetricName = reader["MetricName"]?.ToString() ?? string.Empty,
-                MetricValue = reader["MetricValue"]?.ToString(),
-                Unit = reader["Unit"]?.ToString(),
-                SourceSheet = reader["SourceSheet"]?.ToString() ?? string.Empty,
-                SourceColumn = reader["SourceColumn"]?.ToString() ?? string.Empty
-            });
-        }
-
-        return metrics;
-    }
 
     private static void ClearEngineTables(SqliteConnection connection, SqliteTransaction transaction)
     {
