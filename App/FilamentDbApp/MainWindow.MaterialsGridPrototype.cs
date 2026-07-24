@@ -10,6 +10,34 @@ namespace FilamentDbApp;
 
 public partial class MainWindow
 {
+    private static List<MaterialsPrototypeColumn> BuildFastMeasurementIdentityColumns() =>
+    [
+        FastMeasurementColumn("Material ID", 90, "MaterialID", true),
+        FastMeasurementColumn("Manufacturer", 130, "Manufacturer", true),
+        FastMeasurementColumn("Product Line", 130, "ProductLine", true),
+        FastMeasurementColumn("Marketing Name", 140, "MarketingName", true),
+        FastMeasurementColumn("Base Material", 110, "BaseMaterial", true),
+        FastMeasurementColumn("Category", 110, "MaterialCategory", true),
+        FastMeasurementColumn("Variant / Finish", 120, "VariantFinish", true),
+        FastMeasurementColumn("Reinforcement", 110, "Reinforcement", true),
+        FastMeasurementColumn("Color", 90, "Color", true)
+    ];
+
+    private static MaterialsPrototypeColumn FastMeasurementColumn(
+        string header,
+        double width,
+        string? propertyName,
+        bool isReadOnly,
+        FastGridCellKind cellKind = FastGridCellKind.Standard) =>
+        new(
+            header,
+            width,
+            propertyName,
+            isReadOnly,
+            MaterialsPrototypeEditorKind.Text,
+            Array.Empty<string>(),
+            cellKind);
+
     private static readonly bool FastMaterialsViewDefaultEnabled = true;
     private MaterialsRenderingPrototypeView? _embeddedMaterialsPrototypeView;
     private bool _fastMaterialsCloseGuardAttached;

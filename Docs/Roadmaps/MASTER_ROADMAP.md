@@ -1628,7 +1628,8 @@ changes priority.
   - Remove accepted Fast-workflow legacy fallback controls first.
   - Keep legacy DataGrids hidden temporarily while they still supply Fast column and row adapters.
   - Stage 1 UI retirement is runtime accepted with Full Data Verification 319/319.
-  - Stage 2 replaces measurement-grid adapters with explicit Fast contracts.
+  - Stage 2 measurement contracts are runtime accepted with Full Data Verification 320/320.
+  - Stage 3 replaces the Materials DataGrid column/item adapter with an explicit Fast contract.
   - Replace those adapters with explicit Fast contracts before deleting legacy XAML, handlers and commit paths.
   - Preserve canonical SQLite, formulas, filters, validation, settings CRUD and layout behavior at every stage.
   - Require runtime acceptance after each removal stage.

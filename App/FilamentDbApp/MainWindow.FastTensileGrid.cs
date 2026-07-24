@@ -84,42 +84,52 @@ public partial class MainWindow
             reloadAfterApply: true);
     }
 
-    private List<MaterialsPrototypeColumn> BuildFastTensileColumns() =>
-        AssignStablePrototypeLayoutKeys(NativeTensileGrid.Columns
-            .OrderBy(column => column.DisplayIndex)
-            .Select(column =>
-            {
-                var propertyName = GetBoundPropertyName(column);
-                var header = column.Header?.ToString() ?? string.Empty;
-                var cellKind = string.IsNullOrWhiteSpace(propertyName)
-                    ? FastGridCellKind.Spacer
-                    : System.Text.RegularExpressions.Regex.IsMatch(
-                        propertyName,
-                        "^(Upright|Flat)(10|[1-9])$",
-                        System.Text.RegularExpressions.RegexOptions.CultureInvariant)
-                        ? FastGridCellKind.TensileSample
-                        : column.IsReadOnly &&
-                          propertyName is not ("MaterialID" or "Manufacturer" or "ProductLine" or "MarketingName" or
-                              "BaseMaterial" or "MaterialCategory" or "VariantFinish" or "Reinforcement" or "Color" or
-                              "ValidationSummary")
-                            ? FastGridCellKind.Computed
-                            : FastGridCellKind.Standard;
-                return new MaterialsPrototypeColumn(
-                    header,
-                    Math.Clamp(column.Width.DisplayValue, 50, 500),
-                    propertyName,
-                    column.IsReadOnly,
-                    MaterialsPrototypeEditorKind.Text,
-                    Array.Empty<string>(),
-                    cellKind);
-            })
-            .ToList());
+    private List<MaterialsPrototypeColumn> BuildFastTensileColumns()
+    {
+        var columns = BuildFastMeasurementIdentityColumns();
+        columns.Add(FastMeasurementColumn(string.Empty, 50, null, true, FastGridCellKind.Spacer));
+        for (var index = 1; index <= 10; index++)
+        {
+            columns.Add(FastMeasurementColumn(
+                $"Upright {index}",
+                index == 10 ? 80 : 75,
+                $"Upright{index}",
+                false,
+                FastGridCellKind.TensileSample));
+        }
+        columns.Add(FastMeasurementColumn(string.Empty, 50, null, true, FastGridCellKind.Spacer));
+        for (var index = 1; index <= 10; index++)
+        {
+            columns.Add(FastMeasurementColumn(
+                $"Flat {index}",
+                index == 10 ? 75 : 70,
+                $"Flat{index}",
+                false,
+                FastGridCellKind.TensileSample));
+        }
+        columns.Add(FastMeasurementColumn(string.Empty, 50, null, true, FastGridCellKind.Spacer));
+        columns.Add(FastMeasurementColumn("Test Notes", 220, "TestNotes", false));
+        columns.Add(FastMeasurementColumn("Measured date", 110, "MeasuredDateText", false));
+        columns.Add(FastMeasurementColumn("MPa - Upright", 100, "MpaUpright", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("MPa - Flat", 90, "MpaFlat", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("Std Dev - Upright", 120, "StdDevUpright", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("Std Dev - Flat", 110, "StdDevFlat", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("CV % - Upright", 110, "CvUpright", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("CV % - Flat", 100, "CvFlat", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("Samples - Upright", 115, "SamplesUpright", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("Samples - Flat", 105, "SamplesFlat", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("Confidence - Upright", 130, "ConfidenceUpright", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("Confidence - Flat", 120, "ConfidenceFlat", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("Validation", 150, "ValidationSummary", true));
+        return AssignStablePrototypeLayoutKeys(columns);
+    }
 
     private List<MaterialsPrototypeRow> BuildFastTensileRows(
-        IReadOnlyList<MaterialsPrototypeColumn> columns) =>
-        NativeTensileGrid.Items
-            .Cast<object>()
-            .OfType<NativeTensileMeasurementRow>()
+        IReadOnlyList<MaterialsPrototypeColumn> columns)
+    {
+        var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
+        return _nativeTensileRows
+            .Where(row => visibleMaterialIds.Contains(row.MaterialID))
             .Select(row =>
         {
             var cells = columns.Select(column => PrototypeCellText(row, column.PropertyName)).ToArray();
@@ -130,6 +140,7 @@ public partial class MainWindow
                 cells.ToArray(),
                 () => !string.Equals(row.ValidationSummary, "Invalid sample value", StringComparison.Ordinal));
         }).ToList();
+    }
 
     private bool ApplyFastTensileChanges(IReadOnlyList<MaterialsPrototypeChange> changes)
     {

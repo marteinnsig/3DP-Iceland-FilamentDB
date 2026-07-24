@@ -14,6 +14,13 @@ metadata remained on v44.7.6 while assembly metadata was v44.7.7; the candidate
 identity is now aligned.
 Owner runtime testing accepted Stage 1 and Full Data Verification passed
 319/319. Stage 2 is the measurement-adapter replacement checkpoint.
+Stage 2 now gives Tensile, Impact and Stiffness explicit Fast column contracts
+and canonical filtered row sources. The three Fast builders no longer consume
+legacy DataGrid columns or items; legacy XAML remains collapsed pending runtime
+acceptance.
+Owner runtime testing accepted Stage 2 and Full Data Verification passed
+320/320. Stage 3 moves the Materials Fast view to an explicit schema and
+canonical filtered row source.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

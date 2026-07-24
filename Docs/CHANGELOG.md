@@ -14,6 +14,15 @@
   Verification run exposed one cascading metadata mismatch.
 - Owner runtime testing accepted the Fast-only UI and Full Data Verification
   passed 319/319; Stage 1 is complete.
+- Replaced Tensile, Impact and Stiffness DataGrid-derived columns with explicit
+  Fast schemas preserving accepted headers, widths, editability and layout
+  keys.
+- Replaced measurement DataGrid item sources with canonical measurement
+  collections scoped by the established visible Materials MaterialID set.
+- Added a Verification gate for exact schema counts, unique stable keys,
+  filtered row parity and canonical source-object ownership.
+- Owner runtime testing accepted all three measurement contracts and Full Data
+  Verification passed 320/320; Stage 2 is complete.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 

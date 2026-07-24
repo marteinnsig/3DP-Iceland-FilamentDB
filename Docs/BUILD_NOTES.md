@@ -29,6 +29,22 @@ editing/filter behavior. After the identity correction, Full Data Verification
 passed 319/319. Stage 1 is accepted; Stage 2 will replace the three measurement
 DataGrid adapters before removing their legacy XAML and event paths.
 
+Stage 2 replaces Tensile, Impact and Stiffness column derivation with explicit
+Fast contracts matching the accepted headers, widths, editability, cell kinds
+and stable layout keys. Visible rows now come directly from the three canonical
+measurement collections intersected with the established Materials filter
+MaterialID set. No Fast measurement builder reads legacy DataGrid columns or
+items.
+
+Legacy measurement XAML and event paths remain collapsed for this checkpoint;
+they are not removed until the explicit contracts pass runtime editing,
+layout, filter and Verification tests.
+
+Owner runtime testing accepted measurement columns, editing, navigation,
+calculations, layout reset/persistence and Materials-filter propagation. Full
+Data Verification passed 320/320. Stage 2 is accepted; Stage 3 will replace the
+Materials DataGrid column/item adapter.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on

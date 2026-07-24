@@ -468,6 +468,11 @@ assembly was v44.7.7. The metadata is aligned; no canonical data or workflow
 failure was reported.
 Owner runtime acceptance and Full Data Verification 319/319 completed Stage 1.
 Stage 2 will replace measurement DataGrid schema/row adapters.
+Stage 2 candidate now uses explicit Fast measurement schemas and canonical
+filtered measurement collections. Legacy measurement XAML remains collapsed
+until this ownership passes runtime acceptance.
+Owner runtime acceptance and Full Data Verification 320/320 completed Stage 2.
+Stage 3 will replace the Materials DataGrid schema/row adapter.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

@@ -17409,6 +17409,34 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             fastSettingsReady && releaseIdentityReady
                 ? "Legacy/preview switches are hidden while accepted Fast contracts and temporary collapsed adapters remain intact"
                 : "A legacy/preview switch remains visible, an accepted Fast contract failed or release identity is misaligned"));
+        var fastTensileContractColumns = BuildFastTensileColumns();
+        var fastImpactContractColumns = BuildFastImpactColumns();
+        var fastStiffnessContractColumns = BuildFastStiffnessColumns();
+        var visibleMeasurementMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
+        var fastTensileContractRows = BuildFastTensileRows(fastTensileContractColumns);
+        var fastImpactContractRows = BuildFastImpactRows(fastImpactContractColumns);
+        var fastStiffnessContractRows = BuildFastStiffnessRows(fastStiffnessContractColumns);
+        var measurementFastContractsReady =
+            fastTensileContractColumns.Count == 45 &&
+            fastImpactContractColumns.Count == 45 &&
+            fastStiffnessContractColumns.Count == 18 &&
+            fastTensileContractColumns.Select(PrototypeColumnKey).Distinct(StringComparer.Ordinal).Count() == 45 &&
+            fastImpactContractColumns.Select(PrototypeColumnKey).Distinct(StringComparer.Ordinal).Count() == 45 &&
+            fastStiffnessContractColumns.Select(PrototypeColumnKey).Distinct(StringComparer.Ordinal).Count() == 18 &&
+            fastTensileContractRows.Count == visibleMeasurementMaterialIds.Count &&
+            fastImpactContractRows.Count == visibleMeasurementMaterialIds.Count &&
+            fastStiffnessContractRows.Count == visibleMeasurementMaterialIds.Count &&
+            fastTensileContractRows.All(row => row.Source is NativeTensileMeasurementRow source &&
+                                               _nativeTensileRows.Contains(source)) &&
+            fastImpactContractRows.All(row => row.Source is NativeImpactMeasurementRow source &&
+                                              _nativeImpactRows.Contains(source)) &&
+            fastStiffnessContractRows.All(row => row.Source is NativeStiffnessMeasurementRow source &&
+                                                 _nativeStiffnessRows.Contains(source));
+        checks.Add(new VerificationCheck("v44.7.7 Measurement Fast-contract retirement stage gate",
+            measurementFastContractsReady && legacyGridRetirementUiReady && releaseIdentityReady,
+            measurementFastContractsReady && legacyGridRetirementUiReady && releaseIdentityReady
+                ? "Tensile, Impact and Stiffness Fast schemas and visible rows come from explicit contracts and canonical collections"
+                : "A measurement Fast schema, stable key, canonical visible-row source, UI retirement or release identity failed"));
 
         return checks;
     }

@@ -84,33 +84,27 @@ public partial class MainWindow
             reloadAfterApply: true);
     }
 
-    private List<MaterialsPrototypeColumn> BuildFastStiffnessColumns() =>
-        AssignStablePrototypeLayoutKeys(NativeStiffnessGrid.Columns
-            .OrderBy(column => column.DisplayIndex)
-            .Select(column =>
-            {
-                var propertyName = GetBoundPropertyName(column);
-                var cellKind = string.IsNullOrWhiteSpace(propertyName)
-                    ? FastGridCellKind.Spacer
-                    : propertyName is "DeflectionMm" or "ModulusMpa"
-                        ? FastGridCellKind.Computed
-                        : FastGridCellKind.Standard;
-                return new MaterialsPrototypeColumn(
-                    column.Header?.ToString() ?? string.Empty,
-                    Math.Clamp(column.Width.DisplayValue, 50, 500),
-                    propertyName,
-                    column.IsReadOnly,
-                    MaterialsPrototypeEditorKind.Text,
-                    Array.Empty<string>(),
-                    cellKind);
-            })
-            .ToList());
+    private List<MaterialsPrototypeColumn> BuildFastStiffnessColumns()
+    {
+        var columns = BuildFastMeasurementIdentityColumns();
+        columns.Add(FastMeasurementColumn(string.Empty, 50, null, true, FastGridCellKind.Spacer));
+        columns.Add(FastMeasurementColumn("Revolutions", 95, "Revolutions", false));
+        columns.Add(FastMeasurementColumn("Degrees", 85, "Degrees", false));
+        columns.Add(FastMeasurementColumn(string.Empty, 50, null, true, FastGridCellKind.Spacer));
+        columns.Add(FastMeasurementColumn("Test Notes", 220, "TestNotes", false));
+        columns.Add(FastMeasurementColumn("Measured date", 110, "MeasuredDateText", false));
+        columns.Add(FastMeasurementColumn("Deflection mm", 110, "DeflectionMm", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("Modulus MPa", 110, "ModulusMpa", true, FastGridCellKind.Computed));
+        columns.Add(FastMeasurementColumn("Validation", 150, "ValidationSummary", true));
+        return AssignStablePrototypeLayoutKeys(columns);
+    }
 
     private List<MaterialsPrototypeRow> BuildFastStiffnessRows(
-        IReadOnlyList<MaterialsPrototypeColumn> columns) =>
-        NativeStiffnessGrid.Items
-            .Cast<object>()
-            .OfType<NativeStiffnessMeasurementRow>()
+        IReadOnlyList<MaterialsPrototypeColumn> columns)
+    {
+        var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
+        return _nativeStiffnessRows
+            .Where(row => visibleMaterialIds.Contains(row.MaterialID))
             .Select(row =>
             {
                 var cells = columns.Select(column => PrototypeCellText(row, column.PropertyName)).ToArray();
@@ -121,6 +115,7 @@ public partial class MainWindow
                     cells.ToArray(),
                     () => row.ValidationSummary == "OK");
             }).ToList();
+    }
 
     private bool ApplyFastStiffnessChanges(IReadOnlyList<MaterialsPrototypeChange> changes)
     {
