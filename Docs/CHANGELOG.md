@@ -1,3 +1,24 @@
+## v44.5.9 - Supported Migration Naming
+
+- Renamed internal loaders so canonical SQLite projection, supported
+  empty-target JSON migration and built-in defaults have distinct ownership.
+- Removed misleading `TransitionStorage`, `ImportedNative` and `ExcelDefaults`
+  method names without changing callers, conditions or execution order.
+- Corrected the remaining user-visible `SQLite transition storage` validation
+  phrase to `canonical SQLite storage`.
+- Preserved all five JSON migration snapshots/readers, schema v30, governed
+  Excel disaster recovery, explicit SQLite restore, updater, website/report and
+  FTPS behavior.
+- Added a Verification gate proving the old internal names are absent and every
+  renamed supported boundary remains present.
+- Corrected the first runtime candidate after MAT0206 exposed whole-revolution
+  stiffness being marked covered but not calculated.
+- Added bounded close-time commit/save for active Tensile, Impact and Stiffness
+  edits with a Default-No close-anyway failure prompt.
+- Runtime accepted with Full Data Verification 310/310, MAT0206 active-cell
+  persistence across restart, visible whole-revolution Stiffness output and
+  report coverage parity restored.
+
 ## v44.5.8 - Retired Transition UI Residue
 
 - Removed nine private load/import-sync click handlers with no XAML or code

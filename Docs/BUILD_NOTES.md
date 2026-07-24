@@ -1,4 +1,48 @@
-# Current Build Notes - v44.5.8
+# Current Build Notes - v44.5.9
+
+## Supported Migration Naming
+
+v44.5.9 is a rename-only ownership clarification. Materials startup now calls
+`LoadNativeMaterialsFromCanonicalOrMigrationSnapshot`; measurement bootstrap
+uses the three `LoadNative*RowsForCanonicalMigration` methods; normal
+measurement initialization uses `BuildNative*RowsFromCanonicalStorage`; and
+Settings uses `LoadBuiltInNativeSettingsDefaults`.
+
+The underlying bodies, conditions and call order are unchanged. Canonical
+SQLite remains first for Materials, JSON snapshots remain bounded to supported
+empty-target migration, measurement bootstrap remains guarded by the canonical
+migration marker, and built-in Settings defaults remain an explicit Default-No
+action. The remaining user-visible `SQLite transition storage` validation
+phrase now says `canonical SQLite storage`.
+
+No database/schema, snapshot, backup, recovery, updater, website/report or FTPS
+behavior changes. Debug/Release, static/security checks, Full Data Verification
+and runtime startup/edit/save acceptance are required.
+
+The first runtime run exposed two pre-existing measurement-boundary defects
+while testing a newly created MAT0206 row. Full Data Verification failed
+306/310 because a stiffness row with whole Revolutions and blank Degrees was
+counted as covered but the calculator required both fields, leaving Material
+Detail/Charts and report parity incomplete. The active SQLite row proved the
+input was retained. `ResultsService` now treats a missing component as zero
+when the other component exists, matching the revolutions-plus-degrees
+measurement model; both fields empty still produce no result.
+
+The same run also exposed a close-time race: the window committed only the
+Materials grid before shutdown, so an active measurement cell could close
+before its deferred auto-save callback. Closing now commits all three
+measurement grids and persists them when dirty or actively editing. Failure
+remains Default-No through an explicit close-anyway prompt. No automatic
+restore or evidence cleanup is introduced. Runtime re-acceptance is required.
+
+Final runtime acceptance passed Full Data Verification 310/310 with zero
+failures on 2026-07-24. MAT0206 retained its active-cell measurement edit across
+restart, whole-revolution stiffness produced a visible Material Detail result
+and 100/100 chart score, and report coverage parity returned to PASS. System
+Diagnostics confirmed schema v30, 201 canonical rows in each measurement
+workspace, successful Stiffness auto-save, six Ready backups, snapshot-folder
+governance PASS and zero incomplete update transactions. v44.5.9 is runtime
+accepted.
 
 ## Retired Transition UI Residue
 

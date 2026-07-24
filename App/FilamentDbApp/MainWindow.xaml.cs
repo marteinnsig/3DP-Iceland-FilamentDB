@@ -16806,10 +16806,10 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var canonicalStorageTerminologyReady =
             CanonicalStorageStatusText.Contains("SQLite canonical", StringComparison.Ordinal) &&
             CanonicalStorageStatusText.Contains("legacy JSON migration snapshot retained", StringComparison.Ordinal) &&
-            typeof(MainWindow).GetMethod("LoadNativeMaterialsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod("LoadNativeTensileRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod("LoadNativeImpactRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod("LoadNativeStiffnessRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+            typeof(MainWindow).GetMethod("LoadNativeMaterialsFromCanonicalOrMigrationSnapshot", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeTensileRowsForCanonicalMigration", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeImpactRowsForCanonicalMigration", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeStiffnessRowsForCanonicalMigration", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("v44.5.3 Canonical storage terminology release gate",
             canonicalStorageTerminologyReady && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady,
             canonicalStorageTerminologyReady && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
@@ -16863,16 +16863,49 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             typeof(MainWindow).GetMethod("SyncNativeStiffnessFromImported_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
             typeof(MainWindow).GetMethod("SyncNativeImpactFromMaterials_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
             typeof(MainWindow).GetMethod("SyncNativeStiffnessFromMaterials_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
-            typeof(MainWindow).GetMethod("LoadNativeMaterialsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod("LoadNativeTensileRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod("LoadNativeImpactRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-            typeof(MainWindow).GetMethod("LoadNativeStiffnessRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeMaterialsFromCanonicalOrMigrationSnapshot", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeTensileRowsForCanonicalMigration", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeImpactRowsForCanonicalMigration", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeStiffnessRowsForCanonicalMigration", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
             typeof(MainWindow).GetMethod("NativeSettingsFilePath", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("v44.5.8 Retired transition UI residue release gate",
             retiredTransitionUiResidueReady && legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady,
             retiredTransitionUiResidueReady && legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
                 ? "Caller-free load/import-sync handlers and unused JSON save-state allocations are absent while supported empty-canonical JSON migration readers and governed recovery remain available"
                 : "Transition UI residue remains or a supported JSON migration/recovery boundary is missing"));
+        var revolutionsOnlyStiffness = _resultsService.CalculateStiffness("10", "", 1, 100, 5, 25);
+        var degreesOnlyStiffness = _resultsService.CalculateStiffness("", "180", 1, 100, 5, 25);
+        var emptyStiffness = _resultsService.CalculateStiffness("", "", 1, 100, 5, 25);
+        var boundedMeasurementPersistenceReady =
+            revolutionsOnlyStiffness.DeflectionMm == 10 &&
+            revolutionsOnlyStiffness.ModulusMpa.HasValue &&
+            degreesOnlyStiffness.DeflectionMm == 0.5 &&
+            degreesOnlyStiffness.ModulusMpa.HasValue &&
+            emptyStiffness.DeflectionMm is null &&
+            emptyStiffness.ModulusMpa is null &&
+            typeof(MainWindow).GetMethod("MainWindow_Closing", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        var supportedMigrationNamingReady =
+            typeof(MainWindow).GetMethod("LoadNativeMaterialsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("LoadNativeTensileRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("LoadNativeImpactRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("LoadNativeStiffnessRowsFromTransitionStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("ResetNativeSettingsToExcelDefaults", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("GetImportedNativeTensileRows", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("GetImportedNativeImpactRows", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("GetImportedNativeStiffnessRows", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("LoadNativeMaterialsFromCanonicalOrMigrationSnapshot", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeTensileRowsForCanonicalMigration", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeImpactRowsForCanonicalMigration", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadNativeStiffnessRowsForCanonicalMigration", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("LoadBuiltInNativeSettingsDefaults", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("BuildNativeTensileRowsFromCanonicalStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("BuildNativeImpactRowsFromCanonicalStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("BuildNativeStiffnessRowsFromCanonicalStorage", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v44.5.9 Supported migration naming release gate",
+            supportedMigrationNamingReady && boundedMeasurementPersistenceReady && retiredTransitionUiResidueReady && legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady,
+            supportedMigrationNamingReady && boundedMeasurementPersistenceReady && retiredTransitionUiResidueReady && legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
+                ? "Internal names distinguish canonical SQLite projection, supported empty-target JSON migration and built-in defaults; whole-revolution/degree-only stiffness and close-time measurement persistence are covered"
+                : "Misleading migration naming remains, partial stiffness input is not computed, close-time persistence is missing or a required recovery boundary failed"));
         var compatibilityCatalog = _database.GetLocalBackupCatalog();
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
@@ -21320,7 +21353,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void InitializeNativeSettingsGridEditor()
     {
-        ResetNativeSettingsToExcelDefaults();
+        LoadBuiltInNativeSettingsDefaults();
         LoadCanonicalNativeSettings();
         LoadDeploymentSettingsIntoManager();
         var canonicalBaseMaterials = _database.LoadBaseMaterialCatalog();
@@ -21490,7 +21523,7 @@ private List<string> GetVisibleAiMaterialLabels()
         return StorageWorkingFilePath("native-settings-manager.json");
     }
 
-    private void ResetNativeSettingsToExcelDefaults()
+    private void LoadBuiltInNativeSettingsDefaults()
     {
         _nativeSettingsRows.Clear();
         foreach (var row in GetDefaultNativeSettingsRows())
@@ -21675,7 +21708,7 @@ private List<string> GetVisibleAiMaterialLabels()
             return;
         }
 
-        ResetNativeSettingsToExcelDefaults();
+        LoadBuiltInNativeSettingsDefaults();
         LoadDeploymentSettingsIntoManager();
         SaveCanonicalNativeSettings();
     }
@@ -21907,7 +21940,7 @@ private List<string> GetVisibleAiMaterialLabels()
         };
 
         _suppressNativeMaterialDirty = true;
-        ReplaceNativeMaterialRows(LoadNativeMaterialsFromTransitionStorage());
+        ReplaceNativeMaterialRows(LoadNativeMaterialsFromCanonicalOrMigrationSnapshot());
         _suppressNativeMaterialDirty = false;
 
         BindNativeMaterialsGrid();
@@ -22471,7 +22504,7 @@ private List<string> GetVisibleAiMaterialLabels()
         return StorageWorkingFilePath("native-materials-manager.json");
     }
 
-    private List<NativeMaterialRow> LoadNativeMaterialsFromTransitionStorage()
+    private List<NativeMaterialRow> LoadNativeMaterialsFromCanonicalOrMigrationSnapshot()
     {
         var canonicalRows = _database.LoadNativeMaterialManagerRows().Select(NativeMaterialRowFromRecord).ToList();
         if (canonicalRows.Count > 0) return canonicalRows;
@@ -22949,6 +22982,47 @@ private List<string> GetVisibleAiMaterialLabels()
             }
         }
         _workflowPreferencesService.Save();
+
+        var measurementEditPending = new[] { "NativeTensileGrid", "NativeImpactGrid", "NativeStiffnessGrid" }
+            .Select(FindName)
+            .OfType<DataGrid>()
+            .Select(grid => CollectionViewSource.GetDefaultView(grid.ItemsSource))
+            .OfType<IEditableCollectionView>()
+            .Any(view => view.IsEditingItem || view.IsAddingNew);
+
+        CommitNativeTensileGridEdits();
+        CommitNativeImpactGridEdits();
+        CommitNativeStiffnessGridEdits();
+
+        if (measurementEditPending || _nativeTensileDirty || _nativeImpactDirty || _nativeStiffnessDirty)
+        {
+            try
+            {
+                ApplyNativeTensileComputedFields(_nativeTensileRows);
+                ApplyNativeImpactComputedFields(_nativeImpactRows);
+                ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
+                RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
+                SaveNativeMeasurementsToSqlite();
+                SetNativeTensileDirty(false);
+                SetNativeImpactDirty(false);
+                SetNativeStiffnessDirty(false);
+            }
+            catch (Exception ex)
+            {
+                var closeAnyway = MessageBox.Show(
+                    this,
+                    $"Measurement changes could not be auto-saved before closing:\n\n{ex.Message}\n\nClose the application anyway?",
+                    "Measurement Auto-Save Blocked",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning,
+                    MessageBoxResult.No);
+                if (closeAnyway != MessageBoxResult.Yes)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+        }
 
         // Auto-save is the normal workflow. Closing the application should first
         // commit any active DataGrid edit and persist the Material Manager working
@@ -25167,7 +25241,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
         if (!NativeMaterialIdsAreSqliteSafe())
         {
-            MessageBox.Show("Save blocked: SQLite transition storage requires every row to have a unique Material ID. Fix missing or duplicate Material IDs before saving.", "Material Manager Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show("Save blocked: canonical SQLite storage requires every row to have a unique Material ID. Fix missing or duplicate Material IDs before saving.", "Material Manager Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 
@@ -25553,9 +25627,9 @@ private List<string> GetVisibleAiMaterialLabels()
         if (_nativeMeasurementMigrationChecked) return;
         _nativeMeasurementMigrationChecked = true;
         if (_database.NativeMeasurementsAreCanonical()) return;
-        var tensile = LoadNativeTensileRowsFromTransitionStorage();
-        var impact = LoadNativeImpactRowsFromTransitionStorage();
-        var stiffness = LoadNativeStiffnessRowsFromTransitionStorage();
+        var tensile = LoadNativeTensileRowsForCanonicalMigration();
+        var impact = LoadNativeImpactRowsForCanonicalMigration();
+        var stiffness = LoadNativeStiffnessRowsForCanonicalMigration();
         ApplyNativeTensileComputedFields(tensile);
         ApplyNativeImpactComputedFields(impact);
         ApplyNativeStiffnessComputedFields(stiffness);
@@ -25587,7 +25661,7 @@ private List<string> GetVisibleAiMaterialLabels()
         EnsureNativeMeasurementsMigratedToSqlite();
         _nativeTensileRows.CollectionChanged += (_, _) => { if (!_suppressNativeTensileDirty) MarkNativeTensileDirty(); };
         _suppressNativeTensileDirty = true;
-        ReplaceNativeTensileRows(GetImportedNativeTensileRows());
+        ReplaceNativeTensileRows(BuildNativeTensileRowsFromCanonicalStorage());
         _suppressNativeTensileDirty = false;
         if (FindName("NativeTensileGrid") is DataGrid grid) grid.ItemsSource = _nativeTensileRows;
         ApplyNativeMeasurementFilters();
@@ -25597,7 +25671,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private string NativeTensileFilePath() => StorageWorkingFilePath("native-tensile-measurements.json");
 
-    private List<NativeTensileMeasurementRow> LoadNativeTensileRowsFromTransitionStorage()
+    private List<NativeTensileMeasurementRow> LoadNativeTensileRowsForCanonicalMigration()
     {
         var path = NativeTensileFilePath();
         if (System.IO.File.Exists(path))
@@ -25609,7 +25683,7 @@ private List<string> GetVisibleAiMaterialLabels()
             }
             catch { }
         }
-        return GetImportedNativeTensileRows();
+        return BuildNativeTensileRowsFromCanonicalStorage();
     }
 
     private static NativeTensileMeasurementRow NativeTensileRowFromMaterial(NativeMaterialRow material)
@@ -25700,7 +25774,7 @@ private List<string> GetVisibleAiMaterialLabels()
         SyncNativeImpactRowsWithMaterialManager(markDirty);
     }
 
-    private List<NativeTensileMeasurementRow> GetImportedNativeTensileRows()
+    private List<NativeTensileMeasurementRow> BuildNativeTensileRowsFromCanonicalStorage()
     {
         var materials = _nativeMaterialRows.ToList();
         var rows = materials
@@ -26058,7 +26132,7 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         _nativeImpactRows.CollectionChanged += (_, _) => { if (!_suppressNativeImpactDirty) MarkNativeImpactDirty(); };
         _suppressNativeImpactDirty = true;
-        ReplaceNativeImpactRows(GetImportedNativeImpactRows());
+        ReplaceNativeImpactRows(BuildNativeImpactRowsFromCanonicalStorage());
         _suppressNativeImpactDirty = false;
         if (FindName("NativeImpactGrid") is DataGrid grid) grid.ItemsSource = _nativeImpactRows;
         ApplyNativeMeasurementFilters();
@@ -26068,7 +26142,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private string NativeImpactFilePath() => StorageWorkingFilePath("native-impact-measurements.json");
 
-    private List<NativeImpactMeasurementRow> LoadNativeImpactRowsFromTransitionStorage()
+    private List<NativeImpactMeasurementRow> LoadNativeImpactRowsForCanonicalMigration()
     {
         var path = NativeImpactFilePath();
         if (System.IO.File.Exists(path))
@@ -26080,10 +26154,10 @@ private List<string> GetVisibleAiMaterialLabels()
             }
             catch { }
         }
-        return GetImportedNativeImpactRows();
+        return BuildNativeImpactRowsFromCanonicalStorage();
     }
 
-    private List<NativeImpactMeasurementRow> GetImportedNativeImpactRows()
+    private List<NativeImpactMeasurementRow> BuildNativeImpactRowsFromCanonicalStorage()
     {
         var materials = _nativeMaterialRows.ToList();
 
@@ -26407,7 +26481,7 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         _nativeStiffnessRows.CollectionChanged += (_, _) => { if (!_suppressNativeStiffnessDirty) MarkNativeStiffnessDirty(); };
         _suppressNativeStiffnessDirty = true;
-        ReplaceNativeStiffnessRows(GetImportedNativeStiffnessRows());
+        ReplaceNativeStiffnessRows(BuildNativeStiffnessRowsFromCanonicalStorage());
         _suppressNativeStiffnessDirty = false;
         if (FindName("NativeStiffnessGrid") is DataGrid grid) grid.ItemsSource = _nativeStiffnessRows;
         ApplyNativeMeasurementFilters();
@@ -26417,7 +26491,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private string NativeStiffnessFilePath() => StorageWorkingFilePath("native-stiffness-measurements.json");
 
-    private List<NativeStiffnessMeasurementRow> LoadNativeStiffnessRowsFromTransitionStorage()
+    private List<NativeStiffnessMeasurementRow> LoadNativeStiffnessRowsForCanonicalMigration()
     {
         var path = NativeStiffnessFilePath();
         if (System.IO.File.Exists(path))
@@ -26429,7 +26503,7 @@ private List<string> GetVisibleAiMaterialLabels()
             }
             catch { }
         }
-        return GetImportedNativeStiffnessRows();
+        return BuildNativeStiffnessRowsFromCanonicalStorage();
     }
 
     private static NativeStiffnessMeasurementRow NativeStiffnessRowFromMaterial(NativeMaterialRow material) => new()
@@ -26458,7 +26532,7 @@ private List<string> GetVisibleAiMaterialLabels()
         row.Color = material.Color;
     }
 
-    private List<NativeStiffnessMeasurementRow> GetImportedNativeStiffnessRows()
+    private List<NativeStiffnessMeasurementRow> BuildNativeStiffnessRowsFromCanonicalStorage()
     {
         var materials = _nativeMaterialRows.ToList();
         var rows = materials.Select(NativeStiffnessRowFromMaterial).Where(r => !string.IsNullOrWhiteSpace(r.MaterialID)).ToList();

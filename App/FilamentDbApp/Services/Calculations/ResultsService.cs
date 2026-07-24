@@ -59,9 +59,9 @@ public sealed class ResultsService : IResultsService
 
         if (parsedRevolutions.HasValue || parsedDegrees.HasValue) sampleCount = 1;
 
-        if (parsedRevolutions.HasValue && parsedDegrees.HasValue && mmPerRevolution > 0)
+        if ((parsedRevolutions.HasValue || parsedDegrees.HasValue) && mmPerRevolution > 0)
         {
-            deflection = (parsedRevolutions.Value + parsedDegrees.Value / 360d) * mmPerRevolution;
+            deflection = (parsedRevolutions.GetValueOrDefault() + parsedDegrees.GetValueOrDefault() / 360d) * mmPerRevolution;
             if (deflection <= 0) deflection = null;
         }
 

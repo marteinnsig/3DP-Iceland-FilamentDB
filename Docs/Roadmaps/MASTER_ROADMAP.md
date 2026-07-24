@@ -832,6 +832,9 @@ accepted as v44.5.7 — Legacy Workbook Schema Retirement.**
 Ninth bounded increment complete and runtime accepted as v44.5.8 — Retired
 Transition UI Residue.
 
+Tenth bounded increment complete and runtime accepted as v44.5.9 — Supported
+Migration Naming.
+
 - The unreachable original-Excel database import handler and its
   caller-exclusive importer services are removed. Lower-level SQLite legacy
   tables/readers remain for existing-data compatibility.
@@ -874,6 +877,16 @@ Transition UI Residue.
   caller-exclusive confirmation helpers and unused JSON save-state allocations.
   Supported empty-canonical JSON migration readers and all governed recovery
   paths remain intact.
+- v44.5.9 renames internal canonical projection, supported JSON
+  migration and built-in-default methods according to their current ownership.
+  The first runtime run failed 306/310 after a new material exposed
+  whole-revolution stiffness and close-time active-cell persistence gaps. The
+  bounded correction treats a missing stiffness component as zero when its
+  paired input exists and commits dirty/active measurement edits before close;
+  schema and recovery behavior remain unchanged.
+- Runtime Full Data Verification passed 310/310 with zero failures. MAT0206
+  retained its active-cell edit across restart, whole-revolution stiffness
+  reached Material Detail/Charts and report coverage parity returned to PASS.
 
 - Inventory remaining original-Excel database, JSON/default/cache and pre-SQLite compatibility paths by caller and supported-state ownership.
 - Preserve governed Excel disaster recovery and any migration path still required for a supported schema; remove only proven obsolete UI, dead handlers/services and stale documentation in small reviewed increments.

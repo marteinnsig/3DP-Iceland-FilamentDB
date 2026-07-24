@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "RETIRED-TRANSITION-UI-RESIDUE";
-    public const string ReleaseTitle = "Retired Transition UI Residue";
+    public const string ReleaseCode = "SUPPORTED-MIGRATION-NAMING";
+    public const string ReleaseTitle = "Supported Migration Naming";
 
     public static string Version
     {
