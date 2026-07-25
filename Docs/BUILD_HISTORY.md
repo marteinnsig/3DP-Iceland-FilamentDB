@@ -107,6 +107,13 @@ autosave coalescing remains. A recursive unapplied-snapshot prompt found during
 runtime testing was corrected by deferring validation refresh until after Fast
 snapshot acceptance. Owner runtime acceptance and Full Data Verification
 330/330 passed; Stage 5I is accepted.
+Stage 5J retires the remaining Materials workflow registry, binding, selection
+and refresh callers. Canonical Fast selection now owns startup and Material
+Detail, while purchasing, Inventory and measurement sync refresh the Fast view.
+Startup selection and tab-return viewport regressions found during owner
+testing were corrected with a one-shot post-load selection and measured
+visibility refresh. Full Data Verification passed 331/331; Stage 5J is accepted.
+The collapsed DataGrid XAML remains deletion-gated.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

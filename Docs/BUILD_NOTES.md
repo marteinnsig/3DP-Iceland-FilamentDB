@@ -237,6 +237,25 @@ and text editing, tab/restart persistence, validation, computed-field rebuild
 and recovery export. Full Data Verification passed 330/330; Stage 5I is
 accepted.
 
+Stage 5J removes Materials from the legacy workflow-grid registry and retires
+its hidden binding, selection, checkbox/copy and refresh callers. Startup
+selection and Material Detail now use the canonical Fast selection contract;
+Inventory, purchasing and measurement updates refresh the Fast view directly.
+The collapsed DataGrid XAML remains only for the final deletion checkpoint.
+Owner runtime testing accepted selection, sync and Verification behavior.
+The first runtime review found canonical startup selection restored without a
+visible Fast-row highlight. Fast activation now explicitly hands the saved
+canonical row to the rendering surface after the control is loaded. An initial
+pre-layout full synchronization produced a blank surface until manual reload;
+the corrected handoff selects only the saved row after layout and never rebuilds
+the startup snapshot.
+Tab return then exposed a stale rendering viewport: the reusable Loaded handler
+reset offsets and the saved-selection callback ran again. Selection is now
+one-shot, and Loaded/visibility return resend the measured current offsets at
+Render priority, matching the scrollbar refresh path without reloading rows.
+The corrected startup selection and tab-return rendering passed owner runtime
+re-test. Full Data Verification passed 331/331; Stage 5J is accepted.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on

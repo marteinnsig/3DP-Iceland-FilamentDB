@@ -52,7 +52,19 @@ public partial class MainWindow
         _embeddedMaterialsPrototypeView = CreateMaterialsRenderingPrototypeView(directCanonicalEditing: true);
         FastMaterialsViewHost.Content = _embeddedMaterialsPrototypeView;
         FastMaterialsViewHost.Visibility = Visibility.Visible;
-        NativeMaterialsGrid.Visibility = Visibility.Collapsed;
+        if (_lastSelectedNativeMaterial is not null)
+        {
+            var savedSelection = _lastSelectedNativeMaterial;
+            var savedSelectionApplied = false;
+            _embeddedMaterialsPrototypeView.Loaded += (_, _) =>
+            {
+                if (savedSelectionApplied) return;
+                savedSelectionApplied = true;
+                _embeddedMaterialsPrototypeView.Dispatcher.BeginInvoke(
+                    System.Windows.Threading.DispatcherPriority.Loaded,
+                    () => _embeddedMaterialsPrototypeView.SelectCanonicalSource(savedSelection));
+            };
+        }
         if (!_fastMaterialsCloseGuardAttached)
         {
             Closing += MainWindow_FastMaterialsViewClosing;
@@ -486,9 +498,26 @@ public partial class MainWindow
 
             Loaded += (_, _) =>
             {
-                _surface.SetViewport(0, 0, _scrollViewer.ViewportWidth, _scrollViewer.ViewportHeight);
-                _surface.InvalidateVisual();
+                Dispatcher.BeginInvoke(
+                    System.Windows.Threading.DispatcherPriority.Render,
+                    RefreshViewport);
             };
+            IsVisibleChanged += (_, args) =>
+            {
+                if (args.NewValue is not true) return;
+                Dispatcher.BeginInvoke(
+                    System.Windows.Threading.DispatcherPriority.Render,
+                    RefreshViewport);
+            };
+        }
+
+        private void RefreshViewport()
+        {
+            _surface.SetViewport(
+                _scrollViewer.HorizontalOffset,
+                _scrollViewer.VerticalOffset,
+                _scrollViewer.ViewportWidth,
+                _scrollViewer.ViewportHeight);
         }
 
         public bool ConfirmCanClose()
@@ -828,6 +857,11 @@ public partial class MainWindow
         public bool ReloadFromCanonical(string reason)
         {
             return SynchronizeFromCanonical(reason, preferredSelection: null, resetVerticalOffset: true);
+        }
+
+        public void SelectCanonicalSource(object source)
+        {
+            _surface.SelectSource(source);
         }
 
         public bool SynchronizeFromCanonical(

@@ -617,6 +617,19 @@ recovery/update/close/validation/inventory/manual-save callers while retaining
 Fast canonical autosave coalescing. Owner runtime testing accepted edit,
 tab/restart, validation, recalculation and recovery-export behavior with Full
 Data Verification 330/330.
+Stage 5J removes the residual Materials workflow registry, binding,
+selection, copy and refresh callers. Fast/canonical selection owns startup and
+Material Detail; purchasing, Inventory and measurement sync refresh Fast
+Materials directly. The collapsed XAML remains for the final deletion gate.
+Owner runtime testing accepted selection, detail, sync and restart behavior.
+The first runtime review found no visible selected row after startup/restart.
+Canonical selection was restored, but the newly created Fast surface had not
+received it. A first pre-layout full synchronization caused a blank surface
+until manual reload. Fast activation now performs only a deferred row selection
+after layout. A subsequent tab return could retain a stale viewport until the
+horizontal scrollbar moved; selection is now one-shot and visibility return
+replays the measured viewport through the same render path. Owner runtime
+re-test and Full Data Verification 331/331 passed; Stage 5J is accepted.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

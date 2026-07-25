@@ -327,6 +327,7 @@
                     <GroupBox Grid.Row="3" Header="Materials - source of truth for native modules">
                         <Grid>
                         <DataGrid Name="NativeMaterialsGrid" Style="{StaticResource HighPerformanceDataGrid}" SelectionMode="Single" SelectionUnit="CellOrRowHeader"
+                                  Visibility="Collapsed"
                                   AutoGenerateColumns="False"
                                   CanUserAddRows="False"
                                   CanUserDeleteRows="False"
@@ -335,9 +336,7 @@
                                   VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Auto"
                                   ScrollViewer.IsDeferredScrollingEnabled="False"
-                                  Margin="8"
-                                  BeginningEdit="InputDataGrid_BeginningEdit"
-                                  SelectionChanged="NativeMaterialsGrid_SelectionChanged">
+                                  Margin="8">
                             <DataGrid.Resources>
                                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#DBEAFE"/>
                                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#0F172A"/>

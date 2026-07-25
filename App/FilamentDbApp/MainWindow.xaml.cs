@@ -207,7 +207,6 @@ public partial class MainWindow : Window
 
     private static readonly string[] WorkflowGridNames =
     {
-        "NativeMaterialsGrid",
         "ManufacturersGrid",
         "ExperimentalTensileGrid",
         "ExperimentalImpactGrid",
@@ -289,50 +288,6 @@ public partial class MainWindow : Window
         if (targetItem is null || targetColumn is null) return;
 
         grid.CurrentCell = new DataGridCellInfo(targetItem, targetColumn);
-        if (ReferenceEquals(grid, FindName("NativeMaterialsGrid")) && targetItem is NativeMaterialRow nativeMaterial)
-        {
-            grid.SelectedItem = nativeMaterial;
-
-            // Keep selection and mutation distinct for native boolean fields. Clicking
-            // blank space in the cell selects the material; only the rendered checkbox
-            // toggles its value.
-            if (targetColumn is DataGridCheckBoxColumn)
-            {
-                var clickedCheckBox = FindVisualChild<CheckBox>(clickedCell);
-                if (clickedCheckBox is null)
-                {
-                    e.Handled = true;
-                    return;
-                }
-
-                var checkBoxPosition = e.GetPosition(clickedCheckBox);
-                var isInsideCheckBox =
-                    checkBoxPosition.X >= 0 &&
-                    checkBoxPosition.Y >= 0 &&
-                    checkBoxPosition.X <= clickedCheckBox.ActualWidth &&
-                    checkBoxPosition.Y <= clickedCheckBox.ActualHeight;
-                if (!isInsideCheckBox)
-                {
-                    e.Handled = true;
-                    return;
-                }
-
-                if (GetBoundPropertyName(targetColumn) is not { } booleanProperty ||
-                    GetPropertyValue(nativeMaterial, booleanProperty) is not bool currentValue)
-                {
-                    return;
-                }
-
-                var nextValue = !currentValue;
-                SetPropertyValue(nativeMaterial, booleanProperty, nextValue);
-                clickedCheckBox.IsChecked = nextValue;
-                MarkNativeMaterialsDirty();
-                QueueNativeMaterialEditRefresh();
-                e.Handled = true;
-                return;
-            }
-        }
-        TryAutoCopyWorkflowIdentityCell(grid);
         if (clickedCell.IsReadOnly || targetColumn.IsReadOnly) return;
 
         // Own the click so WPF does not spend the first click selecting the cell and the
@@ -427,13 +382,11 @@ public partial class MainWindow : Window
             [WorkflowBulkUpdateScope.CurrentFilteredRows] = visibleRows.Where(item => !ReferenceEquals(item, sourceItem)).ToList()
         };
 
-        var isMaterialsGrid = ReferenceEquals(grid, NativeMaterialsGrid);
         var dialog = new WorkflowBulkUpdateDialog(
             Convert.ToString(column.Header, CultureInfo.CurrentCulture) ?? "Current column",
             FormatClipboardValue(sourceValue),
             candidatesByScope,
-            item => FormatClipboardValue(GetWorkflowCellValue(item, column)),
-            isMaterialsGrid)
+            item => FormatClipboardValue(GetWorkflowCellValue(item, column)))
         {
             Owner = this
         };
@@ -480,8 +433,7 @@ public partial class MainWindow : Window
             string columnName,
             string sourceValue,
             Dictionary<WorkflowBulkUpdateScope, List<object>> candidatesByScope,
-            Func<object, string> valueReader,
-            bool isMaterialsGrid)
+            Func<object, string> valueReader)
         {
             _sourceValue = sourceValue;
             _candidatesByScope = candidatesByScope;
@@ -523,7 +475,7 @@ public partial class MainWindow : Window
             var choices = new StackPanel { Margin = new Thickness(0, 0, 0, 14) };
             choices.Children.Add(new TextBlock { Text = "Apply to:", FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 0, 0, 6) });
             choices.Children.Add(CreateScopeRadio("Remaining visible rows below", WorkflowBulkUpdateScope.RemainingVisibleRows, true));
-            choices.Children.Add(CreateScopeRadio(isMaterialsGrid ? "Current filtered materials" : "Current filtered rows", WorkflowBulkUpdateScope.CurrentFilteredRows, false));
+            choices.Children.Add(CreateScopeRadio("Current filtered rows", WorkflowBulkUpdateScope.CurrentFilteredRows, false));
             Grid.SetRow(choices, 2);
             root.Children.Add(choices);
 
@@ -586,20 +538,6 @@ public partial class MainWindow : Window
                     ? $"Warning: {differentValues} existing value{(differentValues == 1 ? string.Empty : "s")} will be overwritten."
                     : "No existing values will be overwritten.");
             _updateButton.IsEnabled = rowsToChange > 0;
-        }
-    }
-
-    private void TryAutoCopyWorkflowIdentityCell(DataGrid grid)
-    {
-        if (!ReferenceEquals(grid, NativeMaterialsGrid) || !grid.CurrentCell.IsValid) return;
-        var header = Convert.ToString(grid.CurrentCell.Column.Header, CultureInfo.CurrentCulture) ?? string.Empty;
-        var property = GetBoundPropertyName(grid.CurrentCell.Column) ?? string.Empty;
-        var key = (header + " " + property).ToLowerInvariant();
-        if (!(key.Contains("manufacturer") || key.Contains("material name") || key.Contains("display name"))) return;
-
-        if (CopyCurrentWorkflowCell(grid))
-        {
-            StatusText.Text = $"Auto-copied {header}.";
         }
     }
 
@@ -973,19 +911,6 @@ public partial class MainWindow : Window
 
     private void RefreshAfterNativeUndo(string gridName)
     {
-        switch (gridName)
-        {
-            case "NativeMaterialsGrid":
-                ApplyNativeMaterialComputedFieldsToAllRows();
-                RefreshNativeMaterialGridValidation();
-                RefreshNativeMaterialSummary();
-                RefreshInventorySummary();
-                RefreshNativeInputModulesFromMaterialManager(markDirty: false);
-                MarkNativeMaterialsDirty();
-                QueueNativeMaterialDependentIntelligenceRefresh();
-                break;
-        }
-
         if (FindName(gridName) is DataGrid grid)
         {
             try { grid.Items.Refresh(); } catch (InvalidOperationException) { }
@@ -17402,6 +17327,25 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             materialsCanonicalSelectionReady && releaseIdentityReady
                 ? "Materials edit, validation, recovery and close/save paths no longer require DataGrid commit lifecycle"
                 : "Materials legacy edit lifecycle, canonical ownership or release identity failed"));
+        var materialsResidualCallersRetired =
+            !WorkflowGridNames.Contains("NativeMaterialsGrid", StringComparer.Ordinal) &&
+            typeof(MainWindow).GetMethod(
+                "BindNativeMaterialsGrid",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "NativeMaterialsGrid_SelectionChanged",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "TryAutoCopyWorkflowIdentityCell",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            FindName("NativeMaterialsGrid") is DataGrid { Visibility: Visibility.Collapsed };
+        checks.Add(new VerificationCheck("v44.7.7 Materials residual caller retirement stage gate",
+            materialsResidualCallersRetired && materialsLegacyEditLifecycleRetired &&
+            materialsCanonicalFilterOwnershipReady && materialsCanonicalSelectionReady &&
+            releaseIdentityReady,
+            materialsResidualCallersRetired
+                ? "Fast/canonical selection and refresh own Materials while final hidden XAML deletion remains gated"
+                : "A Materials workflow registry, binding, selection, copy or visible legacy-grid caller remains"));
 
         return checks;
     }
@@ -22239,7 +22183,7 @@ private List<string> GetVisibleAiMaterialLabels()
         ReplaceNativeMaterialRows(LoadNativeMaterialsFromCanonicalOrMigrationSnapshot());
         _suppressNativeMaterialDirty = false;
 
-        BindNativeMaterialsGrid();
+        InitializeNativeMaterialSelection();
         SetNativeMaterialsDirty(false);
         RefreshNativeMaterialSummary();
         RefreshInventorySummary();
@@ -22311,36 +22255,17 @@ private List<string> GetVisibleAiMaterialLabels()
         }), System.Windows.Threading.DispatcherPriority.Background);
     }
 
-    private void BindNativeMaterialsGrid()
+    private void InitializeNativeMaterialSelection()
     {
-        if (FindName("NativeMaterialsGrid") is DataGrid grid)
-        {
-            grid.ItemsSource = _nativeMaterialRows;
-            ApplyNativeMaterialFilters();
-            var savedMaterialId = _workflowPreferencesService.GetLastSelectedMaterialId();
-            var restoredSelection = _nativeMaterialRows.FirstOrDefault(row =>
-                string.Equals(row.MaterialID?.Trim(), savedMaterialId, StringComparison.OrdinalIgnoreCase) &&
-                grid.Items.Contains(row));
-            if (restoredSelection is not null)
-            {
-                grid.SelectedItem = restoredSelection;
-                if (grid.Columns.Count > 0)
-                {
-                    grid.CurrentCell = new DataGridCellInfo(restoredSelection, grid.Columns[0]);
-                }
-                grid.ScrollIntoView(restoredSelection);
-            }
-            else if (grid.SelectedItem is NativeMaterialRow selected)
-            {
-                ShowNativeMaterialDetails(selected);
-            }
-            else if (_nativeMaterialRows.Count > 0)
-            {
-                grid.SelectedIndex = 0;
-            }
-        }
-
         PopulateNativeMaterialFilters();
+        ApplyNativeMaterialFilters();
+        var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
+        var savedMaterialId = _workflowPreferencesService.GetLastSelectedMaterialId();
+        var selection = _nativeMaterialRows.FirstOrDefault(row =>
+                            visibleMaterialIds.Contains(row.MaterialID) &&
+                            string.Equals(row.MaterialID?.Trim(), savedMaterialId, StringComparison.OrdinalIgnoreCase))
+                        ?? _nativeMaterialRows.FirstOrDefault(row => visibleMaterialIds.Contains(row.MaterialID));
+        if (selection is not null) SelectMaterialsPrototypeRow(selection);
     }
 
     private void RefreshCanonicalMaterialConsumerFilters()
@@ -22586,21 +22511,6 @@ private List<string> GetVisibleAiMaterialLabels()
             "Stiffness" => string.Equals(row.InStiffness, "Yes", StringComparison.OrdinalIgnoreCase),
             _ => true
         };
-    }
-
-    private void NativeMaterialsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (sender is DataGrid grid && grid.SelectedItem is NativeMaterialRow row)
-        {
-            foreach (var materialRow in _nativeMaterialRows)
-            {
-                materialRow.IsCurrentSelection = ReferenceEquals(materialRow, row);
-            }
-            _lastSelectedNativeMaterial = row;
-            _workflowPreferencesService.SetLastSelectedMaterialId(row.MaterialID);
-            NativeMaterialSelectionText.Text = $"Selected MaterialID: {row.MaterialID}";
-            ShowNativeMaterialDetails(row);
-        }
     }
 
     private NativeMaterialRow? GetSelectedNativeMaterial()
@@ -23398,7 +23308,6 @@ private List<string> GetVisibleAiMaterialLabels()
             ApplyNativeMaterialComputedFieldsToAllRows();
             RefreshNativeMaterialSummary();
             RefreshNativeMaterialGridValidation();
-            if (FindName("NativeMaterialsGrid") is DataGrid materialGrid) materialGrid.Items.Refresh();
             if (markDirty) MarkNativeMaterialsDirty();
         }
 
@@ -23410,11 +23319,8 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void RefreshSelectedNativeMaterialDetails()
     {
-        if (FindName("NativeMaterialsGrid") is not DataGrid grid || grid.SelectedItem is not NativeMaterialRow selected)
-        {
-            return;
-        }
-
+        var selected = _lastSelectedNativeMaterial;
+        if (selected is null) return;
         var current = _nativeMaterialRows.FirstOrDefault(row =>
             string.Equals(row.MaterialID?.Trim(), selected.MaterialID?.Trim(), StringComparison.OrdinalIgnoreCase));
         if (current is not null)
@@ -23583,7 +23489,7 @@ private List<string> GetVisibleAiMaterialLabels()
         if (syncedMaterials > 0)
         {
             SaveNativeMaterialsSilent();
-            if (FindName("NativeMaterialsGrid") is DataGrid materialsGrid) materialsGrid.Items.Refresh();
+            RefreshNativeMaterialGridValidation();
         }
         grid.Items.Refresh();
         if (FindName("PurchaseOrderLinesGrid") is DataGrid lg) lg.Items.Refresh();
@@ -25041,8 +24947,8 @@ private List<string> GetVisibleAiMaterialLabels()
             }
         }
 
-        if (changed && FindName("NativeMaterialsGrid") is DataGrid materialGrid)
-            materialGrid.Items.Refresh();
+        if (changed)
+            RefreshNativeMaterialGridValidation();
 
         if (changed && persist)
             SaveNativeMaterialsSilent();

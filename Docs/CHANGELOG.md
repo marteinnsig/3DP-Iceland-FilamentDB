@@ -2746,3 +2746,10 @@ Maintenance rule: every build must add one new top entry here and keep the detai
   `Reload Materials Prototype` unapplied-change prompt.
 - Owner runtime testing accepted the corrected Materials edit, persistence, validation, recalculation and recovery-export lifecycle;
   Full Data Verification passed 330/330.
+- Added the v44.7.7 Stage 5J candidate, retiring residual Materials workflow-grid binding, selection, copy and refresh callers while
+  retaining the collapsed legacy XAML only for the final deletion checkpoint.
+- Fixed Stage 5J startup selection so the saved canonical MaterialID is visibly selected after the Fast Materials surface is created.
+- Corrected that fix to defer a selection-only handoff until Fast Materials is loaded, avoiding a blank pre-layout surface that required
+  `Reload current Materials filters/data`.
+- Fixed blank Fast Materials tab return by making saved selection one-shot and refreshing the measured viewport at Render priority.
+- Owner runtime testing accepted Stage 5J startup selection, tab return and canonical sync; Full Data Verification passed 331/331.
