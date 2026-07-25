@@ -1,6 +1,19 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.8 - Backup Filename Compatibility
+
+- Runtime-accepted readable `.bak` presentation names for new automatic,
+  manual, SQLite-restore and Excel-restore SQLite backups.
+- Preserves canonical SQLite bytes, integrity/schema verification, explicit
+  default-No restore and updater/recovery evidence.
+- Recovery Center and direct restore retain every existing `.sqlite` backup;
+  legacy files are not renamed, moved or added to the new rotating cleanup set.
+- Diagnostics distinguish the 20-file rotating `.bak` set from retained legacy
+  automatic evidence.
+- Debug/Release and static/documentation gates passed; owner runtime acceptance
+  and Full Data Verification passed 333/333.
+
 ## v44.7.7 - Legacy Grid Retirement
 
 - Runtime-accepted retirement of the legacy Materials, Tensile, Impact,

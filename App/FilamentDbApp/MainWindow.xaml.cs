@@ -40,6 +40,8 @@ public partial class MainWindow : Window
         "Refresh", "Verify Selected", "Restore Selected", "Create SQLite Backup", "Restore SQLite Backup",
         "Create Excel Backup", "Restore Excel Backup", "Open Storage Folder"
     };
+    private const string SqliteBackupFileDialogFilter =
+        "3DPIceland SQLite backup (*.bak;*.sqlite)|*.bak;*.sqlite|All files (*.*)|*.*";
     private static readonly string[] UpdateEvidenceBoundaryLabels =
     {
         "Transaction state", "Health acknowledgement", "Application rollback snapshot", "SQLite backup evidence"
@@ -1363,7 +1365,7 @@ public partial class MainWindow : Window
         var dialog = new OpenFileDialog
         {
             Title = "Select SQLite Backup to Restore",
-            Filter = "SQLite backup (*.sqlite)|*.sqlite|All files (*.*)|*.*",
+            Filter = SqliteBackupFileDialogFilter,
             InitialDirectory = Directory.Exists(_database.BackupFolder) ? _database.BackupFolder : _database.DatabaseFolder
         };
         if (dialog.ShowDialog(this) != true) return;
@@ -14061,10 +14063,12 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
         var backups = _database.GetAutomaticBackups();
         var latestBackup = backups.FirstOrDefault();
+        var retainedLegacyAutomaticBackups = _database.GetRetainedLegacyAutomaticBackupCount();
         sb.AppendLine("Backups");
         sb.AppendLine("-------");
         sb.AppendLine("Backup folder: " + _database.BackupFolder);
-        sb.AppendLine("Automatic backups: " + backups.Count + " / 20");
+        sb.AppendLine("Rotating automatic backups: " + backups.Count + " / 20");
+        sb.AppendLine("Retained legacy automatic backups: " + retainedLegacyAutomaticBackups + " (not rotated by v44.7.8)");
         sb.AppendLine("Latest backup: " + (latestBackup is null ? "None" : latestBackup.Name + " (" + latestBackup.CreationTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) + ")"));
         var recoveryCatalog = _database.GetLocalBackupCatalog();
         sb.AppendLine("Recovery Center catalog: " + recoveryCatalog.Count + " SQLite backup(s)");
@@ -16955,6 +16959,19 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             recoveryCenterClarityReady && recoveryCompatibilityReady && updateEvidenceClarityReady && guardedRestoreContractSurfaceReady && releaseIdentityReady
                 ? "Recovery Center shows one concise compatibility summary and selected-backup details; verbose update evidence remains available through diagnostics without weakening guarded restore"
                 : "Recovery Center summary, selected-backup compatibility, update evidence diagnostics or guarded restore boundary failed"));
+        var backupFilenameCompatibilityReady =
+            LocalDatabase.BackupFilenameCompatibilityContractIsReady() &&
+            SqliteBackupFileDialogFilter.Contains("*.bak;*.sqlite", StringComparison.Ordinal) &&
+            typeof(LocalDatabase).GetMethod(nameof(LocalDatabase.GetLocalBackupCatalog)) is not null &&
+            typeof(LocalDatabase).GetMethod(nameof(LocalDatabase.GetRetainedLegacyAutomaticBackupCount)) is not null &&
+            typeof(LocalDatabase).GetMethod(nameof(LocalDatabase.RestoreDatabaseBackup)) is not null;
+        checks.Add(new VerificationCheck("v44.7.8 Backup Filename Compatibility release gate",
+            backupFilenameCompatibilityReady && recoveryCenterClarityReady && recoveryCompatibilityReady &&
+            guardedRestoreContractSurfaceReady && interruptedRecoveryReady && releaseIdentityReady,
+            backupFilenameCompatibilityReady && recoveryCenterClarityReady && recoveryCompatibilityReady &&
+            guardedRestoreContractSurfaceReady && interruptedRecoveryReady && releaseIdentityReady
+                ? "New SQLite backups use readable collision-safe .bak names; legacy .sqlite discovery/restore, explicit recovery snapshots, updater evidence and no-automatic-SQLite-restore boundaries remain intact"
+                : "Readable backup naming, dual-format discovery/restore, guarded recovery, updater evidence or release identity failed"));
         var nativeMetadataTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMeasurementNotes");
         var experimentalRunsTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "ExperimentalRuns");
         var measurementDateEditProbe = new NativeStiffnessMeasurementRow();

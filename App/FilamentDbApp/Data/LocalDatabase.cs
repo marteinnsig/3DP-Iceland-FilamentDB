@@ -16,6 +16,12 @@ public sealed partial class LocalDatabase
     private const int MaxAutomaticBackups = 20;
     private const string AutomaticBackupPrefix = "filamentdb_";
     private const string AutomaticBackupExtension = ".sqlite";
+    private const string PresentationBackupExtension = ".bak";
+    private const string PresentationAutomaticBackupPrefix = "3DPIceland-Automatic-";
+    private const string PresentationManualBackupPrefix = "3DPIceland-Manual-";
+    private const string PresentationPreRestoreBackupPrefix = "3DPIceland-Pre-SQLite-Restore-";
+    private const string PresentationPostRestoreBackupPrefix = "3DPIceland-Post-SQLite-Restore-";
+    private const string PresentationPreExcelRestoreBackupPrefix = "3DPIceland-Pre-Excel-Restore-";
     private bool _requiredCanonicalMigrationBackupCreated;
     private static readonly string[] ExcelRecoveryTableInsertOrder =
     {
@@ -160,12 +166,11 @@ public sealed partial class LocalDatabase
 
     private FileInfo CreateConsistentDatabaseBackup(string prefix)
     {
-        if (!File.Exists(DatabasePath) || new FileInfo(DatabasePath).Length == 0)
+        if (!IOFile.Exists(DatabasePath) || new FileInfo(DatabasePath).Length == 0)
             throw new InvalidOperationException("The SQLite database is unavailable for backup.");
 
-        Directory.CreateDirectory(BackupFolder);
-        var stamp = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff", CultureInfo.InvariantCulture);
-        var backupPath = Path.Combine(BackupFolder, $"{prefix}{stamp}{AutomaticBackupExtension}");
+        IODirectory.CreateDirectory(BackupFolder);
+        var backupPath = CreatePresentationBackupPath(prefix, DateTime.Now);
         using var source = new SqliteConnection(ConnectionString);
         using var destination = new SqliteConnection($"Data Source={backupPath}");
         source.Open();
@@ -174,10 +179,29 @@ public sealed partial class LocalDatabase
         var inspection = InspectDatabaseFile(backupPath);
         if (!inspection.IsIntegrityValid)
         {
-            try { File.Delete(backupPath); } catch { }
+            try { IOFile.Delete(backupPath); } catch { }
             throw new InvalidOperationException("The new SQLite backup failed integrity verification: " + inspection.IntegrityResult);
         }
         return new FileInfo(backupPath);
+    }
+
+    private string CreatePresentationBackupPath(string legacyPrefix, DateTime createdAt)
+    {
+        var presentationPrefix = legacyPrefix switch
+        {
+            "filamentdb_manual_" => PresentationManualBackupPrefix,
+            "filamentdb_pre_restore_" => PresentationPreRestoreBackupPrefix,
+            "filamentdb_post_restore_" => PresentationPostRestoreBackupPrefix,
+            "filamentdb_pre_excel_restore_" => PresentationPreExcelRestoreBackupPrefix,
+            _ => PresentationAutomaticBackupPrefix
+        };
+        var stamp = createdAt.ToString("yyyy-MM-dd_HHmmss_fff", CultureInfo.InvariantCulture);
+        var path = IOPath.Combine(BackupFolder, presentationPrefix + stamp + PresentationBackupExtension);
+        return IOFile.Exists(path)
+            ? IOPath.Combine(
+                BackupFolder,
+                presentationPrefix + stamp + "-" + Guid.NewGuid().ToString("N") + PresentationBackupExtension)
+            : path;
     }
 
     private void CreateRequiredBackupBeforeCanonicalMigration(bool retainAllEvidence = false)
@@ -302,11 +326,15 @@ public sealed partial class LocalDatabase
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(BackupFolder) || !Directory.Exists(BackupFolder)) return;
+            if (string.IsNullOrWhiteSpace(BackupFolder) || !IODirectory.Exists(BackupFolder)) return;
 
-            var backups = Directory.GetFiles(BackupFolder, $"{AutomaticBackupPrefix}*{AutomaticBackupExtension}", SearchOption.TopDirectoryOnly)
+            var backups = IODirectory
+                .GetFiles(
+                    BackupFolder,
+                    $"{PresentationAutomaticBackupPrefix}*{PresentationBackupExtension}",
+                    SearchOption.TopDirectoryOnly)
                 .Select(path => new FileInfo(path))
-                .Where(IsAutomaticBackupFile)
+                .Where(IsPresentationAutomaticBackupFile)
                 .OrderByDescending(file => file.CreationTimeUtc)
                 .ThenByDescending(file => file.Name, StringComparer.OrdinalIgnoreCase)
                 .ToList();
@@ -336,11 +364,11 @@ public sealed partial class LocalDatabase
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(BackupFolder) || !Directory.Exists(BackupFolder)) return Array.Empty<FileInfo>();
+            if (string.IsNullOrWhiteSpace(BackupFolder) || !IODirectory.Exists(BackupFolder)) return Array.Empty<FileInfo>();
 
-            return Directory.GetFiles(BackupFolder, $"{AutomaticBackupPrefix}*{AutomaticBackupExtension}", SearchOption.TopDirectoryOnly)
+            return EnumerateSupportedBackupPaths(BackupFolder)
                 .Select(path => new FileInfo(path))
-                .Where(IsAutomaticBackupFile)
+                .Where(IsPresentationAutomaticBackupFile)
                 .OrderByDescending(file => file.CreationTimeUtc)
                 .ThenByDescending(file => file.Name, StringComparer.OrdinalIgnoreCase)
                 .ToList();
@@ -351,15 +379,73 @@ public sealed partial class LocalDatabase
         }
     }
 
+    public int GetRetainedLegacyAutomaticBackupCount()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(BackupFolder) || !IODirectory.Exists(BackupFolder)) return 0;
+            return EnumerateSupportedBackupPaths(BackupFolder)
+                .Select(path => new FileInfo(path))
+                .Count(IsLegacyAutomaticBackupFile);
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
     public FileInfo? GetLatestAutomaticBackup() => GetAutomaticBackups().FirstOrDefault();
 
     private static bool IsAutomaticBackupFile(FileInfo file)
     {
-        var name = Path.GetFileNameWithoutExtension(file.Name);
-        var suffix = name.StartsWith(AutomaticBackupPrefix, StringComparison.OrdinalIgnoreCase)
-            ? name[AutomaticBackupPrefix.Length..]
-            : string.Empty;
-        return DateTime.TryParseExact(suffix, "yyyyMMdd_HHmmss_fff", CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
+        return IsLegacyAutomaticBackupFile(file) || IsPresentationAutomaticBackupFile(file);
+    }
+
+    private static bool IsLegacyAutomaticBackupFile(FileInfo file)
+    {
+        if (!string.Equals(file.Extension, AutomaticBackupExtension, StringComparison.OrdinalIgnoreCase))
+            return false;
+        var name = IOPath.GetFileNameWithoutExtension(file.Name);
+        if (!name.StartsWith(AutomaticBackupPrefix, StringComparison.OrdinalIgnoreCase))
+            return false;
+        var legacySuffix = name[AutomaticBackupPrefix.Length..];
+        return DateTime.TryParseExact(
+            legacySuffix,
+            "yyyyMMdd_HHmmss_fff",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out _);
+    }
+
+    private static bool IsPresentationAutomaticBackupFile(FileInfo file)
+    {
+        if (!string.Equals(file.Extension, PresentationBackupExtension, StringComparison.OrdinalIgnoreCase))
+            return false;
+        var name = IOPath.GetFileNameWithoutExtension(file.Name);
+        if (!name.StartsWith(PresentationAutomaticBackupPrefix, StringComparison.OrdinalIgnoreCase))
+            return false;
+        var suffix = name[PresentationAutomaticBackupPrefix.Length..];
+        return DateTime.TryParseExact(
+                   suffix,
+                   "yyyy-MM-dd_HHmmss_fff",
+                   CultureInfo.InvariantCulture,
+                   DateTimeStyles.None,
+                   out _) ||
+               HasCollisionSafePresentationSuffix(suffix);
+    }
+
+    private static bool HasCollisionSafePresentationSuffix(string suffix)
+    {
+        const int stampLength = 21;
+        return suffix.Length == stampLength + 33 &&
+               suffix[stampLength] == '-' &&
+               DateTime.TryParseExact(
+                   suffix[..stampLength],
+                   "yyyy-MM-dd_HHmmss_fff",
+                   CultureInfo.InvariantCulture,
+                   DateTimeStyles.None,
+                   out _) &&
+               Guid.TryParseExact(suffix[(stampLength + 1)..], "N", out _);
     }
 
     public FileInfo CreateManualBackupNow()
@@ -410,25 +496,55 @@ public sealed partial class LocalDatabase
 
     public IReadOnlyList<DatabaseBackupInfo> GetLocalBackupCatalog()
     {
-        if (!Directory.Exists(BackupFolder)) return Array.Empty<DatabaseBackupInfo>();
-        var activePath = Path.GetFullPath(DatabasePath);
+        if (!IODirectory.Exists(BackupFolder)) return Array.Empty<DatabaseBackupInfo>();
+        var activePath = IOPath.GetFullPath(DatabasePath);
         var results = new List<DatabaseBackupInfo>();
-        foreach (var path in Directory.GetFiles(BackupFolder, "*.sqlite", SearchOption.TopDirectoryOnly)
-                     .Where(path => !string.Equals(Path.GetFullPath(path), activePath, StringComparison.OrdinalIgnoreCase))
-                     .OrderByDescending(File.GetLastWriteTimeUtc))
+        foreach (var path in EnumerateSupportedBackupPaths(BackupFolder)
+                     .Where(path => !string.Equals(IOPath.GetFullPath(path), activePath, StringComparison.OrdinalIgnoreCase))
+                     .OrderByDescending(IOFile.GetLastWriteTimeUtc))
         {
             try { results.Add(VerifyBackupCompatibility(path, runMigrationDryRun: false)); }
             catch (Exception ex)
             {
                 results.Add(new DatabaseBackupInfo
                 {
-                    FilePath = Path.GetFullPath(path), IntegrityResult = "error", FileSizeBytes = new FileInfo(path).Length,
+                    FilePath = IOPath.GetFullPath(path), IntegrityResult = "error", FileSizeBytes = new FileInfo(path).Length,
                     BackupKind = ClassifyBackupKind(path), CompatibilityStatus = "Corrupt / unreadable", CompatibilityDetail = ex.Message,
-                    ModifiedAt = File.GetLastWriteTime(path), CanRestore = false
+                    ModifiedAt = IOFile.GetLastWriteTime(path), CanRestore = false
                 });
             }
         }
         return results;
+    }
+
+    private static IEnumerable<string> EnumerateSupportedBackupPaths(string folder) =>
+        IODirectory
+            .EnumerateFiles(folder, "*", SearchOption.TopDirectoryOnly)
+            .Where(IsSupportedBackupPath);
+
+    private static bool IsSupportedBackupPath(string path) =>
+        string.Equals(IOPath.GetExtension(path), AutomaticBackupExtension, StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(IOPath.GetExtension(path), PresentationBackupExtension, StringComparison.OrdinalIgnoreCase);
+
+    public static bool BackupFilenameCompatibilityContractIsReady()
+    {
+        var legacyAutomatic = new FileInfo("filamentdb_20260725_123456_789.sqlite");
+        var presentationAutomatic = new FileInfo("3DPIceland-Automatic-2026-07-25_123456_789.bak");
+        var collisionSafeAutomatic = new FileInfo(
+            "3DPIceland-Automatic-2026-07-25_123456_789-0123456789abcdef0123456789abcdef.bak");
+        return IsSupportedBackupPath(legacyAutomatic.Name) &&
+               IsSupportedBackupPath(presentationAutomatic.Name) &&
+               IsAutomaticBackupFile(legacyAutomatic) &&
+               IsAutomaticBackupFile(presentationAutomatic) &&
+               IsAutomaticBackupFile(collisionSafeAutomatic) &&
+               ClassifyBackupKind("filamentdb_manual_20260725_123456_789.sqlite") == "Manual backup" &&
+               ClassifyBackupKind("3DPIceland-Manual-2026-07-25_123456_789.bak") == "Manual backup" &&
+               ClassifyBackupKind("3DPIceland-Pre-SQLite-Restore-2026-07-25_123456_789.bak") ==
+               "Pre-SQLite restore recovery" &&
+               ClassifyBackupKind("3DPIceland-Post-SQLite-Restore-2026-07-25_123456_789.bak") ==
+               "Post-SQLite restore evidence" &&
+               ClassifyBackupKind("3DPIceland-Pre-Excel-Restore-2026-07-25_123456_789.bak") ==
+               "Pre-Excel restore recovery";
     }
 
     public DatabaseBackupInfo VerifyBackupCompatibility(string backupPath, bool runMigrationDryRun = true)
@@ -484,12 +600,22 @@ public sealed partial class LocalDatabase
 
     private static string ClassifyBackupKind(string path)
     {
-        var name = Path.GetFileName(path);
-        if (name.StartsWith("filamentdb_pre_excel_restore_", StringComparison.OrdinalIgnoreCase)) return "Pre-Excel restore recovery";
-        if (name.StartsWith("filamentdb_pre_restore_", StringComparison.OrdinalIgnoreCase)) return "Pre-SQLite restore recovery";
-        if (name.StartsWith("filamentdb_post_restore_", StringComparison.OrdinalIgnoreCase)) return "Post-SQLite restore evidence";
-        if (name.StartsWith("filamentdb_manual_", StringComparison.OrdinalIgnoreCase)) return "Manual backup";
-        if (name.StartsWith(AutomaticBackupPrefix, StringComparison.OrdinalIgnoreCase)) return "Automatic / migration backup";
+        var name = IOPath.GetFileName(path);
+        if (name.StartsWith("filamentdb_pre_excel_restore_", StringComparison.OrdinalIgnoreCase) ||
+            name.StartsWith(PresentationPreExcelRestoreBackupPrefix, StringComparison.OrdinalIgnoreCase))
+            return "Pre-Excel restore recovery";
+        if (name.StartsWith("filamentdb_pre_restore_", StringComparison.OrdinalIgnoreCase) ||
+            name.StartsWith(PresentationPreRestoreBackupPrefix, StringComparison.OrdinalIgnoreCase))
+            return "Pre-SQLite restore recovery";
+        if (name.StartsWith("filamentdb_post_restore_", StringComparison.OrdinalIgnoreCase) ||
+            name.StartsWith(PresentationPostRestoreBackupPrefix, StringComparison.OrdinalIgnoreCase))
+            return "Post-SQLite restore evidence";
+        if (name.StartsWith("filamentdb_manual_", StringComparison.OrdinalIgnoreCase) ||
+            name.StartsWith(PresentationManualBackupPrefix, StringComparison.OrdinalIgnoreCase))
+            return "Manual backup";
+        if (name.StartsWith(AutomaticBackupPrefix, StringComparison.OrdinalIgnoreCase) ||
+            name.StartsWith(PresentationAutomaticBackupPrefix, StringComparison.OrdinalIgnoreCase))
+            return "Automatic / migration backup";
         return "External SQLite backup";
     }
 

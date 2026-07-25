@@ -19,7 +19,7 @@ public sealed class DatabaseBackupInfo
     public bool MigrationDryRunPassed { get; init; }
     public bool CanRestore { get; init; }
     public DateTime ModifiedAt { get; init; }
-    public string FileName => Path.GetFileName(FilePath);
+    public string FileName => IOPath.GetFileName(FilePath);
     public bool IsIntegrityValid => string.Equals(IntegrityResult, "ok", StringComparison.OrdinalIgnoreCase);
 }
 

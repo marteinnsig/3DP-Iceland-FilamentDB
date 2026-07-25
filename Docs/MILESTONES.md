@@ -3,6 +3,16 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.8 - Backup Filename Compatibility
+
+Adds readable purpose-specific names for new SQLite backups while retaining
+all legacy `.sqlite` discovery and restore compatibility. Automatic rotation,
+explicit restore snapshots, Excel disaster recovery and updater evidence remain
+separate and honest. Owner runtime acceptance and Full Data Verification
+333/333 passed.
+
+---
+
 # v44.7.7 - Legacy Grid Retirement
 
 Completes the staged replacement and removal of legacy workflow DataGrids

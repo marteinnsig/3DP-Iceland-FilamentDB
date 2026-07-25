@@ -2,6 +2,33 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.8 - Backup Filename Compatibility
+
+- Added readable purpose-specific `.bak` filenames for newly created automatic,
+  manual, SQLite-restore and Excel-restore SQLite backups.
+- Kept `.bak` as a presentation convention only; online SQLite backup bytes,
+  integrity/schema inspection and canonical database ownership are unchanged.
+- Extended Recovery Center catalog and direct restore selection to both new
+  `.bak` and every existing `.sqlite` backup.
+- Preserved all legacy files without rename/move and limited the continuing
+  20-file rotation to new automatic `.bak` backups.
+- Preserved explicit/default-No restore, verified pre/post-restore evidence,
+  updater backup-path evidence and the prohibition on automatic SQLite restore.
+- Added a v44.7.8 Verification gate for naming, dual-format compatibility,
+  Recovery Center, updater and interrupted-recovery boundaries.
+- Aligned the accepted v44.7.3-v44.7.5 CHANGELOG/BUILD_HISTORY headings with
+  their canonical final titles so the release-documentation audit passes.
+- Isolated Debug/Release builds passed with zero warnings/errors; aliases,
+  136-column, diff and canonical release-documentation gates passed.
+- First owner runtime pass verified manual/automatic and SQLite pre/post-restore
+  `.bak` names, legacy `.sqlite` discovery and Full Data Verification 333/333.
+- Corrected diagnostics that combined retained legacy automatic `.sqlite`
+  evidence with the new 20-file rotating `.bak` count; both are now explicit.
+- Excel export correctly creates no pre-restore snapshot; the separate explicit
+  Excel restore path creates its snapshot only after explicit restore approval.
+- Final owner runtime testing confirmed the Excel pre-restore `.bak`, corrected
+  diagnostics and Full Data Verification 333/333. v44.7.8 is complete.
+
 ## v44.7.7 - Legacy Grid Retirement
 
 - Hid Materials preview switching and all `Use Legacy Grid(s)` buttons.
@@ -156,7 +183,7 @@
 - Debug/Release, static/security gates, Full Data Verification and owner
   runtime acceptance passed.
 
-## v44.7.5 - Fast Workflow Grid - Stiffness Candidate
+## v44.7.5 - Fast Workflow Grid - Stiffness
 
 - Added Fast Stiffness as the startup-default Stiffness view with a visible
   one-click legacy-grid fallback.
@@ -176,7 +203,7 @@
   fallback and corrected editor alignment.
 - Full Data Verification passed 317/317; v44.7.5 is accepted.
 
-## v44.7.4 - Fast Workflow Grid - Impact Candidate
+## v44.7.4 - Fast Workflow Grid - Impact
 
 - Added Fast Impact as the startup-default Impact view with a visible
   one-click legacy-grid fallback.
@@ -199,7 +226,7 @@
   fallback corrections.
 - Full Data Verification passed 316/316; v44.7.4 is accepted.
 
-## v44.7.3 - Fast Workflow Grid - Tensile Candidate
+## v44.7.3 - Fast Workflow Grid - Tensile
 
 - Generalized the accepted Fast Materials renderer so canonical workflow rows
   can reuse its viewport-only rendering and editing contracts.

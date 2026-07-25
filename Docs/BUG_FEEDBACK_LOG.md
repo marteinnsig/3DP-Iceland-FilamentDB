@@ -30,10 +30,10 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 18 |
+| Open | 17 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 30 |
+| Solved | 31 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
@@ -492,9 +492,12 @@ PASS and reduced observed Debug startup from about 19-20 seconds to about 5 seco
 the accepted trace rendered the first usable Materials view at 4.49 seconds.
 
 improvement — backup filename convention:
-Status: Open
-Resolution: Current Recovery Center intentionally retains discoverable `.sqlite` backups. The proposed presentation-only `.bak` convention has not been accepted and must remain backwards compatible without renaming/deleting evidence.
-Verification evidence: Current v44.6.2 runtime still displays canonical `.sqlite` backup names.
+Status: Solved
+Resolution: Solved in version v44.7.8 — readable purpose-specific `.bak` names retain canonical SQLite contents, dual
+`.bak`/`.sqlite` discovery, explicit restore and updater/recovery evidence. Existing `.sqlite` files are not renamed, moved or added
+to the new automatic cleanup set.
+Verification evidence: Owner runtime review confirmed manual/automatic, SQLite pre/post-restore and Excel pre-restore names, legacy
+discovery, separated rotating/retained diagnostics and Full Data Verification 333/333 PASS.
 Use a professional, human-readable backup filename such as
 `Product-YYYY-MM-DD_HHmmss.bak` instead of exposing a plain `.sqlite` filename.
 The `.bak` extension is a presentation/naming convention only: the file remains

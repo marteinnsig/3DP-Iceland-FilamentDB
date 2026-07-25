@@ -1,3 +1,21 @@
+# v44.7.8 - Backup Filename Compatibility
+
+Date: 2026-07-25
+
+- PASS: Full Data Verification reported 333/333 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: release identity aligned at v44.7.8, assembly 44.7.8.0 and
+  `BACKUP-FILENAME-COMPATIBILITY`.
+- PASS: new automatic, manual, SQLite pre/post-restore and Excel pre-restore
+  backups used readable purpose-specific `.bak` names.
+- PASS: legacy `.sqlite` discovery, integrity/schema inspection and explicit
+  restore remained available.
+- PASS: diagnostics separated the new 20-file rotating automatic set from
+  retained legacy automatic evidence.
+- PASS: updater evidence and the prohibition on automatic SQLite restore
+  remained intact.
+- ACCEPTED: v44.7.8 is runtime accepted and canonical.
+
 # v44.7.7 - Legacy Grid Retirement - Stage 1
 
 Date: 2026-07-24

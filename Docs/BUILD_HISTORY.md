@@ -2,6 +2,36 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.8 - Backup Filename Compatibility
+
+Candidate centralizes readable presentation filenames for all newly created
+SQLite backups while retaining the established online SQLite backup engine.
+New files use purpose-specific `3DPIceland-...-YYYY-MM-DD_HHmmss_fff.bak`
+names with a GUID fallback for same-millisecond collisions.
+
+Recovery Center, compatibility verification and direct restore now accept both
+`.bak` and every existing `.sqlite` file. Legacy automatic files remain visible
+to diagnostics/throttling but are excluded from the new automatic cleanup set,
+so the increment does not rename, move or delete existing evidence.
+
+Updater state continues to record the verified backup as an opaque full path.
+SQLite restore remains explicit/default-No and interrupted application recovery
+continues to restore governed application files only. Isolated Debug/Release
+passed with zero warnings/errors, and static/documentation gates passed.
+A Windows PowerShell reflection probe could not load the net9 assembly because
+its host lacked `System.Runtime 9.0.0.0`; the compiled probe remains covered by
+the net9 in-app Verification Center.
+
+The first owner runtime pass confirmed new manual/automatic and SQLite
+pre/post-restore names, legacy discovery and Full Data Verification 333/333.
+Diagnostics exposed `Automatic backups: 21 / 20` because it combined retained
+legacy files with the new rotating set. The corrected candidate reports those
+counts separately without changing backup files or cleanup behavior. The
+provided Excel workbook was an export, so it correctly created no pre-restore
+snapshot. Final explicit Excel restore created a verified pre-restore `.bak`;
+corrected diagnostics and Full Data Verification 333/333 passed. v44.7.8 is
+runtime accepted and complete.
+
 ## v44.7.7 - Legacy Grid Retirement
 
 Stage 1 hides the accepted Fast-workflow legacy/preview switches across
@@ -142,7 +172,7 @@ Owner runtime retest accepted both Settings views, legacy fallback, separator
 persistence and shared filter propagation. Full Data Verification passed;
 v44.7.6 is accepted.
 
-## v44.7.5 - Fast Workflow Grid - Stiffness Candidate
+## v44.7.5 - Fast Workflow Grid - Stiffness
 
 Candidate applies the accepted viewport-only workflow grid to Stiffness while
 retaining canonical rows, 0–10 revolutions, 0–359 degrees, measurement dates,
@@ -158,7 +188,7 @@ leading gap and editor placement. Owner runtime retest accepted the complete
 Stiffness workflow and Full Data Verification passed 317/317. v44.7.5 is
 accepted.
 
-## v44.7.4 - Fast Workflow Grid - Impact Candidate
+## v44.7.4 - Fast Workflow Grid - Impact
 
 Candidate applies the accepted viewport-only workflow grid to Impact while
 retaining the existing canonical row objects, 0–100 needle validation,
@@ -174,7 +204,7 @@ and resets layout in place. Debug/Release and security/static gates passed.
 Owner runtime retest accepted all corrections and Full Data Verification passed
 316/316. v44.7.4 is accepted.
 
-## v44.7.3 - Fast Workflow Grid - Tensile Candidate
+## v44.7.3 - Fast Workflow Grid - Tensile
 
 Candidate begins the approved migration away from problematic editable WPF
 DataGrids. The accepted viewport-only Materials renderer now has reusable row,

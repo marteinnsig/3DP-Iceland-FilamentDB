@@ -1,12 +1,12 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.6 — Fast Workflow Grid — Settings**
+Current canonical release: **v44.7.8 — Backup Filename Compatibility**
 
-Last runtime-accepted baseline: **v44.7.7 — Legacy Grid Retirement**
+Last runtime-accepted baseline: **v44.7.8 — Backup Filename Compatibility**
 
-Current application release: **v44.7.7 — Legacy Grid Retirement**
+Current application release: **v44.7.8 — Backup Filename Compatibility**
 
-Current roadmap increment: **v44.7.8 — Backup Filename Compatibility**
+Current roadmap increment: **v44.7.9 — Public Measurement Date Provenance**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1654,13 +1654,15 @@ changes priority.
   - Preserve canonical SQLite, formulas, filters, validation, settings CRUD and layout behavior at every stage.
   - Require runtime acceptance after each removal stage.
 - **v44.7.8 — Backup Filename Compatibility**
-  - State: Current research/planning.
-  - Feedback disposition: Open.
-  - Research a human-readable presentation name.
-  - Retain SQLite bytes, existing `.sqlite` discovery, explicit restore and all evidence.
-  - Never rename or delete existing backups automatically.
+  - State: Complete.
+  - Feedback disposition: Solved.
+  - Give new automatic/manual/restore-evidence SQLite backups readable purpose-specific `.bak` presentation names.
+  - Retain SQLite bytes, dual `.bak`/`.sqlite` discovery, explicit restore and updater/recovery evidence.
+  - Never rename, move or add existing `.sqlite` backups to the new automatic cleanup set.
+  - Keep the 20-file rotation bounded to new automatic `.bak` files.
+  - Owner runtime acceptance and Full Data Verification 333/333 passed.
 - **v44.7.9 — Public Measurement Date Provenance**
-  - State: Planned.
+  - State: Current research/planning.
   - Feedback disposition: Open.
   - Add canonical Tensile, Impact and Stiffness measured dates to the reviewed public material model.
   - Show dates on applicable website/report surfaces with `Not recorded` honesty.

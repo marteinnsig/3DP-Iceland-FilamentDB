@@ -1,4 +1,44 @@
-# Current Build Notes - v44.7.7
+# Current Build Notes - v44.7.8
+
+## Backup Filename Compatibility
+
+v44.7.8 gives every newly created SQLite backup a readable,
+purpose-specific `3DPIceland-...-YYYY-MM-DD_HHmmss_fff.bak` presentation name.
+The `.bak` extension changes only the filename: backup creation, integrity and
+schema inspection, canonical SQLite contents and restore ownership are
+unchanged.
+
+Recovery Center and direct SQLite restore discover both new `.bak` files and
+all existing `.sqlite` backups. Legacy files are not renamed, moved or added
+to the new cleanup policy. The existing 20-file rotation now applies only to
+new `3DPIceland-Automatic-*.bak` files; legacy `.sqlite` evidence is retained.
+
+Manual, pre-SQLite-restore, post-SQLite-restore and pre-Excel-restore backups
+use distinct readable names. Guarded updater state continues to retain the
+opaque verified backup path, and interrupted recovery still never restores
+SQLite automatically.
+
+The candidate adds a Verification gate for legacy/new naming, collision-safe
+automatic names, dual-format restore discovery, Recovery Center ownership and
+updater/recovery boundaries. Isolated Debug/Release builds passed with zero
+warnings/errors; alias, 136-column, diff and release-documentation gates passed.
+Owner runtime acceptance and Full Data Verification 333/333 passed.
+
+A direct reflection attempt from Windows PowerShell could not load the net9
+candidate assembly because that host lacked `System.Runtime, Version=9.0.0.0`.
+This was a test-host mismatch, not a build failure. The same static naming
+probe is compiled into and will run inside the net9 in-app Verification Center.
+
+First runtime diagnostics passed 333/333 but exposed a presentation-only count:
+`Automatic backups: 21 / 20` combined retained legacy `.sqlite` files with the
+new rotating `.bak` set. Diagnostics now report rotating and retained legacy
+automatic counts separately. No backup file or cleanup behavior changed.
+
+Final runtime testing confirmed the corrected diagnostics plus manual,
+automatic, SQLite pre/post-restore and Excel pre-restore `.bak` names. Legacy
+`.sqlite` files remained discoverable and restore-ready. v44.7.8 is complete.
+
+## Retained v44.7.7 evidence
 
 ## Legacy Grid Retirement
 
