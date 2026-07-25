@@ -1,4 +1,44 @@
-# Current Build Notes - v44.7.11
+# Current Build Notes - v44.7.12
+
+## Clean Baseline Retirement
+
+v44.7.12 is runtime accepted. Repository-wide
+ownership tracing covered C#, XAML, project resources, partial classes,
+reflection-based Verification, serialization, migration, recovery, updater,
+diagnostics, export and report/deployment paths.
+
+The candidate removes the unused hand-built MainWindow PDF renderer and its
+parallel `PdfLines` model projection. User-facing PDF remains exclusively
+printed from canonical HTML with WebView2. The separate typed
+`ReportPdfRendererService`, report certificates and documentation PDFs remain
+active and unchanged.
+
+Caller-free legacy workbook-import write helpers and their model are removed.
+Supported database compatibility, migration inspection, governed Excel
+disaster recovery and explicit SQLite backup/restore remain intact.
+
+Retired website-template file-selection residue, standalone manufacturer
+template rendering, old workflow handlers and dependent helpers are removed.
+The SQLite-approved website template, canonical website renderer and current
+public report families remain unchanged.
+
+Asset review found four tracked image assets. The runtime WPF PNG, installer
+ICO and report JPG all have active owners. The 1.28 MB icon-source PNG had only
+a self-copy project item and is removed from the project and repository.
+
+Debug/Release and updater Release compile probes pass with zero
+warnings/errors. Static, security, package and release-documentation gates pass.
+
+Initial owner testing passed Full Data Verification, normal Engineering Package
+export, branding and the remaining runtime checklist. A fresh Public Report
+Package failed while calculating its source fingerprint because that service
+still queried retired workbook-era `TensileResults` and related tables. The
+fingerprint now reads only the canonical native measurement tables. Legacy
+tables were not recreated. The corrected package rebuilt every public report
+family without visible errors, sampled HTML passed visual review and final Full
+Data Verification passed. v44.7.12 is canonical.
+
+## Retained v44.7.11 evidence
 
 ## Settings Manager Command Clarity
 

@@ -2,6 +2,33 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.12 - Clean Baseline Retirement
+
+Repository-wide ownership review identified a parallel hand-built PDF layer
+that had no caller after canonical HTML/WebView2 PDF became authoritative.
+Its model projection still performed report-specific work on every preview,
+despite never reaching the exported PDF. The complete dead layer is removed.
+
+The same review retired caller-free workbook-import writes, old
+website-template selection/renderer residue, legacy workflow handlers and
+dependent helpers. Compile probes protected cross-partial Fast-grid helpers;
+one initially over-broad removal was immediately detected and restored before
+the cleanup continued.
+
+Tracked asset review retained every runtime/package-owned logo and removed one
+1.28 MB source PNG that was copied to build output without a consumer.
+Compatibility, recovery, schema, formulas, canonical reports and deployment
+behavior remain outside the cleanup boundary.
+
+Initial owner testing passed Verification and normal Engineering Package
+export, but a fresh Public Report Package exposed a residual fingerprint query
+against retired `TensileResults`. The query set is corrected to the canonical
+native measurement tables without recreating any legacy schema.
+
+The corrected Public Report Package completed every report family without
+visible errors. Sampled HTML, prior Engineering Package output, branding and
+final Full Data Verification passed; v44.7.12 is canonical.
+
 ## v44.7.11 - Settings Manager Command Clarity
 
 v44.7.11 separates three existing Settings Manager command boundaries.

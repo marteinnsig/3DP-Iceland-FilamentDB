@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "SETTINGS-MANAGER-COMMAND-CLARITY";
-    public const string ReleaseTitle = "Settings Manager Command Clarity";
+    public const string ReleaseCode = "CLEAN-BASELINE-RETIREMENT";
+    public const string ReleaseTitle = "Clean Baseline Retirement";
 
     public static string Version
     {

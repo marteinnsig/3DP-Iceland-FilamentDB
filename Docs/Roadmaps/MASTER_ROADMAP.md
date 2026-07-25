@@ -1,12 +1,12 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.11 — Settings Manager Command Clarity**
+Current canonical release: **v44.7.12 — Clean Baseline Retirement**
 
-Last runtime-accepted baseline: **v44.7.11 — Settings Manager Command Clarity**
+Last runtime-accepted baseline: **v44.7.12 — Clean Baseline Retirement**
 
-Current application release: **v44.7.11 — Settings Manager Command Clarity**
+Current application release: **v44.7.12 — Clean Baseline Retirement**
 
-Current roadmap increment: **v44.8.0 — Low-value Material fields audit**
+Current roadmap increment: **v44.7.13 — Public HTML Trust Hardening**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1692,6 +1692,23 @@ changes priority.
   - Make reload default-No because it discards current unsaved Settings edits.
   - Hide duplicate generic in-memory grid reload footers; retain the explicit SQLite reload owner.
   - Owner reload, restore, cancellation, restart, column-layout and visual tests passed; Full Data Verification passed 336/336.
+- **v44.7.12 — Clean Baseline Retirement**
+  - State: **Complete and runtime accepted**.
+  - Feedback disposition: Maintainability rule baseline.
+  - Remove only caller-free code after C#, XAML, project, reflection, serialization, migration, recovery and Verification tracing.
+  - Retire the unused hand-built PDF layer; canonical HTML plus WebView2 and the active typed report renderer remain owners.
+  - Retire caller-free legacy workbook write helpers while preserving schema migration, Excel disaster recovery and SQLite restore.
+  - Remove unowned UI/template residue and obsolete repository assets; retain all runtime, installer and report branding assets.
+  - Preserve formulas, measurements, website/report/FTPS behavior, updater evidence and canonical SQLite ownership.
+  - Public Report Package fingerprint now reads canonical native measurement tables, not retired workbook tables.
+  - Debug/Release, static/security/package gates, owner report review and Full Data Verification passed.
+- **v44.7.13 — Public HTML Trust Hardening**
+  - State: **Current research increment**.
+  - Make the imported website-template executable-content trust boundary explicit and default-No.
+  - Add bounded template validation and malicious-input report probes without pretending arbitrary HTML can be fully sanitized.
+  - Harden the hidden WebView2 PDF host against unexpected navigation, popups and permissions.
+  - Preserve accepted website templates, canonical report layout/PDF output, Preview/Production parity and FTPS behavior.
+  - Require HTML/PDF visual acceptance before any CSP or template restriction becomes canonical.
 
 ### Later v44 owner-value sequence
 

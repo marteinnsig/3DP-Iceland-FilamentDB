@@ -1762,7 +1762,6 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Template database" FontWeight="SemiBold" Foreground="#334155" VerticalAlignment="Center" />
                             <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" x:Name="WebsiteTemplateDatabaseStatusText" Text="Loading active SQLite template…" Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
-                            <TextBox x:Name="WebsiteTemplateFileBox" Visibility="Collapsed" />
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Website root folder" FontWeight="SemiBold" Foreground="#334155" VerticalAlignment="Center" />
                             <TextBox Grid.Row="2" Grid.Column="1" x:Name="WebsiteExportFolderBox" MinWidth="360" Margin="0,0,8,0" ToolTip="Website root containing the canonical index.html; every export also maintains the manufacturers redirect." />
                             <Button Grid.Row="2" Grid.Column="2" Click="ChooseWebsiteExportFolder_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,0"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE8B7;"/><TextBlock Text="Choose Folder"/></StackPanel></Button>

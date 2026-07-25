@@ -33,13 +33,34 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 13 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 35 |
+| Solved | 36 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **56** |
+| **Total tracked findings** | **57** |
 
 ## Tracked findings
+
+Date: 2026-07-25
+Area: Repository-wide maintainability and retired artifacts
+Type: Workflow friction
+Severity: Important
+Status: Solved
+Resolution: v44.7.12 removes only caller-free code and files after tracing C#, XAML, project resources, reflection, serialization,
+migration, recovery, updater, diagnostics, export and Verification ownership. The candidate retires the unused hand-built PDF layer,
+legacy workbook write helpers, obsolete website-template/UI residue and one unowned icon-source PNG. Canonical HTML/WebView2 PDF,
+typed report/certificate rendering, Excel disaster recovery, SQLite restore/migration and active branding assets remain.
+Verification evidence: Debug/Release compile probes passed after removing 2,200+ lines and the 1.28 MB unused source asset. Initial owner
+testing passed Verification and normal Engineering Package export, then exposed a Public Report Package fingerprint query against
+retired `TensileResults`. The corrected package rebuilt every public report family without visible errors, sampled HTML passed visual
+review and final Full Data Verification passed.
+What happened: Feature retirement had left caller-free renderer, import, handler, compatibility-UI and asset residue in the current
+tree, increasing maintenance cost and making future cleanup harder to reason about.
+Expected behavior: Each accepted retirement should leave only active runtime or documented compatibility owners, with obsolete code
+and files removed in the same or immediately following bounded increment.
+Steps to reproduce: Trace the retired PDF, legacy workbook-write, template-file and workflow-handler symbols across the complete
+solution and compare project resource ownership for all tracked image assets.
+Screenshot / export / report attached: Repository ownership audit and compiler/analyzer evidence for v44.7.12.
 
 Date: 2026-07-25
 Area: Materials / manual backup and save ownership

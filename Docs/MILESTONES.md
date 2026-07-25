@@ -3,6 +3,17 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.12 - Clean Baseline Retirement
+
+Establishes the new retirement-cleanup rule on a reviewed baseline. Removes
+caller-free PDF, legacy import, template/UI and workflow residue plus one
+unowned source image while preserving every identified canonical,
+compatibility, recovery and deployment owner. A residual public-package
+fingerprint query was moved from retired workbook tables to canonical native
+measurement tables. Owner report review and Full Data Verification passed.
+
+---
+
 # v44.7.11 - Settings Manager Command Clarity
 
 Separates SQLite reload, General-only built-in restore and machine-local column

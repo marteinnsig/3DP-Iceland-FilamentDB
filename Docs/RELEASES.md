@@ -1,6 +1,23 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.12 - Clean Baseline Retirement
+
+- Runtime accepted with Full Data Verification PASS.
+- Removes caller-free hand-built PDF generation and its unused `PdfLines`
+  projection; canonical HTML/WebView2 and active typed report rendering remain.
+- Removes retired workbook-import write helpers while preserving Excel disaster
+  recovery, supported database migration and explicit SQLite restore.
+- Removes legacy template-file/UI and old workflow-handler residue confirmed
+  absent from XAML, reflection and active Fast-grid contracts.
+- Removes an unowned 1.28 MB icon-source PNG while retaining the runtime PNG,
+  installer ICO and report JPG assets.
+- No schema, formula, measurement, report presentation, website/FTPS, updater
+  evidence or canonical SQLite ownership change.
+- Initial runtime testing found and corrected a Public Report Package
+  fingerprint query against retired workbook tables. Final package generation
+  rebuilt all public report families without errors and sampled HTML passed.
+
 ## v44.7.11 - Settings Manager Command Clarity
 
 - Runtime-accepted distinct `Reload Saved Settings`, `Restore Built-in

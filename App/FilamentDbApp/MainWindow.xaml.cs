@@ -832,20 +832,12 @@ public partial class MainWindow : Window
     }
 
 
-    private sealed record NativeUndoAction(object Target, string PropertyName, object? OldValue, object? NewValue, string GridName);
-    private sealed record PendingGridEdit(object Target, string PropertyName, object? OldValue, string GridName);
-
-    private readonly Stack<NativeUndoAction> _nativeUndoStack = new();
-    private PendingGridEdit? _pendingGridEdit;
-    private bool _isApplyingNativeUndo;
-
     private void InputDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
     {
         if (sender is not DataGrid grid) return;
         var propertyName = GetBoundPropertyName(e.Column);
         if (string.IsNullOrWhiteSpace(propertyName) || e.Row?.Item is null)
         {
-            _pendingGridEdit = null;
             return;
         }
 
@@ -858,60 +850,11 @@ public partial class MainWindow : Window
             && !IsValidPartialDecimalText(textArgs.Text))
         {
             e.Cancel = true;
-            _pendingGridEdit = null;
             return;
         }
-
-        _pendingGridEdit = new PendingGridEdit(e.Row.Item, propertyName, GetPropertyValue(e.Row.Item, propertyName), grid.Name);
     }
 
-    private void CaptureInputDataGridUndo(DataGrid grid, DataGridCellEditEndingEventArgs e)
-    {
-        if (_isApplyingNativeUndo) return;
-        var propertyName = GetBoundPropertyName(e.Column);
-        if (string.IsNullOrWhiteSpace(propertyName) || e.Row?.Item is null) return;
-
-        var target = e.Row.Item;
-        var oldValue = _pendingGridEdit is not null
-                       && ReferenceEquals(_pendingGridEdit.Target, target)
-                       && string.Equals(_pendingGridEdit.PropertyName, propertyName, StringComparison.Ordinal)
-            ? _pendingGridEdit.OldValue
-            : GetPropertyValue(target, propertyName);
-
-        Dispatcher.BeginInvoke(new Action(() =>
-        {
-            var newValue = GetPropertyValue(target, propertyName);
-            if (!NativeUndoValuesEqual(oldValue, newValue))
-            {
-                _nativeUndoStack.Push(new NativeUndoAction(target, propertyName, oldValue, newValue, grid.Name));
-            }
-            _pendingGridEdit = null;
-        }), System.Windows.Threading.DispatcherPriority.Background);
-    }
-
-    private void UndoLastNativeInputEdit()
-    {
-        if (_nativeUndoStack.Count == 0)
-        {
-            StatusText.Text = "Nothing to undo.";
-            return;
-        }
-
-        var undo = _nativeUndoStack.Pop();
-        try
-        {
-            _isApplyingNativeUndo = true;
-            SetPropertyValue(undo.Target, undo.PropertyName, undo.OldValue);
-            RefreshAfterNativeUndo(undo.GridName);
-            StatusText.Text = $"Undo: restored {undo.PropertyName}.";
-        }
-        finally
-        {
-            _isApplyingNativeUndo = false;
-        }
-    }
-
-    private void RefreshAfterNativeUndo(string gridName)
+    private void RefreshWorkflowGrid(string gridName)
     {
         if (FindName(gridName) is DataGrid grid)
         {
@@ -956,12 +899,6 @@ public partial class MainWindow : Window
         var underlyingType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
         property.SetValue(target, Convert.ChangeType(value, underlyingType, CultureInfo.CurrentCulture));
     }
-
-    private static bool NativeUndoValuesEqual(object? left, object? right)
-    {
-        return string.Equals(Convert.ToString(left, CultureInfo.InvariantCulture), Convert.ToString(right, CultureInfo.InvariantCulture), StringComparison.Ordinal);
-    }
-
 
     private void MeasurementGrid_PreparingCellForEdit(object sender, DataGridPreparingCellForEditEventArgs e)
     {
@@ -1073,15 +1010,6 @@ public partial class MainWindow : Window
         var modifiers = Keyboard.Modifiers;
         if ((modifiers & ModifierKeys.Control) != 0)
         {
-            if (e.Key == Key.Z)
-            {
-                e.Handled = true;
-                grid.CommitEdit(DataGridEditingUnit.Cell, true);
-                grid.CommitEdit(DataGridEditingUnit.Row, true);
-                Dispatcher.BeginInvoke(new Action(UndoLastNativeInputEdit), System.Windows.Threading.DispatcherPriority.Background);
-                return;
-            }
-
             if (e.Key == Key.C)
             {
                 e.Handled = true;
@@ -1283,7 +1211,7 @@ public partial class MainWindow : Window
     {
         grid.CommitEdit(DataGridEditingUnit.Cell, true);
         grid.CommitEdit(DataGridEditingUnit.Row, true);
-        RefreshAfterNativeUndo(grid.Name);
+        RefreshWorkflowGrid(grid.Name);
         try { grid.Items.Refresh(); } catch (InvalidOperationException) { }
     }
 
@@ -6063,52 +5991,6 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         catch (Exception ex) { MessageBox.Show(this, ex.Message, "Template Export Failed", MessageBoxButton.OK, MessageBoxImage.Error); }
     }
 
-    private void ChooseWebsiteTemplateFile_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var initialDirectory = GetDefaultWebsiteExportFolder();
-            var current = WebsiteTemplateFileBox.Text?.Trim();
-            if (!string.IsNullOrWhiteSpace(current))
-            {
-                var currentFolder = System.IO.Path.GetDirectoryName(current);
-                if (!string.IsNullOrWhiteSpace(currentFolder) && Directory.Exists(currentFolder)) initialDirectory = currentFolder;
-            }
-
-            var dialog = new OpenFileDialog
-            {
-                Title = "Choose website HTML template",
-                Filter = "HTML files (*.html;*.htm)|*.html;*.htm|All files (*.*)|*.*",
-                CheckFileExists = true,
-                InitialDirectory = initialDirectory
-            };
-
-            if (dialog.ShowDialog(this) != true) return;
-
-            WebsiteTemplateFileBox.Text = dialog.FileName;
-
-            var templateFolder = System.IO.Path.GetDirectoryName(dialog.FileName);
-            if (!string.IsNullOrWhiteSpace(templateFolder) && Directory.Exists(templateFolder))
-            {
-                WebsiteExportFolderBox.Text = templateFolder;
-            }
-
-            WebsiteExportPreviewLog.Text = $"External HTML template selected:\n{dialog.FileName}\n\nDefault output folder set to:\n{WebsiteExportFolderBox.Text}\n\nThe template will be read only. Generate Preview will create index-test.html next to the selected template unless you choose another output folder.";
-            WebsiteExportSummaryText.Text = "Template selected";
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(this, ex.Message, "Could not choose HTML template", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-    }
-
-    private void UseBundledWebsiteTemplate_Click(object sender, RoutedEventArgs e)
-    {
-        WebsiteTemplateFileBox.Text = string.Empty;
-        WebsiteExportPreviewLog.Text = "Using bundled master website template. This bundled resource is synchronized with the latest approved standalone index.html and is the default source of truth for website export.";
-        WebsiteExportSummaryText.Text = "Bundled master template";
-    }
-
     private void ChooseWebsiteExportFolder_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -6651,11 +6533,6 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         return report;
     }
 
-    private static bool HasMainWebsiteDataBlock(string template)
-    {
-        return Regex.IsMatch(template, @"\bconst\s+DATA\s*=", RegexOptions.Singleline);
-    }
-
     private static bool CanWriteToFolder(string folder)
     {
         try
@@ -6820,30 +6697,6 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         return null;
     }
 
-    private string? ResolveMainWebsiteTemplatePath(string? selectedTemplatePath)
-    {
-        if (string.IsNullOrWhiteSpace(selectedTemplatePath)) return selectedTemplatePath;
-
-        var normalizedFileName = System.IO.Path.GetFileName(selectedTemplatePath);
-        var selectedFolder = System.IO.Path.GetDirectoryName(selectedTemplatePath);
-        var selectedFolderName = string.IsNullOrWhiteSpace(selectedFolder)
-            ? string.Empty
-            : System.IO.Path.GetFileName(selectedFolder.TrimEnd(System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar));
-
-        if (string.Equals(normalizedFileName, "index.html", StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(selectedFolderName, "manufacturers", StringComparison.OrdinalIgnoreCase))
-        {
-            var parentFolder = System.IO.Path.GetDirectoryName(selectedFolder);
-            if (!string.IsNullOrWhiteSpace(parentFolder))
-            {
-                var mainIndexPath = System.IO.Path.Combine(parentFolder, "index.html");
-                if (File.Exists(mainIndexPath)) return mainIndexPath;
-            }
-        }
-
-        return selectedTemplatePath;
-    }
-
     private string BackupExistingProductionHtml(string htmlPath, DateTime generatedAt)
     {
         if (!File.Exists(htmlPath)) return string.Empty;
@@ -6988,64 +6841,6 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
     {
         // v40.10.0: SQLite is the canonical source of truth for the main website template.
         return _database.GetActiveWebsiteTemplate().HtmlContent;
-    }
-
-    private static string ReplaceWebsiteTemplateData(string template, string dataJson)
-    {
-        var replacement = "const DATA=" + dataJson + ";";
-
-        var dataStart = Regex.Match(template, @"\bconst\s+DATA\s*=");
-        if (!dataStart.Success)
-        {
-            throw new InvalidOperationException("Could not locate the const DATA=... block in the website template.");
-        }
-
-        var equalsIndex = template.IndexOf('=', dataStart.Index);
-        if (equalsIndex < 0)
-        {
-            throw new InvalidOperationException("Could not locate the const DATA=... block in the website template.");
-        }
-
-        var objectStart = template.IndexOf('{', equalsIndex);
-        if (objectStart < 0)
-        {
-            throw new InvalidOperationException("Could not locate the opening JSON object for const DATA in the website template.");
-        }
-
-        var objectEnd = FindMatchingJsonObjectEnd(template, objectStart);
-        if (objectEnd < 0)
-        {
-            throw new InvalidOperationException("Could not locate the end of the const DATA JSON object in the website template.");
-        }
-
-        var replaceEnd = objectEnd + 1;
-        while (replaceEnd < template.Length && char.IsWhiteSpace(template[replaceEnd]))
-        {
-            replaceEnd++;
-        }
-
-        if (replaceEnd < template.Length && template[replaceEnd] == ';')
-        {
-            replaceEnd++;
-        }
-
-        var lineEnding = Environment.NewLine;
-        if (replaceEnd < template.Length && template[replaceEnd] == '\r')
-        {
-            replaceEnd++;
-            if (replaceEnd < template.Length && template[replaceEnd] == '\n')
-            {
-                replaceEnd++;
-            }
-            lineEnding = "\r\n";
-        }
-        else if (replaceEnd < template.Length && template[replaceEnd] == '\n')
-        {
-            replaceEnd++;
-            lineEnding = "\n";
-        }
-
-        return template.Substring(0, dataStart.Index) + replacement + lineEnding + template.Substring(replaceEnd);
     }
 
     private static int FindMatchingJsonObjectEnd(string text, int objectStart)
@@ -7998,39 +7793,6 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         return TryParseDecimalAware(value, out var number) && double.IsFinite(number) ? number : null;
     }
 
-    private static double? CvFractionValue(string? value)
-    {
-        var number = NumberValue(value);
-        if (!number.HasValue) return null;
-        return value?.Contains('%') == true && Math.Abs(number.Value) > 1.0 ? number.Value / 100.0 : number.Value;
-    }
-
-    private static double? MetricNumber(IReadOnlyList<TestSummaryMetric> metrics, params string[] terms)
-    {
-        return NumberValue(FindMetric(metrics, terms)?.MetricValue);
-    }
-
-    private static double? FirstMetricNumber(IReadOnlyList<TestSummaryMetric> metrics, params string[][] termSets)
-    {
-        foreach (var terms in termSets)
-        {
-            var value = MetricNumber(metrics, terms);
-            if (value.HasValue) return value;
-        }
-        return null;
-    }
-
-    private static double? FirstMetricCvFraction(IReadOnlyList<TestSummaryMetric> metrics, params string[][] termSets)
-    {
-        foreach (var terms in termSets)
-        {
-            var metric = FindMetric(metrics, terms);
-            var value = CvFractionValue(metric?.MetricValue);
-            if (value.HasValue) return value;
-        }
-        return null;
-    }
-
     private string GetWebsiteTemplateSourceLabel(string? templatePath)
     {
         var active = _database.GetActiveWebsiteTemplate();
@@ -8105,82 +7867,6 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         return sb.ToString();
     }
 
-    private string BuildManufacturerWebsiteHtml(IReadOnlyList<DataRow> visibleRows, IReadOnlyList<DataRow> allRows, DateTime generatedAt, string templatePath, bool isProduction)
-    {
-        var template = File.ReadAllText(templatePath, Encoding.UTF8);
-        var dataJson = BuildManufacturerWebsiteDataJson(allRows);
-        var outputKind = isProduction ? "production file: manufacturers/index.html" : "safe preview file: manufacturers/index-test.html";
-        var generatedNote = $"<!-- Generated by 3DPIceland Filament DB v21.5 - Export Validation & Logging at {generatedAt:yyyy-MM-dd HH:mm:ss}. {outputKind}. -->\n";
-        var updated = ReplaceManufacturerTemplateData(template, dataJson);
-        updated = ReplaceManufacturerTemplateVisibleSummary(updated, allRows);
-        return generatedNote + updated;
-    }
-
-    private static string ReplaceManufacturerTemplateVisibleSummary(string template, IReadOnlyList<DataRow> rows)
-    {
-        var activeRows = rows.Where(row => !IsTruthy(DataTableHelpers.FirstValue(row, "Archived", "Is Archived"))).ToList();
-        var manufacturerGroups = activeRows
-            .Select(row => new
-            {
-                Row = row,
-                Name = GetCell(row, "Manufacturer", "Brand")?.Trim() ?? string.Empty
-            })
-            .Where(item => !string.IsNullOrWhiteSpace(item.Name))
-            .GroupBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
-            .Select(group => new { Name = group.Key, Count = group.Count() })
-            .OrderByDescending(item => item.Count)
-            .ThenBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        var familyCount = activeRows
-            .Select(row => GetCell(row, "Base Material", "Material Type", "Type")?.Trim())
-            .Where(value => !string.IsNullOrWhiteSpace(value))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .Count();
-
-        var linkedVideos = activeRows
-            .Select(row => GetCell(row, "YouTube Review URL", "YouTube URL")?.Trim())
-            .Count(value => !string.IsNullOrWhiteSpace(value));
-
-        template = ReplaceManufacturerStatsBlock(
-            template,
-            activeRows.Count,
-            manufacturerGroups.Count,
-            familyCount,
-            linkedVideos);
-
-        var maxCount = Math.Max(1, manufacturerGroups.FirstOrDefault()?.Count ?? 1);
-        var manufacturerRows = new StringBuilder();
-        foreach (var item in manufacturerGroups)
-        {
-            var width = item.Count * 100.0 / maxCount;
-            manufacturerRows.AppendLine("        <div class=\"bar-row compact\">");
-            manufacturerRows.AppendLine($"          <div class=\"bar-label-text\"><strong>{System.Net.WebUtility.HtmlEncode(item.Name)}</strong></div>");
-            manufacturerRows.AppendLine($"          <div class=\"bar-track\"><div class=\"bar-fill\" style=\"width:{width.ToString("0.00", CultureInfo.InvariantCulture)}%\"></div></div>");
-            manufacturerRows.AppendLine($"          <div class=\"bar-value\">{item.Count}</div>");
-            manufacturerRows.AppendLine("        </div>");
-        }
-
-        const string heading = "<h2>Manufacturers currently represented</h2>";
-        var headingIndex = template.IndexOf(heading, StringComparison.OrdinalIgnoreCase);
-        if (headingIndex >= 0)
-        {
-            var listStart = template.IndexOf("<div class=\"bar-list\">", headingIndex, StringComparison.OrdinalIgnoreCase);
-            var sectionEnd = template.IndexOf("</section>", listStart >= 0 ? listStart : headingIndex, StringComparison.OrdinalIgnoreCase);
-            if (listStart >= 0 && sectionEnd > listStart)
-            {
-                var listClose = template.LastIndexOf("</div>", sectionEnd, StringComparison.OrdinalIgnoreCase);
-                if (listClose > listStart)
-                {
-                    var replacement = "<div class=\"bar-list\">\n" + manufacturerRows + "      </div>";
-                    template = template[..listStart] + replacement + template[(listClose + 6)..];
-                }
-            }
-        }
-
-        return template;
-    }
-
     private static string ReplaceManufacturerStatsBlock(
         string template,
         int materialCount,
@@ -8217,120 +7903,6 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         return template[..statsStart] + statsHtml + template[(statsEnd + 6)..];
     }
 
-    private string BuildManufacturerWebsiteDataJson(IReadOnlyList<DataRow> rows)
-    {
-        var manufacturerKnowledge = LoadManufacturerKnowledgeByName();
-        var manufacturers = rows
-            .Select(row => new
-            {
-                Row = row,
-                Name = GetCell(row, "Manufacturer", "Brand")?.Trim() ?? string.Empty
-            })
-            .Where(item => !string.IsNullOrWhiteSpace(item.Name))
-            .GroupBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
-            .OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase)
-            .Select(group =>
-            {
-                var groupRows = group.Select(item => item.Row).ToList();
-                var productUrls = groupRows
-                    .Select(row => EmptyToNull(GetCell(row, "Product Page", "Product URL", "ProductUrl", "Manufacturer Website", "Website")))
-                    .Where(url => !string.IsNullOrWhiteSpace(url))
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .OrderBy(url => url, StringComparer.OrdinalIgnoreCase)
-                    .ToList();
-                var youtubeUrls = groupRows
-                    .Select(row => EmptyToNull(GetCell(row, "YouTube Review URL", "YouTube URL")))
-                    .Where(url => !string.IsNullOrWhiteSpace(url))
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .OrderBy(url => url, StringComparer.OrdinalIgnoreCase)
-                    .ToList();
-                var baseMaterials = groupRows
-                    .Select(row => EmptyToNull(GetCell(row, "Base Material", "Material Type", "Type")))
-                    .Where(value => !string.IsNullOrWhiteSpace(value))
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .OrderBy(value => value, StringComparer.OrdinalIgnoreCase)
-                    .ToList();
-                var productLines = groupRows
-                    .Select(row => EmptyToNull(GetCell(row, "Product Line", "ProductLine")))
-                    .Where(value => !string.IsNullOrWhiteSpace(value))
-                    .Distinct(StringComparer.OrdinalIgnoreCase)
-                    .OrderBy(value => value, StringComparer.OrdinalIgnoreCase)
-                    .ToList();
-                var testedCount = groupRows.Count(IsWebsiteTestedMaterial);
-
-                return new Dictionary<string, object?>
-                {
-                    ["manufacturer"] = group.Key,
-                    ["name"] = group.Key,
-                    ["profile"] = manufacturerKnowledge.TryGetValue(group.Key, out var profile) ? profile : null,
-                    ["displayName"] = profile?.DisplayName,
-                    ["country"] = profile?.Country,
-                    ["founded"] = profile?.Founded,
-                    ["website"] = profile?.Website,
-                    ["logoUrl"] = profile?.LogoUrl,
-                    ["description"] = profile?.Description,
-                    ["engineeringFocus"] = profile?.EngineeringFocus,
-                    ["materialCategories"] = profile?.MaterialCategories,
-                    ["strengths"] = profile?.Strengths,
-                    ["weaknesses"] = profile?.Weaknesses,
-                    ["sustainability"] = profile?.Sustainability,
-                    ["typicalApplications"] = profile?.TypicalApplications,
-                    ["headquarters"] = profile?.Headquarters,
-                    ["materialCount"] = groupRows.Count,
-                    ["testedCount"] = testedCount,
-                    ["untestedCount"] = groupRows.Count - testedCount,
-                    ["baseMaterials"] = baseMaterials,
-                    ["productLines"] = productLines,
-                    ["productUrls"] = productUrls,
-                    ["youtubeUrls"] = youtubeUrls,
-                    ["primaryProductUrl"] = productUrls.FirstOrDefault(),
-                    ["primaryYoutubeUrl"] = youtubeUrls.FirstOrDefault()
-                };
-            })
-            .ToList();
-
-        var payload = new Dictionary<string, object?>
-        {
-            ["generatedAt"] = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-            ["manufacturerCount"] = manufacturers.Count,
-            ["materialCount"] = rows.Count,
-            ["manufacturers"] = manufacturers
-        };
-
-        var options = new JsonSerializerOptions
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.Never,
-            WriteIndented = false
-        };
-        return JsonSerializer.Serialize(payload, options);
-    }
-
-    private static string ReplaceManufacturerTemplateData(string template, string dataJson)
-    {
-        var replacement = "const MANUFACTURER_DATA=" + dataJson + ";";
-        var patterns = new[]
-        {
-            @"const\s+MANUFACTURER_DATA\s*=\s*\{.*?\};",
-            @"const\s+MANUFACTURERS\s*=\s*\[.*?\];",
-            @"const\s+DATA\s*=\s*\{.*?\};"
-        };
-
-        foreach (var pattern in patterns)
-        {
-            var updated = Regex.Replace(template, pattern, replacement, RegexOptions.Singleline);
-            if (!string.Equals(updated, template, StringComparison.Ordinal)) return updated;
-        }
-
-        var injected = "<script>\n" + replacement + "\n</script>\n";
-        var bodyClose = template.LastIndexOf("</body>", StringComparison.OrdinalIgnoreCase);
-        if (bodyClose >= 0)
-        {
-            return template.Insert(bodyClose, injected);
-        }
-
-        return template + Environment.NewLine + injected;
-    }
-
     private static bool IsWebsiteTestedMaterial(DataRow row)
     {
         if (IsTruthy(DataTableHelpers.FirstValue(row, "Tested", "Test Status", "Is Tested", "Available on Website"))) return true;
@@ -8344,33 +7916,6 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             .Where(value => !string.IsNullOrWhiteSpace(value))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Count();
-    }
-
-    private string BuildManufacturerWebsiteExportManifest(IReadOnlyList<DataRow> visibleRows, IReadOnlyList<DataRow> allRows, string htmlPath, DateTime generatedAt, string templateSource, bool isProduction, string backupPath)
-    {
-        var sb = new StringBuilder();
-        sb.AppendLine(isProduction ? "3DP Iceland Labs Manufacturers Export Production Manifest" : "3DP Iceland Labs Manufacturers Export Preview Manifest");
-        sb.AppendLine("Version: v21.5 - Export Validation & Logging");
-        sb.AppendLine($"Generated: {generatedAt:yyyy-MM-dd HH:mm:ss}");
-        sb.AppendLine($"Template source: {templateSource}");
-        sb.AppendLine($"Output HTML: {htmlPath}");
-        sb.AppendLine($"Manufacturers exported: {CountManufacturers(allRows)}");
-        sb.AppendLine($"Visible materials: {visibleRows.Count}");
-        sb.AppendLine($"Legacy projection materials: {allRows.Count}");
-        sb.AppendLine();
-        sb.AppendLine("Safety:");
-        if (isProduction)
-        {
-            sb.AppendLine("- Created manufacturers production index.html after confirmation.");
-            sb.AppendLine(string.IsNullOrWhiteSpace(backupPath) ? "- No previous manufacturers index.html existed, so no backup was needed." : $"- Previous manufacturers index.html backup: {backupPath}");
-        }
-        else
-        {
-            sb.AppendLine("- Created manufacturers/index-test.html only.");
-            sb.AppendLine("- Production manufacturers/index.html was not overwritten.");
-        }
-        sb.AppendLine("- Standalone manufacturers publishing is retired; use the guarded main Publish Website action.");
-        return sb.ToString();
     }
 
     private static string MaterialDisplayName(DataRow row)
@@ -9561,7 +9106,6 @@ private void OpenReportOutputFolder_Click(object sender, RoutedEventArgs e)
         public string Title { get; init; } = "Report";
         public string Text { get; init; } = string.Empty;
         public string Html { get; init; } = string.Empty;
-        public List<string> PdfLines { get; init; } = new();
         public int VisibleMaterialCount { get; init; }
         public int TotalMaterialCount { get; init; }
     }
@@ -9680,7 +9224,6 @@ private void OpenReportOutputFolder_Click(object sender, RoutedEventArgs e)
             return new ReportFoundationResult
             {
                 Key = purchasing.Key, Title = purchasing.Title, Text = purchasing.Text, Html = purchasing.Html,
-                PdfLines = purchasing.Text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None).ToList(),
                 VisibleMaterialCount = purchasing.RecordCount, TotalMaterialCount = purchasing.RecordCount
             };
         }
@@ -9796,7 +9339,6 @@ private void OpenReportOutputFolder_Click(object sender, RoutedEventArgs e)
             Title = title,
             Text = text,
             Html = BuildReportFoundationHtml(title, key, generatedAt, reportRows, visibleRows, totalRows, useSelectedMaterialScope, text),
-            PdfLines = BuildRichPdfReportLines(title, key, generatedAt, reportRows, visibleRows, totalRows, useSelectedMaterialScope),
             VisibleMaterialCount = effectiveReportCount,
             TotalMaterialCount = totalRows
         };
@@ -12123,955 +11665,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
 
 
-    private void WriteReportPdf(string pdfPath, ReportFoundationResult report, DateTime generatedAt)
-    {
-        var lines = BuildPdfReportLines(report, generatedAt);
-        var pages = PaginatePdfLines(lines, 34).ToList();
-        if (pages.Count == 0) pages.Add(new List<string> { report.Title });
-
-        var objects = new List<byte[]>();
-        var pageObjectNumbers = new List<int>();
-        var logoBytes = LoadReportLogoJpegBytes();
-        var hasLogo = logoBytes.Length > 0;
-
-        objects.Add(PdfAscii("<< /Type /Catalog /Pages 2 0 R >>"));
-        objects.Add(PdfAscii("__PAGES__"));
-        objects.Add(PdfAscii("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"));
-        objects.Add(PdfAscii("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>"));
-
-        var logoObjectNumber = 0;
-        if (hasLogo)
-        {
-            logoObjectNumber = objects.Count + 1;
-            objects.Add(BuildPdfJpegObject(logoBytes, 801, 482));
-        }
-
-        foreach (var page in pages)
-        {
-            var pageObjectNumber = objects.Count + 1;
-            var contentObjectNumber = pageObjectNumber + 1;
-            pageObjectNumbers.Add(pageObjectNumber);
-
-            var xObjectResources = hasLogo ? $" /XObject << /ImLogo {logoObjectNumber.ToString(CultureInfo.InvariantCulture)} 0 R >>" : string.Empty;
-            objects.Add(PdfAscii($"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >>{xObjectResources} >> /Contents {contentObjectNumber.ToString(CultureInfo.InvariantCulture)} 0 R >>"));
-
-            var stream = BuildPdfPageStream(page, report.Title, generatedAt, pageObjectNumbers.Count, pages.Count, hasLogo);
-            var streamBytes = Encoding.ASCII.GetBytes(stream);
-            objects.Add(PdfAscii($"<< /Length {streamBytes.Length.ToString(CultureInfo.InvariantCulture)} >>\nstream\n{stream}\nendstream"));
-        }
-
-        var kids = string.Join(" ", pageObjectNumbers.Select(n => n.ToString(CultureInfo.InvariantCulture) + " 0 R"));
-        objects[1] = PdfAscii($"<< /Type /Pages /Kids [{kids}] /Count {pageObjectNumbers.Count.ToString(CultureInfo.InvariantCulture)} >>");
-
-        using var ms = new MemoryStream();
-        var offsets = new List<long> { 0 };
-        PdfWriteAscii(ms, "%PDF-1.4\n");
-        PdfWriteAscii(ms, "% 3DPIceland Labs HTML-style native PDF report\n");
-
-        for (var i = 0; i < objects.Count; i++)
-        {
-            offsets.Add(ms.Position);
-            PdfWriteAscii(ms, (i + 1).ToString(CultureInfo.InvariantCulture) + " 0 obj\n");
-            ms.Write(objects[i], 0, objects[i].Length);
-            PdfWriteAscii(ms, "\nendobj\n");
-        }
-
-        var xrefOffset = ms.Position;
-        PdfWriteAscii(ms, "xref\n");
-        PdfWriteAscii(ms, "0 " + (objects.Count + 1).ToString(CultureInfo.InvariantCulture) + "\n");
-        PdfWriteAscii(ms, "0000000000 65535 f \n");
-        foreach (var offset in offsets.Skip(1))
-        {
-            PdfWriteAscii(ms, offset.ToString("0000000000", CultureInfo.InvariantCulture) + " 00000 n \n");
-        }
-        PdfWriteAscii(ms, "trailer\n");
-        PdfWriteAscii(ms, $"<< /Size {(objects.Count + 1).ToString(CultureInfo.InvariantCulture)} /Root 1 0 R >>\n");
-        PdfWriteAscii(ms, "startxref\n");
-        PdfWriteAscii(ms, xrefOffset.ToString(CultureInfo.InvariantCulture) + "\n");
-        PdfWriteAscii(ms, "%%EOF\n");
-
-        File.WriteAllBytes(pdfPath, ms.ToArray());
-    }
-
-    private static byte[] BuildPdfJpegObject(byte[] jpegBytes, int width, int height)
-    {
-        using var ms = new MemoryStream();
-        PdfWriteAscii(ms, $"<< /Type /XObject /Subtype /Image /Width {width.ToString(CultureInfo.InvariantCulture)} /Height {height.ToString(CultureInfo.InvariantCulture)} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length {jpegBytes.Length.ToString(CultureInfo.InvariantCulture)} >>\nstream\n");
-        ms.Write(jpegBytes, 0, jpegBytes.Length);
-        PdfWriteAscii(ms, "\nendstream");
-        return ms.ToArray();
-    }
-
-    private static byte[] PdfAscii(string value) => Encoding.ASCII.GetBytes(value);
-
-    private static void PdfWriteAscii(Stream stream, string value)
-    {
-        var bytes = Encoding.ASCII.GetBytes(value);
-        stream.Write(bytes, 0, bytes.Length);
-    }
-
-    private List<string> BuildPdfReportLines(ReportFoundationResult report, DateTime generatedAt)
-    {
-        var lines = new List<string>
-        {
-            "3DP Iceland Labs - Filament Database",
-            report.Title,
-            $"Generated: {generatedAt:yyyy-MM-dd HH:mm:ss}",
-            $"Visible materials: {report.VisibleMaterialCount} of {report.TotalMaterialCount}",
-            ""
-        };
-
-        if (report.PdfLines.Count > 0)
-        {
-            foreach (var line in report.PdfLines)
-            {
-                if (IsPdfChartCommand(line))
-                {
-                    lines.Add(line);
-                    continue;
-                }
-
-                foreach (var wrapped in WrapPdfLine(line, 92))
-                {
-                    lines.Add(wrapped);
-                }
-            }
-        }
-        else
-        {
-            var previewLines = report.Text
-                .Replace("\r\n", "\n")
-                .Replace('\r', '\n')
-                .Split('\n')
-                .Where(line => !line.StartsWith("Foundation status:", StringComparison.OrdinalIgnoreCase))
-                .ToList();
-
-            foreach (var line in previewLines)
-            {
-                foreach (var wrapped in WrapPdfLine(line, 92))
-                {
-                    lines.Add(wrapped);
-                }
-            }
-        }
-
-        lines.Add("");
-        lines.Add("PDF renderer: v34.1 HTML print engine");
-        return lines;
-    }
-
-    private List<string> BuildRichPdfReportLines(string title, string key, DateTime generatedAt, IReadOnlyList<DataRow> rows, IReadOnlyList<DataRow> contextRows, int totalRows, bool selectedScope)
-    {
-        if (selectedScope && rows.Count == 1)
-        {
-            return key switch
-            {
-                "rankings" => BuildSelectedRankingContextPdfLines(rows[0], contextRows),
-                "awards" => BuildSelectedAwardEligibilityPdfLines(rows[0], contextRows),
-                "youtube" => BuildSelectedVideoNotesPdfLines(rows[0]),
-                "engineering" => BuildMaterialEngineeringPdfLines(rows, contextRows),
-                _ => BuildMaterialPdfLines(rows, title == "Material Detail Report")
-            };
-        }
-
-        return key switch
-        {
-            "rankings" => BuildRankingsPdfLines(rows),
-            "awards" => BuildAwardsPdfLines(rows),
-            "youtube" => BuildYouTubePdfLines(rows),
-            "engineering" => BuildMaterialEngineeringPdfLines(rows, contextRows),
-            _ => BuildMaterialPdfLines(rows, title == "Material Detail Report")
-        };
-    }
-
-
-    private void AppendPdfBarChart(List<string> lines, string title, IEnumerable<(string Label, double Value)> items, string valueSuffix = "/100")
-    {
-        var chartItems = items
-            .Where(item => !string.IsNullOrWhiteSpace(item.Label))
-            .OrderByDescending(item => item.Value)
-            .Take(10)
-            .ToList();
-
-        if (chartItems.Count == 0) return;
-
-        var max = Math.Max(1, chartItems.Max(item => item.Value));
-        lines.Add($"PDFCHART|{title}|{valueSuffix}");
-        foreach (var item in chartItems)
-        {
-            var label = item.Label.Length > 42 ? item.Label[..39] + "..." : item.Label;
-            lines.Add($"PDFCHARTITEM|{label}|{item.Value.ToString("0.###", CultureInfo.InvariantCulture)}|{max.ToString("0.###", CultureInfo.InvariantCulture)}|{valueSuffix}");
-        }
-        lines.Add("PDFCHARTEND");
-        lines.Add("");
-    }
-
-    private void AppendPdfDistributionChart(List<string> lines, string title, IEnumerable<(string Label, int Count)> items)
-    {
-        AppendPdfBarChart(lines, title, items.Select(item => (item.Label, Value: (double)item.Count)), string.Empty);
-    }
-
-    private List<string> BuildPdfBarChartLines(string title, IEnumerable<(string Label, double Value)> items, string valueSuffix = "/100")
-    {
-        var result = new List<string>();
-        AppendPdfBarChart(result, title, items, valueSuffix);
-        return result;
-    }
-
-    private List<string> BuildMaterialEngineeringPdfLines(IReadOnlyList<DataRow> rows, IReadOnlyList<DataRow> contextRows)
-    {
-        if (rows.Count == 1)
-        {
-            var row = rows[0];
-            var video = BuildVideoPlannerRow(row);
-            var ranking = BuildRankingRow(video, "Overall");
-            var lines = new List<string>
-            {
-                "Material Engineering Report",
-                "===========================",
-                "REPORT-100 production report. Source: verified Material Summary and generated report model only.",
-                "Raw tensile, impact and stiffness rows are blocked for this report layer.",
-                "",
-                $"Material: {video.Label}",
-                $"Manufacturer: {video.Manufacturer}",
-                $"Material Type: {video.BaseMaterial}",
-                $"Reinforcement: {DisplayText(video.Reinforcement)}",
-                $"Status: {video.Status}",
-                ""
-            };
-            AppendPdfBarChart(lines, "Chart: Engineering score profile", BuildSelectedMaterialScoreItems(ranking), "/100");
-            lines.Add("Engineering summary");
-            lines.Add("-------------------");
-            lines.Add($"Overall: {ranking.OverallText}");
-            lines.Add($"Tensile: {ranking.TensileText}");
-            lines.Add($"Impact: {ranking.ImpactText}");
-            lines.Add($"Stiffness: {ranking.StiffnessText}");
-            lines.Add($"Consistency: {ranking.ConsistencyText}");
-            lines.Add($"Layer adhesion: {ranking.LayerAdhesionText}");
-            lines.Add($"Best axis: {DisplayText(ranking.BestAxis)}");
-            lines.Add("");
-            lines.Add("Material identity");
-            lines.Add("-----------------");
-            foreach (var field in _detailService.BuildKeyFields(row)) lines.Add($"{field.Key}: {field.Value}");
-            lines.Add("");
-            lines.Add("Peer context");
-            lines.Add("------------");
-            var peers = contextRows.Select(source => BuildRankingRow(BuildVideoPlannerRow(source), "Overall"))
-                .Where(peer => SameText(peer.BaseMaterial, video.BaseMaterial))
-                .OrderByDescending(peer => peer.Overall ?? peer.RankScore ?? double.MinValue)
-                .Take(8)
-                .ToList();
-            foreach (var peer in peers) lines.Add($"- {peer.Label} | Overall {peer.OverallText} | Tensile {peer.TensileText} | Impact {peer.ImpactText}");
-            return lines;
-        }
-
-        var linesMany = new List<string>
-        {
-            "Material Engineering Reports",
-            "============================",
-            "REPORT-100 batch preview for visible materials. Use Selected Material Only for a focused production PDF.",
-            ""
-        };
-        AppendPdfDistributionChart(linesMany, "Chart: Material type distribution", MaterialTypeDistribution(rows));
-        foreach (var row in rows.Take(40))
-        {
-            var video = BuildVideoPlannerRow(row);
-            var ranking = BuildRankingRow(video, "Overall");
-            linesMany.Add($"- {video.Label} | {video.Manufacturer} | {video.BaseMaterial} | Overall {ranking.OverallText} | Tensile {ranking.TensileText} | Impact {ranking.ImpactText} | Stiffness {ranking.StiffnessText}");
-        }
-        return linesMany;
-    }
-
-    private List<string> BuildMaterialPdfLines(IReadOnlyList<DataRow> rows, bool detailReport)
-    {
-        if (detailReport && rows.Count == 1)
-        {
-            return BuildSelectedMaterialPdfLines(rows[0]);
-        }
-
-        var lines = new List<string>
-        {
-            "Material Reports",
-            "================",
-            "Current visible/filter dataset. Includes material identity and available score metrics.",
-            ""
-        };
-
-        AppendPdfDistributionChart(lines, "Chart: Material type distribution", MaterialTypeDistribution(rows));
-        AppendPdfDistributionChart(lines, "Chart: Manufacturer distribution", ManufacturerDistribution(rows));
-
-        var indexedRows = rows.Take(60).Select((row, index) => (Row: row, Index: index + 1)).ToList();
-        foreach (var item in indexedRows)
-        {
-            var row = item.Row;
-            var video = BuildVideoPlannerRow(row);
-            var ranking = BuildRankingRow(video, "Overall");
-            var tensile = FormatMetricCell(row, "Tensile", "Tensile Strength", "Tensile MPa", "MPa");
-            var impact = FormatMetricCell(row, "Impact", "Impact Strength", "Impact kJ/m2", "kJ/m2");
-            var score = FormatMetricCell(row, "Overall Score", "Engineering Score", "Score", "");
-            if (string.IsNullOrWhiteSpace(score)) score = ranking.OverallText;
-
-            lines.Add($"{item.Index}. {video.Label}");
-            lines.Add($"   Manufacturer: {video.Manufacturer} | Type: {video.BaseMaterial} | Reinforcement: {DisplayText(video.Reinforcement)}");
-            lines.Add($"   Overall: {ranking.OverallText} | Tensile: {DisplayText(tensile, ranking.TensileText)} | Impact: {DisplayText(impact, ranking.ImpactText)} | Stiffness: {ranking.StiffnessText}");
-            lines.Add($"   Consistency: {ranking.ConsistencyText} | Layer Adhesion: {ranking.LayerAdhesionText} | Best axis: {DisplayText(ranking.BestAxis)}");
-            lines.Add($"   Status: {video.Status}");
-            lines.Add("");
-        }
-
-        if (rows.Count > indexedRows.Count) lines.Add($"Showing first {indexedRows.Count} of {rows.Count} visible materials in PDF.");
-        return lines;
-    }
-
-    private List<string> BuildSelectedMaterialPdfLines(DataRow row)
-    {
-        var video = BuildVideoPlannerRow(row);
-        var ranking = BuildRankingRow(video, "Overall");
-        var lines = new List<string>
-        {
-            "Material Detail Report",
-            "======================",
-            "Selected material report. This PDF uses the selected row from the Materials grid.",
-            "",
-            $"Material: {video.Label}",
-            $"Manufacturer: {video.Manufacturer}",
-            $"Material Type: {video.BaseMaterial}",
-            $"Reinforcement: {DisplayText(video.Reinforcement)}",
-            $"Status: {video.Status}",
-            ""
-        };
-
-        AppendPdfBarChart(lines, "Chart: Selected material score profile", BuildSelectedMaterialScoreItems(ranking), "/100");
-
-        lines.Add("Score summary");
-        lines.Add("-------------");
-        lines.Add($"Overall: {ranking.OverallText}");
-        lines.Add($"Tensile: {ranking.TensileText}");
-        lines.Add($"Impact: {ranking.ImpactText}");
-        lines.Add($"Stiffness: {ranking.StiffnessText}");
-        lines.Add($"Consistency: {ranking.ConsistencyText}");
-        lines.Add($"Layer Adhesion: {ranking.LayerAdhesionText}");
-        lines.Add($"Best axis: {DisplayText(ranking.BestAxis)}");
-        lines.Add("");
-
-        lines.Add("Material identity");
-        lines.Add("-----------------");
-        foreach (var field in _detailService.BuildKeyFields(row))
-        {
-            lines.Add($"{field.Key}: {field.Value}");
-        }
-        lines.Add("");
-
-        lines.Add("YouTube research notes");
-        lines.Add("----------------------");
-        lines.Add($"Suggested title: {video.SuggestedTitle}");
-        lines.Add($"Angle: {video.SuggestedAngle}");
-        lines.Add($"Comparison idea: {video.ComparisonIdea}");
-
-        return lines;
-    }
-
-
-    private List<string> BuildSelectedRankingContextPdfLines(DataRow selectedRow, IReadOnlyList<DataRow> contextRows)
-    {
-        var selected = BuildRankingRow(BuildVideoPlannerRow(selectedRow), "Overall");
-        var allRanked = contextRows.Select(row => BuildRankingRow(BuildVideoPlannerRow(row), "Overall")).ToList();
-        var contexts = new[]
-        {
-            BuildSelectedRankContext("Overall", allRanked, selected, row => true, row => row.Overall ?? row.RankScore),
-            BuildSelectedRankContext($"{DisplayText(selected.BaseMaterial)} rank", allRanked, selected, row => SameText(row.BaseMaterial, selected.BaseMaterial), row => row.Overall ?? row.RankScore),
-            BuildSelectedRankContext($"{DisplayText(selected.Manufacturer)} rank", allRanked, selected, row => SameText(row.Manufacturer, selected.Manufacturer), row => row.Overall ?? row.RankScore),
-            string.IsNullOrWhiteSpace(selected.Reinforcement) || selected.Reinforcement == "—"
-                ? BuildSelectedRankContext("Unreinforced rank", allRanked, selected, row => string.IsNullOrWhiteSpace(row.Reinforcement) || row.Reinforcement == "—", row => row.Overall ?? row.RankScore)
-                : BuildSelectedRankContext($"{selected.Reinforcement} rank", allRanked, selected, row => SameText(row.Reinforcement, selected.Reinforcement), row => row.Overall ?? row.RankScore)
-        };
-
-        var lines = new List<string>
-        {
-            "Selected Material Ranking Context",
-            "=================================",
-            "This report compares the selected material against the full current visible/filter dataset.",
-            "",
-            $"Material: {selected.Label}",
-            $"Manufacturer: {selected.Manufacturer} | Type: {selected.BaseMaterial} | Reinforcement: {DisplayText(selected.Reinforcement)}",
-            ""
-        };
-        AppendPdfBarChart(lines, "Chart: Selected material score profile", BuildSelectedMaterialScoreItems(selected), "/100");
-        lines.Add("Ranking context");
-        lines.Add("---------------");
-        foreach (var item in contexts.Where(item => item.Total > 0))
-        {
-            lines.Add($"{item.Scope}: {FormatRank(item.Rank, item.Total)} | Score {FormatScore(item.Score)} | Leader: {item.Leader}");
-            lines.Add($"   {item.Note}");
-        }
-        return lines;
-    }
-
-    private List<string> BuildSelectedAwardEligibilityPdfLines(DataRow selectedRow, IReadOnlyList<DataRow> contextRows)
-    {
-        var selected = BuildRankingRow(BuildVideoPlannerRow(selectedRow), "Overall");
-        var allRanked = contextRows.Select(row => BuildRankingRow(BuildVideoPlannerRow(row), "Overall")).ToList();
-        var rows = new List<(string Award, int Rank, int Total, double? Score, string Leader, string Status, string UseCase)>();
-
-        foreach (var definition in AwardDefinitions())
-        {
-            if (!definition.AppliesTo(selected)) continue;
-            var candidates = allRanked
-                .Where(definition.AppliesTo)
-                .Select(row => (Row: row, Score: definition.ScoreSelector(row)))
-                .Where(item => item.Score.HasValue)
-                .OrderByDescending(item => item.Score ?? double.MinValue)
-                .ThenByDescending(item => item.Row.Overall ?? double.MinValue)
-                .ThenBy(item => item.Row.Label, StringComparer.CurrentCultureIgnoreCase)
-                .ToList();
-            var index = candidates.FindIndex(item => MatchesRankingRow(item.Row, selected));
-            if (index < 0) continue;
-            rows.Add((definition.Name, index + 1, candidates.Count, candidates[index].Score, candidates[0].Row.Label, BuildAwardStandingText(index + 1, candidates.Count), definition.UseCase));
-        }
-
-        var lines = new List<string>
-        {
-            "Selected Material Award Eligibility",
-            "===================================",
-            "This report checks award eligibility against the full current visible/filter dataset.",
-            "It does not declare the selected material as winner unless it ranks first in that category.",
-            "",
-            $"Material: {selected.Label}",
-            $"Manufacturer: {selected.Manufacturer} | Type: {selected.BaseMaterial} | Reinforcement: {DisplayText(selected.Reinforcement)}",
-            ""
-        };
-        AppendPdfBarChart(lines, "Chart: Selected material award category scores", rows.Select(row => (row.Award, Value: row.Score ?? 0)), "/100");
-        foreach (var row in rows)
-        {
-            lines.Add($"{row.Award}: {FormatRank(row.Rank, row.Total)} | Score {FormatScore(row.Score)} | Leader: {row.Leader}");
-            lines.Add($"   Status: {row.Status} | Use case: {row.UseCase}");
-            lines.Add("");
-        }
-        if (rows.Count == 0) lines.Add("No matching award eligibility categories found for the selected material.");
-        return lines;
-    }
-
-    private List<string> BuildSelectedVideoNotesPdfLines(DataRow selectedRow)
-    {
-        var video = BuildVideoPlannerRow(selectedRow);
-        var ranking = BuildRankingRow(video, "Overall");
-        var lines = new List<string>
-        {
-            "Selected Material Video Notes",
-            "=============================",
-            $"Material: {video.Label}",
-            $"Priority: {video.Priority} | Status: {video.Status}",
-            $"Manufacturer: {video.Manufacturer} | Type: {video.BaseMaterial} | Reinforcement: {DisplayText(video.Reinforcement)}",
-            ""
-        };
-        AppendPdfBarChart(lines, "Chart: Selected material score profile", BuildSelectedMaterialScoreItems(ranking), "/100");
-        lines.Add($"Suggested title: {video.SuggestedTitle}");
-        lines.Add($"Thumbnail angle: {video.SuggestedAngle}");
-        lines.Add($"Comparison idea: {video.ComparisonIdea}");
-        lines.Add($"Talking points: {video.TalkingPoints}");
-        return lines;
-    }
-
-    private void AppendRankingAnalyticsPdfLines(List<string> lines, IReadOnlyList<RankingRow> rankedRows)
-    {
-        lines.Add("Rankings analytics");
-        lines.Add("==================");
-        lines.Add("Group leaderboards use average overall score from the current visible dataset.");
-        lines.Add("");
-
-        AppendRankingGroupPdfLines(lines, "Manufacturer leaderboard", BuildGroupAnalytics(rankedRows, row => row.Manufacturer, row => row.RankScore, 8));
-        AppendRankingGroupPdfLines(lines, "Material type leaderboard", BuildGroupAnalytics(rankedRows, row => row.BaseMaterial, row => row.RankScore, 8));
-        AppendRankingGroupPdfLines(lines, "Reinforcement comparison", BuildGroupAnalytics(rankedRows, row => string.IsNullOrWhiteSpace(row.Reinforcement) || row.Reinforcement == "—" ? "Unreinforced" : row.Reinforcement, row => row.RankScore, 8));
-
-        lines.Add("Metric leaders");
-        lines.Add("--------------");
-        foreach (var leader in new[]
-        {
-            BuildMetricLeaderRow("Overall", rankedRows, row => row.RankScore),
-            BuildMetricLeaderRow("Tensile", rankedRows, row => row.Tensile),
-            BuildMetricLeaderRow("Impact", rankedRows, row => row.Impact),
-            BuildMetricLeaderRow("Stiffness", rankedRows, row => row.Stiffness),
-            BuildMetricLeaderRow("Consistency", rankedRows, row => row.Consistency),
-            BuildMetricLeaderRow("Layer Adhesion", rankedRows, row => row.LayerAdhesion)
-        }.Where(row => row is not null).Select(row => row!))
-        {
-            lines.Add($"{leader.Metric}: {leader.Material} | {leader.Manufacturer} | {leader.Type} | {leader.ScoreText}");
-        }
-        lines.Add("");
-    }
-
-    private static void AppendRankingGroupPdfLines(List<string> lines, string title, IReadOnlyList<RankingGroupAnalyticsRow> rows)
-    {
-        lines.Add(title);
-        lines.Add(new string('-', title.Length));
-        foreach (var row in rows)
-        {
-            lines.Add($"{row.Label}: avg {FormatScore(row.Value)} across {row.Count} material(s)");
-            lines.Add($"   Best: {row.BestMaterial} ({row.BestScoreText})");
-        }
-        if (rows.Count == 0) lines.Add("No scored groups found.");
-        lines.Add("");
-    }
-
-    private List<string> BuildRankingsPdfLines(IReadOnlyList<DataRow> rows)
-    {
-        var rankedRows = rows
-            .Select(row => BuildRankingRow(BuildVideoPlannerRow(row), "Overall"))
-            .Where(row => row.RankScore.HasValue)
-            .OrderByDescending(row => row.RankScore ?? double.MinValue)
-            .ThenByDescending(row => row.Overall ?? double.MinValue)
-            .ThenBy(row => row.Label, StringComparer.CurrentCultureIgnoreCase)
-            .Take(60)
-            .ToList();
-
-        var lines = new List<string>
-        {
-            "Rankings Reports",
-            "================",
-            "Top visible materials sorted by overall engineering score.",
-            "",
-            "Rank | Material | Overall | Tensile | Impact | Stiffness | Consistency | Layer Adhesion | Best axis",
-            ""
-        };
-
-
-        AppendPdfBarChart(lines, "Chart: Top 10 overall score", rankedRows.Select(row => (row.Label, Value: row.RankScore ?? 0)), "/100");
-        AppendPdfBarChart(lines, "Chart: Top 10 tensile score", rankedRows.Where(row => row.Tensile.HasValue).Select(row => (row.Label, Value: row.Tensile!.Value)), "/100");
-        AppendPdfBarChart(lines, "Chart: Top 10 impact score", rankedRows.Where(row => row.Impact.HasValue).Select(row => (row.Label, Value: row.Impact!.Value)), "/100");
-        AppendRankingAnalyticsPdfLines(lines, rankedRows);
-        for (var i = 0; i < rankedRows.Count; i++)
-        {
-            var row = rankedRows[i];
-            lines.Add($"{i + 1}. {row.Label}");
-            lines.Add($"   {row.Manufacturer} | {row.BaseMaterial} | {row.Reinforcement}");
-            lines.Add($"   Overall {row.OverallText} | Tensile {row.TensileText} | Impact {row.ImpactText} | Stiffness {row.StiffnessText} | Consistency {row.ConsistencyText} | Layer {row.LayerAdhesionText}");
-            lines.Add($"   Best axis: {DisplayText(row.BestAxis)} | Status: {row.Status}");
-            lines.Add("");
-        }
-
-        if (rankedRows.Count == 0) lines.Add("No scored materials found in the current visible set.");
-        return lines;
-    }
-
-    private List<string> BuildAwardsPdfLines(IReadOnlyList<DataRow> rows)
-    {
-        var rankingRows = rows.Select(row => BuildRankingRow(BuildVideoPlannerRow(row), "Overall")).ToList();
-        var lines = new List<string>
-        {
-            "Awards Reports",
-            "==============",
-            "Award winners and runner-up candidates from the current visible dataset.",
-            ""
-        };
-
-        var awardChartItems = new List<(string Label, double Value)>();
-        var manufacturerWinCounts = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
-        var manufacturerRunnerUpCounts = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
-        var typeWinCounts = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
-        var typeRunnerUpCounts = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
-        var reinforcementWinCounts = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
-        var reinforcementRunnerUpCounts = new Dictionary<string, int>(StringComparer.CurrentCultureIgnoreCase);
-
-        void AddCount(Dictionary<string, int> dict, string? key)
-        {
-            var normalized = string.IsNullOrWhiteSpace(key) || key == "—" ? "Unreinforced" : key.Trim();
-            dict[normalized] = dict.TryGetValue(normalized, out var current) ? current + 1 : 1;
-        }
-
-        void AddManufacturerCount(Dictionary<string, int> dict, string? key)
-        {
-            var normalized = string.IsNullOrWhiteSpace(key) || key == "—" ? "Unknown" : key.Trim();
-            dict[normalized] = dict.TryGetValue(normalized, out var current) ? current + 1 : 1;
-        }
-
-        foreach (var definition in AwardDefinitions())
-        {
-            var candidates = rankingRows
-                .Where(definition.AppliesTo)
-                .Select(row => (Row: row, Score: definition.ScoreSelector(row)))
-                .Where(item => item.Score.HasValue)
-                .OrderByDescending(item => item.Score ?? double.MinValue)
-                .ThenByDescending(item => item.Row.Overall ?? double.MinValue)
-                .ThenBy(item => item.Row.Label, StringComparer.CurrentCultureIgnoreCase)
-                .Take(3)
-                .ToList();
-
-            if (candidates.Count == 0) continue;
-
-            var winner = candidates[0];
-            awardChartItems.Add((definition.Name, winner.Score ?? 0));
-
-            AddManufacturerCount(manufacturerWinCounts, winner.Row.Manufacturer);
-            AddCount(typeWinCounts, winner.Row.BaseMaterial);
-            AddCount(reinforcementWinCounts, winner.Row.Reinforcement);
-
-            if (candidates.Count > 1)
-            {
-                var runnerUp = candidates[1];
-                AddManufacturerCount(manufacturerRunnerUpCounts, runnerUp.Row.Manufacturer);
-                AddCount(typeRunnerUpCounts, runnerUp.Row.BaseMaterial);
-                AddCount(reinforcementRunnerUpCounts, runnerUp.Row.Reinforcement);
-            }
-
-            lines.Add(definition.Name);
-            lines.Add($"   Winner: {winner.Row.Label}");
-            lines.Add($"   Manufacturer: {winner.Row.Manufacturer} | Type: {winner.Row.BaseMaterial} | Reinforcement: {winner.Row.Reinforcement}");
-            lines.Add($"   Winning score: {FormatScore(winner.Score)} | Use case: {definition.UseCase}");
-            if (candidates.Count > 1) lines.Add($"   Runner-up: {candidates[1].Row.Label} ({FormatScore(candidates[1].Score)})");
-            if (candidates.Count > 2) lines.Add($"   Third: {candidates[2].Row.Label} ({FormatScore(candidates[2].Score)})");
-            lines.Add($"   Why: {BuildAwardReason(definition, winner.Row, winner.Score)}");
-            lines.Add("");
-        }
-
-        if (awardChartItems.Count > 0)
-        {
-            lines.InsertRange(4, BuildPdfBarChartLines("Chart: Award winner scores", awardChartItems, "/100"));
-        }
-
-        if (awardChartItems.Count > 0)
-        {
-            lines.Add("Awards Analytics");
-            lines.Add("================");
-            lines.Add("Aggregated award wins and runner-up counts from the current visible dataset.");
-            lines.Add("");
-
-            AppendPdfBarChart(lines, "Chart: Manufacturer Award Wins", manufacturerWinCounts.Select(x => (x.Key, (double)x.Value)), string.Empty);
-            AddAwardStrengthPdfTable(lines, "Manufacturer Award Strength", "Manufacturer", manufacturerWinCounts, manufacturerRunnerUpCounts);
-
-            AppendPdfBarChart(lines, "Chart: Material Family Award Wins", typeWinCounts.Select(x => (x.Key, (double)x.Value)), string.Empty);
-            AddAwardStrengthPdfTable(lines, "Material Family Award Strength", "Family", typeWinCounts, typeRunnerUpCounts);
-
-            AppendPdfBarChart(lines, "Chart: Reinforcement Award Wins", reinforcementWinCounts.Select(x => (x.Key, (double)x.Value)), string.Empty);
-            AddAwardStrengthPdfTable(lines, "Reinforcement Award Strength", "Class", reinforcementWinCounts, reinforcementRunnerUpCounts);
-        }
-
-        if (lines.Count <= 4) lines.Add("No award candidates found in the current visible set.");
-        return lines;
-    }
-
-    private void AddAwardStrengthPdfTable(List<string> lines, string title, string labelHeader, IReadOnlyDictionary<string, int> winCounts, IReadOnlyDictionary<string, int> runnerUpCounts)
-    {
-        lines.Add(title);
-        lines.Add(new string('-', Math.Min(72, title.Length)));
-        lines.Add($"{labelHeader} | Award Wins | Runner-ups");
-
-        var keys = winCounts.Keys
-            .Concat(runnerUpCounts.Keys)
-            .Distinct(StringComparer.CurrentCultureIgnoreCase)
-            .Select(key => new
-            {
-                Name = key,
-                Wins = winCounts.TryGetValue(key, out var wins) ? wins : 0,
-                RunnerUps = runnerUpCounts.TryGetValue(key, out var runnerUps) ? runnerUps : 0
-            })
-            .OrderByDescending(x => x.Wins)
-            .ThenByDescending(x => x.RunnerUps)
-            .ThenBy(x => x.Name)
-            .Take(12)
-            .ToList();
-
-        foreach (var item in keys)
-        {
-            lines.Add($"{item.Name} | {item.Wins} | {item.RunnerUps}");
-        }
-
-        lines.Add("");
-    }
-
-    private List<string> BuildYouTubePdfLines(IReadOnlyList<DataRow> rows)
-    {
-        var candidates = rows
-            .Select(row => BuildVideoPlannerRow(row))
-            .OrderByDescending(row => row.Priority)
-            .ThenByDescending(row => row.OverallScore ?? double.MinValue)
-            .Take(50)
-            .ToList();
-
-        var lines = new List<string>
-        {
-            "YouTube Research Reports",
-            "========================",
-            "Data-driven video candidates, suggested titles, talking points, and comparison angles.",
-            ""
-        };
-
-        AppendPdfBarChart(lines, "Chart: Top 10 video priority", candidates.Select(row => (row.Label, Value: (double)row.Priority)), string.Empty);
-
-        for (var i = 0; i < candidates.Count; i++)
-        {
-            var row = candidates[i];
-            lines.Add($"{i + 1}. {row.Label}");
-            lines.Add($"   Priority: {row.Priority} | Manufacturer: {row.Manufacturer} | Type: {row.BaseMaterial} | Reinforcement: {DisplayText(row.Reinforcement)}");
-            lines.Add($"   Scores: Overall {FormatScore(row.OverallScore)} | Tensile {FormatScore(row.TensileScore)} | Impact {FormatScore(row.ImpactScore)} | Stiffness {FormatScore(row.StiffnessScore)}");
-            lines.Add($"   Suggested title: {row.SuggestedTitle}");
-            lines.Add($"   Angle: {row.SuggestedAngle}");
-            lines.Add($"   Talking points: {row.TalkingPoints}");
-            lines.Add($"   Comparison idea: {row.ComparisonIdea}");
-            lines.Add($"   Status: {row.Status}");
-            lines.Add("");
-        }
-
-        if (candidates.Count == 0) lines.Add("No YouTube candidates found in the current visible set.");
-        return lines;
-    }
-
     private static string DisplayText(string? value, string? fallback = null)
     {
         if (!string.IsNullOrWhiteSpace(value) && value != "—") return value;
         if (!string.IsNullOrWhiteSpace(fallback) && fallback != "—") return fallback;
         return "-";
-    }
-
-    private static IEnumerable<List<string>> PaginatePdfLines(IReadOnlyList<string> lines, int linesPerPage)
-    {
-        for (var index = 0; index < lines.Count; index += linesPerPage)
-        {
-            yield return lines.Skip(index).Take(linesPerPage).ToList();
-        }
-    }
-
-    private static IEnumerable<string> WrapPdfLine(string line, int maxLength)
-    {
-        if (string.IsNullOrEmpty(line))
-        {
-            yield return string.Empty;
-            yield break;
-        }
-
-        var remaining = line.TrimEnd();
-        while (remaining.Length > maxLength)
-        {
-            var split = remaining.LastIndexOf(' ', maxLength);
-            if (split < 24) split = maxLength;
-            yield return remaining[..split].TrimEnd();
-            remaining = remaining[split..].TrimStart();
-        }
-        yield return remaining;
-    }
-
-    private static string BuildPdfPageStream(IReadOnlyList<string> lines, string title, DateTime generatedAt, int pageNumber, int pageCount, bool includeLogo)
-    {
-        var sb = new StringBuilder();
-
-        // REPORT-200: fixed-flow HTML-style layout.
-        // The old renderer started content at the same vertical position as the header/cards,
-        // which caused visible text overlap in Acrobat. This layout reserves fixed zones first,
-        // then starts report content below them.
-        PdfRect(sb, 0, 0, 595, 842, "1 1 1");
-        PdfRect(sb, 40, 776, 515, 3, "0.06 0.09 0.16");
-
-        if (includeLogo)
-        {
-            PdfRect(sb, 422, 690, 124, 86, "1 1 1");
-            PdfStrokeRect(sb, 422, 690, 124, 86, "0.80 0.84 0.90");
-            sb.AppendLine("q 112 0 0 67 428 699 cm /ImLogo Do Q");
-        }
-
-        AppendPdfTextAt(sb, 40, 748, title, 18, true, "0.06 0.09 0.16");
-        AppendPdfTextAt(sb, 40, 728, "3DP Iceland Labs", 9, true, "0.08 0.12 0.20");
-        AppendPdfTextAt(sb, 40, 714, $"Generated {generatedAt.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)} - Page {pageNumber} of {pageCount}", 8, false, "0.29 0.33 0.41");
-
-        var cardY = 622d;
-        PdfCard(sb, 40, cardY, 160, 52);
-        PdfCard(sb, 218, cardY, 160, 52);
-        PdfCard(sb, 396, cardY, 160, 52);
-        AppendPdfTextAt(sb, 52, cardY + 32, "REPORT STYLE", 7, true, "0.39 0.45 0.55");
-        AppendPdfTextAt(sb, 52, cardY + 15, "HTML layout", 13, true, "0.06 0.09 0.16");
-        AppendPdfTextAt(sb, 230, cardY + 32, "PDF WORKFLOW", 7, true, "0.39 0.45 0.55");
-        AppendPdfTextAt(sb, 230, cardY + 15, "HTML Print PDF", 13, true, "0.06 0.09 0.16");
-        AppendPdfTextAt(sb, 408, cardY + 32, "BRANDING", 7, true, "0.39 0.45 0.55");
-        AppendPdfTextAt(sb, 408, cardY + 15, includeLogo ? "Logo embedded" : "Logo missing", 13, true, "0.06 0.09 0.16");
-
-        var y = 584d;
-        var inChart = false;
-        var chartItemCount = 0;
-
-        foreach (var rawLine in lines)
-        {
-            if (y < 66) break;
-            var line = rawLine.TrimEnd();
-            if (string.IsNullOrWhiteSpace(line))
-            {
-                y -= inChart ? 2 : 5;
-                continue;
-            }
-
-            // Skip text-report formatting that should not be printed as content in the styled PDF.
-            if (line.EndsWith("===", StringComparison.Ordinal) || line.EndsWith("---", StringComparison.Ordinal)) continue;
-            if (line.Equals(title, StringComparison.OrdinalIgnoreCase)) continue;
-            if (line.Equals("Material Detail Report", StringComparison.OrdinalIgnoreCase) && pageNumber == 1) continue;
-
-            if (line.StartsWith("PDFCHART|", StringComparison.Ordinal))
-            {
-                var parts = line.Split('|');
-                var chartTitle = parts.Length > 1 ? parts[1] : "Chart";
-                if (y < 220) break;
-                PdfCard(sb, 40, y - 118, 515, 118);
-                AppendPdfTextAt(sb, 52, y - 20, chartTitle, 10, true, "0.06 0.09 0.16");
-                y -= 38;
-                inChart = true;
-                chartItemCount = 0;
-                continue;
-            }
-
-            if (line.StartsWith("PDFCHARTITEM|", StringComparison.Ordinal))
-            {
-                var parts = line.Split('|');
-                var label = parts.Length > 1 ? parts[1] : string.Empty;
-                var value = parts.Length > 2 && double.TryParse(parts[2], NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedValue) ? parsedValue : 0;
-                var max = parts.Length > 3 && double.TryParse(parts[3], NumberStyles.Any, CultureInfo.InvariantCulture, out var parsedMax) ? Math.Max(1, parsedMax) : 1;
-                var suffix = parts.Length > 4 ? parts[4] : string.Empty;
-                var barWidth = Math.Max(2, Math.Min(300, value / max * 300));
-                var valueText = value >= 100 ? value.ToString("0", CultureInfo.InvariantCulture) : value.ToString("0.#", CultureInfo.InvariantCulture);
-
-                if (chartItemCount < 6)
-                {
-                    AppendPdfTextAt(sb, 58, y, TrimPdf(label, 32), 7, false, "0.20 0.25 0.33");
-                    PdfRoundBar(sb, 245, y - 3, 300, 7, barWidth);
-                    AppendPdfTextAt(sb, 548, y, $"{valueText}{suffix}", 7, false, "0.20 0.25 0.33", alignRight: true);
-                    y -= 13;
-                    chartItemCount++;
-                }
-                continue;
-            }
-
-            if (line == "PDFCHARTEND")
-            {
-                y -= 20;
-                inChart = false;
-                continue;
-            }
-
-            if (IsPdfSectionTitle(line))
-            {
-                if (y < 96) break;
-                y -= 7;
-                AppendPdfTextAt(sb, 40, y, line, 13, true, "0.06 0.09 0.16");
-                y -= 18;
-                continue;
-            }
-
-            var isKeyValue = line.Contains(':', StringComparison.Ordinal) && line.Length < 110;
-            if (isKeyValue)
-            {
-                var parts = line.Split(':', 2);
-                AppendPdfTextAt(sb, 52, y, TrimPdf(parts[0], 26), 8, false, "0.39 0.45 0.55");
-                AppendPdfTextAt(sb, 230, y, TrimPdf(parts.Length > 1 ? parts[1].Trim() : string.Empty, 58), 8, false, "0.06 0.09 0.16");
-                PdfRect(sb, 52, y - 6, 492, 0.5, "0.90 0.93 0.97");
-                y -= 14;
-                continue;
-            }
-
-            foreach (var wrapped in WrapPdfLine(line, 86))
-            {
-                if (y < 66) break;
-                AppendPdfTextAt(sb, 50, y, TrimPdf(wrapped, 86), 8, false, "0.20 0.25 0.33");
-                y -= 12;
-            }
-        }
-
-        PdfRect(sb, 40, 45, 515, 1, "0.88 0.91 0.95");
-        AppendPdfTextAt(sb, 40, 28, "Source of truth: SQLite + MaterialID + verified Material Summary", 7, false, "0.39 0.45 0.55");
-        AppendPdfTextAt(sb, 555, 28, "3DPIceland Labs", 7, true, "0.39 0.45 0.55", alignRight: true);
-        return sb.ToString();
-    }
-
-    private static bool IsPdfSectionTitle(string line)
-    {
-        var normalized = line.Trim();
-        return normalized is "Material Engineering Report" or "Engineering summary" or "Score summary" or "Material identity" or "Peer context" or "YouTube research notes";
-    }
-
-    private static string TrimPdf(string value, int max)
-    {
-        return value.Length <= max ? value : value[..Math.Max(0, max - 3)] + "...";
-    }
-
-    private static void PdfCard(StringBuilder sb, double x, double y, double width, double height)
-    {
-        PdfRect(sb, x, y, width, height, "0.97 0.98 0.99");
-        PdfStrokeRect(sb, x, y, width, height, "0.80 0.84 0.90");
-    }
-
-    private static void PdfRoundBar(StringBuilder sb, double x, double y, double width, double height, double fillWidth)
-    {
-        PdfRect(sb, x, y, width, height, "0.89 0.92 0.96");
-        PdfRect(sb, x, y, fillWidth, height, "0.06 0.09 0.16");
-    }
-
-    private static void PdfRect(StringBuilder sb, double x, double y, double width, double height, string rgb)
-    {
-        sb.AppendLine($"{rgb} rg {PdfNumber(x)} {PdfNumber(y)} {PdfNumber(width)} {PdfNumber(height)} re f");
-    }
-
-    private static void PdfStrokeRect(StringBuilder sb, double x, double y, double width, double height, string rgb)
-    {
-        sb.AppendLine($"{rgb} RG {PdfNumber(x)} {PdfNumber(y)} {PdfNumber(width)} {PdfNumber(height)} re S");
-    }
-
-    private static bool IsPdfChartCommand(string line)
-    {
-        return line.StartsWith("PDFCHART|", StringComparison.Ordinal) ||
-               line.StartsWith("PDFCHARTITEM|", StringComparison.Ordinal) ||
-               line == "PDFCHARTEND";
-    }
-
-    private static void AppendPdfTextAt(StringBuilder sb, double x, double y, string? text, int fontSize, bool bold = false, string rgb = "0.06 0.09 0.16", bool alignRight = false)
-    {
-        var safeText = PdfText(text);
-        var adjustedX = alignRight ? Math.Max(0, x - EstimatePdfTextWidth(safeText, fontSize)) : x;
-        sb.AppendLine("BT");
-        sb.AppendLine($"{rgb} rg");
-        sb.AppendLine((bold ? "/F2 " : "/F1 ") + fontSize.ToString(CultureInfo.InvariantCulture) + " Tf");
-        sb.AppendLine($"{PdfNumber(adjustedX)} {PdfNumber(y)} Td ({safeText}) Tj");
-        sb.AppendLine("ET");
-    }
-
-    private static double EstimatePdfTextWidth(string text, int fontSize)
-    {
-        return Math.Min(520, text.Length * fontSize * 0.48);
-    }
-
-    private static string PdfNumber(double value)
-    {
-        return value.ToString("0.###", CultureInfo.InvariantCulture);
-    }
-
-    private static string PdfText(string? value)
-    {
-        if (string.IsNullOrEmpty(value)) return string.Empty;
-        var normalized = value
-            .Replace("ð", "d")
-            .Replace("Ð", "D")
-            .Replace("þ", "th")
-            .Replace("Þ", "Th")
-            .Replace("æ", "ae")
-            .Replace("Æ", "AE")
-            .Replace("ö", "o")
-            .Replace("Ö", "O")
-            .Replace("á", "a")
-            .Replace("Á", "A")
-            .Replace("é", "e")
-            .Replace("É", "E")
-            .Replace("í", "i")
-            .Replace("Í", "I")
-            .Replace("ó", "o")
-            .Replace("Ó", "O")
-            .Replace("ú", "u")
-            .Replace("Ú", "U")
-            .Replace("ý", "y")
-            .Replace("Ý", "Y")
-            .Replace("²", "2")
-            .Replace("–", "-")
-            .Replace("—", "-");
-
-        var safe = new StringBuilder();
-        foreach (var ch in normalized)
-        {
-            if (ch == '(' || ch == ')' || ch == '\\') safe.Append('\\');
-            safe.Append(ch <= 126 ? ch : '?');
-        }
-        return safe.ToString();
     }
 
     private string FormatMetricCell(DataRow row, string primaryColumn, string alternateColumn, string secondAlternateColumn, string suffix)
@@ -14527,48 +13125,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         SampleCount: sampleCount,
         Confidence: sampleCount > 0 ? Math.Min(sampleCount, 10) : null,
         CompletenessRating: new RatingResult(sampleCount >= 5 ? 5 : sampleCount > 0 ? 1 : 0, "Probe", "Verification probe"));
-
-    private static bool PrintingSettingsValuesAreValid(NativeMaterialRow row)
-    {
-        static bool Number(string value, out double? number)
-        {
-            number = null;
-            if (string.IsNullOrWhiteSpace(value)) return true;
-            if (!double.TryParse(value, NumberStyles.Float, CultureInfo.CurrentCulture, out var parsed) &&
-                !double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out parsed)) return false;
-            number = parsed;
-            return parsed >= 0;
-        }
-
-        static bool Ordered(double? min, double? recommended, double? max) =>
-            (!min.HasValue || !recommended.HasValue || min <= recommended) &&
-            (!recommended.HasValue || !max.HasValue || recommended <= max) &&
-            (!min.HasValue || !max.HasValue || min <= max);
-
-        static bool Percent(string value, out double? number) =>
-            Number(value, out number) && (!number.HasValue || number <= 100);
-
-        return Number(row.NozzleTemperatureMinC, out var nozzleMin) &&
-               Number(row.NozzleTemperatureRecommendedC, out var nozzleRecommended) &&
-               Number(row.NozzleTemperatureMaxC, out var nozzleMax) &&
-               Ordered(nozzleMin, nozzleRecommended, nozzleMax) &&
-               Number(row.BedTemperatureMinC, out var bedMin) &&
-               Number(row.BedTemperatureRecommendedC, out var bedRecommended) &&
-               Number(row.BedTemperatureMaxC, out var bedMax) &&
-               Ordered(bedMin, bedRecommended, bedMax) &&
-               Number(row.PrintSpeedMinMmPerS, out var speedMin) &&
-               Number(row.PrintSpeedRecommendedMmPerS, out var speedRecommended) &&
-               Number(row.PrintSpeedMaxMmPerS, out var speedMax) &&
-               Ordered(speedMin, speedRecommended, speedMax) &&
-               Percent(row.CoolingMinPercent, out var coolingMin) &&
-               Percent(row.CoolingRecommendedPercent, out var coolingRecommended) &&
-               Percent(row.CoolingMaxPercent, out var coolingMax) &&
-               Ordered(coolingMin, coolingRecommended, coolingMax) &&
-               Number(row.DryingTemperatureC, out _) &&
-               Number(row.DryingTimeHours, out _) &&
-               (string.IsNullOrWhiteSpace(row.PrintingSettingsSourceUrl) || Uri.TryCreate(row.PrintingSettingsSourceUrl, UriKind.Absolute, out _)) &&
-               (string.IsNullOrWhiteSpace(row.PrintingSettingsCheckedDate) || DateTime.TryParse(row.PrintingSettingsCheckedDate, CultureInfo.InvariantCulture, DateTimeStyles.None, out _));
-    }
 
     private List<VerificationCheck> BuildVerificationChecks()
     {
@@ -16309,7 +14865,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("Report model validation", reportingPipeline.Available && reportingPipeline.Generator.HasReportSections && reportingPipeline.Generator.MaterialIdCoverage,
             reportingPipeline.Available ? "Overview + engineering summary sections present" : reportingPipeline.ErrorMessage));
         checks.Add(new VerificationCheck("PDF renderer", reportingPipeline.Available && reportingPipeline.PdfRenderer.Passed,
-            reportingPipeline.Available ? "WebView2 HTML Print Engine owns user PDF export; legacy renderer remains only for diagnostics" : reportingPipeline.ErrorMessage));
+            reportingPipeline.Available ? "WebView2 HTML Print Engine exclusively owns user PDF export" : reportingPipeline.ErrorMessage));
         checks.Add(new VerificationCheck("PDF payload validation", reportingPipeline.Available && reportingPipeline.PdfPayloadValidationPassed,
             reportingPipeline.Available ? "PDF payload pages " + reportingPipeline.PdfPages + ", bytes " + reportingPipeline.PdfBytes : reportingPipeline.ErrorMessage));
         checks.Add(new VerificationCheck("PDF render readiness", reportingPipeline.Available && reportingPipeline.PdfRenderReady,
@@ -17492,6 +16048,35 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             materialsLegacyXamlRetired
                 ? "The retired Materials DataGrid and its duplicate columns are absent; Fast Materials is the sole grid host"
                 : "The retired Materials DataGrid XAML remains or the Fast host is missing"));
+        var cleanBaselineRetirementReady =
+            typeof(ReportFoundationResult).GetProperty("PdfLines") is null &&
+            typeof(MainWindow).GetMethod(
+                "WriteReportPdf",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                nameof(WriteReportPdfFromCanonicalHtmlAsync),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                "BuildManufacturerWebsiteHtml",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "ChooseWebsiteTemplateFile_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(LocalDatabase).GetMethod(
+                "ClearEngineTables",
+                System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(LocalDatabase).GetMethod(
+                "InsertImportRecord",
+                System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is null &&
+            PublicReportSourceFingerprintService.CanonicalQueriesUseNativeTables() &&
+            FindName("WebsiteTemplateFileBox") is null;
+        checks.Add(new VerificationCheck("v44.7.12 Clean baseline retirement release gate",
+            cleanBaselineRetirementReady && materialsLegacyXamlRetired &&
+            reportingPipeline.Available && releaseIdentityReady,
+            cleanBaselineRetirementReady && materialsLegacyXamlRetired &&
+            reportingPipeline.Available && releaseIdentityReady
+                ? "Caller-free PDF, workbook-write, legacy template and retired workflow residue is absent; canonical owners remain"
+                : "Dead-code retirement, canonical reporting ownership, prior legacy retirement or release identity failed"));
 
         return checks;
     }
@@ -18339,19 +16924,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         catch
         {
             return "Unavailable";
-        }
-    }
-
-    private void OpenDatabaseFolderFromDiagnostics()
-    {
-        try
-        {
-            Directory.CreateDirectory(_database.DatabaseFolder);
-            UrlLauncher.Open(_database.DatabaseFolder);
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(this, ex.Message, "Could not open database folder", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -20809,39 +19381,6 @@ private void UpdateDashboardInsights()
         return GetSelectedAiMaterialCollection()?.Title ?? "";
     }
 
-    private sealed class AiMaterialCollectionCompat
-    {
-        public string Title { get; set; } = "";
-        public List<string> Materials { get; set; } = new();
-        public List<string> MaterialLabels { get; set; } = new();
-        public string CreatedUtc { get; set; } = "";
-        public string UpdatedUtc { get; set; } = "";
-    }
-
-    private string AiCollectionsFilePathCompat()
-    {
-        return StorageWorkingFilePath("ai-material-collections.json");
-    }
-
-    private List<AiMaterialCollectionCompat> LoadAiCollectionsCompat()
-    {
-        try
-        {
-            var path = AiCollectionsFilePathCompat();
-            if (!File.Exists(path))
-            {
-                return new List<AiMaterialCollectionCompat>();
-            }
-
-            var json = File.ReadAllText(path);
-            return JsonSerializer.Deserialize<List<AiMaterialCollectionCompat>>(json) ?? new List<AiMaterialCollectionCompat>();
-        }
-        catch
-        {
-            return new List<AiMaterialCollectionCompat>();
-        }
-    }
-
     private sealed class AiCoverageEntry
     {
         public string CollectionTitle { get; set; } = "";
@@ -23059,106 +21598,6 @@ private List<string> GetVisibleAiMaterialLabels()
     }
 
 
-    private static string NativeMaterialCell(DataRow row, params string[] names)
-    {
-        return GetCell(row, names);
-    }
-
-    private static NativeMaterialRow NativeMaterialRowFromDataRow(DataRow row)
-    {
-        var material = new NativeMaterialRow
-        {
-            MaterialID = NativeMaterialCell(row, "Material ID", "MaterialID", "ID"),
-            Manufacturer = NativeMaterialCell(row, "Manufacturer", "Brand"),
-            ProductLine = NativeMaterialCell(row, "Product Line", "ProductLine", "Product"),
-            MarketingName = NativeMaterialCell(row, "Marketing Name", "MarketingName", "Material Name"),
-            BaseMaterial = NativeMaterialCell(row, "Base Material", "Material Type", "Type"),
-            MaterialCategory = NativeMaterialCell(row, "Material Category", "Category"),
-            VariantFinish = NativeMaterialCell(row, "Variant / Finish", "Variant", "Finish"),
-            Reinforcement = NativeMaterialCell(row, "Reinforcement", "Reinforment"),
-            Color = NativeMaterialCell(row, "Color", "Colour"),
-            DiameterMm = NativeMaterialCell(row, "Diameter mm", "Diameter", "DiameterMm"),
-            SpoolWeightG = NativeMaterialCell(row, "Spool Weight g", "Spool Weight", "SpoolWeightG"),
-            ManufacturerSku = NativeMaterialCell(row, "Manufacturer SKU", "ManufacturerSku", "SKU"),
-            InventoryId = NativeMaterialCell(row, "Inventory ID", "InventoryId"),
-            PurchaseId = NativeMaterialCell(row, "Purchase ID", "PurchaseId"),
-            PurchasedFrom = NativeMaterialCell(row, "Purchased From", "Supplier", "Vendor"),
-            SupplierUrl = NativeMaterialCell(row, "Supplier URL", "SupplierUrl"),
-            PurchaseDate = NativeMaterialCell(row, "Purchase Date", "PurchaseDate"),
-            OrderNumber = NativeMaterialCell(row, "Order Number", "OrderNumber"),
-            BatchNumber = NativeMaterialCell(row, "Batch Number", "Batch", "Lot"),
-            StorageLocation = NativeMaterialCell(row, "Storage Location", "StorageLocation"),
-            InventoryStatus = NativeMaterialCell(row, "Inventory Status", "Spool Status", "Opened / Unopened"),
-            Quantity = NativeMaterialCell(row, "Quantity", "Spool Quantity"),
-            RemainingWeightG = NativeMaterialCell(row, "Remaining Weight g", "Remaining Weight", "RemainingWeightG"),
-            PurchasePriceAmount = NativeMaterialCell(row, "Purchase Price", "Purchase Price Amount", "PurchasePriceAmount"),
-            PurchaseCurrency = NativeMaterialCell(row, "Purchase Currency", "Currency", "PurchaseCurrency"),
-            ShippingAmount = NativeMaterialCell(row, "Shipping", "Shipping Amount", "ShippingAmount"),
-            VatAmount = NativeMaterialCell(row, "VAT", "VAT Amount", "VatAmount"),
-            NozzleTemperatureMinC = NativeMaterialCell(row, "Nozzle Temperature Min °C", "Nozzle Temp Min C", "NozzleTemperatureMinC"),
-            NozzleTemperatureRecommendedC = NativeMaterialCell(row, "Nozzle Temperature Recommended °C", "Nozzle Temp Recommended C", "NozzleTemperatureRecommendedC"),
-            NozzleTemperatureMaxC = NativeMaterialCell(row, "Nozzle Temperature Max °C", "Nozzle Temp Max C", "NozzleTemperatureMaxC"),
-            BedTemperatureMinC = NativeMaterialCell(row, "Bed Temperature Min °C", "Bed Temp Min C", "BedTemperatureMinC"),
-            BedTemperatureRecommendedC = NativeMaterialCell(row, "Bed Temperature Recommended °C", "Bed Temp Recommended C", "BedTemperatureRecommendedC"),
-            BedTemperatureMaxC = NativeMaterialCell(row, "Bed Temperature Max °C", "Bed Temp Max C", "BedTemperatureMaxC"),
-            PrintSpeedMinMmPerS = NativeMaterialCell(row, "Print Speed Min mm/s", "PrintSpeedMinMmPerS"),
-            PrintSpeedRecommendedMmPerS = NativeMaterialCell(row, "Print Speed Recommended mm/s", "PrintSpeedRecommendedMmPerS"),
-            PrintSpeedMaxMmPerS = NativeMaterialCell(row, "Print Speed Max mm/s", "PrintSpeedMaxMmPerS"),
-            CoolingRequirement = NativeMaterialCell(row, "Cooling Requirement", "Cooling", "CoolingRequirement"),
-            DryingTimeHours = NativeMaterialCell(row, "Drying Time hours", "Drying Time", "DryingTimeHours"),
-            EnclosureRequirement = NativeMaterialCell(row, "Enclosure Requirement", "Enclosure", "EnclosureRequirement"),
-            PrinterProfileReference = NativeMaterialCell(row, "Printer Profile Reference", "Printer Profile", "PrinterProfileReference"),
-            SlicerProfileReference = NativeMaterialCell(row, "Slicer Profile Reference", "Slicer Profile", "SlicerProfileReference"),
-            PrintingProfileId = NativeMaterialCell(row, "Printing Profile ID", "PrintingProfileId"),
-            PrintingProfileKind = NativeMaterialCell(row, "Printing Profile Kind", "PrintingProfileKind"),
-            CoolingMinPercent = NativeMaterialCell(row, "Cooling Min %", "CoolingMinPercent"),
-            CoolingRecommendedPercent = NativeMaterialCell(row, "Cooling Recommended %", "CoolingRecommendedPercent"),
-            CoolingMaxPercent = NativeMaterialCell(row, "Cooling Max %", "CoolingMaxPercent"),
-            DryingTemperatureC = NativeMaterialCell(row, "Drying Temperature °C", "DryingTemperatureC"),
-            SlicerIdentity = NativeMaterialCell(row, "Slicer Identity", "SlicerIdentity"),
-            SlicerVersion = NativeMaterialCell(row, "Slicer Version", "SlicerVersion"),
-            PrintingSettingsProvenance = NativeMaterialCell(row, "Printing Settings Provenance", "PrintingSettingsProvenance"),
-            PrintingSettingsSourceUrl = NativeMaterialCell(row, "Printing Settings Source URL", "PrintingSettingsSourceUrl"),
-            PrintingSettingsCheckedDate = NativeMaterialCell(row, "Printing Settings Checked Date", "PrintingSettingsCheckedDate"),
-            PrintingSettingsValidationNote = NativeMaterialCell(row, "Printing Settings Validation Note", "PrintingSettingsValidationNote"),
-            ManufacturerWebsite = NativeMaterialCell(row, "Manufacturer Website", "Website", "Product Page", "Product URL"),
-            YouTubeReviewUrl = NativeMaterialCell(row, "YouTube Review URL", "YouTube URL", "Youtube URL", "YouTube Link", "Video URL"),
-            ThumbnailFilename = NativeMaterialCell(row, "Thumbnail Filename", "Thumbnail", "ThumbnailFilename"),
-            Video = NativeMaterialCell(row, "Video", "Has Video", "YouTube Available", "Video Available"),
-            Notes = NativeMaterialCell(row, "Notes", "Note"),
-            TestedStatus = NativeMaterialCell(row, "Tested Status", "Status"),
-            InTensile = NativeMaterialCell(row, "In Tensile", "Tensile"),
-            InImpact = NativeMaterialCell(row, "In Impact", "Impact"),
-            InStiffness = NativeMaterialCell(row, "In Stiffness", "Stiffness"),
-            SortOrder = NativeMaterialCell(row, "Sort Order", "SortOrder"),
-            SourcePriority = NativeMaterialCell(row, "Source Priority", "SourcePriority"),
-            WebsiteDisplayName = NativeMaterialCell(row, "Website Display Name", "Display Name", "Name"),
-            MaterialKey = NativeMaterialCell(row, "Material Key", "MaterialKey"),
-            IsArchived = false
-        };
-
-        if (string.IsNullOrWhiteSpace(material.Video) && !string.IsNullOrWhiteSpace(material.YouTubeReviewUrl))
-        {
-            material.Video = "Yes";
-        }
-
-        if (string.IsNullOrWhiteSpace(material.WebsiteDisplayName))
-        {
-            material.WebsiteDisplayName = string.Join(" ", new[]
-            {
-                material.Manufacturer,
-                material.ProductLine,
-                material.MarketingName,
-                material.BaseMaterial,
-                material.VariantFinish,
-                material.Reinforcement,
-                material.Color
-            }.Where(part => !string.IsNullOrWhiteSpace(part))).Trim();
-        }
-
-        return material;
-    }
-
     private void ReplaceNativeMaterialRows(IEnumerable<NativeMaterialRow> rows)
     {
         var previousSuppress = _suppressNativeMaterialDirty;
@@ -24763,20 +23202,6 @@ private List<string> GetVisibleAiMaterialLabels()
             Read("Stiffness", string.Empty));
     }
 
-    private string BuildExperimentalBestSummary(IReadOnlyList<ExperimentalRunRecord> runs, ExperimentalRunRecord baseline)
-    {
-        string Best(Func<ExperimentalRunMetrics, double?> selector, string label)
-        {
-            var candidates = runs.Select(run => (Run: run, Value: selector(GetExperimentalRunMetrics(run.ExperimentalRunId))))
-                .Where(x => x.Value.HasValue).OrderByDescending(x => x.Value).ToList();
-            if (candidates.Count == 0) return $"{label}: no results";
-            var winner = candidates[0];
-            var lowest = candidates[^1];
-            return $"{label}: high {winner.Run.ParameterValue} {winner.Run.ParameterUnit} ({FormatExperimentalMetric(winner.Value)}), low {lowest.Run.ParameterValue} {lowest.Run.ParameterUnit} ({FormatExperimentalMetric(lowest.Value)})".Trim();
-        }
-        return $"Baseline: {baseline.ParameterValue} {baseline.ParameterUnit} • {Best(x => x.TensileFlat, "Tensile flat")} • {Best(x => x.ImpactFlat, "Impact flat")} • {Best(x => x.Stiffness, "Stiffness")}";
-    }
-
     private static double ParseExperimentalSortValue(string? text) => ParseExperimentalResult(text) ?? double.MaxValue;
     private static double? ParseExperimentalResult(string? text)
     {
@@ -25787,12 +24212,6 @@ private List<string> GetVisibleAiMaterialLabels()
         MessageBox.Show(summary, "Material Manager Validation", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 
-    private void RefreshNativeMaterialSummary_Click(object sender, RoutedEventArgs e)
-    {
-        RefreshNativeMaterialSummary();
-    }
-
-
     private sealed class NativeTensileMeasurementRow : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -25994,25 +24413,6 @@ private List<string> GetVisibleAiMaterialLabels()
     private static bool ShouldAssignMeasuredDate(DateTime? currentDate, IEnumerable<string> inputs) =>
         currentDate is null && inputs.Any(value => !string.IsNullOrWhiteSpace(value));
 
-    private bool IsFirstMeasurementValueEdit(DataGrid grid, DataGridCellEditEndingEventArgs e, IEnumerable<string> currentInputs)
-    {
-        var propertyName = GetBoundPropertyName(e.Column);
-        if (!IsNativeMeasurementNumericInputColumn(grid.Name, propertyName) ||
-            e.EditAction != DataGridEditAction.Commit ||
-            e.EditingElement is not TextBox editor ||
-            string.IsNullOrWhiteSpace(editor.Text))
-            return false;
-
-        var oldValue = _pendingGridEdit is not null &&
-                       ReferenceEquals(_pendingGridEdit.Target, e.Row.Item) &&
-                       string.Equals(_pendingGridEdit.PropertyName, propertyName, StringComparison.Ordinal)
-            ? Convert.ToString(_pendingGridEdit.OldValue, CultureInfo.CurrentCulture)
-            : null;
-
-        return string.IsNullOrWhiteSpace(oldValue) &&
-               currentInputs.Count(value => !string.IsNullOrWhiteSpace(value)) == 1;
-    }
-
     private void SaveNativeMeasurementsToSqlite() => _database.MigrateNativeMeasurementsToSqlite(
         _nativeTensileRows.Select(ToTensilePersistence).ToList(),
         _nativeImpactRows.Select(ToImpactPersistence).ToList(),
@@ -26169,16 +24569,6 @@ private List<string> GetVisibleAiMaterialLabels()
         ApplyNativeTensileComputedFields(_nativeTensileRows);
     }
 
-    private void SaveNativeTensile_Click(object sender, RoutedEventArgs e)
-    {
-        ApplyNativeTensileComputedFields(_nativeTensileRows);
-        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        SaveNativeMeasurementsToSqlite();
-        SetNativeTensileDirty(false);
-        UpdateNativeWorkflowStatus("Tensile saved ✓", saved: true);
-        ShowTransientStatus("Tensile measurements saved successfully.");
-    }
-
     private void SaveNativeTensileSilent()
     {
         try
@@ -26193,23 +24583,6 @@ private List<string> GetVisibleAiMaterialLabels()
             ShowNativeSaveBlockedStatus("Tensile", ex.Message);
         }
     }
-
-    private void RecalculateNativeTensile_Click(object sender, RoutedEventArgs e)
-    {
-        ApplyNativeTensileComputedFields(_nativeTensileRows);
-        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        MarkNativeTensileDirty();
-        RefreshNativeTensileSummary();
-    }
-
-    private void ValidateNativeTensile_Click(object sender, RoutedEventArgs e)
-    {
-        ApplyNativeTensileComputedFields(_nativeTensileRows);
-        var invalid = _nativeTensileRows.Where(r => r.ValidationSummary != "OK").ToList();
-        MessageBox.Show(invalid.Count == 0 ? $"Tensile validation passed for {_nativeTensileRows.Count} rows." : $"Tensile validation found {invalid.Count} rows with invalid sample values.", "Tensile Measurements Validation", MessageBoxButton.OK, invalid.Count == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
-    }
-
-    private void RefreshNativeTensileSummary_Click(object sender, RoutedEventArgs e) => RefreshNativeTensileSummary();
 
     private void MarkNativeTensileDirty() => SetNativeTensileDirty(true);
 
@@ -26299,19 +24672,6 @@ private List<string> GetVisibleAiMaterialLabels()
         var sum = values.Sum(v => Math.Pow(v - avg, 2));
         return Math.Sqrt(sum / (values.Count - 1));
     }
-
-    private static string FormatComputedTensile(double? rawAverageOrStdDev, double crossSectionArea)
-    {
-        if (!rawAverageOrStdDev.HasValue || crossSectionArea <= 0) return "";
-        return (rawAverageOrStdDev.Value / crossSectionArea).ToString("0.###", CultureInfo.CurrentCulture);
-    }
-
-    private static string FormatCv(string meanText, string stdText)
-    {
-        if (!TryParseMeasurement(meanText, out var mean) || mean == 0 || !TryParseMeasurement(stdText, out var std)) return "";
-        return (std / mean).ToString("0.###", CultureInfo.CurrentCulture);
-    }
-
 
     private sealed class NativeImpactMeasurementRow : INotifyPropertyChanged
     {
@@ -26593,16 +24953,6 @@ private List<string> GetVisibleAiMaterialLabels()
         ApplyNativeImpactComputedFields(_nativeImpactRows);
     }
 
-    private void SaveNativeImpact_Click(object sender, RoutedEventArgs e)
-    {
-        ApplyNativeImpactComputedFields(_nativeImpactRows);
-        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        SaveNativeMeasurementsToSqlite();
-        SetNativeImpactDirty(false);
-        UpdateNativeWorkflowStatus("Impact saved ✓", saved: true);
-        ShowTransientStatus("Impact measurements saved successfully.");
-    }
-
     private void SaveNativeImpactSilent()
     {
         try
@@ -26617,23 +24967,6 @@ private List<string> GetVisibleAiMaterialLabels()
             ShowNativeSaveBlockedStatus("Impact", ex.Message);
         }
     }
-
-    private void RecalculateNativeImpact_Click(object sender, RoutedEventArgs e)
-    {
-        ApplyNativeImpactComputedFields(_nativeImpactRows);
-        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        MarkNativeImpactDirty();
-        RefreshNativeImpactSummary();
-    }
-
-    private void ValidateNativeImpact_Click(object sender, RoutedEventArgs e)
-    {
-        ApplyNativeImpactComputedFields(_nativeImpactRows);
-        var invalid = _nativeImpactRows.Where(r => r.ValidationSummary != "OK").ToList();
-        MessageBox.Show(invalid.Count == 0 ? $"Impact validation passed for {_nativeImpactRows.Count} rows." : $"Impact validation found {invalid.Count} rows with invalid needle % values.", "Impact Measurements Validation", MessageBoxButton.OK, invalid.Count == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
-    }
-
-    private void RefreshNativeImpactSummary_Click(object sender, RoutedEventArgs e) => RefreshNativeImpactSummary();
 
     private void MarkNativeImpactDirty() => SetNativeImpactDirty(true);
 
@@ -26916,16 +25249,6 @@ private List<string> GetVisibleAiMaterialLabels()
         ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
     }
 
-    private void SaveNativeStiffness_Click(object sender, RoutedEventArgs e)
-    {
-        ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
-        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        SaveNativeMeasurementsToSqlite();
-        SetNativeStiffnessDirty(false);
-        UpdateNativeWorkflowStatus("Stiffness saved ✓", saved: true);
-        ShowTransientStatus("Stiffness measurements saved successfully.");
-    }
-
     private void SaveNativeStiffnessSilent()
     {
         try
@@ -26940,23 +25263,6 @@ private List<string> GetVisibleAiMaterialLabels()
             ShowNativeSaveBlockedStatus("Stiffness", ex.Message);
         }
     }
-
-    private void RecalculateNativeStiffness_Click(object sender, RoutedEventArgs e)
-    {
-        ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
-        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
-        MarkNativeStiffnessDirty();
-        RefreshNativeStiffnessSummary();
-    }
-
-    private void ValidateNativeStiffness_Click(object sender, RoutedEventArgs e)
-    {
-        ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
-        var invalid = _nativeStiffnessRows.Where(r => r.ValidationSummary != "OK").ToList();
-        MessageBox.Show(invalid.Count == 0 ? $"Stiffness validation passed for {_nativeStiffnessRows.Count} rows." : $"Stiffness validation found {invalid.Count} rows with invalid input values.", "Stiffness Measurements Validation", MessageBoxButton.OK, invalid.Count == 0 ? MessageBoxImage.Information : MessageBoxImage.Warning);
-    }
-
-    private void RefreshNativeStiffnessSummary_Click(object sender, RoutedEventArgs e) => RefreshNativeStiffnessSummary();
 
     private void MarkNativeStiffnessDirty() => SetNativeStiffnessDirty(true);
 
@@ -27038,8 +25344,6 @@ private List<string> GetVisibleAiMaterialLabels()
     }
 
     private static double DegreesToRadians(double degrees) => Math.PI * degrees / 180d;
-
-    private static string FormatComputedImpact(double? value) => value.HasValue ? value.Value.ToString("0.###", CultureInfo.CurrentCulture) : "";
 
     private static bool TryParseMeasurement(string? text, out double value)
     {

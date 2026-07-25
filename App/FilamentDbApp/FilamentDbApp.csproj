@@ -8,10 +8,10 @@
     <ApplicationIcon>Assets\3dp-iceland-labs-icon.ico</ApplicationIcon>
     <AssemblyName>3DPIcelandFilamentDB</AssemblyName>
     <RootNamespace>FilamentDbApp</RootNamespace>
-    <Version>44.7.11</Version>
-    <AssemblyVersion>44.7.11.0</AssemblyVersion>
-    <FileVersion>44.7.11.0</FileVersion>
-    <InformationalVersion>44.7.11-SETTINGS-MANAGER-COMMAND-CLARITY</InformationalVersion>
+    <Version>44.7.12</Version>
+    <AssemblyVersion>44.7.12.0</AssemblyVersion>
+    <FileVersion>44.7.12.0</FileVersion>
+    <InformationalVersion>44.7.12-CLEAN-BASELINE-RETIREMENT</InformationalVersion>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Copyright>Copyright © 2026 Marteinn Sigurðsson / 3DPIceland Labs</Copyright>
   </PropertyGroup>
@@ -34,9 +34,6 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Resource Include="Assets\3dp-iceland-labs-icon.png" />
-    <Content Include="Assets\3dp-iceland-app-icon-source.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>

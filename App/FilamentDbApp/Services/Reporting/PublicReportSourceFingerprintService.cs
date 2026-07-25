@@ -23,12 +23,27 @@ public sealed class PublicReportSourceFingerprintService
             FROM NativeMaterialManagerRows
             ORDER BY MaterialId COLLATE NOCASE
             """),
-        ("TensileResults", "SELECT * FROM TensileResults ORDER BY MaterialId COLLATE NOCASE"),
-        ("TensileSamples", "SELECT * FROM TensileSamples ORDER BY MaterialId COLLATE NOCASE, Orientation COLLATE NOCASE, SampleNumber"),
-        ("ImpactSamples", "SELECT * FROM ImpactSamples ORDER BY MaterialId COLLATE NOCASE, Orientation COLLATE NOCASE, SampleNumber"),
-        ("StiffnessMeasurements", "SELECT * FROM StiffnessMeasurements ORDER BY MaterialId COLLATE NOCASE"),
-        ("TestSummaryValues", "SELECT * FROM TestSummaryValues ORDER BY MaterialId COLLATE NOCASE, TestType COLLATE NOCASE, MetricName COLLATE NOCASE")
+        ("NativeTensileResults", "SELECT * FROM NativeTensileResults ORDER BY MaterialId COLLATE NOCASE"),
+        ("NativeTensileSamples", """
+            SELECT * FROM NativeTensileSamples
+            ORDER BY MaterialId COLLATE NOCASE, Orientation COLLATE NOCASE, SampleNumber
+            """),
+        ("NativeImpactSamples", """
+            SELECT * FROM NativeImpactSamples
+            ORDER BY MaterialId COLLATE NOCASE, Orientation COLLATE NOCASE, SampleNumber
+            """),
+        ("NativeStiffnessMeasurements", """
+            SELECT * FROM NativeStiffnessMeasurements
+            ORDER BY MaterialId COLLATE NOCASE
+            """),
+        ("NativeMeasurementNotes", """
+            SELECT * FROM NativeMeasurementNotes
+            ORDER BY MaterialId COLLATE NOCASE, TestType COLLATE NOCASE
+            """)
     };
+
+    public static bool CanonicalQueriesUseNativeTables() =>
+        CanonicalQueries.All(query => query.Name.StartsWith("Native", StringComparison.Ordinal));
 
     public string Compute(string databasePath, IEnumerable<string> publicMaterialIds, string canonicalReportProjection)
     {

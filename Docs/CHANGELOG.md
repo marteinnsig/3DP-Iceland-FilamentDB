@@ -2,6 +2,25 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.12 - Clean Baseline Retirement
+
+- Removed the caller-free hand-built MainWindow PDF renderer, chart/text
+  projection helpers and unused `ReportFoundationResult.PdfLines`.
+- Preserved canonical HTML-to-WebView2 PDF and the separately owned typed report
+  renderer/certificate pipeline.
+- Removed retired workbook-import write helpers and `WorkbookImportData` while
+  preserving compatibility, migration and recovery owners.
+- Removed retired website-template file UI/handlers, standalone manufacturer
+  template helpers and residual legacy measurement handlers.
+- Removed the unowned `3dp-iceland-app-icon-source.png` project/output asset;
+  active application, installer and report branding remain.
+- Added a v44.7.12 Verification gate for absence of retired entry points and
+  continued canonical reporting ownership.
+- Corrected the Public Report Package source fingerprint to read canonical
+  native measurement tables instead of retired workbook-era tables.
+- Owner runtime review accepted normal Engineering Package output, branding
+  and all public report families; sampled HTML and final Verification passed.
+
 ## v44.7.11 - Settings Manager Command Clarity
 
 - Renamed `Load Settings` to `Reload Saved Settings` and added a default-No
