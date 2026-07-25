@@ -30,16 +30,28 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 13 |
+| Open | 14 |
 | In progress | 1 |
 | Partially solved | 3 |
 | Solved | 42 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **63** |
+| **Total tracked findings** | **64** |
 
 ## Tracked findings
+
+Date: 2026-07-25
+Area: Materials / Manufacturers
+Type: Workflow improvement
+Severity: Idea
+Status: Open
+Resolution: Planned for ownership research and bounded implementation in v44.8.3.
+Verification evidence: Pending.
+What happened: Materials currently accepts free-text Manufacturer values even though Manufacturers has a governed canonical catalog.
+Expected behavior: Materials should offer a dropdown sourced from canonical Manufacturers while preserving supported legacy/unmapped values.
+Steps to reproduce: Open Materials and edit Manufacturer on an existing or new row.
+Screenshot / export / report attached: Not required.
 
 Date: 2026-07-25
 Area: Guarded updater acceptance

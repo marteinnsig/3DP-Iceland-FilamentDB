@@ -1827,6 +1827,13 @@ changes priority.
   - Feedback disposition: Partially solved.
   - Explain the feature, prove filtered MaterialID scope and simplify collections.
   - This does **not** include an external AI API.
+- **v44.8.3 — Canonical Manufacturer Selection**
+  - Feedback disposition: Open.
+  - Research Materials/Manufacturers ownership before replacing free-text Manufacturer editing.
+  - Compare backwards-compatible name binding with a real `ManufacturerID` foreign-key relationship.
+  - Source the dropdown from canonical Manufacturers and preserve supported legacy/unmapped values.
+  - Define rename, archive, delete, Add Material, import/export, report, website and recovery behavior.
+  - Update disposable CRUD automation for select/save/restart persistence when the runtime contract is approved.
 - **v44.9.0 — Price-to-Engineering Analytics**
   - Feedback disposition: Partially solved.
   - Define governed USD/kg provenance and one honest price/performance metric.
