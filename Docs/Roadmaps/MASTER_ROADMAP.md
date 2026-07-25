@@ -6,7 +6,7 @@ Last runtime-accepted baseline: **v44.7.18 — Guarded Updater Acceptance**
 
 Current application release: **v44.7.18 — Guarded Updater Acceptance**
 
-Current roadmap increment: **v44.8.0 — Low-value Material fields audit**
+Current roadmap increment: **v45.0 — Material Model Audit and Relationship Plan**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -24,7 +24,14 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v41 | Engineering Intelligence | ★★★★★ | Complete — governed downstream handoffs delivered |
 | v42 | Website & Approved Template Architecture | ★★★★☆ | Foundation delivered early |
 | v43 | Deployment Platform | ★★★★☆ | Complete — canonical v43.8.9 runtime accepted |
-| v44 | Daily Use, Reliability & Maintainability | ★★★★★ | In progress — v44.0 through v44.4 complete |
+| v44 | Daily Use, Reliability & Maintainability | ★★★★★ | Complete — canonical v44.7.18 runtime accepted |
+| v45 | Material Model and Canonical Relationships | ★★★★★ | Current |
+| v46 | Application Branding | ★★★☆☆ | Planned |
+| v47 | AI Assistant Workflow | ★★★★☆ | Planned |
+| v48 | Pricing and Usage Analytics | ★★★★☆ | Planned |
+| v49 | Experimental Workflow Extension | ★★★★☆ | Planned |
+| v50 | Comprehensive User Help | ★★★★★ | Planned |
+| v51 | Governed Runtime Profiles | ★★★☆☆ | Research only |
 
 ## Reconciliation of the older plans
 
@@ -1514,7 +1521,7 @@ other legacy code paths encountered during the audit.
 
 ## Canonical delivery status and next-version plan
 
-Last reviewed: **2026-07-24**
+Last reviewed: **2026-07-25**
 
 This is the authoritative execution summary. Earlier proposal tables and idea
 descriptions above are retained as context only. Estimated versions below are
@@ -1522,6 +1529,12 @@ planning slots, not implementation promises. Only the first `Current` item may
 start without a new scope decision; every later item must still begin with
 caller/data-ownership research and may be reordered when daily-use evidence
 changes priority.
+
+Major versions own one coherent strategic theme. Close a major version when
+its bounded milestone is accepted, and advance the major number for the next
+materially different theme instead of accumulating unrelated subversions.
+Never renumber completed or runtime-accepted history; this rule applies only
+to unstarted authoritative planning slots.
 
 ### Completed v44 delivery
 
@@ -1564,7 +1577,7 @@ changes priority.
   - All 49 retained feedback items have lifecycle metadata.
   - Owner review, 136-column formatting and canonical documentation audit passed.
 
-### Near-term bounded sequence
+### Completed v44 bounded sequence
 
 - **v44.7.0 — Feedback Backlog Governance and Roadmap Reset**
   - State: **Complete**.
@@ -1712,11 +1725,11 @@ changes priority.
   - Defer CSP and broad sanitization until compatibility evidence proves they do not break accepted output.
   - Owner template/Preview/report HTML/PDF review and Full Data Verification 339/339 passed.
 
-### Later v44 owner-value sequence
+### Completed v44 automation closure
 
 - **v44.7.14 — Automated Runtime Acceptance Foundation**
   - State: **Complete; runtime accepted.**
-  - Feedback disposition: Approved owner-value foundation before v44.8 feature work.
+  - Feedback disposition: Approved owner-value foundation before post-v44 feature work.
   - Research before code:
   - Research UI Automation visibility, startup/profile ownership, Verification exports and current evidence surfaces.
   - Confirm which controls already expose `AutomationId` and whether virtualized Fast controls are visible to UI Automation.
@@ -1760,11 +1773,11 @@ changes priority.
   - Disposable acceptance passes 340/340 with consistent snapshots and identical before/after logical SQLite hashes.
   - Owner runtime acceptance and Full Data Verification 340/340 pass.
   - Fast-cell, report-generation, CRUD, recovery and updater automation remain outside the completed Stage 1 scope.
-  - Complete Stages 2–5 in v44.7.15–v44.7.18 before starting v44.8 feature work.
+  - Complete Stages 2–5 in v44.7.15–v44.7.18 before starting post-v44 feature work.
   - Automation supports but never replaces owner runtime or visual acceptance.
 - **v44.7.15 — Automated Report Acceptance**
   - State: **Completed and runtime accepted 2026-07-25.**
-  - Feedback disposition: Approved Stage 2 completion before v44.8.
+  - Feedback disposition: Approved Stage 2 completion before post-v44 feature work.
   - Map report controls, completion signals, routes, allowlisted content and current HTML/PDF verification before code changes.
   - Build local previews only; keep Production and FTPS blocked.
   - Verify expected routes, HTML/PDF existence, non-empty artifacts, hashes and governed text without exposing private data.
@@ -1778,7 +1791,7 @@ changes priority.
   - Debug/Release, static/security, documentation, roadmap-line and NuGet vulnerability gates pass.
 - **v44.7.16 — Disposable CRUD Acceptance**
   - State: **Completed and runtime accepted 2026-07-25.**
-  - Feedback disposition: Approved Stage 3 completion before v44.8.
+  - Feedback disposition: Approved Stage 3 completion before post-v44 feature work.
   - Add scenario-authorized create, edit, save, restart, persistence and delete tests only in a proven disposable profile.
   - Use uniquely identified automation records and prove canonical owner paths are never selected.
   - Retain before/after snapshots, logical hashes and per-action evidence; unexpected dialogs stop the run.
@@ -1791,7 +1804,7 @@ changes priority.
   - Owner accepted normal create/edit/delete persistence and Full Data Verification 342/342.
 - **v44.7.17 — Disposable Backup and Recovery Acceptance**
   - State: **Completed and runtime accepted 2026-07-25.**
-  - Feedback disposition: Approved Stage 4 completion before v44.8.
+  - Feedback disposition: Approved Stage 4 completion before post-v44 feature work.
   - Exercise manual SQLite backup, Recovery Center discovery/verify and governed Excel restore only against disposable data.
   - Require explicit scenario authorization, validated paths and retained pre/post-restore evidence and hashes.
   - Prove that SQLite is never silently restored and that supported historical `.sqlite` and `.bak` discovery remains intact.
@@ -1805,7 +1818,7 @@ changes priority.
   - Owner accepted backup discovery, Excel recovery, pre/post evidence and Full Data Verification 343/343.
 - **v44.7.18 — Guarded Updater Acceptance**
   - State: **Completed and runtime accepted 2026-07-25.**
-  - Feedback disposition: Approved Stage 5 completion before v44.8.
+  - Feedback disposition: Approved Stage 5 completion before post-v44 feature work.
   - Test only an isolated disposable portable build; never target the installed owner app or canonical database.
   - Verify transaction states, snapshot, exact-build health acknowledgement, rollback and retained evidence.
   - Keep Production, FTPS and owner paths blocked; every updater mutation requires explicit scenario authorization.
@@ -1814,63 +1827,53 @@ changes priority.
   - Real helper commit covers 54 governed portable files and exact v44.7.18 health acknowledgement.
   - Forced failed launch reaches `RolledBack`; all pre-update SHA-256 values and database business state are restored.
   - Disposable and owner Full Data Verification pass 344/344; owner accepted normal startup and owner-data behavior.
-- **v44.8.0 — Low-value Material fields audit**
+### Authoritative future major-version sequence
+
+- **v45.0 — Material Model Audit and Relationship Plan**
   - State: **Current authoritative increment.**
   - Feedback disposition: Open.
-  - Trace `Manufacturer SKU` and video-thumbnail-name callers before any hide/retire decision.
-  - Preserve recovery and report compatibility.
-- **v44.8.1 — Application icon/branding review**
+  - Trace `Manufacturer SKU`, video-thumbnail-name and related Material field callers before hide/retire decisions.
+  - Map Materials, Manufacturers and Base Material catalog identity, rename, archive, delete and compatibility ownership.
+  - Decide bounded v45.1/v45.2 implementation contracts before schema or UI changes.
+  - Preserve recovery, import/export, reports, website and historical/unmapped values.
+- **v45.1 — Canonical Manufacturer Selection**
   - Feedback disposition: Open.
-  - Evaluate a transparent-background icon against Windows visibility, installer, About, reports and governed assets.
-  - Entry condition: approved visual asset and runtime screenshots.
-- **v44.8.2 — AI Assistant Workflow Clarity**
-  - Feedback disposition: Partially solved.
-  - Explain the feature, prove filtered MaterialID scope and simplify collections.
-  - This does **not** include an external AI API.
-- **v44.8.3 — Canonical Manufacturer Selection**
-  - Feedback disposition: Open.
-  - Research Materials/Manufacturers ownership before replacing free-text Manufacturer editing.
+  - Replace free-text Manufacturer editing only after v45.0 approves the ownership contract.
   - Compare backwards-compatible name binding with a real `ManufacturerID` foreign-key relationship.
   - Source the dropdown from canonical Manufacturers and preserve supported legacy/unmapped values.
   - Define rename, archive, delete, Add Material, import/export, report, website and recovery behavior.
-  - Update disposable CRUD automation for select/save/restart persistence when the runtime contract is approved.
-- **v44.9.0 — Price-to-Engineering Analytics**
-  - Feedback disposition: Partially solved.
-  - Define governed USD/kg provenance and one honest price/performance metric.
-  - Missing cost remains `Not recorded`.
-  - Entry condition: approved currency, unit and formula contract.
-- **v44.9.1 — Usage and Test-History Research**
-  - Feedback disposition: Open.
-  - Define ownership for print hours, test hours, material usage and sample-count history.
-  - Do not add schema until an actual capture/report workflow is known.
-- **v44.10.0 — Canonical Base Material Selection**
+  - Update disposable CRUD automation for select/save/restart persistence.
+- **v45.2 — Canonical Base Material Selection**
   - Feedback disposition: Open.
   - Use a backwards-compatible dropdown sourced from the governed catalog.
   - Preserve explicit legacy/unmapped values and never silently remap.
   - Entry condition: caller, import/export and migration audit complete.
-- **v44.11.0 — Experimental Workflow Extension**
+- **v46.0 — Application Branding Review**
+  - Feedback disposition: Open.
+  - Evaluate a transparent-background icon against Windows visibility, installer, About, reports and governed assets.
+  - Entry condition: approved visual asset and runtime screenshots.
+- **v47.0 — AI Assistant Workflow Clarity**
   - Feedback disposition: Partially solved.
-  - Evaluate owner-visible gaps on top of canonical Series/Runs.
-  - Do not duplicate Materials or create dynamic schema columns.
-
-### Larger post-v44 candidates
-
-- **v45.0 — MaterialID-aware Print Job Pricing and immutable quote snapshots**
+  - Explain the feature, prove filtered MaterialID scope and simplify collections.
+  - This does **not** include an external AI API.
+- **v48.0 — Pricing and Usage Analytics Foundation**
+  - Feedback disposition: Partially solved.
+  - Define governed USD/kg provenance and one honest price/performance metric.
+  - Define ownership for print hours, test hours, material usage and sample-count history.
+  - Missing cost and history remain `Not recorded`; do not add schema before a proven capture/report workflow.
+- **v48.1 — MaterialID-aware Print Job Pricing and Immutable Quote Snapshots**
   - State: Open design.
   - Requires formula/reuse-rights, unit, currency-provenance and Printer Profile approval before coding.
   - Historical quote snapshots must be immutable.
-- **v45.1 — Optional official exchange-rate reference catalog**
+- **v48.2 — Optional Official Exchange-rate Reference Catalog**
   - State: Deferred/conditional.
   - Requires a stable official endpoint and reuse contract.
-  - May prefill only new unsaved purchase data.
-  - Must never rewrite saved purchases, lots or quotes.
-- **v45.2 — Governed Development/Verification and Production/Clean profiles**
-  - State: Research only until diagnostics have measured cost.
-  - Mandatory crash, recovery, security and support evidence can never be removed.
-
-### Dedicated v46 user-help milestone
-
-- **v46.0 — Comprehensive User Help and Workflow Guide**
+  - May prefill only new unsaved purchase data and must never rewrite saved purchases, lots or quotes.
+- **v49.0 — Experimental Workflow Extension**
+  - Feedback disposition: Partially solved.
+  - Evaluate owner-visible gaps on top of canonical Series/Runs.
+  - Do not duplicate Materials or create dynamic schema columns.
+- **v50.0 — Comprehensive User Help and Workflow Guide**
   - State: Planned dedicated milestone.
   - Feedback disposition: Open.
   - Treat this as a full information-architecture and user-documentation project, not incidental tooltip work.
@@ -1880,6 +1883,9 @@ changes priority.
   - Provide a start-to-finish guide, per-tab reference, contextual in-app entry points and troubleshooting/recovery boundaries.
   - Preserve canonical calculations, SQLite ownership, public allowlists, default-No publishing and guarded recovery behavior.
   - Entry condition: approved help structure and verified mapping to current runtime behavior.
+- **v51.0 — Governed Development/Verification and Production/Clean Profiles**
+  - State: Research only until diagnostics have measured cost.
+  - Mandatory crash, recovery, security and support evidence can never be removed.
 
 ### Intentionally unscheduled
 

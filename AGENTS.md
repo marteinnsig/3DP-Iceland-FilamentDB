@@ -61,3 +61,15 @@
   manual when deterministic automation would not provide reliable evidence.
 - Document why tester changes are required or why no tester change is warranted
   in the increment evidence and release notes.
+
+## Roadmap major-version governance
+
+- Give each future major version one coherent strategic theme and a bounded
+  completion condition.
+- Advance to a new major version when the next material milestone has a
+  different theme. Do not accumulate long sequences of unrelated work under
+  one major version merely to avoid advancing the version number.
+- Use minor or patch increments only for related stages, corrections and
+  acceptance work inside the same major milestone.
+- Never renumber completed, canonical or runtime-accepted releases. Roadmap
+  renumbering applies only to unstarted planning slots.

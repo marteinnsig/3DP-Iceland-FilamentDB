@@ -46,7 +46,7 @@ Area: Materials / Manufacturers
 Type: Workflow improvement
 Severity: Idea
 Status: Open
-Resolution: Planned for ownership research and bounded implementation in v44.8.3.
+Resolution: Planned for ownership research in v45.0 and bounded implementation in v45.1.
 Verification evidence: Pending.
 What happened: Materials currently accepts free-text Manufacturer values even though Manufacturers has a governed canonical catalog.
 Expected behavior: Materials should offer a dropdown sourced from canonical Manufacturers while preserving supported legacy/unmapped values.
@@ -289,7 +289,7 @@ Area: Application-wide user help and workflow guidance
 Type: Workflow friction / UI polish
 Severity: Idea
 Status: Open
-Resolution: Planned as the dedicated v46.0 user-help milestone. Cover every supported tab and the complete owner workflow
+Resolution: Planned as the dedicated v50.0 user-help milestone. Cover every supported tab and the complete owner workflow
 from Purchasing, Materials and Inventory through measurement entry, validation, analysis, reports, website Preview and guarded
 Production publishing. Research current UI ownership and accepted behavior before writing; do not let help text redefine calculations,
 data ownership, public allowlists, FTPS confirmation or recovery boundaries.
