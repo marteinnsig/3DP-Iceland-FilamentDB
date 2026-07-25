@@ -30,10 +30,10 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 14 |
+| Open | 13 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 34 |
+| Solved | 35 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
@@ -110,12 +110,18 @@ Date: 2026-07-24
 Area: Settings Manager command clarity and column reset naming
 Type: Workflow friction / UI polish
 Severity: Minor
-Status: Open
-Resolution: Research the exact persisted-data ownership and mutation paths behind `Load Settings` and `Restore Built-in Defaults`.
-Make their distinct purpose, confirmation and result explicit; if they are unintentionally equivalent, correct the caller behavior
-without changing canonical SQLite settings or deployment/Base Material ownership. Rename `Reset Fast Columns` to `Reset Columns` while
-preserving the accepted settings-column layout reset scope.
-Verification evidence: Requires persisted custom-value, load, built-in restore, cancellation, restart and column-layout runtime tests.
+Status: Solved
+Resolution: v44.7.11 renames Load to `Reload Saved Settings`, adds a
+default-No discard confirmation, and renames `Reset Fast Columns` to `Reset
+Columns`. Research found that built-in restore also replaced the in-memory Base
+Material Catalog despite its stated General-only scope; the candidate now
+replaces and saves only General Settings while preserving Deployment Settings
+and the canonical Base Material Catalog. Duplicate generic Fast-grid footer
+reloads are hidden because they refreshed only in-memory rows; the explicit
+toolbar command owns SQLite reload.
+Verification evidence: Owner persisted-value reload, default-No cancellation,
+built-in restore, Base Material/Deployment preservation, restart, column reset
+and visual tests passed. Full Data Verification passed 336/336.
 What happened: `Load Settings` and `Restore Built-in Defaults` appear to perform the same action by replacing entered values with
 defaults. The `Reset Fast Columns` label also exposes an implementation detail rather than the user action.
 Expected behavior: Loading should clearly reload the intended saved canonical values, restoring defaults should be a distinct

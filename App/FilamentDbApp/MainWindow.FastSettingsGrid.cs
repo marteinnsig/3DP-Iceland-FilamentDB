@@ -27,8 +27,8 @@ public partial class MainWindow
     {
         var confirmation = MessageBox.Show(
             this,
-            "Reset both Fast Settings column layouts to application defaults?",
-            "Reset Fast Settings Columns",
+            "Reset both Settings Manager column layouts to application defaults?\n\nSaved Settings and Base Material data are unchanged.",
+            "Reset Settings Columns",
             MessageBoxButton.YesNo,
             MessageBoxImage.Question,
             MessageBoxResult.No);
@@ -40,7 +40,7 @@ public partial class MainWindow
             _defaultFastNativeSettingsColumns ?? BuildFastNativeSettingsColumns());
         _embeddedFastBaseMaterialsView?.ResetLayout(
             _defaultFastBaseMaterialsColumns ?? BuildFastBaseMaterialColumns());
-        ShowTransientStatus("Fast Settings columns reset to defaults.");
+        ShowTransientStatus("Settings Manager columns reset to defaults; saved data was unchanged.");
     }
 
     private MaterialsRenderingPrototypeView CreateFastNativeSettingsView()
@@ -56,7 +56,8 @@ public partial class MainWindow
             BuildFastNativeSettingsRows,
             _ => { },
             directCanonicalEditing: true,
-            reloadAfterApply: true);
+            reloadAfterApply: true,
+            showReloadButton: false);
     }
 
     private MaterialsRenderingPrototypeView CreateFastBaseMaterialsView()
@@ -72,7 +73,8 @@ public partial class MainWindow
             BuildFastBaseMaterialRows,
             source => _selectedFastBaseMaterialRow = source as NativeBaseMaterialRow,
             directCanonicalEditing: true,
-            reloadAfterApply: true);
+            reloadAfterApply: true,
+            showReloadButton: false);
     }
 
     private static List<MaterialsPrototypeColumn> BuildFastNativeSettingsColumns() =>

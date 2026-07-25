@@ -448,7 +448,8 @@ public partial class MainWindow
             Func<IReadOnlyList<MaterialsPrototypeColumn>, List<MaterialsPrototypeRow>> reloadRows,
             Action<object> selectRow,
             bool directCanonicalEditing,
-            bool reloadAfterApply = false)
+            bool reloadAfterApply = false,
+            bool showReloadButton = true)
         {
             _columns = columns as List<MaterialsPrototypeColumn> ?? columns.ToList();
             _rows = rows as List<MaterialsPrototypeRow> ?? rows.ToList();
@@ -493,6 +494,7 @@ public partial class MainWindow
             _reloadButton = new Button
             {
                 Content = "Reload current Materials filters/data",
+                Visibility = showReloadButton ? Visibility.Visible : Visibility.Collapsed,
                 Margin = new Thickness(8, 4, 0, 4),
                 Padding = new Thickness(10, 4, 10, 4)
             };

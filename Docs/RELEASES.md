@@ -1,6 +1,18 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.11 - Settings Manager Command Clarity
+
+- Runtime-accepted distinct `Reload Saved Settings`, `Restore Built-in
+  Defaults` and `Reset Columns` ownership.
+- Reload is default-No and reads saved General/Deployment values from SQLite.
+- Built-in restore changes only General Settings; Deployment Settings and Base
+  Material Catalog remain unchanged.
+- Removed two misleading Settings footer reloads that only refreshed in-memory
+  grids rather than SQLite.
+- Debug/Release and static/security gates passed; owner runtime acceptance and
+  Full Data Verification passed 336/336.
+
 ## v44.7.10 - Canonical MaterialID Default Row Order
 
 - Runtime-accepted natural numeric MaterialID default order across Fast

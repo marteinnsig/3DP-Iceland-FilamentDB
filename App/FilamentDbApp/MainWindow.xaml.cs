@@ -17066,6 +17066,31 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             canonicalMaterialIdDefaultOrderReady && releaseIdentityReady
                 ? "Fast Materials, Tensile, Impact and Stiffness use natural numeric MaterialID default order; active sorts reapply after source changes, and close commits editors plus parent Materials before FK-child measurements"
                 : "Natural MaterialID order, active-sort refresh, parent-before-child close ownership, legacy-grid retirement or release identity failed"));
+        var settingsManagerCommandClarityReady =
+            FindName("ResetSettingsColumnsButton") is Button resetSettingsColumnsButton &&
+            string.Equals(resetSettingsColumnsButton.Content?.ToString(), "Reset Columns", StringComparison.Ordinal) &&
+            FindName("ReloadSavedSettingsButton") is Button reloadSavedSettingsButton &&
+            reloadSavedSettingsButton.Content is StackPanel reloadSavedSettingsContent &&
+            reloadSavedSettingsContent.Children.OfType<TextBlock>().Any(text =>
+                string.Equals(text.Text, "Reload Saved Settings", StringComparison.Ordinal)) &&
+            FindName("RestoreBuiltInSettingsButton") is Button &&
+            typeof(MainWindow).GetMethod(
+                "ReplaceNativeGeneralSettingsWithBuiltInDefaults",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                nameof(LoadNativeSettings_Click),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                nameof(ResetNativeSettings_Click),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MaterialsRenderingPrototypeView).GetConstructors().Any(constructor =>
+                constructor.GetParameters().Any(parameter =>
+                    string.Equals(parameter.Name, "showReloadButton", StringComparison.Ordinal)));
+        checks.Add(new VerificationCheck("v44.7.11 Settings Manager Command Clarity release gate",
+            settingsManagerCommandClarityReady && releaseIdentityReady,
+            settingsManagerCommandClarityReady && releaseIdentityReady
+                ? "Reload Saved Settings is default-No and SQLite-owned; built-in restore is General-only, and Reset Columns changes only both Settings layouts"
+                : "Settings reload, built-in restore, layout-reset ownership or release identity failed"));
         var nativeMetadataTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMeasurementNotes");
         var experimentalRunsTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "ExperimentalRuns");
         var measurementDateEditProbe = new NativeStiffnessMeasurementRow();
@@ -22066,6 +22091,19 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void LoadNativeSettings_Click(object sender, RoutedEventArgs e)
     {
+        var result = MessageBox.Show(
+            this,
+            "Reload saved General and Deployment settings from SQLite?\n\n" +
+            "Current unsaved Settings edits will be discarded. The Base Material Catalog is unchanged.",
+            "Reload Saved Settings?",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question,
+            MessageBoxResult.No);
+        if (result != MessageBoxResult.Yes)
+        {
+            return;
+        }
+
         LoadCanonicalNativeSettings();
         LoadDeploymentSettingsIntoManager();
         EnsurePurchasingCurrencySettings();
@@ -22073,9 +22111,12 @@ private List<string> GetVisibleAiMaterialLabels()
 
         // Base Material Catalog is intentionally not replaced from JSON. SQLite owns it.
 
+        RefreshNativeInputModulesFromMaterialManager(markDirty: false);
+        SyncPurchaseOrderCurrencyRatesFromSettings();
         ApplyNativeMaterialComputedFieldsToAllRows();
         RefreshNativeMaterialGridValidation();
         RefreshFastSettingsViews();
+        ShowTransientStatus("Saved General and Deployment settings reloaded; Base Material Catalog was unchanged.");
     }
 
     private void ResetNativeSettings_Click(object sender, RoutedEventArgs e)
@@ -22086,10 +22127,30 @@ private List<string> GetVisibleAiMaterialLabels()
             return;
         }
 
-        LoadBuiltInNativeSettingsDefaults();
-        LoadDeploymentSettingsIntoManager();
+        ReplaceNativeGeneralSettingsWithBuiltInDefaults();
         SaveCanonicalNativeSettings();
+        RefreshNativeInputModulesFromMaterialManager(markDirty: false);
+        RefreshPurchaseCurrencyChoices();
+        SyncPurchaseOrderCurrencyRatesFromSettings();
+        ApplyNativeMaterialComputedFieldsToAllRows();
+        RefreshNativeMaterialGridValidation();
         RefreshFastSettingsViews();
+        ShowTransientStatus("Built-in General Settings restored and saved; Deployment Settings and Base Material Catalog were unchanged.");
+    }
+
+    private void ReplaceNativeGeneralSettingsWithBuiltInDefaults()
+    {
+        foreach (var row in _nativeSettingsRows
+                     .Where(row => !string.Equals(row.Section, "Deployment", StringComparison.OrdinalIgnoreCase))
+                     .ToList())
+        {
+            _nativeSettingsRows.Remove(row);
+        }
+
+        foreach (var row in GetDefaultNativeSettingsRows())
+        {
+            _nativeSettingsRows.Add(row);
+        }
     }
 
     private void AddBaseMaterialRow_Click(object sender, RoutedEventArgs e)

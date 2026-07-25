@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.11 - Settings Manager Command Clarity
+
+Separates SQLite reload, General-only built-in restore and machine-local column
+reset behavior. The accepted workflow preserves Deployment Settings and Base
+Material Catalog ownership and removes misleading in-memory reload footers.
+Owner runtime acceptance and Full Data Verification 336/336 passed.
+
+---
+
 # v44.7.10 - Canonical MaterialID Default Row Order
 
 Adds natural numeric default ordering to all four accepted daily Fast grids

@@ -1,12 +1,12 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.10 — Canonical MaterialID Default Row Order**
+Current canonical release: **v44.7.11 — Settings Manager Command Clarity**
 
-Last runtime-accepted baseline: **v44.7.10 — Canonical MaterialID Default Row Order**
+Last runtime-accepted baseline: **v44.7.11 — Settings Manager Command Clarity**
 
-Current application release: **v44.7.10 — Canonical MaterialID Default Row Order**
+Current application release: **v44.7.11 — Settings Manager Command Clarity**
 
-Current roadmap increment: **v44.7.11 — Settings Manager Command Clarity**
+Current roadmap increment: **v44.8.0 — Low-value Material fields audit**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1682,13 +1682,16 @@ changes priority.
   - Keep Add/Duplicate placeholder display names unique and immediately save-safe.
   - Owner Add, Duplicate, sort, close/restart and viewport tests passed; Full Data Verification passed 335/335.
 - **v44.7.11 — Settings Manager Command Clarity**
-  - State: Planned.
-  - Feedback disposition: Open.
+  - State: Complete and runtime accepted.
+  - Feedback disposition: Solved.
   - Trace persisted SQLite ownership and callers for `Load Settings` and `Restore Built-in Defaults`.
   - Make reload versus default-No replacement behavior explicit; correct overlap only if runtime evidence proves a defect.
   - Preserve Deployment Settings and Base Material Catalog ownership, cancellation and restart behavior.
   - Rename `Reset Fast Columns` to `Reset Columns` without changing the accepted layout-reset scope.
-  - Verify custom values, load, restore, cancellation, restart and column-layout reset at runtime.
+  - Correct built-in restore so it cannot replace the in-memory Base Material Catalog.
+  - Make reload default-No because it discards current unsaved Settings edits.
+  - Hide duplicate generic in-memory grid reload footers; retain the explicit SQLite reload owner.
+  - Owner reload, restore, cancellation, restart, column-layout and visual tests passed; Full Data Verification passed 336/336.
 
 ### Later v44 owner-value sequence
 

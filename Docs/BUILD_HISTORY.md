@@ -2,6 +2,26 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.11 - Settings Manager Command Clarity
+
+v44.7.11 separates three existing Settings Manager command boundaries.
+Reload Saved Settings reads General and Deployment values from SQLite after a
+default-No discard confirmation. Restore Built-in Defaults replaces and saves
+only General Settings. Reset Columns remains a machine-local two-layout reset.
+
+Research corrected a real ownership defect: the previous built-in restore
+reused an initialization helper that also replaced the in-memory Base Material
+Catalog. Deployment Settings, Base Materials, schema, formulas, reports,
+website/FTPS and recovery remain separately owned. Runtime acceptance is
+complete.
+
+Owner visual review found the shared Fast-grid Materials reload footer repeated
+in both Settings views. It refreshed only current in-memory rows, not SQLite,
+so both Settings instances are hidden while programmatic refresh remains.
+
+Owner reload, restore, cancellation, restart, layout and visual tests passed.
+Full Data Verification passed 336/336; v44.7.11 is canonical.
+
 ## v44.7.10 - Canonical MaterialID Default Row Order
 
 v44.7.10 centralizes natural MaterialID comparison in the accepted Fast-grid

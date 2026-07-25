@@ -1858,10 +1858,10 @@
                     </StackPanel>
 
                     <WrapPanel Grid.Row="1" Margin="0,0,0,10">
-                        <Button Content="Reset Fast Columns" Click="ResetFastSettingsColumns_Click" Padding="12,6" Margin="0,0,16,8"/>
+                        <Button Name="ResetSettingsColumnsButton" Content="Reset Columns" Click="ResetFastSettingsColumns_Click" Padding="12,6" Margin="0,0,16,8" ToolTip="Reset the General Settings and Base Material Catalog column layouts. Saved data is unchanged."/>
                         <Button Click="SaveNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE74E;"/><TextBlock Text="Save Settings"/></StackPanel></Button>
-                        <Button Click="LoadNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE8E5;"/><TextBlock Text="Load Settings"/></StackPanel></Button>
-                        <Button Click="ResetNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" ToolTip="Replace current general settings with the built-in defaults."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE777;"/><TextBlock Text="Restore Built-in Defaults"/></StackPanel></Button>
+                        <Button Name="ReloadSavedSettingsButton" Click="LoadNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" ToolTip="Reload saved General and Deployment settings from SQLite. Base Material Catalog is unchanged."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE8E5;"/><TextBlock Text="Reload Saved Settings"/></StackPanel></Button>
+                        <Button Name="RestoreBuiltInSettingsButton" Click="ResetNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" ToolTip="Replace General Settings with built-in defaults. Deployment Settings and Base Material Catalog are unchanged."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE777;"/><TextBlock Text="Restore Built-in Defaults"/></StackPanel></Button>
                         <Button Content="Add Base Material" Click="AddBaseMaterialRow_Click" Padding="12,6" Margin="16,0,8,8"/>
                         <Button Content="Delete Selected Base Material" Click="DeleteBaseMaterialRow_Click" Padding="12,6" Margin="0,0,8,8" ToolTip="Delete the selected base-material definition from Settings."/>
                     </WrapPanel>

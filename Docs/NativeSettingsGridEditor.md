@@ -59,3 +59,16 @@ Saved settings are stored locally as:
 This is the first native replacement for the Excel `04 Settings` sheet.
 
 Future calculation engines must read from these native settings instead of directly depending on Excel.
+
+## Current canonical command ownership
+
+The v27.2 action and storage list above is historical. In v44.7.11:
+
+- `Save Settings` persists General Settings, Deployment Settings and Base
+  Material Catalog through their separate SQLite owners.
+- `Reload Saved Settings` reloads General and Deployment values from SQLite
+  after default-No confirmation; Base Material Catalog is unchanged.
+- `Restore Built-in Defaults` replaces and saves General Settings only.
+- `Reset Columns` resets the two machine-local Settings Manager layouts and
+  does not change canonical data.
+- Legacy JSON remains migration compatibility input only.

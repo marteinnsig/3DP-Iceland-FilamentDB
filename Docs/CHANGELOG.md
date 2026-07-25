@@ -2,6 +2,26 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.11 - Settings Manager Command Clarity
+
+- Renamed `Load Settings` to `Reload Saved Settings` and added a default-No
+  confirmation before current unsaved Settings edits are discarded.
+- Clarified that reload reads General and Deployment values from SQLite and
+  leaves Base Material Catalog unchanged.
+- Corrected built-in restore to replace and save only General Settings instead
+  of also replacing the in-memory Base Material Catalog.
+- Preserve Deployment Settings and canonical Base Materials through built-in
+  restore.
+- Refresh existing measurement, currency, purchase-rate and Material
+  validation consumers after reload or restore.
+- Renamed `Reset Fast Columns` to `Reset Columns`; retained its two-layout,
+  machine-local scope and default-No confirmation.
+- Hid the duplicated generic `Reload current Materials filters/data` footer
+  from both Settings views; it did not reload SQLite and the explicit toolbar
+  reload owns that workflow.
+- Owner reload, restore, cancellation, restart, layout and visual tests passed;
+  Full Data Verification passed 336/336.
+
 ## v44.7.10 - Canonical MaterialID Default Row Order
 
 - Added one shared natural numeric MaterialID comparer to the Fast Materials,

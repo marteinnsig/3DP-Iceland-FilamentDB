@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "CANONICAL-MATERIALID-DEFAULT-ROW-ORDER";
-    public const string ReleaseTitle = "Canonical MaterialID Default Row Order";
+    public const string ReleaseCode = "SETTINGS-MANAGER-COMMAND-CLARITY";
+    public const string ReleaseTitle = "Settings Manager Command Clarity";
 
     public static string Version
     {

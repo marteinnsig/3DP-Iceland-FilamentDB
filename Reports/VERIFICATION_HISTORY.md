@@ -1,3 +1,19 @@
+# v44.7.11 - Settings Manager Command Clarity
+
+Date: 2026-07-25
+
+- PASS: Full Data Verification reported 336/336 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: release identity aligned at v44.7.11, assembly 44.7.11.0 and
+  `SETTINGS-MANAGER-COMMAND-CLARITY`.
+- PASS: Reload Saved Settings used default-No and restored saved
+  General/Deployment SQLite values while preserving Base Material Catalog.
+- PASS: built-in restore replaced only General Settings and preserved
+  Deployment Settings plus canonical Base Materials through restart.
+- PASS: Reset Columns retained its two-layout machine-local scope.
+- PASS: misleading duplicated in-memory Settings reload footers were absent.
+- ACCEPTED: v44.7.11 is runtime accepted and canonical.
+
 # v44.7.10 - Canonical MaterialID Default Row Order
 
 Date: 2026-07-25

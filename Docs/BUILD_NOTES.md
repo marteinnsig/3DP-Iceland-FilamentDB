@@ -1,4 +1,38 @@
-# Current Build Notes - v44.7.10
+# Current Build Notes - v44.7.11
+
+## Settings Manager Command Clarity
+
+v44.7.11 is runtime accepted. `Load Settings` is now `Reload
+Saved Settings` and explains that it reloads General and Deployment settings
+from canonical SQLite, discards current unsaved Settings edits only after a
+default-No confirmation, and leaves Base Material Catalog unchanged.
+
+Research found an ownership defect behind `Restore Built-in Defaults`.
+`LoadBuiltInNativeSettingsDefaults` seeds both General Settings and Base
+Materials during initialization, but the restore command reused it despite
+promising a General-only replacement. That temporarily replaced the in-memory
+Base Material Catalog and a later Save Settings could persist the unintended
+catalog defaults. The restore command now uses a General-only replacement,
+preserves Deployment rows and Base Materials, saves the new General values and
+refreshes their existing calculation/currency consumers.
+
+`Reset Fast Columns` is renamed `Reset Columns`. It still resets only the two
+machine-local Settings and Base Material layout preferences after default-No
+confirmation; canonical values are unchanged.
+
+Owner visual review exposed a generic Fast-grid footer command labelled
+`Reload current Materials filters/data` in both Settings views. It only rebuilt
+each view from its current in-memory collection and did not reload SQLite.
+Both redundant Settings instances are now hidden; programmatic refresh and the
+explicit toolbar `Reload Saved Settings` command remain intact.
+
+Schema, formulas, SQLite ownership, Deployment credentials, reports,
+website/FTPS, recovery and measurement behavior are otherwise unchanged.
+Debug/Release and static/security gates passed. Owner reload, restore,
+cancellation, restart, layout and visual tests passed; Full Data Verification
+passed 336/336.
+
+## Retained v44.7.10 evidence
 
 ## Canonical MaterialID Default Row Order
 
