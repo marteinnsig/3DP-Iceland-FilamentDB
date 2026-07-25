@@ -41,3 +41,23 @@
 - Run Debug and Release builds, relevant static/security gates, and Full Data
   Verification after a material cleanup. Require runtime acceptance before
   closing and committing a cleanup increment.
+
+## Automated acceptance maintenance
+
+- For every new feature, changed workflow, retired action, or material behavior
+  change, explicitly assess whether the automated acceptance runner,
+  `AutomationId` coverage, scenario authorization, retained evidence, or Full
+  Data Verification contracts must change.
+- Update the tester in the same increment whenever the change creates or alters
+  an important runtime contract that can be tested safely and deterministically.
+- Prefer extending the existing smoke, reports, CRUD, recovery, or updater
+  scenario when its safety boundary already owns the behavior. Add a new
+  bounded scenario only when the workflow needs distinct authorization,
+  isolation, evidence, or destructive-action guards.
+- Keep Production, FTPS, owner-database, unexpected-dialog, owned-process input,
+  and disposable-profile policies intact when extending automation.
+- Do not add low-value automation merely to mirror cosmetic text or layout.
+  Keep visual HTML, PDF, wrapping, clipping, branding, and usability acceptance
+  manual when deterministic automation would not provide reliable evidence.
+- Document why tester changes are required or why no tester change is warranted
+  in the increment evidence and release notes.
