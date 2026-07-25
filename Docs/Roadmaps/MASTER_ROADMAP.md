@@ -6,7 +6,7 @@ Last runtime-accepted baseline: **v44.7.14 — Automated Runtime Acceptance Foun
 
 Current application release: **v44.7.14 — Automated Runtime Acceptance Foundation**
 
-Current roadmap increment: **v44.8.0 — Low-value Material fields audit**
+Current roadmap increment: **v44.7.15 — Automated Report Acceptance**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1759,10 +1759,40 @@ changes priority.
   - Stage 1 candidate now provides the isolated profile, exact-build runner, stable navigation IDs and Verification evidence.
   - Disposable acceptance passes 340/340 with consistent snapshots and identical before/after logical SQLite hashes.
   - Owner runtime acceptance and Full Data Verification 340/340 pass.
-  - Fast-cell, report-generation, CRUD, recovery and updater automation remain explicitly deferred.
-  - Pilot the accepted runner on v44.8.x increments; automation supports but never replaces owner runtime acceptance.
-- **v44.8.0 — Low-value Material fields audit**
+  - Fast-cell, report-generation, CRUD, recovery and updater automation remain outside the completed Stage 1 scope.
+  - Complete Stages 2–5 in v44.7.15–v44.7.18 before starting v44.8 feature work.
+  - Automation supports but never replaces owner runtime or visual acceptance.
+- **v44.7.15 — Automated Report Acceptance**
   - State: **Current research increment.**
+  - Feedback disposition: Approved Stage 2 completion before v44.8.
+  - Map report controls, completion signals, routes, allowlisted content and current HTML/PDF verification before code changes.
+  - Build local previews only; keep Production and FTPS blocked.
+  - Verify expected routes, HTML/PDF existence, non-empty artifacts, hashes and governed text without exposing private data.
+  - Retain screenshots and machine-readable evidence; require explicit owner visual review for representative HTML and PDF output.
+  - Preserve every accepted report, website, formula, measurement and publication-approval boundary.
+- **v44.7.16 — Disposable CRUD Acceptance**
+  - State: Planned after v44.7.15 acceptance.
+  - Feedback disposition: Approved Stage 3 completion before v44.8.
+  - Add scenario-authorized create, edit, save, restart, persistence and delete tests only in a proven disposable profile.
+  - Use uniquely identified automation records and prove canonical owner paths are never selected.
+  - Retain before/after snapshots, logical hashes and per-action evidence; unexpected dialogs stop the run.
+  - Do not automate Fast-grid cells until their stable automation contract is researched and accepted.
+- **v44.7.17 — Disposable Backup and Recovery Acceptance**
+  - State: Planned after v44.7.16 acceptance.
+  - Feedback disposition: Approved Stage 4 completion before v44.8.
+  - Exercise manual SQLite backup, Recovery Center discovery/verify and governed Excel restore only against disposable data.
+  - Require explicit scenario authorization, validated paths and retained pre/post-restore evidence and hashes.
+  - Prove that SQLite is never silently restored and that supported historical `.sqlite` and `.bak` discovery remains intact.
+  - Preserve updater/recovery evidence, diagnostics and explicit restore behavior.
+- **v44.7.18 — Guarded Updater Acceptance**
+  - State: Planned after v44.7.17 acceptance.
+  - Feedback disposition: Approved Stage 5 completion before v44.8.
+  - Test only an isolated disposable portable build; never target the installed owner app or canonical database.
+  - Verify transaction states, snapshot, exact-build health acknowledgement, rollback and retained evidence.
+  - Keep Production, FTPS and owner paths blocked; every updater mutation requires explicit scenario authorization.
+  - Require runtime review for success, failure and rollback boundaries before closing the automation program.
+- **v44.8.0 — Low-value Material fields audit**
+  - State: Planned after v44.7.18 acceptance.
   - Feedback disposition: Open.
   - Trace `Manufacturer SKU` and video-thumbnail-name callers before any hide/retire decision.
   - Preserve recovery and report compatibility.
