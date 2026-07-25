@@ -1,5 +1,16 @@
 # Automated Runtime Acceptance
 
+## Approved local disposable seed
+
+The owner-approved local automation seed is:
+
+`C:\Seed-Database\filamentdb.sqlite`
+
+This path must still be passed explicitly with `--seed-database`. The runner
+copies it below the disposable `%TEMP%\3DPIceland-Automation\<ProfileId>` root
+and never mutates the source seed. It must not be generalized into owner-data
+discovery or fallback selection.
+
 ## v44.7.14 Stage 1 candidate
 
 The Stage 1 runner is a read-only smoke and evidence tool. It does not replace
@@ -172,3 +183,30 @@ transaction commits 54 governed files, the failure transaction reaches
 `RolledBack`, all pre-update SHA-256 values are restored and the canonical
 business-state hash remains equal to baseline. Owner runtime then accepted
 normal startup, owner-data behavior and Full Data Verification 344/344.
+# v45.1 disposable CRUD extension
+
+The final unlinked-review addition is covered by Full Data Verification rather
+than fragile grid input automation. Profile `20260725225702-22872c00` passes
+345/345 and verifies that the counted Manufacturer filter represents null
+`ManufacturerId` rows. The CRUD scenario also returns the database business
+state to its exact baseline; owner, Production and FTPS paths remain blocked.
+Owner runtime accepted the same-name selection and zero-count collapsed UI;
+final owner Full Data Verification passes 345/345.
+
+The `crud` scenario remains confined to its exact generated disposable
+MaterialID and a disposable Manufacturer catalog record. Create stores a
+deliberate legacy/unmapped Manufacturer with null ID and restart preserves it
+exactly. Edit creates and selects the catalog identity; restart proves
+`ManufacturerId` plus canonical name persistence. The final stage proves
+canonical rename propagation, referenced-delete blocking, rename restoration,
+Material/catalog deletion and lossless sequence cleanup. The runner still does
+not automate Fast-grid cells, owner data, Production or FTPS.
+
+Disposable ManufacturerId acceptance run `20260725222727-42605144` passed Full
+Data Verification 345/345. It preserved the deliberate unmapped Manufacturer
+through create/restart, persisted the explicit catalog ID through edit/restart,
+propagated a catalog rename, blocked referenced deletion and removed all
+generated records. Final business-state hash matched baseline. The approved
+source seed retained its original
+4,825,088 bytes, timestamp and SHA-256
+`7851D26BA82E345E2C4B156996B68F0360B7F74A48B777752A609CB368EFD6D4`.

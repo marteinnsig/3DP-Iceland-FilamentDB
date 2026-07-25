@@ -1,3 +1,23 @@
+# v45.1 candidate - Owner relationship acceptance
+
+Date: 2026-07-25
+
+- Exact-name confirmation linked 182 Materials and preserved 20 unmatched legacy values.
+- `3DPIceland_FilamentDB_Verification_20260725_224919.txt`: PASS 345/345.
+- The v45.1 contract now requires the counted unlinked filter; final UI acceptance remains pending.
+- Disposable CRUD profile `20260725225702-22872c00` passes 345/345 with equal
+  baseline/final business-state hash
+  `9BA19BE80FF49D7BBA1EDEF27B115177D3315AE8422FA0CFBFF17FE826BFD516`.
+- Same-name identity correction profile `20260725230522-1ea4b751` also passes
+  345/345 and returns the same exact baseline business-state hash.
+- Owner evidence `3DPIceland_FilamentDB_Verification_20260725_231008.txt` passes
+  345/345 with zero unlinked Materials after staged exact-name binding.
+- Disposable profile `20260725231345-2dfcad7a` passes 345/345 and verifies that
+  the recovery controls remain available when unlinked legacy rows exist.
+- Final owner evidence `3DPIceland_FilamentDB_Verification_20260725_231731.txt`
+  passes 345/345 with zero unlinked Materials and accepts the conditional
+  recovery UI. v45.1 is canonical.
+
 # v44.7.11 - Settings Manager Command Clarity
 
 Date: 2026-07-25
@@ -2610,3 +2630,57 @@ Status: PASS; RUNTIME ACCEPTED
 - PASS: SQLite schema v29 and the existing 200-material owner database loaded and verified normally.
 - PASS: NuGet vulnerability scan resolved `Microsoft.Data.Sqlite` 9.0.18 and SQLitePCLRaw 2.1.12 with no known vulnerable package from configured sources.
 - PASS: Debug/Release 0 warnings and 0 errors; updater self-test and six-file signed-package verifier passed.
+## v45.1 Canonical Manufacturer Selection candidate
+
+- PASS: isolated Debug compile probe and final Debug/Release solution builds
+  completed with zero warnings/errors.
+- PASS: schema v32 stores nullable `ManufacturerId`; migration leaves historical
+  rows unlinked and preserves exact legacy/unmapped Manufacturer text.
+- PASS: explicit selection persists ID, canonical rename propagates to linked
+  Material snapshots and referenced hard delete is blocked.
+- PASS: website/report/public allowlists remain unchanged; typed Excel recovery
+  carries the nullable relationship column.
+- PASS: release-documentation audit, 136-character roadmap-line gate, diff
+  checks and read-only NuGet vulnerability scan.
+- PASS: disposable CRUD against `C:\Seed-Database\filamentdb.sqlite` reported
+  Full Data Verification 345/345 with zero failures.
+
+- PASS: generated `AUT5abe4fcf` preserved unmapped Manufacturer create/restart,
+  canonical Manufacturer edit/restart and final delete/restart absence.
+- PASS: baseline/final business-state hashes match. The source seed remained
+  4,825,088 bytes with unchanged timestamp and SHA-256
+  `7851D26BA82E345E2C4B156996B68F0360B7F74A48B777752A609CB368EFD6D4`.
+- Owner follow-up evidence `3DPIceland_FilamentDB_Verification_20260725_214218.txt`
+  reported 344/345: Inventory engine alone failed with one stale in-memory spool
+  row after its MaterialID was deleted in the same session. The accompanying
+  screenshot also showed the deleted Material's unique Manufacturer until a
+  later grid rebuild.
+- The candidate now refreshes Manufacturer choices on Material collection
+  changes and reloads Inventory from canonical SQLite after successful Material
+  deletion. Disposable CRUD run `20260725214900-5abe4fcf` re-passed Full Data
+  Verification 345/345; Inventory engine reported zero orphan rows and the seed
+  hash remained unchanged. Owner runtime retest remains required.
+- Owner review then found initial Name typing blocked for a new catalog row when
+  its placeholder matched a Material value. Draft rows now permit their initial
+  character-by-character rename and mirror Display Name; established in-use
+  records remain guarded. Debug/Release and disposable CRUD run
+  `20260725220220-dc872e8c` pass 345/345 with unchanged seed and business state.
+  Direct Name-cell typing remains owner-manual.
+- The approved ManufacturerId pivot passed disposable CRUD run
+  `20260725222727-42605144`: schema 31 migrated to 32 with zero automatically
+  linked historical rows, explicit ID survived restart, canonical rename
+  propagated, referenced delete was blocked and cleanup returned the exact
+  business-state hash to
+  `9BA19BE80FF49D7BBA1EDEF27B115177D3315AE8422FA0CFBFF17FE826BFD516`.
+- Final delivery build run `20260725223305-cc3cce96` repeated the same 345/345
+  PASS and equal business-state hash after the default-No exact-binding UI and
+  Verification contract were added.
+- Owner exact binding linked 182 Materials and left 20 unmatched by design.
+  Owner evidence `3DPIceland_FilamentDB_Verification_20260725_224310.txt`
+  reported 341/345: four chained v44.7.7 gates failed because one archived
+  MaterialID remained in the raw All-filter ID set while canonical report rows
+  correctly contained only 201 active Materials. The gate now compares active
+  scope on both sides; owner retest remains pending.
+- Disposable owner-fix run `20260725224654-16f3c455` passed 345/345; all four
+  v44.7.7 gates passed and the final business-state hash matched baseline.
+- PENDING: normal owner runtime/visual review.

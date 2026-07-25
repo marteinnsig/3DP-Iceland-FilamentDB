@@ -44,4 +44,32 @@ public sealed partial class LocalDatabase
         using var connection = new SqliteConnection(ConnectionString); connection.Open();
         using var command = connection.CreateCommand(); command.CommandText = "DELETE FROM Manufacturers WHERE ManufacturerId=$id;"; command.Parameters.AddWithValue("$id", manufacturerId); command.ExecuteNonQuery();
     }
+
+    public long? LoadManufacturerSequenceForAuthorizedAutomation()
+    {
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = "SELECT seq FROM sqlite_sequence WHERE name='Manufacturers';";
+        return command.ExecuteScalar() is { } value && value is not DBNull
+            ? Convert.ToInt64(value)
+            : null;
+    }
+
+    public void RestoreManufacturerSequenceForAuthorizedAutomation(long? sequence)
+    {
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var command = connection.CreateCommand();
+        if (sequence.HasValue)
+        {
+            command.CommandText = "UPDATE sqlite_sequence SET seq=$sequence WHERE name='Manufacturers';";
+            command.Parameters.AddWithValue("$sequence", sequence.Value);
+        }
+        else
+        {
+            command.CommandText = "DELETE FROM sqlite_sequence WHERE name='Manufacturers';";
+        }
+        command.ExecuteNonQuery();
+    }
 }

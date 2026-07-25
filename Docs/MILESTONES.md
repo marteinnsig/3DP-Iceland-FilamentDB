@@ -1780,3 +1780,17 @@ Version 30 begins the Reporting Platform. Reporting must consume the same verifi
 
 Version 29 marks the completion of the first production-ready foundation of the 3DPIceland Engineering Platform. Future platform development, including Reporting, AI, API, Mobile, and Cloud, will extend this foundation rather than replace it.
 
+# v45.1 - Canonical Manufacturer Selection
+
+- Owner exact binding linked 182 Materials, preserved 20 unmatched values and
+  passed Full Data Verification 345/345.
+- A counted unlinked-Manufacturer filter completed explicit binding without
+  fuzzy or silent remapping; zero unlinked Materials and Verification 345/345
+  are runtime accepted.
+
+v45.0 completed the Material relationship audit without changing schema or UI.
+v45.1 now supplies nullable canonical Manufacturer identity while preserving
+legacy/unmapped text and every existing downstream text contract. Linked
+catalog rename propagates to Materials and all projections without silent
+migration of historical rows.
+This milestone is complete and canonical.

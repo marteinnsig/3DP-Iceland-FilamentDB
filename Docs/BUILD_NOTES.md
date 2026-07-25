@@ -1,4 +1,82 @@
-# Current Build Notes - v44.7.18
+# Current Build Notes - v45.1 Canonical
+
+v45.1 now implements a nullable canonical `ManufacturerId` relationship in
+schema v32. Fast Materials stores the selected catalog identity while retaining
+the exact historical Manufacturer text as a compatibility snapshot and fallback.
+Existing rows remain unlinked after migration; no value is silently matched,
+cleared, corrected or remapped.
+
+Manufacturers provides a `Bind Exact Material Names` action with a preview and
+default-No confirmation. It links only unique case-insensitive exact catalog
+names; ambiguous and unmatched values remain unchanged.
+
+A linked Material resolves the current catalog name at runtime. Manufacturer
+rename updates linked Material snapshots and therefore every existing filter,
+report, website and public-output projection. Archive is non-destructive and
+hard delete is blocked while an ID is referenced. Legacy/unmapped rows continue
+to use their exact text. Governed Excel recovery carries the nullable column
+through its typed table snapshot without changing public allowlists.
+
+Disposable CRUD proves an unmapped Manufacturer survives create/restart, then
+creates and selects a disposable catalog identity, proves ID persistence,
+canonical rename propagation and referenced-delete blocking, and removes both
+generated records. Production, FTPS and owner paths remain
+blocked. Debug and Release solution builds pass with zero warnings/errors;
+documentation, roadmap-line and NuGet vulnerability gates pass. Disposable CRUD
+passes against the explicit approved seed with Full Data Verification 345/345,
+equal baseline/final business-state hashes and an unchanged source-seed hash.
+Owner runtime acceptance is complete.
+
+Owner review then exposed one shared stale-projection defect after deleting a
+test Material: its unique Manufacturer remained in the dropdown and the
+in-memory Inventory collection retained a row already removed by SQLite
+cascade, causing Inventory engine to fail at 344/345. The candidate now
+refreshes Manufacturer choices on Material collection changes and reloads
+Inventory from canonical SQLite after a successful Material delete save.
+Disposable CRUD re-passed 345/345 with zero inventory orphans; owner retest is
+still required.
+
+Owner review also found that a new catalog row could not be named when its
+`New Manufacturer` placeholder matched a Material value: the in-use rename
+guard rewrote the active editor after each character. Name now remains in the
+cell edit buffer until focus leaves; the guard evaluates the complete proposed
+name once. New and recognizable placeholder rows are draft-owned for their
+initial edit, mirror Name into Display Name and become normally guarded after
+restart. Placeholder generation avoids both catalog and Material names.
+
+Owner exact binding linked 182 Materials and deliberately left 20 unmatched.
+The next Verification run exposed a scope-only defect: one archived MaterialID
+was present in the raw All-filter ID set but absent from canonical active report
+rows, cascading four v44.7.7 failures. The ownership check now compares active
+scope on both sides; no Material or report behavior changed.
+
+The owner retest passed Full Data Verification 345/345. Materials now adds a
+counted `Unlinked manufacturers (n)` filter so each remaining legacy value can
+be reviewed and explicitly assigned through the canonical dropdown. The count
+refreshes after each assignment; no fuzzy or silent mapping is introduced.
+Disposable CRUD profile `20260725225702-22872c00` passes the extended
+Verification contract 345/345 with equal baseline/final business-state hashes
+and an unchanged schema-v31 migration seed.
+
+Owner review exposed a same-text identity edge case: choosing the canonical
+Manufacturer whose name already matched the legacy text created no cell-text
+delta, so the Fast grid skipped the binding call. Manufacturer dropdown
+confirmation now commits the identity explicitly even when display text is
+unchanged; other columns retain normal change-only behavior.
+Disposable CRUD profile `20260725230522-1ea4b751` passes Full Data Verification
+345/345 after this correction and returns the business-state hash to baseline.
+
+Owner exact binding then reached zero unlinked Materials and Verification passed
+345/345 in `3DPIceland_FilamentDB_Verification_20260725_231008.txt`. The
+unlinked filter and exact-binding button are collapsed at zero. They remain a
+supported recovery surface and reappear only if migration, import or restore
+introduces an unlinked legacy value.
+Disposable recovery-visibility profile `20260725231345-2dfcad7a` passes
+345/345 on the schema-v31 seed and returns the business-state hash to baseline.
+Owner evidence `3DPIceland_FilamentDB_Verification_20260725_231731.txt`
+subsequently accepted the zero-count UI and passed 345/345. v45.1 is closed.
+
+# Previous Build Notes - v44.7.18
 
 ## Guarded Updater Acceptance
 

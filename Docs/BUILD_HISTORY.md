@@ -2331,3 +2331,33 @@ Material Manager exposes the settings as editable columns and Material Detail gr
 The first runtime attempt exposed an empty XAML `sys:String` item that compiled but caused `NullReferenceException` during `InitializeComponent`; removing the empty ComboBox entries restored startup. Runtime data entry then exposed that the complete Materials recompute/filter/module-sync/SQLite-save queue delayed arrow-key navigation. A restartable 450 ms edit debounce now gives navigation priority, collapses rapid edits into one governed save and waits while the next cell remains in edit mode; application close retains synchronous dirty-data persistence.
 
 Debug and Release builds complete with zero warnings and zero errors. Runtime acceptance confirmed normal startup, Verification Center Overall PASS, visible printing-setting columns, persistence across application restarts and fast arrow-key column navigation. v42.13.0 is accepted.
+## v45.1 - Canonical Manufacturer Selection
+
+The completed v45.0 audit found that Materials, Manufacturers and Base Material
+Catalog currently use independent text identities. It also found real purchasing,
+detail, Excel and recovery ownership for Manufacturer SKU, and compatibility-only
+ownership for thumbnail filename. Neither field is retired in this increment.
+
+The initial name-binding candidate proved insufficient during owner review:
+canonical spelling corrections must flow to Materials and every downstream
+output. v45.1 therefore uses schema v32 with nullable `ManufacturerId`, keeps the
+exact text snapshot for unlinked legacy values, permits canonical rename
+propagation and blocks deletion while an ID is referenced. Migration never
+auto-links an existing row.
+
+Owner exact binding linked 182 rows and preserved 20 unmatched rows; owner Full
+Data Verification passed 345/345. A counted Materials filter now exposes the
+remaining null IDs for explicit review.
+
+Fast Materials offers active catalog names plus exact current unmapped values.
+Selection stores ID and snapshot; Add uses an active canonical default and
+Duplicate preserves the ID. Reports, website, filters, import/export and recovery
+continue through the resolved Manufacturer projection. Debug and Release solution
+builds pass with zero warnings/errors.
+Documentation, roadmap-line and NuGet vulnerability gates pass. Disposable CRUD
+passes Full Data Verification 345/345 against the explicitly selected non-owner
+seed. Unmapped and canonical Manufacturer persistence passed across separate
+restarts, the generated MaterialID was removed, final business state matched
+baseline and the source seed remained byte-identical. Owner completed binding
+to zero unlinked Materials and accepted the final conditional recovery UI;
+Full Data Verification passed 345/345.

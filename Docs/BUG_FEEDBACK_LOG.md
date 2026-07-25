@@ -30,24 +30,122 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 14 |
+| Open | 15 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 42 |
+| Solved | 46 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **64** |
+| **Total tracked findings** | **69** |
 
 ## Tracked findings
+
+Date: 2026-07-25
+Area: Verification / Materials filters
+Type: Bug
+Severity: Important
+Status: Solved
+Resolution: The v44.7.7 ownership gate now compares canonical active rows with active filtered MaterialIDs. A filter reset to All no
+longer lets an archived MaterialID create a false 201-versus-202 mismatch and cascade four unrelated retirement-gate failures.
+Verification evidence: Owner evidence reported 341/345 with exactly four chained v44.7.7 failures. Disposable owner-fix run
+`20260725224654-16f3c455` and owner evidence `3DPIceland_FilamentDB_Verification_20260725_224919.txt` pass 345/345.
+What happened: Exact Manufacturer binding rebuilt the filter list and selected All, exposing one archived ID only in the raw ID set.
+Expected behavior: Canonical active report/filter ownership must compare the same active scope on both sides.
+Steps to reproduce: Keep one archived Material, reset Manufacturer filter to All, then run Full Data Verification.
+Screenshot / export / report attached: `3DPIceland_FilamentDB_Verification_20260725_224310.txt`.
+
+Date: 2026-07-25
+Area: Manufacturers
+Type: Bug
+Severity: Important
+Status: Solved
+Resolution: Manufacturer Name uses a cell edit buffer and updates on focus loss. The name-based rename guard was superseded by
+nullable Material `ManufacturerId`: canonical rename is allowed and propagates to linked Materials, while hard delete is blocked.
+New or recognizable `New Manufacturer` rows remain explicit drafts and placeholders avoid catalog and Material name collisions.
+Verification evidence: Debug/Release pass with zero warnings/errors. Disposable CRUD and Full Data Verification pass 345/345 with
+unchanged seed and business-state hashes. Owner accepted direct naming, later rename propagation and Full Data Verification 345/345.
+What happened: Immediate per-character binding let the in-use rename guard write the stored text back into the active editor.
+Expected behavior: A newly added Manufacturer must accept its initial proper name while established in-use names remain protected.
+Steps to reproduce: Ensure a Material uses `New Manufacturer`, add a Manufacturer, then type in its Name cell.
+Screenshot / export / report attached: `codex-clipboard-e6ad4625-65e3-4880-a8ad-d6f9cf772122.png`.
+
+Date: 2026-07-25
+Area: Distribution / public demo dataset
+Type: Workflow improvement / Data issue
+Severity: Idea
+Status: Open
+Resolution: Plan as a separate bounded project. Build a versioned, distributable SQLite demo backup from an explicit allowlist of
+roughly 30–40 owner-measured materials, with stable pseudonymous Manufacturer, Product Line, Marketing Name and demo MaterialID
+identities. Preserve real measurement values and useful same-manufacturer/base-material relationships, but remove or replace private
+purchasing, inventory, notes, URLs, local paths, credentials, deployment and production identity. Keep this public demo seed separate
+from the internal canonical acceptance seed. Require deterministic regeneration, provenance, privacy/static scans, SQLite integrity,
+Full Data Verification, runtime/report review, package SHA-256 and explicit guarded publication under
+`https://www.iskort.is/3dp/downloads/`. Production and FTPS remain default-No until separately authorized.
+Verification evidence: Pending dataset contract, pseudonym mapping, privacy allowlist/denylist, runtime acceptance and guarded publish.
+What happened: Trial users or evaluators currently lack a safe populated database that demonstrates Materials, measurements, filters,
+rankings, reports and same-family/manufacturer comparisons without exposing the owner database or commercial product identities.
+Expected behavior: Offer an optional downloadable demo SQLite backup with real 3DPIceland measurement evidence under fictional,
+clearly disclosed identities, enough grouped coverage to demonstrate the application while preventing owner/private-data disclosure.
+Steps to reproduce: Install the application on a clean profile and look for a governed populated demo dataset beside the installer
+downloads.
+Screenshot / export / report attached: Not required.
+
+Date: 2026-07-25
+Area: Disposable automation / evidence retention
+Type: Workflow friction
+Severity: Minor
+Status: Open
+Resolution: After Codex has reviewed a completed disposable tester run and retained the evidence still needed for the current
+increment, Codex should remove obsolete profile folders below `%TEMP%\3DPIceland-Automation`. Keep the latest accepted PASS evidence
+for each scenario and every unresolved FAIL, aborted run or runtime-acceptance dependency. Never delete the automation root itself,
+follow reparse points or touch owner, Production, FTPS or unresolved paths. Record which profile IDs were removed and retained.
+Verification evidence: Pending a bounded cleanup implementation and dry-run/path-containment review.
+What happened: Completed disposable tester profiles can remain below the temporary automation root after their results have been
+reviewed and are no longer needed, causing old databases, reports, screenshots and transaction evidence to accumulate.
+Expected behavior: Codex should perform a deliberate post-review cleanup when obsolete disposable evidence is no longer needed,
+while preserving the latest accepted scenario evidence and all material failure or current-increment evidence.
+Steps to reproduce: Run disposable tester scenarios repeatedly and inspect `%TEMP%\3DPIceland-Automation` after Codex has reviewed
+the retained results.
+Screenshot / export / report attached: Not required.
+
+Date: 2026-07-25
+Area: Materials / Inventory / Manufacturers
+Type: Bug
+Severity: Important
+Status: Solved
+Resolution: Material Add/Duplicate/Delete now refreshes the live Manufacturer choices immediately. After a successful Material
+delete save, Inventory is reloaded from canonical SQLite so cascaded spool deletion is reflected before Verification runs. No value
+is remapped and no owner database is touched by automation.
+Verification evidence: The reported owner run failed only Inventory engine at 344/345 because one deleted MaterialID still existed
+in the in-memory spool collection. The dropdown screenshot showed the same stale-projection class. Debug/Release pass; disposable
+CRUD and Full Data Verification pass 345/345, including dropdown removal checks and zero inventory orphans.
+Owner runtime accepted the refreshed projections and Full Data Verification 345/345.
+What happened: A deleted Material's unique Manufacturer remained in the open dropdown until a later grid rebuild. Verification in
+the same session also counted an Inventory row already removed from SQLite by the Material delete cascade.
+Expected behavior: All live projections must refresh immediately after canonical Material changes.
+Steps to reproduce: Add a Material with a unique Manufacturer, delete it, inspect the dropdown, then run Full Data Verification
+without restarting the app.
+Screenshot / export / report attached: `codex-clipboard-067a4d7d-1faa-4b07-948b-7088409a9c29.png` and
+`3DPIceland_FilamentDB_Verification_20260725_214218.txt`.
 
 Date: 2026-07-25
 Area: Materials / Manufacturers
 Type: Workflow improvement
 Severity: Idea
-Status: Open
-Resolution: Planned for ownership research in v45.0 and bounded implementation in v45.1.
-Verification evidence: Pending.
+Status: Solved
+Resolution: Owner review showed name binding could not propagate later spelling corrections. The v45.1 candidate now stores nullable
+`ManufacturerId`, resolves linked catalog names, retains exact unlinked legacy text and blocks deletion of referenced catalog rows.
+Migration never auto-links existing Materials. A previewed default-No action binds only explicit unique exact-name matches.
+Materials also provides a counted `Unlinked manufacturers (n)` filter for explicit one-by-one assignment of the remaining values.
+Owner runtime then found that selecting the same visible name produced no text delta, so the Fast grid skipped the save. Manufacturer
+dropdown confirmation now explicitly commits canonical identity even when the legacy text already equals the selected catalog name.
+After owner binding reached zero unlinked rows, the review filter and exact-binding button became daily-workflow noise. Both are now
+hidden at zero and return only if migration, import or recovery legitimately reintroduces a supported unlinked value.
+Verification evidence: Disposable CRUD passes legacy fallback, ID persistence, rename propagation, delete guard and cleanup;
+Full Data Verification passes 345/345 with equal baseline/final business-state hashes. Owner exact binding linked 182 rows, retained
+20 unmatched rows without remapping, then linked the final rows after catalog creation. Owner evidence
+`3DPIceland_FilamentDB_Verification_20260725_231731.txt` passes 345/345 with zero unlinked Materials.
 What happened: Materials currently accepts free-text Manufacturer values even though Manufacturers has a governed canonical catalog.
 Expected behavior: Materials should offer a dropdown sourced from canonical Manufacturers while preserving supported legacy/unmapped values.
 Steps to reproduce: Open Materials and edit Manufacturer on an existing or new row.

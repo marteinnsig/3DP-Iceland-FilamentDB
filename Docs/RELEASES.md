@@ -853,3 +853,13 @@ Usage-mode support release. Adds the feedback loop and review cadence used while
 - Replaced frequent success MessageBox dialogs with three-second status feedback.
 - Preserved confirmation, warning and error dialogs.
 - Removed internal storage terminology from normal user-facing success messages.
+## v45.1 - Canonical Manufacturer Selection
+
+- Schema v32 adds nullable Material `ManufacturerId` identity with exact text fallback.
+- Existing legacy/unmapped rows remain unlinked and are never silently mapped.
+- Explicit exact-name bulk binding is previewed and default-No; ambiguous/unmatched values stay unlinked.
+- A counted unlinked-Manufacturer filter supports deliberate one-by-one assignment and refreshes after each edit.
+- Linked rename propagates to Materials and downstream outputs; referenced delete is blocked.
+- Archive stays non-destructive; public allowlists remain unchanged and typed recovery includes the new column.
+- Disposable CRUD and owner Full Data Verification pass 345/345.
+- Owner exact binding reached zero unlinked Materials and accepted the final conditional recovery UI.

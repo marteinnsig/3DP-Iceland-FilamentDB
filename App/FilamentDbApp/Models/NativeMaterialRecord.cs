@@ -3,6 +3,7 @@
 public sealed class NativeMaterialRecord
 {
     public string MaterialID { get; set; } = string.Empty;
+    public long? ManufacturerId { get; set; }
     public string Manufacturer { get; set; } = string.Empty;
     public string ProductLine { get; set; } = string.Empty;
     public string MarketingName { get; set; } = string.Empty;

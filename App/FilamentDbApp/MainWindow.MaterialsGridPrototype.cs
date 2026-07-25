@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -74,6 +75,7 @@ public partial class MainWindow
             cellKind);
 
     private MaterialsRenderingPrototypeView? _embeddedMaterialsPrototypeView;
+    private readonly ObservableCollection<string> _fastManufacturerChoices = new();
     private bool _fastMaterialsCloseGuardAttached;
 
     private void ActivateDefaultFastMaterialsView()
@@ -181,13 +183,17 @@ public partial class MainWindow
             directCanonicalEditing);
     }
 
-    private static List<MaterialsPrototypeColumn> BuildFastMaterialsColumns() =>
+    private List<MaterialsPrototypeColumn> BuildFastMaterialsColumns()
+    {
+        RefreshFastManufacturerChoices();
+        return
         AssignStablePrototypeLayoutKeys(
         [
             FastMaterialsColumn("Material ID", 90, "MaterialID", true),
             FastMaterialsColumn("Public reports", 95, "PublishPublicReports", false, MaterialsPrototypeEditorKind.CheckBox),
             FastMaterialsColumn("Public test details", 115, "PublishPublicTestDetails", false, MaterialsPrototypeEditorKind.CheckBox),
-            FastMaterialsColumn("Manufacturer", 140, "Manufacturer", false),
+            FastMaterialsColumn("Manufacturer", 170, "Manufacturer", false,
+                MaterialsPrototypeEditorKind.ComboBox, _fastManufacturerChoices),
             FastMaterialsColumn("Product Line", 140, "ProductLine", false),
             FastMaterialsColumn("Marketing Name", 160, "MarketingName", false),
             FastMaterialsColumn("Base Material", 110, "BaseMaterial", false),
@@ -242,6 +248,33 @@ public partial class MainWindow
             FastMaterialsColumn("Material Key", 260, "MaterialKey", true),
             FastMaterialsColumn("Validation", 180, "ValidationSummary", true)
         ]);
+    }
+
+    private void RefreshFastManufacturerChoices()
+    {
+        var choices = _database.LoadManufacturers()
+            .Where(row => row.IsActive)
+            .Select(row => row.Name.Trim())
+            .Concat(_nativeMaterialRows.Select(row => row.Manufacturer?.Trim() ?? string.Empty))
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(value => value, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
+
+        _fastManufacturerChoices.Clear();
+        foreach (var choice in choices) _fastManufacturerChoices.Add(choice);
+    }
+
+    private void BindMaterialToSelectedManufacturer(NativeMaterialRow material, string selectedName)
+    {
+        var matches = _database.LoadManufacturers()
+            .Where(row =>
+                row.IsActive &&
+                string.Equals(row.Name.Trim(), selectedName.Trim(), StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        material.ManufacturerId = matches.Count == 1 ? matches[0].ManufacturerId : null;
+        material.Manufacturer = matches.Count == 1 ? matches[0].Name : selectedName;
+    }
 
     private static MaterialsPrototypeColumn FastMaterialsColumn(
         string header,
@@ -257,6 +290,13 @@ public partial class MainWindow
             isReadOnly,
             editorKind,
             choices ?? Array.Empty<string>());
+
+    private static bool RequiresExplicitSameValueCommit(MaterialsPrototypeColumn column) =>
+        column.EditorKind == MaterialsPrototypeEditorKind.ComboBox &&
+        string.Equals(
+            column.PropertyName,
+            nameof(NativeMaterialRow.Manufacturer),
+            StringComparison.Ordinal);
 
     private void SelectMaterialsPrototypeRow(object source)
     {
@@ -362,6 +402,14 @@ public partial class MainWindow
                 ? change.NewValue == "✓"
                 : change.NewValue;
             SetPropertyValue(change.Row.Source, change.Column.PropertyName!, value);
+            if (change.Row.Source is NativeMaterialRow material &&
+                string.Equals(
+                    change.Column.PropertyName,
+                    nameof(NativeMaterialRow.Manufacturer),
+                    StringComparison.Ordinal))
+            {
+                BindMaterialToSelectedManufacturer(material, change.NewValue);
+            }
         }
 
         MarkNativeMaterialsDirty();
@@ -437,6 +485,7 @@ public partial class MainWindow
         private readonly TextBlock _status;
         private readonly Button _applyButton;
         private readonly Button _reloadButton;
+        private readonly HashSet<(int RowIndex, int ColumnIndex)> _explicitSameValueCommits = [];
         private long _scrollStarted;
         private Control? _activeEditor;
 
@@ -829,6 +878,11 @@ public partial class MainWindow
                     ComboBox comboBox => comboBox.SelectedItem?.ToString() ?? comboBox.Text,
                     _ => _rows[cell.RowIndex].Cells[cell.ColumnIndex]
                 };
+                if (editor is ComboBox &&
+                    RequiresExplicitSameValueCommit(_columns[cell.ColumnIndex]))
+                {
+                    _explicitSameValueCommits.Add((cell.RowIndex, cell.ColumnIndex));
+                }
             }
 
             _editorLayer.Children.Remove(editor);
@@ -855,11 +909,13 @@ public partial class MainWindow
                 }
                 _surface.InvalidateVisual();
                 _status.Text = "Invalid value was not applied; the cell was restored.";
+                _explicitSameValueCommits.Clear();
                 return;
             }
             if (_reloadAfterApply)
             {
                 RefreshCurrentRowsFromSources();
+                _explicitSameValueCommits.Clear();
                 UpdateApplyState();
                 _status.Text = $"Saved {changes.Count:N0} changed field(s) through the canonical auto-save workflow.";
                 return;
@@ -868,6 +924,7 @@ public partial class MainWindow
             {
                 Array.Copy(row.Cells, row.OriginalCells, row.Cells.Length);
             }
+            _explicitSameValueCommits.Clear();
             UpdateApplyState();
             _status.Text = $"Saved {changes.Count:N0} changed field(s) through the canonical Materials auto-save workflow.";
         }
@@ -987,9 +1044,13 @@ public partial class MainWindow
                 for (var columnIndex = 0; columnIndex < _columns.Count; columnIndex++)
                 {
                     var column = _columns[columnIndex];
+                    var rowIndex = _rows.IndexOf(row);
+                    var explicitSameValueCommit =
+                        _explicitSameValueCommits.Contains((rowIndex, columnIndex));
                     if (column.IsReadOnly ||
                         string.IsNullOrWhiteSpace(column.PropertyName) ||
-                        string.Equals(row.Cells[columnIndex], row.OriginalCells[columnIndex], StringComparison.Ordinal))
+                        (!explicitSameValueCommit &&
+                         string.Equals(row.Cells[columnIndex], row.OriginalCells[columnIndex], StringComparison.Ordinal)))
                     {
                         continue;
                     }

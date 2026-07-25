@@ -86,6 +86,7 @@ public partial class MainWindow : Window
     private readonly EngineeringPeerPositionService _engineeringPeerPositionService = new();
     private readonly EngineeringIntelligenceHandoffService _engineeringIntelligenceHandoffService = new();
     private readonly ObservableCollection<InventorySpoolRecord> _inventorySpoolRows = new();
+    private bool _isReloadingInventorySpools;
     private readonly ObservableCollection<MaterialExperimentRecord> _materialExperimentRows = new();
     private readonly ObservableCollection<ExperimentalRunRecord> _experimentalRunRows = new();
     private readonly ObservableCollection<ExperimentalMeasurementRecord> _experimentalMeasurementRows = new();
@@ -225,7 +226,7 @@ public partial class MainWindow : Window
         var row = new NativeMaterialRow
         {
             MaterialID = materialId,
-            Manufacturer = "3DPIceland Automation",
+            Manufacturer = "3DPIceland Automation Legacy",
             ProductLine = "Disposable CRUD",
             MarketingName = "Created",
             BaseMaterial = "PLA",
@@ -253,6 +254,25 @@ public partial class MainWindow : Window
                   ?? throw new InvalidOperationException("Authorized disposable MaterialID was not persisted after create.");
         if (!string.Equals(row.Notes, "AUTOMATION-CRUD-CREATED", StringComparison.Ordinal))
             throw new InvalidOperationException("Authorized disposable MaterialID has unexpected pre-edit content.");
+        if (!string.Equals(row.Manufacturer, "3DPIceland Automation Legacy", StringComparison.Ordinal))
+            throw new InvalidOperationException("Unmapped Manufacturer text was not preserved through create/restart.");
+        if (!_fastManufacturerChoices.Contains(row.Manufacturer, StringComparer.Ordinal))
+            throw new InvalidOperationException("Current unmapped Manufacturer is missing from the dropdown choices.");
+        var originalManufacturerSequence = _database.LoadManufacturerSequenceForAuthorizedAutomation();
+        var canonicalManufacturer = new ManufacturerRecord
+        {
+            Name = "3DPIceland Automation Manufacturer " + row.MaterialID,
+            DisplayName = "3DPIceland Automation Manufacturer",
+            Notes = "AUTOMATION-ORIGINAL-SEQUENCE:" +
+                    (originalManufacturerSequence?.ToString(CultureInfo.InvariantCulture) ?? "NULL"),
+            SortOrder = int.MaxValue
+        };
+        _database.SaveManufacturer(canonicalManufacturer);
+        AttachManufacturerAutoSave(canonicalManufacturer);
+        _manufacturerRows.Add(canonicalManufacturer);
+        _persistedManufacturerNames[canonicalManufacturer.ManufacturerId] = canonicalManufacturer.Name;
+        row.Manufacturer = canonicalManufacturer.Name;
+        row.ManufacturerId = canonicalManufacturer.ManufacturerId;
         row.MarketingName = "Edited";
         row.Notes = "AUTOMATION-CRUD-EDITED";
         ApplyNativeMaterialComputedFields(row, _nativeMaterialRows.IndexOf(row));
@@ -265,8 +285,50 @@ public partial class MainWindow : Window
                   ?? throw new InvalidOperationException("Authorized disposable MaterialID was not persisted after edit.");
         if (!string.Equals(row.Notes, "AUTOMATION-CRUD-EDITED", StringComparison.Ordinal))
             throw new InvalidOperationException("Authorized disposable MaterialID edit was not persisted.");
+        if (!_database.LoadManufacturers().Any(item =>
+                item.IsActive &&
+                item.ManufacturerId == row.ManufacturerId &&
+                string.Equals(item.Name, row.Manufacturer, StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidOperationException("Canonical Manufacturer selection was not persisted through edit/restart.");
+        if (_fastManufacturerChoices.Contains("3DPIceland Automation Legacy", StringComparer.Ordinal))
+            throw new InvalidOperationException("Removed unmapped Manufacturer remains stale in the dropdown choices.");
+        var canonicalManufacturer = _manufacturerRows.Single(item =>
+            item.ManufacturerId == row.ManufacturerId);
+        var referencedDeleteBlocked = false;
+        try
+        {
+            _database.DeleteManufacturer(canonicalManufacturer.ManufacturerId);
+        }
+        catch (Microsoft.Data.Sqlite.SqliteException)
+        {
+            referencedDeleteBlocked = true;
+        }
+        if (!referencedDeleteBlocked)
+            throw new InvalidOperationException("Referenced canonical Manufacturer deletion was not blocked.");
+        var originalManufacturerName = canonicalManufacturer.Name;
+        var renamedManufacturerName = originalManufacturerName + " Automation Rename";
+        RenameManufacturerForAuthorizedAutomation(canonicalManufacturer, renamedManufacturerName);
+        if (!string.Equals(row.Manufacturer, renamedManufacturerName, StringComparison.Ordinal) ||
+            !_database.LoadNativeMaterialManagerRows().Any(item =>
+                item.MaterialID == row.MaterialID &&
+                item.ManufacturerId == canonicalManufacturer.ManufacturerId &&
+                string.Equals(item.Manufacturer, renamedManufacturerName, StringComparison.Ordinal)))
+            throw new InvalidOperationException("Canonical Manufacturer rename did not propagate to the linked Material.");
+        RenameManufacturerForAuthorizedAutomation(canonicalManufacturer, originalManufacturerName);
+        if (!string.Equals(row.Manufacturer, originalManufacturerName, StringComparison.Ordinal))
+            throw new InvalidOperationException("Canonical Manufacturer rename restore did not propagate.");
         _nativeMaterialRows.Remove(row);
         RequireAutomationCrudSave("DELETED");
+        var sequenceText = canonicalManufacturer.Notes["AUTOMATION-ORIGINAL-SEQUENCE:".Length..];
+        long? originalManufacturerSequence = string.Equals(sequenceText, "NULL", StringComparison.Ordinal)
+            ? null
+            : long.Parse(sequenceText, CultureInfo.InvariantCulture);
+        _database.DeleteManufacturer(canonicalManufacturer.ManufacturerId);
+        _database.RestoreManufacturerSequenceForAuthorizedAutomation(originalManufacturerSequence);
+        _manufacturerRows.Remove(canonicalManufacturer);
+        _persistedManufacturerNames.Remove(canonicalManufacturer.ManufacturerId);
+        _manufacturerRenameDraftIds.Remove(canonicalManufacturer.ManufacturerId);
+        RefreshFastManufacturerChoices();
     }
 
     private void AutomationCrudVerifyAbsent_Click(object sender, RoutedEventArgs e)
@@ -282,6 +344,8 @@ public partial class MainWindow : Window
         RefreshNativeMaterialGridValidation();
         if (!SaveNativeMaterialsSilent())
             throw new InvalidOperationException($"Canonical SQLite save failed during automation CRUD {status}.");
+        RefreshFastManufacturerChoices();
+        RefreshInventoryMaterialChoices();
         SetAutomationCrudStatus(status);
     }
 
@@ -12995,7 +13059,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Recovery Center catalog: " + recoveryCatalog.Count + " SQLite backup(s)");
         foreach (var group in recoveryCatalog.GroupBy(item => item.CompatibilityStatus).OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase))
             sb.AppendLine("- " + group.Key + ": " + group.Count());
-        sb.AppendLine("Compatibility policy: schema 27-30 require isolated migration dry-run; schema 31 ready; older/newer/corrupt blocked");
+        sb.AppendLine("Compatibility policy: schema 27-31 require isolated migration dry-run; schema 32 ready; older/newer/corrupt blocked");
         sb.AppendLine();
 
         sb.AppendLine("Website Export Routing");
@@ -13542,14 +13606,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             header.StartsWith("Cooling ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Drying ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Profile ", StringComparison.OrdinalIgnoreCase));
-        var printingSettingsReady = _database.CurrentSchemaVersion == 31 &&
+        var printingSettingsReady = _database.CurrentSchemaVersion == 32 &&
                                     persistedBaseMaterials.Count == _nativeBaseMaterialRows.Count &&
                                     persistedBaseMaterials.Select(x => x.BaseMaterial).OrderBy(x => x).SequenceEqual(
                                         _nativeBaseMaterialRows.Select(x => x.BaseMaterial).OrderBy(x => x), StringComparer.OrdinalIgnoreCase) &&
                                     perMaterialPrintingColumnsAbsent;
         checks.Add(new VerificationCheck("Base material printing settings foundation", printingSettingsReady,
             printingSettingsReady
-                ? $"Schema v31; {_nativeBaseMaterialRows.Count} SQLite-canonical base-material baselines; per-MaterialID printing columns absent"
+                ? $"Schema v32; {_nativeBaseMaterialRows.Count} SQLite-canonical base-material baselines; per-MaterialID printing columns absent"
                 : "SQLite Base Material Catalog parity, schema version or Materials-column boundary failed"));
         var printingPublicNames = new[] { "NozzleTemperature", "BedTemperature", "PrintSpeed", "Cooling", "Drying", "EnclosureRequirement", "PrinterProfileReference", "Slicer", "PrintingSettings", "PrintingProfile" };
         var printingSettingsRemainInternal = printingPublicNames.All(name =>
@@ -15140,7 +15204,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                                            !string.IsNullOrWhiteSpace(deploymentSettings.FtpsUserName) &&
                                            deploymentSettings.FtpsPort is >= 1 and <= 65535;
         checks.Add(new VerificationCheck("SQLite-governed explicit FTPS publishing contract",
-            _database.CurrentSchemaVersion == 31 &&
+            _database.CurrentSchemaVersion == 32 &&
             (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
             FtpsWebsitePublisherService.MainRemotePath == "/index.html" &&
             FtpsWebsitePublisherService.ManufacturerRemotePath == "/manufacturers/index.html" &&
@@ -15602,7 +15666,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             printingSettingsReady && printingSettingsRemainInternal && incrementalFtpsPublishingReady && releaseIdentityReady
                 ? "Canonical baseline profile identity, cooling/drying units, slicer identity, provenance, source and checked-date contracts passed; public allowlists unchanged"
                 : "Printing-profile governance, provenance, internal-only boundary, prior publishing gate or release identity did not pass"));
-        var deploymentSettingsReady = _database.CurrentSchemaVersion == 31 &&
+        var deploymentSettingsReady = _database.CurrentSchemaVersion == 32 &&
                                       (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
                                       typeof(WindowsCredentialService).GetMethod("ReadPassword", new[] { typeof(string), typeof(string) }) is not null;
         checks.Add(new VerificationCheck("v42.15 Deployment Settings Governance release gate", deploymentSettingsReady && incrementalFtpsPublishingReady && releaseIdentityReady,
@@ -15622,7 +15686,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 : "Native measurement marker, SQLite/UI count parity or release identity failed"));
         var canonicalGeneralSettings = _database.LoadNativeSettingsRows();
         var expectedGeneralSettings = _nativeSettingsRows.Count(row => !string.Equals(row.Section, "Deployment", StringComparison.OrdinalIgnoreCase));
-        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == 31 &&
+        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == 32 &&
                                           _database.LoadNativeMaterialManagerRows().Count == _nativeMaterialRows.Count &&
                                           canonicalGeneralSettings.Count == expectedGeneralSettings &&
                                           canonicalGeneralSettings.Select(row => (row.Section, row.Parameter, row.Unit, row.UsedBy)).Distinct().Count() == canonicalGeneralSettings.Count;
@@ -15631,7 +15695,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? $"SQLite owns {_nativeMaterialRows.Count} Materials rows and {canonicalGeneralSettings.Count} general Settings rows; legacy JSON is snapshot-only"
                 : "Materials/Settings SQLite parity, settings key uniqueness, schema or release identity failed"));
         var latestLocalBackup = _database.GetLocalBackupCatalog()
-            .FirstOrDefault(item => item.CanRestore && item.IsIntegrityValid && item.SchemaVersion is > 0 and <= 31 && item.Materials > 0);
+            .FirstOrDefault(item => item.CanRestore && item.IsIntegrityValid && item.SchemaVersion is > 0 and <= 32 && item.Materials > 0);
         var latestLocalBackupValid = false;
         var latestLocalBackupDetail = "No restore-ready SQLite backup with canonical Materials is available";
         if (latestLocalBackup is not null)
@@ -15639,7 +15703,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             try
             {
                 var inspection = _database.InspectDatabaseBackup(latestLocalBackup.FilePath);
-                latestLocalBackupValid = inspection.IsIntegrityValid && inspection.SchemaVersion is > 0 and <= 31 && inspection.Materials > 0;
+                latestLocalBackupValid = inspection.IsIntegrityValid && inspection.SchemaVersion is > 0 and <= 32 && inspection.Materials > 0;
                 latestLocalBackupDetail = $"{IOPath.GetFileName(latestLocalBackup.FilePath)}: integrity {inspection.IntegrityResult}, schema v{inspection.SchemaVersion}, materials {inspection.Materials:N0}";
             }
             catch (Exception ex) { latestLocalBackupDetail = IOPath.GetFileName(latestLocalBackup.FilePath) + ": " + ex.Message; }
@@ -15656,7 +15720,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var excelRecoverySnapshot = _database.CreateExcelRecoverySnapshot();
         var excelRecoveryRows = excelRecoverySnapshot.Tables.Sum(table => table.Rows.Count);
         var excelRecoveryReady = excelRecoverySnapshot.FormatVersion == ExcelRecoverySnapshot.CurrentFormatVersion &&
-                                 excelRecoverySnapshot.SourceSchemaVersion == 31 &&
+                                 excelRecoverySnapshot.SourceSchemaVersion == 32 &&
                                  excelRecoverySnapshot.Tables.Count == 21 &&
                                  excelRecoverySnapshot.Tables.All(table => !string.IsNullOrWhiteSpace(table.TableName) && table.Columns.Count > 0 && table.Rows.All(row => row.Count == table.Columns.Count) && ExcelDisasterRecoveryService.ComputeTableHash(table).Length == 64) &&
                                  excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMaterialManagerRows").Rows.Count == _nativeMaterialRows.Count &&
@@ -15739,14 +15803,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Original-workbook sheet metadata is absent from Material Detail, Tools and diagnostics while supported-schema inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
                 : "A workbook metadata reader/UI surface remains or a required compatibility/recovery boundary failed"));
         var legacyWorkbookSchemaRetiredReady =
-            _database.CurrentSchemaVersion == 31 &&
+            _database.CurrentSchemaVersion == 32 &&
             _database.LegacyWorkbookTablesAreRetired() &&
             typeof(LocalDatabase).GetMethod("GetTestSummaryMetrics") is null &&
             typeof(MainWindow).GetMethod("GetCanonicalTestSummaryMetrics", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("v44.5.7 Legacy workbook schema retirement release gate",
             legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady,
             legacyWorkbookSchemaRetiredReady && activeDatabaseCompatibilityVerification.Passed && canonicalWorkingStoresReady && excelRecoveryReady && localRestoreContractReady && releaseIdentityReady
-                ? "Schema v31 contains no original-workbook tables; engineering metrics use canonical measurement rows while supported migration inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
+                ? "Schema v32 contains no original-workbook tables; engineering metrics use canonical measurement rows while supported migration inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
                 : "Legacy workbook tables/readers remain or canonical metrics, migration compatibility or recovery boundaries failed"));
         var retiredTransitionUiResidueReady =
             typeof(MainWindow).GetMethod("LoadNativeMaterials_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
@@ -15805,14 +15869,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
                                          compatibilityCatalog.Where(item => item.SchemaVersion is > 0 and < 27).All(item => item.CompatibilityStatus == "Legacy / incomplete" && !item.CanRestore) &&
-                                         compatibilityCatalog.Where(item => item.SchemaVersion is >= 27 and <= 30).All(item => item.CompatibilityStatus == "Migration required" && !item.CanRestore) &&
-                                         compatibilityCatalog.Where(item => item.SchemaVersion > 31).All(item => item.CompatibilityStatus == "Newer / incompatible" && !item.CanRestore) &&
+                                         compatibilityCatalog.Where(item => item.SchemaVersion is >= 27 and <= 31).All(item => item.CompatibilityStatus == "Migration required" && !item.CanRestore) &&
+                                         compatibilityCatalog.Where(item => item.SchemaVersion > 32).All(item => item.CompatibilityStatus == "Newer / incompatible" && !item.CanRestore) &&
                                          typeof(LocalDatabase).GetMethod("GetLocalBackupCatalog") is not null &&
                                          typeof(LocalDatabase).GetMethod("VerifyBackupCompatibility") is not null &&
                                          typeof(MainWindow).GetMethod("ShowRecoveryCenter_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("v43.3 Recovery Compatibility Center release gate", recoveryCompatibilityReady && localRestoreContractReady && excelRecoveryReady && releaseIdentityReady,
             recoveryCompatibilityReady && localRestoreContractReady && excelRecoveryReady && releaseIdentityReady
-                ? $"{compatibilityCatalog.Count} local SQLite backups classified; schema 27-30 require isolated dry-run, schema 31 ready, legacy/newer/corrupt blocked; verify-only and guarded restore UI available"
+                ? $"{compatibilityCatalog.Count} local SQLite backups classified; schema 27-31 require isolated dry-run, schema 32 ready, legacy/newer/corrupt blocked; verify-only and guarded restore UI available"
                 : "Recovery catalog, compatibility classification, migration dry-run contract, guarded restore UI or release identity failed"));
         var backupRecoveryUiReady = BackupAndRecoveryCenterActions.SequenceEqual(new[]
         {
@@ -15923,7 +15987,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var recoveryClarityGlossary = BuildRecoveryCompatibilityGlossary();
         var emptyProfileCompatibilityReady =
             compatibilityCatalog
-                .Where(item => item.IsIntegrityValid && item.SchemaVersion == 31 && item.Materials == 0)
+                .Where(item => item.IsIntegrityValid && item.SchemaVersion == 32 && item.Materials == 0)
                 .All(item => item.CompatibilityStatus == "Ready — empty profile" && item.CanRestore) &&
             recoveryClarityGlossary.Contains("Ready — empty profile", StringComparison.Ordinal) &&
             recoveryClarityGlossary.Contains("not full-data release evidence", StringComparison.Ordinal) &&
@@ -16071,7 +16135,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         measurementDateEditProbe.MeasuredDateText = "";
         var clearedDateAccepted = measurementDateEditProbe.MeasuredDate is null && measurementDateEditProbe.MeasuredDateText == "";
         var measurementDateReady =
-            _database.CurrentSchemaVersion == 31 &&
+            _database.CurrentSchemaVersion == 32 &&
             nativeMetadataTable.Columns.Contains("MeasuredDate", StringComparer.OrdinalIgnoreCase) &&
             experimentalRunsTable.Columns.Contains("MeasuredDate", StringComparer.OrdinalIgnoreCase) &&
             typeof(ExperimentalRunRecord).GetProperty(nameof(ExperimentalRunRecord.MeasuredDate)) is not null &&
@@ -16248,7 +16312,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             fastMaterialsContractColumns.Count == 52 &&
             fastMaterialsContractColumns.Select(PrototypeColumnKey).Distinct(StringComparer.Ordinal).Count() == 52 &&
             fastMaterialsContractColumns.Count(column => column.EditorKind == MaterialsPrototypeEditorKind.CheckBox) == 3 &&
-            fastMaterialsContractColumns.Count(column => column.EditorKind == MaterialsPrototypeEditorKind.ComboBox) == 4 &&
+            fastMaterialsContractColumns.Count(column => column.EditorKind == MaterialsPrototypeEditorKind.ComboBox) == 5 &&
             fastMaterialsContractRows.Count == visibleMeasurementMaterialIds.Count &&
             fastMaterialsContractRows.All(row => row.Source is NativeMaterialRow source &&
                                                  _nativeMaterialRows.Contains(source)) &&
@@ -16265,6 +16329,56 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             legacyGridRetirementUiReady && releaseIdentityReady
                 ? "Materials Fast schema and visible rows come from an explicit contract and the canonical filtered collection"
                 : "Materials schema, editors, stable keys, canonical visible-row source, prior stage or release identity failed"));
+        var manufacturerColumn = fastMaterialsContractColumns.SingleOrDefault(column =>
+            string.Equals(column.PropertyName, nameof(NativeMaterialRow.Manufacturer), StringComparison.Ordinal));
+        var activeManufacturerNames = _database.LoadManufacturers()
+            .Where(row => row.IsActive && !string.IsNullOrWhiteSpace(row.Name))
+            .Select(row => row.Name.Trim())
+            .ToList();
+        var currentManufacturerValues = _nativeMaterialRows
+            .Select(row => row.Manufacturer?.Trim() ?? string.Empty)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .ToList();
+        var manufacturerCatalogById = _database.LoadManufacturers()
+            .ToDictionary(row => row.ManufacturerId);
+        var linkedManufacturerIdsValid = _nativeMaterialRows
+            .Where(row => row.ManufacturerId.HasValue)
+            .All(row =>
+                manufacturerCatalogById.TryGetValue(row.ManufacturerId!.Value, out var manufacturer) &&
+                string.Equals(row.Manufacturer, manufacturer.Name, StringComparison.Ordinal));
+        var unlinkedManufacturerCount = _nativeMaterialRows.Count(row => !row.ManufacturerId.HasValue);
+        var unlinkedManufacturerFilterReady =
+            unlinkedManufacturerCount > 0
+                ? NativeMaterialManufacturerFilter.Items.Cast<object>().Any(item =>
+                      string.Equals(
+                          item.ToString(),
+                          UnlinkedManufacturerFilterText(unlinkedManufacturerCount),
+                          StringComparison.Ordinal)) &&
+                  BindExactMaterialManufacturerNamesButton.Visibility == Visibility.Visible
+                : !NativeMaterialManufacturerFilter.Items.Cast<object>().Any(item =>
+                      IsUnlinkedManufacturerFilter(item.ToString())) &&
+                  BindExactMaterialManufacturerNamesButton.Visibility == Visibility.Collapsed;
+        var canonicalManufacturerSelectionReady =
+            manufacturerColumn?.EditorKind == MaterialsPrototypeEditorKind.ComboBox &&
+            activeManufacturerNames.All(name =>
+                manufacturerColumn.Choices.Contains(name, StringComparer.OrdinalIgnoreCase)) &&
+            currentManufacturerValues.All(name =>
+                manufacturerColumn.Choices.Contains(name, StringComparer.OrdinalIgnoreCase)) &&
+            linkedManufacturerIdsValid &&
+            unlinkedManufacturerFilterReady &&
+            manufacturerColumn is not null &&
+            RequiresExplicitSameValueCommit(manufacturerColumn) &&
+            typeof(MainWindow).GetMethod(
+                nameof(IsManufacturerReferenced),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                nameof(BuildExactManufacturerBindingPlan),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v45.1 canonical Manufacturer selection contract",
+            canonicalManufacturerSelectionReady && releaseIdentityReady,
+            canonicalManufacturerSelectionReady && releaseIdentityReady
+                ? $"Nullable ManufacturerId links resolve exact catalog names; {unlinkedManufacturerCount} unlinked rows are filterable; legacy text and delete guards remain"
+                : "ManufacturerId integrity, unlinked-row filter, canonical resolution, legacy fallback, catalog guard or release identity failed"));
         var fastNativeSettingsContractColumns = BuildFastNativeSettingsColumns();
         var fastBaseMaterialContractColumns = BuildFastBaseMaterialColumns();
         var fastSettingsContractsReady =
@@ -16401,7 +16515,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Materials selection and CRUD resolve through canonical Fast-owned selection without a DataGrid parameter"
                 : "Materials canonical selection ownership, a prior retirement gate or release identity failed"));
         var canonicalVisibleMaterialRows = GetCanonicalVisibleMaterialRows();
-        var canonicalVisibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
+        var canonicalVisibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters()
+            .Where(materialId => _nativeMaterialRows.Any(row =>
+                !row.IsArchived &&
+                string.Equals(row.MaterialID, materialId, StringComparison.OrdinalIgnoreCase)))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         var materialsCanonicalFilterOwnershipReady =
             canonicalVisibleMaterialRows.Count == canonicalVisibleMaterialIds.Count &&
             canonicalVisibleMaterialRows.All(row =>
@@ -21186,6 +21304,7 @@ private List<string> GetVisibleAiMaterialLabels()
         }
 
         public string MaterialID { get; set; } = "";
+        public long? ManufacturerId { get; set; }
         public string Manufacturer { get; set; } = "";
         public string ProductLine { get; set; } = "";
         public string MarketingName { get; set; } = "";
@@ -21432,9 +21551,20 @@ private List<string> GetVisibleAiMaterialLabels()
         var allText = NativeMaterialAllFilterText(comboName);
         var previous = combo.SelectedItem?.ToString() ?? allText;
         var previousWasAll = IsNativeMaterialAllFilter(previous);
+        var previousWasUnlinked = IsUnlinkedManufacturerFilter(previous);
         combo.SelectionChanged -= NativeMaterialFilter_Changed;
         combo.Items.Clear();
         combo.Items.Add(allText);
+        if (string.Equals(comboName, "NativeMaterialManufacturerFilter", StringComparison.Ordinal))
+        {
+            var unlinkedCount = _nativeMaterialRows.Count(row => !row.ManufacturerId.HasValue);
+            if (unlinkedCount > 0)
+            {
+                combo.Items.Add(UnlinkedManufacturerFilterText(unlinkedCount));
+            }
+            BindExactMaterialManufacturerNamesButton.Visibility =
+                unlinkedCount > 0 ? Visibility.Visible : Visibility.Collapsed;
+        }
         foreach (var value in values.Select(v => v?.Trim() ?? string.Empty)
                      .Where(v => !string.IsNullOrWhiteSpace(v))
                      .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -21445,9 +21575,19 @@ private List<string> GetVisibleAiMaterialLabels()
 
         combo.SelectedItem = previousWasAll
             ? allText
-            : combo.Items.Cast<object>().FirstOrDefault(item => string.Equals(item.ToString(), previous, StringComparison.OrdinalIgnoreCase)) ?? allText;
+            : previousWasUnlinked
+                ? combo.Items.Cast<object>().FirstOrDefault(item =>
+                    IsUnlinkedManufacturerFilter(item.ToString())) ?? allText
+                : combo.Items.Cast<object>().FirstOrDefault(item =>
+                    string.Equals(item.ToString(), previous, StringComparison.OrdinalIgnoreCase)) ?? allText;
         combo.SelectionChanged += NativeMaterialFilter_Changed;
     }
+
+    private static string UnlinkedManufacturerFilterText(int count) =>
+        $"Unlinked manufacturers ({count})";
+
+    private static bool IsUnlinkedManufacturerFilter(string? value) =>
+        value?.StartsWith("Unlinked manufacturers (", StringComparison.OrdinalIgnoreCase) == true;
 
     private static string NativeMaterialAllFilterText(string comboName)
     {
@@ -21610,7 +21750,11 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private static bool NativeMaterialRowMatchesCurrentFilters(NativeMaterialRow row, string search, string manufacturer, string baseMaterial, string category, string reinforcement, string tested)
     {
-        if (!NativeMaterialMatches(row.Manufacturer, manufacturer)) return false;
+        if (IsUnlinkedManufacturerFilter(manufacturer))
+        {
+            if (row.ManufacturerId.HasValue) return false;
+        }
+        else if (!NativeMaterialMatches(row.Manufacturer, manufacturer)) return false;
         if (!NativeMaterialMatches(row.BaseMaterial, baseMaterial)) return false;
         if (!NativeMaterialMatches(row.MaterialCategory, category)) return false;
         if (!NativeMaterialMatches(row.Reinforcement, reinforcement)) return false;
@@ -21843,6 +21987,7 @@ private List<string> GetVisibleAiMaterialLabels()
         return new NativeMaterialRecord
         {
             MaterialID = row.MaterialID,
+            ManufacturerId = row.ManufacturerId,
             Manufacturer = row.Manufacturer,
             ProductLine = row.ProductLine,
             MarketingName = row.MarketingName,
@@ -21928,6 +22073,7 @@ private List<string> GetVisibleAiMaterialLabels()
         return new NativeMaterialRow
         {
             MaterialID = record.MaterialID,
+            ManufacturerId = record.ManufacturerId,
             Manufacturer = record.Manufacturer,
             ProductLine = record.ProductLine,
             MarketingName = record.MarketingName,
@@ -23946,6 +24092,7 @@ private List<string> GetVisibleAiMaterialLabels()
         }
         _inventorySpoolRows.CollectionChanged += (_, _) =>
         {
+            if (_isReloadingInventorySpools) return;
             SaveInventorySpools();
             SyncMaterialInventoryQuantityFromSpools(persist: true);
             RefreshInventorySummary();
@@ -23975,6 +24122,24 @@ private List<string> GetVisibleAiMaterialLabels()
     }
 
     private void SaveInventorySpools() => _database.ReplaceInventorySpoolItems(_inventorySpoolRows);
+
+    private void ReloadInventorySpoolsFromCanonicalDatabase()
+    {
+        _isReloadingInventorySpools = true;
+        try
+        {
+            _inventorySpoolRows.Clear();
+            foreach (var row in _database.LoadInventorySpoolItems()) _inventorySpoolRows.Add(row);
+        }
+        finally
+        {
+            _isReloadingInventorySpools = false;
+        }
+
+        RefreshInventoryMaterialChoices();
+        SyncMaterialInventoryQuantityFromSpools(persist: false);
+        RefreshInventorySummary();
+    }
 
     /// <summary>
     /// Quantity in Materials is an aggregate display owned by the spool table.
@@ -24449,10 +24614,16 @@ private List<string> GetVisibleAiMaterialLabels()
         CreateDatabaseBackupBeforeMajorMaterialChange("adding material");
 
         var materialId = GenerateNextNativeMaterialId();
+        var defaultManufacturer = _database.LoadManufacturers()
+            .Where(item => item.IsActive && !string.IsNullOrWhiteSpace(item.Name))
+            .OrderBy(item => item.SortOrder)
+            .ThenBy(item => item.Name)
+            .FirstOrDefault();
         var row = new NativeMaterialRow
         {
             MaterialID = materialId,
-            Manufacturer = "New manufacturer",
+            ManufacturerId = defaultManufacturer?.ManufacturerId,
+            Manufacturer = defaultManufacturer?.Name ?? "New manufacturer",
             ProductLine = $"New product line {materialId}",
             BaseMaterial = "PLA",
             MaterialCategory = "Standard",
@@ -24472,6 +24643,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
         ApplyNativeMaterialComputedFields(row, _nativeMaterialRows.Count);
         _nativeMaterialRows.Add(row);
+        RefreshFastManufacturerChoices();
         MarkNativeMaterialsDirty();
         RefreshNativeMaterialGridValidation();
         FocusNewNativeMaterial(row);
@@ -24493,6 +24665,7 @@ private List<string> GetVisibleAiMaterialLabels()
         {
             MaterialID = materialId,
             Manufacturer = selected.Manufacturer,
+            ManufacturerId = selected.ManufacturerId,
             ProductLine = selected.ProductLine,
             MarketingName = string.IsNullOrWhiteSpace(selected.MarketingName)
                 ? $"Copy {materialId}"
@@ -24527,6 +24700,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
         ApplyNativeMaterialComputedFields(copy, _nativeMaterialRows.Count);
         _nativeMaterialRows.Add(copy);
+        RefreshFastManufacturerChoices();
         MarkNativeMaterialsDirty();
         RefreshNativeMaterialGridValidation();
         FocusNewNativeMaterial(copy);
@@ -24590,6 +24764,7 @@ private List<string> GetVisibleAiMaterialLabels()
         CreateDatabaseBackupBeforeMajorMaterialChange("deleting material");
 
         _nativeMaterialRows.Remove(selected);
+        RefreshFastManufacturerChoices();
         if (ReferenceEquals(_lastSelectedNativeMaterial, selected)) _lastSelectedNativeMaterial = null;
         SyncNativeTensileRowsWithMaterialManager(markDirty: true);
         MarkNativeMaterialsDirty();
@@ -24607,6 +24782,10 @@ private List<string> GetVisibleAiMaterialLabels()
                 ShowNativeSaveBlockedStatus(
                     "Materials",
                     "Deleted measurement references were saved, but the MaterialID removal remains unsaved");
+            }
+            else
+            {
+                ReloadInventorySpoolsFromCanonicalDatabase();
             }
         }
         catch (Exception ex)

@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "GUARDED-UPDATER-ACCEPTANCE";
-    public const string ReleaseTitle = "Guarded Updater Acceptance";
+    public const string ReleaseCode = "CANONICAL-MANUFACTURER-SELECTION";
+    public const string ReleaseTitle = "Canonical Manufacturer Selection";
 
     public static string Version
     {

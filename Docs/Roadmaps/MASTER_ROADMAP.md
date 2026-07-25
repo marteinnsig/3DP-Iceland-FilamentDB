@@ -1,12 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.18 — Guarded Updater Acceptance**
+Current canonical release: **v45.1 — Canonical Manufacturer Selection**
 
-Last runtime-accepted baseline: **v44.7.18 — Guarded Updater Acceptance**
+Last runtime-accepted baseline: **v45.1 — Canonical Manufacturer Selection**
 
-Current application release: **v44.7.18 — Guarded Updater Acceptance**
+Current application candidate: **None — v45.1 is canonical**
 
-Current roadmap increment: **v45.0 — Material Model Audit and Relationship Plan**
+Current roadmap increment: **v45.2 — Canonical Base Material Selection**
+
+Current acceptance note: v45.1 is runtime accepted with zero unlinked Materials and Full Data Verification 345/345.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1830,19 +1832,36 @@ to unstarted authoritative planning slots.
 ### Authoritative future major-version sequence
 
 - **v45.0 — Material Model Audit and Relationship Plan**
-  - State: **Current authoritative increment.**
-  - Feedback disposition: Open.
+  - State: **Completed research 2026-07-25.**
+  - Feedback disposition: Research complete; implementation moved to v45.1.
   - Trace `Manufacturer SKU`, video-thumbnail-name and related Material field callers before hide/retire decisions.
   - Map Materials, Manufacturers and Base Material catalog identity, rename, archive, delete and compatibility ownership.
   - Decide bounded v45.1/v45.2 implementation contracts before schema or UI changes.
   - Preserve recovery, import/export, reports, website and historical/unmapped values.
+  - Audit found Manufacturer/Base Material are independent text identities with no catalog foreign keys.
+  - `Manufacturer SKU` retains purchasing, detail, export and recovery callers; it is not caller-free.
+  - Thumbnail filename has compatibility/export ownership but no active website/report asset reader.
+  - Decision: use backwards-compatible name selection first; do not add or silently populate `ManufacturerID`.
+  - Owner review superseded name-only binding for v45.1 because canonical rename must propagate through every consumer.
 - **v45.1 — Canonical Manufacturer Selection**
-  - Feedback disposition: Open.
+  - State: **Complete — canonical and runtime accepted.**
+  - Feedback disposition: Solved.
   - Replace free-text Manufacturer editing only after v45.0 approves the ownership contract.
   - Compare backwards-compatible name binding with a real `ManufacturerID` foreign-key relationship.
   - Source the dropdown from canonical Manufacturers and preserve supported legacy/unmapped values.
   - Define rename, archive, delete, Add Material, import/export, report, website and recovery behavior.
   - Update disposable CRUD automation for select/save/restart persistence.
+  - Schema v32 adds nullable `ManufacturerId`; migration leaves every existing Material unlinked.
+  - Active catalog names plus exact current legacy/unmapped values remain available in Fast Materials.
+  - Explicit selection stores ID and text snapshot; linked rename propagates to all existing text projections.
+  - Exact-name legacy binding requires a visible preview and default-No confirmation; ambiguous/unmatched values remain unlinked.
+  - Referenced hard delete is blocked; archive and unlinked legacy fallback preserve data.
+  - Public allowlists stay unchanged; typed Excel recovery includes the nullable ID column.
+  - Disposable CRUD covers legacy fallback, ID persistence, rename propagation, delete guard and lossless cleanup.
+  - Owner review found stale Manufacturer and Inventory projections after Material delete; the candidate refreshes both.
+  - Initial naming of a new Manufacturer remains editable even when a legacy Material uses the default placeholder text.
+  - Owner exact binding reached zero unlinked Materials; recovery controls hide at zero and reappear for supported legacy data.
+  - Owner runtime accepted the final workflow and Full Data Verification passed 345/345.
 - **v45.2 — Canonical Base Material Selection**
   - Feedback disposition: Open.
   - Use a backwards-compatible dropdown sourced from the governed catalog.

@@ -11,7 +11,7 @@ namespace FilamentDbApp.Data;
 
 public sealed partial class LocalDatabase
 {
-    private const int SchemaVersion = 31;
+    private const int SchemaVersion = 32;
     private const int MinimumStandaloneBackupSchemaVersion = 27;
     private const int MaxAutomaticBackups = 20;
     private const string AutomaticBackupPrefix = "filamentdb_";
@@ -53,10 +53,13 @@ public sealed partial class LocalDatabase
         var legacyMaterialsImportRetirementPending = IOFile.Exists(DatabasePath) && LegacyMaterialsImportRetirementIsPending();
         var legacyWorkbookRetirementPending = IOFile.Exists(DatabasePath) && LegacyWorkbookTablesRetirementIsPending();
         var postRetirementBackupPending = IOFile.Exists(DatabasePath) && LegacyWorkbookPostRetirementBackupIsPending();
-        if (IOFile.Exists(DatabasePath) && (NativeMeasurementMigrationIsPending() || DatabaseSchemaUpgradeIsPending() || legacyMaterialsImportRetirementPending || legacyWorkbookRetirementPending))
+        var schemaUpgradePending = IOFile.Exists(DatabasePath) && DatabaseSchemaUpgradeIsPending();
+        if (IOFile.Exists(DatabasePath) && (NativeMeasurementMigrationIsPending() || schemaUpgradePending || legacyMaterialsImportRetirementPending || legacyWorkbookRetirementPending))
             CreateRequiredBackupBeforeCanonicalMigration(retainAllEvidence: legacyMaterialsImportRetirementPending || legacyWorkbookRetirementPending);
 
         Initialize();
+        if (schemaUpgradePending)
+            CreateConsistentDatabaseBackup(AutomaticBackupPrefix);
         if ((legacyWorkbookRetirementPending || postRetirementBackupPending) && LegacyWorkbookTablesAreRetired())
             CreateAndRecordLegacyWorkbookPostRetirementBackup();
     }
@@ -1148,6 +1151,7 @@ CREATE TABLE IF NOT EXISTS TestSummaryValues (
 
 CREATE TABLE IF NOT EXISTS NativeMaterialManagerRows (
     MaterialId TEXT PRIMARY KEY,
+    ManufacturerId INTEGER,
     Manufacturer TEXT,
     ProductLine TEXT,
     MarketingName TEXT,
@@ -1568,6 +1572,36 @@ DROP TABLE IF EXISTS MaterialsImport;";
         EnsureColumn(connection, "NativeMaterialManagerRows", "PublishPublicTestDetails", "INTEGER NOT NULL DEFAULT 0");
         EnsureColumn(connection, "NativeMaterialManagerRows", "IsArchived", "INTEGER NOT NULL DEFAULT 0");
         EnsureColumn(connection, "NativeMaterialManagerRows", "UpdatedAtUtc", "TEXT NOT NULL DEFAULT ''");
+        EnsureColumn(connection, "NativeMaterialManagerRows", "ManufacturerId", "INTEGER");
+        using (var manufacturerRelationship = connection.CreateCommand())
+        {
+            manufacturerRelationship.CommandText = """
+                CREATE TRIGGER IF NOT EXISTS NativeMaterials_ManufacturerId_InsertGuard
+                BEFORE INSERT ON NativeMaterialManagerRows
+                WHEN NEW.ManufacturerId IS NOT NULL
+                     AND NOT EXISTS (SELECT 1 FROM Manufacturers WHERE ManufacturerId = NEW.ManufacturerId)
+                BEGIN
+                    SELECT RAISE(ABORT, 'Native Material ManufacturerId does not exist');
+                END;
+                CREATE TRIGGER IF NOT EXISTS NativeMaterials_ManufacturerId_UpdateGuard
+                BEFORE UPDATE OF ManufacturerId ON NativeMaterialManagerRows
+                WHEN NEW.ManufacturerId IS NOT NULL
+                     AND NOT EXISTS (SELECT 1 FROM Manufacturers WHERE ManufacturerId = NEW.ManufacturerId)
+                BEGIN
+                    SELECT RAISE(ABORT, 'Native Material ManufacturerId does not exist');
+                END;
+                CREATE TRIGGER IF NOT EXISTS Manufacturers_ReferencedDeleteGuard
+                BEFORE DELETE ON Manufacturers
+                WHEN EXISTS (
+                    SELECT 1 FROM NativeMaterialManagerRows
+                    WHERE ManufacturerId = OLD.ManufacturerId
+                )
+                BEGIN
+                    SELECT RAISE(ABORT, 'Manufacturer is referenced by canonical Materials');
+                END;
+                """;
+            manufacturerRelationship.ExecuteNonQuery();
+        }
         EnsureColumn(connection, "InventorySpoolItems", "PurchaseOrderLineId", "TEXT");
         RetireLegacyWorkbookTablesIfCanonicalReady(connection);
     }
@@ -1606,7 +1640,7 @@ DROP TABLE IF EXISTS MaterialsImport;";
         update.Transaction = transaction;
         update.CommandText = """
             INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('LegacyWorkbookTablesRetiredV1', 'complete');
-            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('SchemaVersion', '31');
+            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('SchemaVersion', '32');
             """;
         update.ExecuteNonQuery();
         transaction.Commit();
@@ -1923,15 +1957,16 @@ $cmin,$crec,$cmax,$cooling,$dtemp,$dhours,$enclosure,$printer,$slicer,$profileId
         insert.Transaction = transaction;
         insert.CommandText = @"
 INSERT INTO NativeMaterialManagerRows (
-    MaterialId, Manufacturer, ProductLine, MarketingName, BaseMaterial, MaterialCategory, VariantFinish,
+    MaterialId, ManufacturerId, Manufacturer, ProductLine, MarketingName, BaseMaterial, MaterialCategory, VariantFinish,
     Reinforcement, Color, DiameterMm, SpoolWeightG, ManufacturerSku, InventoryId, PurchaseId, PurchasedFrom, SupplierUrl, PurchaseDate, OrderNumber, BatchNumber, StorageLocation, InventoryStatus, Quantity, RemainingWeightG, PurchasePriceAmount, PurchaseCurrency, ShippingAmount, VatAmount, MsrpAmount, MsrpCurrency, MsrpUsd, LandedCostAmount, LandedCostCurrency, LandedCostUsd, MsrpUsdPerKg, LandedCostUsdPerKg, PriceCheckedDate, NozzleTemperatureMinC, NozzleTemperatureRecommendedC, NozzleTemperatureMaxC, BedTemperatureMinC, BedTemperatureRecommendedC, BedTemperatureMaxC, PrintSpeedMinMmPerS, PrintSpeedRecommendedMmPerS, PrintSpeedMaxMmPerS, CoolingRequirement, DryingTimeHours, EnclosureRequirement, PrinterProfileReference, SlicerProfileReference, PrintingProfileId, PrintingProfileKind, CoolingMinPercent, CoolingRecommendedPercent, CoolingMaxPercent, DryingTemperatureC, SlicerIdentity, SlicerVersion, PrintingSettingsProvenance, PrintingSettingsSourceUrl, PrintingSettingsCheckedDate, PrintingSettingsValidationNote, ManufacturerWebsite, YouTubeReviewUrl, ThumbnailFilename,
     Video, Notes, TestedStatus, InTensile, InImpact, InStiffness, SortOrder, SourcePriority, WebsiteDisplayName, MaterialKey, PublishPublicReports, PublishPublicTestDetails, IsArchived, UpdatedAtUtc
 ) VALUES (
-    $MaterialId, $Manufacturer, $ProductLine, $MarketingName, $BaseMaterial, $MaterialCategory, $VariantFinish,
+    $MaterialId, $ManufacturerId, $Manufacturer, $ProductLine, $MarketingName, $BaseMaterial, $MaterialCategory, $VariantFinish,
     $Reinforcement, $Color, $DiameterMm, $SpoolWeightG, $ManufacturerSku, $InventoryId, $PurchaseId, $PurchasedFrom, $SupplierUrl, $PurchaseDate, $OrderNumber, $BatchNumber, $StorageLocation, $InventoryStatus, $Quantity, $RemainingWeightG, $PurchasePriceAmount, $PurchaseCurrency, $ShippingAmount, $VatAmount, $MsrpAmount, $MsrpCurrency, $MsrpUsd, $LandedCostAmount, $LandedCostCurrency, $LandedCostUsd, $MsrpUsdPerKg, $LandedCostUsdPerKg, $PriceCheckedDate, $NozzleTemperatureMinC, $NozzleTemperatureRecommendedC, $NozzleTemperatureMaxC, $BedTemperatureMinC, $BedTemperatureRecommendedC, $BedTemperatureMaxC, $PrintSpeedMinMmPerS, $PrintSpeedRecommendedMmPerS, $PrintSpeedMaxMmPerS, $CoolingRequirement, $DryingTimeHours, $EnclosureRequirement, $PrinterProfileReference, $SlicerProfileReference, $PrintingProfileId, $PrintingProfileKind, $CoolingMinPercent, $CoolingRecommendedPercent, $CoolingMaxPercent, $DryingTemperatureC, $SlicerIdentity, $SlicerVersion, $PrintingSettingsProvenance, $PrintingSettingsSourceUrl, $PrintingSettingsCheckedDate, $PrintingSettingsValidationNote, $ManufacturerWebsite, $YouTubeReviewUrl, $ThumbnailFilename,
     $Video, $Notes, $TestedStatus, $InTensile, $InImpact, $InStiffness, $SortOrder, $SourcePriority, $WebsiteDisplayName, $MaterialKey, $PublishPublicReports, $PublishPublicTestDetails, $IsArchived, $UpdatedAtUtc
 )
 ON CONFLICT(MaterialId) DO UPDATE SET
+    ManufacturerId=excluded.ManufacturerId,
     Manufacturer=excluded.Manufacturer,
     ProductLine=excluded.ProductLine,
     MarketingName=excluded.MarketingName,
@@ -2012,6 +2047,7 @@ ON CONFLICT(MaterialId) DO UPDATE SET
     UpdatedAtUtc=excluded.UpdatedAtUtc;";
 
         var pMaterialId = insert.Parameters.Add("$MaterialId", SqliteType.Text);
+        var pManufacturerId = insert.Parameters.Add("$ManufacturerId", SqliteType.Integer);
         var pManufacturer = insert.Parameters.Add("$Manufacturer", SqliteType.Text);
         var pProductLine = insert.Parameters.Add("$ProductLine", SqliteType.Text);
         var pMarketingName = insert.Parameters.Add("$MarketingName", SqliteType.Text);
@@ -2104,6 +2140,9 @@ ON CONFLICT(MaterialId) DO UPDATE SET
             if (string.IsNullOrWhiteSpace(material.MaterialID)) continue;
 
             pMaterialId.Value = material.MaterialID.Trim();
+            pManufacturerId.Value = material.ManufacturerId.HasValue
+                ? material.ManufacturerId.Value
+                : DBNull.Value;
             pManufacturer.Value = material.Manufacturer ?? string.Empty;
             pProductLine.Value = material.ProductLine ?? string.Empty;
             pMarketingName.Value = material.MarketingName ?? string.Empty;
@@ -2223,7 +2262,7 @@ ON CONFLICT(MaterialId) DO UPDATE SET
         using var command = connection.CreateCommand();
         command.CommandText = @"
 SELECT
-    MaterialId, Manufacturer, ProductLine, MarketingName, BaseMaterial, MaterialCategory, VariantFinish,
+    MaterialId, ManufacturerId, Manufacturer, ProductLine, MarketingName, BaseMaterial, MaterialCategory, VariantFinish,
     Reinforcement, Color, DiameterMm, SpoolWeightG, ManufacturerSku, InventoryId, PurchaseId, PurchasedFrom, SupplierUrl, PurchaseDate, OrderNumber, BatchNumber, StorageLocation, InventoryStatus, Quantity, RemainingWeightG, PurchasePriceAmount, PurchaseCurrency, ShippingAmount, VatAmount, MsrpAmount, MsrpCurrency, MsrpUsd, LandedCostAmount, LandedCostCurrency, LandedCostUsd, MsrpUsdPerKg, LandedCostUsdPerKg, PriceCheckedDate, NozzleTemperatureMinC, NozzleTemperatureRecommendedC, NozzleTemperatureMaxC, BedTemperatureMinC, BedTemperatureRecommendedC, BedTemperatureMaxC, PrintSpeedMinMmPerS, PrintSpeedRecommendedMmPerS, PrintSpeedMaxMmPerS, CoolingRequirement, DryingTimeHours, EnclosureRequirement, PrinterProfileReference, SlicerProfileReference, PrintingProfileId, PrintingProfileKind, CoolingMinPercent, CoolingRecommendedPercent, CoolingMaxPercent, DryingTemperatureC, SlicerIdentity, SlicerVersion, PrintingSettingsProvenance, PrintingSettingsSourceUrl, PrintingSettingsCheckedDate, PrintingSettingsValidationNote, ManufacturerWebsite, YouTubeReviewUrl, ThumbnailFilename,
     Video, Notes, TestedStatus, InTensile, InImpact, InStiffness, SortOrder, SourcePriority, WebsiteDisplayName, MaterialKey, PublishPublicReports, PublishPublicTestDetails, IsArchived
 FROM NativeMaterialManagerRows
@@ -2238,6 +2277,9 @@ ORDER BY
             rows.Add(new NativeMaterialRecord
             {
                 MaterialID = ReadString(reader, "MaterialId"),
+                ManufacturerId = reader["ManufacturerId"] is DBNull
+                    ? null
+                    : Convert.ToInt64(reader["ManufacturerId"], CultureInfo.InvariantCulture),
                 Manufacturer = ReadString(reader, "Manufacturer"),
                 ProductLine = ReadString(reader, "ProductLine"),
                 MarketingName = ReadString(reader, "MarketingName"),

@@ -344,7 +344,8 @@
                         <TextBox Name="NativeMaterialSearchBox" Width="220" TextChanged="NativeMaterialFilter_Changed" KeyDown="NativeMaterialSearchBox_KeyDown" TabIndex="0" Margin="0,0,12,8"
 />
                         <TextBlock Text="Manufacturer" VerticalAlignment="Center" Margin="0,0,4,8"/>
-                        <ComboBox Name="NativeMaterialManufacturerFilter" Width="160" TabIndex="1" SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
+                        <ComboBox Name="NativeMaterialManufacturerFilter" AutomationProperties.AutomationId="NativeMaterialManufacturerFilter"
+                                  Width="205" TabIndex="1" SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
 />
                         <TextBlock Text="Material type" VerticalAlignment="Center" Margin="0,0,4,8"/>
                         <ComboBox Name="NativeMaterialBaseMaterialFilter" Width="145" TabIndex="2" SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
@@ -375,6 +376,10 @@
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
             <Button Content="Add Manufacturer" Click="AddManufacturer_Click" Padding="10,5" Margin="0,0,8,0"/>
             <Button Content="Duplicate" Click="DuplicateManufacturer_Click" Padding="10,5" Margin="0,0,8,0"/>
+            <Button x:Name="BindExactMaterialManufacturerNamesButton"
+                    Content="Bind Exact Material Names" Click="BindExactMaterialManufacturerNames_Click"
+                    AutomationProperties.AutomationId="BindExactMaterialManufacturerNames"
+                    Padding="10,5" Margin="0,0,8,0"/>
             <Button Content="Archive / Restore" Click="ToggleManufacturerActive_Click" Padding="10,5" Margin="0,0,8,0"/>
             <Button Content="Delete" Click="DeleteManufacturer_Click" Padding="10,5" Margin="0,0,16,0"/>
             <TextBlock Text="Search" VerticalAlignment="Center" Margin="0,0,6,0"/>
@@ -383,7 +388,7 @@
         </StackPanel>
         <DataGrid Grid.Row="1" x:Name="ManufacturersGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="False" SelectionMode="Single" SelectionUnit="CellOrRowHeader" BeginningEdit="InputDataGrid_BeginningEdit" PreparingCellForEdit="MeasurementGrid_PreparingCellForEdit">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="150"/>
                 <DataGridTextColumn Header="Display Name" Binding="{Binding DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150"/>
                 <DataGridTextColumn Header="Country" Binding="{Binding Country, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
                 <DataGridTextColumn Header="Founded" Binding="{Binding Founded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="80"/>

@@ -2973,3 +2973,33 @@ Maintenance rule: every build must add one new top entry here and keep the detai
   grid host.
 - Owner runtime testing accepted final Materials legacy XAML deletion and all retained Fast workflows; Full Data Verification passed
   332/332 and v44.7.7 is complete.
+## v45.1 - Canonical Manufacturer Selection
+
+- Replaced free-text Fast Materials Manufacturer editing with a canonical
+  dropdown sourced from active SQLite Manufacturer profiles.
+- Preserved exact current legacy/unmapped Manufacturer values without silent
+  remapping.
+- Added nullable schema-v32 `ManufacturerId`; existing rows remain unlinked
+  until an explicit catalog selection is made.
+- Added previewed, default-No exact-name binding for unique catalog matches;
+  ambiguous and unmatched legacy values remain unlinked.
+- Added a counted `Unlinked manufacturers (n)` Materials filter for explicit
+  one-by-one assignment; the count refreshes without fuzzy remapping.
+- Canonical Manufacturer selection now commits `ManufacturerId` when the chosen
+  catalog name equals the existing legacy text.
+- Hides the unlinked filter and exact-binding action when the count reaches zero;
+  both return if a supported migration/import/recovery path introduces one.
+- Linked catalog rename updates Material snapshots and all existing downstream
+  projections; referenced hard delete is blocked and archive remains safe.
+- Governed typed Excel recovery includes the nullable ID while public allowlists
+  and output shapes remain unchanged.
+- Blocked catalog rename and hard delete while a Manufacturer name is referenced
+  by canonical Materials; archive remains non-destructive.
+- Extended disposable CRUD acceptance across unmapped and canonical
+  Manufacturer save/restart persistence.
+- Passed disposable CRUD and Full Data Verification 345/345 with equal
+  baseline/final business-state hashes and an unchanged source seed.
+- Kept Manufacturer SKU, thumbnail metadata, reports, website, public allowlists,
+  Excel and governed recovery contracts unchanged.
+- Owner runtime accepted zero unlinked Materials, conditional recovery controls
+  and Full Data Verification 345/345.
