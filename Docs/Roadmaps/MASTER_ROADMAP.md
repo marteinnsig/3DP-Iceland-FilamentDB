@@ -1,12 +1,12 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.12 — Clean Baseline Retirement**
+Current canonical release: **v44.7.13 — Public HTML Trust Hardening**
 
-Last runtime-accepted baseline: **v44.7.12 — Clean Baseline Retirement**
+Last runtime-accepted baseline: **v44.7.13 — Public HTML Trust Hardening**
 
-Current application release: **v44.7.12 — Clean Baseline Retirement**
+Current application release: **v44.7.13 — Public HTML Trust Hardening**
 
-Current roadmap increment: **v44.7.13 — Public HTML Trust Hardening**
+Current roadmap increment: **v44.8.0 — Low-value Material fields audit**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1703,16 +1703,19 @@ changes priority.
   - Public Report Package fingerprint now reads canonical native measurement tables, not retired workbook tables.
   - Debug/Release, static/security/package gates, owner report review and Full Data Verification passed.
 - **v44.7.13 — Public HTML Trust Hardening**
-  - State: **Current research increment**.
+  - State: **Complete and runtime accepted**.
   - Make the imported website-template executable-content trust boundary explicit and default-No.
-  - Add bounded template validation and malicious-input report probes without pretending arbitrary HTML can be fully sanitized.
-  - Harden the hidden WebView2 PDF host against unexpected navigation, popups and permissions.
+  - Limit new imports to 5 MiB and require one structurally replaceable `const DATA` object.
+  - Encode malicious public text, reject unsafe link schemes and verify those boundaries directly.
+  - Block unexpected WebView2 navigation, popups and permissions; retain scripts and local assets only for canonical PDF rendering.
   - Preserve accepted website templates, canonical report layout/PDF output, Preview/Production parity and FTPS behavior.
-  - Require HTML/PDF visual acceptance before any CSP or template restriction becomes canonical.
+  - Defer CSP and broad sanitization until compatibility evidence proves they do not break accepted output.
+  - Owner template/Preview/report HTML/PDF review and Full Data Verification 339/339 passed.
 
 ### Later v44 owner-value sequence
 
 - **v44.8.0 — Low-value Material fields audit**
+  - State: **Current research increment**.
   - Feedback disposition: Open.
   - Trace `Manufacturer SKU` and video-thumbnail-name callers before any hide/retire decision.
   - Preserve recovery and report compatibility.

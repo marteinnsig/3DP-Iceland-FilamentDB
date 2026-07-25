@@ -1,4 +1,26 @@
-# Current Build Notes - v44.7.12
+# Current Build Notes - v44.7.13
+
+## Public HTML Trust Hardening
+
+v44.7.13 is runtime accepted. New website-template imports are
+limited to 5 MiB, must contain one structurally replaceable `const DATA`
+object and require an explicit default-No trust confirmation before SQLite
+storage and immediate activation. Existing stored templates are unchanged.
+
+The hidden WebView2 PDF host retains JavaScript and local report assets while
+printing, but blocks unexpected top-level navigation, popups and permission
+requests. Script execution is disabled again between batch documents.
+
+Verification now exercises encoded malicious public text, rejection of
+`javascript:` links, bounded website-template parsing and presence of the
+WebView2 hardening policy. CSP and arbitrary-HTML sanitization remain outside
+this increment pending compatibility proof.
+
+Owner runtime testing accepted template-import cancellation/confirmation,
+website Preview, the complete Public Report Package and sampled HTML/PDF
+output. Full Data Verification passed 339/339. v44.7.13 is canonical.
+
+## Retained v44.7.12 evidence
 
 ## Clean Baseline Retirement
 

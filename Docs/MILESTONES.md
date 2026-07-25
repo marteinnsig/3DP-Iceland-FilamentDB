@@ -3,6 +3,16 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.13 - Public HTML Trust Hardening
+
+Makes executable website-template import an explicit bounded
+trust decision and restricts the hidden WebView2 PDF host. It preserves stored
+templates and accepted report/website output while adding malicious-input and
+host-policy Verification evidence. Owner runtime review and Full Data
+Verification 339/339 passed.
+
+---
+
 # v44.7.12 - Clean Baseline Retirement
 
 Establishes the new retirement-cleanup rule on a reviewed baseline. Removes

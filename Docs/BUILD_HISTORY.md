@@ -2,6 +2,23 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.13 - Public HTML Trust Hardening
+
+Research found that arbitrary imported HTML was stored and immediately
+activated after only a loose `const DATA` text check. New imports now have a
+bounded, structurally replaceable DATA contract and an explicit default-No
+trust decision. Existing SQLite template versions are not rewritten.
+
+The reusable WebView2 PDF engine now denies unexpected top-level navigation,
+new windows and permissions. JavaScript remains available only while the
+canonical local document is loaded and printed so accepted report behavior is
+preserved.
+
+Malicious-input and host-policy Verification probes were added. Owner testing
+accepted the import trust workflow, website Preview, the complete Public Report
+Package and sampled HTML/PDF output. Full Data Verification passed 339/339;
+v44.7.13 is canonical.
+
 ## v44.7.12 - Clean Baseline Retirement
 
 Repository-wide ownership review identified a parallel hand-built PDF layer

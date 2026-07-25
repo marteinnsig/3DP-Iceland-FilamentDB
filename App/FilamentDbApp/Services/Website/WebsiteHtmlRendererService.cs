@@ -1,9 +1,33 @@
 ﻿using System.Text.RegularExpressions;
 
+using System.Text;
+
 namespace FilamentDbApp.Services.Website;
 
 public sealed class WebsiteHtmlRendererService
 {
+    public const int MaximumTemplateBytes = 5 * 1024 * 1024;
+
+    public void ValidateTemplateForImport(string template)
+    {
+        if (string.IsNullOrWhiteSpace(template))
+        {
+            throw new InvalidOperationException("Website template is empty.");
+        }
+
+        if (Encoding.UTF8.GetByteCount(template) > MaximumTemplateBytes)
+        {
+            throw new InvalidOperationException("Website template exceeds the 5 MiB import limit.");
+        }
+
+        if (template.IndexOf('\0') >= 0)
+        {
+            throw new InvalidOperationException("Website template contains a NUL character and cannot be imported.");
+        }
+
+        _ = ReplaceDataBlock(template, "{}");
+    }
+
     public string RenderMainWebsite(string template, string dataJson, DateTime generatedAt, bool isProduction, string buildLabel)
     {
         if (string.IsNullOrWhiteSpace(template))

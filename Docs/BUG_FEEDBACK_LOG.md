@@ -33,13 +33,31 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 13 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 36 |
+| Solved | 37 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **57** |
+| **Total tracked findings** | **58** |
 
 ## Tracked findings
+
+Date: 2026-07-25
+Area: Website template import / public HTML / PDF host
+Type: Bug / Website idea
+Severity: Important
+Status: Solved
+Resolution: v44.7.13 makes new executable-template import and immediate activation an explicit default-No trust decision. Imports are
+limited to 5 MiB and require a structurally replaceable `const DATA` object. Existing stored templates remain unchanged. The hidden
+WebView2 PDF host blocks unexpected navigation, popups and permissions while retaining required local scripts/assets during printing.
+Verification evidence: Debug/Release, analyzers, documentation, roadmap and NuGet advisory gates passed. Owner runtime testing
+accepted import cancellation/confirmation, website Preview, the complete Public Report Package and sampled HTML/PDF output. Full Data
+Verification passed 339/339 with malicious-input encoding and hardened WebView2 host checks both PASS.
+What happened: Arbitrary imported HTML was stored and immediately activated after only a loose DATA text check, and the hidden
+WebView2 PDF host had no explicit navigation, popup or permission policy.
+Expected behavior: Executable template trust must be explicit and default-No, with bounded structural validation and a local PDF host
+that cannot unexpectedly leave its canonical document or grant browser capabilities.
+Steps to reproduce: Import an HTML template from Website Export, or inspect the hidden WebView2 host used by report PDF generation.
+Screenshot / export / report attached: `3DPIceland_FilamentDB_Verification_20260725_175112.txt` and owner runtime review.
 
 Date: 2026-07-25
 Area: Repository-wide maintainability and retired artifacts

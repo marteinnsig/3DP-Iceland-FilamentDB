@@ -5955,8 +5955,29 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         {
             var dialog = new OpenFileDialog { Title = "Import website master template", Filter = "HTML files (*.html)|*.html|All files (*.*)|*.*" };
             if (dialog.ShowDialog(this) != true) return;
-            var html = File.ReadAllText(dialog.FileName, Encoding.UTF8);
-            var imported = _database.ImportWebsiteTemplate(html, System.IO.Path.GetFileName(dialog.FileName), "Imported through Website Export in v40.10.0.");
+            var fileInfo = new FileInfo(dialog.FileName);
+            if (fileInfo.Length > WebsiteHtmlRendererService.MaximumTemplateBytes)
+                throw new InvalidOperationException("Website template exceeds the 5 MiB import limit.");
+
+            var html = IOFile.ReadAllText(dialog.FileName, Encoding.UTF8);
+            _websiteHtmlRendererService.ValidateTemplateForImport(html);
+
+            var confirmed = MessageBox.Show(
+                this,
+                "This HTML file can contain executable JavaScript. Importing it stores and immediately activates it as the main website " +
+                "template, so its content can run during Preview/Production generation and can be published through the existing FTPS workflow.\n\n" +
+                "Only continue if you trust the file and its source. The application validates the required DATA boundary but cannot make " +
+                "arbitrary HTML safe.\n\nImport and activate this template?",
+                "Trust and Activate Website Template?",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning,
+                MessageBoxResult.No);
+            if (confirmed != MessageBoxResult.Yes) return;
+
+            var imported = _database.ImportWebsiteTemplate(
+                html,
+                IOPath.GetFileName(dialog.FileName),
+                "Imported through Website Export with the v44.7.13 explicit trust boundary.");
             RefreshWebsiteTemplateManager();
             WebsiteExportPreviewLog.Text = $"Website template imported into SQLite and activated.\n\nVersion: {imported.TemplateVersion}\nSource: {imported.SourceFileName}\nSHA-256: {imported.ContentHash}\n\nFuture main website exports will use this database version.";
             WebsiteExportSummaryText.Text = "Database template imported";
@@ -8939,6 +8960,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         {
             hostWindow.Show();
             await webView.EnsureCoreWebView2Async();
+            ConfigureReportPrintWebView(webView);
             await PrintCanonicalHtmlWithWebViewAsync(webView, pdfPath, htmlPath);
         }
         finally
@@ -8956,6 +8978,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         {
             hostWindow.Show();
             await webView.EnsureCoreWebView2Async();
+            ConfigureReportPrintWebView(webView);
             _publicReportBatchWebView = webView;
             _publicReportBatchHostWindow = hostWindow;
         }
@@ -8994,9 +9017,28 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         return (webView, hostWindow);
     }
 
+    private static void ConfigureReportPrintWebView(Microsoft.Web.WebView2.Wpf.WebView2 webView)
+    {
+        var core = webView.CoreWebView2;
+        core.Settings.AreDevToolsEnabled = false;
+        core.Settings.AreDefaultContextMenusEnabled = false;
+        core.Settings.AreBrowserAcceleratorKeysEnabled = false;
+        core.Settings.IsStatusBarEnabled = false;
+        core.Settings.IsZoomControlEnabled = false;
+        core.NewWindowRequested += (_, args) => args.Handled = true;
+        core.PermissionRequested += (_, args) => args.State = Microsoft.Web.WebView2.Core.CoreWebView2PermissionState.Deny;
+    }
+
     private static async Task PrintCanonicalHtmlWithWebViewAsync(Microsoft.Web.WebView2.Wpf.WebView2 webView, string pdfPath, string htmlPath)
     {
         var navigationReady = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+        var allowedDocumentUri = new Uri(htmlPath).AbsoluteUri;
+        void NavigationStarting(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs args)
+        {
+            if (!string.Equals(args.Uri, allowedDocumentUri, StringComparison.OrdinalIgnoreCase))
+                args.Cancel = true;
+        }
+
         void NavigationCompleted(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs args)
         {
             if (args.IsSuccess)
@@ -9007,34 +9049,39 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
         try
         {
+            webView.CoreWebView2.Settings.IsScriptEnabled = true;
+            webView.CoreWebView2.NavigationStarting += NavigationStarting;
             webView.NavigationCompleted += NavigationCompleted;
-            webView.CoreWebView2.Navigate(new Uri(htmlPath).AbsoluteUri);
+            webView.CoreWebView2.Navigate(allowedDocumentUri);
             await navigationReady.Task.WaitAsync(TimeSpan.FromSeconds(30));
+
+            await WaitForReportDocumentReadyAsync(webView);
+
+            var settings = webView.CoreWebView2.Environment.CreatePrintSettings();
+            settings.ShouldPrintBackgrounds = true;
+            settings.ShouldPrintHeaderAndFooter = false;
+            settings.Orientation = UsesLandscapePublicReportLayout(htmlPath)
+                ? Microsoft.Web.WebView2.Core.CoreWebView2PrintOrientation.Landscape
+                : Microsoft.Web.WebView2.Core.CoreWebView2PrintOrientation.Portrait;
+            settings.PageWidth = 8.27;
+            settings.PageHeight = 11.69;
+            settings.MarginTop = 0.25;
+            settings.MarginBottom = 0.25;
+            settings.MarginLeft = 0.25;
+            settings.MarginRight = 0.25;
+            settings.ScaleFactor = 1.0;
+
+            var printed = await webView.CoreWebView2.PrintToPdfAsync(pdfPath, settings);
+            if (!printed || !IOFile.Exists(pdfPath) || new FileInfo(pdfPath).Length == 0)
+                throw new InvalidOperationException("HTML print engine did not create a valid PDF file.");
         }
         finally
         {
+            webView.CoreWebView2.Stop();
+            webView.CoreWebView2.Settings.IsScriptEnabled = false;
+            webView.CoreWebView2.NavigationStarting -= NavigationStarting;
             webView.NavigationCompleted -= NavigationCompleted;
         }
-
-        await WaitForReportDocumentReadyAsync(webView);
-
-        var settings = webView.CoreWebView2.Environment.CreatePrintSettings();
-        settings.ShouldPrintBackgrounds = true;
-        settings.ShouldPrintHeaderAndFooter = false;
-        settings.Orientation = UsesLandscapePublicReportLayout(htmlPath)
-            ? Microsoft.Web.WebView2.Core.CoreWebView2PrintOrientation.Landscape
-            : Microsoft.Web.WebView2.Core.CoreWebView2PrintOrientation.Portrait;
-        settings.PageWidth = 8.27;
-        settings.PageHeight = 11.69;
-        settings.MarginTop = 0.25;
-        settings.MarginBottom = 0.25;
-        settings.MarginLeft = 0.25;
-        settings.MarginRight = 0.25;
-        settings.ScaleFactor = 1.0;
-
-        var printed = await webView.CoreWebView2.PrintToPdfAsync(pdfPath, settings);
-        if (!printed || !File.Exists(pdfPath) || new FileInfo(pdfPath).Length == 0)
-            throw new InvalidOperationException("HTML print engine did not create a valid PDF file.");
     }
 
     private static bool UsesLandscapePublicReportLayout(string htmlPath)
@@ -13260,6 +13307,28 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             BuildInfo.ShortLabel,
             BuildInfo.ReleaseTitle);
         var publicReportVerification = _publicReportPublishingService.Verify(publicReportProbeModel, publicReportProbe);
+        const string maliciousPublicText = "<script>alert('3dp')</script>";
+        var maliciousPublicReportProbe = _publicReportPublishingService.Build(
+            new PublicMaterialEngineeringReportModel
+            {
+                MaterialId = "MAT-SECURITY-PROBE",
+                MaterialName = maliciousPublicText,
+                Manufacturer = maliciousPublicText,
+                EngineeringSummary = maliciousPublicText,
+                ManufacturerWebsite = "javascript:alert('3dp')",
+                VideoReviewUrl = "javascript:alert('3dp')"
+            },
+            new DateTime(2026, 7, 25, 12, 0, 0, DateTimeKind.Local),
+            BuildInfo.ShortLabel,
+            BuildInfo.ReleaseTitle);
+        var publicHtmlEncodingReady =
+            maliciousPublicReportProbe.Html.Contains("&lt;script&gt;alert", StringComparison.Ordinal) &&
+            !maliciousPublicReportProbe.Html.Contains(maliciousPublicText, StringComparison.Ordinal) &&
+            !maliciousPublicReportProbe.Html.Contains("href=\"javascript:", StringComparison.OrdinalIgnoreCase);
+        checks.Add(new VerificationCheck("Public HTML malicious-input encoding", publicHtmlEncodingReady,
+            publicHtmlEncodingReady
+                ? "HTML-significant public text is encoded and javascript-scheme links are not rendered"
+                : "A malicious-input probe reached public HTML without the required encoding or link-scheme rejection"));
         var publicReportBatchIndexProbe = PublicReportPublishingService.BuildPreviewIndex(
             new[]
             {
@@ -13393,9 +13462,12 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var publicBatchPrintReady = IsHtmlPrintEngineAvailable() &&
                                     typeof(MainWindow).GetMethod("BeginPublicReportPdfBatchAsync", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
                                     typeof(MainWindow).GetMethod("EndPublicReportPdfBatch", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
-                                    typeof(MainWindow).GetMethod("PrintCanonicalHtmlWithWebViewAsync", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is not null;
+                                    typeof(MainWindow).GetMethod("PrintCanonicalHtmlWithWebViewAsync", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is not null &&
+                                    typeof(MainWindow).GetMethod("ConfigureReportPrintWebView", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("Public report reusable batch PDF engine", publicBatchPrintReady,
-            publicBatchPrintReady ? "One WebView2 print host can be reused across the one-click batch while individual exports retain isolated printing" : "Reusable WebView2 batch lifecycle or canonical print method is unavailable"));
+            publicBatchPrintReady
+                ? "One hardened WebView2 print host can be reused across the batch; unexpected navigation, popups and permissions are blocked"
+                : "Reusable WebView2 lifecycle, hardening policy or canonical print method is unavailable"));
         var publicBoundedMultitaskingReady = typeof(MainWindow).GetMethod("FindMissingPublicReportArtifactsAsync", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is not null &&
                                                typeof(MainWindow).GetMethod("WaitForReportDocumentReadyAsync", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("Public report bounded multitasking", publicBoundedMultitaskingReady,
@@ -14603,6 +14675,27 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             websitePipeline.Available ? "Rows aligned, MaterialID present, chart/radar metrics and pricing fields available" : websitePipeline.ErrorMessage));
         checks.Add(new VerificationCheck("Website verification suite", websitePipeline.Available && websitePipeline.Website.Passed,
             websitePipeline.Available ? "WebsiteVerificationService validates HTML, DATA, JSON and publish readiness" : websitePipeline.ErrorMessage));
+        var websiteTemplateImportValidationReady = true;
+        try
+        {
+            _websiteHtmlRendererService.ValidateTemplateForImport("<html><script>const DATA={};</script></html>");
+        }
+        catch
+        {
+            websiteTemplateImportValidationReady = false;
+        }
+        try
+        {
+            _websiteHtmlRendererService.ValidateTemplateForImport("<html><script>const DATA={;</script></html>");
+            websiteTemplateImportValidationReady = false;
+        }
+        catch (InvalidOperationException)
+        {
+        }
+        checks.Add(new VerificationCheck("Website template import trust boundary", websiteTemplateImportValidationReady,
+            websiteTemplateImportValidationReady
+                ? "New imports require a bounded replaceable DATA object and explicit default-No executable-content trust confirmation"
+                : "Website template import validation did not distinguish a valid bounded DATA object from a malformed block"));
         var databaseTemplates = _database.GetWebsiteTemplates();
         var activeDatabaseTemplate = databaseTemplates.FirstOrDefault(item => item.IsActive);
         checks.Add(new VerificationCheck("Native website template database", activeDatabaseTemplate is not null && databaseTemplates.Count > 0,

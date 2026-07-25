@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "CLEAN-BASELINE-RETIREMENT";
-    public const string ReleaseTitle = "Clean Baseline Retirement";
+    public const string ReleaseCode = "PUBLIC-HTML-TRUST-HARDENING";
+    public const string ReleaseTitle = "Public HTML Trust Hardening";
 
     public static string Version
     {

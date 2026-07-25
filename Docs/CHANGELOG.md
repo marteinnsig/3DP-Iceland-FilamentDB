@@ -2,6 +2,24 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.13 - Public HTML Trust Hardening
+
+- Added a 5 MiB limit and structural `const DATA` object validation for new
+  website-template imports.
+- Added an explicit default-No executable-content trust warning before an
+  imported template is stored and immediately activated.
+- Preserved all existing stored templates and accepted website generation,
+  Preview/Production and FTPS ownership.
+- Hardened the hidden WebView2 PDF host against unexpected navigation, popups
+  and permissions while retaining scripts and local assets during printing.
+- Added Verification probes for malicious public text/link encoding, template
+  import validation and the WebView2 host policy.
+- Deliberately deferred CSP and broad HTML sanitization until compatibility and
+  visual evidence can prove they do not break accepted outputs.
+- Owner runtime testing accepted the import trust workflow, website Preview,
+  complete Public Report Package and sampled HTML/PDF output.
+- Full Data Verification passed 339/339; v44.7.13 is canonical.
+
 ## v44.7.12 - Clean Baseline Retirement
 
 - Removed the caller-free hand-built MainWindow PDF renderer, chart/text

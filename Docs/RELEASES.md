@@ -1,6 +1,19 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.13 - Public HTML Trust Hardening
+
+- Runtime accepted with Full Data Verification 339/339 PASS.
+- Makes new executable website-template import and immediate activation an
+  explicit default-No trust decision.
+- Adds bounded DATA-block validation without rewriting accepted stored
+  templates or claiming arbitrary HTML can be sanitized safely.
+- Restricts hidden WebView2 PDF navigation, popups and permissions while
+  preserving canonical HTML/PDF rendering and local assets.
+- Adds malicious-input encoding/link and trust-boundary Verification probes.
+- Owner review accepted website Preview, the complete Public Report Package
+  and sampled canonical HTML/PDF output.
+
 ## v44.7.12 - Clean Baseline Retirement
 
 - Runtime accepted with Full Data Verification PASS.
