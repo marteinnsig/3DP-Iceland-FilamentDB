@@ -2,7 +2,7 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
-## v44.7.7 - Legacy Grid Retirement - UI Candidate
+## v44.7.7 - Legacy Grid Retirement
 
 - Hid Materials preview switching and all `Use Legacy Grid(s)` buttons.
 - Retained Reset Columns and every canonical edit/save action.
@@ -2753,3 +2753,7 @@ Maintenance rule: every build must add one new top entry here and keep the detai
   `Reload current Materials filters/data`.
 - Fixed blank Fast Materials tab return by making saved selection one-shot and refreshing the measured viewport at Render priority.
 - Owner runtime testing accepted Stage 5J startup selection, tab return and canonical sync; Full Data Verification passed 331/331.
+- Stage 5K deleted the final collapsed Materials DataGrid XAML and requires Fast Materials as the sole
+  grid host.
+- Owner runtime testing accepted final Materials legacy XAML deletion and all retained Fast workflows; Full Data Verification passed
+  332/332 and v44.7.7 is complete.

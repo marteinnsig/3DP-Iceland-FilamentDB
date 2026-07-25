@@ -3,6 +3,16 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.7 - Legacy Grid Retirement
+
+Completes the staged replacement and removal of legacy workflow DataGrids
+after Fast Materials, Tensile, Impact, Stiffness and Settings gained explicit
+canonical contracts. Runtime-gated stages preserved SQLite, formulas, filters,
+validation, reports, updater and recovery behavior. Owner acceptance and Full
+Data Verification 332/332 passed.
+
+---
+
 # v44.7.2 - Validation Help Clarity
 
 Adds concise always-visible Materials guidance for the five required

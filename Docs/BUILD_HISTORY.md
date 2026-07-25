@@ -2,7 +2,7 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
-## v44.7.7 - Legacy Grid Retirement - UI Candidate
+## v44.7.7 - Legacy Grid Retirement
 
 Stage 1 hides the accepted Fast-workflow legacy/preview switches across
 Materials, Tensile, Impact, Stiffness and Settings. Reset Columns and canonical
@@ -114,6 +114,9 @@ Startup selection and tab-return viewport regressions found during owner
 testing were corrected with a one-shot post-load selection and measured
 visibility refresh. Full Data Verification passed 331/331; Stage 5J is accepted.
 The collapsed DataGrid XAML remains deletion-gated.
+Stage 5K deletes that final collapsed Materials DataGrid and its duplicate XAML
+column definitions. Fast Materials becomes the sole grid host. Owner runtime
+acceptance and Full Data Verification 332/332 passed; v44.7.7 is complete.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

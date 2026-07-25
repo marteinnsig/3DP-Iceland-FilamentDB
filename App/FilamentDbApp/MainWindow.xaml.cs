@@ -15828,15 +15828,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("Daily workflow entry contrast", true, "Tensile and impact entry cells use readable dark text across yellow and green value bands"));
         checks.Add(new VerificationCheck("Materials workflow column layout", true, "High-use website, video and test-status columns appear directly after Color; Diameter is hidden from the daily grid"));
         var fastMaterialsViewReady = FindName("FastMaterialsViewHost") is ContentControl &&
-                                     FindName("NativeMaterialsGrid") is DataGrid &&
+                                     FindName("NativeMaterialsGrid") is null &&
                                      typeof(MainWindow).GetMethod(
                                          "ToggleFastMaterialsView_Click",
                                          System.Reflection.BindingFlags.Instance |
                                          System.Reflection.BindingFlags.NonPublic) is null;
         checks.Add(new VerificationCheck("Fast Materials view activation contract", fastMaterialsViewReady,
             fastMaterialsViewReady
-                ? "Fast Materials is the only activatable UI; the temporary collapsed DataGrid remains deletion-gated"
-                : "Fast Materials activation retirement or temporary adapter contract is missing"));
+                ? "Fast Materials is the only Materials grid UI; the retired DataGrid XAML is absent"
+                : "Fast Materials activation or final legacy XAML retirement is incomplete"));
         var experimental = _database.GetExperimentalFrameworkStats();
         checks.Add(new VerificationCheck("Experimental definition foundation", experimental.Definitions >= 10 && experimental.ActiveDefinitions >= 10,
             $"Definitions {experimental.Definitions}, active {experimental.ActiveDefinitions}; generic parameter catalog is SQLite-backed"));
@@ -17338,14 +17338,24 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             typeof(MainWindow).GetMethod(
                 "TryAutoCopyWorkflowIdentityCell",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
-            FindName("NativeMaterialsGrid") is DataGrid { Visibility: Visibility.Collapsed };
+            FindName("NativeMaterialsGrid") is null;
         checks.Add(new VerificationCheck("v44.7.7 Materials residual caller retirement stage gate",
             materialsResidualCallersRetired && materialsLegacyEditLifecycleRetired &&
             materialsCanonicalFilterOwnershipReady && materialsCanonicalSelectionReady &&
             releaseIdentityReady,
             materialsResidualCallersRetired
-                ? "Fast/canonical selection and refresh own Materials while final hidden XAML deletion remains gated"
-                : "A Materials workflow registry, binding, selection, copy or visible legacy-grid caller remains"));
+                ? "Fast/canonical selection and refresh own Materials; no residual legacy grid caller remains"
+                : "A Materials workflow registry, binding, selection, copy or legacy-grid caller remains"));
+        var materialsLegacyXamlRetired =
+            FindName("NativeMaterialsGrid") is null &&
+            FindName("FastMaterialsViewHost") is ContentControl;
+        checks.Add(new VerificationCheck("v44.7.7 Materials legacy XAML deletion stage gate",
+            materialsLegacyXamlRetired && materialsResidualCallersRetired &&
+            materialsLegacyEditLifecycleRetired && materialsCanonicalFilterOwnershipReady &&
+            materialsCanonicalSelectionReady && releaseIdentityReady,
+            materialsLegacyXamlRetired
+                ? "The retired Materials DataGrid and its duplicate columns are absent; Fast Materials is the sole grid host"
+                : "The retired Materials DataGrid XAML remains or the Fast host is missing"));
 
         return checks;
     }

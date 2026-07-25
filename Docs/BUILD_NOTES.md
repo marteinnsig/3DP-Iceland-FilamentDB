@@ -1,6 +1,6 @@
 # Current Build Notes - v44.7.7
 
-## Legacy Grid Retirement - UI Candidate
+## Legacy Grid Retirement
 
 v44.7.7 is a staged retirement of the accepted Fast-workflow legacy DataGrid
 fallbacks. Stage 1 removes every visible legacy/preview switch from Materials,
@@ -255,6 +255,14 @@ one-shot, and Loaded/visibility return resend the measured current offsets at
 Render priority, matching the scrollbar refresh path without reloading rows.
 The corrected startup selection and tab-return rendering passed owner runtime
 re-test. Full Data Verification passed 331/331; Stage 5J is accepted.
+
+Stage 5K deletes the final collapsed `NativeMaterialsGrid` XAML, including its
+duplicate columns, row styling and bindings. Fast Materials is now the sole
+Materials grid host. Verification requires the retired name to be absent;
+canonical SQLite, selection, filters, editing, reports and sync paths are
+unchanged. Owner runtime testing accepted startup, selection, tab return,
+editing, filters, CRUD, measurement/Inventory sync and column reset. Full Data
+Verification passed 332/332. Stage 5K and v44.7.7 are complete.
 
 ## Fast Workflow Grid - Settings
 

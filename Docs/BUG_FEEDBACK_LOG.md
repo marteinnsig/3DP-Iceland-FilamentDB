@@ -630,6 +630,10 @@ after layout. A subsequent tab return could retain a stale viewport until the
 horizontal scrollbar moved; selection is now one-shot and visibility return
 replays the measured viewport through the same render path. Owner runtime
 re-test and Full Data Verification 331/331 passed; Stage 5J is accepted.
+Stage 5K deletes the final collapsed Materials DataGrid XAML and its
+duplicate columns, styling and bindings. Fast Materials is the sole grid host;
+owner runtime testing and Full Data Verification 332/332 passed. v44.7.7 Legacy
+Grid Retirement is complete.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

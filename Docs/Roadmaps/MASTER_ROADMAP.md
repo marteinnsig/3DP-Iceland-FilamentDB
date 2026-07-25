@@ -2,11 +2,11 @@
 
 Current canonical release: **v44.7.6 — Fast Workflow Grid — Settings**
 
-Last runtime-accepted baseline: **v44.7.6 — Fast Workflow Grid — Settings**
+Last runtime-accepted baseline: **v44.7.7 — Legacy Grid Retirement**
 
-Current application candidate: **v44.7.7 — Legacy Grid Retirement**
+Current application release: **v44.7.7 — Legacy Grid Retirement**
 
-Current roadmap increment: **v44.7.7 — Legacy Grid Retirement**
+Current roadmap increment: **v44.7.8 — Backup Filename Compatibility**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1623,8 +1623,8 @@ changes priority.
   - Materials filter propagation now refreshes all three Fast measurement snapshots from the shared visible MaterialID set.
   - Owner runtime acceptance and Full Data Verification passed.
 - **v44.7.7 — Legacy Grid Retirement**
-  - State: Current staged candidate.
-  - Feedback disposition: In progress.
+  - State: **Complete**.
+  - Feedback disposition: Solved.
   - Remove accepted Fast-workflow legacy fallback controls first.
   - Keep legacy DataGrids hidden temporarily while they still supply Fast column and row adapters.
   - Stage 1 UI retirement is runtime accepted with Full Data Verification 319/319.
@@ -1649,11 +1649,12 @@ changes priority.
   - Stage 5H Materials filter/report/count ownership is accepted with Full Data Verification 329/329.
   - Stage 5I Materials edit/commit and recovery/save lifecycle retirement is accepted with Full Data Verification 330/330.
   - Stage 5J residual Materials caller retirement is accepted with Full Data Verification 331/331.
+  - Stage 5K final Materials XAML deletion is accepted with Full Data Verification 332/332.
   - Replace those adapters with explicit Fast contracts before deleting legacy XAML, handlers and commit paths.
   - Preserve canonical SQLite, formulas, filters, validation, settings CRUD and layout behavior at every stage.
   - Require runtime acceptance after each removal stage.
 - **v44.7.8 — Backup Filename Compatibility**
-  - State: Planned.
+  - State: Current research/planning.
   - Feedback disposition: Open.
   - Research a human-readable presentation name.
   - Retain SQLite bytes, existing `.sqlite` discovery, explicit restore and all evidence.

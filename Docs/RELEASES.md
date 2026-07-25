@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.7 - Legacy Grid Retirement
+
+- Runtime-accepted retirement of the legacy Materials, Tensile, Impact,
+  Stiffness and Settings DataGrid fallbacks.
+- Fast views now own explicit canonical contracts, selection, editing, filters,
+  validation, layout and SQLite auto-save handoffs.
+- Removes visible fallback controls, legacy handlers, grid-only callers and
+  final collapsed XAML while preserving formulas, reports, updater and recovery.
+- Debug/Release and static gates passed; owner runtime acceptance and Full Data
+  Verification passed 332/332.
+
 ## v44.7.6 - Fast Workflow Grid - Settings
 
 - Runtime-accepted final Fast Workflow Grid input-workspace migration.

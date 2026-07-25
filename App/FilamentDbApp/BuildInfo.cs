@@ -10,7 +10,7 @@ namespace FilamentDbApp;
 public static class BuildInfo
 {
     public const string ReleaseCode = "LEGACY-GRID-RETIREMENT";
-    public const string ReleaseTitle = "Legacy Grid Retirement - UI Candidate";
+    public const string ReleaseTitle = "Legacy Grid Retirement";
 
     public static string Version
     {
