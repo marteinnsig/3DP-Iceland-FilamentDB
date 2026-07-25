@@ -1,6 +1,19 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.14 - Automated Runtime Acceptance Foundation
+
+- Canonical runtime-accepted Stage 1 foundation.
+- Adds an exact-build, disposable-profile read-only smoke runner.
+- Blocks owner-database discovery, Production, FTPS, updates, restore and
+  Material deletion in automation mode.
+- Adds stable navigation/Verification Automation IDs, screenshots, TXT/JSON
+  results, consistent SQLite snapshots and before/after logical hashes.
+- Defers Fast-cell, report-generation, CRUD, recovery and updater automation.
+- Disposable and owner-profile Full Data Verification both pass 340/340;
+  Debug/Release, static, security, documentation and NuGet vulnerability gates
+  pass.
+
 ## v44.7.13 - Public HTML Trust Hardening
 
 - Runtime accepted with Full Data Verification 339/339 PASS.

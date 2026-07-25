@@ -33,13 +33,32 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 13 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 37 |
+| Solved | 38 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **58** |
+| **Total tracked findings** | **59** |
 
 ## Tracked findings
+
+Date: 2026-07-25
+Area: Runtime acceptance automation
+Type: Workflow friction
+Severity: Important
+Status: Solved
+Resolution: Solved in version v44.7.14 — 2026-07-25. Stage 1 adds an exact-build Windows UI Automation runner only after implementing a visibly disposable startup
+profile. The profile is confined below a dedicated temporary root, separates all writable paths, requires an explicit seed copy and
+blocks Production, FTPS, updates, restore and Material deletion. Stable navigation/Verification IDs and TXT/JSON evidence are added.
+Verification evidence: Disposable Stage 1 runner PASS; isolated and owner-profile Full Data Verification 340/340 PASS; canonical
+logical SQLite hash matched before/after; Debug and Release solution builds pass with zero warnings/errors; static, security,
+documentation and NuGet vulnerability gates PASS.
+What happened: Runtime acceptance depended on repeated manual navigation and evidence capture, while the app had no Automation IDs,
+disposable startup profile or machine-readable Verification export.
+Expected behavior: Safe repeatable smoke evidence should reduce manual repetition without selecting owner data, crossing application
+process boundaries or replacing owner runtime/visual acceptance.
+Steps to reproduce: Inspect current startup path ownership, UI Automation tree and Verification export workflow.
+Screenshot / export / report attached: Disposable runner JSON/TXT, Verification JSON/TXT, owned-window screenshots and consistent
+before/after SQLite snapshots retained below the dedicated temporary automation root.
 
 Date: 2026-07-25
 Area: Website template import / public HTML / PDF host

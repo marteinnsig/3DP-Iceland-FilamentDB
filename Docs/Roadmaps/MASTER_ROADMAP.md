@@ -1,10 +1,10 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.13 — Public HTML Trust Hardening**
+Current canonical release: **v44.7.14 — Automated Runtime Acceptance Foundation**
 
-Last runtime-accepted baseline: **v44.7.13 — Public HTML Trust Hardening**
+Last runtime-accepted baseline: **v44.7.14 — Automated Runtime Acceptance Foundation**
 
-Current application release: **v44.7.13 — Public HTML Trust Hardening**
+Current application release: **v44.7.14 — Automated Runtime Acceptance Foundation**
 
 Current roadmap increment: **v44.8.0 — Low-value Material fields audit**
 
@@ -1714,8 +1714,55 @@ changes priority.
 
 ### Later v44 owner-value sequence
 
+- **v44.7.14 — Automated Runtime Acceptance Foundation**
+  - State: **Complete; runtime accepted.**
+  - Feedback disposition: Approved owner-value foundation before v44.8 feature work.
+  - Research before code:
+  - Research UI Automation visibility, startup/profile ownership, Verification exports and current evidence surfaces.
+  - Confirm which controls already expose `AutomationId` and whether virtualized Fast controls are visible to UI Automation.
+  - Trace startup database/settings path selection and determine whether a clean disposable-profile contract already exists.
+  - Map owned dialogs, success/error status, machine-readable Verification export and PDF/report completion signals.
+  - Classify current runtime checks by whether they are genuinely safe in read-only mode.
+  - Safety policy:
+  - Block Production and FTPS by default in every automated scenario.
+  - Permit restore, delete and update only in a proven disposable profile and only with explicit per-scenario authorization.
+  - Stop the run on any unexpected dialog; do not infer a response or continue past an unknown state.
+  - Never select or mutate the owner database automatically.
+  - Validate the resolved database path before every write or restore and retain backup plus before/after hashes.
+  - Exclude credentials and secret-bearing controls from screenshots, logs and machine-readable evidence.
+  - Confine synthetic mouse/keyboard input to the owned application process and window.
+  - Stage 1 — Read-only smoke runner:
+  - Add a read-only smoke runner that launches an exact build, verifies release identity and navigates stable UI contracts.
+  - Add stable WPF `AutomationId` values only where required; never depend primarily on screen coordinates or display text.
+  - Add an isolated disposable runtime profile with visible identity and no canonical owner-database ownership.
+  - Define data-driven scenarios for navigation, input, waits, assertions, files, screenshots and controlled shutdown.
+  - Record machine-readable JSON/TXT results, step timing, logs, screenshots, artifact hashes and Verification exports.
+  - Launch the application, inspect tabs/controls, run Full Data Verification and create evidence without changing data.
+  - Stage 2 — Report acceptance:
+  - Automate local report HTML/PDF content and artifact checks; retain explicit human visual acceptance.
+  - Verify routes, allowlisted text, HTML/PDF existence and hashes; capture screenshots for manual visual review.
+  - Stage 3 — Disposable CRUD:
+  - Add disposable CRUD/save/restart tests only after read-only smoke and profile isolation are accepted.
+  - Create, edit, persist and remove only an explicitly identified disposable test record/profile.
+  - Stage 4 — Backup and recovery:
+  - Add backup, Recovery Center and Excel-restore scenarios only against disposable data with retained evidence.
+  - Verify manual SQLite backup, discovery, inspection and pre/post-restore evidence; never silently restore SQLite.
+  - Stage 5 — Guarded updater:
+  - Add guarded updater scenarios only in disposable portable environments after recovery boundaries are proven.
+  - Verify transaction, snapshot and rollback evidence; never target the installed owner application or canonical database.
+  - Keep owner SQLite, Production, FTPS, destructive restore/delete and unexpected dialogs blocked by default.
+  - Distinguish `PASS`, `FAIL`, `BLOCKED`, `SKIPPED BY SAFETY POLICY` and `MANUAL REVIEW REQUIRED`.
+  - Minimum first delivery:
+  - Add one runner project, 10–20 stable `AutomationId` values and three to five read-only smoke/report scenarios.
+  - Produce screenshots, JSON/TXT results and a Full Data Verification export with hard Production/FTPS blocking.
+  - Do not activate later destructive stages until isolation, path validation and scenario policy pass runtime acceptance.
+  - Stage 1 candidate now provides the isolated profile, exact-build runner, stable navigation IDs and Verification evidence.
+  - Disposable acceptance passes 340/340 with consistent snapshots and identical before/after logical SQLite hashes.
+  - Owner runtime acceptance and Full Data Verification 340/340 pass.
+  - Fast-cell, report-generation, CRUD, recovery and updater automation remain explicitly deferred.
+  - Pilot the accepted runner on v44.8.x increments; automation supports but never replaces owner runtime acceptance.
 - **v44.8.0 — Low-value Material fields audit**
-  - State: **Current research increment**.
+  - State: **Current research increment.**
   - Feedback disposition: Open.
   - Trace `Manufacturer SKU` and video-thumbnail-name callers before any hide/retire decision.
   - Preserve recovery and report compatibility.

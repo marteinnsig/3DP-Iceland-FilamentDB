@@ -14,10 +14,11 @@ public sealed class WorkflowPreferencesService
 
     public WorkflowPreferencesService()
     {
-        var folder = IOPath.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "3DPIceland",
-            "FilamentDbApp");
+        var folder = AutomationRuntimeProfile.Current?.PreferencesFolder ??
+                     IOPath.Combine(
+                         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                         "3DPIceland",
+                         "FilamentDbApp");
         IODirectory.CreateDirectory(folder);
         _settingsPath = IOPath.Combine(folder, "workflow-preferences.json");
         Load();

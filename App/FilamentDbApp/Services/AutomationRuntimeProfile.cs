@@ -1,0 +1,91 @@
+using System.IO;
+using System.Security.Cryptography;
+using System.Text.Json;
+
+namespace FilamentDbApp.Services;
+
+public sealed class AutomationRuntimeProfile
+{
+    public const string ArgumentName = "--automation-profile";
+    public const string MarkerFileName = ".3dpiceland-disposable-profile.json";
+
+    public string ProfileId { get; init; } = string.Empty;
+    public string RootPath { get; init; } = string.Empty;
+    public string DatabaseFolder { get; init; } = string.Empty;
+    public string PreferencesFolder { get; init; } = string.Empty;
+    public string OutputFolder { get; init; } = string.Empty;
+    public string EvidenceFolder { get; init; } = string.Empty;
+    public string ExpectedExecutableSha256 { get; init; } = string.Empty;
+    public bool ProductionAndFtpsBlocked { get; init; }
+    public bool UpdatesBlocked { get; init; }
+
+    public static AutomationRuntimeProfile? Current { get; private set; }
+    public static bool IsActive => Current is not null;
+    public static string VisibleIdentity => Current is null
+        ? string.Empty
+        : $"AUTOMATION / DISPOSABLE — {Current.ProfileId}";
+
+    public static void Configure(string[] args)
+    {
+        var index = Array.IndexOf(args, ArgumentName);
+        if (index < 0) return;
+        if (index + 1 >= args.Length)
+            throw new InvalidOperationException($"{ArgumentName} requires an absolute manifest path.");
+
+        var manifestPath = IOPath.GetFullPath(args[index + 1]);
+        var markerPath = IOPath.Combine(IOPath.GetDirectoryName(manifestPath) ?? string.Empty, MarkerFileName);
+        if (!string.Equals(manifestPath, markerPath, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException($"Automation profile must use the exact marker name {MarkerFileName}.");
+        if (!IOFile.Exists(manifestPath))
+            throw new FileNotFoundException("Disposable automation profile marker is missing.", manifestPath);
+
+        var profile = JsonSerializer.Deserialize<AutomationRuntimeProfile>(
+                          IOFile.ReadAllText(manifestPath),
+                          new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                      ?? throw new InvalidOperationException("Automation profile JSON is invalid.");
+        profile.Validate(manifestPath);
+        Current = profile;
+    }
+
+    public static void DemandNetworkAndProductionBlocked(string action)
+    {
+        if (!IsActive) return;
+        throw new InvalidOperationException($"{action} is blocked by the disposable automation safety policy.");
+    }
+
+    private void Validate(string manifestPath)
+    {
+        if (string.IsNullOrWhiteSpace(ProfileId) ||
+            !ProfileId.All(ch => char.IsLetterOrDigit(ch) || ch is '-' or '_'))
+            throw new InvalidOperationException("Automation ProfileId must be a non-empty safe identifier.");
+        if (!ProductionAndFtpsBlocked || !UpdatesBlocked)
+            throw new InvalidOperationException("Automation profiles must hard-block Production, FTPS and updates.");
+
+        var allowedRoot = IOPath.GetFullPath(IOPath.Combine(IOPath.GetTempPath(), "3DPIceland-Automation"))
+            .TrimEnd(IOPath.DirectorySeparatorChar) + IOPath.DirectorySeparatorChar;
+        var root = IOPath.GetFullPath(RootPath).TrimEnd(IOPath.DirectorySeparatorChar);
+        if (!root.StartsWith(allowedRoot, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("Automation profile root must stay below the dedicated temporary automation root.");
+        if (!string.Equals(IOPath.GetDirectoryName(manifestPath), root, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("Automation profile marker must be located directly in its declared root.");
+
+        foreach (var path in new[] { DatabaseFolder, PreferencesFolder, OutputFolder, EvidenceFolder })
+        {
+            var fullPath = IOPath.GetFullPath(path);
+            if (!fullPath.StartsWith(root + IOPath.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Every automation profile path must stay below its declared disposable root.");
+        }
+
+        var ownerDatabaseFolder = IOPath.GetFullPath(Data.LocalDatabase.GetConfiguredStorageFolder())
+            .TrimEnd(IOPath.DirectorySeparatorChar);
+        if (string.Equals(IOPath.GetFullPath(DatabaseFolder).TrimEnd(IOPath.DirectorySeparatorChar),
+                ownerDatabaseFolder, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("Automation database folder resolves to the canonical owner database folder.");
+
+        var executable = Environment.ProcessPath
+                         ?? throw new InvalidOperationException("Automation executable path is unavailable.");
+        var executableHash = Convert.ToHexString(SHA256.HashData(IOFile.ReadAllBytes(executable)));
+        if (!string.Equals(executableHash, ExpectedExecutableSha256, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("Automation executable SHA-256 does not match the approved profile.");
+    }
+}

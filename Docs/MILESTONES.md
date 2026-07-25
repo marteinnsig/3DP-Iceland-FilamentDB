@@ -3,6 +3,17 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.14 - Automated Runtime Acceptance Foundation
+
+Runtime-accepted Stage 1 foundation for exact-build read-only smoke and evidence automation. It
+introduces a visibly isolated disposable profile, hard safety locks, stable UI
+Automation contracts and machine-readable Verification evidence. Destructive
+and owner-profile automation remain blocked. Disposable acceptance passes
+340/340 with identical before/after logical database hashes; owner runtime
+acceptance and Full Data Verification also pass 340/340.
+
+---
+
 # v44.7.13 - Public HTML Trust Hardening
 
 Makes executable website-template import an explicit bounded

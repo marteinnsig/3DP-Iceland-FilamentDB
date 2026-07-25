@@ -1,4 +1,30 @@
-# Current Build Notes - v44.7.13
+# Current Build Notes - v44.7.14
+
+## Automated Runtime Acceptance Foundation
+
+v44.7.14 is the runtime-accepted Stage 1 foundation. A new framework-only
+Windows UI Automation runner launches an exact SHA-256-bound application build
+only after it creates an isolated profile below the dedicated temporary
+automation root and copies an explicitly supplied non-live SQLite seed.
+
+The app validates every profile path, visibly labels the disposable session,
+separates database/preferences/output/evidence folders and skips owner-profile
+legacy migration. Production, FTPS, update, restore and Material-delete entry
+points are blocked while automation mode is active.
+
+Stable Automation IDs cover the main window, workspace tabs, Fast hosts,
+Verification Center and evidence command. Verification exports TXT and JSON
+without a file dialog. The runner retains owned-window screenshots and result
+evidence, rejects unexpected dialogs and compares canonical logical database
+hashes from consistent before/after SQLite snapshots. This avoids treating
+normal WAL checkpoint/header normalization as a data mutation.
+
+Fast-grid cell automation, report generation, CRUD, recovery and updater
+scenarios remain outside Stage 1. The disposable runner passes with isolated
+Full Data Verification 340/340 and matching logical hashes. Owner runtime
+acceptance and Full Data Verification pass 340/340.
+
+## Retained v44.7.13 evidence
 
 ## Public HTML Trust Hardening
 

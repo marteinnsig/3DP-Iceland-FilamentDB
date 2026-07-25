@@ -107,6 +107,7 @@ public partial class MainWindow
 
     private void DeleteManufacturer_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Manufacturer deletion")) return;
         var row = ResolveSelectedManufacturer();
         if (row is null)
         {

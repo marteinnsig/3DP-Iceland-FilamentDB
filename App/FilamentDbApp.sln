@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilamentDbApp", "FilamentDb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateCore", "UpdateCore\UpdateCore.csproj", "{D86DC8DA-1AC3-4B24-9F99-CB9355677B93}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomationRunner", "AutomationRunner\AutomationRunner.csproj", "{2B15F551-ED9D-4CFA-9CB0-37D7D86BE1B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{D86DC8DA-1AC3-4B24-9F99-CB9355677B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D86DC8DA-1AC3-4B24-9F99-CB9355677B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D86DC8DA-1AC3-4B24-9F99-CB9355677B93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B15F551-ED9D-4CFA-9CB0-37D7D86BE1B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B15F551-ED9D-4CFA-9CB0-37D7D86BE1B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B15F551-ED9D-4CFA-9CB0-37D7D86BE1B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B15F551-ED9D-4CFA-9CB0-37D7D86BE1B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

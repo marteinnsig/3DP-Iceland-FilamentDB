@@ -22,6 +22,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
@@ -142,6 +143,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         RunStartupPhase("MainWindow.InitializeComponent", InitializeComponent);
+        ApplyAutomationRuntimeProfile();
         RunStartupPhase("Workspace tab ordering", ApplyWorkspaceTabPriorityOrder);
         RunStartupPhase("Website template manager", RefreshWebsiteTemplateManager);
         _nativeMaterialSearchDebounceTimer.Tick += NativeMaterialSearchDebounceTimer_Tick;
@@ -173,6 +175,22 @@ public partial class MainWindow : Window
         UpdateNativeWorkflowStatus("Auto-save ready");
         RunStartupPhase("Application statistics refresh", RefreshApplicationStatistics);
         App.StartupPerformance.Mark("MainWindow constructor completed");
+    }
+
+    private void ApplyAutomationRuntimeProfile()
+    {
+        if (!AutomationRuntimeProfile.IsActive) return;
+        AutomationProfileIdentityText.Text = AutomationRuntimeProfile.VisibleIdentity;
+        AutomationProfileIdentityText.Visibility = Visibility.Visible;
+        Title += " — " + AutomationRuntimeProfile.VisibleIdentity;
+        AutomationProperties.SetAutomationId(AutomationProfileIdentityText, "AutomationProfileIdentity");
+    }
+
+    private bool IsAutomationActionBlocked(string action)
+    {
+        if (!AutomationRuntimeProfile.IsActive) return false;
+        StatusText.Text = $"{action} — BLOCKED BY AUTOMATION SAFETY POLICY";
+        return true;
     }
 
     private static void RunStartupPhase(string phaseName, Action action)
@@ -1290,6 +1308,7 @@ public partial class MainWindow : Window
 
     private void RestoreSqliteBackup_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("SQLite restore")) return;
         var dialog = new OpenFileDialog
         {
             Title = "Select SQLite Backup to Restore",
@@ -1577,6 +1596,7 @@ public partial class MainWindow : Window
 
     private void RestoreExcelDisasterRecovery_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Excel restore")) return;
         var dialog = new OpenFileDialog
         {
             Title = "Select Governed Excel Disaster-Recovery Package",
@@ -6042,6 +6062,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
     private async void GenerateWebsiteProductionExport_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Production website generation")) return;
         await GenerateWebsiteExportAsync(isProduction: true);
     }
 
@@ -6052,6 +6073,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
     private async Task<bool> RunFtpsConnectionTestAsync(bool showSuccess)
     {
+        if (IsAutomationActionBlocked("FTPS connection")) return false;
         var deployment = _database.LoadDeploymentSettings();
         var password = FtpsPasswordBox.Password;
         if (string.IsNullOrWhiteSpace(password)) password = WindowsCredentialService.ReadPassword(deployment.FtpsHost, deployment.FtpsUserName);
@@ -6088,6 +6110,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
     private async void PublishWebsiteFtps_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Production FTPS publishing")) return;
         var deployment = _database.LoadDeploymentSettings();
         if (!await GenerateWebsiteExportAsync(isProduction: true)) return;
 
@@ -6321,6 +6344,8 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
     private async Task<bool> GenerateWebsiteExportAsync(bool isProduction)
     {
+        if (isProduction)
+            if (IsAutomationActionBlocked("Production website generation")) return false;
         try
         {
             if (GetNativeWebsiteExportCandidateRows().Count == 0)
@@ -12188,6 +12213,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private async Task CheckForRemoteUpdateAsync(bool showUpToDate)
     {
+        if (IsAutomationActionBlocked("Application update check")) return;
         try
         {
             Mouse.OverrideCursor = Cursors.Wait;
@@ -12220,6 +12246,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private async void PublishApplicationRelease_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Application release publishing")) return;
         var dialog = new OpenFileDialog
         {
             Title = "Select Governed Application Deployment Plan",
@@ -12259,6 +12286,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private async void PublishApplicationUpdate_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Application update publishing")) return;
         var dialog = new OpenFileDialog { Title = "Select Signed Application Update Feed", Filter = "Application update feed (latest.json)|latest.json", CheckFileExists = true };
         if (dialog.ShowDialog(this) != true) return;
         try
@@ -12279,6 +12307,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private void StartGuardedApplicationUpdate(string packagePath, ApplicationUpdateManifest manifest)
     {
+        if (IsAutomationActionBlocked("Guarded application update")) return;
         try
         {
             var executable = Environment.ProcessPath ?? throw new InvalidOperationException("Current application executable path is unavailable.");
@@ -12422,6 +12451,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
             Background = Brushes.White
         };
+        AutomationProperties.SetAutomationId(window, "VerificationCenterWindow");
 
         var root = new DockPanel();
         var toolbar = new StackPanel
@@ -12444,8 +12474,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             FontSize = 13,
             Margin = new Thickness(10)
         };
+        AutomationProperties.SetAutomationId(reportBox, "VerificationReportText");
 
-        Button MakeButton(string text, RoutedEventHandler handler)
+        Button MakeButton(string text, string automationId, RoutedEventHandler handler)
         {
             var button = new Button
             {
@@ -12453,6 +12484,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 Padding = new Thickness(10, 4, 10, 4),
                 Margin = new Thickness(0, 0, 8, 0)
             };
+            AutomationProperties.SetAutomationId(button, automationId);
             button.Click += handler;
             return button;
         }
@@ -12475,7 +12507,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             Foreground = GetWebsiteVerificationVisibilityBrush()
         };
 
-        toolbar.Children.Add(MakeButton("Refresh", (_, _) =>
+        toolbar.Children.Add(MakeButton("Refresh", "RefreshVerification", (_, _) =>
         {
             reportBox.Text = BuildVerificationCenterReport();
             statusLabel.Text = GetVerificationOverallText();
@@ -12483,7 +12515,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             websiteStatusLabel.Text = GetWebsiteVerificationVisibilityText();
             websiteStatusLabel.Foreground = GetWebsiteVerificationVisibilityBrush();
         }));
-        toolbar.Children.Add(MakeButton("Recalculate Native Results", (_, _) =>
+        toolbar.Children.Add(MakeButton("Recalculate Native Results", "RecalculateNativeResults", (_, _) =>
         {
             ApplyNativeTensileComputedFields(_nativeTensileRows);
             ApplyNativeImpactComputedFields(_nativeImpactRows);
@@ -12495,7 +12527,16 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             websiteStatusLabel.Text = GetWebsiteVerificationVisibilityText();
             websiteStatusLabel.Foreground = GetWebsiteVerificationVisibilityBrush();
         }));
-        toolbar.Children.Add(MakeButton("Export Report", (_, _) => ExportDiagnosticsReport(reportBox.Text, isVerificationReport: true)));
+        toolbar.Children.Add(MakeButton("Export Report", "ExportVerificationReport",
+            (_, _) => ExportDiagnosticsReport(reportBox.Text, isVerificationReport: true)));
+        if (AutomationRuntimeProfile.IsActive)
+        {
+            toolbar.Children.Add(MakeButton("Export Automation Evidence", "ExportAutomationVerificationEvidence", (_, _) =>
+            {
+                ExportAutomationVerificationEvidence(reportBox.Text);
+                statusLabel.Text = "Automation Verification evidence exported";
+            }));
+        }
         toolbar.Children.Add(statusLabel);
         toolbar.Children.Add(websiteStatusLabel);
 
@@ -12504,6 +12545,39 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         root.Children.Add(reportBox);
         window.Content = root;
         window.ShowDialog();
+    }
+
+    private void ExportAutomationVerificationEvidence(string reportText)
+    {
+        var profile = AutomationRuntimeProfile.Current
+                      ?? throw new InvalidOperationException("Disposable automation profile is not active.");
+        IODirectory.CreateDirectory(profile.EvidenceFolder);
+        var verification = BuildVerificationProfile();
+        var payload = new
+        {
+            schema = "3dpiceland-automation-verification-v1",
+            profileId = profile.ProfileId,
+            releaseVersion = BuildInfo.Version,
+            releaseCode = BuildInfo.ReleaseCode,
+            releaseTitle = BuildInfo.ReleaseTitle,
+            profile = verification.ProfileName,
+            verification.Passed,
+            verification.ApplicableCount,
+            verification.PassedCount,
+            verification.FailedCount,
+            verification.NotApplicableCount,
+            databasePath = _database.DatabasePath,
+            databaseHashOwner = "AutomationRunner before/after controlled runtime",
+            generatedAtUtc = DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture)
+        };
+        SafeFileOperations.WriteAllTextAtomic(
+            IOPath.Combine(profile.EvidenceFolder, "verification.txt"),
+            reportText,
+            new UTF8Encoding(false));
+        SafeFileOperations.WriteAllTextAtomic(
+            IOPath.Combine(profile.EvidenceFolder, "verification.json"),
+            JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true }),
+            new UTF8Encoding(false));
     }
 
     private string BuildVerificationCenterReport()
@@ -13176,6 +13250,20 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
     private List<VerificationCheck> BuildVerificationChecks()
     {
         var checks = new List<VerificationCheck>();
+        var automationFoundationReady =
+            AutomationRuntimeProfile.MarkerFileName == ".3dpiceland-disposable-profile.json" &&
+            typeof(AutomationRuntimeProfile).GetMethod(nameof(AutomationRuntimeProfile.Configure)) is not null &&
+            typeof(MainWindow).GetMethod(
+                nameof(ExportAutomationVerificationEvidence),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            FindName("WorkspaceTabs") is TabControl automationWorkspaceTabs &&
+            AutomationProperties.GetAutomationId(automationWorkspaceTabs) == "WorkspaceTabs" &&
+            FindName("FastMaterialsViewHost") is ContentControl automationMaterialsHost &&
+            AutomationProperties.GetAutomationId(automationMaterialsHost) == "FastMaterialsViewHost";
+        checks.Add(new VerificationCheck("Automated runtime acceptance safety foundation", automationFoundationReady,
+            automationFoundationReady
+                ? "Disposable-path validation, hard Production/FTPS/update locks, stable UI Automation IDs and TXT/JSON evidence are present"
+                : "Disposable profile, safety-lock, AutomationId or machine-readable evidence contract is incomplete"));
         var workspaceTabHeaders = WorkspaceTabs.Items.OfType<TabItem>()
             .Select(item => item.Header?.ToString() ?? string.Empty)
             .ToList();
@@ -19010,6 +19098,7 @@ private void UpdateDashboardInsights()
 
     private void DeleteAiSession_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("AI session deletion")) return;
         try
         {
             var combo = FindName("AiSavedSessionsCombo") as ComboBox;
@@ -19265,6 +19354,7 @@ private void UpdateDashboardInsights()
 
     private void DeleteAiMaterialCollection_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("AI collection deletion")) return;
         try
         {
             var collection = GetSelectedAiMaterialCollection();
@@ -20798,6 +20888,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void DeleteBaseMaterialRow_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Base Material deletion")) return;
         var row = _selectedFastBaseMaterialRow;
         if (row is not null)
         {
@@ -22336,6 +22427,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void DeletePurchaseOrder_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Purchase Order deletion")) return;
         if (FindName("PurchaseOrdersGrid") is not DataGrid grid || grid.SelectedItem is not PurchaseOrderRecord order) return;
         if (MessageBox.Show(this, "Delete selected purchase order and its lines? Existing inventory spools are not deleted.", "Purchase Orders", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
         foreach(var line in _purchaseOrderLines.Where(x=>x.PurchaseOrderId==order.PurchaseOrderId).ToList()) _purchaseOrderLines.Remove(line);
@@ -22358,6 +22450,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void DeletePurchaseOrderLine_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Purchase Order item deletion")) return;
         if (FindName("PurchaseOrderLinesGrid") is DataGrid grid && grid.SelectedItem is PurchaseOrderLineRecord line){_purchaseOrderLines.Remove(line);SavePurchaseOrders();_purchaseOrderLineView?.Refresh();RefreshPurchaseOrderSummary();}
     }
 
@@ -22909,6 +23002,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void DeleteExperimentalRun_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Experimental run deletion")) return;
         var row = ResolveExperimentalRun();
         if (row is null) { MessageBox.Show(this, "Select a run first.", "Experimental Testing"); return; }
         if (MessageBox.Show(this, $"Delete experimental run {row.ExperimentalRunId}?", "Experimental Testing", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
@@ -23451,6 +23545,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void DeleteMaterialExperiment_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Experimental series deletion")) return;
         if (FindName("MaterialExperimentsGrid") is not DataGrid grid) return;
         var row = grid.CurrentCell.Item as MaterialExperimentRecord ?? grid.SelectedItem as MaterialExperimentRecord ?? _lastSelectedMaterialExperiment;
         if (row is null)
@@ -23732,6 +23827,7 @@ private List<string> GetVisibleAiMaterialLabels()
     }
     private void DeleteInventorySpool_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Inventory deletion")) return;
         if (FindName("InventorySpoolGrid") is not DataGrid grid || grid.SelectedItem is not InventorySpoolRecord x) return;
         if (MessageBox.Show(this, "Delete selected spool record?", "Inventory", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
         // ICollectionView may contain WPF's NewItemPlaceholder. Filter the view to
@@ -24246,6 +24342,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void DeleteNativeMaterial_Click(object sender, RoutedEventArgs e)
     {
+        if (IsAutomationActionBlocked("Material deletion")) return;
         if (GetSelectedNativeMaterial() is not NativeMaterialRow selected)
         {
             MessageBox.Show("Select a material to delete.", "Material Manager", MessageBoxButton.OK, MessageBoxImage.Information);

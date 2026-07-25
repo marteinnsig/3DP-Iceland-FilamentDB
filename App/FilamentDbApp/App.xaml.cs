@@ -21,6 +21,7 @@ public partial class App : Application
     {
         StartupPerformance.Mark("Application.OnStartup entered");
         base.OnStartup(e);
+        AutomationRuntimeProfile.Configure(e.Args);
         ConfigureUpdateHealthAcknowledgement(e.Args);
 
         var splash = new SplashWindow();
@@ -92,7 +93,8 @@ public partial class App : Application
         {
             TryWriteUpdateHealthAcknowledgement(renderedWindow.CurrentDatabaseSchema);
             if (string.IsNullOrWhiteSpace(_updateTransactionId)) renderedWindow.DetectInterruptedApplicationUpdateAtStartup();
-            if (string.IsNullOrWhiteSpace(_updateTransactionId)) renderedWindow.BeginAutomaticUpdateCheck();
+            if (string.IsNullOrWhiteSpace(_updateTransactionId) && !AutomationRuntimeProfile.IsActive)
+                renderedWindow.BeginAutomaticUpdateCheck();
         }
     }
 

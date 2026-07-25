@@ -40,11 +40,12 @@ public sealed partial class LocalDatabase
 
     public LocalDatabase()
     {
-        var folder = GetConfiguredStorageFolder();
+        var folder = AutomationRuntimeProfile.Current?.DatabaseFolder ?? GetConfiguredStorageFolder();
         Directory.CreateDirectory(folder);
         DatabasePath = Path.Combine(folder, "filamentdb.sqlite");
 
-        CopyLegacyDatabaseToConfiguredFolderIfNeeded(folder);
+        if (!AutomationRuntimeProfile.IsActive)
+            CopyLegacyDatabaseToConfiguredFolderIfNeeded(folder);
 
         new ActiveDatabaseCompatibilityService().EnsureSupportedOrPreserve(DatabasePath, SchemaVersion);
 

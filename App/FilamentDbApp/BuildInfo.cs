@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "PUBLIC-HTML-TRUST-HARDENING";
-    public const string ReleaseTitle = "Public HTML Trust Hardening";
+    public const string ReleaseCode = "AUTOMATED-RUNTIME-ACCEPTANCE-FOUNDATION";
+    public const string ReleaseTitle = "Automated Runtime Acceptance Foundation";
 
     public static string Version
     {

@@ -2,6 +2,27 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.14 - Automated Runtime Acceptance Foundation
+
+- Added a disposable automation-profile manifest bound to the exact application
+  executable SHA-256 and confined below a dedicated temporary root.
+- Isolated database, preferences, output and evidence paths without owner
+  database discovery or legacy copy behavior.
+- Hard-blocked Production, FTPS, update, restore and Material deletion while
+  the automation profile is active.
+- Added stable Stage 1 Automation IDs and machine-readable Verification JSON/TXT
+  evidence.
+- Added a native Windows UI Automation runner with exact-process input,
+  unexpected-dialog blocking, owned-window screenshots and before/after
+  consistent SQLite snapshots plus canonical logical database hashes.
+- Prevented SQLite WAL checkpoint/header normalization from producing a false
+  read-only mutation failure, and made failure evidence resilient to file locks.
+- Disposable runner and isolated Full Data Verification pass 340/340 with
+  matching logical hashes; owner runtime acceptance and Full Data Verification
+  also pass 340/340.
+- Kept Fast-cell editing, report generation, CRUD, recovery and updater
+  automation outside the Stage 1 candidate.
+
 ## v44.7.13 - Public HTML Trust Hardening
 
 - Added a 5 MiB limit and structural `const DATA` object validation for new

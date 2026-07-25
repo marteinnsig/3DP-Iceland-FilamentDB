@@ -2,6 +2,23 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.14 - Automated Runtime Acceptance Foundation
+
+The pre-code audit found no existing Automation IDs, no disposable startup
+profile and no machine-readable Verification export. The custom drawn Fast
+surface also has no row/cell automation peer.
+
+Stage 1 therefore starts with isolation rather than runner input. The release
+requires an explicit seed copy, validates a temporary profile and executable
+hash, separates every writable path and blocks network/Production/destructive
+entry points. The runner uses only owned-process UI Automation and retains
+screenshots plus TXT/JSON evidence.
+
+Disposable runtime acceptance passes with isolated Full Data Verification
+340/340 and an identical canonical logical SQLite hash before/after. Owner
+runtime acceptance and Full Data Verification also pass 340/340. Debug/Release,
+static, security, documentation and NuGet vulnerability gates pass.
+
 ## v44.7.13 - Public HTML Trust Hardening
 
 Research found that arbitrary imported HTML was stored and immediately
