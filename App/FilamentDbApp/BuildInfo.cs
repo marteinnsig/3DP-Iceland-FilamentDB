@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "PUBLIC-MEASUREMENT-DATE-PROVENANCE";
-    public const string ReleaseTitle = "Public Measurement Date Provenance";
+    public const string ReleaseCode = "CANONICAL-MATERIALID-DEFAULT-ROW-ORDER";
+    public const string ReleaseTitle = "Canonical MaterialID Default Row Order";
 
     public static string Version
     {

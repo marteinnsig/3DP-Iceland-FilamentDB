@@ -1,12 +1,12 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.9 — Public Measurement Date Provenance**
+Current canonical release: **v44.7.10 — Canonical MaterialID Default Row Order**
 
-Last runtime-accepted baseline: **v44.7.9 — Public Measurement Date Provenance**
+Last runtime-accepted baseline: **v44.7.10 — Canonical MaterialID Default Row Order**
 
-Current application release: **v44.7.9 — Public Measurement Date Provenance**
+Current application release: **v44.7.10 — Canonical MaterialID Default Row Order**
 
-Current roadmap increment: **v44.7.10 — Canonical MaterialID Default Row Order**
+Current roadmap increment: **v44.7.11 — Settings Manager Command Clarity**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1671,12 +1671,16 @@ changes priority.
   - Preserve schema, formulas, report routes, other report families, website/FTPS and PDF-from-canonical-HTML behavior.
   - Owner HTML/PDF and responsive-GUI review passed; Full Data Verification passed 334/334.
 - **v44.7.10 — Canonical MaterialID Default Row Order**
-  - State: Planned.
-  - Feedback disposition: Open.
+  - State: Complete and runtime accepted.
+  - Feedback disposition: Solved.
   - Research view ownership and saved user-sort behavior across Materials, Tensile, Impact and Stiffness.
   - Default unsorted views to numeric MaterialID ascending: lowest first and newest/highest last.
   - Preserve explicit user sorting, filters, canonical row identity, SQLite order and legacy fallback behavior.
-  - Verify first load, reset, editing, filters, restart persistence and both fast/legacy grid paths.
+  - Reapply active header sorts after filters, reload, Add and Duplicate while preserving selection.
+  - Restore startup selection, then reset the default viewport to the top-left after deferred filter refresh.
+  - Commit active editors and save parent Materials before FK-child measurements during close/restart.
+  - Keep Add/Duplicate placeholder display names unique and immediately save-safe.
+  - Owner Add, Duplicate, sort, close/restart and viewport tests passed; Full Data Verification passed 335/335.
 - **v44.7.11 — Settings Manager Command Clarity**
   - State: Planned.
   - Feedback disposition: Open.

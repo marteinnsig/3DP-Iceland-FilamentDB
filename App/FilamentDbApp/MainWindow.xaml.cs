@@ -17013,6 +17013,59 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             publicMeasurementDateProvenanceReady && releaseIdentityReady
                 ? "Material Engineering and Test Session reports publish allowlisted canonical ISO measured dates; missing dates remain Not recorded and internal edit timestamps stay excluded"
                 : "Public measured-date allowlist, renderer parity, missing-date honesty, timestamp exclusion or release identity failed"));
+        var fastSurfaceType = typeof(MainWindow).GetNestedType(
+            "MaterialsRenderingSurface",
+            System.Reflection.BindingFlags.NonPublic);
+        static bool IsCanonicalMaterialIdOrder(IEnumerable<MaterialsPrototypeRow> rows)
+        {
+            var materialIds = rows.Select(row => row.MaterialId).ToList();
+            return materialIds.SequenceEqual(
+                materialIds.OrderBy(id => id, CanonicalMaterialIdComparer),
+                StringComparer.Ordinal);
+        }
+        var canonicalMaterialIdDefaultOrderReady =
+            CompareCanonicalMaterialIds("MAT2", "MAT10") < 0 &&
+            CompareCanonicalMaterialIds("MAT0002", "MAT0010") < 0 &&
+            CompareCanonicalMaterialIds("MAT99999999999999999999", "MAT100000000000000000000") < 0 &&
+            CompareCanonicalMaterialIds("ALT2", "MAT1") < 0 &&
+            BuildNativeMaterialDisplayName(new NativeMaterialRow
+            {
+                MaterialID = "MAT0205",
+                Manufacturer = "New manufacturer",
+                ProductLine = "New product line MAT0205",
+                BaseMaterial = "PLA"
+            }) != BuildNativeMaterialDisplayName(new NativeMaterialRow
+            {
+                MaterialID = "MAT0206",
+                Manufacturer = "New manufacturer",
+                ProductLine = "New product line MAT0206",
+                BaseMaterial = "PLA"
+            }) &&
+            IsCanonicalMaterialIdOrder(BuildMaterialsPrototypeRows(BuildFastMaterialsColumns())) &&
+            IsCanonicalMaterialIdOrder(BuildFastTensileRows(BuildFastTensileColumns())) &&
+            IsCanonicalMaterialIdOrder(BuildFastImpactRows(BuildFastImpactColumns())) &&
+            IsCanonicalMaterialIdOrder(BuildFastStiffnessRows(BuildFastStiffnessColumns())) &&
+            fastSurfaceType?.GetMethod(
+                "ApplyCurrentSortOrDefault",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public) is not null &&
+            typeof(MaterialsRenderingPrototypeView).GetMethod(
+                "CommitActiveEditor",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public) is not null &&
+            typeof(MaterialsRenderingPrototypeView).GetMethod(
+                "ResetViewportToOrigin",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public) is not null &&
+            typeof(MainWindow).GetMethod(
+                "MainWindow_Closing",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            FindName("NativeMaterialsGrid") is null &&
+            FindName("NativeTensileGrid") is null &&
+            FindName("NativeImpactGrid") is null &&
+            FindName("NativeStiffnessGrid") is null;
+        checks.Add(new VerificationCheck("v44.7.10 Canonical MaterialID Default Row Order release gate",
+            canonicalMaterialIdDefaultOrderReady && releaseIdentityReady,
+            canonicalMaterialIdDefaultOrderReady && releaseIdentityReady
+                ? "Fast Materials, Tensile, Impact and Stiffness use natural numeric MaterialID default order; active sorts reapply after source changes, and close commits editors plus parent Materials before FK-child measurements"
+                : "Natural MaterialID order, active-sort refresh, parent-before-child close ownership, legacy-grid retirement or release identity failed"));
         var nativeMetadataTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMeasurementNotes");
         var experimentalRunsTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "ExperimentalRuns");
         var measurementDateEditProbe = new NativeStiffnessMeasurementRow();
@@ -23122,6 +23175,12 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         if (_databaseRestoreShutdown) return;
 
+        _embeddedMaterialsPrototypeView?.CommitActiveEditor();
+        _embeddedFastTensileView?.CommitActiveEditor();
+        _embeddedFastImpactView?.CommitActiveEditor();
+        _embeddedFastStiffnessView?.CommitActiveEditor();
+        _nativeMaterialEditDebounceTimer.Stop();
+
         _workflowPreferencesService.CaptureWindow(this);
         _workflowPreferencesService.SetLastSelectedMaterialId(_lastSelectedNativeMaterial?.MaterialID);
         SaveWebsiteExportFolderPreference(WebsiteExportFolderBox.Text?.Trim() ?? string.Empty);
@@ -23133,6 +23192,30 @@ private List<string> GetVisibleAiMaterialLabels()
             }
         }
         _workflowPreferencesService.Save();
+
+        // Measurement rows are FK children of canonical Materials. Persist a new
+        // or duplicated parent MaterialID before attempting measurement auto-save.
+        if (_nativeMaterialDirty)
+        {
+            ApplyNativeMaterialComputedFieldsToAllRows();
+            if (!SaveNativeMaterialsSilent())
+            {
+                var closeAnyway = MessageBox.Show(
+                    this,
+                    "Material Manager changes could not be auto-saved before closing.\n\n" +
+                    "Measurement auto-save was not attempted because measurement rows require their parent MaterialID in SQLite.\n\n" +
+                    "Close the application anyway?",
+                    "Auto-Save Blocked",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning,
+                    MessageBoxResult.No);
+                if (closeAnyway != MessageBoxResult.Yes)
+                {
+                    e.Cancel = true;
+                }
+                return;
+            }
+        }
 
         if (_nativeTensileDirty || _nativeImpactDirty || _nativeStiffnessDirty)
         {
@@ -23164,9 +23247,8 @@ private List<string> GetVisibleAiMaterialLabels()
             }
         }
 
-        // Auto-save is the normal workflow. Closing the application should first
-        // commit any active DataGrid edit and persist the Material Manager working
-        // copy instead of asking the user to discard changes.
+        // Measurement save can update the derived Material test-status fields.
+        // Persist that parent metadata after the child transaction completes.
         if (!_nativeMaterialDirty)
         {
             return;
@@ -25459,11 +25541,12 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         CreateDatabaseBackupBeforeMajorMaterialChange("adding material");
 
+        var materialId = GenerateNextNativeMaterialId();
         var row = new NativeMaterialRow
         {
-            MaterialID = GenerateNextNativeMaterialId(),
+            MaterialID = materialId,
             Manufacturer = "New manufacturer",
-            ProductLine = "New product line",
+            ProductLine = $"New product line {materialId}",
             BaseMaterial = "PLA",
             MaterialCategory = "Standard",
             DiameterMm = "1.75",
@@ -25498,12 +25581,15 @@ private List<string> GetVisibleAiMaterialLabels()
 
         CreateDatabaseBackupBeforeMajorMaterialChange("duplicating material");
 
+        var materialId = GenerateNextNativeMaterialId();
         var copy = new NativeMaterialRow
         {
-            MaterialID = GenerateNextNativeMaterialId(),
+            MaterialID = materialId,
             Manufacturer = selected.Manufacturer,
             ProductLine = selected.ProductLine,
-            MarketingName = selected.MarketingName,
+            MarketingName = string.IsNullOrWhiteSpace(selected.MarketingName)
+                ? $"Copy {materialId}"
+                : $"{selected.MarketingName} Copy {materialId}",
             BaseMaterial = selected.BaseMaterial,
             MaterialCategory = selected.MaterialCategory,
             VariantFinish = selected.VariantFinish,

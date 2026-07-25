@@ -1,6 +1,19 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.10 - Canonical MaterialID Default Row Order
+
+- Runtime-accepted natural numeric MaterialID default order across Fast
+  Materials, Tensile, Impact and Stiffness without changing SQLite row order.
+- Active header sorts reapply after filters, reload, Add and Duplicate while
+  preserving canonical selection and saved column layouts.
+- Startup retains the selected MaterialID while presenting the grid at its
+  top-left origin.
+- Close commits editors and persists parent Materials before FK-child
+  measurements; new and duplicated rows receive unique editable defaults.
+- Debug/Release and static/documentation gates passed; owner runtime acceptance
+  and Full Data Verification passed 335/335.
+
 ## v44.7.9 - Public Measurement Date Provenance
 
 - Runtime-accepted canonical ISO Tensile, Impact and Stiffness measured dates

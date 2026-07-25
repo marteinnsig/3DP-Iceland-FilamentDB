@@ -2,6 +2,30 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.10 - Canonical MaterialID Default Row Order
+
+- Added one shared natural numeric MaterialID comparer to the Fast Materials,
+  Tensile, Impact and Stiffness presentation row builders.
+- Default unsorted views now place the lowest numeric MaterialID first and the
+  newest/highest last without changing canonical collection or SQLite order.
+- Reapply active header sorting when filters, reload, Add or Duplicate change
+  the visible source set; preserve selected source identity.
+- Kept sort session-owned and column layout preferences unchanged.
+- Corrected close-time persistence ordering discovered during runtime testing:
+  active Fast editors commit first, followed by parent Materials, FK-child
+  measurements and derived Material test-status.
+- Block measurement auto-save when its parent Material save failed, avoiding a
+  secondary foreign-key error and duplicate close prompts.
+- Restore the last selected MaterialID, then reset the startup viewport to the
+  top-left after deferred filter refresh; Add/Duplicate keeps its new selected
+  row visible.
+- Make newly added and duplicated rows immediately save-safe by including the
+  generated MaterialID in their editable Product Line/copy presentation text,
+  avoiding duplicate computed Website Display Names.
+- Debug/Release, static/documentation and read-only NuGet advisory gates passed.
+- Owner Add, Duplicate, sorting, close/restart and startup viewport tests
+  passed; Full Data Verification passed 335/335.
+
 ## v44.7.9 - Public Measurement Date Provenance
 
 - Added typed, allowlisted canonical Tensile, Impact and Stiffness measured

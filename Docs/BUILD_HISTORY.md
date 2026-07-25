@@ -2,6 +2,35 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.10 - Canonical MaterialID Default Row Order
+
+v44.7.10 centralizes natural MaterialID comparison in the accepted Fast-grid
+presentation layer. All four daily grids build default rows in numeric ID order
+while active header sorts are reapplied whenever the visible source set
+changes.
+
+No SQLite query/order, canonical collection, schema, formula, filter,
+column-layout preference or retired legacy grid is changed. Debug/Release,
+static/documentation and read-only NuGet advisory gates pass.
+
+The first owner ordering run succeeded but close/restart exposed
+parent-before-child persistence inversion after Add/Duplicate. The candidate
+now commits active Fast editors and saves Materials before measurement FK
+children, with one default-No warning if parent persistence is blocked.
+
+Owner re-test accepted the close-order fix and identified startup viewport
+positioning. Deferred filter refresh re-entered ensure-visible after selection
+restore, so startup now resets the Fast Materials viewport to top-left at
+ApplicationIdle while retaining the saved selection.
+
+The next owner Add test correctly blocked an invalid parent row and caused
+dependent canonical-parity Verification failures. Research traced this to
+duplicate generic placeholder display names. Add/Duplicate defaults now include
+their generated MaterialID and are unique before the first edit.
+
+Owner Add, Duplicate, active/default sort, close/restart and startup viewport
+tests passed. Full Data Verification passed 335/335; v44.7.10 is canonical.
+
 ## v44.7.9 - Public Measurement Date Provenance
 
 Candidate adds a shared public measurement-date model to the existing Material

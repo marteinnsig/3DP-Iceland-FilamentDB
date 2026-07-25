@@ -30,10 +30,10 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 16 |
+| Open | 14 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 32 |
+| Solved | 34 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
@@ -62,12 +62,13 @@ Date: 2026-07-24
 Area: Materials / Add Material and Duplicate
 Type: Workflow friction / UI polish
 Severity: Minor
-Status: Open
-Resolution: Preserve the active Materials sort definition when Add Material or Duplicate creates a row. Insert/reposition the new
-MaterialID according to that sort, keep the new row selected and visible, and preserve filters and column layout. Do not rewrite
-canonical SQLite row order or silently replace the user's explicit sort.
-Verification evidence: Requires ascending/descending MaterialID, another-column sort, active filters, Add, Duplicate, selection,
-visibility, edit, restart and fallback-to-default runtime tests.
+Status: Solved
+Resolution: v44.7.10 reapplies the active Fast-grid header sort when
+Add, Duplicate, filters or reload change the visible source set. Selection,
+column layout and canonical SQLite order remain separate.
+Verification evidence: Debug/Release, static/documentation and read-only NuGet
+advisory gates passed. Owner Add, Duplicate, sorting, close/restart and
+save-safe placeholder tests passed. Full Data Verification passed 335/335.
 What happened: With Material ID sorted descending, a newly created next MaterialID does not appear at the expected top position, so
 the user must apply the sort again to find it.
 Expected behavior: If `MAT0206` is the current highest MaterialID and Add or Duplicate creates `MAT0207`, the new selected row should
@@ -127,12 +128,14 @@ Date: 2026-07-24
 Area: Materials / Tensile / Impact / Stiffness default row ordering
 Type: Workflow friction / UI polish
 Severity: Minor
-Status: Open
-Resolution: Add a researched default sort that orders canonical MaterialID values numerically ascending across the four daily grids.
-Preserve explicit user sorting and saved layout behavior; do not use lexical ordering that places `MAT10` before `MAT2`, and do not
-renumber, rewrite or move canonical rows in SQLite.
-Verification evidence: Requires caller/view ownership research plus first-load, reset, filter, edit, restart and fallback-grid runtime
-acceptance with the lowest MaterialID at the top and newest/highest MaterialID at the bottom.
+Status: Solved
+Resolution: v44.7.10 adds one presentation-only natural MaterialID
+comparer to all four accepted Fast grids. It does not renumber or reorder
+canonical SQLite rows.
+Verification evidence: Debug/Release, static/documentation and read-only NuGet
+advisory gates passed. Owner default/explicit sorting, retained selection,
+top-left startup viewport and restart tests passed. Full Data Verification
+passed 335/335.
 What happened: Default views in Materials, Tensile, Impact and Stiffness are not consistently presented in ascending MaterialID order.
 Expected behavior: On an unsorted/default view, show the lowest numeric MaterialID first and the newest/highest MaterialID last in all
 four workflows.

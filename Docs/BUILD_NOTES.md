@@ -1,4 +1,50 @@
-# Current Build Notes - v44.7.9
+# Current Build Notes - v44.7.10
+
+## Canonical MaterialID Default Row Order
+
+v44.7.10 is runtime accepted. The shared Fast-grid presentation
+layer now gives unsorted Materials, Tensile, Impact and Stiffness views a
+natural numeric MaterialID order. `MAT2` precedes `MAT10`; arbitrarily long
+numeric suffixes remain deterministic without integer conversion.
+
+The comparer is presentation-only. Canonical observable collections, SQLite
+queries/bytes, schema, `SortOrder`, formulas, filters, selection identity,
+column-layout preferences, reports, website/FTPS and recovery are unchanged.
+Header-click sorting remains session-owned and is reapplied after filter,
+reload, Add or Duplicate changes the visible source set.
+
+The candidate also resolves the related Add/Duplicate sort-retention finding:
+a new row follows the active ascending, descending or other-column header sort
+instead of being appended outside that order. Legacy workflow grids remain
+retired.
+
+Initial runtime testing passed the ordering scenarios but exposed a close-time
+FK failure after Add/Duplicate: measurement children were auto-saved before the
+new parent MaterialID reached SQLite. Closing now commits active Fast editors,
+saves dirty parent Materials first, then measurement children, then any derived
+Material test-status update. If the parent save is blocked, measurement save is
+not attempted and one default-No warning owns the decision.
+
+The close-order re-test passed and exposed a first-load presentation detail:
+the deferred filter/collection refresh re-selected the saved MaterialID through
+the normal ensure-visible path, moving both viewport axes. Startup now resets
+the Fast Materials viewport to `(0,0)` after deferred refresh while retaining
+the saved selection. Add/Duplicate still ensure the new row is visible.
+
+A later Add test exposed a pre-existing validation conflict: repeated generic
+`New manufacturer / New product line / PLA` placeholders produced duplicate
+computed Website Display Names, blocking parent SQLite auto-save and causing
+dependent Verification parity failures. Add now includes its generated
+MaterialID in the placeholder Product Line; Duplicate appends a MaterialID-
+specific copy marker to Marketing Name. Both remain visibly editable while
+being unique and save-safe immediately.
+
+Debug and Release builds pass with zero warnings/errors. Diff, 136-column
+roadmap, release-documentation and read-only direct/transitive NuGet advisory
+gates pass. Owner Add, Duplicate, sort, close/restart and viewport testing
+passed; Full Data Verification passed 335/335.
+
+## Retained v44.7.9 evidence
 
 ## Public Measurement Date Provenance
 

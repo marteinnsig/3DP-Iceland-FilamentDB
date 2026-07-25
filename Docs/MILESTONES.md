@@ -3,6 +3,16 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.10 - Canonical MaterialID Default Row Order
+
+Adds natural numeric default ordering to all four accepted daily Fast grids
+while retaining explicit sorts, selection identity, layouts and canonical
+SQLite order. Runtime findings also corrected parent-before-child close
+persistence, startup viewport position and duplicate placeholder names.
+Owner runtime acceptance and Full Data Verification 335/335 passed.
+
+---
+
 # v44.7.9 - Public Measurement Date Provenance
 
 Publishes canonical per-module measured dates through typed allowlisted

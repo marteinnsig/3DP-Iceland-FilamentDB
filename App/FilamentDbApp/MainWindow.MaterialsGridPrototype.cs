@@ -10,6 +10,41 @@ namespace FilamentDbApp;
 
 public partial class MainWindow
 {
+    private static readonly IComparer<string> CanonicalMaterialIdComparer =
+        Comparer<string>.Create(CompareCanonicalMaterialIds);
+
+    private static int CompareCanonicalMaterialIds(string? left, string? right)
+    {
+        var leftText = left?.Trim() ?? string.Empty;
+        var rightText = right?.Trim() ?? string.Empty;
+        var leftMatch = System.Text.RegularExpressions.Regex.Match(
+            leftText,
+            @"^(?<prefix>.*?)(?<number>\d+)$",
+            System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+        var rightMatch = System.Text.RegularExpressions.Regex.Match(
+            rightText,
+            @"^(?<prefix>.*?)(?<number>\d+)$",
+            System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+        if (!leftMatch.Success || !rightMatch.Success)
+            return StringComparer.OrdinalIgnoreCase.Compare(leftText, rightText);
+
+        var prefixComparison = StringComparer.OrdinalIgnoreCase.Compare(
+            leftMatch.Groups["prefix"].Value,
+            rightMatch.Groups["prefix"].Value);
+        if (prefixComparison != 0) return prefixComparison;
+
+        var leftNumber = leftMatch.Groups["number"].Value.TrimStart('0');
+        var rightNumber = rightMatch.Groups["number"].Value.TrimStart('0');
+        if (leftNumber.Length == 0) leftNumber = "0";
+        if (rightNumber.Length == 0) rightNumber = "0";
+        var lengthComparison = leftNumber.Length.CompareTo(rightNumber.Length);
+        if (lengthComparison != 0) return lengthComparison;
+        var numberComparison = StringComparer.Ordinal.Compare(leftNumber, rightNumber);
+        return numberComparison != 0
+            ? numberComparison
+            : StringComparer.OrdinalIgnoreCase.Compare(leftText, rightText);
+    }
+
     private static List<MaterialsPrototypeColumn> BuildFastMeasurementIdentityColumns() =>
     [
         FastMeasurementColumn("Material ID", 90, "MaterialID", true),
@@ -62,7 +97,15 @@ public partial class MainWindow
                 savedSelectionApplied = true;
                 _embeddedMaterialsPrototypeView.Dispatcher.BeginInvoke(
                     System.Windows.Threading.DispatcherPriority.Loaded,
-                    () => _embeddedMaterialsPrototypeView.SelectCanonicalSource(savedSelection));
+                    () =>
+                    {
+                        _embeddedMaterialsPrototypeView.SelectCanonicalSource(
+                            savedSelection,
+                            ensureVisible: false);
+                        _embeddedMaterialsPrototypeView.Dispatcher.BeginInvoke(
+                            System.Windows.Threading.DispatcherPriority.ApplicationIdle,
+                            _embeddedMaterialsPrototypeView.ResetViewportToOrigin);
+                    });
             };
         }
         if (!_fastMaterialsCloseGuardAttached)
@@ -234,6 +277,7 @@ public partial class MainWindow
         var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
         return _nativeMaterialRows
             .Where(row => visibleMaterialIds.Contains(row.MaterialID))
+            .OrderBy(row => row.MaterialID, CanonicalMaterialIdComparer)
             .Select(row =>
             {
                 var cells = columns.Select(column => PrototypeCellText(row, column.PropertyName)).ToArray();
@@ -559,6 +603,22 @@ public partial class MainWindow
             return true;
         }
 
+        public void CommitActiveEditor()
+        {
+            CloseEditor(commit: true);
+        }
+
+        public void ResetViewportToOrigin()
+        {
+            _scrollViewer.ScrollToHorizontalOffset(0);
+            _scrollViewer.ScrollToVerticalOffset(0);
+            _surface.SetViewport(
+                0,
+                0,
+                _scrollViewer.ViewportWidth,
+                _scrollViewer.ViewportHeight);
+        }
+
         public void ResetLayout(IReadOnlyList<MaterialsPrototypeColumn> defaultColumns)
         {
             CloseEditor(commit: true);
@@ -859,9 +919,9 @@ public partial class MainWindow
             return SynchronizeFromCanonical(reason, preferredSelection: null, resetVerticalOffset: true);
         }
 
-        public void SelectCanonicalSource(object source)
+        public void SelectCanonicalSource(object source, bool ensureVisible = true)
         {
-            _surface.SelectSource(source);
+            _surface.SelectSource(source, ensureVisible);
         }
 
         public bool SynchronizeFromCanonical(
@@ -901,15 +961,9 @@ public partial class MainWindow
                 return true;
             }
 
-            var ordered = existingSources
-                .Where(reloadedBySource.ContainsKey)
-                .Select(source => reloadedBySource[source])
-                .ToList();
-            var retainedSources = ordered.Select(row => row.Source).ToHashSet();
-            ordered.AddRange(reloaded.Where(row => !retainedSources.Contains(row.Source)));
             _rows.Clear();
-            _rows.AddRange(ordered);
-            _surface.ReplaceRows(selectedSource);
+            _rows.AddRange(reloaded);
+            _surface.ApplyCurrentSortOrDefault(selectedSource);
             var horizontalOffset = _scrollViewer.HorizontalOffset;
             var verticalOffset = resetVerticalOffset ? 0 : _scrollViewer.VerticalOffset;
             _scrollViewer.ScrollToVerticalOffset(verticalOffset);
@@ -1107,14 +1161,17 @@ public partial class MainWindow
                 ? _rows[_selectedRow].Source
                 : null;
 
-        public void SelectSource(object? source)
+        public void SelectSource(object? source, bool ensureVisible = true)
         {
             if (source is null) return;
             var rowIndex = _rows.FindIndex(row => ReferenceEquals(row.Source, source));
             if (rowIndex < 0) return;
             _selectedRow = rowIndex;
             _selectedColumn = Math.Max(0, _selectedColumn);
-            EnsureCellVisible?.Invoke(CurrentCellBounds());
+            if (ensureVisible)
+            {
+                EnsureCellVisible?.Invoke(CurrentCellBounds());
+            }
             InvalidateVisual();
         }
 
@@ -1128,6 +1185,20 @@ public partial class MainWindow
             Height = Math.Max(_contentHeight, _viewportHeight);
             InvalidateMeasure();
             InvalidateVisual();
+        }
+
+        public void ApplyCurrentSortOrDefault(object? selectedSource = null)
+        {
+            if (_sortColumn >= 0)
+            {
+                SortRowsCore(_sortColumn, _sortAscending);
+            }
+            else
+            {
+                _rows.Sort((left, right) =>
+                    CompareCanonicalMaterialIds(left.MaterialId, right.MaterialId));
+            }
+            ReplaceRows(selectedSource);
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -1402,7 +1473,7 @@ public partial class MainWindow
         private void SortRows(int columnIndex)
         {
             var selected = _selectedRow >= 0 && _selectedRow < _rows.Count
-                ? _rows[_selectedRow]
+                ? _rows[_selectedRow].Source
                 : null;
             if (_sortColumn == columnIndex)
                 _sortAscending = !_sortAscending;
@@ -1412,15 +1483,24 @@ public partial class MainWindow
                 _sortAscending = true;
             }
 
+            SortRowsCore(columnIndex, _sortAscending);
+            ReplaceRows(selected);
+        }
+
+        private void SortRowsCore(int columnIndex, bool ascending)
+        {
             _rows.Sort((left, right) =>
             {
-                var comparison = CompareCellValues(left.Cells[columnIndex], right.Cells[columnIndex]);
+                var comparison = string.Equals(
+                    _columns[columnIndex].PropertyName,
+                    "MaterialID",
+                    StringComparison.Ordinal)
+                    ? CompareCanonicalMaterialIds(left.MaterialId, right.MaterialId)
+                    : CompareCellValues(left.Cells[columnIndex], right.Cells[columnIndex]);
                 if (comparison == 0)
-                    comparison = StringComparer.OrdinalIgnoreCase.Compare(left.MaterialId, right.MaterialId);
-                return _sortAscending ? comparison : -comparison;
+                    comparison = CompareCanonicalMaterialIds(left.MaterialId, right.MaterialId);
+                return ascending ? comparison : -comparison;
             });
-            _selectedRow = selected is null ? -1 : _rows.IndexOf(selected);
-            InvalidateVisual();
         }
 
         private static int CompareCellValues(string left, string right)

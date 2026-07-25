@@ -1,3 +1,19 @@
+# v44.7.10 - Canonical MaterialID Default Row Order
+
+Date: 2026-07-25
+
+- PASS: Full Data Verification reported 335/335 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: release identity aligned at v44.7.10, assembly 44.7.10.0 and
+  `CANONICAL-MATERIALID-DEFAULT-ROW-ORDER`.
+- PASS: natural numeric default MaterialID order covered Fast Materials,
+  Tensile, Impact and Stiffness without changing SQLite order.
+- PASS: explicit sorting, Add, Duplicate, retained selection and top-left
+  startup viewport passed owner runtime review.
+- PASS: close/restart persisted parent Materials before FK-child measurements.
+- PASS: Add/Duplicate unique editable defaults remained save-safe.
+- ACCEPTED: v44.7.10 is runtime accepted and canonical.
+
 # v44.7.9 - Public Measurement Date Provenance
 
 Date: 2026-07-25

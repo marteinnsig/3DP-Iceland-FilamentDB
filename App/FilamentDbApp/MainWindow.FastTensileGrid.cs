@@ -101,6 +101,7 @@ public partial class MainWindow
         var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
         return _nativeTensileRows
             .Where(row => visibleMaterialIds.Contains(row.MaterialID))
+            .OrderBy(row => row.MaterialID, CanonicalMaterialIdComparer)
             .Select(row =>
         {
             var cells = columns.Select(column => PrototypeCellText(row, column.PropertyName)).ToArray();
