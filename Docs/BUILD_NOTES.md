@@ -76,6 +76,14 @@ Disposable recovery-visibility profile `20260725231345-2dfcad7a` passes
 Owner evidence `3DPIceland_FilamentDB_Verification_20260725_231731.txt`
 subsequently accepted the zero-count UI and passed 345/345. v45.1 is closed.
 
+Post-release seed maintenance preserved the schema-v31 migration fixture and
+promoted a normalized schema-v32 acceptance seed. The first two manual-backup
+copies exposed canonical `SortOrder` normalization on disposable startup; no
+owner data was changed. The normalized candidate contains 203 Materials, zero
+unlinked/invalid Manufacturer identities and no automation residue. Disposable
+profile `20260725233352-929a4f1a` passes 345/345 and exact business-state
+rollback.
+
 # Previous Build Notes - v44.7.18
 
 ## Guarded Updater Acceptance

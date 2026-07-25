@@ -193,6 +193,15 @@ state to its exact baseline; owner, Production and FTPS paths remain blocked.
 Owner runtime accepted the same-name selection and zero-count collapsed UI;
 final owner Full Data Verification passes 345/345.
 
+The accepted canonical tester seed is now schema v32 at
+`C:\Seed-Database\filamentdb.sqlite`, SHA-256
+`65BD03F668768F0AAEBF937BAFC628559A168EA1A07E586CECADC7431AF7BB84`.
+The prior schema-v31 fixture remains at
+`C:\Seed-Database\filamentdb-schema31-migration.sqlite`, SHA-256
+`7851D26BA82E345E2C4B156996B68F0360B7F74A48B777752A609CB368EFD6D4`.
+Profile `20260725233352-929a4f1a` passes CRUD, Full Data Verification 345/345
+and exact baseline/final business-state hash equality on the schema-v32 seed.
+
 The `crud` scenario remains confined to its exact generated disposable
 MaterialID and a disposable Manufacturer catalog record. Create stores a
 deliberate legacy/unmapped Manufacturer with null ID and restart preserves it

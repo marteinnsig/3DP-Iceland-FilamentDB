@@ -17,6 +17,9 @@ Date: 2026-07-25
 - Final owner evidence `3DPIceland_FilamentDB_Verification_20260725_231731.txt`
   passes 345/345 with zero unlinked Materials and accepts the conditional
   recovery UI. v45.1 is canonical.
+- Schema-v32 seed acceptance profile `20260725233352-929a4f1a` passes CRUD and
+  Full Data Verification 345/345 with baseline/final business-state hash
+  `5922D4E7B8AF2FB045C07F1F5F813E1C050C5F17B562003504FCBC15EDBDBDF0`.
 
 # v44.7.11 - Settings Manager Command Clarity
 
