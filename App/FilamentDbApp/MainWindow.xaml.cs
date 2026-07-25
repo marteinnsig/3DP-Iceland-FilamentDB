@@ -184,6 +184,8 @@ public partial class MainWindow : Window
         AutomationProfileIdentityText.Visibility = Visibility.Visible;
         Title += " — " + AutomationRuntimeProfile.VisibleIdentity;
         AutomationProperties.SetAutomationId(AutomationProfileIdentityText, "AutomationProfileIdentity");
+        ReportOutputFolderBox.Text = AutomationRuntimeProfile.Current!.OutputFolder;
+        ReportOutputFolderBox.IsReadOnly = true;
     }
 
     private bool IsAutomationActionBlocked(string action)
@@ -8032,6 +8034,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
     {
         try
         {
+            AutomationRuntimeProfile.DemandReportGenerationAuthorized();
             var selectedReportKey = (ReportTypeSelector?.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? string.Empty;
             if (!_purchasingReportService.IsPurchasingReport(selectedReportKey) && !HasCanonicalMaterialReportData())
             {
@@ -8099,6 +8102,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
         try
         {
+            AutomationRuntimeProfile.DemandReportGenerationAuthorized();
             var selectedMaterials = _nativeMaterialRows
                 .Where(row => !row.IsArchived && row.PublishPublicReports && !string.IsNullOrWhiteSpace(row.MaterialID))
                 .OrderBy(row => row.WebsiteDisplayName, StringComparer.CurrentCultureIgnoreCase)
@@ -8193,6 +8197,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         if (BuildPublicComparisonReportPreviewButton is not null) BuildPublicComparisonReportPreviewButton.IsEnabled = false;
         try
         {
+            AutomationRuntimeProfile.DemandReportGenerationAuthorized();
             var publicRows = _nativeMaterialRows
                 .Where(row => !row.IsArchived && row.PublishPublicReports && !string.IsNullOrWhiteSpace(row.MaterialID))
                 .Select(BuildNativeMaterialDataRow)
@@ -8287,6 +8292,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         if (BuildPublicManufacturerReportPreviewButton is not null) BuildPublicManufacturerReportPreviewButton.IsEnabled = false;
         try
         {
+            AutomationRuntimeProfile.DemandReportGenerationAuthorized();
             var publicSource = _nativeMaterialRows.Where(row => !row.IsArchived && row.PublishPublicReports && !string.IsNullOrWhiteSpace(row.MaterialID)).Select(row => (Row: BuildNativeMaterialDataRow(row), Model: BuildPublicMaterialEngineeringReportModel(BuildNativeMaterialDataRow(row)))).Where(x => !string.IsNullOrWhiteSpace(x.Model.Manufacturer)).ToList();
             if (publicSource.Count == 0) { ReportPreviewLog.Text = "Select one or more active MaterialIDs with Public reports before building public manufacturer reports."; return; }
             var manufacturerGroups = publicSource.GroupBy(x => x.Model.Manufacturer.Trim(), StringComparer.CurrentCultureIgnoreCase).ToList();
@@ -8323,6 +8329,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         if (BuildPublicTestSessionReportPreviewButton is not null) BuildPublicTestSessionReportPreviewButton.IsEnabled = false;
         try
         {
+            AutomationRuntimeProfile.DemandReportGenerationAuthorized();
             var summaries=GetCanonicalVerifiedSummaryMap(); var tensile=_nativeTensileRows.Where(x=>!string.IsNullOrWhiteSpace(x.MaterialID)).GroupBy(x=>x.MaterialID.Trim(),StringComparer.OrdinalIgnoreCase).ToDictionary(x=>x.Key,x=>x.First(),StringComparer.OrdinalIgnoreCase); var impact=_nativeImpactRows.Where(x=>!string.IsNullOrWhiteSpace(x.MaterialID)).GroupBy(x=>x.MaterialID.Trim(),StringComparer.OrdinalIgnoreCase).ToDictionary(x=>x.Key,x=>x.First(),StringComparer.OrdinalIgnoreCase); var stiffness=_nativeStiffnessRows.Where(x=>!string.IsNullOrWhiteSpace(x.MaterialID)).GroupBy(x=>x.MaterialID.Trim(),StringComparer.OrdinalIgnoreCase).ToDictionary(x=>x.Key,x=>x.First(),StringComparer.OrdinalIgnoreCase);
             PublicTestModuleQualityModel Q(string module,string orientation,MeasurementSetResult? x,string unit,string? validation)=>new(){Module=module,Orientation=orientation,Average=x?.Average is double a?a.ToString("0.###",CultureInfo.CurrentCulture)+" "+unit:"n/a",StandardDeviation=x?.StandardDeviation is double s?s.ToString("0.###",CultureInfo.CurrentCulture)+" "+unit:"n/a",CoefficientOfVariation=x?.CoefficientOfVariation is double c?c.ToString("0.###",CultureInfo.CurrentCulture)+"%":"n/a",Samples=x?.SampleCount??0,Confidence=x?.Confidence is int confidence?confidence+"/10":"n/a",Validation=validation??"No native record"};
             var models=_nativeMaterialRows.Where(x=>!x.IsArchived&&x.PublishPublicReports&&!string.IsNullOrWhiteSpace(x.MaterialID)).Select(row=>{var id=row.MaterialID.Trim();summaries.TryGetValue(id,out var summary);tensile.TryGetValue(id,out var tr);impact.TryGetValue(id,out var ir);stiffness.TryGetValue(id,out var sr);var approved=row.PublishPublicTestDetails;var quality=new List<PublicTestModuleQualityModel>{Q("Tensile","Upright",summary?.Tensile?.Upright,"MPa",tr?.ValidationSummary),Q("Tensile","Flat",summary?.Tensile?.Flat,"MPa",tr?.ValidationSummary),Q("Impact","Upright",summary?.Impact?.Upright,"kJ/m²",ir?.ValidationSummary),Q("Impact","Flat",summary?.Impact?.Flat,"kJ/m²",ir?.ValidationSummary),new(){Module="Stiffness",Orientation="Three-point bend",Average=summary?.Stiffness?.ModulusMpa is double sm?sm.ToString("0.###",CultureInfo.CurrentCulture)+" MPa":"n/a",Samples=summary?.HasStiffnessResults==true?1:0,Confidence=summary?.Stiffness?.CompletenessRating.Label??"n/a",Validation=sr?.ValidationSummary??"No native record"}};var raw=approved?new[]{new PublicTestRawInputModel{Module="Tensile",InputSet="Upright force inputs (N)",RecordedValues=string.Join(", ",tr?.SampleValues(true)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Tensile",InputSet="Flat force inputs (N)",RecordedValues=string.Join(", ",tr?.SampleValues(false)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Impact",InputSet="Upright needle inputs (%)",RecordedValues=string.Join(", ",ir?.SampleValues(true)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Impact",InputSet="Flat needle inputs (%)",RecordedValues=string.Join(", ",ir?.SampleValues(false)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Stiffness",InputSet="Revolutions / degrees",RecordedValues=sr is null?"n/a":JoinNonEmpty(" / ",sr.Revolutions,sr.Degrees)}}:Array.Empty<PublicTestRawInputModel>();var notes=approved?new[]{("Tensile",tr?.TestNotes),("Impact",ir?.TestNotes),("Stiffness",sr?.TestNotes)}.Where(x=>!string.IsNullOrWhiteSpace(x.Item2)).Select(x=>new PublicTestNoteModel{Module=x.Item1,Note=x.Item2!}).ToList():new List<PublicTestNoteModel>();return new PublicTestSessionReportModel{MaterialId=id,MaterialName=string.IsNullOrWhiteSpace(row.WebsiteDisplayName)?id:row.WebsiteDisplayName,Manufacturer=row.Manufacturer,SummaryStatus=summary?.SummaryStatus??"No native results",ResultModules=summary?.ResultModuleCount??0,SpecimenResultRecords=quality.Sum(x=>x.Samples),PublicDetailsApproved=approved,VerifiedMeasurements=PublicVerifiedMeasurementsFromSummary(summary),MeasurementDates=BuildPublicMeasurementDateProvenance(id),QualityRows=quality,RawInputs=raw,ApprovedNotes=notes};}).OrderBy(x=>x.MaterialName).ToList();
@@ -8337,7 +8344,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
     private async Task BuildPublicPrintingRecommendationPreviewAsync()
     {
-        if(BuildPublicPrintingRecommendationPreviewButton is not null)BuildPublicPrintingRecommendationPreviewButton.IsEnabled=false;try{var rows=_nativeMaterialRows.Where(x=>!x.IsArchived&&x.PublishPublicReports&&!string.IsNullOrWhiteSpace(x.MaterialID)).Select(BuildNativeMaterialDataRow).ToList();var summaries=GetCanonicalVerifiedSummaryMap();var publicRankings=rows.Select(row=>BuildRankingRow(BuildVideoPlannerRow(row,summaries),"Overall")).ToList();var models=rows.Select(row=>{var source=BuildPublicMaterialEngineeringReportModel(row);var ranking=BuildRankingRow(BuildVideoPlannerRow(row,summaries),"Overall");var alternatives=BuildBetterAlternativeRows(ranking,publicRankings).Select(item=>new PublicAlternativeModel{MaterialId=item.MaterialId,MaterialName=item.Label,Manufacturer=item.Manufacturer,OverallScore=item.OverallText,TensileScore=item.TensileText,ImpactScore=item.ImpactText}).ToList();return new PublicPrintingRecommendationReportModel{MaterialId=source.MaterialId,MaterialName=source.MaterialName,Manufacturer=source.Manufacturer,BaseMaterial=source.BaseMaterial,TestCoverage=source.TestCoverage,EngineeringAxes=source.VerifiedEngineeringAxes,OverallScore=source.OverallScore,TensileScore=source.TensileScore,ImpactScore=source.ImpactScore,StiffnessScore=source.StiffnessScore,ConsistencyScore=source.ConsistencyScore,LayerAdhesionScore=source.LayerAdhesionScore,OverallRank=source.OverallRank,MsrpUsdPerKg=source.MsrpUsdPerKg,RecommendedApplications=source.RecommendedApplications,Strengths=source.Strengths,Limitations=source.Limitations,Tradeoffs=source.Tradeoffs,WorkflowChecks=BuildPrintingWorkflowChecks(row,ranking),DecisionGuidance=BuildDecisionGuidanceItems(ranking,alternatives.Count),Alternatives=alternatives,ManufacturerWebsite=source.ManufacturerWebsite};}).OrderBy(x=>x.MaterialName).ToList();if(models.Count==0){ReportPreviewLog.Text="Select one or more active MaterialIDs with Public reports.";return;}var at=DateTime.Now;var output=string.IsNullOrWhiteSpace(ReportOutputFolderBox.Text)?GetDefaultReportOutputFolder():ReportOutputFolderBox.Text.Trim();var root=System.IO.Path.Combine(output,PublicReportPublishingService.PreviewRootFolderName);foreach(var model in models){var result=_publicPrintingRecommendationReportPublishingService.Build(model,at,BuildInfo.ShortLabel,BuildInfo.ReleaseTitle);var verify=_publicPrintingRecommendationReportPublishingService.Verify(model,result);if(!verify.Passed)throw new InvalidOperationException(verify.Detail);var folder=result.RelativeDirectory.Split('/',StringSplitOptions.RemoveEmptyEntries).Aggregate(root,System.IO.Path.Combine);var assets=System.IO.Path.Combine(folder,"assets");Directory.CreateDirectory(assets);CopyReportPackageAssets(assets);var html=System.IO.Path.Combine(folder,"index.html");SafeFileOperations.WriteAllTextAtomic(html,result.Html,Encoding.UTF8);SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder,"manifest.txt"),result.Manifest,Encoding.UTF8);SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder,"report-metadata.json"),result.MetadataJson,Encoding.UTF8);await WriteReportPdfFromCanonicalHtmlAsync(System.IO.Path.Combine(folder,"report.pdf"),html);}Directory.CreateDirectory(root);var index=System.IO.Path.Combine(root,"printing-recommendations.html");SafeFileOperations.WriteAllTextAtomic(index,PublicPrintingRecommendationReportPublishingService.BuildPreviewIndex(models,at),Encoding.UTF8);ReportExportSummaryText.Text=$"Public printing recommendations built: {models.Count}";ReportPreviewLog.Text=$"Built {models.Count} full public Printing Recommendation reports. Alternatives are selected from public MaterialIDs.\n\nIndex: {index}\n\nLocal preview only. Nothing was uploaded.";}catch(Exception ex){ReportExportSummaryText.Text="Public printing recommendation failed";ReportPreviewLog.Text+="\n\n"+ex.Message;}finally{if(BuildPublicPrintingRecommendationPreviewButton is not null)BuildPublicPrintingRecommendationPreviewButton.IsEnabled=true;}
+        if(BuildPublicPrintingRecommendationPreviewButton is not null)BuildPublicPrintingRecommendationPreviewButton.IsEnabled=false;try{AutomationRuntimeProfile.DemandReportGenerationAuthorized();var rows=_nativeMaterialRows.Where(x=>!x.IsArchived&&x.PublishPublicReports&&!string.IsNullOrWhiteSpace(x.MaterialID)).Select(BuildNativeMaterialDataRow).ToList();var summaries=GetCanonicalVerifiedSummaryMap();var publicRankings=rows.Select(row=>BuildRankingRow(BuildVideoPlannerRow(row,summaries),"Overall")).ToList();var models=rows.Select(row=>{var source=BuildPublicMaterialEngineeringReportModel(row);var ranking=BuildRankingRow(BuildVideoPlannerRow(row,summaries),"Overall");var alternatives=BuildBetterAlternativeRows(ranking,publicRankings).Select(item=>new PublicAlternativeModel{MaterialId=item.MaterialId,MaterialName=item.Label,Manufacturer=item.Manufacturer,OverallScore=item.OverallText,TensileScore=item.TensileText,ImpactScore=item.ImpactText}).ToList();return new PublicPrintingRecommendationReportModel{MaterialId=source.MaterialId,MaterialName=source.MaterialName,Manufacturer=source.Manufacturer,BaseMaterial=source.BaseMaterial,TestCoverage=source.TestCoverage,EngineeringAxes=source.VerifiedEngineeringAxes,OverallScore=source.OverallScore,TensileScore=source.TensileScore,ImpactScore=source.ImpactScore,StiffnessScore=source.StiffnessScore,ConsistencyScore=source.ConsistencyScore,LayerAdhesionScore=source.LayerAdhesionScore,OverallRank=source.OverallRank,MsrpUsdPerKg=source.MsrpUsdPerKg,RecommendedApplications=source.RecommendedApplications,Strengths=source.Strengths,Limitations=source.Limitations,Tradeoffs=source.Tradeoffs,WorkflowChecks=BuildPrintingWorkflowChecks(row,ranking),DecisionGuidance=BuildDecisionGuidanceItems(ranking,alternatives.Count),Alternatives=alternatives,ManufacturerWebsite=source.ManufacturerWebsite};}).OrderBy(x=>x.MaterialName).ToList();if(models.Count==0){ReportPreviewLog.Text="Select one or more active MaterialIDs with Public reports.";return;}var at=DateTime.Now;var output=string.IsNullOrWhiteSpace(ReportOutputFolderBox.Text)?GetDefaultReportOutputFolder():ReportOutputFolderBox.Text.Trim();var root=System.IO.Path.Combine(output,PublicReportPublishingService.PreviewRootFolderName);foreach(var model in models){var result=_publicPrintingRecommendationReportPublishingService.Build(model,at,BuildInfo.ShortLabel,BuildInfo.ReleaseTitle);var verify=_publicPrintingRecommendationReportPublishingService.Verify(model,result);if(!verify.Passed)throw new InvalidOperationException(verify.Detail);var folder=result.RelativeDirectory.Split('/',StringSplitOptions.RemoveEmptyEntries).Aggregate(root,System.IO.Path.Combine);var assets=System.IO.Path.Combine(folder,"assets");Directory.CreateDirectory(assets);CopyReportPackageAssets(assets);var html=System.IO.Path.Combine(folder,"index.html");SafeFileOperations.WriteAllTextAtomic(html,result.Html,Encoding.UTF8);SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder,"manifest.txt"),result.Manifest,Encoding.UTF8);SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder,"report-metadata.json"),result.MetadataJson,Encoding.UTF8);await WriteReportPdfFromCanonicalHtmlAsync(System.IO.Path.Combine(folder,"report.pdf"),html);}Directory.CreateDirectory(root);var index=System.IO.Path.Combine(root,"printing-recommendations.html");SafeFileOperations.WriteAllTextAtomic(index,PublicPrintingRecommendationReportPublishingService.BuildPreviewIndex(models,at),Encoding.UTF8);ReportExportSummaryText.Text=$"Public printing recommendations built: {models.Count}";ReportPreviewLog.Text=$"Built {models.Count} full public Printing Recommendation reports. Alternatives are selected from public MaterialIDs.\n\nIndex: {index}\n\nLocal preview only. Nothing was uploaded.";}catch(Exception ex){ReportExportSummaryText.Text="Public printing recommendation failed";ReportPreviewLog.Text+="\n\n"+ex.Message;}finally{if(BuildPublicPrintingRecommendationPreviewButton is not null)BuildPublicPrintingRecommendationPreviewButton.IsEnabled=true;}
     }
 
     private async void BuildPublicMaterialSummaryPreview_Click(object sender, RoutedEventArgs e)
@@ -8350,6 +8357,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         if (BuildPublicMaterialSummaryPreviewButton is not null) BuildPublicMaterialSummaryPreviewButton.IsEnabled = false;
         try
         {
+            AutomationRuntimeProfile.DemandReportGenerationAuthorized();
             var summaries = GetCanonicalVerifiedSummaryMap();
             var source = _nativeMaterialRows
                 .Where(row => !row.IsArchived && row.PublishPublicReports && !string.IsNullOrWhiteSpace(row.MaterialID))
@@ -8443,6 +8451,9 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         if (BuildPublicEngineeringReportPackageButton is not null) BuildPublicEngineeringReportPackageButton.IsEnabled = false;
         try
         {
+            AutomationRuntimeProfile.DemandReportGenerationAuthorized();
+            if (AutomationRuntimeProfile.IsActive)
+                ReportOutputFolderBox.Text = AutomationRuntimeProfile.Current!.OutputFolder;
             var result = await EnsurePublicReportPackageAsync(status => ReportExportSummaryText.Text = status);
             ReportExportSummaryText.Text = $"Public report package built: {result.CatalogEntries} catalog entries";
             ReportPreviewLog.Text = FormatPublicReportPackageResult(result);
@@ -8538,7 +8549,10 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                 entries.Add(Entry("manufacturer", manufacturer + " Manufacturer Report", "Manufacturer", manufacturer, $"reports/manufacturers/{slug}"));
             }
 
-            var output = string.IsNullOrWhiteSpace(ReportOutputFolderBox.Text) ? GetDefaultReportOutputFolder() : ReportOutputFolderBox.Text.Trim();
+            var output = AutomationRuntimeProfile.Current?.OutputFolder ??
+                         (string.IsNullOrWhiteSpace(ReportOutputFolderBox.Text)
+                             ? GetDefaultReportOutputFolder()
+                             : ReportOutputFolderBox.Text.Trim());
             var root = System.IO.Path.Combine(output, PublicReportPublishingService.PreviewRootFolderName);
             var fingerprintPath = System.IO.Path.Combine(root, PublicReportSourceFingerprintService.FileName);
             var canonicalReportProjection = JsonSerializer.Serialize(new
@@ -8836,6 +8850,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
     {
         try
         {
+            AutomationRuntimeProfile.DemandReportGenerationAuthorized();
             if (!HasCanonicalMaterialReportData())
             {
                 ReportPreviewLog.Text = "No material data is loaded. Add or import materials before exporting the Engineering Report Package.";
@@ -9039,6 +9054,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             Opacity = 0,
             Content = webView
         };
+        AutomationProperties.SetAutomationId(hostWindow, "ReportPrintHostWindow");
         return (webView, hostWindow);
     }
 
@@ -11873,6 +11889,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private string GetDefaultReportOutputFolder()
     {
+        if (AutomationRuntimeProfile.Current is { } profile) return profile.OutputFolder;
         var currentReportFolder = ReportOutputFolderBox?.Text?.Trim();
         if (!string.IsNullOrWhiteSpace(currentReportFolder)) return currentReportFolder;
 
@@ -13264,6 +13281,19 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             automationFoundationReady
                 ? "Disposable-path validation, hard Production/FTPS/update locks, stable UI Automation IDs and TXT/JSON evidence are present"
                 : "Disposable profile, safety-lock, AutomationId or machine-readable evidence contract is incomplete"));
+        var automatedReportAcceptanceReady =
+            typeof(AutomationRuntimeProfile).GetProperty(nameof(AutomationRuntimeProfile.ReportGenerationAuthorized)) is not null &&
+            typeof(AutomationRuntimeProfile).GetMethod(nameof(AutomationRuntimeProfile.DemandReportGenerationAuthorized)) is not null &&
+            FindName("BuildPublicEngineeringReportPackageButton") is Button automationReportButton &&
+            AutomationProperties.GetAutomationId(automationReportButton) == "BuildPublicReportPackage" &&
+            FindName("ReportOutputFolderBox") is TextBox automationReportOutput &&
+            AutomationProperties.GetAutomationId(automationReportOutput) == "ReportOutputFolder" &&
+            FindName("ReportPreviewLog") is TextBox automationReportLog &&
+            AutomationProperties.GetAutomationId(automationReportLog) == "ReportPreviewLog";
+        checks.Add(new VerificationCheck("Automated report acceptance safety foundation", automatedReportAcceptanceReady,
+            automatedReportAcceptanceReady
+                ? "Scenario authorization, disposable output binding, stable report completion IDs and artifact evidence contracts are present"
+                : "Automated report authorization, output containment, completion or evidence contract is incomplete"));
         var workspaceTabHeaders = WorkspaceTabs.Items.OfType<TabItem>()
             .Select(item => item.Header?.ToString() ?? string.Empty)
             .ToList();

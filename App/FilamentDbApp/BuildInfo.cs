@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "AUTOMATED-RUNTIME-ACCEPTANCE-FOUNDATION";
-    public const string ReleaseTitle = "Automated Runtime Acceptance Foundation";
+    public const string ReleaseCode = "AUTOMATED-REPORT-ACCEPTANCE";
+    public const string ReleaseTitle = "Automated Report Acceptance";
 
     public static string Version
     {

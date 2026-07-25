@@ -2,6 +2,27 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.15 - Automated Report Acceptance
+
+- Added an explicit disposable `reports` scenario over the canonical public
+  report package workflow.
+- Bound automated report output to the disposable profile and rejected report
+  writes without per-scenario authorization.
+- Added stable report action, output, completion and log Automation IDs.
+- Added catalog-driven containment, type coverage, HTML marker, PDF header,
+  JSON, byte-count and SHA-256 evidence checks.
+- Corrected a rendered Material Summary continuation-table clip with fixed
+  columns and deterministic 20-row presentation tables.
+- Corrected owner-found Material Summary screen-HTML right-edge clipping with
+  readable column widths, normal word wrapping and horizontal narrow-window
+  scrolling without changing the PDF contract.
+- Disposable acceptance passes Verification 341/341 with 211 catalog entries,
+  639 verified artifacts and identical logical database hashes.
+- Kept Production, FTPS, updates, restore, delete, formulas, report models,
+  routes and publication approvals unchanged.
+- Owner visual review accepted the representative landscape PDF and responsive
+  HTML behavior; owner Full Data Verification passed 341/341.
+
 ## v44.7.14 - Automated Runtime Acceptance Foundation
 
 - Added a disposable automation-profile manifest bound to the exact application

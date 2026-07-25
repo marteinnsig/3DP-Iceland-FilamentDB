@@ -14,7 +14,9 @@ internal static class Program
 {
     private const string MarkerFileName = ".3dpiceland-disposable-profile.json";
     private static readonly TimeSpan ElementTimeout = TimeSpan.FromSeconds(45);
+    private static readonly TimeSpan ReportTimeout = TimeSpan.FromMinutes(20);
     private static readonly List<StepResult> Steps = new();
+    private static string CurrentScenario = "smoke";
 
     [STAThread]
     private static int Main(string[] args)
@@ -29,12 +31,18 @@ internal static class Program
         try
         {
             var options = RunnerOptions.Parse(args);
+            CurrentScenario = options.Scenario;
             executable = IOPath.GetFullPath(options.ApplicationPath);
             seedDatabase = IOPath.GetFullPath(options.SeedDatabasePath);
             if (!IOFile.Exists(executable)) throw new FileNotFoundException("Application executable not found.", executable);
             if (!IOFile.Exists(seedDatabase)) throw new FileNotFoundException("Explicit seed database not found.", seedDatabase);
 
-            root = CreateDisposableProfile(executable, seedDatabase, out var markerPath, out databasePath);
+            root = CreateDisposableProfile(
+                executable,
+                seedDatabase,
+                string.Equals(options.Scenario, "reports", StringComparison.Ordinal),
+                out var markerPath,
+                out databasePath);
             seedDatabaseHash = Sha256(seedDatabase);
             application = Process.Start(new ProcessStartInfo(executable)
             {
@@ -99,6 +107,22 @@ internal static class Program
             Record("verification-export", true, "TXT/JSON evidence exported");
 
             CloseWindow(verification, application.Id);
+            if (string.Equals(options.Scenario, "reports", StringComparison.Ordinal))
+            {
+                SelectTab(main, "ReportsTab", application.Id);
+                var outputFolder = FindById(main, "ReportOutputFolder");
+                Require(
+                    string.Equals(
+                        outputFolder.GetCurrentPropertyValue(ValuePattern.ValueProperty)?.ToString(),
+                        IOPath.Combine(root, "output"),
+                        StringComparison.OrdinalIgnoreCase),
+                    "Reports output folder is not bound to the disposable automation profile.");
+                Invoke(FindById(main, "BuildPublicReportPackage"), application.Id);
+                WaitForReportCompletion(main, application.Id);
+                var artifactCount = ValidateReportArtifacts(root);
+                CaptureWindow(main, IOPath.Combine(root, "evidence", "report-package.png"));
+                Record("report-package", true, $"{artifactCount} catalog/root artifacts verified and hashed");
+            }
             CloseWindow(main, application.Id);
             if (!application.WaitForExit(15000))
                 throw new TimeoutException("Application did not complete controlled shutdown.");
@@ -152,6 +176,7 @@ internal static class Program
     private static string CreateDisposableProfile(
         string executable,
         string seedDatabase,
+        bool reportGenerationAuthorized,
         out string markerPath,
         out string databasePath)
     {
@@ -183,7 +208,8 @@ internal static class Program
             evidenceFolder,
             expectedExecutableSha256 = Sha256(executable),
             productionAndFtpsBlocked = true,
-            updatesBlocked = true
+            updatesBlocked = true,
+            reportGenerationAuthorized
         };
         IOFile.WriteAllText(markerPath, JsonSerializer.Serialize(manifest, new JsonSerializerOptions
         {
@@ -285,6 +311,135 @@ internal static class Program
             Thread.Sleep(100);
         }
         throw new TimeoutException("Timed out waiting for automation evidence.");
+    }
+
+    private static void WaitForReportCompletion(AutomationElement main, int processId)
+    {
+        var summary = FindById(main, "ReportExportSummary");
+        var log = FindById(main, "ReportPreviewLog");
+        var timer = Stopwatch.StartNew();
+        while (timer.Elapsed < ReportTimeout)
+        {
+            AssertNoUnexpectedWindows(processId, "MainWindow", "ReportPrintHostWindow");
+            var status = summary.Current.Name;
+            if (status.StartsWith("Public report package built:", StringComparison.Ordinal))
+                return;
+            if (status.Contains("failed", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException(
+                    $"Public report package failed: {log.GetCurrentPropertyValue(ValuePattern.ValueProperty)}");
+            Thread.Sleep(250);
+        }
+        throw new TimeoutException("Timed out waiting for the public report package.");
+    }
+
+    private static int ValidateReportArtifacts(string profileRoot)
+    {
+        const string previewFolder = "public-report-preview";
+        const string screenThemeMarker = "3DP-PUBLIC-REPORT-SCREEN-THEME-v42.14-r3";
+        var root = IOPath.GetFullPath(IOPath.Combine(profileRoot, "output", previewFolder));
+        var catalogPath = IOPath.Combine(root, "report-catalog.json");
+        var catalog = JsonDocument.Parse(IOFile.ReadAllText(catalogPath));
+        var reports = catalog.RootElement.GetProperty("publicData").GetProperty("Reports").EnumerateArray().ToList();
+        var types = reports.Select(report => report.GetProperty("ReportType").GetString() ?? string.Empty)
+            .ToHashSet(StringComparer.Ordinal);
+        foreach (var required in new[]
+                 {
+                     "material-summary", "material-engineering", "comparison",
+                     "manufacturer", "test-session", "printing-recommendation"
+                 })
+            Require(types.Contains(required), $"Report catalog is missing required type {required}.");
+
+        var relativePaths = reports
+            .SelectMany(report => new[]
+            {
+                report.GetProperty("Html").GetString(),
+                report.GetProperty("Pdf").GetString(),
+                report.GetProperty("Metadata").GetString()
+            })
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Select(path => path!)
+            .Concat(new[]
+            {
+                "index.html", "manifest.txt", "report-catalog.json", "source-fingerprint.json",
+                "assets/3dp-iceland-labs-logo-pdf.jpg", "assets/3dp-iceland-labs-icon.ico"
+            })
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToList();
+        var rootPrefix = root.TrimEnd(IOPath.DirectorySeparatorChar) + IOPath.DirectorySeparatorChar;
+        var artifacts = new List<ArtifactEvidence>();
+        foreach (var relative in relativePaths)
+        {
+            Require(
+                !IOPath.IsPathRooted(relative) &&
+                !relative.Contains('\\') &&
+                relative.Split('/').All(segment => segment.Length > 0 && segment is not "." and not ".."),
+                $"Unsafe report route: {relative}");
+            var fullPath = IOPath.GetFullPath(
+                IOPath.Combine(root, relative.Replace('/', IOPath.DirectorySeparatorChar)));
+            Require(fullPath.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase), $"Report route escaped output root: {relative}");
+            Require(IOFile.Exists(fullPath), $"Report artifact is missing: {relative}");
+            var info = new FileInfo(fullPath);
+            Require(info.Length > 0, $"Report artifact is empty: {relative}");
+            if (relative.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+            {
+                var html = IOFile.ReadAllText(fullPath);
+                Require(
+                    relative == "index.html"
+                        ? html.Contains("3DP-PUBLIC-REPORT-PORTFOLIO-v42.8", StringComparison.Ordinal)
+                        : html.Contains(screenThemeMarker, StringComparison.Ordinal),
+                    $"Report HTML marker is missing: {relative}");
+            }
+            if (relative.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+            {
+                using var stream = IOFile.OpenRead(fullPath);
+                var header = new byte[5];
+                Require(stream.Read(header, 0, header.Length) == header.Length &&
+                        Encoding.ASCII.GetString(header) == "%PDF-", $"Invalid PDF header: {relative}");
+            }
+            if (relative.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                using (JsonDocument.Parse(IOFile.ReadAllText(fullPath))) { }
+            artifacts.Add(new ArtifactEvidence(relative, info.Length, Sha256(fullPath)));
+        }
+
+        var evidenceFolder = IOPath.Combine(profileRoot, "evidence");
+        var representative = reports
+            .Where(report =>
+                report.GetProperty("ReportType").GetString() is "material-summary" or "material-engineering")
+            .Take(2)
+            .SelectMany(report => new[]
+            {
+                report.GetProperty("Html").GetString(),
+                report.GetProperty("Pdf").GetString()
+            })
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .ToList();
+        var result = new
+        {
+            schema = "3dpiceland-automation-report-evidence-v1",
+            status = "PASS",
+            manualVisualReview = "REQUIRED",
+            previewRoot = root,
+            reportTypes = types.OrderBy(type => type).ToList(),
+            catalogEntries = reports.Count,
+            artifacts,
+            representativeReviewPaths = representative
+        };
+        IOFile.WriteAllText(
+            IOPath.Combine(evidenceFolder, "report-artifacts.json"),
+            JsonSerializer.Serialize(result, new JsonSerializerOptions { WriteIndented = true }),
+            new UTF8Encoding(false));
+        IOFile.WriteAllLines(
+            IOPath.Combine(evidenceFolder, "report-artifacts.txt"),
+            new[]
+            {
+                "Status: PASS",
+                "Manual visual review: REQUIRED",
+                $"Catalog entries: {reports.Count}",
+                $"Verified artifacts: {artifacts.Count}"
+            }.Concat(artifacts.Select(item => $"{item.Sha256} {item.Bytes} {item.RelativePath}")),
+            new UTF8Encoding(false));
+        return artifacts.Count;
     }
 
     private static string Sha256(string path) =>
@@ -423,6 +578,7 @@ internal static class Program
         {
             schema = "3dpiceland-automation-run-v1",
             status,
+            scenario = CurrentScenario,
             safetyPolicy = new
             {
                 productionBlocked = true,
@@ -430,7 +586,8 @@ internal static class Program
                 updatesBlocked = true,
                 ownerDatabaseAutoSelection = false,
                 unexpectedDialogsBlocked = true,
-                inputConfinedToOwnedProcess = true
+                inputConfinedToOwnedProcess = true,
+                reportGenerationAuthorized = string.Equals(CurrentScenario, "reports", StringComparison.Ordinal)
             },
             executable,
             seedDatabase,
@@ -451,8 +608,9 @@ internal static class Program
     }
 
     private sealed record StepResult(string Name, string Status, string Detail, DateTimeOffset AtUtc);
+    private sealed record ArtifactEvidence(string RelativePath, long Bytes, string Sha256);
 
-    private sealed record RunnerOptions(string ApplicationPath, string SeedDatabasePath)
+    private sealed record RunnerOptions(string ApplicationPath, string SeedDatabasePath, string Scenario)
     {
         public static RunnerOptions Parse(string[] args)
         {
@@ -463,7 +621,13 @@ internal static class Program
                     throw new ArgumentException($"Required argument missing: {name}");
                 return args[index + 1];
             }
-            return new RunnerOptions(Required("--app"), Required("--seed-database"));
+            var scenarioIndex = Array.IndexOf(args, "--scenario");
+            var scenario = scenarioIndex >= 0 && scenarioIndex + 1 < args.Length
+                ? args[scenarioIndex + 1].Trim().ToLowerInvariant()
+                : "smoke";
+            if (scenario is not ("smoke" or "reports"))
+                throw new ArgumentException("--scenario must be smoke or reports.");
+            return new RunnerOptions(Required("--app"), Required("--seed-database"), scenario);
         }
     }
 

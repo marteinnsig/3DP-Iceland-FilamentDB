@@ -1,4 +1,40 @@
-# Current Build Notes - v44.7.14
+# Current Build Notes - v44.7.15
+
+## Automated Report Acceptance
+
+v44.7.15 is the runtime-accepted Stage 2 increment over the accepted v44.7.14 disposable
+runtime foundation. A new explicit `reports` scenario invokes the existing
+canonical `Build Public Report Package` workflow without changing its six
+report builders, report models, formulas, routes or publication approvals.
+
+Automation report writes require scenario authorization and are confined to
+the disposable profile output folder. Production, FTPS, updates, restore and
+delete actions remain blocked. The runner waits for the stable report
+completion contract, validates catalog-owned safe routes, HTML markers, PDF
+headers and JSON, then records exact bytes and SHA-256 values.
+
+Disposable Stage 2 runtime passes with Full Data Verification 341/341, 211
+catalog entries, 639 catalog/root artifacts and identical before/after logical
+SQLite hashes. PDF rendering found and corrected a Material Summary continuation
+table clip by retaining fixed columns in deterministic 20-row presentation
+tables. Representative Summary and Material Engineering PDFs now render without
+clipping or overlap. Owner review then found right-edge clipping in the screen
+HTML; Material Summary screen tables now use fixed 100% layout and wrapped
+cells. Narrow-window review then showed over-compression, so the final screen
+contract uses readable column widths, normal word wrapping and horizontal
+scrolling below the table minimum width. The accepted landscape PDF contract
+is retained. Owner accepted the landscape PDF and responsive HTML behavior;
+owner Full Data Verification passes 341/341.
+
+Debug and Release solution builds pass with zero warnings/errors. Diff,
+documentation, 136-column roadmap, security/static and NuGet vulnerability
+gates pass; all three solution projects report no known vulnerable packages.
+Repository-wide `dotnet format --verify-no-changes` remains unsuitable as an
+increment gate because the accepted baseline contains thousands of pre-existing
+whitespace findings across unchanged files; no bulk formatting was performed.
+All v44.7.15 release gates pass.
+
+## Retained v44.7.14 evidence
 
 ## Automated Runtime Acceptance Foundation
 

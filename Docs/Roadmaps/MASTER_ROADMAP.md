@@ -1,12 +1,12 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.14 — Automated Runtime Acceptance Foundation**
+Current canonical release: **v44.7.15 — Automated Report Acceptance**
 
 Last runtime-accepted baseline: **v44.7.14 — Automated Runtime Acceptance Foundation**
 
 Current application release: **v44.7.14 — Automated Runtime Acceptance Foundation**
 
-Current roadmap increment: **v44.7.15 — Automated Report Acceptance**
+Current roadmap increment: **v44.7.16 — Disposable CRUD Acceptance**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1763,15 +1763,21 @@ changes priority.
   - Complete Stages 2–5 in v44.7.15–v44.7.18 before starting v44.8 feature work.
   - Automation supports but never replaces owner runtime or visual acceptance.
 - **v44.7.15 — Automated Report Acceptance**
-  - State: **Current research increment.**
+  - State: **Completed and runtime accepted 2026-07-25.**
   - Feedback disposition: Approved Stage 2 completion before v44.8.
   - Map report controls, completion signals, routes, allowlisted content and current HTML/PDF verification before code changes.
   - Build local previews only; keep Production and FTPS blocked.
   - Verify expected routes, HTML/PDF existence, non-empty artifacts, hashes and governed text without exposing private data.
   - Retain screenshots and machine-readable evidence; require explicit owner visual review for representative HTML and PDF output.
   - Preserve every accepted report, website, formula, measurement and publication-approval boundary.
+  - Candidate uses the canonical aggregate package action, explicit scenario authorization and disposable output containment.
+  - Disposable runtime passes Verification 341/341 with 211 catalog entries, 639 verified artifacts and matching logical DB hashes.
+  - Rendered PDF review corrected a Material Summary continuation-table clip.
+  - Owner-found HTML clipping/over-compression is corrected with readable columns and narrow-window scrolling.
+  - Owner accepted the landscape PDF, responsive HTML behavior and Full Data Verification 341/341.
+  - Debug/Release, static/security, documentation, roadmap-line and NuGet vulnerability gates pass.
 - **v44.7.16 — Disposable CRUD Acceptance**
-  - State: Planned after v44.7.15 acceptance.
+  - State: **Current authoritative Stage 3 increment.**
   - Feedback disposition: Approved Stage 3 completion before v44.8.
   - Add scenario-authorized create, edit, save, restart, persistence and delete tests only in a proven disposable profile.
   - Use uniquely identified automation records and prove canonical owner paths are never selected.

@@ -1,6 +1,21 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.15 - Automated Report Acceptance
+
+- Canonical runtime-accepted Stage 2 report-acceptance increment.
+- Uses the canonical six-family public report package workflow.
+- Requires explicit disposable scenario authorization and output containment.
+- Adds catalog-driven HTML/PDF/JSON/hash evidence while retaining manual visual
+  review and all Production/FTPS safety locks.
+- Disposable evidence passes Verification 341/341 with 211 catalog entries,
+  639 verified artifacts and identical before/after logical SQLite hashes.
+- Corrects a rendered Material Summary continuation-table clip without changing
+  its allowlisted data, routes or canonical report ownership.
+- Debug/Release, static/security, documentation, roadmap-line and NuGet
+  vulnerability gates pass; owner visual acceptance and Verification 341/341
+  pass.
+
 ## v44.7.14 - Automated Runtime Acceptance Foundation
 
 - Canonical runtime-accepted Stage 1 foundation.

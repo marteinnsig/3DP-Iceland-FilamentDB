@@ -33,13 +33,36 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 13 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 38 |
+| Solved | 39 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **59** |
+| **Total tracked findings** | **60** |
 
 ## Tracked findings
+
+Date: 2026-07-25
+Area: Automated report acceptance
+Type: Workflow improvement
+Severity: Important
+Status: Solved
+Resolution: Solved in version v44.7.15 — 2026-07-25. Stage 2 adds an explicitly authorized disposable report scenario over the canonical six-family public
+report package workflow. Automated output is confined below the disposable profile; catalog routes, HTML/PDF/JSON artifacts, bytes and
+SHA-256 values are retained as machine-readable evidence. Visual HTML/PDF review remains manual.
+Verification evidence: Disposable report runtime passes Verification 341/341 with 211 catalog entries, 639 verified artifacts and
+matching logical SQLite hashes. Debug/Release, static/security, documentation, roadmap-line and NuGet vulnerability gates pass.
+Owner Full Data Verification remains pending.
+What happened: The accepted report workflow had strong in-app verification but no safe runner completion contract or retained
+catalog-driven artifact inventory.
+Expected behavior: Repeatable local report acceptance should prove report completion and artifact integrity without owner paths,
+Production/FTPS access, private-field expansion or false claims of visual acceptance.
+Steps to reproduce: Run the explicit disposable `reports` scenario against an approved seed copy.
+Screenshot / export / report attached: Disposable Stage 2 PASS on 2026-07-25 with Verification 341/341, 211 catalog entries,
+639 catalog/root artifacts and identical before/after logical SQLite hashes. Representative Material Summary and Material
+Engineering PDFs were rendered and visually reviewed; a discovered final-page summary-table clip was corrected with deterministic
+20-row presentation tables. Owner review then found screen-HTML right-edge clipping and excessive narrow-window wrapping; the screen
+table now preserves readable columns with normal word wrapping and horizontal narrow-window scrolling while retaining the PDF contract.
+Owner accepted the landscape PDF and responsive HTML behavior; owner Full Data Verification passes 341/341.
 
 Date: 2026-07-25
 Area: Runtime acceptance automation

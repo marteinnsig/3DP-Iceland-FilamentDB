@@ -2043,7 +2043,9 @@
                                 <TextBlock Text="Reports / PDF Export" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A" />
                                 <TextBlock Text="Choose an Engineering or Purchasing report to preview and export from verified SQLite-backed platform data." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
                             </StackPanel>
-                            <TextBlock Grid.Column="1" x:Name="ReportExportSummaryText" Text="No report preview yet" Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1" x:Name="ReportExportSummaryText"
+                                       AutomationProperties.AutomationId="ReportExportSummary"
+                                       Text="No report preview yet" Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
                         </Grid>
                     </Border>
 
@@ -2083,7 +2085,9 @@
                             </ComboBox>
 
                             <TextBlock Grid.Row="0" Grid.Column="2" Text="Output folder" FontWeight="SemiBold" Foreground="#334155" VerticalAlignment="Center" />
-                            <TextBox Grid.Row="0" Grid.Column="3" x:Name="ReportOutputFolderBox" MinWidth="360" Margin="0,0,8,0" ToolTip="Folder used for report previews and exports." />
+                            <TextBox Grid.Row="0" Grid.Column="3" x:Name="ReportOutputFolderBox"
+                                     AutomationProperties.AutomationId="ReportOutputFolder"
+                                     MinWidth="360" Margin="0,0,8,0" ToolTip="Folder used for report previews and exports." />
                             <Button Grid.Row="0" Grid.Column="4" Click="ChooseReportOutputFolder_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,0"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE8B7;"/><TextBlock Text="Choose Folder"/></StackPanel></Button>
                             <Button Grid.Row="0" Grid.Column="5" Click="OpenReportOutputFolder_Click" Style="{StaticResource IconActionButton}"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE838;"/><TextBlock Text="Open Folder"/></StackPanel></Button>
 
@@ -2106,7 +2110,11 @@
                                     <Button x:Name="BuildPublicTestSessionReportPreviewButton" Click="BuildPublicTestSessionReportPreview_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" FontWeight="SemiBold" ToolTip="Build public Test Session reports; raw inputs and notes require the separate Public test details approval. This does not upload anything."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE9D9;"/><TextBlock Text="Build Public Test Sessions"/></StackPanel></Button>
                                     <Button x:Name="BuildPublicPrintingRecommendationPreviewButton" Click="BuildPublicPrintingRecommendationPreview_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" FontWeight="SemiBold" ToolTip="Build full public Printing Recommendation reports from governed profiles. This does not upload anything."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE8D4;"/><TextBlock Text="Build Public Recommendations"/></StackPanel></Button>
                                     <Button x:Name="BuildPublicMaterialSummaryPreviewButton" Click="BuildPublicMaterialSummaryPreview_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" FontWeight="SemiBold" ToolTip="Build the public REPORT-110 dataset summary from explicitly allowlisted MaterialIDs. This does not upload anything."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE9D2;"/><TextBlock Text="Build Public Material Summary"/></StackPanel></Button>
-                                    <Button x:Name="BuildPublicEngineeringReportPackageButton" Click="BuildPublicEngineeringReportPackage_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" FontWeight="SemiBold" ToolTip="Build any missing public reports, verify all six report types and create the canonical portfolio index, manifest and catalog. This does not upload anything."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE7B8;"/><TextBlock Text="Build Public Report Package"/></StackPanel></Button>
+                                    <Button x:Name="BuildPublicEngineeringReportPackageButton"
+                                            AutomationProperties.AutomationId="BuildPublicReportPackage"
+                                            Click="BuildPublicEngineeringReportPackage_Click" Style="{StaticResource IconActionButton}"
+                                            Margin="0,0,8,8" FontWeight="SemiBold"
+                                            ToolTip="Build any missing public reports, verify all six report types and create the canonical portfolio index, manifest and catalog. This does not upload anything."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE7B8;"/><TextBlock Text="Build Public Report Package"/></StackPanel></Button>
                                 </WrapPanel>
                                 <TextBlock Text="Report template and scope control Refresh Preview and Export Current Report. Each public build button names its own report family and uses opted-in public materials." Foreground="#64748B" TextWrapping="Wrap" />
                             </StackPanel>
@@ -2129,6 +2137,7 @@
                                 <TextBlock Grid.Row="0" Text="Report Preview" FontSize="16" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,8" />
                                 <TextBox Grid.Row="1"
                                          x:Name="ReportPreviewLog"
+                                         AutomationProperties.AutomationId="ReportPreviewLog"
                                          Style="{x:Null}"
                                          Text="Import data, choose a report type and output folder, then refresh the preview."
                                          IsReadOnly="True"

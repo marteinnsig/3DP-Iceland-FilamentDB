@@ -2,6 +2,22 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.15 - Automated Report Acceptance
+
+Research confirmed that `Build Public Report Package` already owns completion
+across all six accepted public report families, canonical HTML-to-PDF output,
+catalog routes and missing/stale rebuilds. Stage 2 therefore automates that
+single aggregate owner rather than duplicating eight UI actions.
+
+The candidate requires explicit report-scenario authorization, confines output
+to the disposable profile and adds catalog-driven artifact hashes and stable
+completion evidence. Disposable runtime passes Verification 341/341 with 211
+catalog entries, 639 verified artifacts and identical logical database hashes.
+Rendered PDF review also found and corrected a final-page Material Summary
+table clip. Debug/Release, static/security, documentation, roadmap-line and
+NuGet vulnerability gates pass. Owner accepted the landscape PDF, responsive
+HTML behavior and Full Data Verification 341/341.
+
 ## v44.7.14 - Automated Runtime Acceptance Foundation
 
 The pre-code audit found no existing Automation IDs, no disposable startup

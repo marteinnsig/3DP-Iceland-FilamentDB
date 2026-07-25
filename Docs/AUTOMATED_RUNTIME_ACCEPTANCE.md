@@ -55,3 +55,37 @@ The first scenarios verify exact-process startup, visible disposable identity,
 stable tab/control navigation, Verification export and controlled shutdown.
 Fast-grid cells remain outside Stage 1 because the custom drawn surface does
 not yet expose row/cell automation peers.
+
+## v44.7.15 Stage 2 accepted
+
+The report scenario requires explicit `--scenario reports`. Its manifest
+authorizes local report generation only, binds the Reports output box to the
+disposable profile output folder and keeps Production, FTPS, updates, restore
+and delete actions blocked.
+
+```powershell
+App\AutomationRunner\bin\Debug\net9.0-windows\3DPIcelandAutomationRunner.exe `
+  --app App\FilamentDbApp\bin\Debug\net9.0-windows\3DPIcelandFilamentDB.exe `
+  --seed-database C:\path\to\explicit\filamentdb-test-copy.sqlite `
+  --scenario reports
+```
+
+Stage 2 invokes the canonical `Build Public Report Package` action and waits
+for its existing six-report workflow. It validates catalog-owned safe routes,
+non-empty HTML/PDF/JSON artifacts, canonical HTML markers, PDF headers and
+SHA-256 values. Evidence adds:
+
+- `evidence\report-package.png`
+- `evidence\report-artifacts.json`
+- `evidence\report-artifacts.txt`
+
+Representative HTML/PDF paths are recorded as `MANUAL REVIEW REQUIRED`.
+Automation never declares visual layout acceptance.
+
+Disposable acceptance on 2026-07-25 passed Full Data Verification 341/341,
+validated 211 catalog entries and retained hashes for 639 catalog/root
+artifacts. Before/after logical SQLite hashes matched. PDF rendering exposed a
+Material Summary final-page table clip; deterministic 20-row presentation
+tables corrected it while retaining the same allowlisted rows, order, routes
+and report ownership. Owner runtime accepted Full Data Verification 341/341,
+the landscape PDF and responsive HTML behavior.

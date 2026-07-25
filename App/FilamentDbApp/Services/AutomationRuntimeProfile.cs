@@ -18,6 +18,7 @@ public sealed class AutomationRuntimeProfile
     public string ExpectedExecutableSha256 { get; init; } = string.Empty;
     public bool ProductionAndFtpsBlocked { get; init; }
     public bool UpdatesBlocked { get; init; }
+    public bool ReportGenerationAuthorized { get; init; }
 
     public static AutomationRuntimeProfile? Current { get; private set; }
     public static bool IsActive => Current is not null;
@@ -51,6 +52,13 @@ public sealed class AutomationRuntimeProfile
     {
         if (!IsActive) return;
         throw new InvalidOperationException($"{action} is blocked by the disposable automation safety policy.");
+    }
+
+    public static void DemandReportGenerationAuthorized()
+    {
+        if (IsActive && Current?.ReportGenerationAuthorized != true)
+            throw new InvalidOperationException(
+                "Report generation requires explicit authorization in the disposable automation scenario.");
     }
 
     private void Validate(string manifestPath)

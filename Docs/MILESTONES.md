@@ -3,6 +3,19 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.15 - Automated Report Acceptance
+
+Runtime-accepted Stage 2 for explicit disposable public-report acceptance. It
+automates the accepted six-family aggregate package, validates catalog routes
+and artifact hashes, and retains owner HTML/PDF visual review. Disposable
+runtime passes Verification 341/341 with 639 verified artifacts and identical
+logical database hashes. Rendered PDF review found and corrected a Material
+Summary continuation-table clip. Owner accepted the landscape PDF, responsive
+HTML behavior and Full Data Verification 341/341. Production, FTPS and owner
+paths remain blocked.
+
+---
+
 # v44.7.14 - Automated Runtime Acceptance Foundation
 
 Runtime-accepted Stage 1 foundation for exact-build read-only smoke and evidence automation. It
