@@ -20,7 +20,7 @@ Resolution:
 Verification evidence:
 ```
 
-## Status review — 2026-07-24
+## Status review — 2026-07-25
 
 This review preserves every original description and adds lifecycle metadata.
 `Solved` is used only where an accepted release or direct runtime evidence can
@@ -30,16 +30,50 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 16 |
+| Open | 18 |
 | In progress | 1 |
 | Partially solved | 3 |
 | Solved | 30 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **54** |
+| **Total tracked findings** | **56** |
 
 ## Tracked findings
+
+Date: 2026-07-25
+Area: Materials / manual backup and save ownership
+Type: Workflow friction / UI polish
+Severity: Minor
+Status: Open
+Resolution: Research the Materials `Manual Backup` command and its `SaveNativeMaterials_Click` ownership before changing it. Decide
+whether the action should be removed, renamed to an explicit save action or moved into Backup and Recovery Center. Preserve canonical
+SQLite persistence, validation, dirty-state honesty and the pre-save backup safety boundary.
+Verification evidence: Requires caller and backup-order research plus dirty/clean state, validation-blocked save, backup creation,
+SQLite persistence, close/restart and Backup and Recovery Center runtime tests.
+What happened: The Materials toolbar labels the action `Manual Backup`, but it validates and saves Materials and creates a database
+backup before replacement; a separate canonical SQLite backup action already exists in Backup and Recovery Center.
+Expected behavior: The label and placement should state the action's real ownership without duplicating backup UI or weakening the
+existing save-time protection.
+Steps to reproduce: Edit a Material, inspect the enabled `Manual Backup` action and compare it with File > Backup and Recovery Center.
+Screenshot / export / report attached: User feedback and source-path review on 2026-07-25.
+
+Date: 2026-07-24
+Area: Materials / Add Material and Duplicate
+Type: Workflow friction / UI polish
+Severity: Minor
+Status: Open
+Resolution: Preserve the active Materials sort definition when Add Material or Duplicate creates a row. Insert/reposition the new
+MaterialID according to that sort, keep the new row selected and visible, and preserve filters and column layout. Do not rewrite
+canonical SQLite row order or silently replace the user's explicit sort.
+Verification evidence: Requires ascending/descending MaterialID, another-column sort, active filters, Add, Duplicate, selection,
+visibility, edit, restart and fallback-to-default runtime tests.
+What happened: With Material ID sorted descending, a newly created next MaterialID does not appear at the expected top position, so
+the user must apply the sort again to find it.
+Expected behavior: If `MAT0206` is the current highest MaterialID and Add or Duplicate creates `MAT0207`, the new selected row should
+appear first under descending Material ID sorting while the existing sort order remains active.
+Steps to reproduce: Sort Materials by Material ID descending, then use Add Material or Duplicate and inspect the new row position.
+Screenshot / export / report attached: User feedback on 2026-07-24.
 
 Date: 2026-07-24
 Area: Settings Manager / Base Material Catalog
@@ -570,6 +604,10 @@ Stage 5F candidate removes the hidden Materials preview toggle, fallback
 handler/state and legacy-view reactivation method. Fast Materials becomes the
 only activatable UI. Owner runtime acceptance and Full Data Verification
 327/327 passed; legacy Materials XAML/lifecycle are the next checkpoint.
+Stage 5G candidate moves reports and Materials CRUD to Fast-owned canonical
+selection and removes hidden-grid focus/refresh ownership from new-row,
+archive/restore and recalculation paths. Owner runtime acceptance and Full
+Data Verification 328/328 passed.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,

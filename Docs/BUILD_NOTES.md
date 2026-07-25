@@ -204,6 +204,18 @@ checkboxes, exact-selection CRUD, filters and measurement propagation, local
 reset, layout persistence, tab return, close/restart save and 201-row
 canonical parity. Full Data Verification passed 327/327. Stage 5F is accepted.
 
+Stage 5G makes `_lastSelectedNativeMaterial`, owned by Fast row selection, the
+sole Materials selection contract for reports and Duplicate, Archive,
+Unarchive and Delete. New-row focus, archive refresh, restore refresh and
+recalculation no longer drive the hidden DataGrid. Legacy XAML and remaining
+filter/edit/recovery adapters stay in place for later checkpoints. Runtime
+exact-selection CRUD and Verification acceptance are pending.
+
+Owner runtime testing accepted exact Fast selection across Material Detail,
+selected-material reports, Duplicate, Archive, Unarchive and Delete, including
+filters, sort, tab changes, recalculation and restart cleanup to 201 canonical
+rows. Full Data Verification passed 328/328. Stage 5G is accepted.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on

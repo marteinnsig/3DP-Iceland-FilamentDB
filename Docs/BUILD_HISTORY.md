@@ -88,6 +88,13 @@ activatable Materials UI; legacy XAML and grid-only lifecycle remain for the
 next checkpoint. Owner runtime testing accepted editing, exact-selection CRUD,
 filters, reset, layout, tab return and restart persistence with 201 canonical
 rows. Full Data Verification passed 327/327; Stage 5F is accepted.
+Stage 5G moves reports and Materials CRUD to the Fast-owned canonical
+selection contract. New-row focus, archive/restore refresh and recalculation
+no longer drive hidden DataGrid state. Remaining legacy filter/edit/recovery
+adapters stay deletion-gated; runtime acceptance is pending.
+Owner runtime testing accepted exact Fast selection for reports and all
+Materials CRUD across filters, sort, tab changes and restart cleanup to 201
+canonical rows. Full Data Verification passed 328/328; Stage 5G is accepted.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

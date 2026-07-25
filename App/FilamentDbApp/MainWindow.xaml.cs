@@ -1823,7 +1823,8 @@ public partial class MainWindow : Window
             return displayedRow["Material ID"]?.ToString()?.Trim() ?? string.Empty;
         }
 
-        if (FindName("NativeMaterialsGrid") is DataGrid nativeGrid && nativeGrid.SelectedItem is NativeMaterialRow nativeRow)
+        if (_lastSelectedNativeMaterial is { } nativeRow &&
+            _nativeMaterialRows.Contains(nativeRow))
         {
             return nativeRow.MaterialID.Trim();
         }
@@ -1835,7 +1836,8 @@ public partial class MainWindow : Window
     {
         if (_currentMaterialDetailRow is not null) return _currentMaterialDetailRow;
 
-        if (FindName("NativeMaterialsGrid") is DataGrid nativeGrid && nativeGrid.SelectedItem is NativeMaterialRow nativeRow)
+        if (_lastSelectedNativeMaterial is { } nativeRow &&
+            _nativeMaterialRows.Contains(nativeRow))
         {
             return BuildNativeMaterialDataRow(nativeRow);
         }
@@ -17362,6 +17364,28 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             stiffnessLegacyGridRetired && releaseIdentityReady
                 ? "Settings legacy DataGrid XAML and grid-specific bind/edit/selection lifecycle are absent"
                 : "Settings legacy lifecycle remains, a Fast contract failed or release identity is misaligned"));
+        var materialsCanonicalSelectionReady =
+            typeof(MainWindow).GetMethod(
+                nameof(GetSelectedNativeMaterial),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic,
+                binder: null,
+                Type.EmptyTypes,
+                modifiers: null) is not null &&
+            typeof(MainWindow).GetMethod(nameof(DuplicateNativeMaterial_Click),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(ArchiveNativeMaterial_Click),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(UnarchiveNativeMaterial_Click),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(nameof(DeleteNativeMaterial_Click),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v44.7.7 Materials canonical selection ownership stage gate",
+            materialsCanonicalSelectionReady && fastMaterialsViewReady &&
+            settingsLegacyGridsRetired && releaseIdentityReady,
+            materialsCanonicalSelectionReady && fastMaterialsViewReady &&
+            settingsLegacyGridsRetired && releaseIdentityReady
+                ? "Materials selection and CRUD resolve through canonical Fast-owned selection without a DataGrid parameter"
+                : "Materials canonical selection ownership, a prior retirement gate or release identity failed"));
 
         return checks;
     }
@@ -22627,27 +22651,8 @@ private List<string> GetVisibleAiMaterialLabels()
         }
     }
 
-    private NativeMaterialRow? GetSelectedNativeMaterial(DataGrid grid)
+    private NativeMaterialRow? GetSelectedNativeMaterial()
     {
-        if (_embeddedMaterialsPrototypeView is not null &&
-            _lastSelectedNativeMaterial is not null &&
-            _nativeMaterialRows.Contains(_lastSelectedNativeMaterial))
-        {
-            return _lastSelectedNativeMaterial;
-        }
-
-        if (grid.SelectedItem is NativeMaterialRow selected && _nativeMaterialRows.Contains(selected))
-        {
-            _lastSelectedNativeMaterial = selected;
-            return selected;
-        }
-
-        if (grid.CurrentCell.IsValid && grid.CurrentCell.Item is NativeMaterialRow current && _nativeMaterialRows.Contains(current))
-        {
-            _lastSelectedNativeMaterial = current;
-            return current;
-        }
-
         return _lastSelectedNativeMaterial is not null && _nativeMaterialRows.Contains(_lastSelectedNativeMaterial)
             ? _lastSelectedNativeMaterial
             : null;
@@ -25581,15 +25586,6 @@ private List<string> GetVisibleAiMaterialLabels()
             "the changed canonical Materials collection",
             row);
 
-        if (FindName("NativeMaterialsGrid") is not DataGrid grid) return;
-        grid.SelectedItem = row;
-        grid.ScrollIntoView(row);
-        Dispatcher.BeginInvoke(new Action(() =>
-        {
-            var firstEditableColumn = GetEditableWorkflowColumns(grid).FirstOrDefault();
-            if (firstEditableColumn is null || !grid.Items.Contains(row)) return;
-            TryActivateWorkflowGridCell(grid, row, firstEditableColumn);
-        }), System.Windows.Threading.DispatcherPriority.Background);
     }
 
     private void AddNativeMaterial_Click(object sender, RoutedEventArgs e)
@@ -25627,7 +25623,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void DuplicateNativeMaterial_Click(object sender, RoutedEventArgs e)
     {
-        if (FindName("NativeMaterialsGrid") is not DataGrid grid || GetSelectedNativeMaterial(grid) is not NativeMaterialRow selected)
+        if (GetSelectedNativeMaterial() is not NativeMaterialRow selected)
         {
             MessageBox.Show("Select a material to duplicate.", "Material Manager", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
@@ -25679,7 +25675,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void ArchiveNativeMaterial_Click(object sender, RoutedEventArgs e)
     {
-        if (FindName("NativeMaterialsGrid") is not DataGrid grid || GetSelectedNativeMaterial(grid) is not NativeMaterialRow selected)
+        if (GetSelectedNativeMaterial() is not NativeMaterialRow selected)
         {
             MessageBox.Show("Select a material to archive.", "Material Manager", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
@@ -25689,7 +25685,8 @@ private List<string> GetVisibleAiMaterialLabels()
 
         selected.IsArchived = true;
         MarkNativeMaterialsDirty();
-        grid.Items.Refresh();
+        _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
+            "the archived canonical MaterialID");
         RefreshNativeMaterialSummary();
         QueueNativeMaterialEditRefresh();
         ShowTransientStatus("Material archived successfully.");
@@ -25697,7 +25694,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void UnarchiveNativeMaterial_Click(object sender, RoutedEventArgs e)
     {
-        if (FindName("NativeMaterialsGrid") is not DataGrid grid || GetSelectedNativeMaterial(grid) is not NativeMaterialRow selected)
+        if (GetSelectedNativeMaterial() is not NativeMaterialRow selected)
         {
             MessageBox.Show("Select an archived material to unarchive.", "Material Manager", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
@@ -25707,7 +25704,9 @@ private List<string> GetVisibleAiMaterialLabels()
 
         selected.IsArchived = false;
         MarkNativeMaterialsDirty();
-        grid.Items.Refresh();
+        _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
+            "the restored canonical MaterialID",
+            selected);
         RefreshNativeMaterialSummary();
         QueueNativeMaterialEditRefresh();
         ShowTransientStatus("Material restored successfully.");
@@ -25715,7 +25714,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void DeleteNativeMaterial_Click(object sender, RoutedEventArgs e)
     {
-        if (FindName("NativeMaterialsGrid") is not DataGrid grid || GetSelectedNativeMaterial(grid) is not NativeMaterialRow selected)
+        if (GetSelectedNativeMaterial() is not NativeMaterialRow selected)
         {
             MessageBox.Show("Select a material to delete.", "Material Manager", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
@@ -25757,13 +25756,9 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void RebuildNativeMaterialDisplayNames_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeMaterialGridEdits();
         ApplyNativeMaterialComputedFieldsToAllRows();
-
-        if (FindName("NativeMaterialsGrid") is DataGrid grid)
-        {
-            grid.Items.Refresh();
-        }
+        _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
+            "recalculated canonical Materials");
 
         SyncNativeTensileRowsWithMaterialManager(markDirty: true);
         MarkNativeMaterialsDirty();

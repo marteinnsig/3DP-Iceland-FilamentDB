@@ -110,6 +110,12 @@
   legacy XAML deletion remains runtime-gated.
 - Owner runtime testing accepted Fast-only Materials behavior, 201-row
   canonical parity and Full Data Verification 327/327.
+- Made Fast-owned canonical Materials selection the sole selection source for
+  reports and Duplicate/Archive/Unarchive/Delete.
+- Removed hidden-DataGrid focus and refresh ownership from new-row focus,
+  archive/restore and recalculation paths.
+- Owner runtime testing accepted exact Fast selection for reports and
+  Materials CRUD; Full Data Verification passed 328/328.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 
