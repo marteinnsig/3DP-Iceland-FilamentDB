@@ -13486,6 +13486,16 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             disposableRecoveryAcceptanceReady
                 ? "Scenario authorization, legacy/new backup discovery, governed Excel restore and pre/post evidence contracts are present"
                 : "Disposable recovery authorization, backup compatibility or pre/post evidence contract is incomplete"));
+        var guardedUpdaterAcceptanceReady =
+            typeof(AutomationRuntimeProfile).GetProperty(nameof(AutomationRuntimeProfile.UpdaterAuthorized)) is not null &&
+            typeof(ApplicationUpdateTransactionRequest).GetProperty(
+                nameof(ApplicationUpdateTransactionRequest.AutomationProfilePath)) is not null &&
+            ApplicationUpdateTransactionEngine.RunContractVerification().Passed;
+        checks.Add(new VerificationCheck("Guarded updater acceptance safety foundation",
+            guardedUpdaterAcceptanceReady,
+            guardedUpdaterAcceptanceReady
+                ? "Explicit disposable updater authorization, profile forwarding, transaction rollback and health contracts are present"
+                : "Disposable updater authorization, profile forwarding, rollback or health contract is incomplete"));
         var workspaceTabHeaders = WorkspaceTabs.Items.OfType<TabItem>()
             .Select(item => item.Header?.ToString() ?? string.Empty)
             .ToList();

@@ -8,10 +8,10 @@
     <ApplicationIcon>Assets\3dp-iceland-labs-icon.ico</ApplicationIcon>
     <AssemblyName>3DPIcelandFilamentDB</AssemblyName>
     <RootNamespace>FilamentDbApp</RootNamespace>
-    <Version>44.7.17</Version>
-    <AssemblyVersion>44.7.17.0</AssemblyVersion>
-    <FileVersion>44.7.17.0</FileVersion>
-    <InformationalVersion>44.7.17-DISPOSABLE-BACKUP-RECOVERY-ACCEPTANCE</InformationalVersion>
+    <Version>44.7.18</Version>
+    <AssemblyVersion>44.7.18.0</AssemblyVersion>
+    <FileVersion>44.7.18.0</FileVersion>
+    <InformationalVersion>44.7.18-GUARDED-UPDATER-ACCEPTANCE</InformationalVersion>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Copyright>Copyright © 2026 Marteinn Sigurðsson / 3DPIceland Labs</Copyright>
   </PropertyGroup>

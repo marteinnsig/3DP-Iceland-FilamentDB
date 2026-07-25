@@ -19,6 +19,7 @@ public sealed class ApplicationUpdateTransactionRequest
     public string ApplicationRelativePath { get; set; } = "3DPIcelandFilamentDB.exe";
     public int WaitForProcessId { get; set; }
     public string HealthAcknowledgementPath { get; set; } = string.Empty;
+    public string AutomationProfilePath { get; set; } = string.Empty;
     public int HealthTimeoutSeconds { get; set; } = 60;
     public int MinimumDatabaseSchema { get; set; }
     public int MaximumDatabaseSchema { get; set; }
@@ -259,6 +260,7 @@ public sealed class ApplicationUpdateTransactionEngine
             var ack = Path.GetFullPath(request.HealthAcknowledgementPath);
             if (!IsFileContained(transactionRoot, ack)) throw new InvalidOperationException("Health acknowledgement must stay inside the durable transaction folder.");
         }
+        ValidateAutomationProfilePath(request);
     }
     private static void ValidateRollbackRequest(ApplicationUpdateTransactionRequest request)
     {
@@ -274,7 +276,46 @@ public sealed class ApplicationUpdateTransactionEngine
             throw new InvalidOperationException("Recovery live/rollback directory containment is invalid.");
         if (!IsSafeRelativePath(request.ApplicationRelativePath) || !request.GovernedFiles.Contains(request.ApplicationRelativePath, StringComparer.Ordinal))
             throw new InvalidOperationException("The recovery application executable must be a governed relative path.");
+        ValidateAutomationProfilePath(request);
     }
+    private static void ValidateAutomationProfilePath(ApplicationUpdateTransactionRequest request)
+    {
+        var profilePath = request.AutomationProfilePath;
+        if (string.IsNullOrWhiteSpace(profilePath)) return;
+        const string markerFileName = ".3dpiceland-disposable-profile.json";
+        var fullPath = Path.GetFullPath(profilePath);
+        if (!string.Equals(Path.GetFileName(fullPath), markerFileName, StringComparison.OrdinalIgnoreCase) ||
+            !File.Exists(fullPath))
+            throw new InvalidOperationException("Updater automation requires the exact disposable profile marker.");
+        var allowedRoot = Path.GetFullPath(Path.Combine(Path.GetTempPath(), "3DPIceland-Automation"))
+            .TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
+        if (!fullPath.StartsWith(allowedRoot, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException("Updater automation profile must stay below the dedicated temporary automation root.");
+        using var profile = JsonDocument.Parse(File.ReadAllText(fullPath));
+        var root = profile.RootElement;
+        if (!ReadRequiredBoolean(root, "updaterAuthorized") ||
+            !ReadRequiredBoolean(root, "updatesBlocked") ||
+            !ReadRequiredBoolean(root, "productionAndFtpsBlocked"))
+            throw new InvalidOperationException(
+                "Updater automation requires explicit authorization with Production, FTPS and general updates still blocked.");
+        var declaredRoot = root.TryGetProperty("rootPath", out var rootPath)
+            ? Path.GetFullPath(rootPath.GetString() ?? string.Empty)
+            : string.Empty;
+        var markerRoot = Path.GetDirectoryName(fullPath) ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(declaredRoot) ||
+            !string.Equals(declaredRoot.TrimEnd(Path.DirectorySeparatorChar),
+                markerRoot.TrimEnd(Path.DirectorySeparatorChar),
+                StringComparison.OrdinalIgnoreCase) ||
+            !IsDirectoryContained(declaredRoot, request.LiveDirectory) ||
+            !IsFileContained(declaredRoot, request.StatePath) ||
+            !IsFileContained(declaredRoot, request.DatabaseBackupPath))
+            throw new InvalidOperationException(
+                "Updater automation live, transaction and backup paths must stay inside the declared disposable profile.");
+    }
+    private static bool ReadRequiredBoolean(JsonElement root, string name) =>
+        root.TryGetProperty(name, out var value) &&
+        value.ValueKind is JsonValueKind.True or JsonValueKind.False &&
+        value.GetBoolean();
 
     private static ApplicationUpdateTransactionState NewState(ApplicationUpdateTransactionRequest request) => new()
     {

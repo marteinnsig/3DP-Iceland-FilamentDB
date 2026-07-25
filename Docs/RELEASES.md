@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.18 - Guarded Updater Acceptance
+
+- Runtime-accepted Stage 5 targets only an isolated disposable portable build.
+- Requires explicit updater authorization while retaining general update,
+  Production, FTPS, owner application and owner database locks.
+- Real helper commit and exact v44.7.18 health acknowledgement pass.
+- Forced failed launch rolls back all 54 governed files to exact SHA-256
+  values.
+- Disposable and owner Full Data Verification pass 344/344.
+- Owner accepted normal startup and owner-data behavior.
+
 ## v44.7.17 - Disposable Backup and Recovery Acceptance
 
 - Runtime-accepted Stage 4 with explicit disposable recovery authorization.

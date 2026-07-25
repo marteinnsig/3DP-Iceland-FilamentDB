@@ -33,13 +33,28 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 13 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 41 |
+| Solved | 42 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **62** |
+| **Total tracked findings** | **63** |
 
 ## Tracked findings
+
+Date: 2026-07-25
+Area: Guarded updater acceptance
+Type: Workflow improvement
+Severity: Important
+Status: Solved
+Resolution: Solved in version v44.7.18 — 2026-07-25. Explicit disposable Stage 5 authorization adds real helper
+commit/health and forced rollback evidence. General updates, Production, FTPS, owner application and owner database remain blocked.
+Verification evidence: Disposable Stage 5 and Full Data Verification pass 344/344. Exact v44.7.18 health acknowledgement,
+`Committed`/`RolledBack` states, 54 restored SHA-256 values and equal baseline/final database business-state hashes are retained.
+Owner accepted normal startup, owner-data behavior and Full Data Verification 344/344.
+What happened: Existing updater contract probes were isolated in-process fixtures and did not exercise real helper/app health startup.
+Expected behavior: Stage 5 should prove commit and rollback through the real helper without reaching owner or production paths.
+Steps to reproduce: Run the explicit disposable `updater` scenario against an approved seed copy and Debug helper.
+Screenshot / export / report attached: Evidence below `%TEMP%\3DPIceland-Automation\<ProfileId>\evidence`.
 
 Date: 2026-07-25
 Area: Disposable backup and recovery acceptance

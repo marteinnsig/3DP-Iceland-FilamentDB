@@ -1,12 +1,12 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.17 — Disposable Backup and Recovery Acceptance**
+Current canonical release: **v44.7.18 — Guarded Updater Acceptance**
 
-Last runtime-accepted baseline: **v44.7.17 — Disposable Backup and Recovery Acceptance**
+Last runtime-accepted baseline: **v44.7.18 — Guarded Updater Acceptance**
 
-Current application release: **v44.7.17 — Disposable Backup and Recovery Acceptance**
+Current application release: **v44.7.18 — Guarded Updater Acceptance**
 
-Current roadmap increment: **v44.7.18 — Guarded Updater Acceptance**
+Current roadmap increment: **v44.8.0 — Low-value Material fields audit**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1804,14 +1804,18 @@ changes priority.
   - Disposable Full Data Verification passes 343/343; workbook and recovery artifacts retain bytes and SHA-256 evidence.
   - Owner accepted backup discovery, Excel recovery, pre/post evidence and Full Data Verification 343/343.
 - **v44.7.18 — Guarded Updater Acceptance**
-  - State: **Current authoritative Stage 5 increment.**
+  - State: **Completed and runtime accepted 2026-07-25.**
   - Feedback disposition: Approved Stage 5 completion before v44.8.
   - Test only an isolated disposable portable build; never target the installed owner app or canonical database.
   - Verify transaction states, snapshot, exact-build health acknowledgement, rollback and retained evidence.
   - Keep Production, FTPS and owner paths blocked; every updater mutation requires explicit scenario authorization.
   - Require runtime review for success, failure and rollback boundaries before closing the automation program.
+  - Candidate forwards the exact disposable profile through helper health and rollback relaunches.
+  - Real helper commit covers 54 governed portable files and exact v44.7.18 health acknowledgement.
+  - Forced failed launch reaches `RolledBack`; all pre-update SHA-256 values and database business state are restored.
+  - Disposable and owner Full Data Verification pass 344/344; owner accepted normal startup and owner-data behavior.
 - **v44.8.0 — Low-value Material fields audit**
-  - State: Planned after v44.7.18 acceptance.
+  - State: **Current authoritative increment.**
   - Feedback disposition: Open.
   - Trace `Manufacturer SKU` and video-thumbnail-name callers before any hide/retire decision.
   - Preserve recovery and report compatibility.

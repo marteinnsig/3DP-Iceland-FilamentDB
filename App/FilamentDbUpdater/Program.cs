@@ -21,7 +21,7 @@ if (args.Length == 2 && args[0] == "--apply")
     {
         TryStop(updatedProcess);
         var restoredExecutable = Path.Combine(request.LiveDirectory, request.ApplicationRelativePath.Replace('/', Path.DirectorySeparatorChar));
-        Process.Start(new ProcessStartInfo(restoredExecutable) { UseShellExecute = true, WorkingDirectory = request.LiveDirectory });
+        Process.Start(CreateApplicationStartInfo(restoredExecutable, request));
     }
     return result.Succeeded ? 0 : 1;
 }
@@ -39,7 +39,7 @@ if (args.Length == 2 && args[0] == "--recover")
     {
         TryStop(updatedProcess);
         var restoredExecutable = Path.Combine(request.LiveDirectory, request.ApplicationRelativePath.Replace('/', Path.DirectorySeparatorChar));
-        Process.Start(new ProcessStartInfo(restoredExecutable) { UseShellExecute = true, WorkingDirectory = request.LiveDirectory });
+        Process.Start(CreateApplicationStartInfo(restoredExecutable, request));
     }
     return result.Succeeded || result.RolledBack ? 0 : 1;
 }
@@ -69,6 +69,7 @@ static bool LaunchAndAwaitHealth(ApplicationUpdateTransactionRequest request, ou
         var start = new ProcessStartInfo(executable) { UseShellExecute = false, WorkingDirectory = request.LiveDirectory };
         start.ArgumentList.Add("--update-health-ack"); start.ArgumentList.Add(request.HealthAcknowledgementPath);
         start.ArgumentList.Add("--update-transaction"); start.ArgumentList.Add(request.TransactionId);
+        AddAutomationProfileArgument(start, request);
         process = Process.Start(start) ?? throw new InvalidOperationException("Updated application process could not be started.");
         var deadline = DateTime.UtcNow.AddSeconds(Math.Clamp(request.HealthTimeoutSeconds, 10, 300));
         while (DateTime.UtcNow < deadline)
@@ -88,6 +89,28 @@ static bool LaunchAndAwaitHealth(ApplicationUpdateTransactionRequest request, ou
     }
     catch { return false; }
     finally { if (!healthy) TryStop(process); }
+}
+
+static ProcessStartInfo CreateApplicationStartInfo(
+    string executable,
+    ApplicationUpdateTransactionRequest request)
+{
+    var start = new ProcessStartInfo(executable)
+    {
+        UseShellExecute = false,
+        WorkingDirectory = request.LiveDirectory
+    };
+    AddAutomationProfileArgument(start, request);
+    return start;
+}
+
+static void AddAutomationProfileArgument(
+    ProcessStartInfo start,
+    ApplicationUpdateTransactionRequest request)
+{
+    if (string.IsNullOrWhiteSpace(request.AutomationProfilePath)) return;
+    start.ArgumentList.Add("--automation-profile");
+    start.ArgumentList.Add(request.AutomationProfilePath);
 }
 
 static void TryStop(Process? process)

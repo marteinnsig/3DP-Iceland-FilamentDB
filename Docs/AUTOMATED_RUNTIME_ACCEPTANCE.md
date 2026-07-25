@@ -145,3 +145,30 @@ governed workbook, both filename generations and pre/post restore artifacts
 retain bytes and SHA-256 evidence; baseline/final business-state hashes match.
 Owner runtime accepted backup discovery, Excel recovery, pre/post evidence and
 Full Data Verification 343/343.
+
+## v44.7.18 Stage 5 accepted
+
+The guarded updater scenario requires explicit `--scenario updater` plus an
+explicit `--updater` helper path. Its manifest keeps general updates,
+Production and FTPS blocked while authorizing only the isolated Stage 5
+transaction.
+
+```powershell
+App\AutomationRunner\bin\Debug\net9.0-windows\3DPIcelandAutomationRunner.exe `
+  --app App\FilamentDbApp\bin\Debug\net9.0-windows\3DPIcelandFilamentDB.exe `
+  --seed-database C:\Seed-Database\filamentdb.sqlite `
+  --scenario updater `
+  --updater App\FilamentDbUpdater\bin\Debug\net9.0\3DPIcelandUpdater.exe
+```
+
+The runner copies only build artifacts into a disposable portable directory.
+It applies an identical staged build through the real updater helper, requires
+an exact v44.7.18 health acknowledgement, then stages an intentionally invalid
+disposable executable and requires complete rollback. The updater forwards the
+same validated disposable profile both after install and after rollback.
+
+Disposable evidence passes Full Data Verification 344/344. The success
+transaction commits 54 governed files, the failure transaction reaches
+`RolledBack`, all pre-update SHA-256 values are restored and the canonical
+business-state hash remains equal to baseline. Owner runtime then accepted
+normal startup, owner-data behavior and Full Data Verification 344/344.

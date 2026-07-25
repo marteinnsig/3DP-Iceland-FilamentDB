@@ -22,6 +22,7 @@ public sealed class AutomationRuntimeProfile
     public bool MaterialCrudAuthorized { get; init; }
     public string MaterialCrudId { get; init; } = string.Empty;
     public bool RecoveryAuthorized { get; init; }
+    public bool UpdaterAuthorized { get; init; }
 
     public static AutomationRuntimeProfile? Current { get; private set; }
     public static bool IsActive => Current is not null;

@@ -103,12 +103,25 @@ public partial class App : Application
         var ackIndex = Array.IndexOf(args, "--update-health-ack");
         var transactionIndex = Array.IndexOf(args, "--update-transaction");
         if (ackIndex < 0 || transactionIndex < 0 || ackIndex + 1 >= args.Length || transactionIndex + 1 >= args.Length) return;
-        var allowedRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "3DPIcelandLabs", "Updates", "transactions");
-        var fullRoot = Path.GetFullPath(allowedRoot).TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
-        var candidate = Path.GetFullPath(args[ackIndex + 1]);
-        if (!candidate.StartsWith(fullRoot, StringComparison.OrdinalIgnoreCase)) return;
+        var candidate = IOPath.GetFullPath(args[ackIndex + 1]);
+        var productionRoot = IOPath.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "3DPIcelandLabs",
+            "Updates",
+            "transactions");
+        if (!IsContainedFile(productionRoot, candidate) &&
+            !(AutomationRuntimeProfile.Current is { } profile &&
+              IsContainedFile(profile.RootPath, candidate)))
+            return;
         _updateHealthAcknowledgementPath = candidate;
         _updateTransactionId = args[transactionIndex + 1];
+    }
+
+    private static bool IsContainedFile(string root, string candidate)
+    {
+        var fullRoot = IOPath.GetFullPath(root).TrimEnd(IOPath.DirectorySeparatorChar) +
+                       IOPath.DirectorySeparatorChar;
+        return IOPath.GetFullPath(candidate).StartsWith(fullRoot, StringComparison.OrdinalIgnoreCase);
     }
 
     private static void TryWriteUpdateHealthAcknowledgement(int databaseSchema)
@@ -121,10 +134,10 @@ public partial class App : Application
                 TransactionId = _updateTransactionId, ReleaseVersion = BuildInfo.Version, DatabaseSchema = databaseSchema,
                 AcknowledgedAtUtc = DateTimeOffset.UtcNow.ToString("O")
             };
-            Directory.CreateDirectory(Path.GetDirectoryName(_updateHealthAcknowledgementPath)!);
+            IODirectory.CreateDirectory(IOPath.GetDirectoryName(_updateHealthAcknowledgementPath)!);
             var temp = _updateHealthAcknowledgementPath + ".tmp";
-            File.WriteAllText(temp, JsonSerializer.Serialize(acknowledgement, new JsonSerializerOptions { WriteIndented = true }));
-            File.Move(temp, _updateHealthAcknowledgementPath, true);
+            IOFile.WriteAllText(temp, JsonSerializer.Serialize(acknowledgement, new JsonSerializerOptions { WriteIndented = true }));
+            IOFile.Move(temp, _updateHealthAcknowledgementPath, true);
         }
         catch { }
     }

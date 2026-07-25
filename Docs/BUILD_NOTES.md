@@ -1,4 +1,25 @@
-# Current Build Notes - v44.7.17
+# Current Build Notes - v44.7.18
+
+## Guarded Updater Acceptance
+
+v44.7.18 completes Stage 5. It adds explicit disposable updater scenario
+authorization while keeping general updates, Production, FTPS and owner paths
+blocked. The real updater helper forwards the exact validated disposable
+profile to both the updated application and the rollback relaunch.
+
+The runner copies a portable build below its temporary profile, verifies
+snapshot and `Committed` state with an exact-build health acknowledgement,
+then stages an invalid disposable executable and requires `RolledBack`.
+Retained evidence includes request/state/health files, rollback snapshots and
+SHA-256 for all 54 governed files.
+
+Disposable runtime and Full Data Verification pass 344/344. All pre-update
+portable hashes and the database business-state hash return to baseline.
+Debug/Release, static/security, release-documentation and read-only NuGet
+advisory gates pass. Owner runtime and Full Data Verification 344/344 passed.
+v44.7.18 is closed.
+
+## Retained v44.7.17 evidence
 
 ## Disposable Backup and Recovery Acceptance
 

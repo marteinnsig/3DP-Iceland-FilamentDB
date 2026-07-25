@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "DISPOSABLE-BACKUP-RECOVERY-ACCEPTANCE";
-    public const string ReleaseTitle = "Disposable Backup and Recovery Acceptance";
+    public const string ReleaseCode = "GUARDED-UPDATER-ACCEPTANCE";
+    public const string ReleaseTitle = "Guarded Updater Acceptance";
 
     public static string Version
     {

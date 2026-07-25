@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Windows.Automation;
 using Microsoft.Data.Sqlite;
+using FilamentDbApp.UpdateCore;
 
 namespace FilamentDbApp.AutomationRunner;
 
@@ -44,6 +45,7 @@ internal static class Program
                 string.Equals(options.Scenario, "reports", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "crud", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "recovery", StringComparison.Ordinal),
+                string.Equals(options.Scenario, "updater", StringComparison.Ordinal),
                 out var markerPath,
                 out databasePath,
                 out var materialCrudId);
@@ -174,6 +176,15 @@ internal static class Program
             CloseWindow(main, application.Id);
             if (!application.WaitForExit(15000))
                 throw new TimeoutException("Application did not complete controlled shutdown.");
+            if (string.Equals(options.Scenario, "updater", StringComparison.Ordinal))
+            {
+                RunUpdaterAcceptance(
+                    root,
+                    executable,
+                    IOPath.GetFullPath(options.UpdaterPath),
+                    markerPath,
+                    application.Id);
+            }
 
             var finalSnapshotPath = IOPath.Combine(root, "evidence", "database-after.sqlite");
             CreateConsistentSnapshot(databasePath, finalSnapshotPath);
@@ -236,6 +247,7 @@ internal static class Program
         bool reportGenerationAuthorized,
         bool materialCrudAuthorized,
         bool recoveryAuthorized,
+        bool updaterAuthorized,
         out string markerPath,
         out string databasePath,
         out string materialCrudId)
@@ -273,7 +285,8 @@ internal static class Program
             reportGenerationAuthorized,
             materialCrudAuthorized,
             materialCrudId,
-            recoveryAuthorized
+            recoveryAuthorized,
+            updaterAuthorized
         };
         IOFile.WriteAllText(markerPath, JsonSerializer.Serialize(manifest, new JsonSerializerOptions
         {
@@ -281,6 +294,295 @@ internal static class Program
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         }), new UTF8Encoding(false));
         return root;
+    }
+
+    private static void RunUpdaterAcceptance(
+        string root,
+        string sourceExecutable,
+        string updaterExecutable,
+        string markerPath,
+        int exitedApplicationProcessId)
+    {
+        Require(IOFile.Exists(updaterExecutable), "Updater executable not found.");
+        var sourceDirectory = IOPath.GetDirectoryName(sourceExecutable)
+                              ?? throw new InvalidOperationException("Application source directory is unavailable.");
+        var portableDirectory = IOPath.Combine(root, "portable-app");
+        CopyDirectory(sourceDirectory, portableDirectory);
+        var applicationRelativePath = IOPath.GetFileName(sourceExecutable);
+        var portableExecutable = IOPath.Combine(portableDirectory, applicationRelativePath);
+        Require(IOFile.Exists(portableExecutable), "Disposable portable application executable is missing.");
+        var governedFiles = IODirectory.EnumerateFiles(
+                portableDirectory,
+                "*",
+                SearchOption.AllDirectories)
+            .Select(path => IOPath.GetRelativePath(portableDirectory, path).Replace('\\', '/'))
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToList();
+        Require(governedFiles.Contains(applicationRelativePath, StringComparer.Ordinal),
+            "Portable application executable is not governed.");
+        var baselineHashes = HashGovernedFiles(portableDirectory, governedFiles);
+
+        var successRoot = IOPath.Combine(root, "transactions", "success");
+        var successStaging = IOPath.Combine(successRoot, "staging");
+        CopyDirectory(portableDirectory, successStaging);
+        var success = CreateUpdaterRequest(
+            "automation-success-" + Guid.NewGuid().ToString("N"),
+            portableDirectory,
+            successStaging,
+            successRoot,
+            markerPath,
+            applicationRelativePath,
+            governedFiles,
+            "44.7.17",
+            "44.7.18",
+            exitedApplicationProcessId);
+        var successExit = RunUpdater(updaterExecutable, successRoot, success);
+        Require(successExit == 0, $"Disposable updater success returned exit code {successExit}.");
+        var successState = ReadTransactionState(success.StatePath);
+        Require(successState.Phase == "Committed", "Disposable updater success did not reach Committed.");
+        var acknowledgement = JsonSerializer.Deserialize<ApplicationUpdateHealthAcknowledgement>(
+            IOFile.ReadAllText(success.HealthAcknowledgementPath));
+        Require(
+            acknowledgement is not null &&
+            acknowledgement.TransactionId == success.TransactionId &&
+            acknowledgement.ReleaseVersion == success.NewVersion,
+            "Exact-build health acknowledgement is missing or mismatched.");
+        ClosePortableApplication(portableExecutable);
+        var committedHashes = HashGovernedFiles(portableDirectory, governedFiles);
+        Require(HashMapsEqual(baselineHashes, committedHashes),
+            "Success scenario changed bytes despite an identical staged build.");
+
+        var failureRoot = IOPath.Combine(root, "transactions", "rollback");
+        var failureStaging = IOPath.Combine(failureRoot, "staging");
+        CopyDirectory(portableDirectory, failureStaging);
+        IOFile.WriteAllText(
+            IOPath.Combine(failureStaging, applicationRelativePath),
+            "INTENTIONALLY INVALID DISPOSABLE AUTOMATION EXECUTABLE",
+            new UTF8Encoding(false));
+        var beforeRollbackHashes = HashGovernedFiles(portableDirectory, governedFiles);
+        var failure = CreateUpdaterRequest(
+            "automation-rollback-" + Guid.NewGuid().ToString("N"),
+            portableDirectory,
+            failureStaging,
+            failureRoot,
+            markerPath,
+            applicationRelativePath,
+            governedFiles,
+            "44.7.18",
+            "44.7.19",
+            exitedApplicationProcessId);
+        var failureExit = RunUpdater(updaterExecutable, failureRoot, failure);
+        Require(failureExit == 1, $"Disposable updater failure returned unexpected exit code {failureExit}.");
+        var failureState = ReadTransactionState(failure.StatePath);
+        Require(failureState.Phase == "RolledBack", "Failed disposable update did not reach RolledBack.");
+        ClosePortableApplication(portableExecutable);
+        var afterRollbackHashes = HashGovernedFiles(portableDirectory, governedFiles);
+        Require(HashMapsEqual(beforeRollbackHashes, afterRollbackHashes),
+            "Rollback did not restore the exact pre-update portable file set.");
+
+        var evidence = new
+        {
+            schema = "3dpiceland-automation-updater-evidence-v1",
+            status = "PASS",
+            liveDirectory = portableDirectory,
+            ownerApplicationTargeted = false,
+            ownerDatabaseTargeted = false,
+            productionAndFtpsBlocked = true,
+            governedFileCount = governedFiles.Count,
+            success = new
+            {
+                success.TransactionId,
+                successState.Phase,
+                success.StatePath,
+                success.HealthAcknowledgementPath,
+                rollbackDirectory = success.RollbackDirectory,
+                exactBuildRelease = acknowledgement!.ReleaseVersion
+            },
+            rollback = new
+            {
+                failure.TransactionId,
+                failureState.Phase,
+                failure.StatePath,
+                rollbackDirectory = failure.RollbackDirectory,
+                exactFileSetRestored = true
+            },
+            hashes = afterRollbackHashes
+        };
+        var evidencePath = IOPath.Combine(root, "evidence", "updater-evidence.json");
+        IOFile.WriteAllText(
+            evidencePath,
+            JsonSerializer.Serialize(evidence, new JsonSerializerOptions { WriteIndented = true }),
+            new UTF8Encoding(false));
+        Record(
+            "updater-commit-health",
+            true,
+            $"Committed {governedFiles.Count} files; exact release {acknowledgement.ReleaseVersion}");
+        Record(
+            "updater-failure-rollback",
+            true,
+            $"RolledBack; {governedFiles.Count} pre-update SHA-256 values restored");
+    }
+
+    private static ApplicationUpdateTransactionRequest CreateUpdaterRequest(
+        string transactionId,
+        string liveDirectory,
+        string stagingDirectory,
+        string transactionRoot,
+        string markerPath,
+        string applicationRelativePath,
+        List<string> governedFiles,
+        string previousVersion,
+        string newVersion,
+        int exitedApplicationProcessId)
+    {
+        IODirectory.CreateDirectory(transactionRoot);
+        var request = new ApplicationUpdateTransactionRequest
+        {
+            TransactionId = transactionId,
+            LiveDirectory = liveDirectory,
+            StagingDirectory = stagingDirectory,
+            RollbackDirectory = IOPath.Combine(transactionRoot, "rollback"),
+            StatePath = IOPath.Combine(transactionRoot, "transaction-state.json"),
+            PreviousVersion = previousVersion,
+            NewVersion = newVersion,
+            ReleaseCode = "GUARDED-UPDATER-ACCEPTANCE",
+            SignatureAlgorithm = "AUTOMATION-DISPOSABLE-ONLY",
+            SigningKeyFingerprint = "NO-PRODUCTION-SIGNING-KEY",
+            DatabaseBackupPath = IOPath.Combine(
+                IOPath.GetDirectoryName(markerPath)!,
+                "database",
+                "3DPIceland-Automation-Seed-Evidence.bak"),
+            ApplicationRelativePath = applicationRelativePath,
+            WaitForProcessId = exitedApplicationProcessId,
+            HealthAcknowledgementPath = IOPath.Combine(transactionRoot, "health-ack.json"),
+            AutomationProfilePath = markerPath,
+            HealthTimeoutSeconds = 30,
+            MinimumDatabaseSchema = 0,
+            MaximumDatabaseSchema = int.MaxValue,
+            GovernedFiles = governedFiles
+        };
+        IOFile.WriteAllText(
+            IOPath.Combine(transactionRoot, "request.json"),
+            JsonSerializer.Serialize(request, new JsonSerializerOptions { WriteIndented = true }),
+            new UTF8Encoding(false));
+        return request;
+    }
+
+    private static int RunUpdater(
+        string updaterExecutable,
+        string transactionRoot,
+        ApplicationUpdateTransactionRequest request)
+    {
+        var requestPath = IOPath.Combine(transactionRoot, "request.json");
+        using var updater = Process.Start(new ProcessStartInfo(updaterExecutable)
+        {
+            UseShellExecute = false,
+            WorkingDirectory = transactionRoot
+        }.WithArgument("--apply", requestPath))
+            ?? throw new InvalidOperationException("Updater helper did not start.");
+        if (!updater.WaitForExit((int)TimeSpan.FromMinutes(3).TotalMilliseconds))
+        {
+            updater.Kill(entireProcessTree: true);
+            throw new TimeoutException("Updater helper did not finish.");
+        }
+        return updater.ExitCode;
+    }
+
+    private static ApplicationUpdateTransactionState ReadTransactionState(string path) =>
+        JsonSerializer.Deserialize<ApplicationUpdateTransactionState>(IOFile.ReadAllText(path))
+        ?? throw new InvalidOperationException("Updater transaction state is unreadable.");
+
+    private static void CopyDirectory(string source, string destination)
+    {
+        IODirectory.CreateDirectory(destination);
+        foreach (var directory in IODirectory.EnumerateDirectories(source, "*", SearchOption.AllDirectories)
+                     .Where(path => !IsGeneratedRuntimePath(source, path)))
+            IODirectory.CreateDirectory(IOPath.Combine(
+                destination,
+                IOPath.GetRelativePath(source, directory)));
+        foreach (var file in IODirectory.EnumerateFiles(source, "*", SearchOption.AllDirectories)
+                     .Where(path => !IsGeneratedRuntimePath(source, path)))
+        {
+            var target = IOPath.Combine(destination, IOPath.GetRelativePath(source, file));
+            IODirectory.CreateDirectory(IOPath.GetDirectoryName(target)!);
+            IOFile.Copy(file, target, overwrite: true);
+        }
+    }
+
+    private static bool IsGeneratedRuntimePath(string root, string path) =>
+        IOPath.GetRelativePath(root, path)
+            .Split(IOPath.DirectorySeparatorChar, IOPath.AltDirectorySeparatorChar)
+            .Any(segment => segment.EndsWith(".exe.WebView2", StringComparison.OrdinalIgnoreCase));
+
+    private static SortedDictionary<string, string> HashGovernedFiles(
+        string root,
+        IEnumerable<string> governedFiles)
+    {
+        var result = new SortedDictionary<string, string>(StringComparer.Ordinal);
+        foreach (var relativePath in governedFiles)
+            result[relativePath] = Sha256(IOPath.Combine(
+                root,
+                relativePath.Replace('/', IOPath.DirectorySeparatorChar)));
+        return result;
+    }
+
+    private static bool HashMapsEqual(
+        IReadOnlyDictionary<string, string> first,
+        IReadOnlyDictionary<string, string> second) =>
+        first.Count == second.Count &&
+        first.All(item =>
+            second.TryGetValue(item.Key, out var value) &&
+            string.Equals(item.Value, value, StringComparison.OrdinalIgnoreCase));
+
+    private static void ClosePortableApplication(string executable)
+    {
+        var fullExecutable = IOPath.GetFullPath(executable);
+        var deadline = DateTime.UtcNow.AddSeconds(45);
+        while (DateTime.UtcNow < deadline)
+        {
+            var matches = Process.GetProcesses()
+                .Where(process =>
+                {
+                    try
+                    {
+                        return string.Equals(
+                            IOPath.GetFullPath(process.MainModule?.FileName ?? string.Empty),
+                            fullExecutable,
+                            StringComparison.OrdinalIgnoreCase);
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                })
+                .ToList();
+            if (matches.Count == 0)
+            {
+                Thread.Sleep(200);
+                continue;
+            }
+            foreach (var process in matches)
+            {
+                try
+                {
+                    var window = WaitForElement(
+                        AutomationElement.RootElement,
+                        new AndCondition(
+                            new PropertyCondition(AutomationElement.ProcessIdProperty, process.Id),
+                            new PropertyCondition(AutomationElement.AutomationIdProperty, "MainWindow")),
+                        "disposable updated application");
+                    CloseWindow(window, process.Id);
+                    if (!process.WaitForExit(15000))
+                        throw new TimeoutException("Disposable updated application did not close.");
+                }
+                finally
+                {
+                    process.Dispose();
+                }
+            }
+            return;
+        }
+        throw new TimeoutException("Disposable updated application process was not found.");
     }
 
     private static AutomationElement FindById(AutomationElement root, string automationId) =>
@@ -769,6 +1071,7 @@ internal static class Program
                 reportGenerationAuthorized = string.Equals(CurrentScenario, "reports", StringComparison.Ordinal)
                 ,materialCrudAuthorized = string.Equals(CurrentScenario, "crud", StringComparison.Ordinal)
                 ,recoveryAuthorized = string.Equals(CurrentScenario, "recovery", StringComparison.Ordinal)
+                ,updaterAuthorized = string.Equals(CurrentScenario, "updater", StringComparison.Ordinal)
             },
             executable,
             seedDatabase,
@@ -793,7 +1096,11 @@ internal static class Program
     private sealed record StepResult(string Name, string Status, string Detail, DateTimeOffset AtUtc);
     private sealed record ArtifactEvidence(string RelativePath, long Bytes, string Sha256);
 
-    private sealed record RunnerOptions(string ApplicationPath, string SeedDatabasePath, string Scenario)
+    private sealed record RunnerOptions(
+        string ApplicationPath,
+        string SeedDatabasePath,
+        string Scenario,
+        string UpdaterPath)
     {
         public static RunnerOptions Parse(string[] args)
         {
@@ -808,9 +1115,10 @@ internal static class Program
             var scenario = scenarioIndex >= 0 && scenarioIndex + 1 < args.Length
                 ? args[scenarioIndex + 1].Trim().ToLowerInvariant()
                 : "smoke";
-            if (scenario is not ("smoke" or "reports" or "crud" or "recovery"))
-                throw new ArgumentException("--scenario must be smoke, reports, crud or recovery.");
-            return new RunnerOptions(Required("--app"), Required("--seed-database"), scenario);
+            if (scenario is not ("smoke" or "reports" or "crud" or "recovery" or "updater"))
+                throw new ArgumentException("--scenario must be smoke, reports, crud, recovery or updater.");
+            var updater = scenario == "updater" ? Required("--updater") : string.Empty;
+            return new RunnerOptions(Required("--app"), Required("--seed-database"), scenario, updater);
         }
     }
 

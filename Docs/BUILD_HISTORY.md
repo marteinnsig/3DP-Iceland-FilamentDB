@@ -2,6 +2,19 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.18 - Guarded Updater Acceptance
+
+Stage 5 uses the real updater helper only against a disposable
+portable build. Explicit scenario authorization forwards the validated
+disposable profile through success and rollback relaunches while general
+updates, Production, FTPS, owner application and owner database remain blocked.
+
+The success transaction commits 54 governed files with an exact v44.7.18
+health acknowledgement. An intentionally invalid staged executable then
+forces `RolledBack`; all pre-update SHA-256 values and database business state
+are restored. Disposable and owner Full Data Verification pass 344/344.
+Owner accepted normal startup and owner-data behavior.
+
 ## v44.7.17 - Disposable Backup and Recovery Acceptance
 
 Research found mature manual backup, catalog and SQLite restore ownership, but

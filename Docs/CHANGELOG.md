@@ -2,6 +2,22 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.18 - Guarded Updater Acceptance
+
+- Added explicit `updater` scenario authorization without releasing general
+  update, Production or FTPS locks.
+- Forwarded the exact disposable profile to post-update health and rollback
+  relaunch processes.
+- Restricted automation profiles and health evidence to the dedicated
+  temporary automation root.
+- Exercised the real updater helper against a copied portable build only.
+- Retained transaction state, health acknowledgement, rollback snapshots and
+  SHA-256 evidence for 54 governed build files.
+- Candidate runtime reaches `Committed`, then forces a failed health launch
+  and reaches `RolledBack` with exact file hashes restored.
+- Disposable and owner Full Data Verification pass 344/344; owner accepted
+  normal startup and owner-data behavior.
+
 ## v44.7.17 - Disposable Backup and Recovery Acceptance
 
 - Added explicit disposable recovery scenario authorization.

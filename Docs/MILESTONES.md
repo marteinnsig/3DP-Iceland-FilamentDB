@@ -3,6 +3,16 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.18 - Guarded Updater Acceptance
+
+Stage 5 proves real helper commit, exact-build health acknowledgement and full
+rollback only against a disposable portable build. Transaction, snapshot,
+health and SHA-256 evidence are retained; Production, FTPS, owner application
+and owner database remain blocked. Disposable and owner Verification pass
+344/344; owner accepted normal startup and owner-data behavior.
+
+---
+
 # v44.7.17 - Disposable Backup and Recovery Acceptance
 
 Stage 4 candidate verifies manual backup, historical filename compatibility and
