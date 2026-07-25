@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "BACKUP-FILENAME-COMPATIBILITY";
-    public const string ReleaseTitle = "Backup Filename Compatibility";
+    public const string ReleaseCode = "PUBLIC-MEASUREMENT-DATE-PROVENANCE";
+    public const string ReleaseTitle = "Public Measurement Date Provenance";
 
     public static string Version
     {

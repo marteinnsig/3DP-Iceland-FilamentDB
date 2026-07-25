@@ -8734,7 +8734,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         {
             var summaries=GetCanonicalVerifiedSummaryMap(); var tensile=_nativeTensileRows.Where(x=>!string.IsNullOrWhiteSpace(x.MaterialID)).GroupBy(x=>x.MaterialID.Trim(),StringComparer.OrdinalIgnoreCase).ToDictionary(x=>x.Key,x=>x.First(),StringComparer.OrdinalIgnoreCase); var impact=_nativeImpactRows.Where(x=>!string.IsNullOrWhiteSpace(x.MaterialID)).GroupBy(x=>x.MaterialID.Trim(),StringComparer.OrdinalIgnoreCase).ToDictionary(x=>x.Key,x=>x.First(),StringComparer.OrdinalIgnoreCase); var stiffness=_nativeStiffnessRows.Where(x=>!string.IsNullOrWhiteSpace(x.MaterialID)).GroupBy(x=>x.MaterialID.Trim(),StringComparer.OrdinalIgnoreCase).ToDictionary(x=>x.Key,x=>x.First(),StringComparer.OrdinalIgnoreCase);
             PublicTestModuleQualityModel Q(string module,string orientation,MeasurementSetResult? x,string unit,string? validation)=>new(){Module=module,Orientation=orientation,Average=x?.Average is double a?a.ToString("0.###",CultureInfo.CurrentCulture)+" "+unit:"n/a",StandardDeviation=x?.StandardDeviation is double s?s.ToString("0.###",CultureInfo.CurrentCulture)+" "+unit:"n/a",CoefficientOfVariation=x?.CoefficientOfVariation is double c?c.ToString("0.###",CultureInfo.CurrentCulture)+"%":"n/a",Samples=x?.SampleCount??0,Confidence=x?.Confidence is int confidence?confidence+"/10":"n/a",Validation=validation??"No native record"};
-            var models=_nativeMaterialRows.Where(x=>!x.IsArchived&&x.PublishPublicReports&&!string.IsNullOrWhiteSpace(x.MaterialID)).Select(row=>{var id=row.MaterialID.Trim();summaries.TryGetValue(id,out var summary);tensile.TryGetValue(id,out var tr);impact.TryGetValue(id,out var ir);stiffness.TryGetValue(id,out var sr);var approved=row.PublishPublicTestDetails;var quality=new List<PublicTestModuleQualityModel>{Q("Tensile","Upright",summary?.Tensile?.Upright,"MPa",tr?.ValidationSummary),Q("Tensile","Flat",summary?.Tensile?.Flat,"MPa",tr?.ValidationSummary),Q("Impact","Upright",summary?.Impact?.Upright,"kJ/m²",ir?.ValidationSummary),Q("Impact","Flat",summary?.Impact?.Flat,"kJ/m²",ir?.ValidationSummary),new(){Module="Stiffness",Orientation="Three-point bend",Average=summary?.Stiffness?.ModulusMpa is double sm?sm.ToString("0.###",CultureInfo.CurrentCulture)+" MPa":"n/a",Samples=summary?.HasStiffnessResults==true?1:0,Confidence=summary?.Stiffness?.CompletenessRating.Label??"n/a",Validation=sr?.ValidationSummary??"No native record"}};var raw=approved?new[]{new PublicTestRawInputModel{Module="Tensile",InputSet="Upright force inputs (N)",RecordedValues=string.Join(", ",tr?.SampleValues(true)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Tensile",InputSet="Flat force inputs (N)",RecordedValues=string.Join(", ",tr?.SampleValues(false)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Impact",InputSet="Upright needle inputs (%)",RecordedValues=string.Join(", ",ir?.SampleValues(true)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Impact",InputSet="Flat needle inputs (%)",RecordedValues=string.Join(", ",ir?.SampleValues(false)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Stiffness",InputSet="Revolutions / degrees",RecordedValues=sr is null?"n/a":JoinNonEmpty(" / ",sr.Revolutions,sr.Degrees)}}:Array.Empty<PublicTestRawInputModel>();var notes=approved?new[]{("Tensile",tr?.TestNotes),("Impact",ir?.TestNotes),("Stiffness",sr?.TestNotes)}.Where(x=>!string.IsNullOrWhiteSpace(x.Item2)).Select(x=>new PublicTestNoteModel{Module=x.Item1,Note=x.Item2!}).ToList():new List<PublicTestNoteModel>();return new PublicTestSessionReportModel{MaterialId=id,MaterialName=string.IsNullOrWhiteSpace(row.WebsiteDisplayName)?id:row.WebsiteDisplayName,Manufacturer=row.Manufacturer,SummaryStatus=summary?.SummaryStatus??"No native results",ResultModules=summary?.ResultModuleCount??0,SpecimenResultRecords=quality.Sum(x=>x.Samples),PublicDetailsApproved=approved,VerifiedMeasurements=PublicVerifiedMeasurementsFromSummary(summary),QualityRows=quality,RawInputs=raw,ApprovedNotes=notes};}).OrderBy(x=>x.MaterialName).ToList();
+            var models=_nativeMaterialRows.Where(x=>!x.IsArchived&&x.PublishPublicReports&&!string.IsNullOrWhiteSpace(x.MaterialID)).Select(row=>{var id=row.MaterialID.Trim();summaries.TryGetValue(id,out var summary);tensile.TryGetValue(id,out var tr);impact.TryGetValue(id,out var ir);stiffness.TryGetValue(id,out var sr);var approved=row.PublishPublicTestDetails;var quality=new List<PublicTestModuleQualityModel>{Q("Tensile","Upright",summary?.Tensile?.Upright,"MPa",tr?.ValidationSummary),Q("Tensile","Flat",summary?.Tensile?.Flat,"MPa",tr?.ValidationSummary),Q("Impact","Upright",summary?.Impact?.Upright,"kJ/m²",ir?.ValidationSummary),Q("Impact","Flat",summary?.Impact?.Flat,"kJ/m²",ir?.ValidationSummary),new(){Module="Stiffness",Orientation="Three-point bend",Average=summary?.Stiffness?.ModulusMpa is double sm?sm.ToString("0.###",CultureInfo.CurrentCulture)+" MPa":"n/a",Samples=summary?.HasStiffnessResults==true?1:0,Confidence=summary?.Stiffness?.CompletenessRating.Label??"n/a",Validation=sr?.ValidationSummary??"No native record"}};var raw=approved?new[]{new PublicTestRawInputModel{Module="Tensile",InputSet="Upright force inputs (N)",RecordedValues=string.Join(", ",tr?.SampleValues(true)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Tensile",InputSet="Flat force inputs (N)",RecordedValues=string.Join(", ",tr?.SampleValues(false)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Impact",InputSet="Upright needle inputs (%)",RecordedValues=string.Join(", ",ir?.SampleValues(true)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Impact",InputSet="Flat needle inputs (%)",RecordedValues=string.Join(", ",ir?.SampleValues(false)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Stiffness",InputSet="Revolutions / degrees",RecordedValues=sr is null?"n/a":JoinNonEmpty(" / ",sr.Revolutions,sr.Degrees)}}:Array.Empty<PublicTestRawInputModel>();var notes=approved?new[]{("Tensile",tr?.TestNotes),("Impact",ir?.TestNotes),("Stiffness",sr?.TestNotes)}.Where(x=>!string.IsNullOrWhiteSpace(x.Item2)).Select(x=>new PublicTestNoteModel{Module=x.Item1,Note=x.Item2!}).ToList():new List<PublicTestNoteModel>();return new PublicTestSessionReportModel{MaterialId=id,MaterialName=string.IsNullOrWhiteSpace(row.WebsiteDisplayName)?id:row.WebsiteDisplayName,Manufacturer=row.Manufacturer,SummaryStatus=summary?.SummaryStatus??"No native results",ResultModules=summary?.ResultModuleCount??0,SpecimenResultRecords=quality.Sum(x=>x.Samples),PublicDetailsApproved=approved,VerifiedMeasurements=PublicVerifiedMeasurementsFromSummary(summary),MeasurementDates=BuildPublicMeasurementDateProvenance(id),QualityRows=quality,RawInputs=raw,ApprovedNotes=notes};}).OrderBy(x=>x.MaterialName).ToList();
             if(models.Count==0){ReportPreviewLog.Text="Select one or more active MaterialIDs with Public reports.";return;}var at=DateTime.Now;var output=string.IsNullOrWhiteSpace(ReportOutputFolderBox.Text)?GetDefaultReportOutputFolder():ReportOutputFolderBox.Text.Trim();var root=System.IO.Path.Combine(output,PublicReportPublishingService.PreviewRootFolderName);foreach(var model in models){var result=_publicTestSessionReportPublishingService.Build(model,at,BuildInfo.ShortLabel,BuildInfo.ReleaseTitle);var verification=_publicTestSessionReportPublishingService.Verify(model,result);if(!verification.Passed)throw new InvalidOperationException(verification.Detail);var folder=result.RelativeDirectory.Split('/',StringSplitOptions.RemoveEmptyEntries).Aggregate(root,System.IO.Path.Combine);var assets=System.IO.Path.Combine(folder,"assets");Directory.CreateDirectory(assets);CopyReportPackageAssets(assets);var html=System.IO.Path.Combine(folder,"index.html");SafeFileOperations.WriteAllTextAtomic(html,result.Html,Encoding.UTF8);SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder,"manifest.txt"),result.Manifest,Encoding.UTF8);SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder,"report-metadata.json"),result.MetadataJson,Encoding.UTF8);await WriteReportPdfFromCanonicalHtmlAsync(System.IO.Path.Combine(folder,"report.pdf"),html);}Directory.CreateDirectory(root);var index=System.IO.Path.Combine(root,"test-sessions.html");SafeFileOperations.WriteAllTextAtomic(index,PublicTestSessionReportPublishingService.BuildPreviewIndex(models,at),Encoding.UTF8);ReportExportSummaryText.Text=$"Public test-session previews built: {models.Count}";ReportPreviewLog.Text=$"Built {models.Count} public Test Session reports; {models.Count(x=>x.PublicDetailsApproved)} include explicitly approved raw inputs/notes.\n\nIndex: {index}\n\nLocal preview only. Nothing was uploaded.";
         }
         catch(Exception ex){ReportExportSummaryText.Text="Public test-session preview failed";ReportPreviewLog.Text+="\n\n"+ex.Message;}finally{if(BuildPublicTestSessionReportPreviewButton is not null)BuildPublicTestSessionReportPreviewButton.IsEnabled=true;}
@@ -9153,6 +9153,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             MaterialAverage = PublicEngineeringScoreProfileFromRanking(materialAverage),
             ManufacturerAverage = PublicEngineeringScoreProfileFromRanking(manufacturerAverage),
             VerifiedMeasurements = PublicVerifiedMeasurementsFromSummary(video.VerifiedSummary),
+            MeasurementDates = BuildPublicMeasurementDateProvenance(video.MaterialId),
             MetricPositions = metricPositions,
             DecisionGuidance = BuildDecisionGuidanceItems(ranking, betterAlternatives.Count),
             BetterAlternatives = betterAlternatives.Select(item => new PublicAlternativeModel
@@ -9203,6 +9204,22 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         StiffnessModulusMpa = summary?.Stiffness?.ModulusMpa,
         StiffnessDeflectionMm = summary?.Stiffness?.DeflectionMm
     };
+
+    private PublicMeasurementDateProvenanceModel BuildPublicMeasurementDateProvenance(string materialId)
+    {
+        string PublicIsoDate(string testType)
+        {
+            var measuredDate = ParseIsoMeasuredDate(_database.GetNativeMeasurementDate(materialId, testType));
+            return measuredDate?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? "Not recorded";
+        }
+
+        return new PublicMeasurementDateProvenanceModel
+        {
+            Tensile = PublicIsoDate("Tensile"),
+            Impact = PublicIsoDate("Impact"),
+            Stiffness = PublicIsoDate("Stiffness")
+        };
+    }
 
     private static PublicMeasurementSetModel PublicMeasurementSetFromResult(MeasurementSetResult? result) => new()
     {
@@ -14662,6 +14679,12 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             Strengths = new[] { "Stiffness is a strong governed signal." },
             Limitations = new[] { "Impact performance should be reviewed for shock-loaded parts." },
             Tradeoffs = new[] { "Higher rigidity is paired with lower impact tolerance." },
+            MeasurementDates = new PublicMeasurementDateProvenanceModel
+            {
+                Tensile = "2026-07-21",
+                Impact = "Not recorded",
+                Stiffness = "2026-07-23"
+            },
             PeerContext = new[]
             {
                 new PublicMaterialPeerModel
@@ -14743,7 +14766,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var publicManufacturerReady = publicManufacturerVerification.Passed && FindName("BuildPublicManufacturerReportPreviewButton") is Button;
         checks.Add(new VerificationCheck("Public Manufacturer Report route and allowlist", publicManufacturerReady,
             publicManufacturerReady ? $"Stable reports/manufacturers/verification-manufacturer route; {PublicManufacturerReportPublishingService.PublicFieldAllowlist.Count} explicit fields; public-only portfolio context" : publicManufacturerVerification.Detail));
-        var publicTestProbeModel = new PublicTestSessionReportModel { MaterialId = "MAT-PUBLIC-001", MaterialName = "Public PLA Blue", Manufacturer = "Verification Manufacturer", SummaryStatus = "Complete", ResultModules = 3, SpecimenResultRecords = 9, PublicDetailsApproved = false, QualityRows = new[] { new PublicTestModuleQualityModel { Module = "Tensile", Orientation = "Upright", Average = "42 MPa", StandardDeviation = "1.2 MPa", CoefficientOfVariation = "2.9%", Samples = 5, Confidence = "8/10", Validation = "Valid" } } };
+        var publicTestProbeModel = new PublicTestSessionReportModel { MaterialId = "MAT-PUBLIC-001", MaterialName = "Public PLA Blue", Manufacturer = "Verification Manufacturer", SummaryStatus = "Complete", ResultModules = 3, SpecimenResultRecords = 9, PublicDetailsApproved = false, MeasurementDates = new PublicMeasurementDateProvenanceModel { Tensile = "2026-07-21", Impact = "Not recorded", Stiffness = "2026-07-23" }, QualityRows = new[] { new PublicTestModuleQualityModel { Module = "Tensile", Orientation = "Upright", Average = "42 MPa", StandardDeviation = "1.2 MPa", CoefficientOfVariation = "2.9%", Samples = 5, Confidence = "8/10", Validation = "Valid" } } };
         var publicTestProbe = _publicTestSessionReportPublishingService.Build(publicTestProbeModel, new DateTime(2026, 7, 22, 12, 0, 0, DateTimeKind.Local), BuildInfo.ShortLabel, BuildInfo.ReleaseTitle);
         var publicTestVerification = _publicTestSessionReportPublishingService.Verify(publicTestProbeModel, publicTestProbe);
         var approvedTestProbe = new PublicTestSessionReportModel { MaterialId = "MAT-PUBLIC-002", MaterialName = "Approved Detail Probe", PublicDetailsApproved = true, QualityRows = publicTestProbeModel.QualityRows, RawInputs = new[] { new PublicTestRawInputModel { Module = "Tensile", InputSet = "Upright force inputs (N)", RecordedValues = "40, 41, 42" } }, ApprovedNotes = new[] { new PublicTestNoteModel { Module = "Tensile", Note = "Approved public note" } } };
@@ -16972,6 +16995,24 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             guardedRestoreContractSurfaceReady && interruptedRecoveryReady && releaseIdentityReady
                 ? "New SQLite backups use readable collision-safe .bak names; legacy .sqlite discovery/restore, explicit recovery snapshots, updater evidence and no-automatic-SQLite-restore boundaries remain intact"
                 : "Readable backup naming, dual-format discovery/restore, guarded recovery, updater evidence or release identity failed"));
+        var publicMeasurementDateProvenanceReady =
+            PublicReportPublishingService.PublicFieldAllowlist.Contains("MeasurementDates", StringComparer.Ordinal) &&
+            PublicTestSessionReportPublishingService.PublicFieldAllowlist.Contains("MeasurementDates", StringComparer.Ordinal) &&
+            publicReportVerification.Passed &&
+            publicTestVerification.Passed &&
+            publicReportProbe.Html.Contains("2026-07-21", StringComparison.Ordinal) &&
+            publicReportProbe.Html.Contains("2026-07-23", StringComparison.Ordinal) &&
+            publicReportProbe.Html.Contains("Not recorded", StringComparison.Ordinal) &&
+            publicTestProbe.Html.Contains("2026-07-21", StringComparison.Ordinal) &&
+            publicTestProbe.Html.Contains("2026-07-23", StringComparison.Ordinal) &&
+            publicTestProbe.Html.Contains("Not recorded", StringComparison.Ordinal) &&
+            !publicReportProbe.MetadataJson.Contains("UpdatedAtUtc", StringComparison.OrdinalIgnoreCase) &&
+            !publicTestProbe.MetadataJson.Contains("UpdatedAtUtc", StringComparison.OrdinalIgnoreCase);
+        checks.Add(new VerificationCheck("v44.7.9 Public Measurement Date Provenance release gate",
+            publicMeasurementDateProvenanceReady && releaseIdentityReady,
+            publicMeasurementDateProvenanceReady && releaseIdentityReady
+                ? "Material Engineering and Test Session reports publish allowlisted canonical ISO measured dates; missing dates remain Not recorded and internal edit timestamps stay excluded"
+                : "Public measured-date allowlist, renderer parity, missing-date honesty, timestamp exclusion or release identity failed"));
         var nativeMetadataTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMeasurementNotes");
         var experimentalRunsTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "ExperimentalRuns");
         var measurementDateEditProbe = new NativeStiffnessMeasurementRow();

@@ -37,6 +37,7 @@ public sealed class PublicMaterialEngineeringReportModel
     public PublicEngineeringScoreProfile MaterialAverage { get; init; } = new();
     public PublicEngineeringScoreProfile ManufacturerAverage { get; init; } = new();
     public PublicVerifiedMeasurementsModel VerifiedMeasurements { get; init; } = new();
+    public PublicMeasurementDateProvenanceModel MeasurementDates { get; init; } = new();
     public IReadOnlyList<PublicMetricPositionModel> MetricPositions { get; init; } = Array.Empty<PublicMetricPositionModel>();
     public IReadOnlyList<string> DecisionGuidance { get; init; } = Array.Empty<string>();
     public IReadOnlyList<PublicAlternativeModel> BetterAlternatives { get; init; } = Array.Empty<PublicAlternativeModel>();
@@ -59,6 +60,13 @@ public sealed class PublicMeasurementSetModel
     public double? CoefficientOfVariation { get; init; }
     public int SampleCount { get; init; }
     public int? Confidence { get; init; }
+}
+
+public sealed class PublicMeasurementDateProvenanceModel
+{
+    public string Tensile { get; init; } = "Not recorded";
+    public string Impact { get; init; } = "Not recorded";
+    public string Stiffness { get; init; } = "Not recorded";
 }
 
 public sealed class PublicMetricPositionModel
@@ -232,6 +240,7 @@ public sealed class PublicTestSessionReportModel
     public int SpecimenResultRecords { get; init; }
     public bool PublicDetailsApproved { get; init; }
     public PublicVerifiedMeasurementsModel VerifiedMeasurements { get; init; } = new();
+    public PublicMeasurementDateProvenanceModel MeasurementDates { get; init; } = new();
     public IReadOnlyList<PublicTestModuleQualityModel> QualityRows { get; init; } = Array.Empty<PublicTestModuleQualityModel>();
     public IReadOnlyList<PublicTestRawInputModel> RawInputs { get; init; } = Array.Empty<PublicTestRawInputModel>();
     public IReadOnlyList<PublicTestNoteModel> ApprovedNotes { get; init; } = Array.Empty<PublicTestNoteModel>();

@@ -30,10 +30,10 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 17 |
+| Open | 16 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 31 |
+| Solved | 32 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
@@ -211,9 +211,13 @@ Date: 2026-07-24
 Area: Public website / Material engineering reports
 Type: Website idea / Data issue
 Severity: Idea
-Status: Open
-Resolution: Add the canonical Tensile, Impact and Stiffness measured dates introduced in v44.6.2 to governed public material data so users can see when each published measurement was performed. Publish only explicitly reviewed fields for materials already allowed on the public website; missing dates must display `Not recorded`, and no internal edit timestamps, notes or private history may leak.
-Verification evidence: Requires public-model allowlist review, local HTML/PDF visual verification, Preview/Production renderer parity, manifest checks and explicit runtime acceptance before publication.
+Status: Solved
+Resolution: Solved in version v44.7.9 — 2026-07-25. Typed, allowlisted Material
+Engineering and Test Session reports publish canonical ISO dates or exact
+`Not recorded`; internal edit timestamps remain excluded.
+Verification evidence: Owner HTML/PDF review confirmed recorded/missing date
+behavior; responsive Reports actions and wrapped tooltips passed runtime
+review; Full Data Verification 334/334 PASS.
 What happened: Canonical measured dates are now available in SQLite and Material Details, but public website users cannot yet see when the displayed engineering measurements were performed.
 Expected behavior: Public material pages and applicable reports show clear per-test measured dates sourced from the same canonical SQLite metadata, with an unambiguous display format and honest missing-data behavior.
 Steps to reproduce: Open a published material page after v44.6.2 and compare its engineering information with Material Detail > General > Test Information in the desktop application.

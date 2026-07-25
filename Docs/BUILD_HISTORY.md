@@ -2,6 +2,35 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.9 - Public Measurement Date Provenance
+
+Candidate adds a shared public measurement-date model to the existing Material
+Engineering and Test Session publication pipelines. The projection reads
+canonical schema-v31 per-module metadata and exposes only ISO dates or the exact
+`Not recorded` fallback through reviewed allowlists.
+
+Internal create/edit timestamps remain forbidden. Public material opt-in,
+detail approval, formulas, routes, manifests, canonical HTML-to-PDF generation,
+website/FTPS and other report families retain their accepted behavior.
+
+Owner review exposed a GUI naming ambiguity: `Build Selected Public Reports`
+did not consume the adjacent template or scope selection. The action is renamed
+`Build Public Material Reports`, with explicit workflow guidance. No handler,
+route or output behavior changed.
+
+Long string tooltips were also clipped by the shared maximum width. The common
+tooltip content template now wraps text while retaining the existing width,
+padding, font size and display timing.
+
+The Reports workflow action row now uses a WrapPanel so narrower windows retain
+every action without horizontal clipping. The explanatory workflow text stays
+below the actions and wraps independently.
+
+Debug/Release builds passed with zero warnings/errors, and
+static/documentation gates passed. Owner runtime review accepted HTML/PDF date
+provenance, exact `Not recorded` behavior, responsive workflow actions and
+wrapped tooltips. Full Data Verification passed 334/334.
+
 ## v44.7.8 - Backup Filename Compatibility
 
 Candidate centralizes readable presentation filenames for all newly created

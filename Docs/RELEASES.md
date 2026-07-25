@@ -1,6 +1,19 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.9 - Public Measurement Date Provenance
+
+- Runtime-accepted canonical ISO Tensile, Impact and Stiffness measured dates
+  in allowlisted Material Engineering and Test Session reports.
+- Missing dates remain exactly `Not recorded`; internal edit timestamps, raw
+  inputs and notes retain their established publication boundaries.
+- Clarifies report-family build actions, wraps long tooltips and keeps every
+  Reports workflow action visible in narrower windows.
+- Preserves schema, formulas, routes, PDF-from-HTML, website/FTPS and other
+  report families.
+- Debug/Release and static/documentation gates passed; owner HTML/PDF and GUI
+  acceptance plus Full Data Verification passed 334/334.
+
 ## v44.7.8 - Backup Filename Compatibility
 
 - Runtime-accepted readable `.bak` presentation names for new automatic,

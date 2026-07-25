@@ -24,7 +24,8 @@ public sealed class PublicReportPublishingService
         "VideoReviewUrl", "VerifiedEngineeringAxes", "EngineeringSummary", "ExecutiveReview",
         "BestFeature", "WeakestFeature", "OverallRank", "OverallPercentile",
         "RecommendedApplications", "Strengths", "Limitations", "Tradeoffs", "PeerContext",
-        "MaterialAverage", "ManufacturerAverage", "VerifiedMeasurements", "MetricPositions",
+        "MaterialAverage", "ManufacturerAverage", "VerifiedMeasurements", "MeasurementDates",
+        "Tensile", "Impact", "Stiffness", "MetricPositions",
         "DecisionGuidance", "BetterAlternatives"
     };
 
@@ -33,7 +34,7 @@ public sealed class PublicReportPublishingService
         "\"Password\"", "\"Credential\"", "\"PrivateKey\"", "\"PurchaseId\"",
         "\"PurchasedFrom\"", "\"InventoryId\"", "\"StorageLocation\"", "\"BatchNumber\"",
         "\"SupplierUrl\"", "\"LandedCostAmount\"", "\"LandedCostUsdPerKg\"",
-        "\"ShippingAmount\"", "\"VatAmount\"", "\"Notes\""
+        "\"ShippingAmount\"", "\"VatAmount\"", "\"Notes\"", "\"UpdatedAtUtc\"", "\"CreatedAtUtc\""
     };
 
     private static readonly string[] ForbiddenRenderedFragments =
@@ -76,7 +77,7 @@ public sealed class PublicReportPublishingService
         var expectedPath = $"reports/materials/{SafeMaterialIdSegment(model.MaterialId)}";
         var materialIdPathPassed = string.Equals(publication.RelativeDirectory, expectedPath, StringComparison.Ordinal) &&
                                    publication.Html.Contains(WebUtility.HtmlEncode(model.MaterialId), StringComparison.Ordinal);
-        var publicFieldAllowlistPassed = PublicFieldAllowlist.Count == 38 &&
+        var publicFieldAllowlistPassed = PublicFieldAllowlist.Count == 42 &&
                                          publication.MetadataJson.Contains("publicFieldAllowlist", StringComparison.Ordinal) &&
                                          PublicFieldAllowlist.All(field => publication.MetadataJson.Contains($"\"{field}\"", StringComparison.Ordinal));
         var publicPayload = string.Join("\n", publication.Html, publication.Manifest, publication.MetadataJson, publication.PreviewIndexHtml);
@@ -110,6 +111,10 @@ public sealed class PublicReportPublishingService
                                 publication.Html.Contains("radar-poly-selected", StringComparison.Ordinal) &&
                                 publication.Html.Contains("Material and manufacturer context", StringComparison.Ordinal) &&
                                 publication.Html.Contains("Verified measurement results", StringComparison.Ordinal) &&
+                                publication.Html.Contains("Measurement provenance", StringComparison.Ordinal) &&
+                                publication.Html.Contains(H(model.MeasurementDates.Tensile), StringComparison.Ordinal) &&
+                                publication.Html.Contains(H(model.MeasurementDates.Impact), StringComparison.Ordinal) &&
+                                publication.Html.Contains(H(model.MeasurementDates.Stiffness), StringComparison.Ordinal) &&
                                 publication.Html.Contains("Metric rankings and percentiles", StringComparison.Ordinal) &&
                                 publication.Html.Contains("Decision guidance", StringComparison.Ordinal) &&
                                 publication.Html.Contains("Better alternatives", StringComparison.Ordinal) &&
@@ -181,6 +186,7 @@ public sealed class PublicReportPublishingService
         var radar = RadarHtml(model);
         var comparisonRows = ComparisonRowsHtml(model);
         var measurementRows = MeasurementRowsHtml(model.VerifiedMeasurements);
+        var measurementDateRows = MeasurementDateRowsHtml(model.MeasurementDates);
         var positionRows = model.MetricPositions.Count == 0
             ? "<tr><td colspan=\"4\">No governed ranking positions are available.</td></tr>"
             : string.Join("", model.MetricPositions.Select(item => $"<tr><td>{H(item.Metric)}</td><td>{Value(item.Score)}</td><td>{Value(item.Rank)}</td><td>{Value(item.Percentile)}</td></tr>"));
@@ -201,6 +207,7 @@ public sealed class PublicReportPublishingService
                "<h2>Engineering radar</h2><div class=\"chart radar-wrap\">" + radar + "</div>" +
                "<h2>Material and manufacturer context</h2><table><thead><tr><th>Metric</th><th>Selected material</th><th>Material average</th><th>Manufacturer average</th></tr></thead><tbody>" + comparisonRows + "</tbody></table>" +
                "<h2>Verified measurement results</h2><p class=\"muted\">Existing Verified Material Summary outputs. The public renderer does not read raw specimen rows or recalculate these values.</p><table><thead><tr><th>Measurement</th><th>Average</th><th>Std. deviation</th><th>CV</th><th>Samples</th><th>Confidence</th></tr></thead><tbody>" + measurementRows + "</tbody></table>" +
+               "<h2>Measurement provenance</h2><p class=\"muted\">Canonical per-module measured dates from SQLite, shown in unambiguous ISO format. Missing dates are not inferred.</p><table><thead><tr><th>Module</th><th>Measured date</th></tr></thead><tbody>" + measurementDateRows + "</tbody></table>" +
                $"<h2>Engineering interpretation</h2><div class=\"note\"><strong>Summary:</strong> {Value(model.EngineeringSummary)}</div><div class=\"note\"><strong>Data-driven review:</strong> {Value(model.ExecutiveReview)}</div>" +
                $"<div class=\"cards\"><div class=\"card\"><div class=\"label\">Best feature</div><div class=\"value\">{Value(model.BestFeature)}</div></div><div class=\"card\"><div class=\"label\">Main limitation</div><div class=\"value\">{Value(model.WeakestFeature)}</div></div><div class=\"card\"><div class=\"label\">Dataset position</div><div class=\"value\">{Value(model.OverallPercentile)}</div><div class=\"muted\">{Value(model.OverallRank)}</div></div></div>" +
                $"<div class=\"review-grid\"><section class=\"review\"><h2>Strengths</h2>{strengths}</section><section class=\"review\"><h2>Limitations</h2>{limitations}</section><section class=\"review\"><h2>Engineering trade-offs</h2>{tradeoffs}</section><section class=\"review\"><h2>Recommended applications</h2>{applications}</section></div>" +
@@ -353,6 +360,10 @@ public sealed class PublicReportPublishingService
                         $"<tr><td>Stiffness deflection</td><td>{Number(measurements.StiffnessDeflectionMm, "mm")}</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>";
         return string.Join("", rows) + stiffness;
     }
+    private static string MeasurementDateRowsHtml(PublicMeasurementDateProvenanceModel dates) =>
+        $"<tr><td>Tensile</td><td>{H(dates.Tensile)}</td></tr>" +
+        $"<tr><td>Impact</td><td>{H(dates.Impact)}</td></tr>" +
+        $"<tr><td>Stiffness</td><td>{H(dates.Stiffness)}</td></tr>";
     private static string MeasurementRow(string label, PublicMeasurementSetModel result, string unit) =>
         $"<tr><td>{H(label)}</td><td>{Number(result.Average, unit)}</td><td>{Number(result.StandardDeviation, unit)}</td><td>{Percent(result.CoefficientOfVariation)}</td><td>{(result.SampleCount > 0 ? result.SampleCount.ToString(CultureInfo.InvariantCulture) : "&mdash;")}</td><td>{(result.Confidence.HasValue ? H(result.Confidence.Value.ToString(CultureInfo.InvariantCulture) + "/10") : "&mdash;")}</td></tr>";
     private static string Number(double? value, string unit) => value.HasValue && double.IsFinite(value.Value) ? H(value.Value.ToString("0.###", CultureInfo.InvariantCulture) + " " + unit) : "&mdash;";

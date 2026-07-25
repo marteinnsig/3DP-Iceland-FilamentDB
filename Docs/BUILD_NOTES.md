@@ -1,4 +1,44 @@
-# Current Build Notes - v44.7.8
+# Current Build Notes - v44.7.9
+
+## Public Measurement Date Provenance
+
+v44.7.9 adds a shared typed public
+measurement-date projection to the Material Engineering and Test Session
+reports. Tensile, Impact and Stiffness dates come from canonical schema-v31
+SQLite metadata and are rendered as ISO `yyyy-MM-dd`; absent or invalid values
+remain exactly `Not recorded`.
+
+Both report families use explicit allowlists and exclude internal create/edit
+timestamps. The existing per-material `PublishPublicReports` boundary remains
+the publication owner, while raw inputs and notes still require the separate
+`PublishPublicTestDetails` approval. Comparison, manufacturer, material
+summary, printing recommendation, routes, manifests, PDF-from-HTML behavior,
+website/FTPS, measurements and formulas are unchanged.
+
+Runtime review found that `Build Selected Public Reports` sounded governed by
+the adjacent Report template and Report scope controls even though its accepted
+handler always builds the Material Engineering public batch. It is now named
+`Build Public Material Reports`; its tooltip and workflow guidance explicitly
+separate template/scope preview-export actions from the report-family-specific
+public build buttons. Handlers, routes and output behavior are unchanged.
+
+The same runtime review showed long button tooltips being clipped at the shared
+360-pixel boundary. The existing window-wide tooltip style now wraps its
+string content inside that maximum width. Tooltip text, timing and button
+behavior are unchanged.
+
+Narrow-window review then showed the Reports workflow buttons being clipped by
+their horizontal StackPanel. The buttons now use a WrapPanel with consistent
+row spacing, while the workflow guidance remains below them. Button identity,
+order and handlers are unchanged.
+
+Debug and Release builds pass with zero warnings/errors. The changed-code bare
+`Path.*`/credential-token probes, diff check, 136-column roadmap check and
+release-documentation audit pass. Owner runtime review accepted the report
+dates, exact missing-data fallback, responsive button layout and wrapped
+tooltips. Full Data Verification passed 334/334. v44.7.9 is complete.
+
+## Retained v44.7.8 evidence
 
 ## Backup Filename Compatibility
 

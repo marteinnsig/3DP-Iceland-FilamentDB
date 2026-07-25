@@ -3,6 +3,16 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.9 - Public Measurement Date Provenance
+
+Publishes canonical per-module measured dates through typed allowlisted
+Material Engineering and Test Session reports, with exact `Not recorded`
+honesty and no internal timestamp leakage. Reports workflow actions now have
+clear family ownership, wrapped tooltips and responsive button layout. Owner
+HTML/PDF and GUI acceptance plus Full Data Verification 334/334 passed.
+
+---
+
 # v44.7.8 - Backup Filename Compatibility
 
 Adds readable purpose-specific names for new SQLite backups while retaining

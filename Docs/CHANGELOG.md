@@ -2,6 +2,27 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.9 - Public Measurement Date Provenance
+
+- Added typed, allowlisted canonical Tensile, Impact and Stiffness measured
+  dates to Material Engineering and Test Session public reports.
+- Render dates in ISO `yyyy-MM-dd`; missing/invalid dates remain exactly
+  `Not recorded` and are never inferred from edit timestamps.
+- Preserved per-material publication opt-in and the separate approval boundary
+  for raw inputs and notes.
+- Left schema, measurements, formulas, report routes, PDF-from-HTML,
+  website/FTPS and other report families unchanged.
+- Renamed the misleading `Build Selected Public Reports` action to
+  `Build Public Material Reports` and clarified that Report template/scope
+  govern preview/export rather than the report-family public batch buttons.
+- Added wrapping to the existing shared tooltip template so longer button
+  guidance remains readable inside its established maximum width.
+- Made the Reports workflow button group wrap onto additional rows in narrower
+  windows instead of clipping later report-family actions.
+- Debug/Release and static/documentation gates passed. Owner accepted HTML/PDF
+  date provenance, missing-data honesty, responsive actions and wrapped
+  tooltips; Full Data Verification passed 334/334.
+
 ## v44.7.8 - Backup Filename Compatibility
 
 - Added readable purpose-specific `.bak` filenames for newly created automatic,

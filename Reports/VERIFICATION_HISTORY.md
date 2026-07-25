@@ -1,3 +1,19 @@
+# v44.7.9 - Public Measurement Date Provenance
+
+Date: 2026-07-25
+
+- PASS: Full Data Verification reported 334/334 applicable checks, zero FAIL
+  and zero N/A.
+- PASS: release identity aligned at v44.7.9, assembly 44.7.9.0 and
+  `PUBLIC-MEASUREMENT-DATE-PROVENANCE`.
+- PASS: owner HTML/PDF review confirmed canonical ISO Tensile, Impact and
+  Stiffness dates plus exact `Not recorded` fallback.
+- PASS: internal edit timestamps stayed excluded and raw inputs/notes retained
+  the separate public-detail approval boundary.
+- PASS: Reports build-action naming, wrapped tooltips and narrow-window button
+  wrapping passed owner runtime review.
+- ACCEPTED: v44.7.9 is runtime accepted and canonical.
+
 # v44.7.8 - Backup Filename Compatibility
 
 Date: 2026-07-25

@@ -1,12 +1,12 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.8 — Backup Filename Compatibility**
+Current canonical release: **v44.7.9 — Public Measurement Date Provenance**
 
-Last runtime-accepted baseline: **v44.7.8 — Backup Filename Compatibility**
+Last runtime-accepted baseline: **v44.7.9 — Public Measurement Date Provenance**
 
-Current application release: **v44.7.8 — Backup Filename Compatibility**
+Current application release: **v44.7.9 — Public Measurement Date Provenance**
 
-Current roadmap increment: **v44.7.9 — Public Measurement Date Provenance**
+Current roadmap increment: **v44.7.10 — Canonical MaterialID Default Row Order**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1662,12 +1662,14 @@ changes priority.
   - Keep the 20-file rotation bounded to new automatic `.bak` files.
   - Owner runtime acceptance and Full Data Verification 333/333 passed.
 - **v44.7.9 — Public Measurement Date Provenance**
-  - State: Current research/planning.
-  - Feedback disposition: Open.
-  - Add canonical Tensile, Impact and Stiffness measured dates to the reviewed public material model.
-  - Show dates on applicable website/report surfaces with `Not recorded` honesty.
-  - Preserve per-material publication opt-in and explicit public allowlists.
-  - Require Preview/Production HTML/PDF parity before publication.
+  - State: Complete.
+  - Feedback disposition: Solved.
+  - Add canonical ISO Tensile, Impact and Stiffness measured dates to Material Engineering and Test Session reports.
+  - Preserve exact `Not recorded` fallback, per-material publication opt-in and explicit public allowlists.
+  - Exclude internal edit timestamps; retain the separate raw-input and note approval boundary.
+  - Clarify that template/scope control preview-export; public batch buttons each name their report family.
+  - Preserve schema, formulas, report routes, other report families, website/FTPS and PDF-from-canonical-HTML behavior.
+  - Owner HTML/PDF and responsive-GUI review passed; Full Data Verification passed 334/334.
 - **v44.7.10 — Canonical MaterialID Default Row Order**
   - State: Planned.
   - Feedback disposition: Open.
