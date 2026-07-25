@@ -116,6 +116,11 @@
   archive/restore and recalculation paths.
 - Owner runtime testing accepted exact Fast selection for reports and
   Materials CRUD; Full Data Verification passed 328/328.
+- Moved Materials filters, visible report/count scope and governed column
+  Verification from hidden DataGrid state to canonical Fast contracts.
+- Routed Enter-key search focus to the Fast Materials view.
+- Owner runtime testing accepted canonical filter, ranking/report scope and
+  restart parity; Full Data Verification passed 329/329.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 

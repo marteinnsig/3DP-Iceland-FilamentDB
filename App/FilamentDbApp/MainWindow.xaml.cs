@@ -9636,20 +9636,11 @@ private void OpenReportOutputFolder_Click(object sender, RoutedEventArgs e)
 
     private List<DataRow> GetCanonicalVisibleMaterialRows()
     {
-        if (FindName("NativeMaterialsGrid") is DataGrid grid && grid.ItemsSource is not null)
-        {
-            var view = CollectionViewSource.GetDefaultView(grid.ItemsSource);
-            if (view is not null)
-            {
-                return view.Cast<object>()
-                    .OfType<NativeMaterialRow>()
-                    .Where(row => !row.IsArchived)
-                    .Select(BuildNativeMaterialDataRow)
-                    .ToList();
-            }
-        }
-
-        return BuildNativeMaterialDataRows(includeArchived: false);
+        var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
+        return _nativeMaterialRows
+            .Where(row => !row.IsArchived && visibleMaterialIds.Contains(row.MaterialID))
+            .Select(BuildNativeMaterialDataRow)
+            .ToList();
     }
 
     private List<DataRow> GetCanonicalActiveMaterialRows() => BuildNativeMaterialDataRows(includeArchived: false);
@@ -14681,7 +14672,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? $"{canonicalVisibleRows.Count} visible and {canonicalActiveRows.Count} active unique MaterialIDs come from the native SQLite-backed Materials view; legacy tab absent"
                 : "Native active/visible MaterialID parity or legacy-tab removal failed"));
         var persistedBaseMaterials = _database.LoadBaseMaterialCatalog();
-        var materialGridHeaders = NativeMaterialsGrid.Columns.Select(column => column.Header?.ToString() ?? string.Empty).ToList();
+        var materialGridHeaders = BuildFastMaterialsColumns()
+            .Select(column => column.Header)
+            .ToList();
         var perMaterialPrintingColumnsAbsent = !materialGridHeaders.Any(header =>
             header.StartsWith("Nozzle ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Bed ", StringComparison.OrdinalIgnoreCase) ||
@@ -14938,8 +14931,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var privatePublicFields = BuildWebsiteTemplateCommonFields(privatePublicProbe);
         var publicSelectionRoundTrip = NativeMaterialRowFromRecord(NativeMaterialRecordFromRow(selectedPublicProbe)).PublishPublicReports;
         var publicSelectionPersistenceReady = publicSelectionRoundTrip &&
-                                              FindName("NativeMaterialsGrid") is DataGrid materialsGrid &&
-                                              materialsGrid.Columns.Any(column => string.Equals(column.Header?.ToString(), "Public reports", StringComparison.Ordinal));
+                                              BuildFastMaterialsColumns().Any(column =>
+                                                  string.Equals(column.Header, "Public reports", StringComparison.Ordinal));
         var publicWebsiteLinkSelectionReady = string.Equals(selectedPublicFields["publicReportUrl"]?.ToString(), "reports/materials/MAT-PUBLIC-SELECTED/index.html", StringComparison.Ordinal) &&
                                               string.Equals(selectedPublicFields["publicReportPdfUrl"]?.ToString(), "reports/materials/MAT-PUBLIC-SELECTED/report.pdf", StringComparison.Ordinal) &&
                                               string.Equals(selectedPublicFields["publicRecommendationUrl"]?.ToString(), "reports/printing-recommendations/MAT-PUBLIC-SELECTED/index.html", StringComparison.Ordinal) &&
@@ -17386,6 +17379,21 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             settingsLegacyGridsRetired && releaseIdentityReady
                 ? "Materials selection and CRUD resolve through canonical Fast-owned selection without a DataGrid parameter"
                 : "Materials canonical selection ownership, a prior retirement gate or release identity failed"));
+        var canonicalVisibleMaterialRows = GetCanonicalVisibleMaterialRows();
+        var canonicalVisibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
+        var materialsCanonicalFilterOwnershipReady =
+            canonicalVisibleMaterialRows.Count == canonicalVisibleMaterialIds.Count &&
+            canonicalVisibleMaterialRows.All(row =>
+                canonicalVisibleMaterialIds.Contains(GetCell(row, "Material ID"))) &&
+            BuildFastMaterialsColumns().Any(column =>
+                string.Equals(column.Header, "Public reports", StringComparison.Ordinal));
+        checks.Add(new VerificationCheck("v44.7.7 Materials canonical filter/report ownership stage gate",
+            materialsCanonicalFilterOwnershipReady && materialsCanonicalSelectionReady &&
+            fastMaterialsViewReady && releaseIdentityReady,
+            materialsCanonicalFilterOwnershipReady && materialsCanonicalSelectionReady &&
+            fastMaterialsViewReady && releaseIdentityReady
+                ? "Materials filters, visible reports and governed column boundaries use canonical Fast contracts"
+                : "Materials canonical filter/report ownership, selection or release identity failed"));
 
         return checks;
     }
@@ -18512,10 +18520,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var active = _nativeMaterialRows.Count(row => !row.IsArchived);
         var archived = Math.Max(0, total - active);
 
-        var nativeView = FindName("NativeMaterialsGrid") is DataGrid nativeGrid && nativeGrid.ItemsSource is not null
-            ? CollectionViewSource.GetDefaultView(nativeGrid.ItemsSource)
-            : null;
-        var visible = nativeView?.Cast<object>().OfType<NativeMaterialRow>().Count() ?? active;
+        var visible = GetVisibleNativeMaterialIdsFromCurrentFilters().Count;
         var filtersActive = visible != total;
 
         if (FindName("NativeMaterialCountText") is TextBlock nativeCountText)
@@ -22440,7 +22445,7 @@ private List<string> GetVisibleAiMaterialLabels()
             ApplyNativeMaterialFilters();
             ApplyNativeMeasurementFilters();
             QueueNativeMaterialDependentIntelligenceRefresh();
-            if (FindName("NativeMaterialsGrid") is DataGrid grid) grid.Focus();
+            _embeddedMaterialsPrototypeView?.Focus();
         }
         else if (e.Key == Key.Escape)
         {
@@ -22493,55 +22498,17 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void ApplyNativeMaterialFilters()
     {
-        if (FindName("NativeMaterialsGrid") is not DataGrid grid || grid.ItemsSource is null) return;
-
-        var view = CollectionViewSource.GetDefaultView(grid.ItemsSource);
-        if (view is null) return;
-        if (view is IEditableCollectionView editableView && (editableView.IsEditingItem || editableView.IsAddingNew)) return;
-
-        var search = FindName("NativeMaterialSearchBox") is TextBox searchBox ? searchBox.Text.Trim() : string.Empty;
-        var manufacturer = NativeMaterialFilterValue("NativeMaterialManufacturerFilter");
-        var baseMaterial = NativeMaterialFilterValue("NativeMaterialBaseMaterialFilter");
-        var category = NativeMaterialFilterValue("NativeMaterialCategoryFilter");
-        var reinforcement = NativeMaterialFilterValue("NativeMaterialReinforcementFilter");
-        var tested = NativeMaterialFilterValue("NativeMaterialTestedFilter");
-
-        try
+        var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
+        _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
+            "the current Materials filter/search result");
+        if (_lastSelectedNativeMaterial is not null &&
+            !visibleMaterialIds.Contains(_lastSelectedNativeMaterial.MaterialID))
         {
-            view.Filter = item =>
-            {
-                if (item is not NativeMaterialRow row) return false;
-                if (!NativeMaterialMatches(row.Manufacturer, manufacturer)) return false;
-                if (!NativeMaterialMatches(row.BaseMaterial, baseMaterial)) return false;
-                if (!NativeMaterialMatches(row.MaterialCategory, category)) return false;
-                if (!NativeMaterialMatches(row.Reinforcement, reinforcement)) return false;
-                if (!NativeMaterialMatchesTestedFilter(row, tested)) return false;
-
-                if (!string.IsNullOrWhiteSpace(search))
-                {
-                    var haystack = string.Join(" ", row.MaterialID, row.Manufacturer, row.ProductLine, row.MarketingName, row.BaseMaterial, row.MaterialCategory, row.VariantFinish, row.Reinforcement, row.Color, row.WebsiteDisplayName, row.MaterialKey);
-                    if (haystack.IndexOf(search, StringComparison.OrdinalIgnoreCase) < 0) return false;
-                }
-
-                return true;
-            };
-
-            view.Refresh();
-            _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
-                "the current Materials filter/search result");
-            if (_lastSelectedNativeMaterial is not null && !grid.Items.Contains(_lastSelectedNativeMaterial))
-            {
-                _lastSelectedNativeMaterial.IsCurrentSelection = false;
-                _lastSelectedNativeMaterial = null;
-                _workflowPreferencesService.SetLastSelectedMaterialId(null);
-                NativeMaterialSelectionText.Text = "Selected MaterialID: none";
-                ClearMaterialDetails();
-            }
-        }
-        catch (InvalidOperationException)
-        {
-            // WPF can reject filter changes while a new material row is still being committed.
-            // The next dispatcher pass or user action will reapply filters after the edit closes.
+            _lastSelectedNativeMaterial.IsCurrentSelection = false;
+            _lastSelectedNativeMaterial = null;
+            _workflowPreferencesService.SetLastSelectedMaterialId(null);
+            NativeMaterialSelectionText.Text = "Selected MaterialID: none";
+            ClearMaterialDetails();
         }
         RefreshNativeMaterialSummary();
         UpdateCountText();
@@ -22586,29 +22553,6 @@ private List<string> GetVisibleAiMaterialLabels()
         }
 
         return true;
-    }
-
-    private void ApplyNativeMeasurementFilterToGrid(string gridName, HashSet<string> visibleMaterialIds)
-    {
-        if (FindName(gridName) is not DataGrid grid || grid.ItemsSource is null) return;
-
-        var view = CollectionViewSource.GetDefaultView(grid.ItemsSource);
-        if (view is null) return;
-        if (view is IEditableCollectionView editableView && (editableView.IsEditingItem || editableView.IsAddingNew)) return;
-
-        try
-        {
-            view.Filter = item =>
-            {
-                var materialId = item.GetType().GetProperty("MaterialID")?.GetValue(item)?.ToString()?.Trim() ?? string.Empty;
-                return !string.IsNullOrWhiteSpace(materialId) && visibleMaterialIds.Contains(materialId);
-            };
-            view.Refresh();
-        }
-        catch (InvalidOperationException)
-        {
-            // WPF can reject filter changes while a grid edit is still committing.
-        }
     }
 
     private string NativeMaterialFilterValue(string comboName)

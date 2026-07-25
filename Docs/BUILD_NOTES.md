@@ -216,6 +216,18 @@ selected-material reports, Duplicate, Archive, Unarchive and Delete, including
 filters, sort, tab changes, recalculation and restart cleanup to 201 canonical
 rows. Full Data Verification passed 328/328. Stage 5G is accepted.
 
+Stage 5H moves Materials filtering, visible report scope, visible counts and
+governed column Verification from the hidden DataGrid view/columns to the
+canonical filter predicate and explicit Fast Materials contract. Enter-key
+search focus also targets the Fast view. Hidden XAML and edit/recovery adapters
+remain for later checkpoints. Runtime filter, report-scope and Verification
+acceptance are pending.
+
+Owner runtime testing accepted search and combined filters, honest selection
+clearing, Fast focus, measurement propagation, ranking/report visible scope,
+archive/unarchive scope and restart parity at 201 canonical rows. Full Data
+Verification passed 329/329. Stage 5H is accepted.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on

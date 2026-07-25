@@ -95,6 +95,12 @@ adapters stay deletion-gated; runtime acceptance is pending.
 Owner runtime testing accepted exact Fast selection for reports and all
 Materials CRUD across filters, sort, tab changes and restart cleanup to 201
 canonical rows. Full Data Verification passed 328/328; Stage 5G is accepted.
+Stage 5H moves Materials filter, visible-report/count and governed-column
+ownership from hidden DataGrid state to canonical predicates and the explicit
+Fast contract. Legacy edit/recovery adapters remain deletion-gated; runtime
+testing accepted filters, selection clearing, measurement propagation,
+ranking/report scope and restart parity at 201 canonical rows. Full Data
+Verification passed 329/329; Stage 5H is accepted.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

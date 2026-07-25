@@ -608,6 +608,10 @@ Stage 5G candidate moves reports and Materials CRUD to Fast-owned canonical
 selection and removes hidden-grid focus/refresh ownership from new-row,
 archive/restore and recalculation paths. Owner runtime acceptance and Full
 Data Verification 328/328 passed.
+Stage 5H candidate moves Materials filter, visible report/count and governed
+column ownership to canonical predicates and the explicit Fast contract.
+Owner runtime acceptance and Full Data Verification 329/329 passed. Legacy
+edit/recovery adapters remain as the next checkpoint.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,
