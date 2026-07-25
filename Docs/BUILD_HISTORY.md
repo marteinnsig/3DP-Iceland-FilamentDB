@@ -2,6 +2,19 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.17 - Disposable Backup and Recovery Acceptance
+
+Research found mature manual backup, catalog and SQLite restore ownership, but
+Excel restore retained only pre-restore SQLite evidence. Stage 4 adds explicit
+disposable authorization, post-Excel evidence and a guarded rollback path.
+
+The runner verifies both filename generations, hashes the governed workbook,
+proves a disposable mutation, restores Excel, retains pre/post backups and
+restarts under the same manifest. SQLite restore is never automated.
+Disposable Full Data Verification passes 343/343 and final business state
+matches baseline. Owner accepted backup discovery, governed Excel recovery,
+pre/post evidence and Full Data Verification 343/343.
+
 ## v44.7.16 - Disposable CRUD Acceptance
 
 Research confirmed that Fast-grid cells still lack stable automation peers and

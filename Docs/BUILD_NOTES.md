@@ -1,6 +1,22 @@
-# Current Build Notes - v44.7.16
+# Current Build Notes - v44.7.17
 
-## Disposable CRUD Acceptance candidate
+## Disposable Backup and Recovery Acceptance
+
+v44.7.17 adds explicit `recovery` scenario authorization. It creates and
+verifies manual `.bak` plus legacy `.sqlite` evidence, exports and verifies the
+canonical governed Excel package, applies a disposable mutation, restores the
+package and restarts under the same manifest.
+
+Excel restore now retains verified pre/post SQLite backups. A post-evidence
+failure triggers rollback from the pre-restore backup. General SQLite/Excel
+restore UI, owner paths, Production, FTPS and updates remain blocked. SQLite
+restore is not automated. Disposable and owner Full Data Verification pass
+343/343 with equal baseline/final business-state hashes. Owner accepted backup
+discovery, governed Excel recovery and pre/post evidence. v44.7.17 is closed.
+
+## Retained v44.7.16 evidence
+
+## Disposable CRUD Acceptance
 
 v44.7.16 adds an explicit `crud` scenario over the accepted disposable runtime
 foundation. The manifest authorizes one exact generated disposable MaterialID.

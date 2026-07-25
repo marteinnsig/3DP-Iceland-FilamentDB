@@ -43,6 +43,7 @@ internal static class Program
                 seedDatabase,
                 string.Equals(options.Scenario, "reports", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "crud", StringComparison.Ordinal),
+                string.Equals(options.Scenario, "recovery", StringComparison.Ordinal),
                 out var markerPath,
                 out databasePath,
                 out var materialCrudId);
@@ -147,6 +148,29 @@ internal static class Program
                 Record("crud-restart-verify-absent", true, materialCrudId);
                 CaptureWindow(main, IOPath.Combine(root, "evidence", "crud-complete.png"));
             }
+            else if (string.Equals(options.Scenario, "recovery", StringComparison.Ordinal))
+            {
+                RunRecoveryAction(main, application.Id, "AutomationRecoveryBackup", "BACKUPS-VERIFIED");
+                var backupArtifacts = ValidateRecoveryBackupArtifacts(root, databasePath);
+                Record("recovery-backup-catalog", true, $"{backupArtifacts} verified .bak/.sqlite artifacts");
+                RunRecoveryAction(main, application.Id, "AutomationRecoveryExportExcel", "EXCEL-EXPORTED");
+                var workbook = IOPath.Combine(root, "output", "3DPIceland-Automation-DisasterRecovery.xlsx");
+                Require(IOFile.Exists(workbook) && new FileInfo(workbook).Length > 0,
+                    "Governed Excel recovery package is missing.");
+                Record("recovery-excel-package", true,
+                    $"{new FileInfo(workbook).Length} bytes; sha256={Sha256(workbook)}");
+                RunRecoveryAction(main, application.Id, "AutomationRecoveryMutate", "MUTATED");
+                RecordDatabaseEvidence(root, databasePath, "recovery-after-mutation");
+                RunRecoveryAction(main, application.Id, "AutomationRecoveryRestoreExcel", "EXCEL-RESTORED");
+                RecordDatabaseEvidence(root, databasePath, "recovery-after-excel-restore");
+                var restoreArtifacts = ValidateRecoveryBackupArtifacts(root, databasePath);
+                Require(restoreArtifacts >= backupArtifacts + 2,
+                    "Excel restore did not add both pre/post SQLite evidence backups.");
+                Record("recovery-pre-post-evidence", true, $"{restoreArtifacts} verified backup artifacts");
+                (application, main) = RestartApplication(application, executable, markerPath);
+                CaptureWindow(main, IOPath.Combine(root, "evidence", "recovery-complete.png"));
+                Record("recovery-restart", true, "Restored disposable profile restarted under the same manifest");
+            }
             CloseWindow(main, application.Id);
             if (!application.WaitForExit(15000))
                 throw new TimeoutException("Application did not complete controlled shutdown.");
@@ -211,6 +235,7 @@ internal static class Program
         string seedDatabase,
         bool reportGenerationAuthorized,
         bool materialCrudAuthorized,
+        bool recoveryAuthorized,
         out string markerPath,
         out string databasePath,
         out string materialCrudId)
@@ -247,7 +272,8 @@ internal static class Program
             updatesBlocked = true,
             reportGenerationAuthorized,
             materialCrudAuthorized,
-            materialCrudId
+            materialCrudId,
+            recoveryAuthorized
         };
         IOFile.WriteAllText(markerPath, JsonSerializer.Serialize(manifest, new JsonSerializerOptions
         {
@@ -276,6 +302,51 @@ internal static class Program
             Thread.Sleep(150);
         }
         throw new TimeoutException($"Timed out waiting for CRUD status {expectedStatus}.");
+    }
+
+    private static void RunRecoveryAction(
+        AutomationElement main,
+        int processId,
+        string automationId,
+        string expectedStatus)
+    {
+        Invoke(FindById(main, automationId), processId);
+        var status = FindById(main, "AutomationRecoveryStatus");
+        var timer = Stopwatch.StartNew();
+        while (timer.Elapsed < ReportTimeout)
+        {
+            AssertNoUnexpectedWindows(processId, "MainWindow");
+            if (string.Equals(status.Current.Name, expectedStatus, StringComparison.Ordinal)) return;
+            Thread.Sleep(150);
+        }
+        throw new TimeoutException($"Timed out waiting for recovery status {expectedStatus}.");
+    }
+
+    private static int ValidateRecoveryBackupArtifacts(string root, string databasePath)
+    {
+        var databaseFolder = IOPath.Combine(root, "database");
+        var paths = IODirectory.EnumerateFiles(databaseFolder, "*", SearchOption.TopDirectoryOnly)
+            .Where(path => !string.Equals(IOPath.GetFullPath(path), IOPath.GetFullPath(databasePath),
+                StringComparison.OrdinalIgnoreCase))
+            .Where(path => string.Equals(IOPath.GetExtension(path), ".bak", StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(IOPath.GetExtension(path), ".sqlite", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        Require(paths.Any(path => string.Equals(IOPath.GetExtension(path), ".bak", StringComparison.OrdinalIgnoreCase)),
+            "Recovery evidence has no presentation .bak backup.");
+        Require(paths.Any(path => string.Equals(IOPath.GetExtension(path), ".sqlite", StringComparison.OrdinalIgnoreCase)),
+            "Recovery evidence has no legacy .sqlite compatibility backup.");
+        foreach (var path in paths)
+        {
+            using var connection = new SqliteConnection($"Data Source={path};Mode=ReadOnly;Pooling=False");
+            connection.Open();
+            using var integrity = connection.CreateCommand();
+            integrity.CommandText = "PRAGMA integrity_check;";
+            Require(string.Equals(integrity.ExecuteScalar()?.ToString(), "ok", StringComparison.OrdinalIgnoreCase),
+                $"Recovery backup failed integrity verification: {IOPath.GetFileName(path)}");
+            Record("recovery-artifact", true,
+                $"{IOPath.GetFileName(path)}; {new FileInfo(path).Length} bytes; sha256={Sha256(path)}");
+        }
+        return paths.Count;
     }
 
     private static (Process Process, AutomationElement Main) RestartApplication(
@@ -697,6 +768,7 @@ internal static class Program
                 inputConfinedToOwnedProcess = true,
                 reportGenerationAuthorized = string.Equals(CurrentScenario, "reports", StringComparison.Ordinal)
                 ,materialCrudAuthorized = string.Equals(CurrentScenario, "crud", StringComparison.Ordinal)
+                ,recoveryAuthorized = string.Equals(CurrentScenario, "recovery", StringComparison.Ordinal)
             },
             executable,
             seedDatabase,
@@ -736,8 +808,8 @@ internal static class Program
             var scenario = scenarioIndex >= 0 && scenarioIndex + 1 < args.Length
                 ? args[scenarioIndex + 1].Trim().ToLowerInvariant()
                 : "smoke";
-            if (scenario is not ("smoke" or "reports" or "crud"))
-                throw new ArgumentException("--scenario must be smoke, reports or crud.");
+            if (scenario is not ("smoke" or "reports" or "crud" or "recovery"))
+                throw new ArgumentException("--scenario must be smoke, reports, crud or recovery.");
             return new RunnerOptions(Required("--app"), Required("--seed-database"), scenario);
         }
     }

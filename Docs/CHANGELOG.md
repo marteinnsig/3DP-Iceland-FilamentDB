@@ -2,6 +2,20 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.17 - Disposable Backup and Recovery Acceptance
+
+- Added explicit disposable recovery scenario authorization.
+- Verified manual `.bak` and retained legacy `.sqlite` discovery, integrity,
+  compatibility and hashes.
+- Automated governed Excel export, disposable mutation, Excel restore and
+  controlled same-manifest restart without automating SQLite restore.
+- Added post-Excel-restore SQLite evidence and rollback from verified
+  pre-restore evidence if post-restore verification fails.
+- Disposable Stage 4 and Full Data Verification pass 343/343 with equal
+  baseline/final business-state hashes.
+- Owner accepted backup discovery, governed Excel recovery, pre/post evidence
+  and Full Data Verification 343/343.
+
 ## v44.7.16 - Disposable CRUD Acceptance
 
 - Added an explicit disposable `crud` scenario authorized for one exact

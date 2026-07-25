@@ -1,6 +1,16 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.17 - Disposable Backup and Recovery Acceptance
+
+- Runtime-accepted Stage 4 with explicit disposable recovery authorization.
+- Preserves new `.bak` and historical `.sqlite` discovery and verification.
+- Proves governed Excel export/restore with pre/post SQLite evidence and equal
+  baseline/final business state.
+- Keeps SQLite restore, owner paths, Production, FTPS and updates blocked.
+- Disposable and owner Full Data Verification pass 343/343; owner accepted
+  backup discovery, governed Excel recovery and pre/post evidence.
+
 ## v44.7.16 - Disposable CRUD Acceptance
 
 - Adds exact-ID, scenario-authorized Materials CRUD only in a proven disposable

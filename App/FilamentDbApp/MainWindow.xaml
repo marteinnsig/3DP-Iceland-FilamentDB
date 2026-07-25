@@ -237,6 +237,19 @@
                         <TextBlock x:Name="AutomationCrudStatusText" AutomationProperties.AutomationId="AutomationCrudStatus"
                                    Foreground="#F8FAFC" VerticalAlignment="Center" />
                     </StackPanel>
+                    <StackPanel x:Name="AutomationRecoveryPanel" Orientation="Horizontal" Margin="0,6,0,0" Visibility="Collapsed">
+                        <Button AutomationProperties.AutomationId="AutomationRecoveryBackup" Content="Recovery: Backup + Catalog"
+                                Click="AutomationRecoveryBackup_Click" Margin="0,0,6,0" />
+                        <Button AutomationProperties.AutomationId="AutomationRecoveryExportExcel" Content="Export Excel"
+                                Click="AutomationRecoveryExportExcel_Click" Margin="0,0,6,0" />
+                        <Button AutomationProperties.AutomationId="AutomationRecoveryMutate" Content="Mutate"
+                                Click="AutomationRecoveryMutate_Click" Margin="0,0,6,0" />
+                        <Button AutomationProperties.AutomationId="AutomationRecoveryRestoreExcel" Content="Restore Excel"
+                                Click="AutomationRecoveryRestoreExcel_Click" Margin="0,0,6,0" />
+                        <TextBlock x:Name="AutomationRecoveryStatusText"
+                                   AutomationProperties.AutomationId="AutomationRecoveryStatus"
+                                   Foreground="#F8FAFC" VerticalAlignment="Center" />
+                    </StackPanel>
                 </StackPanel>
 
                 <Border Grid.Column="2" Background="#1F2937" CornerRadius="6" Padding="12,7" VerticalAlignment="Center">

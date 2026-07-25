@@ -21,6 +21,7 @@ public sealed class AutomationRuntimeProfile
     public bool ReportGenerationAuthorized { get; init; }
     public bool MaterialCrudAuthorized { get; init; }
     public string MaterialCrudId { get; init; } = string.Empty;
+    public bool RecoveryAuthorized { get; init; }
 
     public static AutomationRuntimeProfile? Current { get; private set; }
     public static bool IsActive => Current is not null;
@@ -71,6 +72,13 @@ public sealed class AutomationRuntimeProfile
             !string.Equals(Current.MaterialCrudId, materialId, StringComparison.Ordinal))
             throw new InvalidOperationException(
                 "Material CRUD requires explicit authorization for the exact disposable MaterialID.");
+    }
+
+    public static void DemandRecoveryAuthorized()
+    {
+        if (!IsActive || Current?.RecoveryAuthorized != true)
+            throw new InvalidOperationException(
+                "Backup and recovery automation requires explicit disposable scenario authorization.");
     }
 
     private void Validate(string manifestPath)

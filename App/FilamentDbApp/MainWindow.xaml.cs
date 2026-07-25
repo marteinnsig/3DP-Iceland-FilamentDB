@@ -189,6 +189,9 @@ public partial class MainWindow : Window
         AutomationCrudPanel.Visibility = AutomationRuntimeProfile.Current.MaterialCrudAuthorized
             ? Visibility.Visible
             : Visibility.Collapsed;
+        AutomationRecoveryPanel.Visibility = AutomationRuntimeProfile.Current.RecoveryAuthorized
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private bool IsAutomationActionBlocked(string action)
@@ -280,6 +283,73 @@ public partial class MainWindow : Window
         if (!SaveNativeMaterialsSilent())
             throw new InvalidOperationException($"Canonical SQLite save failed during automation CRUD {status}.");
         SetAutomationCrudStatus(status);
+    }
+
+    private void SetAutomationRecoveryStatus(string status)
+    {
+        AutomationRecoveryStatusText.Text = status;
+        AutomationProperties.SetName(AutomationRecoveryStatusText, status);
+    }
+
+    private void AutomationRecoveryBackup_Click(object sender, RoutedEventArgs e)
+    {
+        AutomationRuntimeProfile.DemandRecoveryAuthorized();
+        var backup = _database.CreateManualBackupNow();
+        var verified = _database.VerifyBackupCompatibility(backup.FullName, runMigrationDryRun: true);
+        if (!verified.CanRestore) throw new InvalidOperationException("Disposable manual backup did not verify.");
+
+        var legacyPath = IOPath.Combine(
+            _database.BackupFolder,
+            "filamentdb_manual_" + DateTime.Now.ToString("yyyyMMdd_HHmmss_fff", CultureInfo.InvariantCulture) + ".sqlite");
+        IOFile.Copy(backup.FullName, legacyPath, overwrite: false);
+        var catalog = _database.GetLocalBackupCatalog();
+        if (!catalog.Any(item => string.Equals(item.FilePath, backup.FullName, StringComparison.OrdinalIgnoreCase) && item.CanRestore) ||
+            !catalog.Any(item => string.Equals(item.FilePath, legacyPath, StringComparison.OrdinalIgnoreCase) && item.CanRestore))
+            throw new InvalidOperationException("Recovery catalog did not retain verified .bak and legacy .sqlite discovery.");
+        SetAutomationRecoveryStatus("BACKUPS-VERIFIED");
+    }
+
+    private void AutomationRecoveryExportExcel_Click(object sender, RoutedEventArgs e)
+    {
+        AutomationRuntimeProfile.DemandRecoveryAuthorized();
+        PersistCanonicalStateForExcelRecovery();
+        RefreshNativeInputModulesFromMaterialManager(markDirty: false);
+        ApplyNativeTensileComputedFields(_nativeTensileRows);
+        ApplyNativeImpactComputedFields(_nativeImpactRows);
+        ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
+        ExportExcelRecoveryPackageToPath(GetAutomationRecoveryWorkbookPath());
+        SetAutomationRecoveryStatus("EXCEL-EXPORTED");
+    }
+
+    private void AutomationRecoveryMutate_Click(object sender, RoutedEventArgs e)
+    {
+        AutomationRuntimeProfile.DemandRecoveryAuthorized();
+        var row = _nativeMaterialRows.FirstOrDefault()
+                  ?? throw new InvalidOperationException("Disposable recovery scenario requires one canonical Material.");
+        row.Notes = (row.Notes ?? string.Empty) + " AUTOMATION-RECOVERY-MUTATION";
+        ApplyNativeMaterialComputedFields(row, _nativeMaterialRows.IndexOf(row));
+        if (!SaveNativeMaterialsSilent())
+            throw new InvalidOperationException("Disposable recovery mutation did not save.");
+        SetAutomationRecoveryStatus("MUTATED");
+    }
+
+    private void AutomationRecoveryRestoreExcel_Click(object sender, RoutedEventArgs e)
+    {
+        AutomationRuntimeProfile.DemandRecoveryAuthorized();
+        var snapshot = new ExcelDisasterRecoveryService().LoadAndVerify(GetAutomationRecoveryWorkbookPath());
+        var result = _database.RestoreExcelRecoverySnapshot(snapshot);
+        if (!IOFile.Exists(result.RecoveryBackupPath) || !IOFile.Exists(result.PostRestoreBackupPath))
+            throw new InvalidOperationException("Excel restore did not retain pre/post SQLite evidence.");
+        _databaseRestoreShutdown = true;
+        SetAutomationRecoveryStatus("EXCEL-RESTORED");
+    }
+
+    private static string GetAutomationRecoveryWorkbookPath()
+    {
+        AutomationRuntimeProfile.DemandRecoveryAuthorized();
+        return IOPath.Combine(
+            AutomationRuntimeProfile.Current!.OutputFolder,
+            "3DPIceland-Automation-DisasterRecovery.xlsx");
     }
 
     private static void RunStartupPhase(string phaseName, Action action)
@@ -12006,22 +12076,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             };
 
             if (dialog.ShowDialog(this) != true) return;
-
-            using var workbook = new XLWorkbook();
-            AddNativeExportInfoSheet(workbook);
-            AddNativeMaterialsSheet(workbook);
-            AddNativeTensileSheet(workbook);
-            AddNativeImpactSheet(workbook);
-            AddNativeStiffnessSheet(workbook);
-            AddNativeSettingsSheet(workbook);
-            AddBaseMaterialProfilesSheet(workbook);
-            var recoverySnapshot = _database.CreateExcelRecoverySnapshot();
-            new ExcelDisasterRecoveryService().AddRecoveryPackage(workbook, recoverySnapshot);
-            workbook.SaveAs(dialog.FileName);
-
-            var verifiedSnapshot = new ExcelDisasterRecoveryService().LoadAndVerify(dialog.FileName);
-            if (verifiedSnapshot.Tables.Count != recoverySnapshot.Tables.Count || verifiedSnapshot.Tables.Sum(table => table.Rows.Count) != recoverySnapshot.Tables.Sum(table => table.Rows.Count))
-                throw new InvalidOperationException("The saved Excel disaster-recovery package did not pass table/row round-trip verification.");
+            var verifiedSnapshot = ExportExcelRecoveryPackageToPath(dialog.FileName);
 
             StatusText.Text = $"Excel disaster-recovery package exported — {verifiedSnapshot.Tables.Count} governed tables, {verifiedSnapshot.Tables.Sum(table => table.Rows.Count):N0} rows";
             ShowTransientStatus($"Excel disaster-recovery package verified — {System.IO.Path.GetFileName(dialog.FileName)}");
@@ -12030,6 +12085,32 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         {
             MessageBox.Show(this, $"Could not export the Excel disaster-recovery package:\n\n{ex.Message}", "Excel Disaster Recovery Export", MessageBoxButton.OK, MessageBoxImage.Error);
         }
+    }
+
+    private ExcelRecoverySnapshot ExportExcelRecoveryPackageToPath(string outputPath)
+    {
+        var fullPath = IOPath.GetFullPath(outputPath);
+        var folder = IOPath.GetDirectoryName(fullPath)
+                     ?? throw new InvalidOperationException("Excel recovery output folder is unavailable.");
+        IODirectory.CreateDirectory(folder);
+        using var workbook = new XLWorkbook();
+        AddNativeExportInfoSheet(workbook);
+        AddNativeMaterialsSheet(workbook);
+        AddNativeTensileSheet(workbook);
+        AddNativeImpactSheet(workbook);
+        AddNativeStiffnessSheet(workbook);
+        AddNativeSettingsSheet(workbook);
+        AddBaseMaterialProfilesSheet(workbook);
+        var recoverySnapshot = _database.CreateExcelRecoverySnapshot();
+        new ExcelDisasterRecoveryService().AddRecoveryPackage(workbook, recoverySnapshot);
+        workbook.SaveAs(fullPath);
+        var verifiedSnapshot = new ExcelDisasterRecoveryService().LoadAndVerify(fullPath);
+        if (verifiedSnapshot.Tables.Count != recoverySnapshot.Tables.Count ||
+            verifiedSnapshot.Tables.Sum(table => table.Rows.Count) !=
+            recoverySnapshot.Tables.Sum(table => table.Rows.Count))
+            throw new InvalidOperationException(
+                "The saved Excel disaster-recovery package did not pass table/row round-trip verification.");
+        return verifiedSnapshot;
     }
 
     private void PersistCanonicalStateForExcelRecovery()
@@ -13392,6 +13473,19 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             disposableCrudAcceptanceReady
                 ? "Exact-ID scenario authorization, profile-only commands and stable CRUD persistence evidence IDs are present"
                 : "Disposable CRUD authorization, exact-ID guard or stable evidence contract is incomplete"));
+        var disposableRecoveryAcceptanceReady =
+            typeof(AutomationRuntimeProfile).GetProperty(nameof(AutomationRuntimeProfile.RecoveryAuthorized)) is not null &&
+            typeof(AutomationRuntimeProfile).GetMethod(nameof(AutomationRuntimeProfile.DemandRecoveryAuthorized)) is not null &&
+            typeof(ExcelRecoveryRestoreResult).GetProperty(nameof(ExcelRecoveryRestoreResult.PostRestoreBackupPath)) is not null &&
+            FindName("AutomationRecoveryPanel") is StackPanel &&
+            FindName("AutomationRecoveryStatusText") is TextBlock automationRecoveryStatus &&
+            AutomationProperties.GetAutomationId(automationRecoveryStatus) == "AutomationRecoveryStatus" &&
+            LocalDatabase.BackupFilenameCompatibilityContractIsReady();
+        checks.Add(new VerificationCheck("Disposable backup and recovery acceptance safety foundation",
+            disposableRecoveryAcceptanceReady,
+            disposableRecoveryAcceptanceReady
+                ? "Scenario authorization, legacy/new backup discovery, governed Excel restore and pre/post evidence contracts are present"
+                : "Disposable recovery authorization, backup compatibility or pre/post evidence contract is incomplete"));
         var workspaceTabHeaders = WorkspaceTabs.Items.OfType<TabItem>()
             .Select(item => item.Header?.ToString() ?? string.Empty)
             .ToList();

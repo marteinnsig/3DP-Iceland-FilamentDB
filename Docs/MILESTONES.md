@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.17 - Disposable Backup and Recovery Acceptance
+
+Stage 4 candidate verifies manual backup, historical filename compatibility and
+governed Excel recovery inside an isolated profile. Pre/post SQLite evidence is
+retained, SQLite restore remains manual and disposable Verification passes
+343/343. Owner runtime accepted recovery behavior and Verification 343/343.
+
+---
+
 # v44.7.16 - Disposable CRUD Acceptance
 
 Stage 3 adds exact-ID, scenario-authorized Materials CRUD in an isolated

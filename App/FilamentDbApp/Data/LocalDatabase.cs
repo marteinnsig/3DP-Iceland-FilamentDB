@@ -22,6 +22,7 @@ public sealed partial class LocalDatabase
     private const string PresentationPreRestoreBackupPrefix = "3DPIceland-Pre-SQLite-Restore-";
     private const string PresentationPostRestoreBackupPrefix = "3DPIceland-Post-SQLite-Restore-";
     private const string PresentationPreExcelRestoreBackupPrefix = "3DPIceland-Pre-Excel-Restore-";
+    private const string PresentationPostExcelRestoreBackupPrefix = "3DPIceland-Post-Excel-Restore-";
     private bool _requiredCanonicalMigrationBackupCreated;
     private static readonly string[] ExcelRecoveryTableInsertOrder =
     {
@@ -172,8 +173,9 @@ public sealed partial class LocalDatabase
 
         IODirectory.CreateDirectory(BackupFolder);
         var backupPath = CreatePresentationBackupPath(prefix, DateTime.Now);
-        using var source = new SqliteConnection(ConnectionString);
-        using var destination = new SqliteConnection($"Data Source={backupPath}");
+        var sourceBuilder = new SqliteConnectionStringBuilder(ConnectionString) { Pooling = false };
+        using var source = new SqliteConnection(sourceBuilder.ToString());
+        using var destination = new SqliteConnection($"Data Source={backupPath};Pooling=False");
         source.Open();
         destination.Open();
         source.BackupDatabase(destination);
@@ -194,6 +196,7 @@ public sealed partial class LocalDatabase
             "filamentdb_pre_restore_" => PresentationPreRestoreBackupPrefix,
             "filamentdb_post_restore_" => PresentationPostRestoreBackupPrefix,
             "filamentdb_pre_excel_restore_" => PresentationPreExcelRestoreBackupPrefix,
+            "filamentdb_post_excel_restore_" => PresentationPostExcelRestoreBackupPrefix,
             _ => PresentationAutomaticBackupPrefix
         };
         var stamp = createdAt.ToString("yyyy-MM-dd_HHmmss_fff", CultureInfo.InvariantCulture);
@@ -462,7 +465,7 @@ public sealed partial class LocalDatabase
             throw new FileNotFoundException("SQLite backup was not found.", databasePath);
 
         var fullPath = Path.GetFullPath(databasePath);
-        using var connection = new SqliteConnection($"Data Source={fullPath};Mode=ReadOnly");
+        using var connection = new SqliteConnection($"Data Source={fullPath};Mode=ReadOnly;Pooling=False");
         connection.Open();
         string ScalarText(string sql)
         {
@@ -545,7 +548,9 @@ public sealed partial class LocalDatabase
                ClassifyBackupKind("3DPIceland-Post-SQLite-Restore-2026-07-25_123456_789.bak") ==
                "Post-SQLite restore evidence" &&
                ClassifyBackupKind("3DPIceland-Pre-Excel-Restore-2026-07-25_123456_789.bak") ==
-               "Pre-Excel restore recovery";
+               "Pre-Excel restore recovery" &&
+               ClassifyBackupKind("3DPIceland-Post-Excel-Restore-2026-07-25_123456_789.bak") ==
+               "Post-Excel restore evidence";
     }
 
     public DatabaseBackupInfo VerifyBackupCompatibility(string backupPath, bool runMigrationDryRun = true)
@@ -605,6 +610,9 @@ public sealed partial class LocalDatabase
         if (name.StartsWith("filamentdb_pre_excel_restore_", StringComparison.OrdinalIgnoreCase) ||
             name.StartsWith(PresentationPreExcelRestoreBackupPrefix, StringComparison.OrdinalIgnoreCase))
             return "Pre-Excel restore recovery";
+        if (name.StartsWith("filamentdb_post_excel_restore_", StringComparison.OrdinalIgnoreCase) ||
+            name.StartsWith(PresentationPostExcelRestoreBackupPrefix, StringComparison.OrdinalIgnoreCase))
+            return "Post-Excel restore evidence";
         if (name.StartsWith("filamentdb_pre_restore_", StringComparison.OrdinalIgnoreCase) ||
             name.StartsWith(PresentationPreRestoreBackupPrefix, StringComparison.OrdinalIgnoreCase))
             return "Pre-SQLite restore recovery";
@@ -747,6 +755,7 @@ public sealed partial class LocalDatabase
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
         using var transaction = connection.BeginTransaction();
+        var committed = false;
         try
         {
             foreach (var tableName in ExcelRecoveryTableInsertOrder.Reverse())
@@ -798,11 +807,38 @@ public sealed partial class LocalDatabase
                     throw new InvalidOperationException("Excel recovery Materials count verification failed.");
             }
             transaction.Commit();
-            return new ExcelRecoveryRestoreResult { RecoveryBackupPath = recovery.FullName, TablesRestored = snapshot.Tables.Count, RowsRestored = rowsRestored, MaterialsRestored = materials.Rows.Count };
+            committed = true;
+            var postRestore = CreateConsistentDatabaseBackup("filamentdb_post_excel_restore_");
+            var postRestoreInspection = InspectDatabaseFile(postRestore.FullName);
+            if (!postRestoreInspection.IsIntegrityValid ||
+                postRestoreInspection.Materials != materials.Rows.Count)
+                throw new InvalidOperationException("The post-Excel restore evidence backup failed canonical verification.");
+            return new ExcelRecoveryRestoreResult
+            {
+                RecoveryBackupPath = recovery.FullName,
+                PostRestoreBackupPath = postRestore.FullName,
+                TablesRestored = snapshot.Tables.Count,
+                RowsRestored = rowsRestored,
+                MaterialsRestored = materials.Rows.Count
+            };
         }
         catch
         {
             try { transaction.Rollback(); } catch { }
+            if (committed)
+            {
+                try
+                {
+                    connection.Close();
+                    SqliteConnection.ClearAllPools();
+                    RestoreDatabaseContents(recovery.FullName, DatabasePath);
+                    SqliteConnection.ClearAllPools();
+                }
+                catch
+                {
+                    // The verified pre-restore backup remains retained for explicit recovery.
+                }
+            }
             throw;
         }
     }

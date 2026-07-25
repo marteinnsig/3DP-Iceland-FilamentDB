@@ -126,3 +126,22 @@ after the final restart. Three per-action snapshots were retained and the
 before/after business-state hashes match.
 Owner runtime then accepted normal create/edit/delete persistence and cleanup;
 owner Full Data Verification passes 342/342.
+
+## v44.7.17 Stage 4 accepted
+
+The backup/recovery scenario requires explicit `--scenario recovery`. It
+creates and verifies a manual `.bak`, retains a verified legacy `.sqlite`
+compatibility copy, exports a governed Excel recovery package, applies one
+disposable mutation and restores the package. SQLite restore remains blocked
+and is never automated.
+
+The Excel restore now retains both pre-restore and post-restore SQLite evidence.
+If post-restore evidence fails after commit, the verified pre-restore backup is
+used for immediate rollback. The runner controls restart under the same exact
+manifest and requires the final business-state hash to equal baseline.
+
+Disposable acceptance passes Full Data Verification 343/343. The
+governed workbook, both filename generations and pre/post restore artifacts
+retain bytes and SHA-256 evidence; baseline/final business-state hashes match.
+Owner runtime accepted backup discovery, Excel recovery, pre/post evidence and
+Full Data Verification 343/343.

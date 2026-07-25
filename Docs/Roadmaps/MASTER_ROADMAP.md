@@ -1,12 +1,12 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.16 — Disposable CRUD Acceptance**
+Current canonical release: **v44.7.17 — Disposable Backup and Recovery Acceptance**
 
-Last runtime-accepted baseline: **v44.7.16 — Disposable CRUD Acceptance**
+Last runtime-accepted baseline: **v44.7.17 — Disposable Backup and Recovery Acceptance**
 
-Current application release: **v44.7.16 — Disposable CRUD Acceptance**
+Current application release: **v44.7.17 — Disposable Backup and Recovery Acceptance**
 
-Current roadmap increment: **v44.7.17 — Disposable Backup and Recovery Acceptance**
+Current roadmap increment: **v44.7.18 — Guarded Updater Acceptance**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1790,14 +1790,21 @@ changes priority.
   - Production, FTPS, updates, restore, general deletion and owner database selection remain blocked.
   - Owner accepted normal create/edit/delete persistence and Full Data Verification 342/342.
 - **v44.7.17 — Disposable Backup and Recovery Acceptance**
-  - State: **Current authoritative Stage 4 increment.**
+  - State: **Completed and runtime accepted 2026-07-25.**
   - Feedback disposition: Approved Stage 4 completion before v44.8.
   - Exercise manual SQLite backup, Recovery Center discovery/verify and governed Excel restore only against disposable data.
   - Require explicit scenario authorization, validated paths and retained pre/post-restore evidence and hashes.
   - Prove that SQLite is never silently restored and that supported historical `.sqlite` and `.bak` discovery remains intact.
   - Preserve updater/recovery evidence, diagnostics and explicit restore behavior.
+  - Candidate adds explicit `recovery` authorization without releasing general SQLite/Excel restore UI locks.
+  - Manual `.bak` and legacy `.sqlite` discovery/verification pass inside the disposable database folder.
+  - Governed Excel export, mutation, restore, pre/post SQLite evidence and same-manifest restart pass.
+  - SQLite restore remains explicit and is not automated; owner, Production, FTPS and updater paths remain blocked.
+  - Final timestamp-normalized business-state hash equals baseline.
+  - Disposable Full Data Verification passes 343/343; workbook and recovery artifacts retain bytes and SHA-256 evidence.
+  - Owner accepted backup discovery, Excel recovery, pre/post evidence and Full Data Verification 343/343.
 - **v44.7.18 — Guarded Updater Acceptance**
-  - State: Planned after v44.7.17 acceptance.
+  - State: **Current authoritative Stage 5 increment.**
   - Feedback disposition: Approved Stage 5 completion before v44.8.
   - Test only an isolated disposable portable build; never target the installed owner app or canonical database.
   - Verify transaction states, snapshot, exact-build health acknowledgement, rollback and retained evidence.

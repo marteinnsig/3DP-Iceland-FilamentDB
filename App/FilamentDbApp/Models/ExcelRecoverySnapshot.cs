@@ -21,6 +21,7 @@ public sealed class ExcelRecoveryTable
 public sealed class ExcelRecoveryRestoreResult
 {
     public required string RecoveryBackupPath { get; init; }
+    public required string PostRestoreBackupPath { get; init; }
     public int TablesRestored { get; init; }
     public long RowsRestored { get; init; }
     public int MaterialsRestored { get; init; }

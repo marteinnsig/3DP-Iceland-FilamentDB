@@ -33,13 +33,27 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 13 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 40 |
+| Solved | 41 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **61** |
+| **Total tracked findings** | **62** |
 
 ## Tracked findings
+
+Date: 2026-07-25
+Area: Disposable backup and recovery acceptance
+Type: Workflow improvement
+Severity: Important
+Status: Solved
+Resolution: Solved in version v44.7.17 — 2026-07-25. Explicit disposable recovery authorization covers verified `.bak`/legacy `.sqlite` discovery,
+governed Excel export/restore and pre/post SQLite restore evidence. General restore UI remains blocked in automation.
+Verification evidence: Disposable Stage 4 and Full Data Verification pass 343/343 with equal baseline/final business-state hashes.
+Workbook and backup artifacts retain bytes and SHA-256 evidence. Owner accepted normal runtime recovery and Verification 343/343.
+What happened: Backup and restore paths were runtime-proven manually but lacked repeatable isolated end-to-end evidence.
+Expected behavior: Stage 4 should verify backups and governed Excel recovery without owner paths or silent SQLite restore.
+Steps to reproduce: Run the explicit disposable `recovery` scenario against an approved seed copy.
+Screenshot / export / report attached: Evidence below `%TEMP%\3DPIceland-Automation\<ProfileId>\evidence`.
 
 Date: 2026-07-25
 Area: Disposable CRUD acceptance
