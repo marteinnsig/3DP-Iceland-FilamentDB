@@ -1647,6 +1647,7 @@ changes priority.
   - Stage 5F Materials fallback activation retirement is accepted with Full Data Verification 327/327.
   - Stage 5G Materials canonical selection and CRUD ownership are accepted with Verification 328/328.
   - Stage 5H Materials filter/report/count ownership is accepted with Full Data Verification 329/329.
+  - Stage 5I Materials edit/commit and recovery/save lifecycle retirement is accepted with Full Data Verification 330/330.
   - Replace those adapters with explicit Fast contracts before deleting legacy XAML, handlers and commit paths.
   - Preserve canonical SQLite, formulas, filters, validation, settings CRUD and layout behavior at every stage.
   - Require runtime acceptance after each removal stage.

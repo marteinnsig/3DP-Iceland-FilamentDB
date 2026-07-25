@@ -1466,7 +1466,6 @@ public partial class MainWindow : Window
 
             if (_nativeMaterialDirty)
             {
-                CommitNativeMaterialGridEdits();
                 ApplyNativeMaterialComputedFieldsToAllRows();
                 SaveNativeMaterialsSilent();
                 if (_nativeMaterialDirty) throw new InvalidOperationException("Restore blocked because current Material changes could not be saved before the recovery snapshot.");
@@ -13317,13 +13316,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private void PersistCanonicalStateForExcelRecovery()
     {
-        foreach (var gridName in new[] { "NativeMaterialsGrid" })
-        {
-            if (FindName(gridName) is not DataGrid grid) continue;
-            grid.CommitEdit(DataGridEditingUnit.Cell, true);
-            grid.CommitEdit(DataGridEditingUnit.Row, true);
-        }
-        CommitNativeMaterialGridEdits();
         ApplyNativeMaterialComputedFieldsToAllRows();
         if (!NativeMaterialIdsAreSqliteSafe() || NativeMaterialHasBlockingValidationIssues())
             throw new InvalidOperationException("Excel disaster recovery is blocked until Materials validation issues are resolved.");
@@ -13724,7 +13716,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             var extractedManifest = packageService.ExtractVerifiedPackage(packagePath, Version.Parse(BuildInfo.Version), _database.CurrentSchemaVersion, stagingDirectory);
             if (!string.Equals(extractedManifest.ReleaseVersion, manifest.ReleaseVersion, StringComparison.Ordinal))
                 throw new InvalidOperationException("Package identity changed between readiness and staging verification.");
-            CommitNativeMaterialGridEdits();
             ApplyNativeMaterialComputedFieldsToAllRows();
             SaveNativeMaterialsSilent();
             if (_nativeMaterialDirty) throw new InvalidOperationException("Current Materials edits could not be saved; update was blocked before shutdown.");
@@ -17394,6 +17385,23 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             fastMaterialsViewReady && releaseIdentityReady
                 ? "Materials filters, visible reports and governed column boundaries use canonical Fast contracts"
                 : "Materials canonical filter/report ownership, selection or release identity failed"));
+        var materialsLegacyEditLifecycleRetired =
+            typeof(MainWindow).GetMethod(
+                "CommitNativeMaterialGridEdits",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "NativeMaterialsGrid_CellEditEnding",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "NativeMaterialsGrid_CurrentCellChanged",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null;
+        checks.Add(new VerificationCheck("v44.7.7 Materials legacy edit/recovery lifecycle stage gate",
+            materialsLegacyEditLifecycleRetired && materialsCanonicalFilterOwnershipReady &&
+            materialsCanonicalSelectionReady && releaseIdentityReady,
+            materialsLegacyEditLifecycleRetired && materialsCanonicalFilterOwnershipReady &&
+            materialsCanonicalSelectionReady && releaseIdentityReady
+                ? "Materials edit, validation, recovery and close/save paths no longer require DataGrid commit lifecycle"
+                : "Materials legacy edit lifecycle, canonical ownership or release identity failed"));
 
         return checks;
     }
@@ -23073,15 +23081,6 @@ private List<string> GetVisibleAiMaterialLabels()
         QueueNativeMaterialCollectionRefresh();
     }
 
-    private void CommitNativeMaterialGridEdits()
-    {
-        if (FindName("NativeMaterialsGrid") is DataGrid grid)
-        {
-            grid.CommitEdit(DataGridEditingUnit.Cell, true);
-            grid.CommitEdit(DataGridEditingUnit.Row, true);
-        }
-    }
-
     private void MarkNativeMaterialsDirty()
     {
         SetNativeMaterialsDirty(true);
@@ -23100,43 +23099,9 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void RefreshNativeMaterialGridValidation()
     {
-        if (FindName("NativeMaterialsGrid") is not DataGrid grid)
-        {
-            return;
-        }
-
-        try
-        {
-            var view = CollectionViewSource.GetDefaultView(grid.ItemsSource);
-            if (view is IEditableCollectionView editableView && (editableView.IsEditingItem || editableView.IsAddingNew))
-            {
-                return;
-            }
-
-            grid.Items.Refresh();
-        }
-        catch (InvalidOperationException)
-        {
-            // DataGrid can reject refresh while a ComboBox/TextBox cell edit is still committing.
-            // The next CellEditEnding dispatcher pass will refresh after the edit transaction closes.
-        }
-    }
-
-    private void NativeMaterialsGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-    {
-        if (sender is DataGrid undoGrid) CaptureInputDataGridUndo(undoGrid, e);
-
-        if (!_suppressNativeMaterialDirty)
-        {
-            MarkNativeMaterialsDirty();
-        }
-
-        QueueNativeMaterialEditRefresh();
-    }
-
-    private void NativeMaterialsGrid_CurrentCellChanged(object sender, EventArgs e)
-    {
-        if (_nativeMaterialDirty) QueueNativeMaterialEditRefresh();
+        _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
+            "canonical Materials validation",
+            _lastSelectedNativeMaterial);
     }
 
     private void QueueNativeMaterialEditRefresh()
@@ -23151,16 +23116,6 @@ private List<string> GetVisibleAiMaterialLabels()
     private void NativeMaterialEditDebounceTimer_Tick(object? sender, EventArgs e)
     {
         _nativeMaterialEditDebounceTimer.Stop();
-        if (FindName("NativeMaterialsGrid") is DataGrid grid &&
-            CollectionViewSource.GetDefaultView(grid.ItemsSource) is IEditableCollectionView editableView &&
-            (editableView.IsEditingItem || editableView.IsAddingNew))
-        {
-            // Never rebuild/filter the view underneath the next active editor. The timer
-            // runs after the row commits or the close path performs its synchronous save.
-            _nativeMaterialEditDebounceTimer.Start();
-            return;
-        }
-
         ApplyNativeMaterialComputedFieldsToAllRows();
         PopulateNativeMaterialFilters();
         ApplyNativeMaterialFilters();
@@ -23239,7 +23194,6 @@ private List<string> GetVisibleAiMaterialLabels()
             return;
         }
 
-        CommitNativeMaterialGridEdits();
         ApplyNativeMaterialComputedFieldsToAllRows();
         SaveNativeMaterialsSilent();
 
@@ -23257,7 +23211,6 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private string BuildNativeMaterialValidationSummary()
     {
-        CommitNativeMaterialGridEdits();
         ApplyNativeMaterialComputedFieldsToAllRows();
 
         var duplicateIds = _nativeMaterialRows
@@ -25097,7 +25050,6 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void AddInventorySpool_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeMaterialGridEdits();
         RefreshInventoryMaterialChoices();
 
         var material = _lastSelectedNativeMaterial;
@@ -25347,8 +25299,6 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void RefreshInventorySummary_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeMaterialGridEdits();
-
         // Run after the DataGrid binding transaction has fully completed. This
         // prevents the manual refresh action from reading the previous status or
         // remaining-weight value from a just-committed ComboBox/TextBox edit.
@@ -25456,7 +25406,6 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void SaveNativeMaterials_Click(object sender, RoutedEventArgs e)
     {
-        CommitNativeMaterialGridEdits();
         ApplyNativeMaterialComputedFieldsToAllRows();
         RefreshNativeMaterialGridValidation();
 

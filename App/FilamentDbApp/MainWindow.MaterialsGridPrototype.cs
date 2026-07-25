@@ -309,7 +309,6 @@ public partial class MainWindow
         }
 
         MarkNativeMaterialsDirty();
-        RefreshNativeMaterialGridValidation();
         QueueNativeMaterialEditRefresh();
         return true;
     }

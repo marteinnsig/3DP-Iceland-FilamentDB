@@ -101,6 +101,12 @@ Fast contract. Legacy edit/recovery adapters remain deletion-gated; runtime
 testing accepted filters, selection clearing, measurement propagation,
 ranking/report scope and restart parity at 201 canonical rows. Full Data
 Verification passed 329/329; Stage 5H is accepted.
+Stage 5I removes Materials DataGrid commit/edit handlers and their recovery,
+update, close, validation, inventory and manual-save callers. Fast canonical
+autosave coalescing remains. A recursive unapplied-snapshot prompt found during
+runtime testing was corrected by deferring validation refresh until after Fast
+snapshot acceptance. Owner runtime acceptance and Full Data Verification
+330/330 passed; Stage 5I is accepted.
 
 ## v44.7.6 - Fast Workflow Grid - Settings
 

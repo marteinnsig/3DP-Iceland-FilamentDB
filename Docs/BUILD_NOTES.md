@@ -228,6 +228,15 @@ clearing, Fast focus, measurement propagation, ranking/report visible scope,
 archive/unarchive scope and restart parity at 201 canonical rows. Full Data
 Verification passed 329/329. Stage 5H is accepted.
 
+Stage 5I removes the hidden Materials DataGrid commit method, cell/current
+handlers and edit-transaction guards from recovery export/restore, updater,
+validation, close, inventory refresh and manual save. The existing debounce
+remains as a Fast canonical autosave coalescer. Validation refresh now
+synchronizes the Fast view directly. Owner runtime testing accepted checkbox
+and text editing, tab/restart persistence, validation, computed-field rebuild
+and recovery export. Full Data Verification passed 330/330; Stage 5I is
+accepted.
+
 ## Fast Workflow Grid - Settings
 
 v44.7.6 completes the planned input-workspace migration with two Fast views on
@@ -1641,3 +1650,6 @@ material testing enquiries. It prepares an addressed email to
 6. Press Copy Submission Details and confirm the same structured content is copied.
 7. Check desktop and narrow/mobile layouts.
 8. Run Verification Center and confirm all manufacturer submission checks pass.
+- Fixed the v44.7.7 Stage 5I candidate Fast Materials apply/reload loop: canonical validation refresh now waits for the existing
+  edit debounce after the Fast view has accepted its snapshot change, so checkbox and text edits no longer reopen the unapplied-change
+  prompt recursively.

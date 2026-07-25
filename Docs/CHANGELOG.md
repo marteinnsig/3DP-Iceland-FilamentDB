@@ -121,6 +121,10 @@
 - Routed Enter-key search focus to the Fast Materials view.
 - Owner runtime testing accepted canonical filter, ranking/report scope and
   restart parity; Full Data Verification passed 329/329.
+- Removed hidden Materials DataGrid commit/edit handlers and their
+  recovery/update/close/validation/inventory/manual-save callers.
+- Retained canonical Fast autosave coalescing and routed validation refresh
+  directly to the Fast view.
 - Preserved SQLite, formulas, filters, validation, Settings CRUD, reports,
   FTPS, updater and recovery behavior.
 
@@ -2738,3 +2742,7 @@ Maintenance rule: every build must add one new top entry here and keep the detai
 - Made SQLite restore use SQLite-native backup copying so an in-use database is never replaced through Windows file operations.
 - Hardened interrupted updates with separate pre-install snapshot failure handling, bounded file-lock retry, byte-identical recovery skips, durable path errors and execution of the verified staged updater helper.
 - Runtime accepted after committed VM updates, successful restored-data restart and Verification PASS 296/296.
+- Fixed a v44.7.7 Stage 5I candidate regression where editing a Fast Materials checkbox or text cell could repeatedly show the
+  `Reload Materials Prototype` unapplied-change prompt.
+- Owner runtime testing accepted the corrected Materials edit, persistence, validation, recalculation and recovery-export lifecycle;
+  Full Data Verification passed 330/330.

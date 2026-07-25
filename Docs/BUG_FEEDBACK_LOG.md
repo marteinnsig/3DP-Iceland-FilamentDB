@@ -612,6 +612,11 @@ Stage 5H candidate moves Materials filter, visible report/count and governed
 column ownership to canonical predicates and the explicit Fast contract.
 Owner runtime acceptance and Full Data Verification 329/329 passed. Legacy
 edit/recovery adapters remain as the next checkpoint.
+Stage 5I removed Materials DataGrid commit/edit handlers and
+recovery/update/close/validation/inventory/manual-save callers while retaining
+Fast canonical autosave coalescing. Owner runtime testing accepted edit,
+tab/restart, validation, recalculation and recovery-export behavior with Full
+Data Verification 330/330.
 Allow users to drag and reorder columns in the Materials, Tensile, Impact and
 Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
 bound field identity rather than column index. Preserve required fields,
@@ -794,3 +799,6 @@ diagnostic-enabled Production package, expose that choice in build metadata and
 the About/Diagnostics surface; do not silently change the executable's support
 or security contract. Clean-profile distribution must continue to exclude owner
 data, credentials and deployment identity in every build profile.
+- **Resolved in v44.7.7 Stage 5I candidate:** Fast Materials checkbox/text edits could recursively show the `Reload Materials Prototype`
+  unapplied-change prompt because validation refresh ran before the view accepted the applied snapshot. Validation now follows the
+  existing edit debounce after snapshot acceptance. Owner runtime re-test and Full Data Verification 330/330 passed.

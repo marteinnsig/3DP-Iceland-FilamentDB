@@ -336,8 +336,6 @@
                                   HorizontalScrollBarVisibility="Auto"
                                   ScrollViewer.IsDeferredScrollingEnabled="False"
                                   Margin="8"
-                                  CellEditEnding="NativeMaterialsGrid_CellEditEnding"
-                                  CurrentCellChanged="NativeMaterialsGrid_CurrentCellChanged"
                                   BeginningEdit="InputDataGrid_BeginningEdit"
                                   SelectionChanged="NativeMaterialsGrid_SelectionChanged">
                             <DataGrid.Resources>
