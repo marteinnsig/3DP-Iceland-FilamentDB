@@ -2,6 +2,21 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v44.7.16 - Disposable CRUD Acceptance
+
+Research confirmed that Fast-grid cells still lack stable automation peers and
+that the normal delete workflow is intentionally human-confirmed. Stage 3
+therefore adds a narrow profile-visible contract authorized for one exact
+generated disposable MaterialID. The runner proves create, edit and delete
+persistence across controlled restarts and retains a consistent SQLite
+snapshot after each mutation.
+
+Full logical hashes record all timestamp movement. A separate final
+business-state hash excludes only `UpdatedAtUtc`; every row count and canonical
+business value must match the baseline. Disposable runtime and Full Data
+Verification pass 342/342. Owner then accepted normal CRUD persistence and
+cleanup; owner Full Data Verification passes 342/342.
+
 ## v44.7.15 - Automated Report Acceptance
 
 Research confirmed that `Build Public Report Package` already owns completion

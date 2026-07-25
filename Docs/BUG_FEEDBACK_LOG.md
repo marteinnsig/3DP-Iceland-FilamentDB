@@ -33,13 +33,27 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 13 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 39 |
+| Solved | 40 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **60** |
+| **Total tracked findings** | **61** |
 
 ## Tracked findings
+
+Date: 2026-07-25
+Area: Disposable CRUD acceptance
+Type: Workflow improvement
+Severity: Important
+Status: Solved
+Resolution: Solved in version v44.7.16 — 2026-07-25. Exact-scenario authorization covers one generated disposable MaterialID and exercises canonical
+create/save, restart/edit/save, restart/delete/save and final restart/absence checks without automating Fast-grid cells.
+Verification evidence: Disposable CRUD runtime PASS. Per-action SQLite snapshots retain full logical and timestamp-normalized
+business-state hashes. Disposable and owner Full Data Verification pass 342/342; owner accepted normal CRUD persistence and cleanup.
+What happened: Stage 1 and Stage 2 could verify read-only behavior and local reports, but persistence and cleanup were still manual.
+Expected behavior: A disposable scenario should prove canonical Materials CRUD persistence without owner paths or broad deletion access.
+Steps to reproduce: Run the explicit disposable `crud` scenario against an approved seed copy.
+Screenshot / export / report attached: Evidence below `%TEMP%\3DPIceland-Automation\<ProfileId>\evidence`.
 
 Date: 2026-07-25
 Area: Automated report acceptance
@@ -51,7 +65,7 @@ report package workflow. Automated output is confined below the disposable profi
 SHA-256 values are retained as machine-readable evidence. Visual HTML/PDF review remains manual.
 Verification evidence: Disposable report runtime passes Verification 341/341 with 211 catalog entries, 639 verified artifacts and
 matching logical SQLite hashes. Debug/Release, static/security, documentation, roadmap-line and NuGet vulnerability gates pass.
-Owner Full Data Verification remains pending.
+Owner Full Data Verification passed 341/341.
 What happened: The accepted report workflow had strong in-app verification but no safe runner completion contract or retained
 catalog-driven artifact inventory.
 Expected behavior: Repeatable local report acceptance should prove report completion and artifact integrity without owner paths,

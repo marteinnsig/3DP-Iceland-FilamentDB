@@ -3,6 +3,16 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v44.7.16 - Disposable CRUD Acceptance
+
+Stage 3 adds exact-ID, scenario-authorized Materials CRUD in an isolated
+profile. It proves create/edit/delete persistence across restarts, retains
+per-action database evidence and requires exact cleanup of canonical business
+state. Disposable and owner Full Data Verification pass 342/342, and owner
+runtime accepted normal CRUD persistence and cleanup.
+
+---
+
 # v44.7.15 - Automated Report Acceptance
 
 Runtime-accepted Stage 2 for explicit disposable public-report acceptance. It

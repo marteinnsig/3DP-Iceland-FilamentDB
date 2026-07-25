@@ -28,6 +28,7 @@ internal static class Program
         string databasePath = string.Empty;
         string seedDatabaseHash = string.Empty;
         string databaseHashBefore = string.Empty;
+        string databaseBusinessHashBefore = string.Empty;
         try
         {
             var options = RunnerOptions.Parse(args);
@@ -41,8 +42,10 @@ internal static class Program
                 executable,
                 seedDatabase,
                 string.Equals(options.Scenario, "reports", StringComparison.Ordinal),
+                string.Equals(options.Scenario, "crud", StringComparison.Ordinal),
                 out var markerPath,
-                out databasePath);
+                out databasePath,
+                out var materialCrudId);
             seedDatabaseHash = Sha256(seedDatabase);
             application = Process.Start(new ProcessStartInfo(executable)
             {
@@ -62,6 +65,9 @@ internal static class Program
             var baselineSnapshotPath = IOPath.Combine(root, "evidence", "database-before.sqlite");
             CreateConsistentSnapshot(databasePath, baselineSnapshotPath);
             databaseHashBefore = ComputeLogicalDatabaseHash(baselineSnapshotPath);
+            databaseBusinessHashBefore = ComputeLogicalDatabaseHash(
+                baselineSnapshotPath,
+                excludeVolatileTimestamps: true);
             Record("database-runtime-baseline", true, databaseHashBefore);
 
             var identity = FindById(main, "AutomationProfileIdentity");
@@ -123,6 +129,24 @@ internal static class Program
                 CaptureWindow(main, IOPath.Combine(root, "evidence", "report-package.png"));
                 Record("report-package", true, $"{artifactCount} catalog/root artifacts verified and hashed");
             }
+            else if (string.Equals(options.Scenario, "crud", StringComparison.Ordinal))
+            {
+                RunCrudAction(main, application.Id, "AutomationCrudCreate", "CREATED");
+                RecordDatabaseEvidence(root, databasePath, "crud-after-create");
+                Record("crud-create-save", true, materialCrudId);
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunCrudAction(main, application.Id, "AutomationCrudEdit", "EDITED");
+                RecordDatabaseEvidence(root, databasePath, "crud-after-edit");
+                Record("crud-restart-edit-save", true, materialCrudId);
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunCrudAction(main, application.Id, "AutomationCrudDelete", "DELETED");
+                RecordDatabaseEvidence(root, databasePath, "crud-after-delete");
+                Record("crud-restart-delete-save", true, materialCrudId);
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunCrudAction(main, application.Id, "AutomationCrudVerifyAbsent", "ABSENT");
+                Record("crud-restart-verify-absent", true, materialCrudId);
+                CaptureWindow(main, IOPath.Combine(root, "evidence", "crud-complete.png"));
+            }
             CloseWindow(main, application.Id);
             if (!application.WaitForExit(15000))
                 throw new TimeoutException("Application did not complete controlled shutdown.");
@@ -130,9 +154,14 @@ internal static class Program
             var finalSnapshotPath = IOPath.Combine(root, "evidence", "database-after.sqlite");
             CreateConsistentSnapshot(databasePath, finalSnapshotPath);
             var databaseHashAfter = ComputeLogicalDatabaseHash(finalSnapshotPath);
-            Require(string.Equals(databaseHashBefore, databaseHashAfter, StringComparison.OrdinalIgnoreCase),
-                "Disposable database bytes changed during the read-only smoke scenario.");
+            var databaseBusinessHashAfter = ComputeLogicalDatabaseHash(
+                finalSnapshotPath,
+                excludeVolatileTimestamps: true);
+            Require(
+                string.Equals(databaseBusinessHashBefore, databaseBusinessHashAfter, StringComparison.OrdinalIgnoreCase),
+                "Disposable canonical business state did not return to its baseline after the scenario.");
             Record("database-hash", true, databaseHashAfter);
+            Record("database-business-state-hash", true, databaseBusinessHashAfter);
             WriteResult(
                 root,
                 "PASS",
@@ -141,6 +170,8 @@ internal static class Program
                 seedDatabaseHash,
                 databaseHashBefore,
                 databaseHashAfter,
+                databaseBusinessHashBefore,
+                databaseBusinessHashAfter,
                 null);
             return 0;
         }
@@ -167,6 +198,8 @@ internal static class Program
                     seedDatabaseHash,
                     databaseHashBefore,
                     databaseHashAfter,
+                    databaseBusinessHashBefore,
+                    string.Empty,
                     ex.ToString());
             Console.Error.WriteLine(ex);
             return 1;
@@ -177,12 +210,15 @@ internal static class Program
         string executable,
         string seedDatabase,
         bool reportGenerationAuthorized,
+        bool materialCrudAuthorized,
         out string markerPath,
-        out string databasePath)
+        out string databasePath,
+        out string materialCrudId)
     {
         var allowedRoot = IOPath.Combine(IOPath.GetTempPath(), "3DPIceland-Automation");
         IODirectory.CreateDirectory(allowedRoot);
         var profileId = DateTime.UtcNow.ToString("yyyyMMddHHmmss") + "-" + Guid.NewGuid().ToString("N")[..8];
+        materialCrudId = "AUT" + profileId[^8..];
         var root = IOPath.Combine(allowedRoot, profileId);
         var databaseFolder = IOPath.Combine(root, "database");
         var preferencesFolder = IOPath.Combine(root, "preferences");
@@ -209,7 +245,9 @@ internal static class Program
             expectedExecutableSha256 = Sha256(executable),
             productionAndFtpsBlocked = true,
             updatesBlocked = true,
-            reportGenerationAuthorized
+            reportGenerationAuthorized,
+            materialCrudAuthorized,
+            materialCrudId
         };
         IOFile.WriteAllText(markerPath, JsonSerializer.Serialize(manifest, new JsonSerializerOptions
         {
@@ -221,6 +259,54 @@ internal static class Program
 
     private static AutomationElement FindById(AutomationElement root, string automationId) =>
         WaitForElement(root, new PropertyCondition(AutomationElement.AutomationIdProperty, automationId), automationId);
+
+    private static void RunCrudAction(
+        AutomationElement main,
+        int processId,
+        string automationId,
+        string expectedStatus)
+    {
+        Invoke(FindById(main, automationId), processId);
+        var status = FindById(main, "AutomationCrudStatus");
+        var timer = Stopwatch.StartNew();
+        while (timer.Elapsed < ElementTimeout)
+        {
+            AssertNoUnexpectedWindows(processId, "MainWindow");
+            if (string.Equals(status.Current.Name, expectedStatus, StringComparison.Ordinal)) return;
+            Thread.Sleep(150);
+        }
+        throw new TimeoutException($"Timed out waiting for CRUD status {expectedStatus}.");
+    }
+
+    private static (Process Process, AutomationElement Main) RestartApplication(
+        Process application,
+        string executable,
+        string markerPath)
+    {
+        var currentMain = WaitForElement(
+            AutomationElement.RootElement,
+            new AndCondition(
+                new PropertyCondition(AutomationElement.ProcessIdProperty, application.Id),
+                new PropertyCondition(AutomationElement.AutomationIdProperty, "MainWindow")),
+            "Main window before restart");
+        CloseWindow(currentMain, application.Id);
+        if (!application.WaitForExit(15000))
+            throw new TimeoutException("Application did not complete controlled CRUD restart.");
+        var restarted = Process.Start(new ProcessStartInfo(executable)
+        {
+            UseShellExecute = false,
+            WorkingDirectory = IOPath.GetDirectoryName(executable)!
+        }.WithArgument("--automation-profile", markerPath))
+            ?? throw new InvalidOperationException("Application process did not restart.");
+        var main = WaitForElement(
+            AutomationElement.RootElement,
+            new AndCondition(
+                new PropertyCondition(AutomationElement.ProcessIdProperty, restarted.Id),
+                new PropertyCondition(AutomationElement.AutomationIdProperty, "MainWindow")),
+            "Main window after restart");
+        AssertNoUnexpectedWindows(restarted.Id, "MainWindow");
+        return (restarted, main);
+    }
 
     private static AutomationElement WaitForElement(AutomationElement root, Condition condition, string label)
     {
@@ -468,7 +554,20 @@ internal static class Program
         source.BackupDatabase(destination);
     }
 
-    private static string ComputeLogicalDatabaseHash(string databasePath)
+    private static void RecordDatabaseEvidence(string root, string databasePath, string label)
+    {
+        var snapshot = IOPath.Combine(root, "evidence", label + ".sqlite");
+        CreateConsistentSnapshot(databasePath, snapshot);
+        Record(
+            label,
+            true,
+            $"logical={ComputeLogicalDatabaseHash(snapshot)}; " +
+            $"business={ComputeLogicalDatabaseHash(snapshot, excludeVolatileTimestamps: true)}");
+    }
+
+    private static string ComputeLogicalDatabaseHash(
+        string databasePath,
+        bool excludeVolatileTimestamps = false)
     {
         using var canonical = new MemoryStream();
         using var writer = new BinaryWriter(canonical, Encoding.UTF8, leaveOpen: true);
@@ -498,7 +597,14 @@ internal static class Program
             {
                 info.CommandText = $"PRAGMA table_info({QuoteIdentifier(table.Name)});";
                 using var reader = info.ExecuteReader();
-                while (reader.Read()) columns.Add(reader.GetString(1));
+                while (reader.Read())
+                {
+                    var column = reader.GetString(1);
+                    if (excludeVolatileTimestamps &&
+                        string.Equals(column, "UpdatedAtUtc", StringComparison.Ordinal))
+                        continue;
+                    columns.Add(column);
+                }
             }
 
             writer.Write(columns.Count);
@@ -570,6 +676,8 @@ internal static class Program
         string seedDatabaseHash,
         string databaseHashBefore,
         string databaseHashAfter,
+        string databaseBusinessHashBefore,
+        string databaseBusinessHashAfter,
         string? error)
     {
         var evidence = IOPath.Combine(root, "evidence");
@@ -588,12 +696,15 @@ internal static class Program
                 unexpectedDialogsBlocked = true,
                 inputConfinedToOwnedProcess = true,
                 reportGenerationAuthorized = string.Equals(CurrentScenario, "reports", StringComparison.Ordinal)
+                ,materialCrudAuthorized = string.Equals(CurrentScenario, "crud", StringComparison.Ordinal)
             },
             executable,
             seedDatabase,
             seedDatabaseHash,
             databaseHashBefore,
             databaseHashAfter,
+            databaseBusinessHashBefore,
+            databaseBusinessHashAfter,
             steps = Steps,
             error,
             completedAtUtc = DateTimeOffset.UtcNow
@@ -625,8 +736,8 @@ internal static class Program
             var scenario = scenarioIndex >= 0 && scenarioIndex + 1 < args.Length
                 ? args[scenarioIndex + 1].Trim().ToLowerInvariant()
                 : "smoke";
-            if (scenario is not ("smoke" or "reports"))
-                throw new ArgumentException("--scenario must be smoke or reports.");
+            if (scenario is not ("smoke" or "reports" or "crud"))
+                throw new ArgumentException("--scenario must be smoke, reports or crud.");
             return new RunnerOptions(Required("--app"), Required("--seed-database"), scenario);
         }
     }

@@ -1,4 +1,26 @@
-# Current Build Notes - v44.7.15
+# Current Build Notes - v44.7.16
+
+## Disposable CRUD Acceptance candidate
+
+v44.7.16 adds an explicit `crud` scenario over the accepted disposable runtime
+foundation. The manifest authorizes one exact generated disposable MaterialID.
+The app exposes a narrow profile-only Automation contract because Fast-grid
+cells do not yet provide stable row/cell automation peers.
+
+The runner creates and saves a valid record, restarts, proves persistence,
+edits and saves, restarts, proves the edit, deletes only the authorized record,
+then restarts and proves absence. Per-action consistent SQLite snapshots retain
+full logical and business-state hashes. The final business-state gate excludes
+only `UpdatedAtUtc`; full hashes preserve evidence of canonical autosave
+timestamp movement.
+
+Disposable Stage 3 runtime and Full Data Verification pass 342/342 with equal
+before/after business-state hashes. Production, FTPS, updates, restore, general
+delete and owner database paths remain blocked. Debug/Release and
+static/security/documentation gates pass. Owner runtime and Full Data
+Verification acceptance pass 342/342. v44.7.16 is closed.
+
+## Retained v44.7.15 evidence
 
 ## Automated Report Acceptance
 

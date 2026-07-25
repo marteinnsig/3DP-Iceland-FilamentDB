@@ -89,3 +89,40 @@ Material Summary final-page table clip; deterministic 20-row presentation
 tables corrected it while retaining the same allowlisted rows, order, routes
 and report ownership. Owner runtime accepted Full Data Verification 341/341,
 the landscape PDF and responsive HTML behavior.
+
+## v44.7.16 Stage 3 accepted
+
+The CRUD scenario requires explicit `--scenario crud`. Its manifest authorizes
+one exact generated disposable MaterialID; it does not release the general
+Material deletion lock or permit owner-path selection.
+
+```powershell
+App\AutomationRunner\bin\Debug\net9.0-windows\3DPIcelandAutomationRunner.exe `
+  --app App\FilamentDbApp\bin\Debug\net9.0-windows\3DPIcelandFilamentDB.exe `
+  --seed-database C:\path\to\explicit\filamentdb-test-copy.sqlite `
+  --scenario crud
+```
+
+Stage 3 uses a narrow in-process Automation contract because Fast-grid cells do
+not yet expose stable automation peers. It exercises the canonical Materials
+row model, computed fields and SQLite collection save:
+
+- create and save one valid uniquely identified disposable record;
+- restart, prove create persistence, edit and save;
+- restart, prove edit persistence, delete only the exact authorized record;
+- restart and prove the record is absent.
+
+Consistent SQLite snapshots and full logical hashes are retained after create,
+edit and delete. The final business-state hash excludes only columns named
+exactly `UpdatedAtUtc`; full hashes remain visible. This records autosave
+timestamp movement while requiring every row count and canonical business
+value to return to its baseline. Unexpected dialogs, Production, FTPS, updates,
+restore and owner paths remain blocked.
+
+Disposable acceptance on 2026-07-25 passes Full Data Verification
+342/342. The exact generated record `AUTce389f57` persisted through create and
+edit restarts, was deleted through the authorized contract and was absent
+after the final restart. Three per-action snapshots were retained and the
+before/after business-state hashes match.
+Owner runtime then accepted normal create/edit/delete persistence and cleanup;
+owner Full Data Verification passes 342/342.

@@ -19,6 +19,8 @@ public sealed class AutomationRuntimeProfile
     public bool ProductionAndFtpsBlocked { get; init; }
     public bool UpdatesBlocked { get; init; }
     public bool ReportGenerationAuthorized { get; init; }
+    public bool MaterialCrudAuthorized { get; init; }
+    public string MaterialCrudId { get; init; } = string.Empty;
 
     public static AutomationRuntimeProfile? Current { get; private set; }
     public static bool IsActive => Current is not null;
@@ -61,6 +63,16 @@ public sealed class AutomationRuntimeProfile
                 "Report generation requires explicit authorization in the disposable automation scenario.");
     }
 
+    public static void DemandMaterialCrudAuthorized(string materialId)
+    {
+        if (!IsActive ||
+            Current?.MaterialCrudAuthorized != true ||
+            string.IsNullOrWhiteSpace(Current.MaterialCrudId) ||
+            !string.Equals(Current.MaterialCrudId, materialId, StringComparison.Ordinal))
+            throw new InvalidOperationException(
+                "Material CRUD requires explicit authorization for the exact disposable MaterialID.");
+    }
+
     private void Validate(string manifestPath)
     {
         if (string.IsNullOrWhiteSpace(ProfileId) ||
@@ -68,6 +80,10 @@ public sealed class AutomationRuntimeProfile
             throw new InvalidOperationException("Automation ProfileId must be a non-empty safe identifier.");
         if (!ProductionAndFtpsBlocked || !UpdatesBlocked)
             throw new InvalidOperationException("Automation profiles must hard-block Production, FTPS and updates.");
+        if (MaterialCrudAuthorized &&
+            (string.IsNullOrWhiteSpace(MaterialCrudId) ||
+             !MaterialCrudId.All(ch => char.IsLetterOrDigit(ch) || ch is '-' or '_')))
+            throw new InvalidOperationException("Authorized automation MaterialID must be a non-empty safe identifier.");
 
         var allowedRoot = IOPath.GetFullPath(IOPath.Combine(IOPath.GetTempPath(), "3DPIceland-Automation"))
             .TrimEnd(IOPath.DirectorySeparatorChar) + IOPath.DirectorySeparatorChar;

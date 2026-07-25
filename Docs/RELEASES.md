@@ -1,6 +1,18 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v44.7.16 - Disposable CRUD Acceptance
+
+- Adds exact-ID, scenario-authorized Materials CRUD only in a proven disposable
+  profile.
+- Proves create/edit/delete persistence across controlled restarts and exact
+  cleanup without Fast-cell automation.
+- Retains per-action snapshots and full hashes while normalizing only volatile
+  `UpdatedAtUtc` values for the final business-state equality gate.
+- Disposable Stage 3 and Full Data Verification pass 342/342.
+- Owner accepted normal create/edit/delete persistence and cleanup; owner Full
+  Data Verification passes 342/342.
+
 ## v44.7.15 - Automated Report Acceptance
 
 - Canonical runtime-accepted Stage 2 report-acceptance increment.

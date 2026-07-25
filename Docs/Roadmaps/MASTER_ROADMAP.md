@@ -1,12 +1,12 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v44.7.15 — Automated Report Acceptance**
+Current canonical release: **v44.7.16 — Disposable CRUD Acceptance**
 
-Last runtime-accepted baseline: **v44.7.14 — Automated Runtime Acceptance Foundation**
+Last runtime-accepted baseline: **v44.7.16 — Disposable CRUD Acceptance**
 
-Current application release: **v44.7.14 — Automated Runtime Acceptance Foundation**
+Current application release: **v44.7.16 — Disposable CRUD Acceptance**
 
-Current roadmap increment: **v44.7.16 — Disposable CRUD Acceptance**
+Current roadmap increment: **v44.7.17 — Disposable Backup and Recovery Acceptance**
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1777,14 +1777,20 @@ changes priority.
   - Owner accepted the landscape PDF, responsive HTML behavior and Full Data Verification 341/341.
   - Debug/Release, static/security, documentation, roadmap-line and NuGet vulnerability gates pass.
 - **v44.7.16 — Disposable CRUD Acceptance**
-  - State: **Current authoritative Stage 3 increment.**
+  - State: **Completed and runtime accepted 2026-07-25.**
   - Feedback disposition: Approved Stage 3 completion before v44.8.
   - Add scenario-authorized create, edit, save, restart, persistence and delete tests only in a proven disposable profile.
   - Use uniquely identified automation records and prove canonical owner paths are never selected.
   - Retain before/after snapshots, logical hashes and per-action evidence; unexpected dialogs stop the run.
   - Do not automate Fast-grid cells until their stable automation contract is researched and accepted.
+  - Candidate uses one exact manifest-authorized disposable MaterialID and the canonical Materials collection-save path.
+  - Create/save, restart/edit/save, restart/delete/save and final restart/absence checks pass in disposable runtime.
+  - Per-action snapshots retain full logical hashes; the final business-state hash normalizes only `UpdatedAtUtc`.
+  - Disposable runtime and Full Data Verification pass 342/342 with equal before/after business-state hashes.
+  - Production, FTPS, updates, restore, general deletion and owner database selection remain blocked.
+  - Owner accepted normal create/edit/delete persistence and Full Data Verification 342/342.
 - **v44.7.17 — Disposable Backup and Recovery Acceptance**
-  - State: Planned after v44.7.16 acceptance.
+  - State: **Current authoritative Stage 4 increment.**
   - Feedback disposition: Approved Stage 4 completion before v44.8.
   - Exercise manual SQLite backup, Recovery Center discovery/verify and governed Excel restore only against disposable data.
   - Require explicit scenario authorization, validated paths and retained pre/post-restore evidence and hashes.

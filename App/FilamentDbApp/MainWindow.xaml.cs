@@ -186,6 +186,9 @@ public partial class MainWindow : Window
         AutomationProperties.SetAutomationId(AutomationProfileIdentityText, "AutomationProfileIdentity");
         ReportOutputFolderBox.Text = AutomationRuntimeProfile.Current!.OutputFolder;
         ReportOutputFolderBox.IsReadOnly = true;
+        AutomationCrudPanel.Visibility = AutomationRuntimeProfile.Current.MaterialCrudAuthorized
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private bool IsAutomationActionBlocked(string action)
@@ -193,6 +196,90 @@ public partial class MainWindow : Window
         if (!AutomationRuntimeProfile.IsActive) return false;
         StatusText.Text = $"{action} — BLOCKED BY AUTOMATION SAFETY POLICY";
         return true;
+    }
+
+    private NativeMaterialRow? GetAuthorizedAutomationMaterial()
+    {
+        var materialId = AutomationRuntimeProfile.Current?.MaterialCrudId ?? string.Empty;
+        AutomationRuntimeProfile.DemandMaterialCrudAuthorized(materialId);
+        return _nativeMaterialRows.FirstOrDefault(row =>
+            string.Equals(row.MaterialID, materialId, StringComparison.Ordinal));
+    }
+
+    private void SetAutomationCrudStatus(string status)
+    {
+        AutomationCrudStatusText.Text = status;
+        AutomationProperties.SetName(AutomationCrudStatusText, status);
+    }
+
+    private void AutomationCrudCreate_Click(object sender, RoutedEventArgs e)
+    {
+        var materialId = AutomationRuntimeProfile.Current?.MaterialCrudId ?? string.Empty;
+        AutomationRuntimeProfile.DemandMaterialCrudAuthorized(materialId);
+        if (GetAuthorizedAutomationMaterial() is not null)
+            throw new InvalidOperationException($"Authorized disposable MaterialID already exists: {materialId}");
+
+        var row = new NativeMaterialRow
+        {
+            MaterialID = materialId,
+            Manufacturer = "3DPIceland Automation",
+            ProductLine = "Disposable CRUD",
+            MarketingName = "Created",
+            BaseMaterial = "PLA",
+            MaterialCategory = "Standard",
+            DiameterMm = "1.75",
+            SpoolWeightG = "1000",
+            MsrpCurrency = "ISK",
+            LandedCostCurrency = "ISK",
+            Video = "No",
+            TestedStatus = "Not tested",
+            InTensile = "No",
+            InImpact = "No",
+            InStiffness = "No",
+            SourcePriority = "Automation disposable",
+            Notes = "AUTOMATION-CRUD-CREATED"
+        };
+        ApplyNativeMaterialComputedFields(row, _nativeMaterialRows.Count);
+        _nativeMaterialRows.Add(row);
+        RequireAutomationCrudSave("CREATED");
+    }
+
+    private void AutomationCrudEdit_Click(object sender, RoutedEventArgs e)
+    {
+        var row = GetAuthorizedAutomationMaterial()
+                  ?? throw new InvalidOperationException("Authorized disposable MaterialID was not persisted after create.");
+        if (!string.Equals(row.Notes, "AUTOMATION-CRUD-CREATED", StringComparison.Ordinal))
+            throw new InvalidOperationException("Authorized disposable MaterialID has unexpected pre-edit content.");
+        row.MarketingName = "Edited";
+        row.Notes = "AUTOMATION-CRUD-EDITED";
+        ApplyNativeMaterialComputedFields(row, _nativeMaterialRows.IndexOf(row));
+        RequireAutomationCrudSave("EDITED");
+    }
+
+    private void AutomationCrudDelete_Click(object sender, RoutedEventArgs e)
+    {
+        var row = GetAuthorizedAutomationMaterial()
+                  ?? throw new InvalidOperationException("Authorized disposable MaterialID was not persisted after edit.");
+        if (!string.Equals(row.Notes, "AUTOMATION-CRUD-EDITED", StringComparison.Ordinal))
+            throw new InvalidOperationException("Authorized disposable MaterialID edit was not persisted.");
+        _nativeMaterialRows.Remove(row);
+        RequireAutomationCrudSave("DELETED");
+    }
+
+    private void AutomationCrudVerifyAbsent_Click(object sender, RoutedEventArgs e)
+    {
+        if (GetAuthorizedAutomationMaterial() is not null)
+            throw new InvalidOperationException("Authorized disposable MaterialID still exists after delete.");
+        SetAutomationCrudStatus("ABSENT");
+    }
+
+    private void RequireAutomationCrudSave(string status)
+    {
+        ApplyNativeMaterialComputedFieldsToAllRows();
+        RefreshNativeMaterialGridValidation();
+        if (!SaveNativeMaterialsSilent())
+            throw new InvalidOperationException($"Canonical SQLite save failed during automation CRUD {status}.");
+        SetAutomationCrudStatus(status);
     }
 
     private static void RunStartupPhase(string phaseName, Action action)
@@ -13294,6 +13381,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             automatedReportAcceptanceReady
                 ? "Scenario authorization, disposable output binding, stable report completion IDs and artifact evidence contracts are present"
                 : "Automated report authorization, output containment, completion or evidence contract is incomplete"));
+        var disposableCrudAcceptanceReady =
+            typeof(AutomationRuntimeProfile).GetProperty(nameof(AutomationRuntimeProfile.MaterialCrudAuthorized)) is not null &&
+            typeof(AutomationRuntimeProfile).GetProperty(nameof(AutomationRuntimeProfile.MaterialCrudId)) is not null &&
+            typeof(AutomationRuntimeProfile).GetMethod(nameof(AutomationRuntimeProfile.DemandMaterialCrudAuthorized)) is not null &&
+            FindName("AutomationCrudPanel") is StackPanel &&
+            FindName("AutomationCrudStatusText") is TextBlock automationCrudStatus &&
+            AutomationProperties.GetAutomationId(automationCrudStatus) == "AutomationCrudStatus";
+        checks.Add(new VerificationCheck("Disposable CRUD acceptance safety foundation", disposableCrudAcceptanceReady,
+            disposableCrudAcceptanceReady
+                ? "Exact-ID scenario authorization, profile-only commands and stable CRUD persistence evidence IDs are present"
+                : "Disposable CRUD authorization, exact-ID guard or stable evidence contract is incomplete"));
         var workspaceTabHeaders = WorkspaceTabs.Items.OfType<TabItem>()
             .Select(item => item.Header?.ToString() ?? string.Empty)
             .ToList();

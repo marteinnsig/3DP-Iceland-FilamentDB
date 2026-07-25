@@ -225,6 +225,18 @@
                     <TextBlock Text="{x:Static local:BuildInfo.MainHeaderText}" Foreground="#CBD5E1" FontSize="14" Margin="0,4,0,0" />
                     <TextBlock x:Name="AutomationProfileIdentityText" AutomationProperties.AutomationId="AutomationProfileIdentity"
                                Foreground="#FBBF24" FontSize="13" FontWeight="Bold" Margin="0,5,0,0" Visibility="Collapsed" />
+                    <StackPanel x:Name="AutomationCrudPanel" Orientation="Horizontal" Margin="0,6,0,0" Visibility="Collapsed">
+                        <Button AutomationProperties.AutomationId="AutomationCrudCreate" Content="Automation CRUD: Create"
+                                Click="AutomationCrudCreate_Click" Margin="0,0,6,0" />
+                        <Button AutomationProperties.AutomationId="AutomationCrudEdit" Content="Edit"
+                                Click="AutomationCrudEdit_Click" Margin="0,0,6,0" />
+                        <Button AutomationProperties.AutomationId="AutomationCrudDelete" Content="Delete"
+                                Click="AutomationCrudDelete_Click" Margin="0,0,6,0" />
+                        <Button AutomationProperties.AutomationId="AutomationCrudVerifyAbsent" Content="Verify absent"
+                                Click="AutomationCrudVerifyAbsent_Click" Margin="0,0,6,0" />
+                        <TextBlock x:Name="AutomationCrudStatusText" AutomationProperties.AutomationId="AutomationCrudStatus"
+                                   Foreground="#F8FAFC" VerticalAlignment="Center" />
+                    </StackPanel>
                 </StackPanel>
 
                 <Border Grid.Column="2" Background="#1F2937" CornerRadius="6" Padding="12,7" VerticalAlignment="Center">

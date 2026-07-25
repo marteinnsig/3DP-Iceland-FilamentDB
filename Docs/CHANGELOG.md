@@ -2,6 +2,21 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v44.7.16 - Disposable CRUD Acceptance
+
+- Added an explicit disposable `crud` scenario authorized for one exact
+  generated MaterialID.
+- Added canonical create/save, restart/edit/save, restart/delete/save and final
+  restart/absence checks without automating Fast-grid cells.
+- Retained per-action SQLite snapshots, full logical hashes and a final
+  business-state hash that normalizes only `UpdatedAtUtc`.
+- Kept general deletion, owner paths, Production, FTPS, updates and restore
+  blocked.
+- Disposable Stage 3 and Full Data Verification pass 342/342 with equal
+  before/after business-state hashes.
+- Owner accepted normal create/edit/delete persistence and cleanup; owner Full
+  Data Verification passes 342/342.
+
 ## v44.7.15 - Automated Report Acceptance
 
 - Added an explicit disposable `reports` scenario over the canonical public
