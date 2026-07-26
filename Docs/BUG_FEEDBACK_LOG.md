@@ -578,7 +578,8 @@ acceptance and Full Data Verification 348/348 pass. Collection create/update cla
 and no external API implementation is claimed. Candidate v47.0.2 adds read-only exact-MaterialID preview, explicit Create/Update
 state and default-No save confirmation. Owner review found misleading cancel output; the corrected candidate now shows unchanged
 persisted membership separately from the discarded filter proposal. Owner runtime acceptance and Full Data Verification 349/349
-pass. Stable coverage identity remains owned by v47.0.3.
+pass. Stable coverage identity and Full Data Verification 350/350 are owner accepted; v47.0.3 is canonical.
+The optional external integration remains separately planned under v52.
 fæ ekkert vit í AI assistance, - hafði valið bambu labs framleiðandia í materials tab í gegnum Leitina. og bjó til collection, það innihélt ekki bara bambu labs efni, heldur öll efni 0-176, 
 sama ef ég hafði filterað eftir manufactures í materials
 fæ í raun ekkert vit í neitt af því sem er að gerast í þessum ai assistance tab, - þetta þarf að þróa áfram ´serstakletga.

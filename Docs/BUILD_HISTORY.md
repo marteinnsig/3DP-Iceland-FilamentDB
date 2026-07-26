@@ -2,6 +2,25 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v47.0.3 - Stable Coverage Identity
+
+Coverage status ownership now supports optional stable collection ID and
+MaterialID fields while retaining legacy title/label snapshots and exact
+fallback. Explicit binding accepts only unique exact identities, previews the
+candidate set and defaults to No. Ambiguous and unmatched entries remain
+unchanged.
+
+Debug and Release solution builds pass with zero warnings and zero errors.
+Release documentation and NuGet vulnerability audits pass. Disposable smoke
+profile `20260726141853-e0ce0c53` passes isolated AI identity inspection and
+Full Data Verification 350/350. Runtime database byte hash
+`F0EDCC3295A114C935668D2B92D7A1AEB1C67C4D1630EFC89F11B7FCDC556E5F`
+and business-state hash
+`4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`
+are equal before and after. Owner runtime accepted the zero-legacy state,
+binding behavior, remaining status workflows and Verification PASS. v47.0.3 is
+canonical.
+
 ## v47.0.2 - AI Collection Workflow Clarity
 
 The candidate distinguishes collection creation from explicit same-name update

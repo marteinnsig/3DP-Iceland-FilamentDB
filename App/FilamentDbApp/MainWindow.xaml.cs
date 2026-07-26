@@ -13734,7 +13734,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             FindName("PreviewAiMaterialCollection") is Button aiCollectionPreview &&
             AutomationProperties.GetAutomationId(aiCollectionPreview) == "PreviewAiMaterialCollection" &&
             FindName("SaveAiMaterialCollection") is Button aiCollectionSave &&
-            AutomationProperties.GetAutomationId(aiCollectionSave) == "SaveAiMaterialCollection";
+            AutomationProperties.GetAutomationId(aiCollectionSave) == "SaveAiMaterialCollection" &&
+            FindName("BindExactAiCoverageIdentity") is Button aiCoverageBinding &&
+            AutomationProperties.GetAutomationId(aiCoverageBinding) == "BindExactAiCoverageIdentity" &&
+            FindName("AiCoverageIdentityStatus") is TextBlock aiCoverageIdentityStatus &&
+            AutomationProperties.GetAutomationId(aiCoverageIdentityStatus) == "AiCoverageIdentityStatus";
         checks.Add(new VerificationCheck("Local AI Assistant scope clarity", aiAssistantScopeReady,
             aiAssistantScopeReady
                 ? $"{canonicalVisibleRows.Count} canonical visible row(s), read-only collection preview and explicit Create/Update state are exposed"
@@ -13757,6 +13761,52 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             aiCollectionCancelReady
                 ? "Cancelled update reports persisted membership separately and discards the current-filter proposal"
                 : "Cancelled update output could misrepresent proposed filter scope as persisted collection membership"));
+        var coverageProbeCollection = new AiMaterialCollection
+        {
+            Id = "COLLECTION-PROBE",
+            Title = "Coverage probe",
+            MaterialKeys = new List<string> { "MAT-PROBE-1", "MAT-PROBE-2" },
+            MaterialLabels = new List<string> { "MAT-PROBE-1 — First", "MAT-PROBE-2 — Second" }
+        };
+        var coverageProbeMaterials = GetAiCollectionMaterials(coverageProbeCollection);
+        var coverageProbeEntries = new List<AiCoverageEntry>
+        {
+            new()
+            {
+                CollectionId = "COLLECTION-PROBE",
+                MaterialKey = "MAT-PROBE-1",
+                CollectionTitle = "Old title snapshot",
+                MaterialLabel = "Old label snapshot",
+                Status = "Tested"
+            },
+            new()
+            {
+                CollectionTitle = "Coverage probe",
+                MaterialLabel = "MAT-PROBE-2 — Second",
+                Status = "Published"
+            },
+            new()
+            {
+                CollectionTitle = "Coverage probe",
+                MaterialLabel = "Unmatched legacy label",
+                Status = "Filmed"
+            }
+        };
+        var coverageBindingProbe = BuildExactAiCoverageBindingCandidates(
+            coverageProbeEntries,
+            new List<AiMaterialCollection> { coverageProbeCollection });
+        var stableCoverageIdentityReady =
+            coverageProbeMaterials.Count == 2 &&
+            AiCoverageStatusFor(coverageProbeEntries, coverageProbeCollection, coverageProbeMaterials[0]) == "Tested" &&
+            AiCoverageStatusFor(coverageProbeEntries, coverageProbeCollection, coverageProbeMaterials[1]) == "Published" &&
+            coverageBindingProbe.Count == 1 &&
+            coverageBindingProbe[0].Material.MaterialKey == "MAT-PROBE-2" &&
+            AiCoverageBelongsToCollection(coverageProbeEntries[0], coverageProbeCollection) &&
+            !HasStableAiCoverageIdentity(coverageProbeEntries[2]);
+        checks.Add(new VerificationCheck("Stable AI coverage identity", stableCoverageIdentityReady,
+            stableCoverageIdentityReady
+                ? "CollectionID/MaterialID lookup wins; one unique exact legacy match binds and unmatched legacy remains unchanged"
+                : "Stable lookup, exact legacy binding or unmatched-value preservation contract failed"));
         var persistedBaseMaterials = _database.LoadBaseMaterialCatalog();
         var materialGridHeaders = BuildFastMaterialsColumns()
             .Select(column => column.Header)
@@ -19541,6 +19591,7 @@ private void UpdateDashboardInsights()
         LoadAiSavedSessionsIntoCombo();
         LoadAiMaterialCollectionsIntoCombo();
         RefreshAiAssistantScopePreview();
+        RefreshAiCoverageIdentityStatus();
     }
 
     private void RefreshAiAssistantScope_Click(object sender, RoutedEventArgs e)
@@ -19583,6 +19634,7 @@ private void UpdateDashboardInsights()
     private void AiMaterialCollectionTitleBox_TextChanged(object sender, TextChangedEventArgs e)
     {
         UpdateAiCollectionActionState();
+        RefreshAiCoverageIdentityStatus();
     }
 
     private void AiMaterialCollectionsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -20148,7 +20200,17 @@ private void UpdateDashboardInsights()
                 return;
             }
 
-            var result = MessageBox.Show($"Delete material collection '{collection.Title}'?", "Delete Material Collection", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var coverageEntries = LoadAiCoverageEntries();
+            var relatedCoverageCount = coverageEntries.Count(item =>
+                AiCoverageBelongsToCollection(item, collection));
+            var result = MessageBox.Show(
+                $"Delete material collection '{collection.Title}'?\n\n" +
+                $"{relatedCoverageCount:N0} related workflow/coverage status entry/entries will also be deleted.\n" +
+                "Materials, measurements and reports are not changed.",
+                "Delete Material Collection?",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question,
+                MessageBoxResult.No);
             if (result != MessageBoxResult.Yes)
             {
                 return;
@@ -20157,8 +20219,13 @@ private void UpdateDashboardInsights()
             var collections = LoadAiMaterialCollections().ToList();
             collections.RemoveAll(item => item.Id == collection.Id);
             SaveAiMaterialCollections(collections);
+            coverageEntries.RemoveAll(item => AiCoverageBelongsToCollection(item, collection));
+            SaveAiCoverageEntries(coverageEntries);
             LoadAiMaterialCollectionsIntoCombo();
-            SetAiAssistantOutput("Deleted material collection: " + collection.Title);
+            RefreshAiCoverageIdentityStatus();
+            SetAiAssistantOutput(
+                "Deleted material collection: " + collection.Title +
+                $"\r\nDeleted related coverage entries: {relatedCoverageCount:N0}");
         }
         catch (Exception ex)
         {
@@ -20340,20 +20407,27 @@ private void UpdateDashboardInsights()
         public double Score { get; set; }
         public string Reason { get; set; } = "";
     }
-
-
-
-    private string GetSelectedAiCollectionTitle()
-    {
-        return GetSelectedAiMaterialCollection()?.Title ?? "";
-    }
-
     private sealed class AiCoverageEntry
     {
+        public string CollectionId { get; set; } = "";
+        public string MaterialKey { get; set; } = "";
         public string CollectionTitle { get; set; } = "";
         public string MaterialLabel { get; set; } = "";
         public string Status { get; set; } = "";
         public string UpdatedUtc { get; set; } = DateTime.UtcNow.ToString("O");
+    }
+
+    private sealed class AiCollectionMaterialIdentity
+    {
+        public string MaterialKey { get; init; } = "";
+        public string MaterialLabel { get; init; } = "";
+    }
+
+    private sealed class AiCoverageBindingCandidate
+    {
+        public AiCoverageEntry Entry { get; init; } = new();
+        public AiMaterialCollection Collection { get; init; } = new();
+        public AiCollectionMaterialIdentity Material { get; init; } = new();
     }
 
     private string AiCoverageFilePath()
@@ -20386,6 +20460,191 @@ private void UpdateDashboardInsights()
         File.WriteAllText(AiCoverageFilePath(), json);
     }
 
+    private static bool HasStableAiCoverageIdentity(AiCoverageEntry entry) =>
+        !string.IsNullOrWhiteSpace(entry.CollectionId) &&
+        !string.IsNullOrWhiteSpace(entry.MaterialKey);
+
+    private static bool AiCoverageEntryMatches(
+        AiCoverageEntry entry,
+        AiMaterialCollection collection,
+        AiCollectionMaterialIdentity material)
+    {
+        if (HasStableAiCoverageIdentity(entry))
+        {
+            return string.Equals(entry.CollectionId, collection.Id, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(entry.MaterialKey, material.MaterialKey, StringComparison.OrdinalIgnoreCase);
+        }
+
+        return string.Equals(entry.CollectionTitle, collection.Title, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(entry.MaterialLabel, material.MaterialLabel, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool AiCoverageBelongsToCollection(
+        AiCoverageEntry entry,
+        AiMaterialCollection collection)
+    {
+        return (HasStableAiCoverageIdentity(entry) &&
+                string.Equals(entry.CollectionId, collection.Id, StringComparison.OrdinalIgnoreCase)) ||
+               (!HasStableAiCoverageIdentity(entry) &&
+                string.Equals(entry.CollectionTitle, collection.Title, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string AiCoverageStatusFor(
+        IEnumerable<AiCoverageEntry> entries,
+        AiMaterialCollection collection,
+        AiCollectionMaterialIdentity material)
+    {
+        return entries.FirstOrDefault(entry => AiCoverageEntryMatches(entry, collection, material))?.Status ?? "Open";
+    }
+
+    private static List<AiCollectionMaterialIdentity> GetAiCollectionMaterials(AiMaterialCollection collection)
+    {
+        var keys = collection.MaterialKeys ?? new List<string>();
+        var labels = collection.MaterialLabels ?? new List<string>();
+        var count = Math.Min(keys.Count, labels.Count);
+        var materials = new List<AiCollectionMaterialIdentity>();
+
+        for (var index = 0; index < count; index++)
+        {
+            var key = keys[index]?.Trim() ?? "";
+            var label = labels[index]?.Trim() ?? "";
+            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(label))
+            {
+                continue;
+            }
+
+            materials.Add(new AiCollectionMaterialIdentity
+            {
+                MaterialKey = key,
+                MaterialLabel = label
+            });
+        }
+
+        return materials;
+    }
+
+    private static List<AiCoverageBindingCandidate> BuildExactAiCoverageBindingCandidates(
+        IReadOnlyList<AiCoverageEntry> entries,
+        IReadOnlyList<AiMaterialCollection> collections)
+    {
+        var candidates = new List<AiCoverageBindingCandidate>();
+
+        foreach (var entry in entries.Where(item => !HasStableAiCoverageIdentity(item)))
+        {
+            var matchingCollections = collections
+                .Where(collection =>
+                    string.Equals(collection.Title, entry.CollectionTitle, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            if (matchingCollections.Count != 1)
+            {
+                continue;
+            }
+
+            var collection = matchingCollections[0];
+            var matchingMaterials = GetAiCollectionMaterials(collection)
+                .Where(material =>
+                    string.Equals(material.MaterialLabel, entry.MaterialLabel, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            if (matchingMaterials.Count != 1)
+            {
+                continue;
+            }
+
+            candidates.Add(new AiCoverageBindingCandidate
+            {
+                Entry = entry,
+                Collection = collection,
+                Material = matchingMaterials[0]
+            });
+        }
+
+        return candidates;
+    }
+
+    private void RefreshAiCoverageIdentityStatus()
+    {
+        if (FindName("AiCoverageIdentityStatus") is not TextBlock statusText)
+        {
+            return;
+        }
+
+        var entries = LoadAiCoverageEntries();
+        var stable = entries.Count(HasStableAiCoverageIdentity);
+        var legacy = entries.Count - stable;
+        var candidates = BuildExactAiCoverageBindingCandidates(entries, LoadAiMaterialCollections());
+        statusText.Text =
+            $"Coverage identity: {stable:N0} stable CollectionID/MaterialID, {legacy:N0} legacy; " +
+            $"{candidates.Count:N0} unique exact legacy binding candidate(s).";
+    }
+
+    private void BindExactAiCoverageIdentity_Click(object sender, RoutedEventArgs e)
+    {
+        if (IsAutomationActionBlocked("AI coverage identity binding")) return;
+
+        var entries = LoadAiCoverageEntries();
+        var collections = LoadAiMaterialCollections();
+        var candidates = BuildExactAiCoverageBindingCandidates(entries, collections);
+        var legacyCount = entries.Count(item => !HasStableAiCoverageIdentity(item));
+        var unmatched = legacyCount - candidates.Count;
+
+        if (candidates.Count == 0)
+        {
+            SetAiAssistantOutput(
+                "EXACT LEGACY COVERAGE BINDING\r\n" +
+                "=============================\r\n" +
+                $"Legacy entries: {legacyCount:N0}\r\n" +
+                "Unique exact candidates: 0\r\n" +
+                $"Unmatched or ambiguous retained unchanged: {unmatched:N0}\r\n\r\n" +
+                "No coverage data was changed.");
+            RefreshAiCoverageIdentityStatus();
+            return;
+        }
+
+        var preview = string.Join(
+            "\r\n",
+            candidates.Take(12).Select(candidate =>
+                $"- {candidate.Collection.Title} / {candidate.Material.MaterialKey} / {candidate.Entry.Status}"));
+        if (candidates.Count > 12)
+        {
+            preview += $"\r\n- ... and {candidates.Count - 12:N0} more";
+        }
+
+        var confirmation = MessageBox.Show(
+            $"Bind {candidates.Count:N0} legacy coverage entry/entries to unique exact Collection ID and MaterialID matches?\n\n" +
+            preview +
+            $"\n\n{unmatched:N0} unmatched or ambiguous legacy entry/entries will remain unchanged.\n" +
+            "No fuzzy matching or status remapping is performed.",
+            "Bind Exact Legacy Coverage Identity?",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question,
+            MessageBoxResult.No);
+        if (confirmation != MessageBoxResult.Yes)
+        {
+            SetAiAssistantOutput(
+                "EXACT LEGACY COVERAGE BINDING CANCELLED\r\n" +
+                "=======================================\r\n" +
+                $"Unique exact candidates: {candidates.Count:N0}\r\n" +
+                $"Unmatched or ambiguous retained unchanged: {unmatched:N0}\r\n\r\n" +
+                "No coverage data was changed.");
+            return;
+        }
+
+        foreach (var candidate in candidates)
+        {
+            candidate.Entry.CollectionId = candidate.Collection.Id;
+            candidate.Entry.MaterialKey = candidate.Material.MaterialKey;
+        }
+
+        SaveAiCoverageEntries(entries);
+        RefreshAiCoverageIdentityStatus();
+        SetAiAssistantOutput(
+            "EXACT LEGACY COVERAGE BINDING COMPLETE\r\n" +
+            "======================================\r\n" +
+            $"Bound exact entries: {candidates.Count:N0}\r\n" +
+            $"Unmatched or ambiguous retained unchanged: {unmatched:N0}\r\n\r\n" +
+            "Legacy title and label snapshots were preserved for compatibility.");
+    }
+
     private void GenerateCollectionDashboard_Click(object sender, RoutedEventArgs e)
     {
         SetAiAssistantOutput(BuildCollectionDashboardBrief());
@@ -20393,28 +20652,28 @@ private void UpdateDashboardInsights()
 
     private void MarkCollectionPublished_Click(object sender, RoutedEventArgs e)
     {
-        var title = GetSelectedAiCollectionTitle();
-        if (string.IsNullOrWhiteSpace(title))
+        var collection = GetSelectedAiMaterialCollection();
+        if (collection is null)
         {
             MessageBox.Show("Select a collection first.", "Coverage Tracking", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
-        ApplyStatusToCollection(title, "Published");
+        ApplyStatusToCollection(collection, "Published");
         SetAiAssistantOutput(BuildCollectionDashboardBrief());
     }
 
     private void ClearCollectionCoverage_Click(object sender, RoutedEventArgs e)
     {
-        var title = GetSelectedAiCollectionTitle();
-        if (string.IsNullOrWhiteSpace(title))
+        var collection = GetSelectedAiMaterialCollection();
+        if (collection is null)
         {
             MessageBox.Show("Select a collection first.", "Coverage Tracking", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
         var result = MessageBox.Show(
-            $"Clear all saved workflow/coverage statuses for the selected AI collection '{title}'?\n\n" +
+            $"Clear all saved workflow/coverage statuses for the selected AI collection '{collection.Title}'?\n\n" +
             "This does not delete the collection, remove materials, or change the Materials tab filter.",
             "Clear Selected Collection Status",
             MessageBoxButton.YesNo,
@@ -20425,8 +20684,9 @@ private void UpdateDashboardInsights()
         }
 
         var entries = LoadAiCoverageEntries();
-        entries.RemoveAll(item => string.Equals(item.CollectionTitle, title, StringComparison.OrdinalIgnoreCase));
+        entries.RemoveAll(item => AiCoverageBelongsToCollection(item, collection));
         SaveAiCoverageEntries(entries);
+        RefreshAiCoverageIdentityStatus();
         SetAiAssistantOutput(BuildCollectionDashboardBrief());
     }
 
@@ -20488,21 +20748,21 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void ApplyCollectionStatus_Click(object sender, RoutedEventArgs e)
     {
-        var title = GetSelectedAiCollectionTitle();
-        if (string.IsNullOrWhiteSpace(title))
+        var collection = GetSelectedAiMaterialCollection();
+        if (collection is null)
         {
             MessageBox.Show("Select a collection first.", "Material Status Tracking", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
         var status = GetSelectedAiMaterialStatus();
-        ApplyStatusToCollection(title, status);
+        ApplyStatusToCollection(collection, status);
         SetAiAssistantOutput(BuildCollectionDashboardBrief());
     }
 
-    private void ApplyStatusToCollection(string title, string status)
+    private void ApplyStatusToCollection(AiMaterialCollection collection, string status)
     {
-        var materials = GetAiCollectionMaterialLabels(title);
+        var materials = GetAiCollectionMaterials(collection);
         if (materials.Count == 0)
         {
             MessageBox.Show("The selected collection has no stored materials.", "Material Status Tracking", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -20514,17 +20774,36 @@ private List<string> GetVisibleAiMaterialLabels()
         foreach (var material in materials)
         {
             var entry = entries.FirstOrDefault(item =>
-                string.Equals(item.CollectionTitle, title, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(item.MaterialLabel, material, StringComparison.OrdinalIgnoreCase));
+                HasStableAiCoverageIdentity(item) &&
+                string.Equals(item.CollectionId, collection.Id, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(item.MaterialKey, material.MaterialKey, StringComparison.OrdinalIgnoreCase));
+            if (entry is null &&
+                materials.Count(item =>
+                    string.Equals(item.MaterialLabel, material.MaterialLabel, StringComparison.OrdinalIgnoreCase)) == 1)
+            {
+                entry = entries.FirstOrDefault(item =>
+                    !HasStableAiCoverageIdentity(item) &&
+                    string.Equals(item.CollectionTitle, collection.Title, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(item.MaterialLabel, material.MaterialLabel, StringComparison.OrdinalIgnoreCase));
+            }
 
             if (entry is null)
             {
                 entry = new AiCoverageEntry
                 {
-                    CollectionTitle = title,
-                    MaterialLabel = material
+                    CollectionId = collection.Id,
+                    MaterialKey = material.MaterialKey,
+                    CollectionTitle = collection.Title,
+                    MaterialLabel = material.MaterialLabel
                 };
                 entries.Add(entry);
+            }
+            else
+            {
+                entry.CollectionId = collection.Id;
+                entry.MaterialKey = material.MaterialKey;
+                entry.CollectionTitle = collection.Title;
+                entry.MaterialLabel = material.MaterialLabel;
             }
 
             entry.Status = status;
@@ -20532,6 +20811,7 @@ private List<string> GetVisibleAiMaterialLabels()
         }
 
         SaveAiCoverageEntries(entries);
+        RefreshAiCoverageIdentityStatus();
     }
 
 
@@ -20556,26 +20836,21 @@ private List<string> GetVisibleAiMaterialLabels()
 
         foreach (var collection in collections.OrderBy(item => item.Title))
         {
-            var labels = collection.MaterialLabels
-                .Where(item => !string.IsNullOrWhiteSpace(item))
-                .Select(item => item.Trim())
-                .ToList();
+            var materials = GetAiCollectionMaterials(collection);
 
-            if (labels.Count == 0)
+            if (materials.Count == 0)
             {
                 continue;
             }
 
-            totalRows += labels.Count;
+            totalRows += materials.Count;
 
-            string StatusFor(string label)
+            string StatusFor(AiCollectionMaterialIdentity material)
             {
-                return coverageEntries.FirstOrDefault(entry =>
-                    string.Equals(entry.CollectionTitle, collection.Title, StringComparison.OrdinalIgnoreCase) &&
-                    string.Equals(entry.MaterialLabel, label, StringComparison.OrdinalIgnoreCase))?.Status ?? "Open";
+                return AiCoverageStatusFor(coverageEntries, collection, material);
             }
 
-            var statusCounts = labels
+            var statusCounts = materials
                 .Select(StatusFor)
                 .GroupBy(status => status)
                 .ToDictionary(group => group.Key, group => group.Count(), StringComparer.OrdinalIgnoreCase);
@@ -20596,12 +20871,13 @@ private List<string> GetVisibleAiMaterialLabels()
                 }
             }
 
-            var published = labels.Count(label => string.Equals(StatusFor(label), "Published", StringComparison.OrdinalIgnoreCase));
+            var published = materials.Count(material =>
+                string.Equals(StatusFor(material), "Published", StringComparison.OrdinalIgnoreCase));
             totalPublished += published;
-            var remaining = labels.Count - published;
-            var percent = labels.Count == 0 ? 0 : Math.Round((double)published / labels.Count * 100, 1);
+            var remaining = materials.Count - published;
+            var percent = materials.Count == 0 ? 0 : Math.Round((double)published / materials.Count * 100, 1);
 
-            collectionSummaries.Add($"{collection.Title}: {published}/{labels.Count} published ({percent}%)");
+            collectionSummaries.Add($"{collection.Title}: {published}/{materials.Count} published ({percent}%)");
 
             var recommendedStatus = PickPipelineNextStatus(statusCounts);
             if (!string.IsNullOrWhiteSpace(recommendedStatus))
@@ -20719,28 +20995,27 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private string BuildCollectionDashboardBrief()
     {
-        var title = GetSelectedAiCollectionTitle();
-        if (string.IsNullOrWhiteSpace(title))
+        var collection = GetSelectedAiMaterialCollection();
+        if (collection is null)
         {
             return "COLLECTION DASHBOARD\r\n\r\nSelect a material collection first. The Collections dropdown must contain a saved collection.";
         }
 
-        var labels = GetAiCollectionMaterialLabels(title);
-        var coverage = LoadAiCoverageEntries()
-            .Where(item => string.Equals(item.CollectionTitle, title, StringComparison.OrdinalIgnoreCase))
-            .ToList();
+        var materials = GetAiCollectionMaterials(collection);
+        var coverage = LoadAiCoverageEntries();
 
-        string StatusFor(string label)
+        string StatusFor(AiCollectionMaterialIdentity material)
         {
-            return coverage.FirstOrDefault(item => string.Equals(item.MaterialLabel, label, StringComparison.OrdinalIgnoreCase))?.Status ?? "Open";
+            return AiCoverageStatusFor(coverage, collection, material);
         }
 
-        var published = labels.Count(label => string.Equals(StatusFor(label), "Published", StringComparison.OrdinalIgnoreCase));
-        var remaining = Math.Max(0, labels.Count - published);
-        var percent = labels.Count == 0 ? 0 : Math.Round((double)published / labels.Count * 100, 1);
+        var published = materials.Count(material =>
+            string.Equals(StatusFor(material), "Published", StringComparison.OrdinalIgnoreCase));
+        var remaining = Math.Max(0, materials.Count - published);
+        var percent = materials.Count == 0 ? 0 : Math.Round((double)published / materials.Count * 100, 1);
 
         var statusOrder = new[] { "Open", "Untested", "Tested", "Video Planned", "Filmed", "Edited", "Published" };
-        var statusCounts = labels
+        var statusCounts = materials
             .Select(StatusFor)
             .GroupBy(status => status)
             .ToDictionary(group => group.Key, group => group.Count(), StringComparer.OrdinalIgnoreCase);
@@ -20749,8 +21024,9 @@ private List<string> GetVisibleAiMaterialLabels()
         {
             "COLLECTION DASHBOARD",
             "====================",
-            $"Collection: {title}",
-            $"Materials: {labels.Count}",
+            $"Collection: {collection.Title}",
+            $"Collection ID: {collection.Id}",
+            $"Materials: {materials.Count}",
             $"Published / completed: {published}",
             $"Remaining: {remaining}",
             $"Coverage: {percent}%",
@@ -20785,13 +21061,13 @@ private List<string> GetVisibleAiMaterialLabels()
         lines.Add("");
         lines.Add("MATERIAL STATUS");
         lines.Add("---------------");
-        lines.Add($"Showing {labels.Count} of {labels.Count} saved material rows.");
+        lines.Add($"Showing {materials.Count} of {materials.Count} saved material rows.");
         lines.Add("");
 
-        for (var index = 0; index < labels.Count; index++)
+        for (var index = 0; index < materials.Count; index++)
         {
-            var label = labels[index];
-            lines.Add($"{index + 1:00}. [{StatusFor(label)}] {label}");
+            var material = materials[index];
+            lines.Add($"{index + 1:00}. [{StatusFor(material)}] {material.MaterialLabel}");
         }
 
         lines.Add("");
@@ -20802,26 +21078,6 @@ private List<string> GetVisibleAiMaterialLabels()
         lines.Add("Clear Selected Collection Status removes only the saved workflow/coverage statuses for the selected AI collection. It does not delete materials or affect Materials tab filters.");
 
         return string.Join("\r\n", lines);
-    }
-
-    private List<string> GetAiCollectionMaterialLabels(string title)
-    {
-        var collection = GetSelectedAiMaterialCollection();
-        if (collection is null || !string.Equals(collection.Title, title, StringComparison.OrdinalIgnoreCase))
-        {
-            collection = LoadAiMaterialCollections()
-                .FirstOrDefault(item => string.Equals(item.Title, title, StringComparison.OrdinalIgnoreCase));
-        }
-
-        if (collection is null || collection.MaterialLabels is null)
-        {
-            return new List<string>();
-        }
-
-        return collection.MaterialLabels
-            .Where(item => !string.IsNullOrWhiteSpace(item))
-            .Select(item => item.Trim())
-            .ToList();
     }
 
     private string BuildMaterialIntelligenceBrief(string mode)

@@ -1,6 +1,13 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v47.0.3 - Stable Coverage Identity
+
+AI coverage status now prefers stable collection ID and MaterialID ownership
+while preserving exact legacy fallback. Explicit unique-exact binding never
+silently changes ambiguous or unmatched entries. Owner runtime acceptance and
+Full Data Verification 350/350 pass.
+
 ## v47.0.2 - AI Collection Workflow Clarity
 
 Material Collections now expose exact Create/Update intent, read-only

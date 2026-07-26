@@ -1,3 +1,17 @@
+# v47.0.3 - Stable Coverage Identity
+
+Date: 2026-07-26
+
+- Adds deterministic stable-first coverage identity, exact legacy-binding and
+  unmatched-preservation verification.
+- Adds read-only AutomationId inspection of isolated disposable coverage state.
+- Profile `20260726141853-e0ce0c53`: PASS 350/350.
+- Database byte and business-state hashes are exactly equal before and after.
+- Production, FTPS and owner database remained blocked.
+- Owner runtime accepted coverage identity visibility, zero legacy entries,
+  remaining workflow behavior and Full Data Verification PASS.
+- Canonical state: v47.0.3.
+
 # v45.2.0 candidate - Base Materials workspace
 
 Date: 2026-07-26

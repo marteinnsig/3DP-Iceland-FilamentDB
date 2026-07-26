@@ -1,4 +1,29 @@
-# Current Build Notes - v47.0.2 Canonical
+# Current Build Notes - v47.0.3 Canonical
+
+## Stable Coverage Identity
+
+Coverage storage is extended backwards-compatibly with optional `CollectionId`
+and `MaterialKey` properties. Existing title/label snapshots are retained and
+remain readable through exact fallback.
+
+An explicit binding action previews unique exact candidates and defaults to No.
+It never performs fuzzy matching and never changes unmatched or ambiguous
+legacy entries. Newly applied statuses are stable immediately.
+
+Collection Dashboard and Video Pipeline status lookup prefer stable identity.
+Clear Status and collection deletion recognize stable and exact legacy
+ownership. Deletion explicitly confirms related coverage removal.
+
+The tester only reads disposable identity state and does not invoke migration.
+Verification deterministically proves stable-first lookup, exact binding and
+unmatched preservation. No SQLite schema or external-AI boundary changes.
+
+Debug and Release builds pass with zero warnings/errors. Documentation and
+NuGet vulnerability gates pass. Disposable smoke profile
+`20260726141853-e0ce0c53` passes Full Data Verification 350/350 and exact
+pre/post database byte and business-state equality. Owner runtime subsequently
+accepted identity visibility, zero-legacy behavior, remaining coverage
+workflows and Verification PASS. v47.0.3 is canonical.
 
 ## AI Collection Workflow Clarity
 

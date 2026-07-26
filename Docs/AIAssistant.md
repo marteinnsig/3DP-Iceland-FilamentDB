@@ -1,5 +1,25 @@
 ﻿# AI Assistant
 
+## v47.0.3 - Stable Coverage Identity Candidate
+
+Coverage entries can now own optional stable `CollectionId` and `MaterialKey`
+values while retaining their existing collection-title and material-label
+snapshots. Status lookup prefers stable identity and falls back to exact legacy
+title/label matching, so supported old JSON remains readable.
+
+`Bind Exact Legacy Coverage...` previews only unambiguous candidates: one exact
+collection title and one exact material label inside that collection. The
+confirmation defaults to No. Unmatched or ambiguous entries remain unchanged;
+there is no fuzzy or silent remapping.
+
+New status writes use stable identity. Clearing status and deleting a collection
+recognize both stable ownership and exact legacy ownership. Collection deletion
+explicitly reports that related coverage will also be removed.
+
+The deterministic tester checks isolated empty coverage identity state without
+invoking binding or modifying personal AppData. No SQLite schema changes or
+external AI calls are introduced.
+
 ## v47.0.2 - Collection Workflow Clarity
 
 Material Collection saving now exposes its exact action and scope before local

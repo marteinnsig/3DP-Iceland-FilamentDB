@@ -3,6 +3,12 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v47.0.3 - Stable Coverage Identity
+
+Collection coverage and pipeline status now use stable collection and material
+identities with lossless legacy compatibility and explicit exact binding.
+Owner runtime acceptance and Full Data Verification 350/350 complete v47.
+
 # v47.0.2 - AI Collection Workflow Clarity
 
 Collection creation and update now have explicit intent, exact MaterialID

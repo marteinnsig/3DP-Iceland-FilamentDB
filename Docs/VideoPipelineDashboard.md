@@ -1,5 +1,11 @@
 ﻿# Video Pipeline Dashboard
 
+## v47.0.3 Candidate
+
+Pipeline status resolution prefers stable collection-ID and MaterialID coverage
+identity. Exact legacy title/label fallback remains available so historical
+coverage JSON is not invalidated before explicit binding.
+
 ## v26.7
 
 The Video Pipeline Dashboard provides a single AI Assistant view of the full YouTube production pipeline across all saved Material Collections.

@@ -2131,7 +2131,20 @@
                                         Padding="12,6"
                                         Margin="0,0,8,8"
                                         ToolTip="Clear saved workflow statuses for the selected collection without deleting it."/>
+                                <Button Name="BindExactAiCoverageIdentity"
+                                        AutomationProperties.AutomationId="BindExactAiCoverageIdentity"
+                                        Content="Bind Exact Legacy Coverage..."
+                                        Click="BindExactAiCoverageIdentity_Click"
+                                        Padding="12,6"
+                                        Margin="0,0,8,8"
+                                        ToolTip="Preview and explicitly bind unique exact legacy collection-title/material-label statuses to Collection ID and MaterialID."/>
                             </WrapPanel>
+                            <TextBlock Name="AiCoverageIdentityStatus"
+                                       AutomationProperties.AutomationId="AiCoverageIdentityStatus"
+                                       Text="Coverage identity: not inspected."
+                                       Foreground="#64748B"
+                                       TextWrapping="Wrap"
+                                       Margin="0,4,0,0"/>
                         </StackPanel>
                     </Border>
 

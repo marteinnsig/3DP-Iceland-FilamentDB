@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v47.0.2 — AI Collection Workflow Clarity**
+Current canonical release: **v47.0.3 — Stable Coverage Identity**
 
-Last runtime-accepted baseline: **v47.0.2 — AI Collection Workflow Clarity**
+Last runtime-accepted baseline: **v47.0.3 — Stable Coverage Identity**
 
-Current application candidate: **None — v47.0.2 is canonical**
+Current application candidate: **None — v47.0.3 is canonical**
 
-Current roadmap increment: **v47.0.3 — Stable Coverage Identity**
+Current roadmap increment: **v48.0 — Pricing and Usage Analytics Foundation**
 
-Current acceptance note: v47.0.2 collection workflow is runtime accepted with Full Data Verification 349/349.
+Current acceptance note: v47.0.3 stable coverage identity is runtime accepted with Full Data Verification 350/350.
 
 Candidate note: None.
 
@@ -1908,6 +1908,14 @@ to unstarted authoritative planning slots.
   - Current increment: v47.0.3 — Stable Coverage Identity.
   - Research and migrate coverage ownership from collection-title/material-label to stable collection ID and MaterialID.
   - Preserve supported legacy coverage entries; bind only exact identities and never perform fuzzy or silent remapping.
+  - Candidate extends coverage JSON backwards-compatibly with optional stable IDs and retains title/label snapshots.
+  - Stable identity is preferred; legacy entries continue through exact title/label fallback until explicitly bound.
+  - Exact binding requires a unique collection title and unique material label, shows a preview and defaults to No.
+  - New status writes use stable identity; collection deletion explicitly confirms removal of its related coverage.
+  - Automation inspects isolated identity state; Verification proves stable-first lookup and unmatched preservation.
+  - Owner accepted zero-legacy state, stable status workflows, dashboard/pipeline behavior and Verification 350/350.
+  - v47.0.3 is complete, canonical and runtime accepted.
+  - v47 is complete; optional external OpenAI integration remains a separate planned v52 theme.
   - Keep the current deterministic assistant local-first and explain its product purpose, inputs and outputs.
   - Prove visible/filtered MaterialID scope and simplify collection creation, inspection, reuse and removal.
   - Show whether each result is a local brief and make canonical-source, evidence and non-mutation boundaries explicit.

@@ -120,6 +120,11 @@ internal static class Program
                 collectionPreview.Contains("Unique MaterialIDs to save:", StringComparison.Ordinal),
                 "AI collection preview did not expose its read-only exact MaterialID contract.");
             Record("ai-collection-preview", true, collectionAction);
+            var coverageIdentity = FindById(main, "AiCoverageIdentityStatus").Current.Name;
+            Require(
+                coverageIdentity.Contains("0 stable CollectionID/MaterialID, 0 legacy", StringComparison.Ordinal),
+                "Disposable AI coverage did not start with an isolated empty identity state.");
+            Record("ai-coverage-identity", true, coverageIdentity);
 
             Expand(FindById(main, "HelpMenu"), application.Id);
             Invoke(FindById(main, "OpenVerificationCenter"), application.Id);

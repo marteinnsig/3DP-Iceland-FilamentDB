@@ -2,6 +2,19 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v47.0.3 - Stable Coverage Identity
+
+- Extends coverage JSON with optional stable collection-ID and MaterialID fields.
+- Preserves legacy collection-title and material-label snapshots and exact fallback.
+- Adds an explicit unique-exact binding preview with default-No confirmation.
+- Leaves unmatched and ambiguous legacy entries unchanged without fuzzy remapping.
+- Writes new coverage statuses with stable identity.
+- Makes coverage clearing and collection deletion identity-aware.
+- Adds AutomationIds, isolated tester evidence and a deterministic Verification probe.
+- Leaves SQLite schema, external AI access and canonical material data unchanged.
+- Owner runtime accepted identity visibility, zero-legacy behavior, status
+  workflows, dashboard/pipeline propagation and Full Data Verification 350/350.
+
 ## v47.0.2 - AI Collection Workflow Clarity
 
 - Shows whether the current collection title will create a new collection or

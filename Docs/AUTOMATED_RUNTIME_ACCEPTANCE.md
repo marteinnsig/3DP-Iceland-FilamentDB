@@ -1,5 +1,19 @@
 # Automated Runtime Acceptance
 
+## v47.0.3 candidate - Stable coverage identity
+
+- Smoke automation reads the coverage identity summary from disposable storage.
+- A new disposable profile must begin with zero stable and zero legacy entries.
+- Automation never invokes the explicit binding action.
+- Verification proves stable-first lookup, one unique exact binding candidate
+  and preservation of unmatched legacy entries.
+- Stable AutomationIds cover the binding action and identity summary.
+- Production, FTPS, owner-database and unexpected-dialog guards are unchanged.
+- Profile `20260726141853-e0ce0c53` passes 350/350 with zero stable and zero
+  legacy entries in isolated storage and exact pre/post database-state equality.
+- Owner runtime accepted visible identity state, zero-legacy behavior, coverage
+  workflows and Full Data Verification PASS.
+
 ## v47.0.2 candidate - AI collection workflow clarity
 
 - Every scenario reads the stable collection Create/Update action state.
