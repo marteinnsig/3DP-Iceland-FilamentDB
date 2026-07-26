@@ -42,8 +42,8 @@ idea. Historical free-form entries remain in their original language and order.
 |---|---:|
 | Open | 18 |
 | In progress | 0 |
-| Partially solved | 3 |
-| Solved | 54 |
+| Partially solved | 2 |
+| Solved | 55 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
@@ -708,13 +708,28 @@ Date: Historical feedback (date not recorded)
 Area: Experimental Testing
 Type: Feature improvement
 Severity: Important
-Status: Partially solved
+Status: Solved
 What happened: Governed experimental measurement comparisons
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
 Resolution: The requested duplicate-material/dynamic-column concept was superseded by canonical MaterialID-linked Experimental Series and Runs with dedicated measurement editors and governed website/report integration. Additional experimental presentation ideas remain open only when backed by a concrete consumer.
 Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+
+Follow-up: v49.0.0 candidate addresses concrete owner-visible integrity gaps on
+top of the accepted Series/Run model. Active Runs define the normal desktop and
+website comparison; inactive history remains explicitly reviewable. Duplicate
+Run resets lifecycle evidence, publication readiness is visible and persistence
+is atomic and guarded. No Materials are duplicated and schema remains v37.
+Final Verification and owner runtime acceptance remain pending.
+
+Owner follow-up: Initial v49.0 runtime passed Verification 367/367 but showed
+that Series Active-only started unchecked, the Results-only inactive-history
+scope looked like a Runs-grid filter and Website readiness appeared only after
+leaving the checkbox cell. The corrected candidate starts Active-only checked,
+labels the Results/Dashboard/Charts boundary and prompts immediately with
+default No. Correction smoke and owner retest pass 368/368. v49.0.0 is
+canonical and runtime accepted.
 
 Date: Historical feedback (date not recorded)
 Area: Branding / application icon / splash

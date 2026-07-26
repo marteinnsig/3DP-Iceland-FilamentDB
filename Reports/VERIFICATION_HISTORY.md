@@ -1,3 +1,36 @@
+# v49.0.0 - Experimental Workflow Integrity candidate
+
+Date: 2026-07-26
+
+- Schema remains v37; canonical owner database is not used by automation.
+- Candidate gates include active-only comparison, explicit inactive-history
+  review, duplicate lifecycle reset, readiness and atomic graph persistence.
+- Debug/Release app and AutomationRunner builds pass with zero warnings/errors.
+- Release-documentation audit and roadmap line-length gate pass.
+- Read-only NuGet vulnerability scan reports no vulnerable packages.
+- Initial smoke `20260726212955-219a159d` exposed missing readiness
+  initialization before a Series was selected; initialization was corrected.
+- Independent agent review found that the first atomic implementation updated
+  unrelated Experimental timestamps. Conditional UPSERT now preserves
+  byte-identical `UpdatedAtUtc` values for unchanged graph rows.
+- Final disposable smoke `20260726213611-698a3177` passes Full Data Verification
+  367/367 and exact logical/business-state preservation.
+- Owner Verification
+  `3DPIceland_FilamentDB_Verification_20260726_215702.txt` passes 367/367.
+- Owner runtime found Series Active-only defaulted off, Results-only history
+  scope was unclear and Website readiness appeared after leaving the cell.
+- The correction sets a checked transient Active-only startup default, labels
+  Results/Dashboard/Charts scope and handles Website readiness on first click.
+- Final correction smoke `20260726220205-e1dea7a8` passes 368/368 with exact
+  logical/business-state preservation.
+- Owner evidence `3DPIceland_FilamentDB_Verification_20260726_220656.txt`
+  passes 368/368 and accepts all corrected runtime behavior.
+- Retired v48 delete/reinsert persistence methods are removed after acceptance.
+- Closure smoke `20260726221001-c7dcae2e` passes 368/368 with exact logical and
+  business-state preservation after the removal.
+- v49.0.0 is complete, canonical and runtime accepted.
+- Production and FTPS remain blocked.
+
 # v48.2.0 - Optional Official Exchange-rate Reference Catalog
 
 Date: 2026-07-26

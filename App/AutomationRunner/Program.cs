@@ -86,12 +86,28 @@ internal static class Program
                          "MaterialsTab", "TensileMeasurementsTab", "ImpactMeasurementsTab",
                          "StiffnessMeasurementsTab", "BaseMaterialsTab", "SettingsManagerTab",
                          "PurchaseOrdersTab", "PrintersTab", "PrintJobQuotesTab",
-                         "AiAssistantTab", "ReportsTab"
+                         "ExperimentalTestingTab", "AiAssistantTab", "ReportsTab"
                      })
             {
                 SelectTab(main, tabId, application.Id);
                 Record("navigate-" + tabId, true, "Tab selected by AutomationId");
             }
+
+            SelectTab(main, "ExperimentalTestingTab", application.Id);
+            var experimentalReadiness = FindById(main, "ExperimentalPublicationReadiness").Current.Name;
+            Require(
+                experimentalReadiness.StartsWith("Publication readiness:", StringComparison.Ordinal),
+                "Experimental Testing did not expose publication readiness.");
+            var experimentalActiveOnly = FindById(main, "ExperimentalActiveOnly");
+            Require(
+                experimentalActiveOnly.GetCurrentPattern(TogglePattern.Pattern) is TogglePattern activeOnlyToggle &&
+                activeOnlyToggle.Current.ToggleState == ToggleState.On,
+                "Experimental Series Active only filter did not start in its safe checked state.");
+            Require(
+                FindById(main, "ExperimentalIncludeInactiveHistory").Current.ControlType ==
+                ControlType.CheckBox,
+                "Experimental Testing did not expose the governed inactive-history comparison toggle.");
+            Record("experimental-workflow-integrity", true, experimentalReadiness);
 
             SelectTab(main, "PurchaseOrdersTab", application.Id);
             var ecbStatus = FindById(main, "EcbExchangeRateStatus").Current.Name;

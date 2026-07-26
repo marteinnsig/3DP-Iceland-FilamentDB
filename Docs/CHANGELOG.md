@@ -2,6 +2,38 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v49.0.0 - Experimental Workflow Integrity
+
+- Makes active Runs the default canonical Results, Analytics, Dashboard and
+  Charts comparison scope, matching governed website publication.
+- Adds explicit `Include inactive history` review without deleting or changing
+  retained Runs.
+- Resets duplicated Runs to Planned, non-baseline and without a measured date.
+- Replaces free-text Run status editing with governed lifecycle choices while
+  preserving existing historical values.
+- Adds publication readiness for active-run count, completeness, baseline,
+  high CV and contradictory Completed status.
+- Requires explicit owner confirmation before an incomplete Series remains
+  selected for website output.
+- Replaces three destructive Experimental save transactions with one atomic,
+  targeted UPSERT/snapshot synchronization and guarded UsageEvent references.
+- Adds baseline ownership, workflow-integrity and release Verification gates.
+- Extends diagnostics and smoke navigation with Experimental counts, readiness
+  and inactive-history controls.
+- Corrects owner-runtime findings: Series `Active only` now starts checked,
+  Results history scope is labeled explicitly and Website readiness appears on
+  the first checkbox click instead of after leaving the cell.
+- Adds a deterministic default-No publication-decision gate.
+- Debug/Release, documentation/security gates and disposable smoke pass Full
+  Data Verification 368/368 with exact logical/business-state preservation.
+- Owner Verification
+  `3DPIceland_FilamentDB_Verification_20260726_220656.txt` passes 368/368 and
+  accepts the corrected filter, Results scope and immediate Website prompt.
+- Removes the retired v48 Experimental delete/reinsert persistence methods
+  after the atomic replacement received runtime acceptance.
+- Schema remains v37. Production, FTPS and owner-database automation remain
+  blocked.
+
 ## v48.2.0 - Optional Official Exchange-rate Reference Catalog
 
 - Selects the documented ECB SDMX HTTPS API and derives ISK cross-rates through

@@ -2,6 +2,37 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v49.0.0 - Experimental Workflow Integrity
+
+Candidate v49.0.0 aligns desktop Experimental conclusions with the active Runs
+eligible for website publication while keeping inactive history available
+through an explicit review toggle. Duplicate Run now creates a clean Planned
+workflow record instead of copying a potentially contradictory Completed state.
+
+Experimental graph persistence is now one atomic transaction using UPSERTs and
+targeted removal of records absent from the in-memory snapshot. Run deletion is
+preflighted against immutable UsageEvents, baseline ownership is validated and
+foreign-key integrity is checked before commit. Schema remains v37.
+
+Publication readiness remains advisory: partial research can be included only
+after explicit confirmation. Debug/Release and documentation/security gates
+pass. Disposable smoke `20260726213611-698a3177` passes Full Data Verification
+367/367 with exact logical and business-state preservation. Final owner runtime
+acceptance remains pending.
+
+Owner runtime evidence `3DPIceland_FilamentDB_Verification_20260726_215702.txt`
+passed 367/367 and exposed three usability details: Series Active-only started
+off, the inactive-history scope was unclear beside the always-complete Runs
+manager, and Website readiness appeared only after leaving the checkbox cell.
+The correction makes Active-only a safe transient startup default, labels the
+Results-only scope and handles Website readiness immediately with default No.
+Final smoke `20260726220205-e1dea7a8` passes 368/368 with exact state equality.
+Owner retest `3DPIceland_FilamentDB_Verification_20260726_220656.txt` passes
+368/368 and accepts all corrected runtime behavior. The temporary v48
+delete/reinsert fallback methods are removed in closure. v49.0.0 is canonical
+and runtime accepted. Closure smoke `20260726221001-c7dcae2e` passes 368/368
+with exact logical and business-state preservation after retirement.
+
 ## v48.2.0 - Optional Official Exchange-rate Reference Catalog
 
 Schema v37 adds ECB-derived Purchase Order rate provenance without introducing

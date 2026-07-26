@@ -1,5 +1,30 @@
 # Automated Runtime Acceptance
 
+## v49.0.0 - Experimental workflow integrity
+
+- Smoke navigation now selects the Experimental Testing tab by stable
+  AutomationId.
+- The tester requires owner-visible publication readiness and the explicit
+  inactive-history comparison toggle.
+- Full Data Verification deterministically proves duplicate lifecycle reset,
+  baseline ownership, active-only default scope controls and graph-persistence
+  wiring.
+- The smoke scenario is read-only for Experimental data. No broad Experimental
+  write authorization is introduced in this increment.
+- The tester requires the Series Active-only filter to start checked.
+- Verification proves incomplete publication defaults to No, explicit
+  confirmation enables it, ready publication proceeds and hiding needs no
+  confirmation.
+- Profile `20260726220205-e1dea7a8` passes Full Data Verification 368/368 and
+  exact logical/business-state preservation.
+- Owner evidence `3DPIceland_FilamentDB_Verification_20260726_220656.txt`
+  passes 368/368 and accepts the corrected runtime behavior.
+- Closure smoke `20260726221001-c7dcae2e` passes 368/368 with exact state
+  preservation after retired persistence removal.
+- Production, FTPS, owner database and unexpected-dialog guards are unchanged.
+- HTML/website presentation and partial-publication confirmation remained
+  owner-manual and are runtime accepted.
+
 ## v48.0.7 - Internal usage analytics
 
 - Reuses the existing disposable `crud` scenario and write authorization.

@@ -62,6 +62,23 @@
 - Document why tester changes are required or why no tester change is warranted
   in the increment evidence and release notes.
 
+## Proactive subagent delegation
+
+- Codex is authorized to use subagents proactively when a task contains
+  concrete, independent workstreams that benefit from parallel research,
+  codebase mapping, test analysis, or independent review.
+- The lead agent remains responsible for synthesis, implementation ownership,
+  repository integrity, final verification, runtime handoff, and release
+  closure.
+- Prefer read-only subagent work for exploration, triage, log analysis, and
+  review. Give each subagent a bounded scope and an explicit deliverable.
+- Avoid parallel writes to overlapping files, schemas, databases,
+  documentation, or other shared mutable state.
+- Do not use subagents when work is small, sequential, tightly coupled, or
+  unlikely to benefit after coordination overhead.
+- Tell the user when subagents are used and summarize how their findings
+  influenced the final implementation or decision.
+
 ## Canonical tester seed maintenance
 
 - Codex is authorized to refresh `C:\Seed-Database\filamentdb.sqlite` when a

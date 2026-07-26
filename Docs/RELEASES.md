@@ -1,6 +1,16 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v49.0.0 - Experimental Workflow Integrity
+
+Active Runs now define the default Experimental comparison and website parity;
+inactive history remains retained and explicitly reviewable. Duplicate Run
+resets lifecycle evidence, publication readiness is owner-visible and
+Experimental persistence is atomic and guarded. Schema remains v37. Runtime
+acceptance passes 368/368 after addressing initial owner-runtime filter,
+scope-label and checkbox-timing findings. v49.0.0 is canonical and runtime
+accepted; the retired v48 persistence fallback is removed.
+
 ## v48.2.0 - Optional Official Exchange-rate Reference Catalog
 
 Schema v37 adds immutable Purchase Order rate provenance and an optional

@@ -3152,42 +3152,245 @@ ORDER BY MaterialId;";
         return rows;
     }
 
-    public void ReplaceMaterialExperiments(IEnumerable<MaterialExperimentRecord> experiments)
+    public void SynchronizeExperimentalGraph(
+        IEnumerable<MaterialExperimentRecord> experiments,
+        IEnumerable<ExperimentalRunRecord> runs,
+        IEnumerable<ExperimentalMeasurementRecord> measurements)
     {
+        var seriesRows = experiments.ToList();
+        var runRows = runs.ToList();
+        var measurementRows = measurements.ToList();
+        var seriesIds = seriesRows.Select(x => x.MaterialExperimentId).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var runIds = runRows.Select(x => x.ExperimentalRunId).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        if (seriesRows.Any(x => string.IsNullOrWhiteSpace(x.MaterialExperimentId)) ||
+            seriesRows.Count != seriesIds.Count)
+            throw new InvalidOperationException("Experimental Series IDs must be present and unique.");
+        if (runRows.Any(x => string.IsNullOrWhiteSpace(x.ExperimentalRunId) ||
+                             !seriesIds.Contains(x.MaterialExperimentId)) ||
+            runRows.Count != runIds.Count)
+            throw new InvalidOperationException("Experimental Run IDs must be unique and owned by a current Series.");
+        if (runRows.GroupBy(x => x.MaterialExperimentId, StringComparer.OrdinalIgnoreCase)
+            .Any(group => group.Count(x => x.IsBaseline) > 1))
+            throw new InvalidOperationException("Only one baseline Run is allowed in each Experimental Series.");
+        if (measurementRows.Any(x => string.IsNullOrWhiteSpace(x.ExperimentalMeasurementId) ||
+                                     !runIds.Contains(x.ExperimentalRunId)) ||
+            measurementRows.Select(x => x.ExperimentalMeasurementId).Distinct(StringComparer.OrdinalIgnoreCase).Count() != measurementRows.Count)
+            throw new InvalidOperationException("Experimental measurements must have unique IDs and a current Run owner.");
+        if (measurementRows.GroupBy(
+                x => $"{x.ExperimentalRunId}\u001f{x.MeasurementType}\u001f{x.Orientation}",
+                StringComparer.OrdinalIgnoreCase).Any(group => group.Count() > 1))
+            throw new InvalidOperationException("Experimental measurement type and orientation must be unique within each Run.");
+
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
         using var transaction = connection.BeginTransaction();
-        using (var clear = connection.CreateCommand())
+
+        var existingRunIds = new List<string>();
+        using (var existing = connection.CreateCommand())
         {
-            clear.Transaction = transaction;
-            clear.CommandText = "DELETE FROM MaterialExperiments;";
-            clear.ExecuteNonQuery();
+            existing.Transaction = transaction;
+            existing.CommandText = "SELECT ExperimentalRunId FROM ExperimentalRuns;";
+            using var reader = existing.ExecuteReader();
+            while (reader.Read()) existingRunIds.Add(reader.GetString(0));
         }
-        using var insert = connection.CreateCommand();
-        insert.Transaction = transaction;
-        insert.CommandText = @"INSERT INTO MaterialExperiments
-(MaterialExperimentId, MaterialId, ExperimentDefinitionId, ParameterValue, ParameterUnit, BaselineMaterialId, Notes, PublishOnWebsite, IsActive, CreatedAtUtc, UpdatedAtUtc)
-VALUES ($id,$material,$definition,$value,$unit,$baseline,$notes,$publish,$active,$created,$updated);";
-        foreach (var x in experiments)
+        var removedRunIds = existingRunIds.Where(id => !runIds.Contains(id)).ToList();
+        foreach (var removedRunId in removedRunIds)
         {
-            var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
-            if (string.IsNullOrWhiteSpace(x.CreatedAtUtc)) x.CreatedAtUtc = now;
-            x.UpdatedAtUtc = now;
-            insert.Parameters.Clear();
-            insert.Parameters.AddWithValue("$id", x.MaterialExperimentId);
-            insert.Parameters.AddWithValue("$material", x.MaterialID);
-            insert.Parameters.AddWithValue("$definition", x.ExperimentDefinitionId);
-            insert.Parameters.AddWithValue("$value", x.ParameterValue ?? string.Empty);
-            insert.Parameters.AddWithValue("$unit", x.ParameterUnit ?? string.Empty);
-            insert.Parameters.AddWithValue("$baseline", string.IsNullOrWhiteSpace(x.BaselineMaterialID) ? DBNull.Value : x.BaselineMaterialID);
-            insert.Parameters.AddWithValue("$notes", x.Notes ?? string.Empty);
-            insert.Parameters.AddWithValue("$publish", x.PublishOnWebsite ? 1 : 0);
-            insert.Parameters.AddWithValue("$active", x.IsActive ? 1 : 0);
-            insert.Parameters.AddWithValue("$created", x.CreatedAtUtc);
-            insert.Parameters.AddWithValue("$updated", x.UpdatedAtUtc);
-            insert.ExecuteNonQuery();
+            using var usage = connection.CreateCommand();
+            usage.Transaction = transaction;
+            usage.CommandText = "SELECT COUNT(*) FROM UsageEvents WHERE ExperimentalRunId=$run;";
+            usage.Parameters.AddWithValue("$run", removedRunId);
+            var references = Convert.ToInt32(usage.ExecuteScalar() ?? 0, CultureInfo.InvariantCulture);
+            if (references > 0)
+                throw new InvalidOperationException(
+                    $"Experimental Run {removedRunId} cannot be deleted because {references} immutable Usage Event(s) reference it.");
+        }
+
+        using (var upsertSeries = connection.CreateCommand())
+        {
+            upsertSeries.Transaction = transaction;
+            upsertSeries.CommandText = @"INSERT INTO MaterialExperiments
+(MaterialExperimentId, MaterialId, ExperimentDefinitionId, ParameterValue, ParameterUnit, BaselineMaterialId, Notes, PublishOnWebsite, IsActive, CreatedAtUtc, UpdatedAtUtc)
+VALUES ($id,$material,$definition,$value,$unit,$baseline,$notes,$publish,$active,$created,$updated)
+ON CONFLICT(MaterialExperimentId) DO UPDATE SET
+MaterialId=excluded.MaterialId, ExperimentDefinitionId=excluded.ExperimentDefinitionId,
+ParameterValue=excluded.ParameterValue, ParameterUnit=excluded.ParameterUnit,
+BaselineMaterialId=excluded.BaselineMaterialId, Notes=excluded.Notes,
+PublishOnWebsite=excluded.PublishOnWebsite, IsActive=excluded.IsActive,
+UpdatedAtUtc=excluded.UpdatedAtUtc
+WHERE MaterialId IS NOT excluded.MaterialId
+   OR ExperimentDefinitionId IS NOT excluded.ExperimentDefinitionId
+   OR ParameterValue IS NOT excluded.ParameterValue
+   OR ParameterUnit IS NOT excluded.ParameterUnit
+   OR BaselineMaterialId IS NOT excluded.BaselineMaterialId
+   OR Notes IS NOT excluded.Notes
+   OR PublishOnWebsite IS NOT excluded.PublishOnWebsite
+   OR IsActive IS NOT excluded.IsActive
+RETURNING UpdatedAtUtc;";
+            foreach (var row in seriesRows)
+            {
+                var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
+                if (string.IsNullOrWhiteSpace(row.CreatedAtUtc)) row.CreatedAtUtc = now;
+                upsertSeries.Parameters.Clear();
+                upsertSeries.Parameters.AddWithValue("$id", row.MaterialExperimentId);
+                upsertSeries.Parameters.AddWithValue("$material", row.MaterialID);
+                upsertSeries.Parameters.AddWithValue("$definition", row.ExperimentDefinitionId);
+                upsertSeries.Parameters.AddWithValue("$value", row.ParameterValue ?? string.Empty);
+                upsertSeries.Parameters.AddWithValue("$unit", row.ParameterUnit ?? string.Empty);
+                upsertSeries.Parameters.AddWithValue("$baseline", string.IsNullOrWhiteSpace(row.BaselineMaterialID) ? DBNull.Value : row.BaselineMaterialID);
+                upsertSeries.Parameters.AddWithValue("$notes", row.Notes ?? string.Empty);
+                upsertSeries.Parameters.AddWithValue("$publish", row.PublishOnWebsite ? 1 : 0);
+                upsertSeries.Parameters.AddWithValue("$active", row.IsActive ? 1 : 0);
+                upsertSeries.Parameters.AddWithValue("$created", row.CreatedAtUtc);
+                upsertSeries.Parameters.AddWithValue("$updated", now);
+                if (upsertSeries.ExecuteScalar() is string updated) row.UpdatedAtUtc = updated;
+            }
+        }
+
+        using (var upsertRun = connection.CreateCommand())
+        {
+            upsertRun.Transaction = transaction;
+            upsertRun.CommandText = @"INSERT INTO ExperimentalRuns
+(ExperimentalRunId, MaterialExperimentId, ParameterValue, ParameterUnit, Status, IsBaseline, IsActive, Notes, MeasuredDate, CreatedAtUtc, UpdatedAtUtc)
+VALUES ($id,$series,$value,$unit,$status,$baseline,$active,$notes,$measured,$created,$updated)
+ON CONFLICT(ExperimentalRunId) DO UPDATE SET
+MaterialExperimentId=excluded.MaterialExperimentId, ParameterValue=excluded.ParameterValue,
+ParameterUnit=excluded.ParameterUnit, Status=excluded.Status, IsBaseline=excluded.IsBaseline,
+IsActive=excluded.IsActive, Notes=excluded.Notes, MeasuredDate=excluded.MeasuredDate,
+UpdatedAtUtc=excluded.UpdatedAtUtc
+WHERE MaterialExperimentId IS NOT excluded.MaterialExperimentId
+   OR ParameterValue IS NOT excluded.ParameterValue
+   OR ParameterUnit IS NOT excluded.ParameterUnit
+   OR Status IS NOT excluded.Status
+   OR IsBaseline IS NOT excluded.IsBaseline
+   OR IsActive IS NOT excluded.IsActive
+   OR Notes IS NOT excluded.Notes
+   OR MeasuredDate IS NOT excluded.MeasuredDate
+RETURNING UpdatedAtUtc;";
+            foreach (var row in runRows)
+            {
+                var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
+                if (string.IsNullOrWhiteSpace(row.CreatedAtUtc)) row.CreatedAtUtc = now;
+                upsertRun.Parameters.Clear();
+                upsertRun.Parameters.AddWithValue("$id", row.ExperimentalRunId);
+                upsertRun.Parameters.AddWithValue("$series", row.MaterialExperimentId);
+                upsertRun.Parameters.AddWithValue("$value", row.ParameterValue ?? string.Empty);
+                upsertRun.Parameters.AddWithValue("$unit", row.ParameterUnit ?? string.Empty);
+                upsertRun.Parameters.AddWithValue("$status", string.IsNullOrWhiteSpace(row.Status) ? "Planned" : row.Status);
+                upsertRun.Parameters.AddWithValue("$baseline", row.IsBaseline ? 1 : 0);
+                upsertRun.Parameters.AddWithValue("$active", row.IsActive ? 1 : 0);
+                upsertRun.Parameters.AddWithValue("$notes", row.Notes ?? string.Empty);
+                upsertRun.Parameters.AddWithValue("$measured", ToIsoDate(row.MeasuredDate));
+                upsertRun.Parameters.AddWithValue("$created", row.CreatedAtUtc);
+                upsertRun.Parameters.AddWithValue("$updated", now);
+                if (upsertRun.ExecuteScalar() is string updated) row.UpdatedAtUtc = updated;
+            }
+        }
+
+        using (var upsertMeasurement = connection.CreateCommand())
+        {
+            upsertMeasurement.Transaction = transaction;
+            upsertMeasurement.CommandText = @"INSERT INTO ExperimentalMeasurements
+(ExperimentalMeasurementId,ExperimentalRunId,MeasurementType,Unit,Orientation,RawUnit,ResultUnit,Sample1,Sample2,Sample3,Sample4,Sample5,Sample6,Sample7,Sample8,Sample9,Sample10,ResultAverage,ResultStdDev,ResultCv,ResultCount,ResultConfidence,Notes,UpdatedAtUtc)
+VALUES ($id,$run,$type,$unit,$orientation,$rawUnit,$resultUnit,$s1,$s2,$s3,$s4,$s5,$s6,$s7,$s8,$s9,$s10,$average,$stddev,$cv,$count,$confidence,$notes,$updated)
+ON CONFLICT(ExperimentalMeasurementId) DO UPDATE SET
+ExperimentalRunId=excluded.ExperimentalRunId, MeasurementType=excluded.MeasurementType,
+Unit=excluded.Unit, Orientation=excluded.Orientation, RawUnit=excluded.RawUnit,
+ResultUnit=excluded.ResultUnit, Sample1=excluded.Sample1, Sample2=excluded.Sample2,
+Sample3=excluded.Sample3, Sample4=excluded.Sample4, Sample5=excluded.Sample5,
+Sample6=excluded.Sample6, Sample7=excluded.Sample7, Sample8=excluded.Sample8,
+Sample9=excluded.Sample9, Sample10=excluded.Sample10, ResultAverage=excluded.ResultAverage,
+ResultStdDev=excluded.ResultStdDev, ResultCv=excluded.ResultCv, ResultCount=excluded.ResultCount,
+ResultConfidence=excluded.ResultConfidence, Notes=excluded.Notes, UpdatedAtUtc=excluded.UpdatedAtUtc
+WHERE ExperimentalRunId IS NOT excluded.ExperimentalRunId
+   OR MeasurementType IS NOT excluded.MeasurementType
+   OR Unit IS NOT excluded.Unit
+   OR Orientation IS NOT excluded.Orientation
+   OR RawUnit IS NOT excluded.RawUnit
+   OR ResultUnit IS NOT excluded.ResultUnit
+   OR Sample1 IS NOT excluded.Sample1 OR Sample2 IS NOT excluded.Sample2
+   OR Sample3 IS NOT excluded.Sample3 OR Sample4 IS NOT excluded.Sample4
+   OR Sample5 IS NOT excluded.Sample5 OR Sample6 IS NOT excluded.Sample6
+   OR Sample7 IS NOT excluded.Sample7 OR Sample8 IS NOT excluded.Sample8
+   OR Sample9 IS NOT excluded.Sample9 OR Sample10 IS NOT excluded.Sample10
+   OR ResultAverage IS NOT excluded.ResultAverage
+   OR ResultStdDev IS NOT excluded.ResultStdDev
+   OR ResultCv IS NOT excluded.ResultCv
+   OR ResultCount IS NOT excluded.ResultCount
+   OR ResultConfidence IS NOT excluded.ResultConfidence
+   OR Notes IS NOT excluded.Notes
+RETURNING UpdatedAtUtc;";
+            foreach (var row in measurementRows)
+            {
+                var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
+                upsertMeasurement.Parameters.Clear();
+                upsertMeasurement.Parameters.AddWithValue("$id", row.ExperimentalMeasurementId);
+                upsertMeasurement.Parameters.AddWithValue("$run", row.ExperimentalRunId);
+                upsertMeasurement.Parameters.AddWithValue("$type", string.IsNullOrWhiteSpace(row.Orientation) ? row.MeasurementType : $"{row.MeasurementType}|{row.Orientation}");
+                upsertMeasurement.Parameters.AddWithValue("$unit", row.ResultUnit ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$orientation", row.Orientation ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$rawUnit", row.RawUnit ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$resultUnit", row.ResultUnit ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$s1", row.Sample1 ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$s2", row.Sample2 ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$s3", row.Sample3 ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$s4", row.Sample4 ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$s5", row.Sample5 ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$s6", row.Sample6 ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$s7", row.Sample7 ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$s8", row.Sample8 ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$s9", row.Sample9 ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$s10", row.Sample10 ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$average", row.ResultAverage ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$stddev", row.ResultStdDev ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$cv", row.ResultCv ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$count", row.ResultCount ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$confidence", row.ResultConfidence ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$notes", row.Notes ?? string.Empty);
+                upsertMeasurement.Parameters.AddWithValue("$updated", now);
+                if (upsertMeasurement.ExecuteScalar() is string updated) row.UpdatedAtUtc = updated;
+            }
+        }
+
+        DeleteRowsMissingFromSnapshot(connection, transaction, "ExperimentalMeasurements", "ExperimentalMeasurementId",
+            measurementRows.Select(x => x.ExperimentalMeasurementId));
+        DeleteRowsMissingFromSnapshot(connection, transaction, "ExperimentalRuns", "ExperimentalRunId", runIds);
+        DeleteRowsMissingFromSnapshot(connection, transaction, "MaterialExperiments", "MaterialExperimentId", seriesIds);
+
+        using (var foreignKeys = connection.CreateCommand())
+        {
+            foreignKeys.Transaction = transaction;
+            foreignKeys.CommandText = "PRAGMA foreign_key_check;";
+            using var reader = foreignKeys.ExecuteReader();
+            if (reader.Read())
+                throw new InvalidOperationException("Experimental graph save failed foreign-key validation.");
         }
         transaction.Commit();
+    }
+
+    private static void DeleteRowsMissingFromSnapshot(
+        SqliteConnection connection,
+        SqliteTransaction transaction,
+        string table,
+        string idColumn,
+        IEnumerable<string> retainedIds)
+    {
+        var ids = retainedIds.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        if (ids.Count == 0)
+        {
+            command.CommandText = $"DELETE FROM {table};";
+        }
+        else
+        {
+            var parameters = ids.Select((_, index) => $"$keep{index}").ToList();
+            command.CommandText = $"DELETE FROM {table} WHERE {idColumn} NOT IN ({string.Join(",", parameters)});";
+            for (var index = 0; index < ids.Count; index++)
+                command.Parameters.AddWithValue(parameters[index], ids[index]);
+        }
+        command.ExecuteNonQuery();
     }
 
     public List<ExperimentalRunRecord> LoadExperimentalRuns()
@@ -3216,44 +3419,6 @@ VALUES ($id,$material,$definition,$value,$unit,$baseline,$notes,$publish,$active
         return rows;
     }
 
-    public void ReplaceExperimentalRuns(IEnumerable<ExperimentalRunRecord> runs)
-    {
-        using var connection = new SqliteConnection(ConnectionString);
-        connection.Open();
-        using var transaction = connection.BeginTransaction();
-        using (var clear = connection.CreateCommand())
-        {
-            clear.Transaction = transaction;
-            clear.CommandText = "DELETE FROM ExperimentalRuns;";
-            clear.ExecuteNonQuery();
-        }
-        using var insert = connection.CreateCommand();
-        insert.Transaction = transaction;
-        insert.CommandText = @"INSERT INTO ExperimentalRuns
-(ExperimentalRunId, MaterialExperimentId, ParameterValue, ParameterUnit, Status, IsBaseline, IsActive, Notes, MeasuredDate, CreatedAtUtc, UpdatedAtUtc)
-VALUES ($id,$series,$value,$unit,$status,$baseline,$active,$notes,$measured,$created,$updated);";
-        foreach (var x in runs)
-        {
-            var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
-            if (string.IsNullOrWhiteSpace(x.CreatedAtUtc)) x.CreatedAtUtc = now;
-            x.UpdatedAtUtc = now;
-            insert.Parameters.Clear();
-            insert.Parameters.AddWithValue("$id", x.ExperimentalRunId);
-            insert.Parameters.AddWithValue("$series", x.MaterialExperimentId);
-            insert.Parameters.AddWithValue("$value", x.ParameterValue ?? string.Empty);
-            insert.Parameters.AddWithValue("$unit", x.ParameterUnit ?? string.Empty);
-            insert.Parameters.AddWithValue("$status", string.IsNullOrWhiteSpace(x.Status) ? "Planned" : x.Status);
-            insert.Parameters.AddWithValue("$baseline", x.IsBaseline ? 1 : 0);
-            insert.Parameters.AddWithValue("$active", x.IsActive ? 1 : 0);
-            insert.Parameters.AddWithValue("$notes", x.Notes ?? string.Empty);
-            insert.Parameters.AddWithValue("$measured", ToIsoDate(x.MeasuredDate));
-            insert.Parameters.AddWithValue("$created", x.CreatedAtUtc);
-            insert.Parameters.AddWithValue("$updated", x.UpdatedAtUtc);
-            insert.ExecuteNonQuery();
-        }
-        transaction.Commit();
-    }
-
     public List<ExperimentalMeasurementRecord> LoadExperimentalMeasurements()
     {
         using var connection = new SqliteConnection(ConnectionString); connection.Open(); Initialize();
@@ -3276,22 +3441,6 @@ VALUES ($id,$series,$value,$unit,$status,$baseline,$active,$notes,$measured,$cre
             });
         }
         return rows;
-    }
-
-    public void ReplaceExperimentalMeasurements(IEnumerable<ExperimentalMeasurementRecord> measurements)
-    {
-        using var connection = new SqliteConnection(ConnectionString); connection.Open(); using var transaction=connection.BeginTransaction();
-        using (var clear=connection.CreateCommand()) { clear.Transaction=transaction; clear.CommandText="DELETE FROM ExperimentalMeasurements;"; clear.ExecuteNonQuery(); }
-        using var insert=connection.CreateCommand(); insert.Transaction=transaction;
-        insert.CommandText=@"INSERT INTO ExperimentalMeasurements (ExperimentalMeasurementId,ExperimentalRunId,MeasurementType,Unit,Orientation,RawUnit,ResultUnit,Sample1,Sample2,Sample3,Sample4,Sample5,Sample6,Sample7,Sample8,Sample9,Sample10,ResultAverage,ResultStdDev,ResultCv,ResultCount,ResultConfidence,Notes,UpdatedAtUtc) VALUES ($id,$run,$type,$unit,$orientation,$rawUnit,$resultUnit,$s1,$s2,$s3,$s4,$s5,$s6,$s7,$s8,$s9,$s10,$average,$stddev,$cv,$count,$confidence,$notes,$updated);";
-        foreach (var x in measurements)
-        {
-            x.UpdatedAtUtc=DateTime.UtcNow.ToString("O",CultureInfo.InvariantCulture); insert.Parameters.Clear();
-            insert.Parameters.AddWithValue("$id",x.ExperimentalMeasurementId); insert.Parameters.AddWithValue("$run",x.ExperimentalRunId); insert.Parameters.AddWithValue("$type", string.IsNullOrWhiteSpace(x.Orientation) ? x.MeasurementType : $"{x.MeasurementType}|{x.Orientation}"); insert.Parameters.AddWithValue("$unit",x.ResultUnit??string.Empty); insert.Parameters.AddWithValue("$orientation",x.Orientation??string.Empty); insert.Parameters.AddWithValue("$rawUnit",x.RawUnit??string.Empty); insert.Parameters.AddWithValue("$resultUnit",x.ResultUnit??string.Empty);
-            insert.Parameters.AddWithValue("$s1",x.Sample1??string.Empty); insert.Parameters.AddWithValue("$s2",x.Sample2??string.Empty); insert.Parameters.AddWithValue("$s3",x.Sample3??string.Empty); insert.Parameters.AddWithValue("$s4",x.Sample4??string.Empty); insert.Parameters.AddWithValue("$s5",x.Sample5??string.Empty); insert.Parameters.AddWithValue("$s6",x.Sample6??string.Empty); insert.Parameters.AddWithValue("$s7",x.Sample7??string.Empty); insert.Parameters.AddWithValue("$s8",x.Sample8??string.Empty); insert.Parameters.AddWithValue("$s9",x.Sample9??string.Empty); insert.Parameters.AddWithValue("$s10",x.Sample10??string.Empty); insert.Parameters.AddWithValue("$average",x.ResultAverage??string.Empty); insert.Parameters.AddWithValue("$stddev",x.ResultStdDev??string.Empty); insert.Parameters.AddWithValue("$cv",x.ResultCv??string.Empty); insert.Parameters.AddWithValue("$count",x.ResultCount??string.Empty); insert.Parameters.AddWithValue("$confidence",x.ResultConfidence??string.Empty);
-            insert.Parameters.AddWithValue("$notes",x.Notes??string.Empty); insert.Parameters.AddWithValue("$updated",x.UpdatedAtUtc); insert.ExecuteNonQuery();
-        }
-        transaction.Commit();
     }
 
     public (int Measurements, int OrphanedRuns, int RunsWithMeasurements) GetExperimentalMeasurementStats()

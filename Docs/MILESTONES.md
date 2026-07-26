@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v49.0.0 - Experimental Workflow Integrity
+
+The candidate strengthens the accepted canonical Series/Run workflow without
+duplicating Materials or introducing dynamic schema columns. Active-run
+comparison parity, explicit inactive-history review, lifecycle-safe duplicate,
+publication readiness and atomic graph persistence form one bounded milestone.
+Owner runtime acceptance and Full Data Verification 368/368 pass. v49.0.0 is
+complete and canonical.
+
 # v48.2.0 - Optional Official Exchange-rate Reference Catalog
 
 The accepted ECB-derived Purchase Order reference preserves manual offline

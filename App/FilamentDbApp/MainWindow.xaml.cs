@@ -13293,6 +13293,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Native tensile rows: " + _nativeTensileRows.Count);
         sb.AppendLine("Native impact rows: " + _nativeImpactRows.Count);
         sb.AppendLine("Native stiffness rows: " + _nativeStiffnessRows.Count);
+        sb.AppendLine("Experimental series: " + _materialExperimentRows.Count);
+        sb.AppendLine("Experimental runs: " + _experimentalRunRows.Count);
+        sb.AppendLine("Experimental measurements: " + _experimentalMeasurementRows.Count);
         sb.AppendLine();
         sb.AppendLine(BuildNativeTensileVerificationReport());
         sb.AppendLine();
@@ -13524,6 +13527,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Native impact rows: " + _nativeImpactRows.Count);
         sb.AppendLine("Native stiffness rows: " + _nativeStiffnessRows.Count);
         sb.AppendLine("Native settings rows: " + _nativeSettingsRows.Count);
+        var diagnosticExperimentalRuns = _database.GetExperimentalRunStats();
+        var diagnosticExperimentalMeasurements = _database.GetExperimentalMeasurementStats();
+        sb.AppendLine("Experimental series: " + _materialExperimentRows.Count);
+        sb.AppendLine("Experimental runs: " + diagnosticExperimentalRuns.Runs);
+        sb.AppendLine("Experimental baseline runs: " + diagnosticExperimentalRuns.BaselineRuns);
+        sb.AppendLine("Experimental orphaned runs: " + diagnosticExperimentalRuns.OrphanedSeries);
+        sb.AppendLine("Experimental measurements: " + diagnosticExperimentalMeasurements.Measurements);
+        sb.AppendLine("Experimental orphaned measurements: " + diagnosticExperimentalMeasurements.OrphanedRuns);
         sb.AppendLine();
 
         sb.AppendLine("Calculation Engine");
@@ -15651,6 +15662,29 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             $"Runs {experimentalRuns.Runs}, baseline runs {experimentalRuns.BaselineRuns}, multi-run series {experimentalRuns.SeriesWithMultipleRuns}, orphaned series {experimentalRuns.OrphanedSeries}"));
         var runCrudReady = FindName("ExperimentalRunsGrid") is DataGrid && _experimentalRunRows.All(x => !string.IsNullOrWhiteSpace(x.ExperimentalRunId) && !string.IsNullOrWhiteSpace(x.MaterialExperimentId));
         checks.Add(new VerificationCheck("Experimental run CRUD integrity", runCrudReady, "RunID and SeriesID are canonical and the run manager is available"));
+        var experimentalWorkflowIntegrityReady =
+            FindName("ExperimentalActiveOnlyCheckBox") is CheckBox &&
+            FindName("ExperimentalIncludeInactiveHistoryCheckBox") is CheckBox &&
+            FindName("ExperimentalPublicationReadinessText") is TextBlock &&
+            typeof(LocalDatabase).GetMethod(nameof(LocalDatabase.SynchronizeExperimentalGraph)) is not null;
+        checks.Add(new VerificationCheck("Experimental workflow integrity contract", experimentalWorkflowIntegrityReady,
+            experimentalWorkflowIntegrityReady
+                ? "Active-only comparison, explicit inactive-history review, publication readiness and graph persistence wiring are available"
+                : "One or more v49 Experimental workflow integrity contracts are missing"));
+        var baselineOwnershipValid = _experimentalRunRows
+            .GroupBy(run => run.MaterialExperimentId, StringComparer.OrdinalIgnoreCase)
+            .All(group => group.Count(run => run.IsBaseline) <= 1);
+        checks.Add(new VerificationCheck("Experimental baseline ownership", baselineOwnershipValid,
+            baselineOwnershipValid ? "Every Series has at most one canonical baseline Run" : "A Series contains multiple baseline Runs"));
+        var publicationDecisionReady =
+            !ResolveExperimentalPublicationRequest(true, false, false) &&
+            ResolveExperimentalPublicationRequest(true, false, true) &&
+            ResolveExperimentalPublicationRequest(true, true, false) &&
+            !ResolveExperimentalPublicationRequest(false, false, false);
+        checks.Add(new VerificationCheck("Experimental publication confirmation decision", publicationDecisionReady,
+            publicationDecisionReady
+                ? "Incomplete publication defaults to No, explicit confirmation enables it, ready publication proceeds and hiding needs no confirmation"
+                : "The governed Experimental publication decision contract failed"));
         var experimentalMeasurements = _database.GetExperimentalMeasurementStats();
         var measurementUiReady = FindName("ExperimentalTensileGrid") is DataGrid && FindName("ExperimentalImpactGrid") is DataGrid && FindName("ExperimentalStiffnessGrid") is DataGrid && _experimentalMeasurementRows.All(x => !string.IsNullOrWhiteSpace(x.ExperimentalMeasurementId) && !string.IsNullOrWhiteSpace(x.ExperimentalRunId));
         checks.Add(new VerificationCheck("Experimental measurement entry", measurementUiReady && experimentalMeasurements.OrphanedRuns == 0,
@@ -16582,6 +16616,35 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             officialReferenceReady && excelRecoveryReady && releaseIdentityReady
                 ? "Schema v37; deterministic ECB EUR cross-rate parser; Purchase Order provenance recovery; loaded orders are excluded from reference refresh"
                 : "ECB parser, new-order-only ownership, Purchase Order provenance recovery, UI diagnostics or release identity failed"));
+        var duplicateRunProbe = CreateExperimentalRunDuplicate(
+            new ExperimentalRunRecord
+            {
+                ExperimentalRunId = "VERIFY-SOURCE",
+                MaterialExperimentId = "VERIFY-SERIES",
+                ParameterValue = "220",
+                ParameterUnit = "°C",
+                Status = "Completed",
+                IsBaseline = true,
+                IsActive = true,
+                MeasuredDate = new DateTime(2026, 7, 26)
+            },
+            "VERIFY-DUPLICATE");
+        var experimentalWorkflowReleaseReady =
+            duplicateRunProbe.Status == "Planned" &&
+            !duplicateRunProbe.IsBaseline &&
+            duplicateRunProbe.MeasuredDate is null &&
+            duplicateRunProbe.IsActive &&
+            FindName("ExperimentalActiveOnlyCheckBox") is CheckBox &&
+            FindName("ExperimentalIncludeInactiveHistoryCheckBox") is CheckBox &&
+            FindName("ExperimentalPublicationReadinessText") is TextBlock &&
+            typeof(LocalDatabase).GetMethod(nameof(LocalDatabase.SynchronizeExperimentalGraph)) is not null &&
+            baselineOwnershipValid;
+        checks.Add(new VerificationCheck(
+            "v49.0 Experimental Workflow Integrity release gate",
+            experimentalWorkflowReleaseReady && releaseIdentityReady,
+            experimentalWorkflowReleaseReady && releaseIdentityReady
+                ? "Active-only comparison with explicit history review; duplicate reset, readiness, baseline ownership and persistence wiring are verified"
+                : "Comparison scope, duplicate reset, readiness, baseline ownership, persistence wiring or release identity failed"));
         var usageStats = _database.GetUsageEventStats();
         var usageRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "UsageEvents");
@@ -24783,6 +24846,7 @@ private List<string> GetVisibleAiMaterialLabels()
         // ListCollectionView is still processing Add/Remove, and re-entering persistence/UI
         // refresh from that event can throw InvalidOperationException in WPF.
         RefreshExperimentalStatus();
+        RefreshExperimentalPublicationReadiness();
     }
 
 
@@ -24866,20 +24930,15 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void SaveMaterialExperiments()
     {
-        // Replacing series rows triggers SQLite cascade delete for child runs.
-        // Restore the canonical in-memory run collection in the same save workflow.
-        _database.ReplaceMaterialExperiments(_materialExperimentRows);
-        _database.ReplaceExperimentalRuns(_experimentalRunRows);
-        _database.ReplaceExperimentalMeasurements(_experimentalMeasurementRows);
+        _database.SynchronizeExperimentalGraph(
+            _materialExperimentRows,
+            _experimentalRunRows,
+            _experimentalMeasurementRows);
     }
 
-    private void SaveExperimentalRuns()
-    {
-        _database.ReplaceExperimentalRuns(_experimentalRunRows);
-        _database.ReplaceExperimentalMeasurements(_experimentalMeasurementRows);
-    }
+    private void SaveExperimentalRuns() => SaveMaterialExperiments();
 
-    private void SaveExperimentalMeasurements() => _database.ReplaceExperimentalMeasurements(_experimentalMeasurementRows);
+    private void SaveExperimentalMeasurements() => SaveMaterialExperiments();
 
     private void MaterialExperimentsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -24968,15 +25027,20 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         var source = ResolveExperimentalRun();
         if (source is null) return;
-        var row = new ExperimentalRunRecord
-        {
-            ExperimentalRunId = "RUN-" + Guid.NewGuid().ToString("N")[..8].ToUpperInvariant(),
-            MaterialExperimentId = source.MaterialExperimentId, ParameterValue = source.ParameterValue, ParameterUnit = source.ParameterUnit,
-            Status = source.Status, IsBaseline = false, IsActive = source.IsActive, Notes = source.Notes,
-            CreatedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture)
-        };
+        var row = CreateExperimentalRunDuplicate(source);
         _experimentalRunRows.Add(row); SaveExperimentalRuns(); _experimentalRunView?.Refresh(); RefreshExperimentalSeriesResults(); RefreshExperimentalStatus();
     }
+
+    private static ExperimentalRunRecord CreateExperimentalRunDuplicate(
+        ExperimentalRunRecord source,
+        string? duplicateId = null) =>
+        new()
+        {
+            ExperimentalRunId = duplicateId ?? "RUN-" + Guid.NewGuid().ToString("N")[..8].ToUpperInvariant(),
+            MaterialExperimentId = source.MaterialExperimentId, ParameterValue = source.ParameterValue, ParameterUnit = source.ParameterUnit,
+            Status = "Planned", IsBaseline = false, IsActive = source.IsActive, Notes = source.Notes,
+            CreatedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture)
+        };
 
     private void DeleteExperimentalRun_Click(object sender, RoutedEventArgs e)
     {
@@ -25129,8 +25193,7 @@ private List<string> GetVisibleAiMaterialLabels()
             return;
         }
 
-        var runs = _experimentalRunRows
-            .Where(x => string.Equals(x.MaterialExperimentId, series.MaterialExperimentId, StringComparison.OrdinalIgnoreCase))
+        var runs = GetExperimentalComparisonRuns(series)
             .OrderBy(x => ParseExperimentalSortValue(x.ParameterValue))
             .ThenBy(x => x.ParameterValue, StringComparer.CurrentCultureIgnoreCase)
             .ToList();
@@ -25169,12 +25232,32 @@ private List<string> GetVisibleAiMaterialLabels()
         SetExperimentalAnalyticsSummary(analytics);
         RefreshExperimentalDashboard(series, runs, analytics);
         RefreshExperimentalCharts();
+        RefreshExperimentalPublicationReadiness(series);
         if (FindName("ExperimentalResultsSummaryText") is TextBlock summary)
         {
             if (runs.Count == 0) summary.Text = "No runs exist in the selected series.";
             else if (baseline is null) summary.Text = $"{runs.Count} run(s). Mark one run as Baseline to calculate Δ%. Analytics ranking is available from completed results.";
             else summary.Text = $"{runs.Count} run(s) compared with {ExperimentalRunLabel(baseline)} baseline. Overall score: Tensile 40%, Impact 40%, Stiffness 20%; available metrics are reweighted automatically.";
         }
+    }
+
+    private List<ExperimentalRunRecord> GetExperimentalComparisonRuns(MaterialExperimentRecord series)
+    {
+        var includeInactive = FindName("ExperimentalIncludeInactiveHistoryCheckBox") is CheckBox { IsChecked: true };
+        return _experimentalRunRows
+            .Where(run => string.Equals(run.MaterialExperimentId, series.MaterialExperimentId, StringComparison.OrdinalIgnoreCase) &&
+                          (includeInactive || run.IsActive))
+            .ToList();
+    }
+
+    private string ExperimentalComparisonScopeLabel() =>
+        FindName("ExperimentalIncludeInactiveHistoryCheckBox") is CheckBox { IsChecked: true }
+            ? "Active and inactive history included."
+            : "Active runs only; website parity is active.";
+
+    private void ExperimentalComparisonScope_Changed(object sender, RoutedEventArgs e)
+    {
+        RefreshExperimentalSeriesResults();
     }
 
 
@@ -25193,8 +25276,7 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         if (FindName("ExperimentalTensileChart") is not Canvas tensile) return;
         var series = _selectedExperimentalSeries ?? _lastSelectedMaterialExperiment;
-        var runs = series is null ? new List<ExperimentalRunRecord>() : _experimentalRunRows
-            .Where(x => string.Equals(x.MaterialExperimentId, series.MaterialExperimentId, StringComparison.OrdinalIgnoreCase))
+        var runs = series is null ? new List<ExperimentalRunRecord>() : GetExperimentalComparisonRuns(series)
             .OrderBy(x => ParseExperimentalSortValue(x.ParameterValue)).ThenBy(x => x.ParameterValue, StringComparer.CurrentCultureIgnoreCase).ToList();
         var points = runs.Select(run =>
         {
@@ -25220,7 +25302,9 @@ private List<string> GetVisibleAiMaterialLabels()
         DrawExperimentalBarChart(FindName("ExperimentalScoreChart") as Canvas, "Combined Performance Score", points, p => p.Score, "%");
         DrawExperimentalBaselineChart(FindName("ExperimentalBaselineChart") as Canvas, points);
         if (FindName("ExperimentalChartsStatusText") is TextBlock status)
-            status.Text = points.Count == 0 ? "Select a test series with runs to display charts." : $"{points.Count} run(s) visualized. Blue halo = baseline; gold marker = best value. Charts use the same native results and analytics score as the Results table.";
+            status.Text = points.Count == 0
+                ? "Select a test series with active runs to display charts."
+                : $"{points.Count} run(s) visualized. {ExperimentalComparisonScopeLabel()} Blue halo = baseline; gold marker = best value. Charts use the same native results and analytics score as the Results table.";
     }
 
     private static void DrawExperimentalLineChart(Canvas? canvas, string title, IReadOnlyList<ExperimentalChartPoint> points, IReadOnlyList<ExperimentalChartSeries> series, string unit)
@@ -25267,6 +25351,69 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private static string ExperimentalRunLabel(ExperimentalRunRecord run) =>
         string.IsNullOrWhiteSpace(run.ParameterValue) ? run.ExperimentalRunId : $"{run.ParameterValue} {run.ParameterUnit}".Trim();
+
+    private ExperimentalPublicationReadiness GetExperimentalPublicationReadiness(MaterialExperimentRecord series)
+    {
+        var runs = _experimentalRunRows
+            .Where(run => run.IsActive &&
+                          string.Equals(run.MaterialExperimentId, series.MaterialExperimentId, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var completed = 0;
+        var missing = 0;
+        var highCvRuns = 0;
+        foreach (var run in runs)
+        {
+            var metrics = GetExperimentalRunMetrics(run.ExperimentalRunId);
+            var values = new[]
+            {
+                metrics.TensileUpright, metrics.TensileFlat,
+                metrics.ImpactUpright, metrics.ImpactFlat, metrics.Stiffness
+            };
+            var runMissing = values.Count(value => !value.HasValue);
+            missing += runMissing;
+            if (runMissing == 0) completed++;
+            if (new[]
+                {
+                    metrics.TensileUprightCv, metrics.TensileFlatCv,
+                    metrics.ImpactUprightCv, metrics.ImpactFlatCv
+                }.Any(value => value > 15d))
+                highCvRuns++;
+        }
+
+        var baselineCount = runs.Count(run => run.IsBaseline);
+        var statusConflicts = runs.Count(run =>
+        {
+            var metrics = GetExperimentalRunMetrics(run.ExperimentalRunId);
+            var complete = metrics.TensileUpright.HasValue && metrics.TensileFlat.HasValue &&
+                           metrics.ImpactUpright.HasValue && metrics.ImpactFlat.HasValue &&
+                           metrics.Stiffness.HasValue;
+            return string.Equals(run.Status, "Completed", StringComparison.OrdinalIgnoreCase) && !complete;
+        });
+        var ready = runs.Count >= 2 && baselineCount == 1 && missing == 0 && highCvRuns == 0 && statusConflicts == 0;
+        var detail =
+            $"Publication readiness: active runs {runs.Count}, complete {completed}, missing results {missing}, " +
+            $"baseline {(baselineCount == 1 ? "ready" : baselineCount == 0 ? "missing" : "invalid")}, " +
+            $"high-CV runs {highCvRuns}, completed-status conflicts {statusConflicts}.";
+        return new ExperimentalPublicationReadiness(ready, detail);
+    }
+
+    private void RefreshExperimentalPublicationReadiness(MaterialExperimentRecord? series = null)
+    {
+        if (FindName("ExperimentalPublicationReadinessText") is not TextBlock text) return;
+        series ??= _selectedExperimentalSeries ?? _lastSelectedMaterialExperiment;
+        if (series is null)
+        {
+            text.Text = "Publication readiness: select a Series.";
+            return;
+        }
+
+        var readiness = GetExperimentalPublicationReadiness(series);
+        text.Text = readiness.Ready
+            ? readiness.Detail + " Ready for governed Website inclusion."
+            : readiness.Detail + " Review before Website inclusion; partial research requires explicit confirmation.";
+    }
+
+    private sealed record ExperimentalPublicationReadiness(bool Ready, string Detail);
 
     private void RefreshExperimentalDashboard(MaterialExperimentRecord? series, IReadOnlyList<ExperimentalRunRecord> runs, ExperimentalAnalyticsResult? analytics)
     {
@@ -25452,7 +25599,10 @@ private List<string> GetVisibleAiMaterialLabels()
         }
         else if (header == "Active")
         {
-            row.IsActive = !row.IsActive; SaveExperimentalRuns(); e.Handled = true;
+            row.IsActive = !row.IsActive;
+            SaveExperimentalRuns();
+            RefreshExperimentalSeriesResults();
+            e.Handled = true;
         }
     }
 
@@ -25554,21 +25704,48 @@ private List<string> GetVisibleAiMaterialLabels()
         // stable current record for Duplicate/Delete without forcing row selection.
         _lastSelectedMaterialExperiment = row;
         var seriesChanged = !ReferenceEquals(_selectedExperimentalSeries, row);
-
-        // Do not partially change only the Run filter from this preview event. Defer the complete
-        // atomic Series context transition until WPF has closed the current mouse/edit transaction.
-        if (seriesChanged)
+        void QueueSeriesActivation()
         {
+            if (!seriesChanged) return;
             Dispatcher.BeginInvoke(new Action(() => ActivateExperimentalSeries(row)),
                 System.Windows.Threading.DispatcherPriority.ContextIdle);
         }
 
         grid.CurrentCell = new DataGridCellInfo(row, cell.Column);
 
-        // A DataGridCheckBoxColumn normally needs two clicks in cell-selection mode.
-        // Toggle Active directly on the first click and persist it without starting
-        // a conflicting DataGrid edit transaction.
-        if (string.Equals(cell.Column.Header?.ToString(), "Active", StringComparison.Ordinal))
+        // DataGridCheckBoxColumn normally defers binding until the edit ends. Handle
+        // governed checkboxes directly so confirmation and persistence occur on the click.
+        var header = cell.Column.Header?.ToString();
+        if (string.Equals(header, "Website", StringComparison.Ordinal))
+        {
+            var requestedPublishing = !row.PublishOnWebsite;
+            var readiness = GetExperimentalPublicationReadiness(row);
+            var confirmedIncomplete = false;
+            if (requestedPublishing && !readiness.Ready)
+            {
+                confirmedIncomplete = MessageBox.Show(
+                    this,
+                    readiness.Detail + "\n\nInclude this incomplete Series in Website output anyway?",
+                    "Experimental publication readiness",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning,
+                    MessageBoxResult.No) == MessageBoxResult.Yes;
+            }
+
+            var resolvedPublishing = ResolveExperimentalPublicationRequest(
+                requestedPublishing,
+                readiness.Ready,
+                confirmedIncomplete);
+            if (row.PublishOnWebsite != resolvedPublishing)
+            {
+                row.PublishOnWebsite = resolvedPublishing;
+                SaveMaterialExperiments();
+            }
+            RefreshExperimentalStatus();
+            RefreshExperimentalPublicationReadiness(row);
+            e.Handled = true;
+        }
+        else if (string.Equals(header, "Active", StringComparison.Ordinal))
         {
             row.IsActive = !row.IsActive;
             row.UpdatedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
@@ -25576,7 +25753,18 @@ private List<string> GetVisibleAiMaterialLabels()
             RefreshExperimentalStatus();
             e.Handled = true;
         }
+
+        // Defer the complete Series context transition until the governed checkbox
+        // decision and mouse/edit transaction have finished. This prevents a modal
+        // readiness prompt from pumping a queued context change while it is open.
+        QueueSeriesActivation();
     }
+
+    private static bool ResolveExperimentalPublicationRequest(
+        bool requestedPublishing,
+        bool readinessReady,
+        bool confirmedIncomplete) =>
+        requestedPublishing && (readinessReady || confirmedIncomplete);
 
     private void MaterialExperimentsGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
     {
@@ -25596,6 +25784,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
             SaveMaterialExperiments();
             RefreshExperimentalStatus();
+            RefreshExperimentalPublicationReadiness(e.Row.Item as MaterialExperimentRecord);
         }), DispatcherPriority.ContextIdle);
     }
 
@@ -25654,6 +25843,14 @@ private List<string> GetVisibleAiMaterialLabels()
         var linked = _materialExperimentRows.Count(x => _nativeMaterialRows.Any(m => string.Equals(m.MaterialID, x.MaterialID, StringComparison.OrdinalIgnoreCase)));
         var selectedRuns = _selectedExperimentalSeries is null ? 0 : _experimentalRunRows.Count(x => x.MaterialExperimentId == _selectedExperimentalSeries.MaterialExperimentId);
         text.Text = $"{visible} series visible • {_materialExperimentRows.Count} total • {active} active • {linked}/{_materialExperimentRows.Count} MaterialID links valid • {selectedRuns} run(s) in selected series";
+        if (_selectedExperimentalSeries is not null)
+        {
+            var selectedActiveRuns = _experimentalRunRows.Count(run =>
+                run.MaterialExperimentId == _selectedExperimentalSeries.MaterialExperimentId && run.IsActive);
+            var selectedInactiveRuns = _experimentalRunRows.Count(run =>
+                run.MaterialExperimentId == _selectedExperimentalSeries.MaterialExperimentId && !run.IsActive);
+            text.Text += $" ({selectedActiveRuns} active, {selectedInactiveRuns} inactive)";
+        }
     }
 
     private InventorySummary BuildInventorySummary()

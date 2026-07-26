@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v48.2.0 — Optional Official Exchange-rate Reference Catalog**
+Current canonical release: **v49.0.0 — Experimental Workflow Integrity**
 
-Last runtime-accepted baseline: **v48.2.0 — Optional Official Exchange-rate Reference Catalog**
+Last runtime-accepted baseline: **v49.0.0 — Experimental Workflow Integrity**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v49.0 — Experimental Workflow Extension**
+Current roadmap increment: **v50.0 — Comprehensive User Help and Workflow Guide**
 
-Current acceptance note: v48.2.0 is runtime accepted with Full Data Verification 364/364.
+Current acceptance note: v49.0.0 is runtime accepted with Full Data Verification 368/368.
 
 Candidate note: None.
 
@@ -32,9 +32,9 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v45 | Material Model and Canonical Relationships | ★★★★★ | Complete — canonical v45.2.1 runtime accepted |
 | v46 | Application Branding | ★★★☆☆ | Complete — canonical v46.0.0 runtime accepted |
 | v47 | AI Assistant Workflow | ★★★★☆ | Complete — canonical v47.0.3 runtime accepted |
-| v48 | Pricing and Usage Analytics | ★★★★☆ | Current |
-| v49 | Experimental Workflow Extension | ★★★★☆ | Planned |
-| v50 | Comprehensive User Help | ★★★★★ | Planned |
+| v48 | Pricing and Usage Analytics | ★★★★☆ | Complete — canonical v48.2.0 runtime accepted |
+| v49 | Experimental Workflow Extension | ★★★★☆ | Complete — canonical v49.0.0 runtime accepted |
+| v50 | Comprehensive User Help | ★★★★★ | Current |
 | v51 | Governed Runtime Profiles | ★★★☆☆ | Research only |
 | v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Planned |
 
@@ -2010,9 +2010,22 @@ to unstarted authoritative planning slots.
   - Owner accepted live ECB retrieval, prefill, offline behavior and historical-data immutability.
   - Canonical tester seed is schema v37; the schema-v36 seed remains an explicit migration fixture.
 - **v49.0 — Experimental Workflow Extension**
-  - Feedback disposition: Partially solved.
-  - Evaluate owner-visible gaps on top of canonical Series/Runs.
+  - State: Complete, canonical and runtime accepted as v49.0.0 — Experimental Workflow Integrity.
+  - Feedback disposition: Solved.
+  - Active Runs define the default desktop and website comparison scope.
+  - Inactive historical Runs remain stored and explicitly reviewable.
+  - Duplicate Run resets status, baseline and measured-date lifecycle evidence.
+  - Publication readiness reports active-run completeness, baseline, high CV and status conflicts.
+  - Partial research remains allowed only after explicit owner confirmation.
+  - Experimental graph persistence is atomic and guards immutable UsageEvent references.
+  - Diagnostics, Verification and smoke navigation cover the changed contract.
+  - Owner follow-up corrected Active-only startup, Results-scope wording and first-click Website confirmation.
+  - Corrected disposable smoke and owner Verification pass Full Data Verification 368/368.
+  - Owner accepted Active-only startup, Results history scope and immediate default-No Website confirmation.
+  - The retired delete/reinsert Experimental persistence methods were removed after runtime acceptance.
+  - Schema remains v37; no new recovery table or canonical seed refresh is required.
   - Do not duplicate Materials or create dynamic schema columns.
+  - Completion condition met: governed gates and runtime acceptance pass with schema v37.
 - **v50.0 — Comprehensive User Help and Workflow Guide**
   - State: Planned dedicated milestone.
   - Feedback disposition: Open.
