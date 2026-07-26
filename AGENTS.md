@@ -62,6 +62,29 @@
 - Document why tester changes are required or why no tester change is warranted
   in the increment evidence and release notes.
 
+## Canonical tester seed maintenance
+
+- Codex is authorized to refresh `C:\Seed-Database\filamentdb.sqlite` when a
+  schema change, accepted data contract, migration requirement, tester need, or
+  other concrete acceptance reason makes the existing canonical seed stale.
+- Treat this as standing project authorization; a separate user confirmation is
+  not required for each justified seed refresh. Filesystem sandbox or escalation
+  approval may still be required by the execution environment.
+- Never copy or mutate the active owner database directly. Use an explicit
+  owner-approved Manual Backup or a validated disposable derivative as source.
+- Before replacement, validate exact paths, SQLite integrity, schema version,
+  relationship integrity, automation residue and relevant row counts.
+- Preserve the prior seed under an explicit schema/migration fixture name when
+  it remains required for supported migration coverage. Never silently discard
+  the last required legacy fixture.
+- After replacement, require source/target SHA-256 evidence, disposable tester
+  acceptance, Full Data Verification and exact baseline/final business-state
+  recovery where the scenario supports it.
+- If the candidate fails any gate, restore the last accepted canonical seed,
+  retain failure evidence and report the reason.
+- Record accepted seed paths, schema versions, hashes and tester evidence in
+  the current release or automated-acceptance documentation.
+
 ## Roadmap major-version governance
 
 - Give each future major version one coherent strategic theme and a bounded
