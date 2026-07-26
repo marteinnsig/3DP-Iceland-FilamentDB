@@ -116,6 +116,24 @@
   canonical seed fixtures, or external release/evidence locations.
 - Leave the empty `artifacts` directory available for later isolated builds.
 
+## Automated tester profile cleanup
+
+- After each completed and accepted commit or push workflow, clean disposable
+  tester profiles below
+  `C:\Users\maddi\AppData\Local\Temp\3DPIceland-Automation`.
+- Perform cleanup only after every tester, Verification, recovery, diagnostics,
+  evidence, and runtime-acceptance consumer for that workflow has finished.
+- Preserve the latest accepted profile temporarily when it is still needed for
+  evidence, review, diagnostics, or screen recording.
+- Preserve failed profiles until the failure has been investigated and all
+  evidence required for correction or release documentation has been retained.
+- Remove older successful disposable profiles after Verification and exact
+  business-state recovery have passed and required evidence has been moved to
+  its governed long-term location.
+- Resolve and verify the exact absolute profile paths before recursive cleanup.
+  Never apply this rule to the temp root, owner AppData, canonical seed fixtures,
+  the active owner database, or any path outside the tester profile root.
+
 ## Roadmap major-version governance
 
 - Give each future major version one coherent strategic theme and a bounded
