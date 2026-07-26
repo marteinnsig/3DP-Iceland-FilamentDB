@@ -85,6 +85,20 @@
 - Record accepted seed paths, schema versions, hashes and tester evidence in
   the current release or automated-acceptance documentation.
 
+## Build artifact cleanup
+
+- After each completed release, build, publish, or push workflow, clean the
+  contents of `C:\3DPIceland-App-Codex\artifacts`.
+- Perform cleanup only after every build, tester, packaging, verification, or
+  deployment consumer for that workflow has finished.
+- Treat `artifacts` as disposable build output. Move any evidence or release
+  artifact that must be retained to its governed long-term location before
+  cleanup.
+- Resolve and verify the exact absolute target before recursive cleanup. Never
+  apply this rule to `.artifacts`, the repository root, source directories,
+  canonical seed fixtures, or external release/evidence locations.
+- Leave the empty `artifacts` directory available for later isolated builds.
+
 ## Roadmap major-version governance
 
 - Give each future major version one coherent strategic theme and a bounded
