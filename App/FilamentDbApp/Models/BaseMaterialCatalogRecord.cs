@@ -2,6 +2,7 @@ namespace FilamentDbApp.Models;
 
 public sealed class BaseMaterialCatalogRecord
 {
+    public long BaseMaterialId { get; set; }
     public string BaseMaterial { get; set; } = string.Empty;
     public string Category { get; set; } = string.Empty;
     public string SortOrder { get; set; } = string.Empty;

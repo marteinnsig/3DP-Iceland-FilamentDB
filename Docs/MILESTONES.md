@@ -3,6 +3,12 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v45.2.1 - Canonical Base Material Identity
+
+Canonical Base Material relationships now use stable IDs without silently
+remapping historical values. Owner runtime accepted exact binding, zero
+unlinked Materials, live rename/dropdown propagation and Verification 347/347.
+
 # v45.2.0 - Base Materials Workspace
 
 - Separates canonical Base Material master data from application Settings.

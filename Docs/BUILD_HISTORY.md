@@ -2,6 +2,21 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v45.2.1 - Canonical Base Material Identity
+
+Schema v33 adds stable Base Material catalog identities and nullable Material
+links. Existing rows migrate unlinked, exact-name binding is explicit and
+default-No, and linked names resolve by ID across UI and downstream consumers.
+Referenced deletion is guarded in UI and SQLite.
+
+Disposable CRUD profile `20260726104609-8be75c9a` exercises the production
+rename handler, immediate dropdown refresh and exact business-state cleanup.
+Owner evidence `3DPIceland_FilamentDB_Verification_20260726_105027.txt` passes
+347/347 with zero unlinked Materials. The normalized schema-v33 seed passes
+profile `20260726105424-55caa15d`; schema-v32 is retained as a migration fixture.
+Canonical-path profile `20260726105756-ce0811c4` repeats 347/347 and exact
+business-state equality on the final `C:\Seed-Database\filamentdb.sqlite`.
+
 ## v45.2.0 - Base Materials Workspace
 
 The accepted Base Material Fast catalog is separated from Settings without

@@ -350,6 +350,10 @@
                         <TextBlock Text="Material type" VerticalAlignment="Center" Margin="0,0,4,8"/>
                         <ComboBox Name="NativeMaterialBaseMaterialFilter" Width="145" TabIndex="2" SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
 />
+                        <TextBlock Name="NativeMaterialBaseMaterialLinkStatusText"
+                                   AutomationProperties.AutomationId="NativeMaterialBaseMaterialLinkStatus"
+                                   VerticalAlignment="Center" FontWeight="SemiBold"
+                                   Foreground="#B45309" Margin="0,0,12,8"/>
                         <TextBlock Text="Category" VerticalAlignment="Center" Margin="0,0,4,8"/>
                         <ComboBox Name="NativeMaterialCategoryFilter" Width="145" TabIndex="3" SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
 />
@@ -1907,6 +1911,11 @@
                         <Button x:Name="ResetBaseMaterialColumnsButton" Content="Reset Columns"
                                 Click="ResetFastBaseMaterialColumns_Click" Padding="12,6" Margin="0,0,8,8"
                                 ToolTip="Reset the Base Materials column layout. Saved data is unchanged."/>
+                        <Button x:Name="BindExactBaseMaterialNamesButton"
+                                Content="Bind Exact Material Names"
+                                AutomationProperties.AutomationId="BindExactBaseMaterialNames"
+                                Click="BindExactBaseMaterialNames_Click" Padding="12,6" Margin="0,0,8,8"
+                                ToolTip="Preview and explicitly bind unlinked Materials to unique exact Base Material names."/>
                     </WrapPanel>
 
                     <GroupBox Grid.Row="2" Header="Base Material Catalog / Controlled Test-Print Profiles">

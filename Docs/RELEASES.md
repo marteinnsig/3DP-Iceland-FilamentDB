@@ -1,6 +1,13 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v45.2.1 - Canonical Base Material Identity
+
+Stable Base Material identities, explicit lossless binding, canonical rename
+propagation and guarded deletion are runtime accepted. Materials, downstream
+outputs and recovery preserve compatibility snapshots while resolving linked
+records by ID. Full Data Verification passes 347/347.
+
 ## v45.2.0 - Base Materials Workspace
 
 Dedicated Base Materials catalog UI, immediate startup rendering and disposable

@@ -76,6 +76,7 @@ public partial class MainWindow
 
     private MaterialsRenderingPrototypeView? _embeddedMaterialsPrototypeView;
     private readonly ObservableCollection<string> _fastManufacturerChoices = new();
+    private readonly ObservableCollection<string> _fastBaseMaterialChoices = new();
     private bool _fastMaterialsCloseGuardAttached;
 
     private void ActivateDefaultFastMaterialsView()
@@ -186,6 +187,7 @@ public partial class MainWindow
     private List<MaterialsPrototypeColumn> BuildFastMaterialsColumns()
     {
         RefreshFastManufacturerChoices();
+        RefreshFastBaseMaterialChoices();
         return
         AssignStablePrototypeLayoutKeys(
         [
@@ -196,7 +198,8 @@ public partial class MainWindow
                 MaterialsPrototypeEditorKind.ComboBox, _fastManufacturerChoices),
             FastMaterialsColumn("Product Line", 140, "ProductLine", false),
             FastMaterialsColumn("Marketing Name", 160, "MarketingName", false),
-            FastMaterialsColumn("Base Material", 110, "BaseMaterial", false),
+            FastMaterialsColumn("Base Material", 130, "BaseMaterial", false,
+                MaterialsPrototypeEditorKind.ComboBox, _fastBaseMaterialChoices),
             FastMaterialsColumn("Category", 120, "MaterialCategory", true),
             FastMaterialsColumn("Variant / Finish", 130, "VariantFinish", false),
             FastMaterialsColumn("Reinforcement", 120, "Reinforcement", false),
@@ -276,6 +279,31 @@ public partial class MainWindow
         material.Manufacturer = matches.Count == 1 ? matches[0].Name : selectedName;
     }
 
+    private void RefreshFastBaseMaterialChoices()
+    {
+        var choices = _nativeBaseMaterialRows
+            .Select(row => row.BaseMaterial.Trim())
+            .Concat(_nativeMaterialRows.Select(row => row.BaseMaterial?.Trim() ?? string.Empty))
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(value => value, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
+        _fastBaseMaterialChoices.Clear();
+        foreach (var choice in choices) _fastBaseMaterialChoices.Add(choice);
+    }
+
+    private void BindMaterialToSelectedBaseMaterial(NativeMaterialRow material, string selectedName)
+    {
+        var matches = _nativeBaseMaterialRows.Where(row =>
+                string.Equals(
+                    row.BaseMaterial.Trim(),
+                    selectedName.Trim(),
+                    StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        material.BaseMaterialId = matches.Count == 1 ? matches[0].BaseMaterialId : null;
+        material.BaseMaterial = matches.Count == 1 ? matches[0].BaseMaterial : selectedName;
+    }
+
     private static MaterialsPrototypeColumn FastMaterialsColumn(
         string header,
         double width,
@@ -293,10 +321,14 @@ public partial class MainWindow
 
     private static bool RequiresExplicitSameValueCommit(MaterialsPrototypeColumn column) =>
         column.EditorKind == MaterialsPrototypeEditorKind.ComboBox &&
-        string.Equals(
-            column.PropertyName,
-            nameof(NativeMaterialRow.Manufacturer),
-            StringComparison.Ordinal);
+        (string.Equals(
+             column.PropertyName,
+             nameof(NativeMaterialRow.Manufacturer),
+             StringComparison.Ordinal) ||
+         string.Equals(
+             column.PropertyName,
+             nameof(NativeMaterialRow.BaseMaterial),
+             StringComparison.Ordinal));
 
     private void SelectMaterialsPrototypeRow(object source)
     {
@@ -409,6 +441,14 @@ public partial class MainWindow
                     StringComparison.Ordinal))
             {
                 BindMaterialToSelectedManufacturer(material, change.NewValue);
+            }
+            if (change.Row.Source is NativeMaterialRow baseMaterialSource &&
+                string.Equals(
+                    change.Column.PropertyName,
+                    nameof(NativeMaterialRow.BaseMaterial),
+                    StringComparison.Ordinal))
+            {
+                BindMaterialToSelectedBaseMaterial(baseMaterialSource, change.NewValue);
             }
         }
 

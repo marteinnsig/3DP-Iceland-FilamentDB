@@ -1,4 +1,56 @@
-# Current Build Notes - v45.2.0 Canonical
+# Current Build Notes - v45.2.1 Canonical
+
+## Canonical Base Material Identity
+
+Schema v33 adds nullable `BaseMaterialId` to canonical Materials and a stable
+identity to Base Material Catalog rows. Migration assigns catalog identities
+but deliberately leaves every existing Material unlinked. Legacy/unmapped text
+remains supported and is included in the Materials dropdown.
+
+New and duplicated Materials retain an explicit catalog identity. Existing
+rows can be linked by selecting the dropdown value, including committing the
+same visible name, or through the default-No `Bind Exact Base Material Names`
+action. Exact binding is case-insensitive and unique-only; it never performs
+fuzzy or silent remapping.
+
+Linked rows resolve the current catalog name by ID. Catalog rename updates the
+Material compatibility snapshot, so filters, reports, website/public outputs,
+measurement projections and printing-profile callers receive the corrected
+name. Referenced catalog deletion is blocked in UI and SQLite. Recovery exports
+retain the governed schema/table identity columns.
+
+The disposable CRUD contract now links its generated Material to its generated
+Base Material, verifies restart persistence, blocks referenced deletion,
+proves rename propagation and restores complete baseline business state.
+Production, FTPS and owner-database paths remain blocked.
+
+Disposable profile `20260726101917-5bc56749` passes the complete relationship
+lifecycle, Full Data Verification 347/347 and exact final business-state
+cleanup. Owner runtime acceptance remains pending.
+
+Owner runtime confirmed the relationship workflow but Verification exposed a
+prior-stage false FAIL when Base Materials had not yet been visited. The v45.2
+workspace gate now validates stable controls and handlers independently of lazy
+view activation. Materials also shows an explicit unlinked Base Material count
+beside the filter; the dropdown remains available for viewing those exact rows.
+
+Renaming a newly added Base Material now refreshes the Materials dropdown in
+the same successful edit transaction. The accepted old choice is removed, the
+new canonical name is available immediately and the Fast Materials viewport is
+synchronized without requiring restart or tab cycling. Disposable CRUD uses
+the same edit handler and verifies both sides of this choice refresh.
+
+Owner final runtime acceptance confirms exact binding, zero unlinked Materials,
+live dropdown refresh and Full Data Verification 347/347 in
+`3DPIceland_FilamentDB_Verification_20260726_105027.txt`. v45.2.1 is closed,
+canonical and runtime accepted.
+
+The canonical tester seed is now normalized schema v33 at
+`C:\Seed-Database\filamentdb.sqlite`, SHA-256
+`50782D4E2DBE8F773E0A915E9E2460525B43FB68611E19DD6EB12F47B131AB31`.
+The prior schema-v32 seed is preserved as
+`C:\Seed-Database\filamentdb-schema32-migration.sqlite`, SHA-256
+`65BD03F668768F0AAEBF937BAFC628559A168EA1A07E586CECADC7431AF7BB84`.
 
 ## Base Materials Workspace
 

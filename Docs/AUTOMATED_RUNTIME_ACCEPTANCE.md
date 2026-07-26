@@ -236,3 +236,31 @@ generated records. Final business-state hash matched baseline. The approved
 source seed retained its original
 4,825,088 bytes, timestamp and SHA-256
 `7851D26BA82E345E2C4B156996B68F0360B7F74A48B777752A609CB368EFD6D4`.
+
+## v45.2.1 canonical Base Material identity extension
+
+The existing disposable CRUD scenario now starts with a deliberate unlinked
+Base Material text value, creates the matching catalog row, explicitly stores
+its `BaseMaterialId`, and proves the relationship after restart. It also proves
+referenced-delete blocking, ID-owned rename propagation, rename restoration,
+catalog cleanup and final business-state hash equality. Fast-grid visual input
+remains owner-manual; Production, FTPS and owner paths remain blocked.
+
+Candidate profile `20260726101917-5bc56749` passes Full Data Verification
+347/347 and the complete disposable CRUD lifecycle. The final business-state
+hash is `A199A91611C51D6074D147B16AB538B9A45485B1D4CB65E58C9EA5ECF54DC8CC`.
+
+Dropdown-refresh profile `20260726104609-8be75c9a` re-passes 347/347 and exact
+business-state cleanup while the CRUD rename uses the production edit handler
+and proves the old choice disappears and the new choice is immediately present.
+
+Owner final evidence `3DPIceland_FilamentDB_Verification_20260726_105027.txt`
+passes 347/347 with zero unlinked Materials. The normalized schema-v33 seed at
+`C:\Seed-Database\filamentdb.sqlite` has SHA-256
+`50782D4E2DBE8F773E0A915E9E2460525B43FB68611E19DD6EB12F47B131AB31`.
+Profile `20260726105424-55caa15d` passes CRUD, 347/347 and exact business-state
+equality on that state. Schema-v32 is preserved as
+`filamentdb-schema32-migration.sqlite`, SHA-256
+`65BD03F668768F0AAEBF937BAFC628559A168EA1A07E586CECADC7431AF7BB84`.
+Final canonical-path profile `20260726105756-ce0811c4` repeats the same PASS and
+business-state hash `4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`.

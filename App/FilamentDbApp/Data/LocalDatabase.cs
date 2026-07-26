@@ -11,7 +11,7 @@ namespace FilamentDbApp.Data;
 
 public sealed partial class LocalDatabase
 {
-    private const int SchemaVersion = 32;
+    private const int SchemaVersion = 33;
     private const int MinimumStandaloneBackupSchemaVersion = 27;
     private const int MaxAutomaticBackups = 20;
     private const string AutomaticBackupPrefix = "filamentdb_";
@@ -1155,6 +1155,7 @@ CREATE TABLE IF NOT EXISTS NativeMaterialManagerRows (
     Manufacturer TEXT,
     ProductLine TEXT,
     MarketingName TEXT,
+    BaseMaterialId INTEGER,
     BaseMaterial TEXT,
     MaterialCategory TEXT,
     VariantFinish TEXT,
@@ -1233,6 +1234,7 @@ CREATE TABLE IF NOT EXISTS NativeMaterialManagerRows (
 );
 
 CREATE TABLE IF NOT EXISTS BaseMaterialCatalog (
+    BaseMaterialId INTEGER UNIQUE,
     BaseMaterial TEXT PRIMARY KEY,
     Category TEXT,
     SortOrder TEXT,
@@ -1573,6 +1575,48 @@ DROP TABLE IF EXISTS MaterialsImport;";
         EnsureColumn(connection, "NativeMaterialManagerRows", "IsArchived", "INTEGER NOT NULL DEFAULT 0");
         EnsureColumn(connection, "NativeMaterialManagerRows", "UpdatedAtUtc", "TEXT NOT NULL DEFAULT ''");
         EnsureColumn(connection, "NativeMaterialManagerRows", "ManufacturerId", "INTEGER");
+        EnsureColumn(connection, "BaseMaterialCatalog", "BaseMaterialId", "INTEGER");
+        EnsureColumn(connection, "NativeMaterialManagerRows", "BaseMaterialId", "INTEGER");
+        using (var baseMaterialIdentity = connection.CreateCommand())
+        {
+            baseMaterialIdentity.CommandText = """
+                UPDATE BaseMaterialCatalog
+                SET BaseMaterialId = rowid
+                WHERE BaseMaterialId IS NULL OR BaseMaterialId <= 0;
+                CREATE UNIQUE INDEX IF NOT EXISTS UX_BaseMaterialCatalog_BaseMaterialId
+                ON BaseMaterialCatalog(BaseMaterialId);
+                CREATE TRIGGER IF NOT EXISTS NativeMaterials_BaseMaterialId_InsertGuard
+                BEFORE INSERT ON NativeMaterialManagerRows
+                WHEN NEW.BaseMaterialId IS NOT NULL
+                     AND NOT EXISTS (
+                         SELECT 1 FROM BaseMaterialCatalog
+                         WHERE BaseMaterialId = NEW.BaseMaterialId
+                     )
+                BEGIN
+                    SELECT RAISE(ABORT, 'Native Material BaseMaterialId does not exist');
+                END;
+                CREATE TRIGGER IF NOT EXISTS NativeMaterials_BaseMaterialId_UpdateGuard
+                BEFORE UPDATE OF BaseMaterialId ON NativeMaterialManagerRows
+                WHEN NEW.BaseMaterialId IS NOT NULL
+                     AND NOT EXISTS (
+                         SELECT 1 FROM BaseMaterialCatalog
+                         WHERE BaseMaterialId = NEW.BaseMaterialId
+                     )
+                BEGIN
+                    SELECT RAISE(ABORT, 'Native Material BaseMaterialId does not exist');
+                END;
+                CREATE TRIGGER IF NOT EXISTS BaseMaterialCatalog_ReferencedDeleteGuard
+                BEFORE DELETE ON BaseMaterialCatalog
+                WHEN EXISTS (
+                    SELECT 1 FROM NativeMaterialManagerRows
+                    WHERE BaseMaterialId = OLD.BaseMaterialId
+                )
+                BEGIN
+                    SELECT RAISE(ABORT, 'Base Material is referenced by canonical Materials');
+                END;
+                """;
+            baseMaterialIdentity.ExecuteNonQuery();
+        }
         using (var manufacturerRelationship = connection.CreateCommand())
         {
             manufacturerRelationship.CommandText = """
@@ -1640,7 +1684,7 @@ DROP TABLE IF EXISTS MaterialsImport;";
         update.Transaction = transaction;
         update.CommandText = """
             INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('LegacyWorkbookTablesRetiredV1', 'complete');
-            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('SchemaVersion', '32');
+            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('SchemaVersion', '33');
             """;
         update.ExecuteNonQuery();
         transaction.Commit();
@@ -1882,7 +1926,7 @@ FtpsUserName=excluded.FtpsUserName, UpdatedAtUtc=excluded.UpdatedAtUtc;";
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
         using var command = connection.CreateCommand();
-        command.CommandText = @"SELECT BaseMaterial, Category, SortOrder,
+        command.CommandText = @"SELECT BaseMaterialId, BaseMaterial, Category, SortOrder,
 NozzleTemperatureMinC, NozzleTemperatureRecommendedC, NozzleTemperatureMaxC,
 BedTemperatureMinC, BedTemperatureRecommendedC, BedTemperatureMaxC,
 PrintSpeedMinMmPerS, PrintSpeedRecommendedMmPerS, PrintSpeedMaxMmPerS,
@@ -1897,13 +1941,14 @@ FROM BaseMaterialCatalog ORDER BY CAST(SortOrder AS INTEGER), BaseMaterial;";
         {
             rows.Add(new BaseMaterialCatalogRecord
             {
-                BaseMaterial = Text(0), Category = Text(1), SortOrder = Text(2),
-                NozzleTemperatureMinC = Text(3), NozzleTemperatureRecommendedC = Text(4), NozzleTemperatureMaxC = Text(5),
-                BedTemperatureMinC = Text(6), BedTemperatureRecommendedC = Text(7), BedTemperatureMaxC = Text(8),
-                PrintSpeedMinMmPerS = Text(9), PrintSpeedRecommendedMmPerS = Text(10), PrintSpeedMaxMmPerS = Text(11),
-                CoolingMinPercent = Text(12), CoolingRecommendedPercent = Text(13), CoolingMaxPercent = Text(14), CoolingGuidance = Text(15),
-                DryingTemperatureC = Text(16), DryingTimeHours = Text(17), EnclosureRequirement = Text(18),
-                PrinterProfileReference = Text(19), SlicerProfileReference = Text(20), ProfileId = Text(21), ProfileKind = Text(22), UpdatedAtUtc = Text(23)
+                BaseMaterialId = reader.GetInt64(0),
+                BaseMaterial = Text(1), Category = Text(2), SortOrder = Text(3),
+                NozzleTemperatureMinC = Text(4), NozzleTemperatureRecommendedC = Text(5), NozzleTemperatureMaxC = Text(6),
+                BedTemperatureMinC = Text(7), BedTemperatureRecommendedC = Text(8), BedTemperatureMaxC = Text(9),
+                PrintSpeedMinMmPerS = Text(10), PrintSpeedRecommendedMmPerS = Text(11), PrintSpeedMaxMmPerS = Text(12),
+                CoolingMinPercent = Text(13), CoolingRecommendedPercent = Text(14), CoolingMaxPercent = Text(15), CoolingGuidance = Text(16),
+                DryingTemperatureC = Text(17), DryingTimeHours = Text(18), EnclosureRequirement = Text(19),
+                PrinterProfileReference = Text(20), SlicerProfileReference = Text(21), ProfileId = Text(22), ProfileKind = Text(23), UpdatedAtUtc = Text(24)
             });
         }
         return rows;
@@ -1914,19 +1959,41 @@ FROM BaseMaterialCatalog ORDER BY CAST(SortOrder AS INTEGER), BaseMaterial;";
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
         using var transaction = connection.BeginTransaction();
-        using (var delete = connection.CreateCommand())
+        var retainedIds = new HashSet<long>();
+        foreach (var row in records.Where(x => x.BaseMaterialId > 0 && !string.IsNullOrWhiteSpace(x.BaseMaterial)))
         {
-            delete.Transaction = transaction;
-            delete.CommandText = "DELETE FROM BaseMaterialCatalog;";
-            delete.ExecuteNonQuery();
-        }
-        foreach (var row in records.Where(x => !string.IsNullOrWhiteSpace(x.BaseMaterial)))
-        {
+            retainedIds.Add(row.BaseMaterialId);
             using var insert = connection.CreateCommand();
             insert.Transaction = transaction;
-            insert.CommandText = @"INSERT INTO BaseMaterialCatalog VALUES (
-$base,$category,$sort,$nmin,$nrec,$nmax,$bmin,$brec,$bmax,$smin,$srec,$smax,
-$cmin,$crec,$cmax,$cooling,$dtemp,$dhours,$enclosure,$printer,$slicer,$profileId,$profileKind,$updated);";
+            insert.CommandText = @"INSERT INTO BaseMaterialCatalog (
+BaseMaterialId,BaseMaterial,Category,SortOrder,NozzleTemperatureMinC,
+NozzleTemperatureRecommendedC,NozzleTemperatureMaxC,BedTemperatureMinC,
+BedTemperatureRecommendedC,BedTemperatureMaxC,PrintSpeedMinMmPerS,
+PrintSpeedRecommendedMmPerS,PrintSpeedMaxMmPerS,CoolingMinPercent,
+CoolingRecommendedPercent,CoolingMaxPercent,CoolingGuidance,DryingTemperatureC,
+DryingTimeHours,EnclosureRequirement,PrinterProfileReference,
+SlicerProfileReference,ProfileId,ProfileKind,UpdatedAtUtc) VALUES (
+$id,$base,$category,$sort,$nmin,$nrec,$nmax,$bmin,$brec,$bmax,$smin,$srec,$smax,
+$cmin,$crec,$cmax,$cooling,$dtemp,$dhours,$enclosure,$printer,$slicer,$profileId,$profileKind,$updated)
+ON CONFLICT(BaseMaterialId) DO UPDATE SET
+BaseMaterial=excluded.BaseMaterial,Category=excluded.Category,SortOrder=excluded.SortOrder,
+NozzleTemperatureMinC=excluded.NozzleTemperatureMinC,
+NozzleTemperatureRecommendedC=excluded.NozzleTemperatureRecommendedC,
+NozzleTemperatureMaxC=excluded.NozzleTemperatureMaxC,
+BedTemperatureMinC=excluded.BedTemperatureMinC,
+BedTemperatureRecommendedC=excluded.BedTemperatureRecommendedC,
+BedTemperatureMaxC=excluded.BedTemperatureMaxC,
+PrintSpeedMinMmPerS=excluded.PrintSpeedMinMmPerS,
+PrintSpeedRecommendedMmPerS=excluded.PrintSpeedRecommendedMmPerS,
+PrintSpeedMaxMmPerS=excluded.PrintSpeedMaxMmPerS,
+CoolingMinPercent=excluded.CoolingMinPercent,
+CoolingRecommendedPercent=excluded.CoolingRecommendedPercent,
+CoolingMaxPercent=excluded.CoolingMaxPercent,CoolingGuidance=excluded.CoolingGuidance,
+DryingTemperatureC=excluded.DryingTemperatureC,DryingTimeHours=excluded.DryingTimeHours,
+EnclosureRequirement=excluded.EnclosureRequirement,
+PrinterProfileReference=excluded.PrinterProfileReference,
+SlicerProfileReference=excluded.SlicerProfileReference,ProfileId=excluded.ProfileId,
+ProfileKind=excluded.ProfileKind,UpdatedAtUtc=excluded.UpdatedAtUtc;";
             var values = new Dictionary<string, string>
             {
                 ["$base"] = row.BaseMaterial.Trim(), ["$category"] = row.Category, ["$sort"] = row.SortOrder,
@@ -1939,8 +2006,26 @@ $cmin,$crec,$cmax,$cooling,$dtemp,$dhours,$enclosure,$printer,$slicer,$profileId
                 ["$profileId"] = row.ProfileId, ["$profileKind"] = row.ProfileKind,
                 ["$updated"] = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture)
             };
+            insert.Parameters.AddWithValue("$id", row.BaseMaterialId);
             foreach (var value in values) insert.Parameters.AddWithValue(value.Key, value.Value ?? string.Empty);
             insert.ExecuteNonQuery();
+        }
+        using (var existing = connection.CreateCommand())
+        {
+            existing.Transaction = transaction;
+            existing.CommandText = "SELECT BaseMaterialId FROM BaseMaterialCatalog;";
+            var deleteIds = new List<long>();
+            using (var reader = existing.ExecuteReader())
+                while (reader.Read())
+                    if (!retainedIds.Contains(reader.GetInt64(0))) deleteIds.Add(reader.GetInt64(0));
+            foreach (var id in deleteIds)
+            {
+                using var delete = connection.CreateCommand();
+                delete.Transaction = transaction;
+                delete.CommandText = "DELETE FROM BaseMaterialCatalog WHERE BaseMaterialId=$id;";
+                delete.Parameters.AddWithValue("$id", id);
+                delete.ExecuteNonQuery();
+            }
         }
         transaction.Commit();
     }
@@ -1957,11 +2042,11 @@ $cmin,$crec,$cmax,$cooling,$dtemp,$dhours,$enclosure,$printer,$slicer,$profileId
         insert.Transaction = transaction;
         insert.CommandText = @"
 INSERT INTO NativeMaterialManagerRows (
-    MaterialId, ManufacturerId, Manufacturer, ProductLine, MarketingName, BaseMaterial, MaterialCategory, VariantFinish,
+    MaterialId, ManufacturerId, Manufacturer, ProductLine, MarketingName, BaseMaterialId, BaseMaterial, MaterialCategory, VariantFinish,
     Reinforcement, Color, DiameterMm, SpoolWeightG, ManufacturerSku, InventoryId, PurchaseId, PurchasedFrom, SupplierUrl, PurchaseDate, OrderNumber, BatchNumber, StorageLocation, InventoryStatus, Quantity, RemainingWeightG, PurchasePriceAmount, PurchaseCurrency, ShippingAmount, VatAmount, MsrpAmount, MsrpCurrency, MsrpUsd, LandedCostAmount, LandedCostCurrency, LandedCostUsd, MsrpUsdPerKg, LandedCostUsdPerKg, PriceCheckedDate, NozzleTemperatureMinC, NozzleTemperatureRecommendedC, NozzleTemperatureMaxC, BedTemperatureMinC, BedTemperatureRecommendedC, BedTemperatureMaxC, PrintSpeedMinMmPerS, PrintSpeedRecommendedMmPerS, PrintSpeedMaxMmPerS, CoolingRequirement, DryingTimeHours, EnclosureRequirement, PrinterProfileReference, SlicerProfileReference, PrintingProfileId, PrintingProfileKind, CoolingMinPercent, CoolingRecommendedPercent, CoolingMaxPercent, DryingTemperatureC, SlicerIdentity, SlicerVersion, PrintingSettingsProvenance, PrintingSettingsSourceUrl, PrintingSettingsCheckedDate, PrintingSettingsValidationNote, ManufacturerWebsite, YouTubeReviewUrl, ThumbnailFilename,
     Video, Notes, TestedStatus, InTensile, InImpact, InStiffness, SortOrder, SourcePriority, WebsiteDisplayName, MaterialKey, PublishPublicReports, PublishPublicTestDetails, IsArchived, UpdatedAtUtc
 ) VALUES (
-    $MaterialId, $ManufacturerId, $Manufacturer, $ProductLine, $MarketingName, $BaseMaterial, $MaterialCategory, $VariantFinish,
+    $MaterialId, $ManufacturerId, $Manufacturer, $ProductLine, $MarketingName, $BaseMaterialId, $BaseMaterial, $MaterialCategory, $VariantFinish,
     $Reinforcement, $Color, $DiameterMm, $SpoolWeightG, $ManufacturerSku, $InventoryId, $PurchaseId, $PurchasedFrom, $SupplierUrl, $PurchaseDate, $OrderNumber, $BatchNumber, $StorageLocation, $InventoryStatus, $Quantity, $RemainingWeightG, $PurchasePriceAmount, $PurchaseCurrency, $ShippingAmount, $VatAmount, $MsrpAmount, $MsrpCurrency, $MsrpUsd, $LandedCostAmount, $LandedCostCurrency, $LandedCostUsd, $MsrpUsdPerKg, $LandedCostUsdPerKg, $PriceCheckedDate, $NozzleTemperatureMinC, $NozzleTemperatureRecommendedC, $NozzleTemperatureMaxC, $BedTemperatureMinC, $BedTemperatureRecommendedC, $BedTemperatureMaxC, $PrintSpeedMinMmPerS, $PrintSpeedRecommendedMmPerS, $PrintSpeedMaxMmPerS, $CoolingRequirement, $DryingTimeHours, $EnclosureRequirement, $PrinterProfileReference, $SlicerProfileReference, $PrintingProfileId, $PrintingProfileKind, $CoolingMinPercent, $CoolingRecommendedPercent, $CoolingMaxPercent, $DryingTemperatureC, $SlicerIdentity, $SlicerVersion, $PrintingSettingsProvenance, $PrintingSettingsSourceUrl, $PrintingSettingsCheckedDate, $PrintingSettingsValidationNote, $ManufacturerWebsite, $YouTubeReviewUrl, $ThumbnailFilename,
     $Video, $Notes, $TestedStatus, $InTensile, $InImpact, $InStiffness, $SortOrder, $SourcePriority, $WebsiteDisplayName, $MaterialKey, $PublishPublicReports, $PublishPublicTestDetails, $IsArchived, $UpdatedAtUtc
 )
@@ -1970,6 +2055,7 @@ ON CONFLICT(MaterialId) DO UPDATE SET
     Manufacturer=excluded.Manufacturer,
     ProductLine=excluded.ProductLine,
     MarketingName=excluded.MarketingName,
+    BaseMaterialId=excluded.BaseMaterialId,
     BaseMaterial=excluded.BaseMaterial,
     MaterialCategory=excluded.MaterialCategory,
     VariantFinish=excluded.VariantFinish,
@@ -2051,6 +2137,7 @@ ON CONFLICT(MaterialId) DO UPDATE SET
         var pManufacturer = insert.Parameters.Add("$Manufacturer", SqliteType.Text);
         var pProductLine = insert.Parameters.Add("$ProductLine", SqliteType.Text);
         var pMarketingName = insert.Parameters.Add("$MarketingName", SqliteType.Text);
+        var pBaseMaterialId = insert.Parameters.Add("$BaseMaterialId", SqliteType.Integer);
         var pBaseMaterial = insert.Parameters.Add("$BaseMaterial", SqliteType.Text);
         var pMaterialCategory = insert.Parameters.Add("$MaterialCategory", SqliteType.Text);
         var pVariantFinish = insert.Parameters.Add("$VariantFinish", SqliteType.Text);
@@ -2146,6 +2233,9 @@ ON CONFLICT(MaterialId) DO UPDATE SET
             pManufacturer.Value = material.Manufacturer ?? string.Empty;
             pProductLine.Value = material.ProductLine ?? string.Empty;
             pMarketingName.Value = material.MarketingName ?? string.Empty;
+            pBaseMaterialId.Value = material.BaseMaterialId.HasValue
+                ? material.BaseMaterialId.Value
+                : DBNull.Value;
             pBaseMaterial.Value = material.BaseMaterial ?? string.Empty;
             pMaterialCategory.Value = material.MaterialCategory ?? string.Empty;
             pVariantFinish.Value = material.VariantFinish ?? string.Empty;
@@ -2262,7 +2352,7 @@ ON CONFLICT(MaterialId) DO UPDATE SET
         using var command = connection.CreateCommand();
         command.CommandText = @"
 SELECT
-    MaterialId, ManufacturerId, Manufacturer, ProductLine, MarketingName, BaseMaterial, MaterialCategory, VariantFinish,
+    MaterialId, ManufacturerId, Manufacturer, ProductLine, MarketingName, BaseMaterialId, BaseMaterial, MaterialCategory, VariantFinish,
     Reinforcement, Color, DiameterMm, SpoolWeightG, ManufacturerSku, InventoryId, PurchaseId, PurchasedFrom, SupplierUrl, PurchaseDate, OrderNumber, BatchNumber, StorageLocation, InventoryStatus, Quantity, RemainingWeightG, PurchasePriceAmount, PurchaseCurrency, ShippingAmount, VatAmount, MsrpAmount, MsrpCurrency, MsrpUsd, LandedCostAmount, LandedCostCurrency, LandedCostUsd, MsrpUsdPerKg, LandedCostUsdPerKg, PriceCheckedDate, NozzleTemperatureMinC, NozzleTemperatureRecommendedC, NozzleTemperatureMaxC, BedTemperatureMinC, BedTemperatureRecommendedC, BedTemperatureMaxC, PrintSpeedMinMmPerS, PrintSpeedRecommendedMmPerS, PrintSpeedMaxMmPerS, CoolingRequirement, DryingTimeHours, EnclosureRequirement, PrinterProfileReference, SlicerProfileReference, PrintingProfileId, PrintingProfileKind, CoolingMinPercent, CoolingRecommendedPercent, CoolingMaxPercent, DryingTemperatureC, SlicerIdentity, SlicerVersion, PrintingSettingsProvenance, PrintingSettingsSourceUrl, PrintingSettingsCheckedDate, PrintingSettingsValidationNote, ManufacturerWebsite, YouTubeReviewUrl, ThumbnailFilename,
     Video, Notes, TestedStatus, InTensile, InImpact, InStiffness, SortOrder, SourcePriority, WebsiteDisplayName, MaterialKey, PublishPublicReports, PublishPublicTestDetails, IsArchived
 FROM NativeMaterialManagerRows
@@ -2283,6 +2373,9 @@ ORDER BY
                 Manufacturer = ReadString(reader, "Manufacturer"),
                 ProductLine = ReadString(reader, "ProductLine"),
                 MarketingName = ReadString(reader, "MarketingName"),
+                BaseMaterialId = reader["BaseMaterialId"] is DBNull
+                    ? null
+                    : Convert.ToInt64(reader["BaseMaterialId"], CultureInfo.InvariantCulture),
                 BaseMaterial = ReadString(reader, "BaseMaterial"),
                 MaterialCategory = ReadString(reader, "MaterialCategory"),
                 VariantFinish = ReadString(reader, "VariantFinish"),

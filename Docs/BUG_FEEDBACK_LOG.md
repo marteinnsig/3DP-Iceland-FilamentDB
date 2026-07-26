@@ -62,6 +62,22 @@ Screenshot / export / report attached: Not required.
 `codex-clipboard-478305e4-d56a-4fa3-816a-9f7da612508e.png` and
 `3DPIceland_FilamentDB_Verification_20260726_095539.txt`.
 
+Follow-up: v45.2.1 candidate adds schema v33 `BaseMaterialId` identity while retaining the exact text snapshot for compatibility.
+Existing rows remain unlinked until explicit dropdown selection or default-No exact-name binding. Linked rename propagates by ID;
+referenced catalog delete is blocked; reports, website, filters and printing-profile resolution consume the current canonical name.
+Disposable profile `20260726101917-5bc56749` passes the linked lifecycle and Full Data Verification 347/347.
+Status: Solved. Owner final evidence `3DPIceland_FilamentDB_Verification_20260726_105027.txt` passes 347/347 with zero
+unlinked Materials and accepts immediate dropdown refresh.
+
+Owner Verification `3DPIceland_FilamentDB_Verification_20260726_102301.txt` reports 203 explicit unlinked Base Material rows and
+passes the v45.2.1 identity contract. The single FAIL is the older v45.2 workspace gate depending on prior lazy tab activation.
+The gate now verifies the stable workspace contract without requiring a prior visit, and Materials shows an always-visible
+`203 unlinked` / `All linked` status beside the Base Material filter.
+
+Owner runtime then found that renaming a newly added Base Material persisted correctly but left the Materials dropdown on its
+original `New material` snapshot until restart. The catalog edit path now refreshes the shared observable choices immediately and
+synchronizes the Fast Materials view. Disposable CRUD exercises the same rename handler and rejects stale old/new choices.
+
 Date: 2026-07-25
 Area: Verification / Materials filters
 Type: Bug

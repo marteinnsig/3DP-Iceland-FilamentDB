@@ -7,6 +7,7 @@ public sealed class NativeMaterialRecord
     public string Manufacturer { get; set; } = string.Empty;
     public string ProductLine { get; set; } = string.Empty;
     public string MarketingName { get; set; } = string.Empty;
+    public long? BaseMaterialId { get; set; }
     public string BaseMaterial { get; set; } = string.Empty;
     public string MaterialCategory { get; set; } = string.Empty;
     public string VariantFinish { get; set; } = string.Empty;

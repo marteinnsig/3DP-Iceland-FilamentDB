@@ -5,6 +5,9 @@ namespace FilamentDbApp;
 
 public partial class MainWindow
 {
+    private sealed record ExactBaseMaterialBinding(
+        NativeMaterialRow Material,
+        NativeBaseMaterialRow BaseMaterial);
     private MaterialsRenderingPrototypeView? _embeddedFastNativeSettingsView;
     private MaterialsRenderingPrototypeView? _embeddedFastBaseMaterialsView;
     private List<MaterialsPrototypeColumn>? _defaultFastNativeSettingsColumns;
@@ -55,6 +58,82 @@ public partial class MainWindow
         _embeddedFastBaseMaterialsView?.ResetLayout(
             _defaultFastBaseMaterialsColumns ?? BuildFastBaseMaterialColumns());
         ShowTransientStatus("Base Materials columns reset to defaults; saved catalog data was unchanged.");
+    }
+
+    private List<ExactBaseMaterialBinding> BuildExactBaseMaterialBindingPlan()
+    {
+        var uniqueNames = _nativeBaseMaterialRows
+            .Where(row => !string.IsNullOrWhiteSpace(row.BaseMaterial))
+            .GroupBy(row => row.BaseMaterial.Trim(), StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() == 1)
+            .ToDictionary(group => group.Key, group => group.Single(), StringComparer.OrdinalIgnoreCase);
+        return _nativeMaterialRows
+            .Where(material =>
+                !material.BaseMaterialId.HasValue &&
+                !string.IsNullOrWhiteSpace(material.BaseMaterial) &&
+                uniqueNames.ContainsKey(material.BaseMaterial.Trim()))
+            .Select(material => new ExactBaseMaterialBinding(
+                material,
+                uniqueNames[material.BaseMaterial.Trim()]))
+            .ToList();
+    }
+
+    private void BindExactBaseMaterialNames_Click(object sender, RoutedEventArgs e)
+    {
+        if (IsAutomationActionBlocked("Base Material exact-name binding")) return;
+        var plan = BuildExactBaseMaterialBindingPlan();
+        if (plan.Count == 0)
+        {
+            ShowTransientStatus("No unlinked Materials have an exact, unique Base Material catalog match.");
+            return;
+        }
+        var unmatched = _nativeMaterialRows.Count(material =>
+            !material.BaseMaterialId.HasValue &&
+            !string.IsNullOrWhiteSpace(material.BaseMaterial)) - plan.Count;
+        var preview = string.Join(
+            "\n",
+            plan.Take(12).Select(item =>
+                $"{item.Material.MaterialID}: {item.Material.BaseMaterial} → ID {item.BaseMaterial.BaseMaterialId}"));
+        var result = MessageBox.Show(
+            this,
+            $"Bind {plan.Count} unlinked Material(s) to exact, unique Base Material names?\n\n" +
+            preview +
+            (plan.Count > 12 ? $"\n… and {plan.Count - 12} more" : string.Empty) +
+            $"\n\n{unmatched} other unlinked value(s) will remain unchanged. " +
+            "Matching is exact ignoring case; no fuzzy remapping is performed.",
+            "Bind Exact Base Material Names?",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question,
+            MessageBoxResult.No);
+        if (result != MessageBoxResult.Yes) return;
+
+        CreateDatabaseBackupBeforeMajorMaterialChange("binding exact Base Material identities");
+        var originals = plan.Select(item =>
+            (item.Material, item.Material.BaseMaterialId, item.Material.BaseMaterial)).ToList();
+        foreach (var item in plan)
+        {
+            item.Material.BaseMaterialId = item.BaseMaterial.BaseMaterialId;
+            item.Material.BaseMaterial = item.BaseMaterial.BaseMaterial;
+        }
+        ApplyNativeMaterialComputedFieldsToAllRows();
+        if (!SaveNativeMaterialsSilent())
+        {
+            foreach (var original in originals)
+            {
+                original.Material.BaseMaterialId = original.BaseMaterialId;
+                original.Material.BaseMaterial = original.BaseMaterial;
+            }
+            ShowTransientStatus("Exact Base Material binding failed; the pre-change backup was retained.");
+            return;
+        }
+        PopulateNativeMaterialFilters();
+        RefreshFastBaseMaterialChoices();
+        _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
+            "explicit exact Base Material identity binding");
+        RefreshNativeInputModulesFromMaterialManager(markDirty: false);
+        RefreshCanonicalMaterialConsumerFilters();
+        ShowTransientStatus(
+            $"Bound {plan.Count} Material(s) by exact Base Material name; {unmatched} remain unlinked.");
     }
 
     private MaterialsRenderingPrototypeView CreateFastNativeSettingsView()
@@ -200,7 +279,7 @@ public partial class MainWindow
         foreach (var change in changes)
         {
             SetPropertyValue(change.Row.Source, change.Column.PropertyName!, change.NewValue);
-            if (change.Row.Source is NativeBaseMaterialRow &&
+            if (change.Row.Source is NativeBaseMaterialRow catalogRow &&
                 string.Equals(
                     change.Column.PropertyName,
                     nameof(NativeBaseMaterialRow.BaseMaterial),
@@ -224,10 +303,7 @@ public partial class MainWindow
                 }
 
                 foreach (var material in _nativeMaterialRows.Where(material =>
-                             string.Equals(
-                                 material.BaseMaterial?.Trim(),
-                                 change.OldValue.Trim(),
-                                 StringComparison.OrdinalIgnoreCase)))
+                             material.BaseMaterialId == catalogRow.BaseMaterialId))
                 {
                     renamedMaterials.Add((material, material.BaseMaterial));
                     material.BaseMaterial = change.NewValue.Trim();
@@ -242,6 +318,9 @@ public partial class MainWindow
             RefreshNativeMaterialGridValidation();
             if (renamedMaterials.Count > 0 && !SaveNativeMaterialsSilent())
                 throw new InvalidOperationException("Linked Material Base Material names could not be saved.");
+            RefreshFastBaseMaterialChoices();
+            _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
+                "current canonical Base Material Catalog choices");
             RefreshNativeInputModulesFromMaterialManager(markDirty: false);
             RefreshCanonicalMaterialConsumerFilters();
             return true;
@@ -254,6 +333,7 @@ public partial class MainWindow
             }
             foreach (var renamed in renamedMaterials)
                 renamed.Material.BaseMaterial = renamed.OldName;
+            RefreshFastBaseMaterialChoices();
             try
             {
                 SaveBaseMaterialCatalogToDatabase();
@@ -273,5 +353,6 @@ public partial class MainWindow
     {
         _embeddedFastNativeSettingsView?.ReloadFromCanonical("current canonical Settings");
         _embeddedFastBaseMaterialsView?.ReloadFromCanonical("current canonical Base Material Catalog");
+        RefreshFastBaseMaterialChoices();
     }
 }

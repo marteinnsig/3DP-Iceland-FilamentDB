@@ -2,6 +2,14 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v45.2.1 - Canonical Base Material Identity
+
+- Adds nullable `BaseMaterialId` identity while preserving every legacy text value.
+- Provides explicit exact-name binding, unlinked review, ID-owned rename propagation and referenced-delete guards.
+- Makes Base Material selection canonical across Materials, reports, website, recovery and printing-profile consumers.
+- Refreshes renamed/new Base Material dropdown choices immediately without restart.
+- Owner runtime accepted zero unlinked Materials and Full Data Verification 347/347.
+
 ## v45.2.0 - Base Materials Workspace
 
 - Moves the canonical Base Material Catalog from Settings Manager into a

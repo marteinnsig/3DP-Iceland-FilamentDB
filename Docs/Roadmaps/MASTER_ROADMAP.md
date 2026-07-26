@@ -1,14 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v45.2.0 — Base Materials Workspace**
+Current canonical release: **v45.2.1 — Canonical Base Material Identity**
 
-Last runtime-accepted baseline: **v45.2.0 — Base Materials Workspace**
+Last runtime-accepted baseline: **v45.2.1 — Canonical Base Material Identity**
 
-Current application candidate: **None — v45.2.0 is canonical**
+Current application candidate: **None — v45.2.1 is canonical**
 
-Current roadmap increment: **v45.2.1 — Canonical Base Material Identity**
+Current roadmap increment: **v46.0 — Application Branding Review**
 
-Current acceptance note: v45.2.0 Base Materials workspace is runtime accepted with Full Data Verification 346/346.
+Current acceptance note: v45.2.1 canonical Base Material identity is runtime accepted with Full Data Verification 347/347.
+
+Candidate note: None.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1863,17 +1865,20 @@ to unstarted authoritative planning slots.
   - Owner exact binding reached zero unlinked Materials; recovery controls hide at zero and reappear for supported legacy data.
   - Owner runtime accepted the final workflow and Full Data Verification passed 345/345.
 - **v45.2 — Canonical Base Material Selection**
-  - Feedback disposition: Open.
+  - Feedback disposition: Solved.
   - v45.2.0 first moves the governed catalog out of Settings into a dedicated Base Materials workspace.
   - v45.2.0 is complete, canonical and runtime accepted.
   - The workspace owns Add, Duplicate, guarded Delete, direct editing and an independent Fast-grid layout.
   - Settings Manager retains only measurement, calculation, deployment and exchange-rate settings.
   - Disposable CRUD must navigate the new tab and prove Base Material add/edit/duplicate/delete persistence and cleanup.
   - Owner accepted immediate startup rendering, full CRUD and Full Data Verification 346/346.
-  - v45.2.1 will add canonical `BaseMaterialId`, exact-name binding, rename/delete guards and downstream resolution.
+  - v45.2.1 adds canonical `BaseMaterialId`, exact-name binding, rename/delete guards and downstream resolution.
   - Use a backwards-compatible dropdown sourced from the governed catalog.
   - Preserve explicit legacy/unmapped values and never silently remap.
-  - Entry condition: caller, import/export and migration audit complete.
+  - Existing schema-v32 Materials migrate with null IDs; only explicit selection or confirmed exact binding creates links.
+  - Tester owns linked rename, referenced-delete blocking, restart persistence and complete disposable cleanup.
+  - Owner accepted binding, live dropdown refresh, rename/delete guards and Full Data Verification 347/347.
+  - v45.2 is complete, canonical and runtime accepted.
 - **v46.0 — Application Branding Review**
   - Feedback disposition: Open.
   - Evaluate a transparent-background icon against Windows visibility, installer, About, reports and governed assets.
