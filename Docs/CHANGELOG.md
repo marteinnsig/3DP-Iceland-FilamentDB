@@ -4,6 +4,9 @@
 
 ## v49.0.0 - Experimental Workflow Integrity
 
+- Aligns signed-package generation, independent verification and application
+  startup on the governed schema-v29 through schema-v37 update range so the
+  accepted v49 release can follow the guarded Production publish workflow.
 - Makes active Runs the default canonical Results, Analytics, Dashboard and
   Charts comparison scope, matching governed website publication.
 - Adds explicit `Include inactive history` review without deleting or changing

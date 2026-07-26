@@ -7,7 +7,12 @@ if (args.Length is not (1 or 3))
     return 2;
 }
 
-var result = new ApplicationUpdatePackageService().Inspect(Path.GetFullPath(args[0]), new Version(0, 0, 0), 29);
+var packagePath = Path.GetFullPath(args[0]);
+var packageService = new ApplicationUpdatePackageService();
+var result = packageService.Inspect(
+    packagePath,
+    new Version(0, 0, 0),
+    BuildInfo.CurrentDatabaseSchema);
 if (!result.Ready)
 {
     Console.Error.WriteLine(result.Status + ": " + result.Detail);
@@ -22,7 +27,27 @@ if (!string.Equals(manifest.ReleaseVersion, expectedVersion, StringComparison.Or
     Console.Error.WriteLine($"Package identity v{manifest.ReleaseVersion} {manifest.ReleaseCode} does not match expected v{expectedVersion} {expectedCode}.");
     return 1;
 }
+if (manifest.MinimumDatabaseSchema != BuildInfo.MinimumUpdateDatabaseSchema ||
+    manifest.MaximumDatabaseSchema != BuildInfo.CurrentDatabaseSchema)
+{
+    Console.Error.WriteLine(
+        $"Package schema support v{manifest.MinimumDatabaseSchema}-v{manifest.MaximumDatabaseSchema} does not match " +
+        $"the governed release contract v{BuildInfo.MinimumUpdateDatabaseSchema}-v{BuildInfo.CurrentDatabaseSchema}.");
+    return 1;
+}
+var minimumSchemaResult = packageService.Inspect(
+    packagePath,
+    new Version(0, 0, 0),
+    BuildInfo.MinimumUpdateDatabaseSchema);
+if (!minimumSchemaResult.Ready)
+{
+    Console.Error.WriteLine(
+        $"Package rejected the governed public schema-v{BuildInfo.MinimumUpdateDatabaseSchema} baseline: " +
+        minimumSchemaResult.Status + ": " + minimumSchemaResult.Detail);
+    return 1;
+}
 
 Console.WriteLine("Application verifier accepted production-signed package.");
-Console.WriteLine(result.Detail);
+Console.WriteLine(
+    $"{result.Detail} Governed public baseline schema v{BuildInfo.MinimumUpdateDatabaseSchema} also supported.");
 return 0;

@@ -389,6 +389,20 @@ internal static class Program
         var applicationRelativePath = IOPath.GetFileName(sourceExecutable);
         var portableExecutable = IOPath.Combine(portableDirectory, applicationRelativePath);
         Require(IOFile.Exists(portableExecutable), "Disposable portable application executable is missing.");
+        var candidateFileVersionText = FileVersionInfo.GetVersionInfo(portableExecutable).FileVersion;
+        Require(
+            Version.TryParse(candidateFileVersionText, out var candidateFileVersion),
+            "Candidate Windows file version is unavailable.");
+        var candidateReleaseVersion = candidateFileVersion!.ToString(3);
+        var previousReleaseVersion = candidateFileVersion.Build > 0
+            ? new Version(candidateFileVersion.Major, candidateFileVersion.Minor, candidateFileVersion.Build - 1).ToString(3)
+            : candidateFileVersion.Minor > 0
+                ? new Version(candidateFileVersion.Major, candidateFileVersion.Minor - 1, 0).ToString(3)
+                : new Version(candidateFileVersion.Major - 1, 0, 0).ToString(3);
+        var nextReleaseVersion = new Version(
+            candidateFileVersion.Major,
+            candidateFileVersion.Minor,
+            candidateFileVersion.Build + 1).ToString(3);
         var governedFiles = IODirectory.EnumerateFiles(
                 portableDirectory,
                 "*",
@@ -411,8 +425,8 @@ internal static class Program
             markerPath,
             applicationRelativePath,
             governedFiles,
-            "44.7.17",
-            "44.7.18",
+            previousReleaseVersion,
+            candidateReleaseVersion,
             exitedApplicationProcessId);
         var successExit = RunUpdater(updaterExecutable, successRoot, success);
         Require(successExit == 0, $"Disposable updater success returned exit code {successExit}.");
@@ -446,8 +460,8 @@ internal static class Program
             markerPath,
             applicationRelativePath,
             governedFiles,
-            "44.7.18",
-            "44.7.19",
+            candidateReleaseVersion,
+            nextReleaseVersion,
             exitedApplicationProcessId);
         var failureExit = RunUpdater(updaterExecutable, failureRoot, failure);
         Require(failureExit == 1, $"Disposable updater failure returned unexpected exit code {failureExit}.");

@@ -22,11 +22,27 @@ $updaterProject = Join-Path $PSScriptRoot "FilamentDbUpdater\FilamentDbUpdater.c
 $updaterPublishFolder = Join-Path $PSScriptRoot "FilamentDbUpdater\bin\Release\net9.0\win-x64\publish"
 $packager = Join-Path $PSScriptRoot "..\Tools\ReleasePackager\ReleasePackager.csproj"
 $verifier = Join-Path $PSScriptRoot "..\Tools\UpdatePackageVerifier\UpdatePackageVerifier.csproj"
+$buildInfoPath = Join-Path $PSScriptRoot "FilamentDbApp\BuildInfo.cs"
 [xml]$projectXml = Get-Content -LiteralPath $project
 $version = [string]$projectXml.Project.PropertyGroup.Version
 $informational = [string]$projectXml.Project.PropertyGroup.InformationalVersion
 $releaseCode = $informational.Substring($informational.IndexOf("-") + 1)
 if (-not [string]::IsNullOrWhiteSpace($VersionOverride)) { $version = $VersionOverride }
+$buildInfo = [IO.File]::ReadAllText($buildInfoPath)
+$minimumSchemaMatch = [Text.RegularExpressions.Regex]::Match(
+    $buildInfo,
+    'public const int MinimumUpdateDatabaseSchema = (?<value>\d+);')
+$currentSchemaMatch = [Text.RegularExpressions.Regex]::Match(
+    $buildInfo,
+    'public const int CurrentDatabaseSchema = (?<value>\d+);')
+if (-not $minimumSchemaMatch.Success -or -not $currentSchemaMatch.Success) {
+    throw "Could not read the governed update schema contract from BuildInfo.cs."
+}
+$minimumSchema = [int]$minimumSchemaMatch.Groups["value"].Value
+$currentSchema = [int]$currentSchemaMatch.Groups["value"].Value
+if ($minimumSchema -le 0 -or $currentSchema -lt $minimumSchema) {
+    throw "The governed update schema contract is invalid."
+}
 
 if (Test-Path -LiteralPath $publishFolder) { Remove-Item -LiteralPath $publishFolder -Recurse -Force }
 if (Test-Path -LiteralPath $updaterPublishFolder) { Remove-Item -LiteralPath $updaterPublishFolder -Recurse -Force }
@@ -41,7 +57,7 @@ Copy-Item -LiteralPath (Join-Path $updaterPublishFolder "3DPIcelandUpdater.exe")
 New-Item -ItemType Directory -Force -Path $OutputFolder | Out-Null
 $output = Join-Path $OutputFolder ("3DPIceland_Update_v" + $version.Replace(".", "_") + ".zip")
 if (Test-Path -LiteralPath $output) { throw "Signed update output already exists: $output" }
-dotnet run --project $packager -c Release -- package --input $publishFolder --output $output --version $version --code $releaseCode --min-schema 29 --max-schema 29
+dotnet run --project $packager -c Release -- package --input $publishFolder --output $output --version $version --code $releaseCode --min-schema $minimumSchema --max-schema $currentSchema
 if ($LASTEXITCODE -ne 0) { throw "Signed update packaging failed." }
 if ([string]::IsNullOrWhiteSpace($VerifierArtifactsPath)) {
     dotnet run --project $verifier -c Release -- $output $version $releaseCode

@@ -43,13 +43,32 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 18 |
 | In progress | 0 |
 | Partially solved | 2 |
-| Solved | 55 |
+| Solved | 56 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **79** |
+| **Total tracked findings** | **80** |
 
 ## Tracked findings
+
+Date: 2026-07-26
+Area: Application release / signed update packaging
+Type: Bug / Workflow friction
+Severity: Blocker
+Status: Solved
+What happened: The v49 application uses schema v37, but signed-package generation and the independent package verifier remained
+hard-coded to the historical schema-v29-only release contract.
+Expected behavior: Build one governed v49 package that supports the public schema-v29 baseline through current schema v37, verifies
+that exact range independently and publishes installer/portable before activating the update feed.
+Steps to reproduce: Run the v49 signed packaging script and inspect the generated manifest or verify it against a schema-v37 profile.
+Screenshot / export / report attached: Candidate package/feed/deployment plan and retained smoke/updater evidence profiles.
+Resolution: A shared `BuildInfo` compatibility contract now owns minimum update schema v29 and current schema v37. `LocalDatabase`,
+packaging, the independent verifier and a deterministic Full Data Verification gate consume the same values. The existing smoke
+scenario owns runtime acceptance without authorizing Production or FTPS.
+Verification evidence: Debug/Release and Candidate release gates pass. The independent verifier accepts the signed package at schema
+v29 and v37. Portable smoke `20260726224510-b4ab7d08` passes 369/369 with exact business-state equality. Updater profile
+`20260726224940-fcb3321a` commits six files with v49.0.0 health and proves exact rollback. Owner and clean-VM installer runtime
+acceptance pass. The exact Candidate bytes are approved for Production promotion; live FTPS publish remains separately guarded.
 
 Date: 2026-07-26
 Area: Purchase Orders / Exchange-rate provenance

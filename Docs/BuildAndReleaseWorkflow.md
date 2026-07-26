@@ -52,16 +52,20 @@ Use clear versioned zip names:
 
 ## Canonical first-install route
 
-The direct **v43.8.9** Setup EXE and portable ZIP built from the canonical signed
-package passed fresh-VM runtime acceptance on clean zero-data profiles. They are
-the approved next first-install route. Existing public stable installer/portable
-routes remain on the accepted v43.8.8 artifacts until the exact tested v43.8.9
-bytes complete clean-tree Production promotion and a separate verified publish.
+The public stable installer, portable ZIP and update feed remain on the accepted
+v43 deployment baseline until the exact tested **v49.0.0** Candidate bytes pass
+fresh-install and guarded-update runtime acceptance, clean-tree Production
+promotion and a separate verified publish.
+
+The v49.0.0 signed package supports the governed schema-v29 public baseline
+through the current schema v37. `BuildInfo.MinimumUpdateDatabaseSchema` and
+`BuildInfo.CurrentDatabaseSchema` are the shared release-compatibility contract
+for application startup, packaging and independent package verification.
 
 Application-file mutation remains default-No, the ECDSA P-256/SHA-256 package
 signature and exact governed inventory remain mandatory, and SQLite is never
 restored automatically. Clean-profile readiness does not replace the canonical
-schema-v29 owner-data Full Data Verification gate.
+schema-v37 owner-data Full Data Verification gate.
 
 ## Deterministic v44.0 release gates
 
@@ -86,6 +90,11 @@ tree, rejects an existing Production target, rechecks every recorded byte count
 and SHA-256, copies the tested binaries unchanged, and writes BOM-less Production
 metadata with the exact promotion commit. Run the Production release gates
 against the promoted output before any FTPS publish action.
+
+Publish the Production application deployment plan before the Production update
+feed. The application release publisher activates versioned installer/portable
+routes before their stable `/downloads` routes. The update publisher transfers
+the signed ZIP before activating `/updates/latest.json`.
 
 Authenticode remains deferred while distribution is private. The internal
 package is protected by the trusted ECDSA signature, but Windows can still show

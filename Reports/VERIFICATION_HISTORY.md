@@ -1,3 +1,23 @@
+# v49.0.0 - Application Release Packaging Candidate
+
+Date: 2026-07-26
+
+- Shared release compatibility contract supports schema v29 through v37.
+- Debug and Release solution builds pass with zero warnings and zero errors.
+- Candidate release gates pass documentation, NuGet vulnerability, BOM-less
+  feed, exact bytes/SHA-256, ECDSA, inventory and activation-order checks.
+- Independent package verification accepts both schema-v29 and schema-v37
+  endpoints for the exact signed v49.0.0 ZIP.
+- Portable smoke `20260726224510-b4ab7d08` passes Full Data Verification
+  369/369 with exact baseline/final business-state equality.
+- Updater profile `20260726224940-fcb3321a` commits six exact Candidate files,
+  receives v49.0.0/schema-v37 health and proves injected-failure rollback with
+  exact governed-file hash restoration.
+- Owner workstation and clean-VM installer runtime acceptance pass.
+- Production, FTPS, owner application and owner database remained blocked.
+- Exact Candidate bytes are approved for Production promotion; publish remains
+  separately guarded.
+
 # v49.0.0 - Experimental Workflow Integrity candidate
 
 Date: 2026-07-26

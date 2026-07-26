@@ -1,4 +1,45 @@
-# Current Build Notes - v48.2.0
+# Current Build Notes - v49.0.0
+
+## Application Release Packaging and Publish Readiness
+
+The v49.0.0 runtime remains unchanged and schema remains v37. Release packaging
+now reads the governed compatibility range from `BuildInfo`: the public
+schema-v29 deployment baseline through current schema v37. `LocalDatabase`, the
+signed-package builder and the independent production verifier use this shared
+contract, preventing the old hard-coded v29-v29 package range from blocking
+current owner profiles.
+
+Full Data Verification now contains a deterministic application-release
+compatibility gate that binds the governed schema-v29 public baseline to the
+runtime's current schema v37. The existing smoke scenario owns this safe,
+offline contract; no Production or FTPS automation is added.
+
+Production and FTPS remain blocked while a new Candidate is built and verified.
+The required order is application installer/portable publish first, followed by
+the signed update package and `/updates/latest.json` activation last. Candidate
+runtime acceptance must prove fresh install, guarded update, SQLite preservation,
+recovery and Full Data Verification before clean-tree Production promotion.
+
+The signed v49.0.0 Candidate contains exactly six governed files and declares
+continuous schema support v29-v37. The independent production verifier accepts
+the package at both endpoints. Candidate release gates pass NuGet vulnerability,
+documentation, BOM-less feed, exact bytes/SHA-256, ECDSA signature, inventory,
+schema and stable-route-last contracts.
+
+Exact portable Candidate smoke profile `20260726224510-b4ab7d08` passes Full
+Data Verification 369/369 and exact baseline/final business-state equality.
+Updater profile `20260726224940-fcb3321a` commits six exact staged files with
+v49.0.0 health acknowledgement, then rolls back an injected invalid executable
+and restores the exact governed file hashes. Earlier updater attempts exposed
+and corrected a stale hard-coded v44 tester identity; owner paths, Production
+and FTPS remained blocked.
+
+Owner runtime acceptance completed on 2026-07-26. The Candidate installer ran
+normally on the owner workstation and on a clean VM; the installed application
+opened normally, retained the expected data boundary and passed Verification
+369/369. The exact accepted Candidate bytes are approved for clean-tree,
+byte-preserving Production promotion. Live FTPS publish remains a separate
+explicit action.
 
 ## Optional Official Exchange-rate Reference Catalog
 

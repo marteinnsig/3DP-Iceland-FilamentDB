@@ -11,6 +11,8 @@ public static class BuildInfo
 {
     public const string ReleaseCode = "EXPERIMENTAL-WORKFLOW-INTEGRITY";
     public const string ReleaseTitle = "Experimental Workflow Integrity";
+    public const int MinimumUpdateDatabaseSchema = 29;
+    public const int CurrentDatabaseSchema = 37;
 
     public static string Version
     {

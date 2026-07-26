@@ -16951,6 +16951,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             remoteUpdateReady && installerPortableReady && guardedApplicationUpdateReady && releaseIdentityReady
                 ? "Governed HTTPS feed, trusted manifest before download, bounded bytes/SHA-256, full package re-verification, delayed/manual discovery, default-No apply and isolated update publishing are wired to the accepted helper."
                 : "Remote feed/download/publish, prior installer/updater contract or release identity failed."));
+        var applicationReleaseCompatibilityReady =
+            BuildInfo.MinimumUpdateDatabaseSchema == 29 &&
+            BuildInfo.CurrentDatabaseSchema == _database.CurrentSchemaVersion &&
+            BuildInfo.MinimumUpdateDatabaseSchema <= BuildInfo.CurrentDatabaseSchema;
+        checks.Add(new VerificationCheck("v49.0.0 application release compatibility contract",
+            applicationReleaseCompatibilityReady,
+            applicationReleaseCompatibilityReady
+                ? $"Signed updates support the governed schema-v{BuildInfo.MinimumUpdateDatabaseSchema} public baseline through current schema v{BuildInfo.CurrentDatabaseSchema}."
+                : "BuildInfo update compatibility does not match the current SQLite schema or governed public baseline."));
         var zeroDataProfileContractReady =
             IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
             IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&
