@@ -2,6 +2,15 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v48.1.1 - Printer and Pricing Settings Foundation
+
+Candidate schema v35 establishes canonical PrinterProfiles, Pricing Settings
+and deterministic ISK/hour calculation. Recovery expands to 23 tables with
+exact v34 empty-printer migration. Debug/Release pass; disposable CRUD Full
+Data Verification passes 362/362 and recovery automation passes. Runtime
+acceptance confirms Printer CRUD, persistence, currency dropdown and rate
+refresh; owner Verification passes 362/362. v48.1.1 is canonical.
+
 ## v48.0.7 - Internal Usage Analytics
 
 Candidate selected-Material private analytics separate audit-row count from

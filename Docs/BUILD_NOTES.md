@@ -1,4 +1,40 @@
-# Current Build Notes - v48.0.7
+# Current Build Notes - v48.1.1
+
+## Printer and Pricing Settings Foundation
+
+Candidate schema v35 adds canonical `PrinterProfiles` and a separate Printers
+workspace with add, duplicate, archive/restore, delete and editable inputs.
+Stable PrinterID is read-only. Uptime is explicitly 0–100 percent. Printer
+currency is selected from a dropdown populated only by valid governed
+`ISK per 1 ...` Purchasing currency rows in Settings.
+
+Seven global Print Job Pricing defaults are SQLite-canonical Settings rows.
+The deterministic rate converts capital to ISK, adds electricity and applies a
+printer override or global buffer. It does not yet create quotes.
+
+Excel recovery owns 23 exact tables. Exact v34 packages migrate with an empty
+PrinterProfiles table; pre-v34 packages may also synthesize the supported empty
+UsageEvents table. Ambiguous sets remain blocked. Disposable CRUD automation
+creates, edits across restart and removes a PrinterProfile with exact cleanup.
+
+Debug and Release app/tester builds pass with zero warnings/errors. Disposable
+profile `20260726184326-9610f189` passes Full Data Verification 362/362 and
+PrinterProfile CRUD across restarts with exact baseline/final business-state
+equality. Recovery profile `20260726184448-e9176bec` passes 23-table export,
+mutation, transactional restore, restart and exact final business-state
+recovery.
+Owner accepted Printer CRUD, restart persistence, governed currency dropdown
+and hourly-rate refresh. Owner evidence
+`3DPIceland_FilamentDB_Verification_20260726_185305.txt` passes 362/362;
+v48.1.1 is canonical and runtime accepted.
+
+Canonical tester seed `C:\Seed-Database\filamentdb.sqlite` was refreshed from
+the accepted disposable schema-v35 database. SHA-256 is
+`2F231B51A9728384979363CAD38AC101D9312AC00D71FC70019185BC99F84A78`.
+The prior schema-v33 seed is retained as
+`filamentdb-schema33-migration.sqlite`, SHA-256
+`50782D4E2DBE8F773E0A915E9E2460525B43FB68611E19DD6EB12F47B131AB31`.
+Both pass SQLite integrity; the v35 seed has zero automation Printer residue.
 
 ## Internal Usage Analytics
 

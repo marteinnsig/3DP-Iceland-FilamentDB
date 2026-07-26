@@ -2,6 +2,22 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v48.1.1 - Printer and Pricing Settings Foundation
+
+- Adds schema v35 with canonical PrinterProfiles and exact governed recovery.
+- Adds a Printers tab with stable IDs, CRUD/archive and editable cost inputs.
+- Restricts printer currency selection to a governed Settings-backed dropdown.
+- Adds seven SQLite-canonical Print Job Pricing defaults under Settings.
+- Calculates deterministic capital, electricity and buffered ISK/hour rates.
+- Extends disposable CRUD automation across restart and exact cleanup.
+- Debug/Release and disposable CRUD/recovery automation pass; Verification is
+  362/362 in the candidate profile.
+- Quote creation and immutable snapshots remain v48.1.2.
+- Owner accepted Printer CRUD, restart persistence, governed currency
+  selection and rate refresh; Full Data Verification passes 362/362.
+- Refreshes the canonical tester seed to validated schema v35 and retains the
+  prior schema-v33 seed as an explicit migration fixture.
+
 ## v48.0.7 - Internal Usage Analytics
 
 - Adds private selected-Material summary cards for effective events, immutable

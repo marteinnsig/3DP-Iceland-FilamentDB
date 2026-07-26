@@ -493,6 +493,61 @@
         <TextBlock Grid.Row="5" Margin="0,8,0,0" Foreground="#64748B" TextWrapping="Wrap" Text="Workflow: create the order when you buy → add every ordered item and assign its Category (materials do not need to exist) → when the box arrives enter Received quantities and Check status → optionally link existing materials → Create Materials + Received Spools processes Filament lines only: it creates missing draft materials and one inventory spool per received unit. Printer, Equipment, Spare Parts, Consumables and Other lines remain recorded on the purchase order for future downstream inventories. Attachments are optional and copied to the FilamentDB storage folder."/>
     </Grid>
 </TabItem>
+<TabItem x:Name="PrintersTab" Header="Printers" AutomationProperties.AutomationId="PrintersTab">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBlock Text="Printers" FontSize="22" FontWeight="SemiBold"/>
+            <TextBlock Text="Canonical printer ownership and governed hourly-rate inputs. Uptime is a percentage from 0 to 100."
+                       Foreground="#64748B" TextWrapping="Wrap"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10">
+            <Button Content="Add Printer" Click="AddPrinter_Click"
+                    AutomationProperties.AutomationId="AddPrinterButton" Margin="0,0,8,0"/>
+            <Button Content="Duplicate" Click="DuplicatePrinter_Click"
+                    AutomationProperties.AutomationId="DuplicatePrinterButton" Margin="0,0,8,0"/>
+            <Button Content="Archive / Restore" Click="ArchivePrinter_Click"
+                    AutomationProperties.AutomationId="ArchivePrinterButton" Margin="0,0,8,0"/>
+            <Button Content="Delete" Click="DeletePrinter_Click"
+                    AutomationProperties.AutomationId="DeletePrinterButton" Margin="0,0,8,0"/>
+            <Button Content="Save" Click="SavePrinters_Click"
+                    AutomationProperties.AutomationId="SavePrintersButton" Margin="0,0,12,0"/>
+            <TextBlock x:Name="PrinterRateStatusText"
+                       AutomationProperties.AutomationId="PrinterRateStatus"
+                       VerticalAlignment="Center" Foreground="#334155"/>
+        </StackPanel>
+        <DataGrid x:Name="PrinterGrid" Grid.Row="2"
+                  AutomationProperties.AutomationId="PrinterGrid"
+                  AutoGenerateColumns="False" CanUserAddRows="False"
+                  SelectionMode="Single" SelectionUnit="FullRow"
+                  CellEditEnding="PrinterGrid_CellEditEnding"
+                  SelectionChanged="PrinterGrid_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Printer ID" Binding="{Binding PrinterId}" IsReadOnly="True" Width="130"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="180"/>
+                <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer}" Width="140"/>
+                <DataGridTextColumn Header="Model" Binding="{Binding Model}" Width="140"/>
+                <DataGridComboBoxColumn x:Name="PrinterCurrencyColumn"
+                                        Header="Currency"
+                                        SelectedItemBinding="{Binding CostCurrency, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="90"/>
+                <DataGridTextColumn Header="Purchase cost" Binding="{Binding PurchaseCostAmount}" Width="110"/>
+                <DataGridTextColumn Header="Upfront cost" Binding="{Binding AdditionalUpfrontCostAmount}" Width="105"/>
+                <DataGridTextColumn Header="Annual maintenance" Binding="{Binding AnnualMaintenanceAmount}" Width="130"/>
+                <DataGridTextColumn Header="Life (years)" Binding="{Binding EstimatedLifeYears}" Width="90"/>
+                <DataGridTextColumn Header="Uptime (%)" Binding="{Binding UptimePercent}" Width="90"/>
+                <DataGridTextColumn Header="Power (W)" Binding="{Binding AveragePowerWatts}" Width="90"/>
+                <DataGridTextColumn Header="Buffer override" Binding="{Binding BufferOverride}" Width="110"/>
+                <DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive}" Width="65"/>
+                <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</TabItem>
 <TabItem Header="Inventory">
     <Grid Margin="12">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="2*"/></Grid.RowDefinitions>

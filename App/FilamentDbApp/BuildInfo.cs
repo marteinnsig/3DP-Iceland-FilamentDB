@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "INTERNAL-USAGE-ANALYTICS";
-    public const string ReleaseTitle = "Internal Usage Analytics";
+    public const string ReleaseCode = "PRINTER-PRICING-FOUNDATION";
+    public const string ReleaseTitle = "Printer and Pricing Settings Foundation";
 
     public static string Version
     {

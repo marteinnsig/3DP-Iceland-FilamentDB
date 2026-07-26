@@ -11,7 +11,7 @@ namespace FilamentDbApp.Data;
 
 public sealed partial class LocalDatabase
 {
-    private const int SchemaVersion = 34;
+    private const int SchemaVersion = 35;
     private const int MinimumStandaloneBackupSchemaVersion = 27;
     private const int MaxAutomaticBackups = 20;
     private const string AutomaticBackupPrefix = "filamentdb_";
@@ -28,7 +28,8 @@ public sealed partial class LocalDatabase
     {
         "Manufacturers", "BaseMaterialCatalog", "NativeMaterialManagerRows", "NativeSettingsRows", "DeploymentSettings", "WebsiteTemplates", "VideoIdeaQueue", "Suppliers",
         "PurchaseOrders", "PurchaseOrderLines", "InventorySpoolItems", "PurchaseDocuments", "ExperimentDefinitions", "MaterialExperiments", "ExperimentalRuns", "ExperimentalMeasurements",
-        "NativeTensileSamples", "NativeTensileResults", "NativeImpactSamples", "NativeStiffnessMeasurements", "NativeMeasurementNotes", "UsageEvents"
+        "NativeTensileSamples", "NativeTensileResults", "NativeImpactSamples", "NativeStiffnessMeasurements", "NativeMeasurementNotes",
+        "PrinterProfiles", "UsageEvents"
     };
     private static readonly string[] LegacyWorkbookTablesDropOrder =
     {
@@ -751,12 +752,20 @@ public sealed partial class LocalDatabase
         var missingTables = ExcelRecoveryTableInsertOrder
             .Where(required => !supplied.Contains(required, StringComparer.OrdinalIgnoreCase))
             .ToList();
-        var legacyPreUsagePackage = snapshot.SourceSchemaVersion < 34 &&
-                                    missingTables.Count == 1 &&
-                                    missingTables[0] == "UsageEvents" &&
-                                    supplied.Count == ExcelRecoveryTableInsertOrder.Length - 1;
+        var allowedMissingTables = snapshot.SourceSchemaVersion switch
+        {
+            < 34 => new[] { "PrinterProfiles", "UsageEvents" },
+            34 => new[] { "PrinterProfiles" },
+            _ => Array.Empty<string>()
+        };
+        var compatibleLegacyPackage =
+            missingTables.Count == allowedMissingTables.Length &&
+            missingTables.All(missing =>
+                allowedMissingTables.Contains(missing, StringComparer.OrdinalIgnoreCase)) &&
+            supplied.Count == ExcelRecoveryTableInsertOrder.Length -
+                allowedMissingTables.Length;
         if (supplied.Distinct(StringComparer.OrdinalIgnoreCase).Count() != supplied.Count ||
-            (!legacyPreUsagePackage &&
+            (!compatibleLegacyPackage &&
              (supplied.Count != ExcelRecoveryTableInsertOrder.Length ||
               missingTables.Count > 0)))
             throw new InvalidOperationException("Excel recovery package does not contain the exact governed canonical table set.");
@@ -780,13 +789,16 @@ public sealed partial class LocalDatabase
             {
                 var table = snapshot.Tables.SingleOrDefault(item =>
                     string.Equals(item.TableName, tableName, StringComparison.OrdinalIgnoreCase));
-                if (table is null && legacyPreUsagePackage && tableName == "UsageEvents")
+                if (table is null &&
+                    allowedMissingTables.Contains(tableName, StringComparer.OrdinalIgnoreCase))
                 {
                     table = new ExcelRecoveryTable
                     {
-                        TableName = "UsageEvents",
-                        SheetName = "DR22 UsageEvents",
-                        Columns = GetTableColumnDefinitions(connection, "UsageEvents")
+                        TableName = tableName,
+                        SheetName = tableName == "PrinterProfiles"
+                            ? "DR22 PrinterProfiles"
+                            : "DR23 UsageEvents",
+                        Columns = GetTableColumnDefinitions(connection, tableName)
                             .Select(column => column.Name)
                             .ToList()
                     };
@@ -1386,6 +1398,27 @@ CREATE INDEX IF NOT EXISTS IX_UsageEvents_InventoryItemId
 CREATE UNIQUE INDEX IF NOT EXISTS UX_UsageEvents_ReversesUsageEventId
     ON UsageEvents(ReversesUsageEventId)
     WHERE ReversesUsageEventId IS NOT NULL;
+
+CREATE TABLE IF NOT EXISTS PrinterProfiles (
+    PrinterId TEXT PRIMARY KEY,
+    Name TEXT NOT NULL,
+    Manufacturer TEXT NOT NULL,
+    Model TEXT NOT NULL,
+    CostCurrency TEXT NOT NULL,
+    PurchaseCostAmount TEXT NOT NULL,
+    AdditionalUpfrontCostAmount TEXT NOT NULL,
+    AnnualMaintenanceAmount TEXT NOT NULL,
+    EstimatedLifeYears TEXT NOT NULL,
+    UptimePercent TEXT NOT NULL,
+    AveragePowerWatts TEXT NOT NULL,
+    BufferOverride TEXT NOT NULL,
+    IsActive INTEGER NOT NULL DEFAULT 1,
+    Notes TEXT NOT NULL,
+    Provenance TEXT NOT NULL,
+    UpdatedAtUtc TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS IX_PrinterProfiles_ActiveName
+    ON PrinterProfiles(IsActive, Name);
 
 CREATE TABLE IF NOT EXISTS PurchaseOrders (
     PurchaseOrderId TEXT PRIMARY KEY, Supplier TEXT, OrderNumber TEXT, PurchaseDate TEXT, Currency TEXT, ExchangeRate TEXT,

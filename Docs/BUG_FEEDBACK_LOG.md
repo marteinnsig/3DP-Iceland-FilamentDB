@@ -40,16 +40,34 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 14 |
+| Open | 16 |
 | In progress | 0 |
 | Partially solved | 3 |
 | Solved | 53 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **74** |
+| **Total tracked findings** | **76** |
 
 ## Tracked findings
+
+Date: 2026-07-26
+Area: Public website / Navigation / Printing Price Calculator
+Type: Website idea / Workflow improvement
+Severity: Important
+Status: Open
+What happened: The standalone Printing Price Calculator at `https://iskort.is/3dp/price` is separate from the main
+`https://iskort.is/3dp/` website experience.
+Expected behavior: Add the existing price-calculator HTML to the main 3DPIceland website as a dedicated tab. Preserve the calculator
+as-is, including its current fields, formulas, wording and client-side behavior. Do not populate it from the desktop Materials list,
+SQLite, MaterialID, reports, website export data or any other application data. The change is website navigation/presentation only.
+Steps to reproduce: Open the main public website and confirm that no dedicated tab currently exposes the standalone price calculator.
+Screenshot / export / report attached: Capture desktop and narrow/mobile tab navigation during implementation.
+Resolution: Unimplemented. Research the current main-template navigation, standalone calculator assets, relative paths and responsive
+behavior before integration. Keep the standalone `/3dp/price` route working unless an explicit redirect decision is separately
+approved. Preview and visually inspect the generated HTML before any Production or FTPS action.
+Verification evidence: Future acceptance must prove calculator output parity with the current standalone page, no Materials/database
+payload or network dependency, working tab navigation at desktop and narrow widths, and unchanged existing main-site tabs/routes.
 
 Date: 2026-07-26
 Area: Recommendation Detail / MSRP context
@@ -1076,6 +1094,11 @@ Expected behavior: Resolve the bounded requirement described in Resolution after
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
 Resolution: Approved design concept, not an accepted implementation. Retain as a bounded future workflow; formula rights, units, currency provenance, profiles and immutable quote snapshots must be researched first.
+2026-07-26 v48.1 contract update: owner approved grams per part multiplied by
+quantity, ISK default with optional governed currencies, 0–100% uptime, a
+separate Printers catalog, Materials `LandedCostUsdPerKg` and explicit manual
+cost/kg plus currency fallback. Global Advanced values move to Settings.
+Historical quotes snapshot all inputs/rates and never recalculate.
 Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
 Date: Historical feedback (date not recorded)
@@ -1137,3 +1160,35 @@ Steps to reproduce: Historical feedback; no additional reproduction steps were r
 Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in v44.7.7 Stage 5I. Validation now runs after snapshot acceptance through the existing edit debounce.
 Verification evidence: Owner runtime re-test and Full Data Verification 330/330 PASS.
+2026-07-26 v48.1.1 implementation: schema v35 now owns canonical
+PrinterProfiles, seven governed Print Job Pricing defaults and a separate
+Printers CRUD/archive workspace. Deterministic hourly cost treats uptime as an
+explicit 0–100 percent. Quotes remain deliberately out of scope until v48.1.2.
+
+Date: 2026-07-26
+Area: Main application navigation / Tab ordering
+Type: UI polish / Final workflow review
+Severity: Normal
+Status: Open
+What happened: New workspaces and tabs have been added over multiple releases, so the overall tab order may no longer reflect the
+best daily-use workflow or the clearest grouping of related areas.
+Expected behavior: Review and, where justified, reorder all main application tabs as one coherent final navigation pass. Perform this
+only after every authoritative Master Roadmap item is complete and the Bug / Feedback Log has no unresolved implementation items.
+Steps to reproduce: After roadmap and feedback completion, traverse every tab from left to right and compare the order with common
+Materials, measurement, reporting, website, purchasing, inventory, research and administration workflows.
+Screenshot / export / report attached: Capture the complete tab order before and after any accepted reordering.
+Resolution: Deliberately placed last in the project queue. Do not reorder tabs incrementally while new workspaces are still being
+introduced. Preserve tab content, AutomationIds, keyboard navigation, lazy-load behavior and saved layout/state ownership. Assess the
+tester and Verification navigation contracts in the same final increment, while keeping visual ordering acceptance owner-manual.
+Verification evidence: None; blocked until the authoritative Master Roadmap is complete and all earlier open, partially solved and
+deferred feedback has been resolved, retired or explicitly dispositioned.
+
+2026-07-26 v48.1.1 runtime feedback: owner accepted the initial Printer
+workspace and Verification 362/362, but requested governed currency selection.
+Printer currency is now a dropdown backed only by valid Purchasing currency
+rates from Settings; unsupported free text is blocked.
+
+2026-07-26 v48.1.1 acceptance: owner confirmed Printer CRUD, restart
+persistence, Settings-backed currency dropdown and hourly-rate refresh.
+Full Data Verification evidence passes 362/362. Increment complete; immutable
+quote workflow continues in v48.1.2.

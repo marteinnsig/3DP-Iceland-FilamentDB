@@ -86,6 +86,8 @@ public partial class MainWindow : Window
     private readonly PricingProvenanceService _pricingProvenanceService = new();
     private readonly EngineeringValueIndexService _engineeringValueIndexService = new();
     private readonly UsageEventDomainService _usageEventDomainService = new();
+    private readonly PrinterRateService _printerRateService = new();
+    private readonly ObservableCollection<PrinterProfileRecord> _printerRows = new();
     private string? _usageCorrectionOriginalId;
     private string? _usageSelectedMaterialId;
     private readonly EngineeringPeerPositionService _engineeringPeerPositionService = new();
@@ -166,6 +168,7 @@ public partial class MainWindow : Window
         RunStartupPhase("Saved video ideas", LoadSavedVideoIdeas);
         RunStartupPhase("AI Assistant workspace", InitializeAiAssistantWorkspace);
         RunStartupPhase("Native settings initialization", InitializeNativeSettingsManager);
+        RunStartupPhase("Printer workspace initialization", InitializePrinterManager);
         RunStartupPhase("Native Materials initialization", InitializeNativeMaterialManager);
         RunStartupPhase("Fast Materials default view", ActivateDefaultFastMaterialsView);
         RunStartupPhase("Manufacturer workspace initialization", InitializeManufacturerManager);
@@ -264,6 +267,24 @@ public partial class MainWindow : Window
             ProfileId = "AUTOMATION-BASE-CREATED"
         });
         SaveBaseMaterialCatalogToDatabase();
+        var automationPrinterId = "AUT-PRN-" + materialId;
+        if (_printerRows.Any(item => item.PrinterId == automationPrinterId))
+            throw new InvalidOperationException("Authorized disposable PrinterID already exists.");
+        _printerRows.Add(new PrinterProfileRecord
+        {
+            PrinterId = automationPrinterId,
+            Name = "Automation Printer " + materialId,
+            Manufacturer = "3DPIceland Automation",
+            Model = "Created",
+            CostCurrency = "ISK",
+            PurchaseCostAmount = "300000",
+            AnnualMaintenanceAmount = "10000",
+            EstimatedLifeYears = "2",
+            UptimePercent = "50",
+            AveragePowerWatts = "150",
+            Notes = "AUTOMATION-PRINTER-CREATED"
+        });
+        SavePrinters();
         RequireAutomationCrudSave("CREATED");
         CreateAuthorizedAutomationUsageEvent(row.MaterialID);
     }
@@ -283,6 +304,19 @@ public partial class MainWindow : Window
             string.Equals(item.BaseMaterial, automationBaseMaterialName, StringComparison.Ordinal))
             ?? throw new InvalidOperationException("Disposable Base Material was not persisted through restart.");
         var automationBaseMaterialCopyName = automationBaseMaterialName + " Copy";
+        var automationPrinterId = "AUT-PRN-" + row.MaterialID;
+        var automationPrinter = _printerRows.SingleOrDefault(item =>
+            item.PrinterId == automationPrinterId)
+            ?? throw new InvalidOperationException(
+                "Disposable Printer profile was not persisted through restart.");
+        if (!string.Equals(automationPrinter.Notes, "AUTOMATION-PRINTER-CREATED",
+                StringComparison.Ordinal))
+            throw new InvalidOperationException(
+                "Disposable Printer profile has unexpected pre-edit content.");
+        automationPrinter.Model = "Edited";
+        automationPrinter.UptimePercent = "60";
+        automationPrinter.Notes = "AUTOMATION-PRINTER-EDITED";
+        SavePrinters();
         _nativeBaseMaterialRows.Add(new NativeBaseMaterialRow
         {
             BaseMaterial = automationBaseMaterialCopyName,
@@ -331,6 +365,17 @@ public partial class MainWindow : Window
             throw new InvalidOperationException("Canonical Manufacturer selection was not persisted through edit/restart.");
         var automationBaseMaterialName = "Automation Base " + row.MaterialID;
         var automationBaseMaterialCopyName = automationBaseMaterialName + " Copy";
+        var automationPrinterId = "AUT-PRN-" + row.MaterialID;
+        var automationPrinter = _printerRows.SingleOrDefault(item =>
+            item.PrinterId == automationPrinterId)
+            ?? throw new InvalidOperationException(
+                "Disposable Printer profile was not persisted after edit.");
+        if (!string.Equals(automationPrinter.Model, "Edited", StringComparison.Ordinal) ||
+            !string.Equals(automationPrinter.UptimePercent, "60", StringComparison.Ordinal) ||
+            !string.Equals(automationPrinter.Notes, "AUTOMATION-PRINTER-EDITED",
+                StringComparison.Ordinal))
+            throw new InvalidOperationException(
+                "Disposable Printer edit did not persist through restart.");
         if (!_nativeBaseMaterialRows.Any(item =>
                 string.Equals(item.BaseMaterial, automationBaseMaterialName, StringComparison.Ordinal) &&
                 string.Equals(item.ProfileId, "AUTOMATION-BASE-EDITED", StringComparison.Ordinal)) ||
@@ -400,6 +445,8 @@ public partial class MainWindow : Window
                      string.Equals(item.BaseMaterial, automationBaseMaterialCopyName, StringComparison.Ordinal)).ToList())
             _nativeBaseMaterialRows.Remove(baseMaterial);
         SaveBaseMaterialCatalogToDatabase();
+        _printerRows.Remove(automationPrinter);
+        SavePrinters();
         var sequenceText = canonicalManufacturer.Notes["AUTOMATION-ORIGINAL-SEQUENCE:".Length..];
         long? originalManufacturerSequence = string.Equals(sequenceText, "NULL", StringComparison.Ordinal)
             ? null
@@ -447,6 +494,10 @@ public partial class MainWindow : Window
         if (_database.LoadInventorySpoolItems().Any(item =>
                 item.MaterialId.Equals(materialId, StringComparison.Ordinal)))
             throw new InvalidOperationException("Authorized disposable inventory spool still exists after delete.");
+        if (_database.LoadPrinterProfiles().Any(item =>
+                item.PrinterId.Equals("AUT-PRN-" + materialId, StringComparison.Ordinal)))
+            throw new InvalidOperationException(
+                "Authorized disposable Printer profile still exists after delete.");
         SetAutomationCrudStatus("ABSENT");
     }
 
@@ -12520,7 +12571,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         ws.Cell(4, 1).Value = "Source of truth";
         ws.Cell(4, 2).Value = "Material Manager rows are exported as the native material source of truth. Measurement sheets reference MaterialID.";
         ws.Cell(5, 1).Value = "Included sheets";
-        ws.Cell(5, 2).Value = "Readable sheets plus DR Manifest and 22 governed canonical recovery tables";
+        ws.Cell(5, 2).Value = "Readable sheets plus DR Manifest and 23 governed canonical recovery tables";
         ws.Range(1, 1, 1, 2).Style.Font.Bold = true;
         ws.Columns().AdjustToContents();
     }
@@ -14018,7 +14069,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             header.StartsWith("Cooling ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Drying ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Profile ", StringComparison.OrdinalIgnoreCase));
-        var printingSettingsReady = _database.CurrentSchemaVersion == 34 &&
+        var printingSettingsReady = _database.CurrentSchemaVersion == 35 &&
                                     persistedBaseMaterials.Count == _nativeBaseMaterialRows.Count &&
                                     persistedBaseMaterials.Select(x => x.BaseMaterial).OrderBy(x => x).SequenceEqual(
                                         _nativeBaseMaterialRows.Select(x => x.BaseMaterial).OrderBy(x => x), StringComparer.OrdinalIgnoreCase) &&
@@ -15823,7 +15874,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                                            !string.IsNullOrWhiteSpace(deploymentSettings.FtpsUserName) &&
                                            deploymentSettings.FtpsPort is >= 1 and <= 65535;
         checks.Add(new VerificationCheck("SQLite-governed explicit FTPS publishing contract",
-            _database.CurrentSchemaVersion == 34 &&
+            _database.CurrentSchemaVersion == 35 &&
             (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
             FtpsWebsitePublisherService.MainRemotePath == "/index.html" &&
             FtpsWebsitePublisherService.ManufacturerRemotePath == "/manufacturers/index.html" &&
@@ -16285,7 +16336,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             printingSettingsReady && printingSettingsRemainInternal && incrementalFtpsPublishingReady && releaseIdentityReady
                 ? "Canonical baseline profile identity, cooling/drying units, slicer identity, provenance, source and checked-date contracts passed; public allowlists unchanged"
                 : "Printing-profile governance, provenance, internal-only boundary, prior publishing gate or release identity did not pass"));
-        var deploymentSettingsReady = _database.CurrentSchemaVersion == 34 &&
+        var deploymentSettingsReady = _database.CurrentSchemaVersion == 35 &&
                                       (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
                                       typeof(WindowsCredentialService).GetMethod("ReadPassword", new[] { typeof(string), typeof(string) }) is not null;
         checks.Add(new VerificationCheck("v42.15 Deployment Settings Governance release gate", deploymentSettingsReady && incrementalFtpsPublishingReady && releaseIdentityReady,
@@ -16305,7 +16356,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 : "Native measurement marker, SQLite/UI count parity or release identity failed"));
         var canonicalGeneralSettings = _database.LoadNativeSettingsRows();
         var expectedGeneralSettings = _nativeSettingsRows.Count(row => !string.Equals(row.Section, "Deployment", StringComparison.OrdinalIgnoreCase));
-        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == 34 &&
+        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == 35 &&
                                           _database.LoadNativeMaterialManagerRows().Count == _nativeMaterialRows.Count &&
                                           canonicalGeneralSettings.Count == expectedGeneralSettings &&
                                           canonicalGeneralSettings.Select(row => (row.Section, row.Parameter, row.Unit, row.UsedBy)).Distinct().Count() == canonicalGeneralSettings.Count;
@@ -16314,7 +16365,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? $"SQLite owns {_nativeMaterialRows.Count} Materials rows and {canonicalGeneralSettings.Count} general Settings rows; legacy JSON is snapshot-only"
                 : "Materials/Settings SQLite parity, settings key uniqueness, schema or release identity failed"));
         var latestLocalBackup = _database.GetLocalBackupCatalog()
-            .FirstOrDefault(item => item.CanRestore && item.IsIntegrityValid && item.SchemaVersion is > 0 and <= 34 && item.Materials > 0);
+            .FirstOrDefault(item => item.CanRestore && item.IsIntegrityValid && item.SchemaVersion is > 0 and <= 35 && item.Materials > 0);
         var latestLocalBackupValid = false;
         var latestLocalBackupDetail = "No restore-ready SQLite backup with canonical Materials is available";
         if (latestLocalBackup is not null)
@@ -16322,7 +16373,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             try
             {
                 var inspection = _database.InspectDatabaseBackup(latestLocalBackup.FilePath);
-                latestLocalBackupValid = inspection.IsIntegrityValid && inspection.SchemaVersion is > 0 and <= 34 && inspection.Materials > 0;
+                latestLocalBackupValid = inspection.IsIntegrityValid && inspection.SchemaVersion is > 0 and <= 35 && inspection.Materials > 0;
                 latestLocalBackupDetail = $"{IOPath.GetFileName(latestLocalBackup.FilePath)}: integrity {inspection.IntegrityResult}, schema v{inspection.SchemaVersion}, materials {inspection.Materials:N0}";
             }
             catch (Exception ex) { latestLocalBackupDetail = IOPath.GetFileName(latestLocalBackup.FilePath) + ": " + ex.Message; }
@@ -16339,8 +16390,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var excelRecoverySnapshot = _database.CreateExcelRecoverySnapshot();
         var excelRecoveryRows = excelRecoverySnapshot.Tables.Sum(table => table.Rows.Count);
         var excelRecoveryReady = excelRecoverySnapshot.FormatVersion == ExcelRecoverySnapshot.CurrentFormatVersion &&
-                                 excelRecoverySnapshot.SourceSchemaVersion == 34 &&
-                                 excelRecoverySnapshot.Tables.Count == 22 &&
+                                 excelRecoverySnapshot.SourceSchemaVersion == 35 &&
+                                 excelRecoverySnapshot.Tables.Count == 23 &&
                                  excelRecoverySnapshot.Tables.All(table => !string.IsNullOrWhiteSpace(table.TableName) && table.Columns.Count > 0 && table.Rows.All(row => row.Count == table.Columns.Count) && ExcelDisasterRecoveryService.ComputeTableHash(table).Length == 64) &&
                                  excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMaterialManagerRows").Rows.Count == _nativeMaterialRows.Count &&
                                  typeof(ExcelDisasterRecoveryService).GetMethod("LoadAndVerify") is not null &&
@@ -16350,11 +16401,48 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             excelRecoveryReady && localRestoreContractReady && canonicalWorkingStoresReady && releaseIdentityReady
                 ? $"Format v{excelRecoverySnapshot.FormatVersion}; {excelRecoverySnapshot.Tables.Count} canonical tables; {excelRecoveryRows:N0} rows; lossless typed chunk encoding, per-table SHA-256, transactional restore and SQLite recovery backup"
                 : "Excel recovery manifest/table/row/hash contract, transactional restore, local SQLite recovery or release identity failed"));
+        var printerProbe = _printerRateService.Calculate(new PrinterRateInput(
+            300000m, 0m, 10000m, 2m, 50m, 150m, 1m, 13m, 1.30m));
+        var invalidPrinterProbe = _printerRateService.Calculate(new PrinterRateInput(
+            300000m, 0m, 10000m, 2m, 0m, 150m, 1m, 13m, 1.30m));
+        var printerRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
+            table => table.TableName == "PrinterProfiles");
+        var pricingSettingsReady = new[]
+        {
+            "Material efficiency factor", "Labor hourly rate",
+            "Electricity cost per kWh", "Default printer buffer factor",
+            "Default target margin", "Default quote currency", "Default prepared by"
+        }.All(parameter => canonicalGeneralSettings.Any(row =>
+            row.Section == "Pricing" && row.Parameter == parameter &&
+            row.UsedBy == "Print Job Pricing"));
+        var printerFoundationReady =
+            _database.CurrentSchemaVersion == 35 &&
+            printerRecoveryTable is not null &&
+            printerRecoveryTable.Columns.Contains("PrinterId") &&
+            printerRecoveryTable.Columns.Contains("UptimePercent") &&
+            pricingSettingsReady &&
+            printerProbe.IsValid &&
+            printerProbe.ProductiveLifetimeHours == 8760m &&
+            Math.Abs((printerProbe.TotalPrinterCostIskPerHour ?? 0m) -
+                     50.0235844748858447488584475m) < 0.000001m &&
+            !invalidPrinterProbe.IsValid &&
+            FindName("PrintersTab") is TabItem &&
+            FindName("PrinterGrid") is DataGrid &&
+            PrinterCurrencyColumn is DataGridComboBoxColumn &&
+            GetGovernedPrinterCurrencies().Contains("ISK", StringComparer.OrdinalIgnoreCase) &&
+            GetGovernedPrinterCurrencies().Contains("USD", StringComparer.OrdinalIgnoreCase) &&
+            AutomationProperties.GetAutomationId(PrinterGrid) == "PrinterGrid";
+        checks.Add(new VerificationCheck(
+            "v48.1.1 Printer and Pricing Settings Foundation release gate",
+            printerFoundationReady && excelRecoveryReady && releaseIdentityReady,
+            printerFoundationReady && excelRecoveryReady && releaseIdentityReady
+                ? $"Schema v35; {_printerRows.Count:N0} canonical printers; seven governed Pricing defaults; deterministic 50.02 ISK/hour probe; PrinterProfiles is governed by Excel recovery"
+                : "Printer schema/UI/rate validation, Pricing defaults, Excel recovery ownership or release identity failed"));
         var usageStats = _database.GetUsageEventStats();
         var usageRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "UsageEvents");
         var usagePersistenceReady =
-            _database.CurrentSchemaVersion == 34 &&
+            _database.CurrentSchemaVersion == 35 &&
             usageRecoveryTable is not null &&
             usageRecoveryTable.Columns.Contains("UsageEventId") &&
             usageRecoveryTable.Columns.Contains("MaterialId") &&
@@ -16499,7 +16587,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Original-workbook sheet metadata is absent from Material Detail, Tools and diagnostics while supported-schema inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
                 : "A workbook metadata reader/UI surface remains or a required compatibility/recovery boundary failed"));
         var legacyWorkbookSchemaRetiredReady =
-            _database.CurrentSchemaVersion == 34 &&
+            _database.CurrentSchemaVersion == 35 &&
             _database.LegacyWorkbookTablesAreRetired() &&
             typeof(LocalDatabase).GetMethod("GetTestSummaryMetrics") is null &&
             typeof(MainWindow).GetMethod("GetCanonicalTestSummaryMetrics", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
@@ -16565,8 +16653,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
                                          compatibilityCatalog.Where(item => item.SchemaVersion is > 0 and < 27).All(item => item.CompatibilityStatus == "Legacy / incomplete" && !item.CanRestore) &&
-                                         compatibilityCatalog.Where(item => item.SchemaVersion is >= 27 and <= 33).All(item => item.CompatibilityStatus == "Migration required" && !item.CanRestore) &&
-                                         compatibilityCatalog.Where(item => item.SchemaVersion > 34).All(item => item.CompatibilityStatus == "Newer / incompatible" && !item.CanRestore) &&
+                                         compatibilityCatalog.Where(item => item.SchemaVersion is >= 27 and <= 34).All(item => item.CompatibilityStatus == "Migration required" && !item.CanRestore) &&
+                                         compatibilityCatalog.Where(item => item.SchemaVersion > 35).All(item => item.CompatibilityStatus == "Newer / incompatible" && !item.CanRestore) &&
                                          typeof(LocalDatabase).GetMethod("GetLocalBackupCatalog") is not null &&
                                          typeof(LocalDatabase).GetMethod("VerifyBackupCompatibility") is not null &&
                                          typeof(MainWindow).GetMethod("ShowRecoveryCenter_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
@@ -16834,7 +16922,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         measurementDateEditProbe.MeasuredDateText = "";
         var clearedDateAccepted = measurementDateEditProbe.MeasuredDate is null && measurementDateEditProbe.MeasuredDateText == "";
         var measurementDateReady =
-            _database.CurrentSchemaVersion == 34 &&
+            _database.CurrentSchemaVersion == 35 &&
             nativeMetadataTable.Columns.Contains("MeasuredDate", StringComparer.OrdinalIgnoreCase) &&
             experimentalRunsTable.Columns.Contains("MeasuredDate", StringComparer.OrdinalIgnoreCase) &&
             typeof(ExperimentalRunRecord).GetProperty(nameof(ExperimentalRunRecord.MeasuredDate)) is not null &&
@@ -22046,6 +22134,7 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         LoadBuiltInNativeSettingsDefaults();
         LoadCanonicalNativeSettings();
+        EnsurePricingSettings();
         LoadDeploymentSettingsIntoManager();
         var canonicalBaseMaterials = _database.LoadBaseMaterialCatalog();
         if (canonicalBaseMaterials.Count == 0)
@@ -22276,7 +22365,14 @@ private List<string> GetVisibleAiMaterialLabels()
             new NativeSettingRow { Section = "Currency", Parameter = "ISK per 1 CAD", Value = "91.50", Unit = "ISK", UsedBy = "Purchasing", Notes = "Update manually when needed" },
             new NativeSettingRow { Section = "Currency", Parameter = "ISK per 1 AUD", Value = "82.00", Unit = "ISK", UsedBy = "Purchasing", Notes = "Update manually when needed" },
             new NativeSettingRow { Section = "Currency", Parameter = "ISK per 1 CNY", Value = "17.20", Unit = "ISK", UsedBy = "Purchasing", Notes = "Update manually when needed" },
-            new NativeSettingRow { Section = "Currency", Parameter = "ISK per 1 JPY", Value = "0.84", Unit = "ISK", UsedBy = "Purchasing", Notes = "Update manually when needed" }
+            new NativeSettingRow { Section = "Currency", Parameter = "ISK per 1 JPY", Value = "0.84", Unit = "ISK", UsedBy = "Purchasing", Notes = "Update manually when needed" },
+            new NativeSettingRow { Section = "Pricing", Parameter = "Material efficiency factor", Value = "1.10", Unit = "factor", UsedBy = "Print Job Pricing", Notes = "Applied once to grams per part times quantity" },
+            new NativeSettingRow { Section = "Pricing", Parameter = "Labor hourly rate", Value = "7500", Unit = "ISK/hour", UsedBy = "Print Job Pricing", Notes = "Governed default retained by quote snapshots" },
+            new NativeSettingRow { Section = "Pricing", Parameter = "Electricity cost per kWh", Value = "13", Unit = "ISK/kWh", UsedBy = "Print Job Pricing", Notes = "Used with each printer's average power" },
+            new NativeSettingRow { Section = "Pricing", Parameter = "Default printer buffer factor", Value = "1.30", Unit = "factor", UsedBy = "Print Job Pricing", Notes = "Printer profile may explicitly override this value" },
+            new NativeSettingRow { Section = "Pricing", Parameter = "Default target margin", Value = "60", Unit = "%", UsedBy = "Print Job Pricing", Notes = "Unambiguous percentage from 0 to below 100" },
+            new NativeSettingRow { Section = "Pricing", Parameter = "Default quote currency", Value = "ISK", Unit = "currency", UsedBy = "Print Job Pricing", Notes = "Other governed currencies remain selectable" },
+            new NativeSettingRow { Section = "Pricing", Parameter = "Default prepared by", Value = "3DP Iceland", Unit = "text", UsedBy = "Print Job Pricing", Notes = "Default quote attribution" }
         };
     }
 

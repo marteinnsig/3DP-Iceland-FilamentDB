@@ -1,6 +1,15 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v48.1.1 - Printer and Pricing Settings Foundation
+
+Schema v35 owns canonical PrinterProfiles, seven governed Pricing defaults and
+a separate Printers workspace. Currency selection is restricted to valid
+Settings-backed Purchasing rates. Deterministic printer cost uses explicit
+0–100 uptime, capital, electricity and buffer inputs. Excel recovery owns 23
+tables with exact v34 migration compatibility. Owner runtime acceptance and
+Full Data Verification 362/362 pass.
+
 ## v48.0.7 - Internal Usage Analytics
 
 Private selected-Material analytics separate immutable ledger rows from

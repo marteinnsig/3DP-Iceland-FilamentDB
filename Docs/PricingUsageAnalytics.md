@@ -403,6 +403,57 @@ Keep job quotations separate from analytics. A quote must snapshot MaterialID,
 effective cost provenance, printer profile, every formula input, currency/rate,
 calculation version and timestamp so later Settings changes cannot rewrite it.
 
+#### v48.1 approved pricing and ownership contract — 2026-07-26
+
+The standalone HTML calculator was reviewed as business-rule reference only.
+Its Advanced Inputs mix global defaults with printer-specific ownership and
+must not become one editable quote form.
+
+Approved quantity and currency decisions:
+
+- filament is **grams per part × quoted quantity**, exactly once;
+- ISK is the default calculation and quote currency;
+- another supported quote currency requires an explicit
+  `ISK per 1 {currency}` rate;
+- every quote snapshots the exact rate, source label and calculation time;
+- printer uptime is entered and stored as an unambiguous 0–100 percent.
+
+Global Pricing Settings own material efficiency, labor hourly rate,
+electricity cost per kWh, default printer buffer, target margin, quote currency
+and company/prepared-by defaults.
+
+A separate Printer catalog owns stable `PrinterID`, name/model, purchase cost,
+additional upfront cost, annual maintenance, estimated life, productive uptime
+percent, average power, optional buffer override, active/archive state, notes
+and provenance.
+
+Material cost selection is explicit:
+
+1. a canonical MaterialID uses governed `LandedCostUsdPerKg`, converted through
+   snapshotted currency rates;
+2. when no Material exists or landed cost is missing, manual cost per kg plus
+   explicit source currency is allowed;
+3. manual evidence remains manual and is never rebound silently to a later
+   MaterialID.
+
+Every saved quote snapshots PrinterID and printer inputs, global settings,
+MaterialID or manual material evidence, grams per part, quantity, time inputs,
+additional lines, currency rates, component costs, margin and final price.
+Later catalog or Settings changes never recalculate historical quotes.
+
+Bounded delivery:
+
+1. **v48.1.0 — Pricing and ownership contract:** formula decisions,
+   provenance, snapshot boundary and reuse attribution; no schema/UI.
+2. **v48.1.1 — Printer and pricing-settings foundation:** canonical Printer
+   catalog, global settings, recovery, diagnostics and disposable CRUD.
+3. **v48.1.2 — Immutable quote workflow:** Material/manual cost selection,
+   exact calculation service, snapshots, quote UI and governed export.
+
+The Print Farm Academy attribution in the reference HTML remains a
+reuse-review requirement. The app will encode approved business rules
+independently rather than copy the external presentation or JavaScript.
+
 ### v48.2 Exchange-rate catalog
 
 Remain deferred until an official endpoint and reuse contract are approved.

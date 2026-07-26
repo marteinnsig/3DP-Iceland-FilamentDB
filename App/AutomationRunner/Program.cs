@@ -85,7 +85,7 @@ internal static class Program
                      {
                          "MaterialsTab", "TensileMeasurementsTab", "ImpactMeasurementsTab",
                          "StiffnessMeasurementsTab", "BaseMaterialsTab", "SettingsManagerTab",
-                         "AiAssistantTab", "ReportsTab"
+                         "PrintersTab", "AiAssistantTab", "ReportsTab"
                      })
             {
                 SelectTab(main, tabId, application.Id);
