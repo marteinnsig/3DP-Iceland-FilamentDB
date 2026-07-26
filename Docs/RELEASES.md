@@ -1,6 +1,13 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v48.0.6 - Bounded Usage UI and Automation
+
+Private exact-MaterialID usage capture supports optional same-Material Inventory
+linkage, immutable ledger review and append-only correction. Empty Inventory
+supports no-spool usage; linked events reconcile weight atomically. Owner
+runtime acceptance and Full Data Verification 360/360 pass.
+
 ## v48.0.5 - Canonical Usage Persistence and Recovery
 
 Schema v34 persists private append-only UsageEvents with atomic linked-Inventory

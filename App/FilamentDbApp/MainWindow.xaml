@@ -565,6 +565,89 @@
         </GroupBox>
     </Grid>
 </TabItem>
+<TabItem Header="Usage" AutomationProperties.AutomationId="UsageTab">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock Text="Material Usage" FontSize="22" FontWeight="SemiBold"/>
+            <TextBlock Text="Record private MaterialID-led usage. Accepted events are immutable; corrections append an exact reversal and replacement. Selecting an inventory spool updates its remaining weight in the same SQLite transaction."
+                       Foreground="#64748B" TextWrapping="Wrap"/>
+        </StackPanel>
+        <WrapPanel Grid.Row="1" Margin="0,0,0,8">
+            <TextBlock Text="Material" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <ComboBox x:Name="UsageMaterialSelector" AutomationProperties.AutomationId="UsageMaterialSelector"
+                      Width="285" DisplayMemberPath="WebsiteDisplayName" SelectedValuePath="MaterialID"
+                      SelectionChanged="UsageMaterialSelector_SelectionChanged" Margin="0,0,14,8"/>
+            <TextBlock Text="Inventory spool (optional)" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <ComboBox x:Name="UsageInventorySelector" AutomationProperties.AutomationId="UsageInventorySelector"
+                      Width="235" DisplayMemberPath="DisplayLabel" SelectedValuePath="InventoryItemId" Margin="0,0,14,8"/>
+            <TextBlock x:Name="UsageMaterialIdentityText" Foreground="#1E3A8A" FontWeight="SemiBold"
+                       VerticalAlignment="Center" Margin="0,0,0,8"/>
+        </WrapPanel>
+        <WrapPanel Grid.Row="2" Margin="0,0,0,8">
+            <TextBlock Text="Type" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <ComboBox x:Name="UsageEventTypeSelector" Width="150" Margin="0,0,12,8"/>
+            <TextBlock Text="Occurred UTC" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <TextBox x:Name="UsageOccurredAtUtcTextBox" Width="205" Margin="0,0,12,8"/>
+            <TextBlock Text="Filament g" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <TextBox x:Name="UsageFilamentGramsTextBox" Width="80" Margin="0,0,12,8"/>
+            <TextBlock Text="Provenance" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <ComboBox x:Name="UsageProvenanceSelector" Width="135" Margin="0,0,12,8"/>
+            <TextBlock Text="Print minutes" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <TextBox x:Name="UsagePrintMinutesTextBox" Width="75" Margin="0,0,12,8"/>
+            <TextBlock Text="Hands-on minutes" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <TextBox x:Name="UsageHandsOnMinutesTextBox" Width="75" Margin="0,0,0,8"/>
+        </WrapPanel>
+        <WrapPanel Grid.Row="3" Margin="0,0,0,10">
+            <TextBlock Text="Produced" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <TextBox x:Name="UsageProducedCountTextBox" Width="65" Margin="0,0,12,8"/>
+            <TextBlock Text="Accepted" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <TextBox x:Name="UsageAcceptedCountTextBox" Width="65" Margin="0,0,12,8"/>
+            <TextBlock Text="Rejected" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <TextBox x:Name="UsageRejectedCountTextBox" Width="65" Margin="0,0,12,8"/>
+            <TextBlock Text="Source" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <TextBox x:Name="UsageSourceTextBox" Width="175" Margin="0,0,12,8"/>
+            <TextBlock Text="Note" VerticalAlignment="Center" Margin="0,0,6,8"/>
+            <TextBox x:Name="UsageNoteTextBox" Width="240" Margin="0,0,14,8"/>
+            <Button x:Name="SaveUsageEventButton" AutomationProperties.AutomationId="SaveUsageEvent"
+                    Content="Record Usage" Click="SaveUsageEvent_Click" Padding="10,4" Margin="0,0,8,8"/>
+            <Button x:Name="BeginUsageCorrectionButton" AutomationProperties.AutomationId="BeginUsageCorrection"
+                    Content="Correct Selected" Click="BeginUsageCorrection_Click" Padding="10,4" Margin="0,0,8,8"/>
+            <Button x:Name="CancelUsageCorrectionButton" Content="Cancel Correction"
+                    Click="CancelUsageCorrection_Click" Padding="10,4" Visibility="Collapsed" Margin="0,0,8,8"/>
+        </WrapPanel>
+        <DataGrid Grid.Row="4" x:Name="UsageLedgerGrid" AutomationProperties.AutomationId="UsageLedgerGrid"
+                  Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False"
+                  IsReadOnly="True" CanUserAddRows="False" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Occurred UTC" Binding="{Binding OccurredAtUtc}" Width="165"/>
+                <DataGridTextColumn Header="MaterialID" Binding="{Binding MaterialId}" Width="90"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding EventType}" Width="120"/>
+                <DataGridTextColumn Header="Entry" Binding="{Binding EntryKind}" Width="90"/>
+                <DataGridTextColumn Header="Inventory spool" Binding="{Binding InventoryItemId}" Width="135"/>
+                <DataGridTextColumn Header="Filament g" Binding="{Binding FilamentUsedGrams}" Width="85"/>
+                <DataGridTextColumn Header="Provenance" Binding="{Binding FilamentProvenance}" Width="115"/>
+                <DataGridTextColumn Header="Print sec" Binding="{Binding PrintDurationSeconds}" Width="80"/>
+                <DataGridTextColumn Header="Hands-on sec" Binding="{Binding HandsOnDurationSeconds}" Width="95"/>
+                <DataGridTextColumn Header="Produced" Binding="{Binding ProducedCount}" Width="75"/>
+                <DataGridTextColumn Header="Accepted" Binding="{Binding AcceptedCount}" Width="75"/>
+                <DataGridTextColumn Header="Rejected" Binding="{Binding RejectedCount}" Width="75"/>
+                <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="170"/>
+                <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="220"/>
+                <DataGridTextColumn Header="Event ID" Binding="{Binding UsageEventId}" Width="210"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBlock Grid.Row="5" x:Name="UsageStatusText" AutomationProperties.AutomationId="UsageStatus"
+                   Foreground="#64748B" Margin="0,8,0,0" TextWrapping="Wrap"/>
+    </Grid>
+</TabItem>
 <TabItem Header="Experimental Testing">
     <Grid Margin="12">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto" MaxHeight="210"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto" MaxHeight="210"/><RowDefinition Height="Auto"/><RowDefinition Height="*" MinHeight="320"/></Grid.RowDefinitions>

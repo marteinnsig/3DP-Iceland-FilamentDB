@@ -2,6 +2,15 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v48.0.6 - Bounded Usage UI and Automation
+
+Candidate private Usage workspace provides exact MaterialID capture, optional
+same-Material Inventory linkage, a read-only ledger and append-only correction.
+Disposable CRUD automation verifies stable controls and ledger state; public
+outputs remain unchanged.
+Owner accepted optional empty-Inventory/no-spool behavior and linked-spool
+reconciliation. Full Data Verification passes 360/360; v48.0.6 is canonical.
+
 ## v48.0.5 - Canonical Usage Persistence and Recovery
 
 Candidate schema v34 adds append-only UsageEvents, atomic linked-Inventory

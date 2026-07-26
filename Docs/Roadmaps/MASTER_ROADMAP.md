@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v48.0.5 — Canonical Usage Persistence and Recovery**
+Current canonical release: **v48.0.6 — Bounded Usage UI and Automation**
 
-Last runtime-accepted baseline: **v48.0.5 — Canonical Usage Persistence and Recovery**
+Last runtime-accepted baseline: **v48.0.6 — Bounded Usage UI and Automation**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v48.0.6 — Bounded Usage UI and Automation**
+Current roadmap increment: **v48.0.7 — Internal Usage Analytics**
 
-Current acceptance note: v48.0.5 persistence/recovery is runtime accepted with Full Data Verification 359/359.
+Current acceptance note: v48.0.6 bounded Usage UI is runtime accepted with Full Data Verification 360/360.
 
 Candidate note: None.
 
@@ -1965,6 +1965,14 @@ to unstarted authoritative planning slots.
   - Owner accepted normal runtime behavior and Full Data Verification 359/359.
   - v48.0.5 is complete, canonical and runtime accepted.
   - Current implementation increment: v48.0.6 — Bounded Usage UI and Automation.
+  - v48.0.6 candidate adds one private Usage tab with exact MaterialID-led capture.
+  - Optional Inventory choices are restricted to the selected MaterialID and retain atomic weight updates.
+  - The ledger is read-only; correction appends reversal plus replacement and exposes no normal delete/edit action.
+  - Print Job, Test Session, public report and website surfaces remain absent.
+  - Disposable CRUD automation verifies the Usage tab, stable controls and ledger state across restart.
+  - Owner accepted optional no-spool capture, linked-spool Inventory reconciliation, correction and tab refresh.
+  - Owner Full Data Verification 360/360 passes; v48.0.6 is complete, canonical and runtime accepted.
+  - Current implementation increment: v48.0.7 — Internal Usage Analytics.
 - **v48.1 — MaterialID-aware Print Job Pricing and Immutable Quote Snapshots**
   - State: Open design.
   - Requires formula/reuse-rights, unit, currency-provenance and Printer Profile approval before coding.

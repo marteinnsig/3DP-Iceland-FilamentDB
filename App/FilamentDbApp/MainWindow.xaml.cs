@@ -86,6 +86,8 @@ public partial class MainWindow : Window
     private readonly PricingProvenanceService _pricingProvenanceService = new();
     private readonly EngineeringValueIndexService _engineeringValueIndexService = new();
     private readonly UsageEventDomainService _usageEventDomainService = new();
+    private string? _usageCorrectionOriginalId;
+    private string? _usageSelectedMaterialId;
     private readonly EngineeringPeerPositionService _engineeringPeerPositionService = new();
     private readonly EngineeringIntelligenceHandoffService _engineeringIntelligenceHandoffService = new();
     private readonly ObservableCollection<InventorySpoolRecord> _inventorySpoolRows = new();
@@ -168,6 +170,7 @@ public partial class MainWindow : Window
         RunStartupPhase("Fast Materials default view", ActivateDefaultFastMaterialsView);
         RunStartupPhase("Manufacturer workspace initialization", InitializeManufacturerManager);
         RunStartupPhase("Inventory workspace initialization", InitializeInventorySpoolManager);
+        RunStartupPhase("Usage workspace initialization", InitializeUsageWorkspace);
         RunStartupPhase("Experimental workspace initialization", InitializeExperimentalMaterialManager);
         RunStartupPhase("Purchasing workspace initialization", InitializePurchaseOrderManager);
         RunStartupPhase("Tensile workspace initialization", InitializeNativeTensileMeasurements);
@@ -490,6 +493,8 @@ public partial class MainWindow : Window
             item.InventoryItemId == inventoryItemId);
         if (persisted.RemainingWeightG != "900")
             throw new InvalidOperationException("Atomic usage inventory decrement did not persist.");
+        UsageMaterialSelector.SelectedValue = materialId;
+        RefreshUsageMaterialContext(materialId);
     }
 
     private void CorrectAuthorizedAutomationUsageEvent(string materialId)
@@ -537,6 +542,8 @@ public partial class MainWindow : Window
                 item.InventoryItemId == inventoryItemId).RemainingWeightG != "920")
             throw new InvalidOperationException(
                 "Atomic usage correction/reversal did not persist exactly.");
+        UsageMaterialSelector.SelectedValue = materialId;
+        RefreshUsageMaterialContext(materialId);
     }
 
     private void DeleteAuthorizedAutomationUsageEvents(string materialId)
@@ -2545,6 +2552,12 @@ public partial class MainWindow : Window
         if (string.Equals(header, "AI Assistant", StringComparison.Ordinal))
         {
             RefreshAiAssistantScopePreview();
+            return;
+        }
+
+        if (string.Equals(header, "Usage", StringComparison.Ordinal))
+        {
+            RefreshUsageWorkspace();
             return;
         }
 
@@ -16357,6 +16370,34 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                   "zero relationship/duplicate-reversal defects; UsageEvents is governed by Excel recovery"
                 : "UsageEvents schema, atomic persistence/correction API, relationship integrity, " +
                   "Excel recovery ownership or release identity failed"));
+        var boundedUsageUiReady =
+            FindName("UsageMaterialSelector") is ComboBox &&
+            FindName("UsageInventorySelector") is ComboBox &&
+            FindName("UsageLedgerGrid") is DataGrid &&
+            FindName("SaveUsageEventButton") is Button &&
+            FindName("BeginUsageCorrectionButton") is Button &&
+            AutomationProperties.GetAutomationId(UsageMaterialSelector) ==
+            "UsageMaterialSelector" &&
+            AutomationProperties.GetAutomationId(UsageInventorySelector) ==
+            "UsageInventorySelector" &&
+            AutomationProperties.GetAutomationId(UsageLedgerGrid) ==
+            "UsageLedgerGrid" &&
+            typeof(MainWindow).GetMethod(
+                "SaveUsageEvent_Click",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                "BeginUsageCorrection_Click",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck(
+            "v48.0.6 Bounded Usage Workspace release gate",
+            boundedUsageUiReady && usagePersistenceReady && releaseIdentityReady,
+            boundedUsageUiReady && usagePersistenceReady && releaseIdentityReady
+                ? "Exact MaterialID selector, same-Material optional Inventory selector, immutable ledger, " +
+                  "append-only record/correction actions and stable automation identities are present; " +
+                  "no Print Job/Test Session or public-output surface is added"
+                : "Bounded Usage UI, stable automation identity, canonical persistence or release identity failed"));
         var retiredOriginalExcelImportSurfaceReady =
             typeof(MainWindow).GetMethod("ImportExcel_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
             typeof(ExcelDisasterRecoveryService).GetMethod("AddRecoveryPackage") is not null &&
@@ -25315,6 +25356,289 @@ private List<string> GetVisibleAiMaterialLabels()
                 _nativeMaterialRows.Select(NativeMaterialRecordFromRow));
         }
     }
+
+    private void InitializeUsageWorkspace()
+    {
+        UsageEventTypeSelector.ItemsSource = Enum.GetValues<UsageEventType>();
+        UsageEventTypeSelector.SelectedItem = UsageEventType.TestPrint;
+        UsageProvenanceSelector.ItemsSource = Enum.GetValues<UsageQuantityProvenance>();
+        UsageProvenanceSelector.SelectedItem = UsageQuantityProvenance.NotRecorded;
+        UsageOccurredAtUtcTextBox.Text =
+            DateTimeOffset.UtcNow.ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture);
+        UsageSourceTextBox.Text = "Manual entry";
+        RefreshUsageWorkspace();
+    }
+
+    private void RefreshUsageWorkspace()
+    {
+        var selectedMaterialId =
+            _usageSelectedMaterialId ??
+            UsageMaterialSelector.SelectedValue?.ToString() ??
+            _lastSelectedNativeMaterial?.MaterialID;
+        var materials = _nativeMaterialRows
+            .Where(row => !row.IsArchived)
+            .OrderBy(row => row.WebsiteDisplayName)
+            .ThenBy(row => row.MaterialID)
+            .ToList();
+        UsageMaterialSelector.ItemsSource = materials;
+        var selected = materials.FirstOrDefault(row =>
+                           row.MaterialID.Equals(
+                               selectedMaterialId,
+                               StringComparison.OrdinalIgnoreCase))
+                       ?? materials.FirstOrDefault();
+        UsageMaterialSelector.SelectedItem = selected;
+        RefreshUsageMaterialContext(selected?.MaterialID);
+    }
+
+    private void UsageMaterialSelector_SelectionChanged(
+        object sender,
+        SelectionChangedEventArgs e)
+    {
+        RefreshUsageMaterialContext(UsageMaterialSelector.SelectedValue?.ToString());
+    }
+
+    private void RefreshUsageMaterialContext(string? materialId)
+    {
+        _usageSelectedMaterialId = string.IsNullOrWhiteSpace(materialId)
+            ? null
+            : materialId;
+        var selectedInventoryId = UsageInventorySelector.SelectedValue?.ToString();
+        var inventory = string.IsNullOrWhiteSpace(materialId)
+            ? new List<InventorySpoolRecord>()
+            : _database.LoadInventorySpoolItems()
+                .Where(item => item.MaterialId.Equals(
+                    materialId,
+                    StringComparison.OrdinalIgnoreCase))
+                .OrderBy(item => item.InventoryItemId)
+                .ToList();
+        UsageInventorySelector.ItemsSource = inventory;
+        UsageInventorySelector.SelectedItem = inventory.FirstOrDefault(item =>
+            item.InventoryItemId.Equals(
+                selectedInventoryId,
+                StringComparison.OrdinalIgnoreCase));
+
+        var events = string.IsNullOrWhiteSpace(materialId)
+            ? new List<UsageEventRecord>()
+            : _database.LoadUsageEvents()
+                .Where(item => item.MaterialId.Equals(
+                    materialId,
+                    StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(item => item.OccurredAtUtc)
+                .ThenByDescending(item => item.CreatedAtUtc)
+                .ToList();
+        UsageLedgerGrid.ItemsSource = events;
+        UsageMaterialIdentityText.Text = string.IsNullOrWhiteSpace(materialId)
+            ? "No canonical MaterialID selected"
+            : $"Canonical MaterialID: {materialId}";
+        UsageStatusText.Text =
+            $"{events.Count:N0} immutable event row(s); {inventory.Count:N0} exact linked inventory spool choice(s). " +
+            "Usage remains private and is not included in public reports or website output.";
+    }
+
+    private void SaveUsageEvent_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var materialId = UsageMaterialSelector.SelectedValue?.ToString()?.Trim();
+            if (string.IsNullOrWhiteSpace(materialId))
+                throw new InvalidOperationException("Select one canonical MaterialID.");
+
+            var now = DateTimeOffset.UtcNow;
+            var occurred = ParseUsageUtc(UsageOccurredAtUtcTextBox.Text);
+            var usageEvent = new UsageEventRecord
+            {
+                UsageEventId = "USE-" + now.ToString(
+                    "yyyyMMddHHmmssfff",
+                    CultureInfo.InvariantCulture) + "-" +
+                    Guid.NewGuid().ToString("N")[..8].ToUpperInvariant(),
+                MaterialId = materialId,
+                EventType = UsageEventTypeSelector.SelectedItem is UsageEventType eventType
+                    ? eventType
+                    : UsageEventType.TestPrint,
+                OccurredAtUtc = occurred,
+                CreatedAtUtc = now,
+                InventoryItemId =
+                    UsageInventorySelector.SelectedValue?.ToString(),
+                FilamentUsedGrams = ParseNullableUsageDecimal(
+                    UsageFilamentGramsTextBox.Text,
+                    "Filament grams"),
+                FilamentProvenance =
+                    UsageProvenanceSelector.SelectedItem is UsageQuantityProvenance provenance
+                        ? provenance
+                        : UsageQuantityProvenance.NotRecorded,
+                PrintDurationSeconds = ParseNullableUsageSeconds(
+                    UsagePrintMinutesTextBox.Text,
+                    "Print minutes"),
+                HandsOnDurationSeconds = ParseNullableUsageSeconds(
+                    UsageHandsOnMinutesTextBox.Text,
+                    "Hands-on minutes"),
+                ProducedCount = ParseNullableUsageCount(
+                    UsageProducedCountTextBox.Text,
+                    "Produced"),
+                AcceptedCount = ParseNullableUsageCount(
+                    UsageAcceptedCountTextBox.Text,
+                    "Accepted"),
+                RejectedCount = ParseNullableUsageCount(
+                    UsageRejectedCountTextBox.Text,
+                    "Rejected"),
+                Source = UsageSourceTextBox.Text.Trim(),
+                Note = UsageNoteTextBox.Text.Trim(),
+                Origin = "Bounded Usage UI"
+            };
+
+            if (string.IsNullOrWhiteSpace(_usageCorrectionOriginalId))
+            {
+                _database.AppendUsageEventAtomic(usageEvent);
+                UsageStatusText.Text =
+                    $"Recorded immutable UsageEvent {usageEvent.UsageEventId}.";
+            }
+            else
+            {
+                _database.AppendUsageCorrectionAtomic(
+                    _usageCorrectionOriginalId,
+                    usageEvent,
+                    "USE-REV-" + now.ToString(
+                        "yyyyMMddHHmmssfff",
+                        CultureInfo.InvariantCulture) + "-" +
+                    Guid.NewGuid().ToString("N")[..8].ToUpperInvariant(),
+                    now,
+                    "Bounded Usage UI correction",
+                    UsageNoteTextBox.Text.Trim());
+                UsageStatusText.Text =
+                    $"Appended reversal and replacement for {_usageCorrectionOriginalId}.";
+            }
+
+            ReloadInventorySpoolsFromCanonicalDatabase();
+            EndUsageCorrection(clearInputs: true);
+            RefreshUsageMaterialContext(materialId);
+        }
+        catch (Exception ex)
+        {
+            UsageStatusText.Text = "Usage save blocked: " + ex.Message;
+            MessageBox.Show(
+                this,
+                ex.Message,
+                "Usage Save Blocked",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+    }
+
+    private void BeginUsageCorrection_Click(object sender, RoutedEventArgs e)
+    {
+        if (UsageLedgerGrid.SelectedItem is not UsageEventRecord selected)
+        {
+            UsageStatusText.Text = "Select one ledger row to correct.";
+            return;
+        }
+
+        var accepted = _database.LoadUsageEvents();
+        if (selected.EntryKind == UsageEventEntryKind.Reversal ||
+            accepted.Any(item => string.Equals(
+                item.ReversesUsageEventId,
+                selected.UsageEventId,
+                StringComparison.OrdinalIgnoreCase)))
+        {
+            UsageStatusText.Text =
+                "Selected event cannot be corrected because it is a reversal or already has a reversal.";
+            return;
+        }
+
+        _usageCorrectionOriginalId = selected.UsageEventId;
+        UsageMaterialSelector.SelectedValue = selected.MaterialId;
+        RefreshUsageMaterialContext(selected.MaterialId);
+        UsageInventorySelector.SelectedValue = selected.InventoryItemId;
+        UsageEventTypeSelector.SelectedItem = selected.EventType;
+        UsageOccurredAtUtcTextBox.Text =
+            selected.OccurredAtUtc.ToString(
+                "yyyy-MM-dd HH:mm:ss 'UTC'",
+                CultureInfo.InvariantCulture);
+        UsageFilamentGramsTextBox.Text =
+            selected.FilamentUsedGrams?.ToString(CultureInfo.CurrentCulture) ?? string.Empty;
+        UsageProvenanceSelector.SelectedItem = selected.FilamentProvenance;
+        UsagePrintMinutesTextBox.Text = FormatUsageMinutes(selected.PrintDurationSeconds);
+        UsageHandsOnMinutesTextBox.Text = FormatUsageMinutes(selected.HandsOnDurationSeconds);
+        UsageProducedCountTextBox.Text =
+            selected.ProducedCount?.ToString(CultureInfo.CurrentCulture) ?? string.Empty;
+        UsageAcceptedCountTextBox.Text =
+            selected.AcceptedCount?.ToString(CultureInfo.CurrentCulture) ?? string.Empty;
+        UsageRejectedCountTextBox.Text =
+            selected.RejectedCount?.ToString(CultureInfo.CurrentCulture) ?? string.Empty;
+        UsageSourceTextBox.Text = selected.Source;
+        UsageNoteTextBox.Text = selected.Note;
+        SaveUsageEventButton.Content = "Save Correction";
+        CancelUsageCorrectionButton.Visibility = Visibility.Visible;
+        UsageStatusText.Text =
+            $"Correction draft for {selected.UsageEventId}. Saving appends reversal + replacement.";
+    }
+
+    private void CancelUsageCorrection_Click(object sender, RoutedEventArgs e) =>
+        EndUsageCorrection(clearInputs: false);
+
+    private void EndUsageCorrection(bool clearInputs)
+    {
+        _usageCorrectionOriginalId = null;
+        SaveUsageEventButton.Content = "Record Usage";
+        CancelUsageCorrectionButton.Visibility = Visibility.Collapsed;
+        if (!clearInputs) return;
+        UsageOccurredAtUtcTextBox.Text =
+            DateTimeOffset.UtcNow.ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture);
+        UsageFilamentGramsTextBox.Clear();
+        UsageProvenanceSelector.SelectedItem = UsageQuantityProvenance.NotRecorded;
+        UsagePrintMinutesTextBox.Clear();
+        UsageHandsOnMinutesTextBox.Clear();
+        UsageProducedCountTextBox.Clear();
+        UsageAcceptedCountTextBox.Clear();
+        UsageRejectedCountTextBox.Clear();
+        UsageNoteTextBox.Clear();
+    }
+
+    private static DateTimeOffset ParseUsageUtc(string text)
+    {
+        if (!DateTimeOffset.TryParse(
+                text.Replace("UTC", "+00:00", StringComparison.OrdinalIgnoreCase),
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AllowWhiteSpaces,
+                out var parsed))
+            throw new InvalidOperationException(
+                "Occurred UTC must be a valid timestamp, for example 2026-07-26 17:30:00 UTC.");
+        return parsed.ToUniversalTime();
+    }
+
+    private static decimal? ParseNullableUsageDecimal(string text, string label)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return null;
+        if (decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture, out var value) ||
+            decimal.TryParse(
+                text.Replace(',', '.'),
+                NumberStyles.Number,
+                CultureInfo.InvariantCulture,
+                out value))
+            return value;
+        throw new InvalidOperationException(label + " must be numeric or blank.");
+    }
+
+    private static long? ParseNullableUsageSeconds(string text, string label)
+    {
+        var minutes = ParseNullableUsageDecimal(text, label);
+        if (!minutes.HasValue) return null;
+        return checked((long)Math.Round(
+            minutes.Value * 60m,
+            MidpointRounding.AwayFromZero));
+    }
+
+    private static int? ParseNullableUsageCount(string text, string label)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return null;
+        if (int.TryParse(text, NumberStyles.Integer, CultureInfo.CurrentCulture, out var value))
+            return value;
+        throw new InvalidOperationException(label + " must be a whole number or blank.");
+    }
+
+    private static string FormatUsageMinutes(long? seconds) =>
+        seconds.HasValue
+            ? (seconds.Value / 60m).ToString("0.##", CultureInfo.CurrentCulture)
+            : string.Empty;
 
     private void InitializeInventorySpoolManager()
     {

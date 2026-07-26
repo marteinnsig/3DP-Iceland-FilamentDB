@@ -3,6 +3,12 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v48.0.6 - Bounded Usage UI and Automation
+
+The accepted private Usage workspace records exact MaterialID-led evidence,
+optionally reconciles same-Material Inventory and preserves immutable history
+through reversal/replacement correction. Owner Verification passes 360/360.
+
 # v48.0.5 - Canonical Usage Persistence and Recovery
 
 Private immutable Usage Events now persist with exact canonical relationships,

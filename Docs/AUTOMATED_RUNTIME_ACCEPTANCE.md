@@ -1,5 +1,21 @@
 # Automated Runtime Acceptance
 
+## v48.0.6 - Bounded usage UI and automation
+
+- Reuses only the existing disposable `crud` authorization.
+- Stable AutomationIds cover the Usage tab, MaterialID selector, Inventory
+  selector, ledger, record action, correction action and status evidence.
+- After create/restart, the tester requires one visible private ledger row and
+  exact SQLite/Inventory evidence.
+- After correction/restart, it requires three visible rows plus exact
+  original/reversal/replacement and 920 g Inventory evidence.
+- Final cleanup and baseline/final business-state equality remain mandatory.
+- Production, FTPS, owner database and public publishing stay blocked.
+- Profile `20260726173640-4d663edc` passes Verification 360/360 and records
+  visible ledger states 1 and 3 with exact Inventory evidence and final cleanup.
+- Owner runtime accepted the empty-Inventory boundary, linked-spool flow and
+  Full Data Verification 360/360.
+
 ## v48.0.5 - Canonical usage persistence and recovery
 
 - Reuses the authorized disposable `crud` scenario; no new broad write

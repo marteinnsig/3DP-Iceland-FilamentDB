@@ -2,6 +2,11 @@
 
 public sealed class InventorySpoolRecord
 {
+    public string DisplayLabel =>
+        string.IsNullOrWhiteSpace(RemainingWeightG)
+            ? InventoryItemId
+            : $"{InventoryItemId} — {RemainingWeightG} g remaining";
+
     public string InventoryItemId { get; set; } = string.Empty;
     public string MaterialId { get; set; } = string.Empty;
     public string MaterialDisplayName { get; set; } = string.Empty;

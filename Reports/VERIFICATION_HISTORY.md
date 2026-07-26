@@ -1,3 +1,23 @@
+# v48.0.6 - Bounded Usage UI and Automation candidate
+
+Date: 2026-07-26
+
+- Debug/Release app and AutomationRunner builds pass with zero warnings/errors.
+- NuGet vulnerability audit reports no vulnerable direct or transitive
+  packages.
+- Release documentation audit passes; Master Roadmap has zero lines over 136
+  characters.
+- Disposable CRUD profile `20260726173640-4d663edc`: PASS 360/360.
+- Visible Usage workspace proves one original event/900 g and three
+  original/reversal/replacement rows/920 g across restart.
+- Exact MaterialID selection survives tab refresh; final cleanup restores the
+  baseline business state.
+- Production, FTPS, owner database and public publishing remained blocked.
+- Owner evidence `3DPIceland_FilamentDB_Verification_20260726_174800.txt`:
+  PASS 360/360.
+- Owner accepted empty-Inventory/no-spool behavior and the linked-spool
+  Inventory/correction workflow; v48.0.6 is canonical.
+
 # v48.0.5 - Canonical Usage Persistence and Recovery
 
 Date: 2026-07-26

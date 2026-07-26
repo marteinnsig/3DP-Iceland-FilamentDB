@@ -174,11 +174,13 @@ internal static class Program
                 RunCrudAction(main, application.Id, "AutomationCrudCreate", "CREATED");
                 RecordDatabaseEvidence(root, databasePath, "crud-after-create");
                 ValidateUsagePersistence(databasePath, materialCrudId, 1, 0, 0, "900");
+                ValidateUsageWorkspace(main, application.Id, materialCrudId, 1);
                 Record("crud-create-save", true, materialCrudId);
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudEdit", "EDITED");
                 RecordDatabaseEvidence(root, databasePath, "crud-after-edit");
                 ValidateUsagePersistence(databasePath, materialCrudId, 3, 1, 1, "920");
+                ValidateUsageWorkspace(main, application.Id, materialCrudId, 3);
                 Record("crud-restart-edit-save", true, materialCrudId);
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudDelete", "DELETED");
@@ -1038,6 +1040,33 @@ internal static class Program
             true,
             $"{materialId}: events={events}; reversals={reversals}; " +
             $"replacements={replacements}; remaining={remainingDetail}");
+    }
+
+    private static void ValidateUsageWorkspace(
+        AutomationElement main,
+        int processId,
+        string materialId,
+        int expectedEvents)
+    {
+        SelectTab(main, "UsageTab", processId);
+        _ = FindById(main, "UsageMaterialSelector");
+        _ = FindById(main, "UsageInventorySelector");
+        _ = FindById(main, "SaveUsageEvent");
+        _ = FindById(main, "BeginUsageCorrection");
+        _ = FindById(main, "UsageLedgerGrid");
+        var status = FindById(main, "UsageStatus")
+            .GetCurrentPropertyValue(AutomationElement.NameProperty)?
+            .ToString() ?? string.Empty;
+        Require(
+            status.Contains(
+                $"{expectedEvents} immutable event row(s)",
+                StringComparison.Ordinal) &&
+            status.Contains("private", StringComparison.OrdinalIgnoreCase),
+            $"Usage UI did not expose the expected private ledger state for {materialId}: {status}");
+        Record(
+            "usage-workspace-" + expectedEvents.ToString(CultureInfo.InvariantCulture),
+            true,
+            $"{materialId}: bounded controls present; {status}");
     }
 
     private static string ComputeLogicalDatabaseHash(

@@ -1,4 +1,32 @@
-# Current Build Notes - v48.0.5
+# Current Build Notes - v48.0.6
+
+## Bounded Usage UI and Automation
+
+The candidate adds one private Usage workspace on top of accepted schema-v34
+persistence. Users select an exact MaterialID, optionally select only an
+Inventory spool linked to that MaterialID, and record observed grams, explicit
+provenance, duration, counts, source and note. UI minutes convert to canonical
+whole seconds.
+
+The ledger is read-only. Correct Selected prepares a replacement draft; saving
+appends an exact reversal plus replacement and atomically reconciles linked
+Inventory. No Print Job/Test Session selector, normal delete/edit action,
+public report field or website output is added.
+
+The existing disposable CRUD scenario remains the bounded write authority and
+now verifies the visible Usage controls and ledger state after create and
+correction restarts.
+
+Candidate profile `20260726173640-4d663edc` passes Full Data Verification
+360/360. It proves one visible event at 900 g, three visible
+original/reversal/replacement rows at 920 g, selection preservation across tab
+refresh, exact cleanup and baseline/final business-state equality.
+
+Owner added canonical Inventory spools for the linked-weight test and accepted
+the full workflow. An empty Inventory correctly leaves the optional spool
+selector empty while no-spool usage remains valid. Owner evidence
+`3DPIceland_FilamentDB_Verification_20260726_174800.txt` passes 360/360;
+v48.0.6 is canonical.
 
 ## Canonical Usage Persistence and Recovery
 

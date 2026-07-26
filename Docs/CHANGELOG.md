@@ -2,6 +2,18 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v48.0.6 - Bounded Usage UI and Automation
+
+- Adds a private Usage tab with exact canonical MaterialID selection and
+  optional same-Material Inventory spool linkage.
+- Records immutable originals and exposes explicit correction as appended
+  reversal plus replacement; normal edit/delete actions remain absent.
+- Presents a read-only ledger and stores UI minutes as canonical whole seconds.
+- Extends disposable CRUD automation to verify stable Usage controls and ledger
+  state across restart. Public reports and website output remain unchanged.
+- Owner accepted empty-Inventory behavior, optional no-spool usage, linked
+  Inventory reconciliation and correction; Verification passes 360/360.
+
 ## v48.0.5 - Canonical Usage Persistence and Recovery
 
 - Adds schema v34 with private append-only `UsageEvents`, exact canonical

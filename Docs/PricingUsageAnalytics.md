@@ -349,6 +349,23 @@ website allowlist is added in this increment.
 Owner runtime accepted normal behavior and Full Data Verification 359/359.
 v48.0.5 is canonical; v48.0.6 owns the bounded Usage UI and automation.
 
+#### v48.0.6 candidate implementation
+
+One private Usage tab now owns exact MaterialID-led capture, optional
+same-Material Inventory selection and a read-only immutable ledger. Record
+Usage appends an original event. Correct Selected prepares a replacement and
+Save Correction appends reversal plus replacement; accepted rows have no
+normal edit/delete path.
+
+UI minutes are converted to canonical whole seconds. Print Job, Test Session,
+general Experimental Run, public reports and website output remain outside the
+surface. Existing disposable CRUD authorization now verifies the visible tab,
+stable AutomationIds and ledger state across restart.
+
+Owner accepted optional no-spool capture when Inventory is empty, then added
+canonical spools and accepted atomic linked-weight updates and correction.
+Full Data Verification passes 360/360; v48.0.6 is canonical.
+
 #### Risks and open decisions
 
 1. Decide whether inventory decrement is mandatory whenever

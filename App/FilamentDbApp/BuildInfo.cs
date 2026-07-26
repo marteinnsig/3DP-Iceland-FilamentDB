@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "CANONICAL-USAGE-PERSISTENCE";
-    public const string ReleaseTitle = "Canonical Usage Persistence and Recovery";
+    public const string ReleaseCode = "BOUNDED-USAGE-WORKSPACE";
+    public const string ReleaseTitle = "Bounded Usage UI and Automation";
 
     public static string Version
     {
