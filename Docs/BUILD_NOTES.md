@@ -1,4 +1,24 @@
-# Current Build Notes - v48.0.2
+# Current Build Notes - v48.0.3 Usage Event Contract
+
+## Usage Event Contract Audit
+
+The ownership audit finds no canonical general Print Job or Test Session
+entity. Native sample counts remain derived measurement evidence; Experimental
+Runs own only Experimental Testing; Inventory owns current spool state rather
+than immutable consumption history.
+
+The recommended future owner is one append-only Usage Event ledger. Events use
+required MaterialID, exact optional inventory/experimental relationships,
+nullable observed quantities and explicit reversal/replacement corrections.
+Material totals remain projections. Job pricing stays separately owned by
+v48.1, and no usage data enters public outputs without a later allowlist
+decision.
+
+No runtime, schema, UI, seed or calculation change is included. Therefore no
+build, tester or Verification count change is claimed. The owner approved event
+vocabulary, reversal/replacement, atomic inventory updates, measured/slicer
+grams provenance, seconds-based duration and private-by-default scope.
+v48.0.3 is complete; v48.0.4 owns the pure disposable domain prototype.
 
 ## Governed Value Index
 

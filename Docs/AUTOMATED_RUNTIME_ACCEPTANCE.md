@@ -1,5 +1,14 @@
 # Automated Runtime Acceptance
 
+## v48.0.3 - Usage event contract
+
+- Documentation/ownership contract only; no runtime behavior or schema changed.
+- No new UI action, AutomationId, scenario authorization or seed is required.
+- Existing Production, FTPS, owner-database and unexpected-dialog guards remain
+  unchanged.
+- v48.0.4 pure domain work must remain non-persistent; persistence later
+  requires bounded disposable CRUD/reversal/recovery evidence.
+
 ## v48.0.2 - Governed value index
 
 - No new write workflow exists; smoke automation does not select mutable

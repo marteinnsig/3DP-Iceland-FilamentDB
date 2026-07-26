@@ -2,6 +2,22 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v48.0.3 - Usage Event Contract Research
+
+- Audits native measurement, Experimental Run, Inventory, Purchasing, report,
+  recovery, diagnostics and automation ownership before schema/UI work.
+- Finds no canonical general Print Job or Test Session identity.
+- Keeps specimen counts as measurement evidence rather than inferred usage.
+- Recommends one append-only event ledger with exact relationships and explicit
+  reversal/replacement correction.
+- Blocks schema and UI until inventory atomicity, units, provenance and
+  private/public boundaries receive owner approval.
+- Requires future persistence to extend the strict governed Excel recovery and
+  disposable automation contracts in the same increment.
+- Owner approved append-only ownership, reversal/replacement, atomic inventory
+  updates, explicit grams provenance, seconds-based duration and private
+  default scope. v48.0.3 is complete without a runtime release change.
+
 ## v48.0.2 - Governed Value Index
 
 - Adds one non-persisted Overall engineering score/MSRP USD/kg service.

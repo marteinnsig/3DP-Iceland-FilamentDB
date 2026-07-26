@@ -2,6 +2,18 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v48.0.3 - Usage Event Contract
+
+Completed the ownership audit before schema/UI work. Native specimen counts
+remain measurement evidence, Experimental Runs remain experimental-only and
+Inventory remaining weight remains current state rather than immutable usage
+history. The owner approved one append-only Usage Event root, explicit
+reversal/replacement, atomic linked-inventory updates, measured/slicer grams
+provenance, seconds-based duration and private-by-default scope.
+
+No runtime, schema, UI, seed, tester or Verification contract changed.
+v48.0.4 owns the pure disposable domain prototype.
+
 ## v48.0.2 - Governed Value Index
 
 One non-persisted service now calculates Overall engineering score points per

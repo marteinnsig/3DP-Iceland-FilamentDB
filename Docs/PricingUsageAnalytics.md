@@ -189,6 +189,150 @@ v48.0.2 is canonical.
 - approve printer/profile, inventory-lot and specimen-count relationships;
 - only then propose additive SQLite tables, Excel recovery and diagnostics.
 
+#### Ownership audit findings
+
+The current runtime has no canonical general Print Job or Test Session entity.
+Native tensile, impact and stiffness storage is MaterialID-oriented and owns
+raw inputs, measured dates, notes and derived sample counts. Those counts prove
+measurement coverage only; they do not prove how many specimens were printed,
+accepted, rejected or how much filament/time was consumed.
+
+Experimental Runs are canonical only inside Experimental Testing. They may be
+an optional usage-event reference when an event genuinely belongs to an
+experimental run, but they cannot own normal native testing or production
+printing.
+
+`InventorySpoolItems` owns current physical spool state and optional purchase
+provenance. `RemainingWeightG` is an editable state snapshot, not an immutable
+consumption ledger. Purchase lines prove acquisition and landed cost; they do
+not prove usage.
+
+No current report, website payload or public allowlist owns usage history.
+REPORT-140 Test Session means measurement traceability and must not be treated
+as a persisted session/job identity. Existing backup/restore and governed Excel
+recovery cover 21 exact canonical tables; a future usage table must be added to
+both sides of that strict contract.
+
+#### Recommended canonical boundary
+
+Use one general append-only Usage Event ledger as the ownership root. Do not
+make native measurement rows, Experimental Runs, Inventory or Materials own
+editable lifetime totals.
+
+Each original event requires:
+
+- stable `UsageEventId` and required canonical `MaterialId`;
+- event type from a governed catalog: test preparation, test print, production
+  print or inventory adjustment;
+- occurred-at UTC timestamp plus created-at UTC evidence;
+- optional `InventoryItemId`, `ExperimentalRunId`, future `PrintJobId` and
+  future `TestSessionId`;
+- optional filament-used grams, print-duration minutes and hands-on/test
+  duration minutes;
+- optional produced, accepted and rejected part/specimen counts;
+- source/provenance, note and creator/origin evidence;
+- all missing numeric values stored as null/`Not recorded`, never zero.
+
+Material, inventory, job and test totals are read-only projections over events.
+The event stores observed facts, not calculated cost. Job pricing and immutable
+quote snapshots remain separately owned by v48.1.
+
+#### Correction and deletion contract
+
+Accepted historical events are never overwritten or deleted through normal
+workflow. A correction writes:
+
+1. one reversal event referencing the exact original `UsageEventId`; and
+2. when appropriate, one replacement event with the corrected observed facts.
+
+The reversal must negate the original quantitative contribution exactly and
+retain the same Material/inventory relationship. A replacement is independent
+and must not silently inherit missing values. Duplicate reversals, reversal of
+a reversal and cross-Material correction are invalid.
+
+Hard deletion is reserved for disposable automation cleanup or failed,
+uncommitted creation inside one database transaction. Archive is not a
+substitute for reversal because hidden history would make totals dishonest.
+
+#### Inventory relationship
+
+An event may reference one canonical inventory spool. It must never silently
+move consumption to another spool or fuzzy-match by Material name. When an
+inventory link is present, its MaterialID must match the event MaterialID.
+
+Whether saving a usage event also decrements `RemainingWeightG` must be decided
+before schema work. The recommended implementation is one atomic service-owned
+transaction that writes the event and updates the spool projection together,
+with reversal applying the exact opposite delta. Direct editing of remaining
+weight must remain an explicit inventory adjustment event once this path
+becomes canonical. Until that replacement is runtime accepted, the current
+inventory edit path remains supported.
+
+#### Capture workflow prototype
+
+Prototype in a disposable profile before adding schema:
+
+1. Start from a selected canonical MaterialID.
+2. Choose event type and occurred-at time.
+3. Optionally choose an exact compatible inventory spool.
+4. Record only observed grams, print minutes, hands-on/test minutes and counts.
+5. Preview the exact event and any inventory delta.
+6. Save once; later changes use explicit Reverse or Correct actions.
+7. Show a read-only MaterialID ledger and totals with `Not recorded` coverage.
+
+Do not expose future Print Job/Test Session selectors until those identities
+exist. An optional Experimental Run selector is valid only inside Experimental
+Testing context.
+
+#### Additive implementation plan
+
+1. **v48.0.3 — Contract acceptance:** approve event vocabulary, null/zero
+   semantics, reversal rules, inventory atomicity and private/public boundary.
+   No schema, UI, seed or runtime release change.
+2. **v48.0.4 — Disposable domain prototype:** add pure models/services and
+   deterministic projections/correction validation without owner-data writes.
+3. **v48.0.5 — Canonical persistence and recovery:** add schema only after
+   prototype acceptance; include foreign keys, indexes, diagnostics, SQLite
+   backup/restore and governed Excel recovery.
+4. **v48.0.6 — Bounded UI and automation:** add MaterialID-led capture, ledger,
+   reverse/correct workflow and a disposable tester scenario with exact
+   baseline/final business-state recovery.
+5. **v48.0.7 — Internal analytics:** add private usage projections only after
+   CRUD/recovery acceptance. Public reports/website remain unchanged unless a
+   later explicit allowlist increment is approved.
+
+#### Owner decision — 2026-07-26
+
+v48.0.3 is approved and complete as a documentation/contract increment.
+Approved decisions:
+
+- one append-only general Usage Event ledger;
+- explicit reversal plus optional replacement correction;
+- atomic event/inventory update when an InventoryItemID is linked;
+- grams provenance distinguishes measured actual from slicer estimate;
+- duration is stored in seconds and may be presented as minutes/hours;
+- current direct inventory-weight editing remains supported until the event
+  replacement path is runtime accepted;
+- usage remains private by default;
+- v48.0.4 may implement a pure disposable domain prototype only, without
+  schema, UI, seed or owner-data writes.
+
+#### Risks and open decisions
+
+1. Decide whether inventory decrement is mandatory whenever
+   `InventoryItemId` is present. Optional decrement would create two truths.
+2. Define whether grams are measured actual usage or slicer-estimated usage;
+   provenance must distinguish them.
+3. Decide whether duration accepts decimal minutes or whole seconds internally;
+   UI units must not control storage precision.
+4. Define timezone capture and display while retaining canonical UTC.
+5. Define creator/origin identity without introducing unsupported user-account
+   claims.
+6. Decide how existing direct `RemainingWeightG` edits transition after the
+   event path is accepted; no caller may be retired early.
+7. Keep usage private by default. Supplier, inventory-lot, internal notes and
+   time history must not enter public payloads implicitly.
+
 ### v48.1 Job Pricing
 
 Keep job quotations separate from analytics. A quote must snapshot MaterialID,
@@ -209,5 +353,10 @@ not need modification.
 
 v48.0.1 must extend Verification for strict MSRP provenance and should extend an
 existing safe deterministic scenario only if a visible workflow changes.
-v48.0.2 formula, missing-input, scope and price-identity probes pass. A future usage schema requires
-disposable CRUD, recovery round-trip, exact cleanup and business-state equality.
+v48.0.2 formula, missing-input, scope and price-identity probes pass.
+
+The accepted v48.0.3 contract audit changes no deterministic runtime behavior. Therefore
+AutomationRunner, AutomationIds, scenarios, seed database and Full Data
+Verification remain unchanged. A future usage schema requires a new bounded
+scenario or explicit CRUD extension with event/reversal integrity, inventory
+atomicity, recovery round-trip, exact cleanup and business-state equality.

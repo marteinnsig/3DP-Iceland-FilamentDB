@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v48.0.3 - Usage Event Contract
+
+Owner-approved append-only usage ownership separates observed consumption/time
+from Materials, Inventory state, measurement sample counts and future job
+pricing. Explicit reversal/replacement and atomic linked-inventory semantics
+are the accepted foundation; no runtime release or schema changed.
+
 # v48.0.2 - Governed Value Index
 
 Engineering recommendations now expose comparable performance-per-dollar

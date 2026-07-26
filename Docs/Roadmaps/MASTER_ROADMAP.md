@@ -6,9 +6,9 @@ Last runtime-accepted baseline: **v48.0.2 — Governed Value Index**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v48.0.3 — Usage Event Contract**
+Current roadmap increment: **v48.0.4 — Disposable Usage Domain Prototype**
 
-Current acceptance note: v48.0.2 value index and exact recommendation scope are runtime accepted with Verification 354/354.
+Current acceptance note: v48.0.3 usage-event ownership and correction contract is owner approved; no runtime release changed.
 
 Candidate note: None.
 
@@ -1944,7 +1944,15 @@ to unstarted authoritative planning slots.
   - Hidden-gem and Manufacturer intelligence reuse the same calculation; no public allowlist is expanded.
   - Exact Base Material scope and recommendation MaterialID/MSRP identity are runtime accepted with Verification 354/354.
   - v48.0.2 is complete, canonical and runtime accepted.
-  - Current implementation increment: v48.0.3 — Usage Event Contract.
+  - v48.0.3 Usage Event Contract is owner approved and complete without a runtime/schema change.
+  - Current audit finds no canonical general Print Job or Test Session identity.
+  - Native specimen counts remain measurement evidence and never become usage history.
+  - Recommended owner is one append-only Usage Event ledger with explicit reversal/correction.
+  - Inventory linkage must be exact by InventoryItemID and MaterialID; fuzzy spool remapping is forbidden.
+  - Schema/UI remain blocked until event vocabulary, null semantics, inventory atomicity and private/public scope are accepted.
+  - Proposed delivery: contract acceptance, disposable domain prototype, persistence/recovery, bounded UI/automation, analytics.
+  - Approved: atomic inventory update, measured/slicer grams provenance, duration storage in seconds and private-by-default usage.
+  - Current implementation increment: v48.0.4 — Disposable Usage Domain Prototype.
 - **v48.1 — MaterialID-aware Print Job Pricing and Immutable Quote Snapshots**
   - State: Open design.
   - Requires formula/reuse-rights, unit, currency-provenance and Printer Profile approval before coding.
