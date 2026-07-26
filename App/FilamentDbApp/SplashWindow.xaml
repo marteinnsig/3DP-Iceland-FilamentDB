@@ -24,10 +24,13 @@
                 <Border CornerRadius="44" Background="White" BorderBrush="#E2E8F0" BorderThickness="1">
                     <Image Source="pack://application:,,,/Assets/3dp-iceland-labs-icon.png" Margin="10" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
                 </Border>
+                <Rectangle Width="76" Height="58" Margin="0,106,0,0"
+                           HorizontalAlignment="Center" VerticalAlignment="Top"
+                           Fill="White" IsHitTestVisible="False" />
                 <Path x:Name="ExtrusionTrace"
-                      Data="M 79,112 C 66,112 62,124 71,131 L 126,131 C 142,131 142,148 126,148 L 72,148 C 57,148 57,165 72,165 L 136,165"
-                      Stroke="#1479F6" StrokeThickness="8" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
-                      StrokeLineJoin="Round" StrokeDashArray="1,220" StrokeDashOffset="220"
+                      Data="M 105,108 C 105,119 101,124 82,124 C 73,124 73,131 82,131 L 128,131 C 139,131 139,142 128,142 L 82,142 C 72,142 72,158 82,158 L 137,158"
+                      Stroke="#1479F6" StrokeThickness="5" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" StrokeDashArray="52,52" StrokeDashOffset="52"
                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
             </Grid>
 

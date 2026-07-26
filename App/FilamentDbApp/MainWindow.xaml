@@ -216,8 +216,10 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Border Grid.Column="0" Width="86" Height="86" Background="#F8FAFC" CornerRadius="18" Padding="6" Margin="0,0,18,0" VerticalAlignment="Center">
-                    <Image Source="pack://application:,,,/Assets/3dp-iceland-labs-icon.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
+                <Border Grid.Column="0" Width="180" Height="96" Background="#FFFFFF" BorderBrush="#E2E8F0" BorderThickness="1"
+                        CornerRadius="18" Padding="8" Margin="0,0,18,0" VerticalAlignment="Center">
+                    <Image Source="pack://application:,,,/Assets/3dp-iceland-labs-header-logo.png"
+                           Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
                 </Border>
 
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">

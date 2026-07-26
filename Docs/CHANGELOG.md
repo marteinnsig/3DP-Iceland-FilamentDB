@@ -2,6 +2,30 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v46.0.0 - Application Branding
+
+- Restored the supplied transparent application-icon source and rebuilt the
+  governed multi-size Windows ICO from it.
+- Retained the application icon in the splash and introduced the supplied
+  3DPIceland Labs wordmark as a distinct main-header resource.
+- Expanded the main-header light card for readable dark wordmark presentation.
+- Replaced the ineffective short splash dash with one full-length vector draw:
+  the baked filament is masked only on splash and the blue trace renders from
+  the nozzle across the complete 2.0-second visible interval.
+- Starts the trace only after UI-thread-heavy MainWindow construction, avoiding
+  a frozen first segment followed by a near-instant completion.
+- Fits the trace to the measured blue-pixel bounds of the supplied icon and
+  restores the original thin stroke and open upper bend.
+- Preserved the accepted public HTML/PDF JPG branding contract unchanged.
+- Extended Verification to require both embedded splash and header resources.
+- Deterministic tester automation is unchanged because final branding,
+  clipping and Windows icon acceptance are visual/manual contracts.
+- Disposable profile `20260726115305-e5fa34a1` passes Full Data Verification
+  347/347 and exact logical/business-state equality.
+- Owner runtime accepted Windows/titlebar transparency, the separate readable
+  header wordmark and the final smooth complete splash trace.
+- Full Data Verification passes 347/347; v46.0.0 is canonical.
+
 ## v45.2.1 - Canonical Base Material Identity
 
 - Adds nullable `BaseMaterialId` identity while preserving every legacy text value.

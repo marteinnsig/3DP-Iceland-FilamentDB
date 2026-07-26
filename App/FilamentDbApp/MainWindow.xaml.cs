@@ -16039,19 +16039,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var cleanDeploymentDefaults = new DeploymentSettingsRecord();
         var privateDeploymentIdentityExcluded = string.IsNullOrWhiteSpace(cleanDeploymentDefaults.FtpsHost) &&
                                                 string.IsNullOrWhiteSpace(cleanDeploymentDefaults.FtpsUserName);
-        var embeddedShellLogoAvailable = System.Windows.Application.GetResourceStream(
+        var embeddedSplashIconAvailable = System.Windows.Application.GetResourceStream(
             new Uri("pack://application:,,,/Assets/3dp-iceland-labs-icon.png", UriKind.Absolute))?.Stream.Length > 0;
+        var embeddedHeaderLogoAvailable = System.Windows.Application.GetResourceStream(
+            new Uri("pack://application:,,,/Assets/3dp-iceland-labs-header-logo.png", UriKind.Absolute))?.Stream.Length > 0;
         var installerPortableReady = deploymentVerification.Passed &&
                                      compiledProductionMaterialSeedExcluded &&
                                      privateDeploymentIdentityExcluded &&
-                                     embeddedShellLogoAvailable &&
+                                     embeddedSplashIconAvailable &&
+                                     embeddedHeaderLogoAvailable &&
                                      typeof(MainWindow).GetMethod("PublishApplicationRelease_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
                                      File.Exists(IOPath.Combine(AppContext.BaseDirectory, "LICENSE"));
         checks.Add(new VerificationCheck("v43.7.0 Installer and Portable Deployment release gate",
             installerPortableReady && interruptedRecoveryReady && releaseIdentityReady,
             installerPortableReady && interruptedRecoveryReady && releaseIdentityReady
-                ? deploymentVerification.Detail + " Clean-profile material seed and private FTPS identity defaults are empty; splash/header logo is an embedded WPF resource; per-user install/uninstall preserves external SQLite, backups, configuration and transaction evidence; publish remains explicit default-No."
-                : "Installer/portable artifact allowlist, empty clean-profile material/FTPS defaults, embedded shell logo, application-release publishing separation, prior recovery contract or release identity failed: " + deploymentVerification.Detail));
+                ? deploymentVerification.Detail + " Clean-profile material seed and private FTPS identity defaults are empty; splash icon and header logo are distinct embedded WPF resources; per-user install/uninstall preserves external SQLite, backups, configuration and transaction evidence; publish remains explicit default-No."
+                : "Installer/portable artifact allowlist, empty clean-profile material/FTPS defaults, embedded splash/header branding, application-release publishing separation, prior recovery contract or release identity failed: " + deploymentVerification.Detail));
         var remoteUpdateReady = RemoteApplicationUpdateService.FeedUrl == "https://www.iskort.is/3dp/updates/latest.json" &&
                                 typeof(RemoteApplicationUpdateService).GetMethod("CheckAsync") is not null &&
                                 typeof(RemoteApplicationUpdateService).GetMethod("DownloadAsync") is not null &&

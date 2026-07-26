@@ -2,6 +2,36 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v46.0.0 - Application Branding
+
+The candidate separates three previously adjacent branding roles. The supplied
+transparent icon owns Windows and splash presentation; the supplied Labs
+wordmark owns the main application header; the accepted report JPG continues
+to own public HTML/PDF output. The Windows ICO was rebuilt as a multi-size
+transparent artifact and the header uses a bounded light card for dark-logo
+contrast. Embedded-resource Verification is deterministic, while final
+Windows, splash and header acceptance remains manual.
+
+Isolated Debug/Release builds pass without warnings. Disposable smoke profile
+`20260726115305-e5fa34a1` passes Full Data Verification 347/347, retains equal
+logical and normalized business-state hashes, and records an unclipped readable
+main-header screenshot.
+
+Owner visual review found that the original splash dash array rendered only a
+short thick segment over the PNG's already-complete filament. The candidate now
+masks that splash-only baked path and draws one full vector trace from the
+nozzle across the guaranteed splash interval without changing canonical assets.
+
+Repeat review exposed UI-dispatcher starvation during MainWindow construction
+and a compressed approximate upper bend. Animation now begins after that
+blocking construction, and the thinner geometry follows measured source-icon
+pixel bounds before the splash can close.
+
+Owner runtime accepted the transparent Windows/titlebar icon, readable Labs
+header card and smooth complete splash trace. Minor geometry variation between
+the animated vector and static icon is accepted as intentional splash
+presentation. v46.0.0 is canonical with Verification 347/347.
+
 ## v45.2.1 - Canonical Base Material Identity
 
 Schema v33 adds stable Base Material catalog identities and nullable Material

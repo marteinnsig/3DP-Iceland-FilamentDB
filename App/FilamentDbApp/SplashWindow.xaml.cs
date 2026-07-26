@@ -9,6 +9,8 @@ public partial class SplashWindow : Window
 {
     private readonly TaskCompletionSource<bool> _shownTcs =
         new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private readonly TaskCompletionSource<bool> _extrusionTcs =
+        new(TaskCreationOptions.RunContinuationsAsynchronously);
 
     public SplashWindow()
     {
@@ -26,15 +28,20 @@ public partial class SplashWindow : Window
         fadeIn.Completed += (_, _) => _shownTcs.TrySetResult(true);
         BeginAnimation(OpacityProperty, fadeIn);
 
+    }
+
+    public Task StartExtrusionAnimationAsync()
+    {
         var drawAnimation = new DoubleAnimation
         {
-            From = 220,
+            From = 52,
             To = 0,
-            Duration = TimeSpan.FromMilliseconds(1400),
-            BeginTime = TimeSpan.FromMilliseconds(180),
-            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            Duration = TimeSpan.FromMilliseconds(1900),
+            BeginTime = TimeSpan.FromMilliseconds(80)
         };
+        drawAnimation.Completed += (_, _) => _extrusionTcs.TrySetResult(true);
         ExtrusionTrace.BeginAnimation(System.Windows.Shapes.Shape.StrokeDashOffsetProperty, drawAnimation);
+        return _extrusionTcs.Task;
     }
 
     public void SetStatus(string status)

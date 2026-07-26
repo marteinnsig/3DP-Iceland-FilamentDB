@@ -1,6 +1,13 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v46.0.0 - Application Branding
+
+Transparent multi-size Windows branding, a separate readable Labs header
+wordmark and a smooth complete splash trace are runtime accepted. Public
+HTML/PDF branding remains unchanged. Full Data Verification passes 347/347
+with exact logical and business-state equality.
+
 ## v45.2.1 - Canonical Base Material Identity
 
 Stable Base Material identities, explicit lossless binding, canonical rename

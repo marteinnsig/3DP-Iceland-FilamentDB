@@ -47,6 +47,11 @@ public partial class App : Application
             }
             MainWindow = mainWindow;
             mainWindow.ContentRendered += MainWindow_ContentRendered;
+
+            // MainWindow construction occupies the UI thread. Start the splash
+            // trace only after construction so every animation frame can render
+            // instead of the clock advancing behind a blocked dispatcher.
+            await splash.StartExtrusionAnimationAsync();
         }
         catch (Exception ex)
         {

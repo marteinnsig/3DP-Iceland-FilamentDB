@@ -1,11 +1,19 @@
 ﻿# Branding
 
-Version v17.1 adds the 3DP Iceland Labs logo and application icon to the WPF application.
+Version v46.0.0 separates the Windows application icon from the in-app Labs
+wordmark while preserving the canonical public-report branding contract.
 
 ## Assets
 
-- `FilamentDbApp/Assets/3dp-iceland-labs-icon.png` is used in the application header and splash screen.
-- `FilamentDbApp/Assets/3dp-iceland-labs-logo-pdf.jpg` is the canonical HTML/PDF report logo.
-- `FilamentDbApp/Assets/3dp-iceland-labs-icon.ico` is used as the window and executable icon.
+- `FilamentDbApp/Assets/3dp-iceland-labs-icon.png` is the transparent source
+  used by the splash screen.
+- `FilamentDbApp/Assets/3dp-iceland-labs-header-logo.png` is the transparent
+  3DPIceland Labs wordmark used only in the main application header.
+- `FilamentDbApp/Assets/3dp-iceland-labs-logo-pdf.jpg` remains the canonical
+  HTML/PDF report logo.
+- `FilamentDbApp/Assets/3dp-iceland-labs-icon.ico` is the multi-size transparent
+  Windows executable, installer, shortcut and governed-package icon.
 
-The header keeps the logo on a light card so the dark text remains readable against the dark application banner.
+The header keeps the dark Labs wordmark on a 180 x 96 white rounded card. The
+splash retains the application icon and extrusion animation. Visual acceptance
+on Windows, the splash and the application header remains manual.

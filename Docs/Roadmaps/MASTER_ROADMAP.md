@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v45.2.1 — Canonical Base Material Identity**
+Current canonical release: **v46.0.0 — Application Branding**
 
-Last runtime-accepted baseline: **v45.2.1 — Canonical Base Material Identity**
+Last runtime-accepted baseline: **v46.0.0 — Application Branding**
 
-Current application candidate: **None — v45.2.1 is canonical**
+Current application candidate: **None — v46.0.0 is canonical**
 
-Current roadmap increment: **v46.0 — Application Branding Review**
+Current roadmap increment: **v47.0 — AI Assistant Workflow Clarity**
 
-Current acceptance note: v45.2.1 canonical Base Material identity is runtime accepted with Full Data Verification 347/347.
+Current acceptance note: v46.0.0 branding is runtime accepted with Full Data Verification 347/347.
 
 Candidate note: None.
 
@@ -29,9 +29,9 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v42 | Website & Approved Template Architecture | ★★★★☆ | Foundation delivered early |
 | v43 | Deployment Platform | ★★★★☆ | Complete — canonical v43.8.9 runtime accepted |
 | v44 | Daily Use, Reliability & Maintainability | ★★★★★ | Complete — canonical v44.7.18 runtime accepted |
-| v45 | Material Model and Canonical Relationships | ★★★★★ | Current |
-| v46 | Application Branding | ★★★☆☆ | Planned |
-| v47 | AI Assistant Workflow | ★★★★☆ | Planned |
+| v45 | Material Model and Canonical Relationships | ★★★★★ | Complete — canonical v45.2.1 runtime accepted |
+| v46 | Application Branding | ★★★☆☆ | Complete — canonical v46.0.0 runtime accepted |
+| v47 | AI Assistant Workflow | ★★★★☆ | Current |
 | v48 | Pricing and Usage Analytics | ★★★★☆ | Planned |
 | v49 | Experimental Workflow Extension | ★★★★☆ | Planned |
 | v50 | Comprehensive User Help | ★★★★★ | Planned |
@@ -1880,9 +1880,17 @@ to unstarted authoritative planning slots.
   - Owner accepted binding, live dropdown refresh, rename/delete guards and Full Data Verification 347/347.
   - v45.2 is complete, canonical and runtime accepted.
 - **v46.0 — Application Branding Review**
-  - Feedback disposition: Open.
+  - Feedback disposition: Solved.
   - Evaluate a transparent-background icon against Windows visibility, installer, About, reports and governed assets.
-  - Entry condition: approved visual asset and runtime screenshots.
+  - Approved original assets own separate application-icon and Labs-wordmark roles.
+  - v46.0.0 keeps the application icon in Windows/splash and uses the Labs wordmark on a light main-header card.
+  - Splash masks the baked filament locally and draws one full vector trace across its guaranteed visible interval.
+  - Trace timing starts after blocking MainWindow construction; geometry follows measured source-icon bounds.
+  - Public HTML/PDF retains its accepted JPG branding contract; plain MessageBox About intentionally remains unbranded.
+  - Deterministic tester expansion is not warranted for visual branding; embedded-resource Verification is extended instead.
+  - Owner accepted executable/titlebar, splash and main-header visuals, including the smooth complete splash trace.
+  - Disposable Full Data Verification passes 347/347 with exact logical and business-state equality.
+  - v46.0 is complete, canonical and runtime accepted.
 - **v47.0 — AI Assistant Workflow Clarity**
   - Feedback disposition: Partially solved.
   - Explain the feature, prove filtered MaterialID scope and simplify collections.

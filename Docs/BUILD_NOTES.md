@@ -1,4 +1,43 @@
-# Current Build Notes - v45.2.1 Canonical
+# Current Build Notes - v46.0.0 Canonical
+
+## Application Branding
+
+The supplied 1254 x 1254 transparent application-icon PNG is now the canonical
+splash source. A governed multi-size ICO derived from that exact source owns
+the executable, Windows shell, installer, shortcut and signed-package role.
+
+The supplied 801 x 482 transparent 3DPIceland Labs wordmark is a separate
+embedded resource. The main application header displays it on a 180 x 96 white
+rounded card, while the splash keeps the application icon and existing
+extrusion animation. The accepted public-report JPG is unchanged.
+
+The supplied icon already contains a completed blue filament path. Splash masks
+only that interior path and draws a matching WPF vector from the nozzle over
+2.0 seconds. This avoids the former `1,220` dash contract, whose values were
+scaled by stroke thickness and exposed only a short heavy segment near exit.
+The canonical PNG, ICO and non-splash callers remain unchanged.
+
+Runtime review showed that MainWindow construction blocked the UI dispatcher,
+so the animation clock advanced while no frames could render. The trace now
+starts only after construction and is awaited before splash exit. Its geometry
+uses the measured original blue bounds (approximately x 76-137, y 108-159 in
+the 210-pixel splash card) and a matching 5-pixel stroke.
+
+Verification requires both WPF resources to load. No tester scenario was added:
+small-icon rendering, alpha edges, wordmark readability, clipping and card
+balance require manual Windows/runtime inspection.
+
+Debug and Release isolated builds pass with zero warnings and errors. The
+read-only NuGet vulnerability scan reports no vulnerable direct or transitive
+packages. Disposable smoke profile `20260726115305-e5fa34a1` passes Full Data
+Verification 347/347. Logical database hash
+`F0EDCC3295A114C935668D2B92D7A1AEB1C67C4D1630EFC89F11B7FCDC556E5F`
+and normalized business-state hash
+`4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`
+are identical before and after. Owner runtime accepted transparent Windows and
+titlebar presentation, the readable unclipped header wordmark and the final
+smooth complete splash trace. Minor vector/icon geometry variation is accepted
+as an intentional splash presentation difference. v46.0.0 is canonical.
 
 ## Canonical Base Material Identity
 

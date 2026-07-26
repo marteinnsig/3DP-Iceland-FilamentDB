@@ -30,10 +30,10 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 15 |
+| Open | 14 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 47 |
+| Solved | 48 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
@@ -586,9 +586,18 @@ og þannig kolll af kolli fyrir þær mælingar sem ég er að gera hverju sinni
 fyrir hverja tilraun sem er gerð, - svo það þyrfti að byggja upp html'ið með þetta í huga samhliða innleiðingu á þessari breytingu. 
 
 improvment:
-Status: Open
-Resolution: No accepted release evidence proves that the requested transparent-background icon was adopted. Existing canonical application/report branding must be reviewed before changing it.
-Verification evidence: None.
+Status: Solved
+Resolution: Solved in version v46.0.0 — 2026-07-26. The supplied transparent original is used as the Windows and
+splash icon source, and separates the supplied Labs wordmark into the main
+header on a white rounded card. Reports retain their accepted JPG contract.
+Verification evidence: Profile `20260726115305-e5fa34a1` passes 347/347 with
+equal baseline/final hashes and a readable unclipped header screenshot. Windows
+and header appearance are owner accepted. Splash review found a short heavy
+overlay; the candidate now masks the baked splash filament and draws one full
+trace only after blocking MainWindow construction. The thinner path follows
+measured original-icon bounds instead of the compressed approximation. Owner
+accepted the final smooth full trace; minor vector/icon geometry variation is
+an intentional splash presentation difference.
  gera icon með transparent bakgrunn
 
 Bug:

@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v46.0.0 - Application Branding
+
+The application now separates Windows/splash icon identity, in-app Labs
+wordmark presentation and public-report branding. Owner runtime accepted the
+transparent Windows icon, readable header card and smooth complete splash
+trace; Verification passes 347/347 with exact business-state preservation.
+
 # v45.2.1 - Canonical Base Material Identity
 
 Canonical Base Material relationships now use stable IDs without silently
