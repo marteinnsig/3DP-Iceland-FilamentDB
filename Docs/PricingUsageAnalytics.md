@@ -171,6 +171,16 @@ Verification 351/351. v48.0.1 is canonical.
 
 No stored metric column should be needed.
 
+Canonical implementation uses one non-persisted service for Recommendation
+Detail, hidden-gem ordering and the existing Manufacturer intelligence caller.
+Recommendation Detail shows the index, Overall Score, canonical MSRP USD/kg,
+comparison scope and missing-data reason. The value is explicitly comparative,
+not a physical property. No public report allowlist is expanded.
+
+Owner runtime accepted exact PLA/ASA scope refresh, alternatives and explicit
+recommendation MaterialID/MSRP identity. Full Data Verification passes 354/354;
+v48.0.2 is canonical.
+
 ### v48.0.3 Usage Event Contract
 
 - prototype the capture and correction workflow without touching owner data;
@@ -199,5 +209,5 @@ not need modification.
 
 v48.0.1 must extend Verification for strict MSRP provenance and should extend an
 existing safe deterministic scenario only if a visible workflow changes.
-v48.0.2 requires formula/missing-input probes. A future usage schema requires
+v48.0.2 formula, missing-input, scope and price-identity probes pass. A future usage schema requires
 disposable CRUD, recovery round-trip, exact cleanup and business-state equality.

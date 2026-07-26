@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v48.0.1 — Canonical Pricing Provenance**
+Current canonical release: **v48.0.2 — Governed Value Index**
 
-Last runtime-accepted baseline: **v48.0.1 — Canonical Pricing Provenance**
+Last runtime-accepted baseline: **v48.0.2 — Governed Value Index**
 
-Current application candidate: **None — v48.0.1 is canonical**
+Current application candidate: **None**
 
-Current roadmap increment: **v48.0.2 — Governed Value Index**
+Current roadmap increment: **v48.0.3 — Usage Event Contract**
 
-Current acceptance note: v48.0.1 pricing provenance is runtime accepted with Full Data Verification 351/351.
+Current acceptance note: v48.0.2 value index and exact recommendation scope are runtime accepted with Verification 354/354.
 
 Candidate note: None.
 
@@ -1939,7 +1939,12 @@ to unstarted authoritative planning slots.
   - v48.0.1 centralizes MSRP provenance and rejects landed-cost or silent 1:1 substitution.
   - Owner accepted Materials, Advisor, Manufacturer/website behavior and Full Data Verification 351/351.
   - v48.0.1 is complete, canonical and runtime accepted.
-  - Current implementation increment: v48.0.2 — Governed Value Index.
+  - v48.0.2 uses one non-persisted Overall engineering score/MSRP USD/kg service.
+  - Recommendation Detail exposes both inputs, comparison scope and honest missing-data reason.
+  - Hidden-gem and Manufacturer intelligence reuse the same calculation; no public allowlist is expanded.
+  - Exact Base Material scope and recommendation MaterialID/MSRP identity are runtime accepted with Verification 354/354.
+  - v48.0.2 is complete, canonical and runtime accepted.
+  - Current implementation increment: v48.0.3 — Usage Event Contract.
 - **v48.1 — MaterialID-aware Print Job Pricing and Immutable Quote Snapshots**
   - State: Open design.
   - Requires formula/reuse-rights, unit, currency-provenance and Printer Profile approval before coding.

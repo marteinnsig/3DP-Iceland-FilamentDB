@@ -84,6 +84,7 @@ public partial class MainWindow : Window
     private readonly InventoryEngineService _inventoryEngineService = new();
     private readonly EngineeringContextService _engineeringContextService = new();
     private readonly PricingProvenanceService _pricingProvenanceService = new();
+    private readonly EngineeringValueIndexService _engineeringValueIndexService = new();
     private readonly EngineeringPeerPositionService _engineeringPeerPositionService = new();
     private readonly EngineeringIntelligenceHandoffService _engineeringIntelligenceHandoffService = new();
     private readonly ObservableCollection<InventorySpoolRecord> _inventorySpoolRows = new();
@@ -1986,6 +1987,58 @@ public partial class MainWindow : Window
         RenderMechanicalTab(row);
         UpdateSelectedMaterialIntelligence(row);
         UpdateReportSelectedMaterial(row);
+        SynchronizeRecommendationScopeToSelectedMaterial(row);
+    }
+
+    private void SynchronizeRecommendationScopeToSelectedMaterial(DataRow row)
+    {
+        if (RecommendationBaseMaterialFilter is null) return;
+
+        var selectedBaseMaterial = DataTableHelpers.FirstValue(
+            row,
+            "Base Material",
+            "Type",
+            "Material Type")?.Trim() ?? string.Empty;
+        var recommendationScope = ResolveRecommendationBaseMaterialScope(
+            selectedBaseMaterial,
+            RecommendationBaseMaterialFilter.Items.Cast<object?>().Select(item =>
+                item is ComboBoxItem comboItem
+                    ? comboItem.Content?.ToString()
+                    : item?.ToString()));
+        if (string.IsNullOrWhiteSpace(recommendationScope)) return;
+        if (string.Equals(
+                SelectedComboText(RecommendationBaseMaterialFilter),
+                recommendationScope,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        _isUpdatingRecommendationFilters = true;
+        try
+        {
+            SelectComboValue(RecommendationBaseMaterialFilter, recommendationScope);
+        }
+        finally
+        {
+            _isUpdatingRecommendationFilters = false;
+        }
+
+        UpdateRecommendations();
+    }
+
+    private static string ResolveRecommendationBaseMaterialScope(
+        string? selectedBaseMaterial,
+        IEnumerable<string?> availableScopes)
+    {
+        if (string.IsNullOrWhiteSpace(selectedBaseMaterial)) return string.Empty;
+        var normalized = selectedBaseMaterial.Trim();
+        return availableScopes
+            .FirstOrDefault(scope => string.Equals(
+                scope?.Trim(),
+                normalized,
+                StringComparison.OrdinalIgnoreCase))
+            ?.Trim() ?? string.Empty;
     }
 
     private void RenderPrintingProfile(DataRow row)
@@ -5041,7 +5094,9 @@ public partial class MainWindow : Window
         RecommendationDetailConsistencyStatus.Text = BlankDash(row.ConsistencyInsight?.StatusLabel);
         RecommendationDetailConsistencySummary.Text = BlankDash(row.ConsistencyInsight?.RepeatabilitySummary);
         RecommendationDetailOutlierReview.Text = BlankDash(row.ConsistencyInsight?.OutlierReviewSummary);
-        RecommendationDetailPriceContext.Text = BlankDash(row.ContextInsight?.PriceSummary);
+        RecommendationDetailPriceContext.Text = BuildRecommendationPriceContext(row);
+        RecommendationDetailValueIndex.Text = row.ValueIndex?.Summary ??
+            "3DPIceland value index: Not recorded. Overall engineering score or canonical MSRP USD/kg is unavailable.";
         RecommendationDetailInventoryStatus.Text = BlankDash(row.ContextInsight?.InventoryStatus);
         RecommendationDetailInventoryContext.Text = BlankDash(row.ContextInsight?.InventorySummary);
         RecommendationDetailManufacturerContext.Text = BlankDash(row.ContextInsight?.ManufacturerSummary);
@@ -5078,6 +5133,7 @@ public partial class MainWindow : Window
         RecommendationDetailConsistencySummary.Text = "—";
         RecommendationDetailOutlierReview.Text = "—";
         RecommendationDetailPriceContext.Text = "—";
+        RecommendationDetailValueIndex.Text = "3DPIceland value index: Not recorded.";
         RecommendationDetailInventoryStatus.Text = "—";
         RecommendationDetailInventoryContext.Text = "—";
         RecommendationDetailManufacturerContext.Text = "—";
@@ -5524,6 +5580,14 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             : string.Join(Environment.NewLine, alternatives.Select(alternative =>
                 $"- {alternative.Kind}: {alternative.Label} ({alternative.ScoreText}, {alternative.PriceText}). {alternative.Summary} {alternative.GainSummary} {alternative.TradeOffSummary}"));
 
+    private static string BuildRecommendationPriceContext(RecommendationRow row)
+    {
+        var identity = string.IsNullOrWhiteSpace(row.MaterialId)
+            ? row.Label
+            : $"{row.Label} ({row.MaterialId})";
+        return $"Recommendation material: {identity}. {BlankDash(row.ContextInsight?.PriceSummary)}";
+    }
+
     private sealed class RecommendationRow
     {
         public int Rank { get; init; }
@@ -5555,6 +5619,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         public EngineeringAdvisorInsight? AdvisorInsight { get; set; }
         public EngineeringConsistencyInsight? ConsistencyInsight { get; set; }
         public EngineeringContextInsight? ContextInsight { get; set; }
+        public EngineeringValueIndexResult? ValueIndex { get; set; }
         public EngineeringPeerInsight? PeerInsight { get; set; }
         public EngineeringIntelligenceHandoff? IntelligenceHandoff { get; set; }
         public MaterialResults? VerifiedSummary { get; init; }
@@ -5882,6 +5947,12 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                     row.PricePerKg,
                     inventory,
                     manufacturers);
+                row.ValueIndex = _engineeringValueIndexService.Calculate(
+                    row.Profile.OverallScore,
+                    row.PricePerKg,
+                    !string.IsNullOrWhiteSpace(row.BaseMaterial)
+                        ? $"current filtered {row.BaseMaterial.Trim()} group"
+                        : "current filtered material dataset");
                 if (peerInsights.TryGetValue(row.MaterialId, out var peerInsight)) row.PeerInsight = peerInsight;
                 row.Alternatives = _engineeringAdvisorService.FindAlternatives(
                     ToAdvisorCandidate(row),
@@ -7755,9 +7826,12 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                 nativePricingRow is not null,
                 nativePricingRow?.MsrpUsdPerKg,
                 GetCell(row, "MSRP USD/kg", "MsrpUsdPerKg"));
-            var valueScore = profile.OverallScore.HasValue && pricePerKg is > 0
-                ? profile.OverallScore.Value / pricePerKg.Value
-                : (double?)null;
+            var valueIndex = _engineeringValueIndexService.Calculate(
+                profile.OverallScore,
+                pricePerKg,
+                !string.IsNullOrWhiteSpace(GetCell(row, "Base Material", "Material Type", "Type"))
+                    ? $"current filtered {GetCell(row, "Base Material", "Material Type", "Type")!.Trim()} group"
+                    : "current manufacturer material dataset");
 
             materials.Add(new ManufacturerMaterialInsight(
                 materialId,
@@ -7765,7 +7839,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                 (GetCell(row, "Base Material", "Material Type", "Type") ?? string.Empty).Trim(),
                 summary,
                 profile,
-                valueScore,
+                valueIndex.Value,
                 pricePerKg));
         }
 
@@ -14346,6 +14420,18 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             true,
             string.Empty,
             "44.20");
+        var valueIndexProbe = _engineeringValueIndexService.Calculate(
+            80,
+            40,
+            "current filtered PLA group");
+        var missingPriceValueIndexProbe = _engineeringValueIndexService.Calculate(
+            80,
+            null,
+            "current filtered PLA group");
+        var missingScoreValueIndexProbe = _engineeringValueIndexService.Calculate(
+            null,
+            40,
+            "current filtered PLA group");
         var peerCandidates = new[]
         {
             new EngineeringPeerCandidate { MaterialId = "peer-selected", Label = "Selected", Manufacturer = "Maker A", Category = "Engineering", OverallScore = 80 },
@@ -14933,6 +15019,19 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             !emptyCanonicalPrice.HasValue &&
             missingPriceContextInsight.PriceSummary.Contains("not available", StringComparison.Ordinal),
             "MSRP uses Materials without landed-cost or stale-projection fallback; stock uses InventoryEngineService output; manufacturer context uses active SQLite records"));
+        var recommendationPriceIdentityProbe = BuildRecommendationPriceContext(new RecommendationRow
+        {
+            Label = "ProtoPasta Gloop! Purple",
+            MaterialId = "MAT0068",
+            ContextInsight = new EngineeringContextInsight
+            {
+                PriceSummary = "Public MSRP reference: $91.74 USD/kg."
+            }
+        });
+        checks.Add(new VerificationCheck("Recommendation price identity clarity",
+            recommendationPriceIdentityProbe.Contains("ProtoPasta Gloop! Purple (MAT0068)", StringComparison.Ordinal) &&
+            recommendationPriceIdentityProbe.Contains("$91.74 USD/kg", StringComparison.Ordinal),
+            "Recommendation MSRP identifies the exact recommended MaterialID and cannot be mistaken for the selected Materials row"));
         checks.Add(new VerificationCheck("Canonical pricing provenance", validIskConversionProbe.HasValue &&
             validIskConversionProbe.UsdAmount == "20.00" &&
             validIskConversionProbe.CurrencyUnitsPerUsd == 125m &&
@@ -14942,6 +15041,29 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             unsupportedCurrencyConversionProbe.UsdAmount.Length == 0 &&
             !manufacturerMissingMsrpProbe.HasValue,
             "Configured rates convert explicitly; missing/unsupported currency and missing canonical MSRP remain Not recorded without landed-cost or 1:1 fallback"));
+        checks.Add(new VerificationCheck("Governed engineering value index", valueIndexProbe.HasValue &&
+            Math.Abs(valueIndexProbe.Value!.Value - 2.0) < 0.0001 &&
+            valueIndexProbe.Summary.Contains("Overall 80.0/100", StringComparison.Ordinal) &&
+            valueIndexProbe.Summary.Contains("canonical MSRP $40.00 USD/kg", StringComparison.Ordinal) &&
+            valueIndexProbe.Summary.Contains("current filtered PLA group", StringComparison.Ordinal) &&
+            valueIndexProbe.Summary.Contains("not a physical property", StringComparison.Ordinal) &&
+            !missingPriceValueIndexProbe.HasValue &&
+            missingPriceValueIndexProbe.Summary.Contains("Canonical MSRP USD/kg is not recorded", StringComparison.Ordinal) &&
+            !missingScoreValueIndexProbe.HasValue &&
+            missingScoreValueIndexProbe.Summary.Contains("Overall engineering score is not recorded", StringComparison.Ordinal) &&
+            FindName("RecommendationDetailValueIndex") is TextBlock valueIndexText &&
+            AutomationProperties.GetAutomationId(valueIndexText) == "RecommendationDetailValueIndex",
+            "Overall score/MSRP index exposes both governed inputs, comparison scope and honest missing-data reasons"));
+        var selectedAsaRecommendationScope = ResolveRecommendationBaseMaterialScope(
+            " ASA ",
+            new[] { "All", "PLA", "ASA" });
+        var unsupportedRecommendationScope = ResolveRecommendationBaseMaterialScope(
+            "Legacy unmapped material",
+            new[] { "All", "PLA", "ASA" });
+        checks.Add(new VerificationCheck("Selected material recommendation scope",
+            selectedAsaRecommendationScope == "ASA" &&
+            unsupportedRecommendationScope.Length == 0,
+            "Material selection synchronizes Recommendation, alternatives, hidden-gem pricing and value-index calculations to the exact canonical Base Material without fuzzy remapping"));
         checks.Add(new VerificationCheck("Engineering cross-context interpretation", contextInsight.PriceSummary.Contains("$32.50 USD/kg", StringComparison.Ordinal) &&
             contextInsight.InventoryStatus == "In stock" &&
             contextInsight.InventorySummary.Contains("2 spools linked; 1250 g remaining", StringComparison.Ordinal) &&

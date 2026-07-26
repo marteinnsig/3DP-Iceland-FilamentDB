@@ -1,3 +1,5 @@
+using FilamentDbApp.Services;
+
 namespace FilamentDbApp.Models;
 
 public sealed class EngineeringAdvisorCandidate
@@ -90,6 +92,10 @@ public sealed class EngineeringAlternativeInsight
     public string Summary { get; init; } = string.Empty;
     public string GainSummary { get; init; } = string.Empty;
     public string TradeOffSummary { get; init; } = string.Empty;
+    public EngineeringValueIndexResult? ValueIndex { get; init; }
+    public string ValueIndexText => ValueIndex?.HasValue == true
+        ? ValueIndex.Value!.Value.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+        : "Not recorded";
 }
 
 public sealed class EngineeringIntelligenceHandoff

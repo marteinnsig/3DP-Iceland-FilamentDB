@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "CANONICAL-PRICING-PROVENANCE";
-    public const string ReleaseTitle = "Canonical Pricing Provenance";
+    public const string ReleaseCode = "GOVERNED-VALUE-INDEX";
+    public const string ReleaseTitle = "Governed Value Index";
 
     public static string Version
     {

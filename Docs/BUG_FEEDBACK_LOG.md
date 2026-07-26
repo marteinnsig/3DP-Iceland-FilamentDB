@@ -43,13 +43,52 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 14 |
 | In progress | 0 |
 | Partially solved | 3 |
-| Solved | 51 |
+| Solved | 53 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **72** |
+| **Total tracked findings** | **74** |
 
 ## Tracked findings
+
+Date: 2026-07-26
+Area: Recommendation Detail / MSRP context
+Type: UI polish
+Severity: Important
+Status: Solved
+What happened: A selected $11.86/kg Elegoo PLA scoped the Recommendation Engine
+to PLA, whose selected winner was a $91.74/kg ProtoPasta PLA. The generic
+`Public MSRP reference` label made the valid winner price appear to be an
+incorrect conversion of the selected Materials row.
+Expected behavior: Recommendation MSRP must identify the exact recommended
+product and MaterialID while preserving the selected Materials row as scope.
+Steps to reproduce: Select an Elegoo PLA Material, then inspect the first
+Recommendation Detail MSRP when a ProtoPasta PLA recommendation is selected.
+Screenshot / export / report attached: Owner runtime report, 2026-07-26.
+Resolution: Solved in v48.0.2 — 2026-07-26. MSRP now prefixes the recommendation name
+and MaterialID. No price, score, scope or canonical data is changed.
+Verification evidence: Seed evidence confirms Elegoo MAT0190-MAT0193 at
+$11.86/kg and ProtoPasta MAT0065-MAT0069 at $91.74/kg. Owner runtime acceptance
+and Full Data Verification 354/354 PASS.
+
+Date: 2026-07-26
+Area: Recommendation Engine / pricing and alternatives
+Type: Bug
+Severity: Blocker
+Status: Solved
+What happened: Selecting an ASA Material updated Selected Material Intelligence,
+but Recommendation, alternatives and hidden gems retained the previous PLA
+Base Material filter and therefore showed PLA MSRP/value context.
+Expected behavior: Selecting a Material must rebuild all recommendation
+surfaces from that Material's exact canonical Base Material family.
+Steps to reproduce: Leave Recommendation Base Material on PLA, select an ASA
+row in Materials and inspect Recommendation Detail and alternatives.
+Screenshot / export / report attached: `codex-clipboard-12ff8fe9-9f51-4c82-b20c-984d6d39663d.png`.
+Resolution: Solved in v48.0.2 — 2026-07-26. Exact canonical Base Material scope synchronizes
+before rebuilding Recommendation, alternatives, hidden gems, MSRP and value
+index. Unsupported legacy names are not fuzzy remapped.
+Verification evidence: Deterministic selected-material scope gate added;
+owner runtime acceptance and Full Data Verification 354/354 PASS.
 
 Date: 2026-07-26
 Area: Materials filters / AI Assistant collections / Video planning

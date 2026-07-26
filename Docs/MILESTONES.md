@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v48.0.2 - Governed Value Index
+
+Engineering recommendations now expose comparable performance-per-dollar
+context without changing scores or canonical MSRP. Exact family scope,
+alternatives, hidden gems and recommendation price identity are runtime
+accepted; Full Data Verification passes 354/354.
+
 # v48.0.1 - Canonical Pricing Provenance
 
 Public MSRP, purchase landed cost and inventory cost now retain explicit

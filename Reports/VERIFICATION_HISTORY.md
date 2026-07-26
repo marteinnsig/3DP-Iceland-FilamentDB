@@ -1,3 +1,22 @@
+# v48.0.2 - Governed Value Index
+
+Date: 2026-07-26
+
+- Adds deterministic formula, input, scope, disclosure, missing-data and UI
+  AutomationId Verification.
+- Profile `20260726161514-840e50cc`: PASS 352/352.
+- Selection-scope correction profile `20260726162917-7e102563`: PASS 353/353.
+- MSRP identity profile `20260726163905-dfb93502`: PASS 354/354.
+- Recommendation MSRP identity clarity gate: PASS.
+- Exact selected-Material Base Material scope now governs Recommendation,
+  alternatives, hidden-gem pricing and value-index calculations.
+- Database byte and business-state hashes are exactly equal before and after.
+- Schema remains v33; Production, FTPS and owner database remained blocked.
+- Owner evidence `3DPIceland_FilamentDB_Verification_20260726_164434.txt`:
+  PASS 354/354.
+- Owner runtime accepted exact PLA/ASA scope, alternatives and recommendation
+  price identity. v48.0.2 is canonical.
+
 # v48.0.1 - Canonical Pricing Provenance
 
 Date: 2026-07-26

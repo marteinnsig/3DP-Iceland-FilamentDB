@@ -1613,6 +1613,12 @@
                                                         <TextBlock x:Name="RecommendationDetailOutlierReview" Text="—" TextWrapping="Wrap" Foreground="#6B21A8" />
                                                         <TextBlock Text="PRICE, INVENTORY &amp; MANUFACTURER CONTEXT" FontWeight="Bold" Foreground="#047857" Margin="0,12,0,0" />
                                                         <TextBlock x:Name="RecommendationDetailPriceContext" Text="—" TextWrapping="Wrap" Foreground="#334155" Margin="0,6,0,3" />
+                                                        <TextBlock x:Name="RecommendationDetailValueIndex"
+                                                                   AutomationProperties.AutomationId="RecommendationDetailValueIndex"
+                                                                   Text="3DPIceland value index: Not recorded."
+                                                                   TextWrapping="Wrap"
+                                                                   Foreground="#1D4ED8"
+                                                                   Margin="0,3,0,6" />
                                                         <TextBlock x:Name="RecommendationDetailInventoryStatus" Text="—" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,3,0,0" />
                                                         <TextBlock x:Name="RecommendationDetailInventoryContext" Text="—" TextWrapping="Wrap" Foreground="#334155" Margin="0,3,0,6" />
                                                         <TextBlock x:Name="RecommendationDetailManufacturerContext" Text="—" TextWrapping="Wrap" Foreground="#065F46" />
@@ -1636,6 +1642,7 @@
                                                                 <DataGridTextColumn Header="Material" Binding="{Binding Label}" Width="220" />
                                                                 <DataGridTextColumn Header="Score" Binding="{Binding ScoreText}" Width="75" />
                                                                 <DataGridTextColumn Header="MSRP" Binding="{Binding PriceText}" Width="90" />
+                                                                <DataGridTextColumn Header="Value index" Binding="{Binding ValueIndexText}" Width="95" />
                                                                 <DataGridTextColumn Header="Why consider it" Binding="{Binding Summary}" Width="300" />
                                                                 <DataGridTextColumn Header="Gain" Binding="{Binding GainSummary}" Width="220" />
                                                                 <DataGridTextColumn Header="Trade-off" Binding="{Binding TradeOffSummary}" Width="220" />

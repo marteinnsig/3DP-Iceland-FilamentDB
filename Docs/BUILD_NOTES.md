@@ -1,4 +1,30 @@
-# Current Build Notes - v48.0.1 Canonical
+# Current Build Notes - v48.0.2
+
+## Governed Value Index
+
+One service calculates Overall engineering score points per canonical MSRP
+USD/kg. It stores nothing and never substitutes landed cost or inferred price.
+Recommendation Detail exposes both inputs, the current filtered family/dataset
+scope, a comparative-not-physical-property disclosure and precise missing-data
+reason.
+
+Existing hidden-gem ordering and Manufacturer intelligence now reuse the same
+formula. No public report allowlist or schema changes. Verification owns valid
+calculation, missing score/price, disclosure, scope and UI AutomationId.
+Selecting a Material now moves the Recommendation Base Material filter to that
+exact canonical family before rebuilding recommendation, alternative,
+hidden-gem, MSRP and value-index rows. Unsupported legacy names are retained
+without fuzzy scope remapping. The smoke tester does not select mutable
+recommendation state, so a new tester step would be low-value; deterministic
+Verification owns the calculation and selection-scope contract.
+
+Recommendation MSRP belongs to the selected recommendation result, which can
+be a different product from the Materials row used to choose the family scope.
+The price line now names that recommendation product and MaterialID explicitly.
+
+Owner runtime accepted the value index, exact PLA/ASA recommendation scope,
+alternative refresh and recommendation MSRP identity. Full Data Verification
+passes 354/354; v48.0.2 is canonical.
 
 ## Canonical Pricing Provenance
 

@@ -1,5 +1,23 @@
 # Automated Runtime Acceptance
 
+## v48.0.2 - Governed value index
+
+- No new write workflow exists; smoke automation does not select mutable
+  Recommendation state.
+- Verification proves Overall-score/MSRP calculation, both inputs, comparison
+  scope, disclosure and missing-score/price behavior.
+- Stable `RecommendationDetailValueIndex` AutomationId is present for future
+  bounded UI automation.
+- Profile `20260726161514-840e50cc` passes 352/352 with exact database byte and
+  business-state equality.
+- Selection-scope correction profile `20260726162917-7e102563` passes 353/353;
+  exact Base Material scope and database/business-state equality pass.
+- MSRP identity profile `20260726163905-dfb93502` passes 354/354 and proves the
+  exact recommended MaterialID is shown beside its canonical MSRP.
+- Owner runtime accepted PLA/ASA scope refresh, alternatives and price identity;
+  owner Full Data Verification passes 354/354.
+- Production, FTPS, owner-database and unexpected-dialog guards are unchanged.
+
 ## v48.0.1 candidate - Canonical pricing provenance
 
 - No new UI action or write workflow is introduced, so no tester scenario is

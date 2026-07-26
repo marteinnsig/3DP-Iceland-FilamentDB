@@ -1,6 +1,14 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v48.0.2 - Governed Value Index
+
+Recommendation intelligence now uses one governed Overall-score/canonical-MSRP
+value index with explicit inputs and comparison scope. Selected Materials bind
+the advisor to their exact canonical Base Material; recommendation MSRP names
+the exact result MaterialID. Owner runtime acceptance and Verification 354/354
+pass.
+
 ## v48.0.1 - Canonical Pricing Provenance
 
 Canonical MSRP resolution and material USD conversion now fail closed: missing

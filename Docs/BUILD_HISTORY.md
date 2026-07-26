@@ -2,6 +2,35 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v48.0.2 - Governed Value Index
+
+One non-persisted service now calculates Overall engineering score points per
+canonical MSRP USD/kg. Recommendation Detail exposes the result, both governed
+inputs, current filtered family/dataset scope, missing-data reason and the
+comparative-not-physical-property boundary.
+
+Hidden-gem ordering and existing Manufacturer intelligence reuse the same
+formula. No score, MSRP, schema or public report allowlist changes are included.
+
+Debug and Release builds pass with zero warnings/errors. Documentation and
+NuGet vulnerability gates pass. Disposable profile
+`20260726161514-840e50cc` passes Full Data Verification 352/352 and exact
+pre/post database byte and business-state equality.
+
+Selection-scope correction profile `20260726162917-7e102563` passes Full Data
+Verification 353/353. Exact canonical Base Material selection governs
+recommendations, alternatives and hidden gems; database and business-state
+hashes remain equal.
+
+MSRP identity profile `20260726163905-dfb93502` passes 354/354. Recommendation
+price context now identifies the exact recommendation name and MaterialID;
+database and business-state hashes remain equal.
+
+Owner Full Data Verification
+`3DPIceland_FilamentDB_Verification_20260726_164434.txt` passes 354/354.
+Runtime acceptance confirms correct PLA/ASA refresh, alternatives and MSRP
+identity; v48.0.2 is canonical.
+
 ## v48.0.1 - Canonical Pricing Provenance
 
 One service now owns canonical MSRP selection and material-price USD

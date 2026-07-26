@@ -10,6 +10,7 @@ namespace FilamentDbApp.Services;
 public sealed class EngineeringAdvisorService
 {
     private const int TotalAxisCount = 5;
+    private readonly EngineeringValueIndexService _valueIndexService = new();
 
     public EngineeringAdvisorInsight Explain(
         EngineeringAdvisorCandidate candidate,
@@ -81,9 +82,13 @@ public sealed class EngineeringAdvisorService
 
         var valueGem = available
             .Where(candidate => selected.PricePerKg is > 0 && candidate.PricePerKg is > 0)
+            .Where(candidate => candidate.Profile.OverallScore.HasValue)
             .Where(candidate => candidate.RecommendationScore >= selected.RecommendationScore - 12)
             .Where(candidate => candidate.PricePerKg!.Value <= selected.PricePerKg!.Value * 0.95)
-            .OrderByDescending(candidate => candidate.RecommendationScore / candidate.PricePerKg!.Value)
+            .OrderByDescending(candidate => _valueIndexService.Calculate(
+                candidate.Profile.OverallScore,
+                candidate.PricePerKg,
+                BuildComparisonScope(candidate)).Value)
             .ThenByDescending(candidate => selected.PricePerKg!.Value - candidate.PricePerKg!.Value)
             .FirstOrDefault(candidate => !used.Contains(CandidateIdentity(candidate)));
         AddChoice(chosen, used, "Value hidden gem", valueGem);
@@ -113,7 +118,7 @@ public sealed class EngineeringAdvisorService
             .ToList();
     }
 
-    private static EngineeringAlternativeInsight BuildAlternativeInsight(
+    private EngineeringAlternativeInsight BuildAlternativeInsight(
         string kind,
         EngineeringAdvisorCandidate selected,
         EngineeringAdvisorCandidate alternative)
@@ -124,6 +129,10 @@ public sealed class EngineeringAdvisorService
             : (double?)null;
         var strongestGain = StrongestAxisDelta(alternative.Profile, selected.Profile);
         var strongestTradeOff = StrongestAxisDelta(selected.Profile, alternative.Profile);
+        var valueIndex = _valueIndexService.Calculate(
+            alternative.Profile.OverallScore,
+            alternative.PricePerKg,
+            BuildComparisonScope(alternative));
 
         var gain = strongestGain.Delta is > 0.5
             ? $"Gains {strongestGain.Delta:0.0} points in {strongestGain.Axis}."
@@ -156,9 +165,15 @@ public sealed class EngineeringAdvisorService
             PriceDeltaPercent = priceDelta,
             Summary = summary,
             GainSummary = gain,
-            TradeOffSummary = tradeOff
+            TradeOffSummary = tradeOff,
+            ValueIndex = valueIndex
         };
     }
+
+    private static string BuildComparisonScope(EngineeringAdvisorCandidate candidate) =>
+        !string.IsNullOrWhiteSpace(candidate.BaseMaterial)
+            ? $"current filtered {candidate.BaseMaterial.Trim()} group"
+            : $"current filtered {candidate.RecommendationType.Trim()} group";
 
     private static void AddChoice(
         ICollection<(string Kind, EngineeringAdvisorCandidate Candidate)> chosen,

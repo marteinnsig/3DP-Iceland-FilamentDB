@@ -2,6 +2,22 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v48.0.2 - Governed Value Index
+
+- Adds one non-persisted Overall engineering score/MSRP USD/kg service.
+- Shows both inputs, comparison scope and missing-data reason in Recommendation Detail.
+- Synchronizes a selected Material's exact canonical Base Material into the
+  Recommendation scope so recommendations, alternatives, hidden gems, MSRP and
+  value index cannot remain on a previously selected family.
+- Labels Recommendation MSRP with the exact recommended material name and
+  MaterialID, distinguishing it from the Materials row used to choose scope.
+- Uses the same formula for hidden-gem ordering and existing Manufacturer intelligence.
+- Labels the index as comparative rather than a physical property.
+- Adds stable AutomationId and deterministic Verification coverage.
+- Does not change schema, scores, MSRP, public report allowlists or canonical data.
+- Owner runtime accepted exact PLA/ASA scope, recommendation-price identity and
+  alternatives; Full Data Verification passes 354/354.
+
 ## v48.0.1 - Canonical Pricing Provenance
 
 - Centralizes canonical MSRP resolution and material USD conversion.
