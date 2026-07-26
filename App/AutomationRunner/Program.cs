@@ -83,12 +83,30 @@ internal static class Program
             foreach (var tabId in new[]
                      {
                          "MaterialsTab", "TensileMeasurementsTab", "ImpactMeasurementsTab",
-                         "StiffnessMeasurementsTab", "BaseMaterialsTab", "SettingsManagerTab", "ReportsTab"
+                         "StiffnessMeasurementsTab", "BaseMaterialsTab", "SettingsManagerTab",
+                         "AiAssistantTab", "ReportsTab"
                      })
             {
                 SelectTab(main, tabId, application.Id);
                 Record("navigate-" + tabId, true, "Tab selected by AutomationId");
             }
+
+            SelectTab(main, "AiAssistantTab", application.Id);
+            Invoke(FindById(main, "RefreshAiAssistantScope"), application.Id);
+            var assistantScope = FindById(main, "AiAssistantScopeSummary").Current.Name;
+            var assistantMaterialIds = FindById(main, "AiAssistantScopeMaterialIds").Current.Name;
+            Require(
+                assistantScope.Contains("unique MaterialID(s)", StringComparison.Ordinal) &&
+                assistantMaterialIds.StartsWith("MaterialID preview:", StringComparison.Ordinal),
+                "AI Assistant did not expose its deterministic visible MaterialID scope.");
+            Invoke(FindById(main, "GenerateAiFullBrief"), application.Id);
+            var assistantOutput = FindById(main, "AiAssistantOutput")
+                .GetCurrentPropertyValue(ValuePattern.ValueProperty)?.ToString() ?? string.Empty;
+            Require(
+                assistantOutput.Contains("AI ASSISTANT", StringComparison.Ordinal) &&
+                assistantOutput.Contains("Visible materials used:", StringComparison.Ordinal),
+                "AI Assistant local full brief did not retain visible-scope evidence.");
+            Record("ai-assistant-local-scope", true, assistantScope + " " + assistantMaterialIds);
 
             Expand(FindById(main, "HelpMenu"), application.Id);
             Invoke(FindById(main, "OpenVerificationCenter"), application.Id);

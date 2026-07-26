@@ -2363,8 +2363,18 @@ public partial class MainWindow : Window
     {
         if (!ReferenceEquals(e.Source, WorkspaceTabs) ||
             WorkspaceTabs.SelectedItem is not TabItem selectedTab ||
-            selectedTab.Header?.ToString() is not { } header ||
-            (!string.Equals(header, "Settings Manager", StringComparison.Ordinal) &&
+            selectedTab.Header?.ToString() is not { } header)
+        {
+            return;
+        }
+
+        if (string.Equals(header, "AI Assistant", StringComparison.Ordinal))
+        {
+            RefreshAiAssistantScopePreview();
+            return;
+        }
+
+        if ((!string.Equals(header, "Settings Manager", StringComparison.Ordinal) &&
              !string.Equals(header, "Base Materials", StringComparison.Ordinal)) ||
             (_embeddedFastNativeSettingsView is not null &&
              _embeddedFastBaseMaterialsView is not null))
@@ -13701,6 +13711,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             canonicalMaterialProjectionReady
                 ? $"{canonicalVisibleRows.Count} visible and {canonicalActiveRows.Count} active unique MaterialIDs come from the native SQLite-backed Materials view; legacy tab absent"
                 : "Native active/visible MaterialID parity or legacy-tab removal failed"));
+        var aiAssistantScopeReady =
+            WorkspaceTabs.Items.OfType<TabItem>().Any(item =>
+                AutomationProperties.GetAutomationId(item) == "AiAssistantTab") &&
+            FindName("AiAssistantScopeSummary") is TextBlock aiScopeSummary &&
+            AutomationProperties.GetAutomationId(aiScopeSummary) == "AiAssistantScopeSummary" &&
+            aiScopeSummary.Text.Contains("Current visible MaterialID scope:", StringComparison.Ordinal) &&
+            aiScopeSummary.Text.Contains("unique MaterialID(s)", StringComparison.Ordinal) &&
+            FindName("AiAssistantScopeMaterialIds") is TextBlock aiScopeMaterialIds &&
+            AutomationProperties.GetAutomationId(aiScopeMaterialIds) == "AiAssistantScopeMaterialIds" &&
+            aiScopeMaterialIds.Text.StartsWith("MaterialID preview:", StringComparison.Ordinal) &&
+            FindName("AiAssistantOutputBox") is TextBox aiAssistantOutput &&
+            AutomationProperties.GetAutomationId(aiAssistantOutput) == "AiAssistantOutput";
+        checks.Add(new VerificationCheck("Local AI Assistant scope clarity", aiAssistantScopeReady,
+            aiAssistantScopeReady
+                ? $"{canonicalVisibleRows.Count} canonical visible row(s) are exposed as a local-only MaterialID scope before generation"
+                : "Local-only identity, visible MaterialID scope preview or stable AutomationId contract is incomplete"));
         var persistedBaseMaterials = _database.LoadBaseMaterialCatalog();
         var materialGridHeaders = BuildFastMaterialsColumns()
             .Select(column => column.Header)
@@ -19484,6 +19510,44 @@ private void UpdateDashboardInsights()
         SetAiPromptTemplateText(GetSelectedAiTemplateName());
         LoadAiSavedSessionsIntoCombo();
         LoadAiMaterialCollectionsIntoCombo();
+        RefreshAiAssistantScopePreview();
+    }
+
+    private void RefreshAiAssistantScope_Click(object sender, RoutedEventArgs e)
+    {
+        RefreshAiAssistantScopePreview();
+    }
+
+    private void RefreshAiAssistantScopePreview()
+    {
+        var visibleRows = GetCanonicalVisibleMaterialRows();
+        var materialIds = visibleRows
+            .Select(BuildAiMaterialKey)
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (FindName("AiAssistantScopeSummary") is TextBlock summary)
+        {
+            summary.Text = visibleRows.Count == 0
+                ? "Current visible MaterialID scope: 0 active rows, 0 unique MaterialID(s). Clear Materials filters or load data before generating."
+                : $"Current visible MaterialID scope: {visibleRows.Count:N0} active row(s), {materialIds.Count:N0} unique MaterialID(s).";
+        }
+
+        if (FindName("AiAssistantScopeMaterialIds") is TextBlock preview)
+        {
+            if (materialIds.Count == 0)
+            {
+                preview.Text = "MaterialID preview: none.";
+            }
+            else
+            {
+                var displayed = materialIds.Take(12).ToList();
+                var remaining = materialIds.Count - displayed.Count;
+                preview.Text = "MaterialID preview: " + string.Join(", ", displayed) +
+                               (remaining > 0 ? $" … and {remaining:N0} more." : ".");
+            }
+        }
     }
 
     private void AiPromptTemplateCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -20915,15 +20979,15 @@ private List<string> GetVisibleAiMaterialLabels()
 
         var lines = new List<string>
         {
-            "AI ASSISTANT",
-            "============",
+            "LOCAL RULE-BASED AI ASSISTANT",
+            "=============================",
             $"Mode: {mode}",
             $"Template: {GetSelectedAiTemplateName()}",
             $"Visible materials used: {visibleRows.Count}",
             "",
-            "PROMPT TEMPLATE",
-            "---------------",
-            string.IsNullOrWhiteSpace(promptText) ? "No prompt text entered." : promptText,
+            "PLANNING NOTE (REFERENCE ONLY)",
+            "------------------------------",
+            string.IsNullOrWhiteSpace(promptText) ? "No planning note entered." : promptText,
             "",
             "DATABASE CONTEXT",
             "----------------",

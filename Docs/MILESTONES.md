@@ -3,6 +3,12 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v47.0.1 - AI Assistant Scope Clarity
+
+The AI Assistant is now an honest local-first planning workspace with visible
+canonical MaterialID scope, explicit non-mutation boundaries and deterministic
+acceptance ownership. Owner runtime acceptance and Verification 348/348 pass.
+
 # v46.0.0 - Application Branding
 
 The application now separates Windows/splash icon identity, in-app Labs

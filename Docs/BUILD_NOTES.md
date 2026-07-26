@@ -1,4 +1,29 @@
-# Current Build Notes - v46.0.0 Canonical
+# Current Build Notes - v47.0.1 Canonical
+
+## AI Assistant Scope Clarity
+
+The AI Assistant remains deterministic, local and backwards compatible. Its
+header now states that no external AI service is called and explains that the
+workspace creates planning briefs without changing canonical application data.
+
+Opening the tab refreshes an exact visible-scope summary sourced from canonical
+active MaterialIDs. A bounded MaterialID preview makes Materials-filter scope
+inspectable before generation. The planning-note field is explicitly described
+as reference text rather than a free-form external AI prompt.
+
+Stable AutomationIds cover the tab, scope summary, MaterialID preview, refresh,
+full-brief generation and output. Every disposable scenario verifies this
+read-only contract without enabling network access or destructive actions.
+
+No schema, session JSON, collection JSON or coverage JSON format changes in
+this increment.
+
+Isolated Debug and Release solution builds pass with zero warnings and errors.
+The read-only NuGet vulnerability scan reports no vulnerable packages.
+Disposable smoke profile `20260726122624-99485959` confirms 201 visible rows,
+201 unique MaterialIDs, Full Data Verification 348/348 and exact logical and
+normalized business-state equality. Owner runtime accepted layout, scope,
+local brief behavior and compatibility; owner Verification passes 348/348.
 
 ## Application Branding
 

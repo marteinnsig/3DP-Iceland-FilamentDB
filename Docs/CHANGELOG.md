@@ -2,6 +2,29 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v47.0.1 - AI Assistant Scope Clarity
+
+- Labels the workspace as local rule-based functionality with no external AI.
+- Explains that generated output is advisory and cannot change canonical data.
+- Shows current visible-row and unique-MaterialID counts before generation.
+- Adds a bounded visible MaterialID preview and explicit scope refresh action.
+- Clarifies that the editable planning note is included for reference rather
+  than interpreted by an external AI model.
+- Separates local brief generation from MaterialID collections and pipeline
+  tracking.
+- Adds stable AutomationIds and deterministic runner coverage for tab
+  navigation, scope evidence and full-brief output.
+- Adds a Full Data Verification contract for local identity and visible-scope
+  clarity.
+- Preserves all existing session, collection and coverage JSON formats.
+- Isolated Debug/Release builds and the NuGet vulnerability scan pass.
+- Disposable smoke profile `20260726122624-99485959` passes the new scope
+  automation contract, Full Data Verification 348/348 and exact business-state
+  equality.
+- Owner runtime accepted layout, local-only purpose, filter-aware MaterialID
+  scope, planning-note honesty and saved workflow compatibility.
+- Owner Full Data Verification passes 348/348; v47.0.1 is canonical.
+
 ## v46.0.0 - Application Branding
 
 - Restored the supplied transparent application-icon source and rebuilt the

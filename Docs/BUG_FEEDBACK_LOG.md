@@ -548,7 +548,10 @@ Status: Partially solved
 Resolution: The incorrect all-material collection scope was solved by canonical visible/active MaterialID projection. v47 now owns
 the local-first workflow, purpose and collection clarity. Planned v52 owns an optional, read-only OpenAI integration with explicit
 payload preview, Windows Credential Manager secret ownership, deterministic local fallback and no automatic canonical-data writes.
-Verification evidence: Solved scope defect in v41.7.2; v47 and v52 are planned and no external API implementation is yet claimed.
+Verification evidence: Solved scope defect in v41.7.2. Candidate v47.0.1 labels the assistant as local rule-based, exposes current
+visible-row and unique-MaterialID counts with a bounded preview, and adds deterministic tester/Verification ownership. Runtime
+acceptance and Full Data Verification 348/348 pass. Collection create/update clarity remains owned by v47.0.2; v52 remains planned
+and no external API implementation is claimed.
 fæ ekkert vit í AI assistance, - hafði valið bambu labs framleiðandia í materials tab í gegnum Leitina. og bjó til collection, það innihélt ekki bara bambu labs efni, heldur öll efni 0-176, 
 sama ef ég hafði filterað eftir manufactures í materials
 fæ í raun ekkert vit í neitt af því sem er að gerast í þessum ai assistance tab, - þetta þarf að þróa áfram ´serstakletga.

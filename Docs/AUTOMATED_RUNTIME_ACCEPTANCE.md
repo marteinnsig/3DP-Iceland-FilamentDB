@@ -1,5 +1,26 @@
 # Automated Runtime Acceptance
 
+## v47.0.1 candidate - Local AI Assistant scope clarity
+
+- Every scenario navigates `AiAssistantTab` by stable AutomationId.
+- The runner explicitly refreshes and reads the visible MaterialID scope.
+- The scope must report unique MaterialIDs and expose a bounded MaterialID
+  preview before generation.
+- The runner generates a local full brief and requires visible-scope evidence
+  in the read-only output.
+- No external network, credential, destructive action or scenario
+  authorization is added.
+- The smoke scenario remains read-only and must preserve exact baseline/final
+  canonical business state.
+- Profile `20260726122624-99485959` passes with 201 visible rows, 201 unique
+  MaterialIDs and Full Data Verification 348/348.
+- Logical hash before/after:
+  `F0EDCC3295A114C935668D2B92D7A1AEB1C67C4D1630EFC89F11B7FCDC556E5F`.
+- Normalized business-state hash before/after:
+  `4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`.
+- Owner runtime accepted the visible-scope workflow and Full Data Verification
+  348/348. v47.0.1 is canonical.
+
 ## Approved local disposable seed
 
 The owner-approved local automation seed is:

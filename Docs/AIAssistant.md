@@ -1,5 +1,36 @@
 ﻿# AI Assistant
 
+## v47.0.1 - Local Purpose and MaterialID Scope Clarity
+
+The AI Assistant is a deterministic local planning workspace. It does not call
+an external AI service and it does not change canonical Materials,
+measurements, reports or website data.
+
+The workspace now shows its current canonical Materials scope before
+generation:
+
+- Count of active visible rows.
+- Count of unique visible MaterialIDs.
+- A bounded MaterialID preview.
+- An explicit refresh action.
+
+The scope is rebuilt from the same native SQLite-backed Materials projection
+used by the current Materials filters. Opening the AI Assistant refreshes the
+preview, and the existing Generate actions continue to use that projection.
+
+The editable planning note is included in the generated brief for reference.
+It is not interpreted as a free-form AI prompt. Saved sessions remain local
+JSON snapshots, while Material Collections retain their existing backwards-
+compatible MaterialID and label representation.
+
+The workspace separates its purpose into two visible stages:
+
+1. Generate a local planning brief.
+2. Save or reuse an exact MaterialID collection and its local pipeline status.
+
+No external API, credential, schema or collection-storage migration is
+introduced by v47.0.1.
+
 ## v26.0 - AI Assistant
 
 The AI Assistant introduces a visible workspace tab inside the WPF application.

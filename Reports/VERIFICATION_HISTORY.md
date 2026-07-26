@@ -2705,3 +2705,20 @@ Status: PASS; RUNTIME ACCEPTED
 - Disposable owner-fix run `20260725224654-16f3c455` passed 345/345; all four
   v44.7.7 gates passed and the final business-state hash matched baseline.
 - PENDING: normal owner runtime/visual review.
+
+# v47.0.1 - AI Assistant Scope Clarity Candidate
+
+- Date: 2026-07-26
+- Disposable profile: `20260726122624-99485959`
+- Scenario: smoke
+- Result: PASS
+- Full Data Verification: 348/348
+- AI Assistant visible scope: 201 active rows and 201 unique MaterialIDs
+- Production, FTPS, updates and owner-database selection: blocked
+- Logical database hash before/after:
+  `F0EDCC3295A114C935668D2B92D7A1AEB1C67C4D1630EFC89F11B7FCDC556E5F`
+- Normalized business-state hash before/after:
+  `4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`
+- Owner runtime and visual acceptance: PASS
+- Owner Full Data Verification: PASS 348/348
+- Canonical state: v47.0.1

@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v46.0.0 — Application Branding**
+Current canonical release: **v47.0.1 — AI Assistant Scope Clarity**
 
-Last runtime-accepted baseline: **v46.0.0 — Application Branding**
+Last runtime-accepted baseline: **v47.0.1 — AI Assistant Scope Clarity**
 
-Current application candidate: **None — v46.0.0 is canonical**
+Current application candidate: **None — v47.0.1 is canonical**
 
-Current roadmap increment: **v47.0 — AI Assistant Workflow Clarity**
+Current roadmap increment: **v47.0.2 — Collection Workflow Clarity**
 
-Current acceptance note: v46.0.0 branding is runtime accepted with Full Data Verification 347/347.
+Current acceptance note: v47.0.1 scope clarity is runtime accepted with Full Data Verification 348/348.
 
 Candidate note: None.
 
@@ -1894,6 +1894,14 @@ to unstarted authoritative planning slots.
   - v46.0 is complete, canonical and runtime accepted.
 - **v47.0 — AI Assistant Workflow Clarity**
   - Feedback disposition: Partially solved.
+  - v47.0.1 labels the assistant as local rule-based, exposes visible MaterialID scope and separates workflow roles.
+  - v47.0.1 preserves existing session, collection and coverage JSON without migration.
+  - Owner accepted purpose, layout, filter-aware scope, local brief behavior and Full Data Verification 348/348.
+  - v47.0.1 is complete, canonical and runtime accepted.
+  - Current increment: v47.0.2 — Collection Workflow Clarity.
+  - Add preview before saving visible rows and distinguish collection creation from explicit update.
+  - Require confirmation before replacing an existing same-name collection.
+  - Preserve all existing collection JSON and MaterialID compatibility.
   - Keep the current deterministic assistant local-first and explain its product purpose, inputs and outputs.
   - Prove visible/filtered MaterialID scope and simplify collection creation, inspection, reuse and removal.
   - Show whether each result is a local brief and make canonical-source, evidence and non-mutation boundaries explicit.

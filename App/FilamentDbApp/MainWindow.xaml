@@ -1962,7 +1962,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-<TabItem Header="AI Assistant">
+<TabItem Header="AI Assistant" AutomationProperties.AutomationId="AiAssistantTab">
                 <Grid Margin="12">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -1973,12 +1973,44 @@
 
                     <Border Grid.Row="0" Padding="14" Background="#F8FAFC" BorderBrush="#D7DBE3" BorderThickness="1" CornerRadius="6">
                         <StackPanel>
-                            <TextBlock Text="AI Assistant" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A"/>
-                            <TextBlock Text="Generate practical content ideas from visible rows, templates, research sessions and material collections." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                            <WrapPanel>
+                                <TextBlock Text="AI Assistant" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A"
+                                           Margin="0,0,14,0"/>
+                                <Border Background="#DBEAFE" CornerRadius="10" Padding="9,3" VerticalAlignment="Center">
+                                    <TextBlock Text="LOCAL RULE-BASED • NO EXTERNAL AI"
+                                               FontWeight="SemiBold"
+                                               Foreground="#1D4ED8"/>
+                                </Border>
+                            </WrapPanel>
+                            <TextBlock Text="Creates deterministic planning briefs from canonical Materials data. It does not contact an AI service and never changes Materials, measurements, reports or website data."
+                                       Foreground="#475569"
+                                       TextWrapping="Wrap"
+                                       Margin="0,6,0,0"/>
+                            <TextBlock Name="AiAssistantScopeSummary"
+                                       AutomationProperties.AutomationId="AiAssistantScopeSummary"
+                                       Text="Current visible MaterialID scope: loading..."
+                                       FontWeight="SemiBold"
+                                       Foreground="#0F172A"
+                                       TextWrapping="Wrap"
+                                       Margin="0,10,0,0"/>
+                            <TextBlock Name="AiAssistantScopeMaterialIds"
+                                       AutomationProperties.AutomationId="AiAssistantScopeMaterialIds"
+                                       Text="MaterialID preview: loading..."
+                                       Foreground="#64748B"
+                                       TextWrapping="Wrap"
+                                       Margin="0,3,0,0"/>
+                            <Button Content="Refresh Visible Scope"
+                                    AutomationProperties.AutomationId="RefreshAiAssistantScope"
+                                    Click="RefreshAiAssistantScope_Click"
+                                    Padding="10,5"
+                                    HorizontalAlignment="Left"
+                                    Margin="0,8,0,0"/>
                         </StackPanel>
                     </Border>
 
                     <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                        <TextBlock Text="1. Generate a local planning brief" FontWeight="SemiBold" Foreground="#0F172A"
+                                   Margin="0,0,0,8"/>
                         <WrapPanel>
                             <TextBlock Text="Template" VerticalAlignment="Center" Margin="0,0,8,8"/>
                             <ComboBox Name="AiPromptTemplateCombo" Width="260" Height="28" SelectionChanged="AiPromptTemplateCombo_SelectionChanged" SelectedIndex="0" Margin="0,0,16,8">
@@ -2006,13 +2038,14 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="Prompt" VerticalAlignment="Top" Margin="0,8,8,0"/>
+                            <TextBlock Grid.Column="0" Text="Planning note" VerticalAlignment="Top" Margin="0,8,8,0"/>
                             <TextBox Grid.Column="1" Name="AiPromptEditorBox"
                                      AcceptsReturn="True"
                                      TextWrapping="Wrap"
                                      VerticalScrollBarVisibility="Auto"
                                      MinHeight="70"
-                                     Padding="8"/>
+                                     Padding="8"
+                                     ToolTip="This note is included in the deterministic brief for reference. It is not interpreted by an external AI service."/>
                         </Grid>
 
                         <WrapPanel Margin="68,8,0,0">
@@ -2022,13 +2055,20 @@
                             <Button Content="Recommended Next Video" Click="GenerateAiRecommendedNextVideo_Click" Padding="12,6" Margin="0,0,8,8"/>
                             <Button Content="Recommended Comparisons" Click="GenerateAiRecommendedComparisons_Click" Padding="12,6" Margin="0,0,8,8"/>
                             <Button Content="Hidden Gems" Click="GenerateAiHiddenGems_Click" Padding="12,6" Margin="0,0,8,8"/>
-                            <Button Content="Generate Full Assistant Brief" Click="GenerateAiFullBrief_Click" Padding="12,6" Margin="0,0,8,8"/>
+                            <Button Content="Generate Full Assistant Brief"
+                                    AutomationProperties.AutomationId="GenerateAiFullBrief"
+                                    Click="GenerateAiFullBrief_Click"
+                                    Padding="12,6"
+                                    Margin="0,0,8,8"/>
                         </WrapPanel>
                     </StackPanel>
 
                     <Border Grid.Row="2" Margin="0,10,0,10" Padding="10" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="4">
                         <StackPanel>
-                            <TextBlock Text="Material Collections &amp; Coverage Tracking" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,8"/>
+                            <TextBlock Text="2. Save or reuse an exact MaterialID collection" FontWeight="SemiBold"
+                                       Foreground="#0F172A" Margin="0,0,0,4"/>
+                            <TextBlock Text="Collections are local snapshots of canonical MaterialIDs. Pipeline status is local workflow metadata and does not change Materials data."
+                                       Foreground="#64748B" TextWrapping="Wrap" Margin="0,0,0,8"/>
                             <WrapPanel>
                                 <TextBlock Text="Intelligence scope" VerticalAlignment="Center" Margin="0,0,8,8"/>
                                 <ComboBox Name="AiMaterialCollectionScopeCombo" Width="170" Height="28" SelectedIndex="0" Margin="0,0,16,8">
@@ -2070,7 +2110,8 @@
 
                     <Border Grid.Row="3" BorderBrush="#CBD5E1" BorderThickness="1" Background="#F8FAFC">
                         <TextBox Name="AiAssistantOutputBox"
-                                 Text="AI Assistant is ready. Select a template, collection, or Material Intelligence action above."
+                                 AutomationProperties.AutomationId="AiAssistantOutput"
+                                 Text="Local rule-based AI Assistant is ready. Review the visible MaterialID scope, then select a planning action."
                                  IsReadOnly="True"
                                  AcceptsReturn="True"
                                  TextWrapping="Wrap"

@@ -2,6 +2,33 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v47.0.1 - AI Assistant Scope Clarity
+
+The candidate makes the existing deterministic AI Assistant contract explicit.
+The workspace identifies itself as local rule-based functionality, describes
+its non-mutation boundary and shows visible-row and unique-MaterialID counts
+with a bounded preview before generation.
+
+The planning-note field is now honest about its role: it is retained in the
+local brief for reference and is not interpreted by an external AI service.
+Brief generation, saved sessions and MaterialID collections/pipeline tracking
+are visually separated without changing existing JSON formats.
+
+Isolated Debug and Release solution builds pass with zero warnings and errors.
+The read-only NuGet vulnerability scan reports no vulnerable direct or
+transitive packages. Disposable smoke profile
+`20260726122624-99485959` passes the new AI scope automation contract and Full
+Data Verification 348/348.
+
+The canonical logical hash remains
+`F0EDCC3295A114C935668D2B92D7A1AEB1C67C4D1630EFC89F11B7FCDC556E5F`
+before and after. The normalized business-state hash remains
+`4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`.
+Owner runtime accepted the unclipped layout, explicit local-only purpose,
+filter-aware MaterialID scope, planning-note behavior and existing saved
+workflow compatibility. Owner Full Data Verification passes 348/348;
+v47.0.1 is canonical.
+
 ## v46.0.0 - Application Branding
 
 The candidate separates three previously adjacent branding roles. The supplied

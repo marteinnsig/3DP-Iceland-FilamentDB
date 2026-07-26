@@ -1,6 +1,14 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v47.0.1 - AI Assistant Scope Clarity
+
+The local rule-based assistant now states its non-external and non-mutation
+boundaries, exposes visible-row and unique-MaterialID scope before generation,
+and distinguishes planning notes, sessions and collections. Deterministic
+tester coverage and Full Data Verification pass 348/348; owner runtime
+accepted the layout, scope and compatibility.
+
 ## v46.0.0 - Application Branding
 
 Transparent multi-size Windows branding, a separate readable Labs header
