@@ -7,6 +7,8 @@
 - Aligns signed-package generation, independent verification and application
   startup on the governed schema-v29 through schema-v37 update range so the
   accepted v49 release can follow the guarded Production publish workflow.
+- Publishes the runtime-accepted installer, portable ZIP and signed update feed
+  in governed order; independent remote downloads match Production SHA-256.
 - Makes active Runs the default canonical Results, Analytics, Dashboard and
   Charts comparison scope, matching governed website publication.
 - Adds explicit `Include inactive history` review without deleting or changing

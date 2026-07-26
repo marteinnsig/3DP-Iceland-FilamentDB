@@ -14,9 +14,15 @@ Date: 2026-07-26
   receives v49.0.0/schema-v37 health and proves injected-failure rollback with
   exact governed-file hash restoration.
 - Owner workstation and clean-VM installer runtime acceptance pass.
-- Production, FTPS, owner application and owner database remained blocked.
+- Production, FTPS, owner application and owner database remained blocked
+  throughout automated acceptance.
 - Exact Candidate bytes are approved for Production promotion; publish remains
   separately guarded.
+- Owner live publish completed installer/portable before update-feed activation.
+- Read-only remote verification confirms HTTP 200, Production v49.0.0,
+  schema v29-v37 and promotion commit `5073da4`.
+- Fresh remote installer, portable and signed-update downloads match all three
+  accepted Production SHA-256 values exactly.
 
 # v49.0.0 - Experimental Workflow Integrity candidate
 

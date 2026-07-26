@@ -68,7 +68,8 @@ scenario owns runtime acceptance without authorizing Production or FTPS.
 Verification evidence: Debug/Release and Candidate release gates pass. The independent verifier accepts the signed package at schema
 v29 and v37. Portable smoke `20260726224510-b4ab7d08` passes 369/369 with exact business-state equality. Updater profile
 `20260726224940-fcb3321a` commits six files with v49.0.0 health and proves exact rollback. Owner and clean-VM installer runtime
-acceptance pass. The exact Candidate bytes are approved for Production promotion; live FTPS publish remains separately guarded.
+acceptance pass. Owner live publish completed in the governed order. Remote installer, portable and update ZIP downloads return HTTP
+200 and match the accepted Production SHA-256 values; `latest.json` reports Production v49.0.0, schema v29-v37 and commit `5073da4`.
 
 Date: 2026-07-26
 Area: Purchase Orders / Exchange-rate provenance

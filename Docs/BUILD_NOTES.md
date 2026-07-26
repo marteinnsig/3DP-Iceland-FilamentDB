@@ -41,6 +41,22 @@ opened normally, retained the expected data boundary and passed Verification
 byte-preserving Production promotion. Live FTPS publish remains a separate
 explicit action.
 
+The owner completed the guarded live publish on 2026-07-26: installer and
+portable stable routes were activated before the signed update ZIP and
+`/updates/latest.json`. Read-only post-publish verification reports HTTP 200,
+Production v49.0.0, schema v29-v37 and promotion commit `5073da4`. Fresh remote
+downloads match the accepted Production SHA-256 values exactly:
+
+- Installer:
+  `C641C064310510DED32209D591E24FAAF2668AF3862CB8BAE924B5723148B829`
+- Portable:
+  `9FFB9BBEFAB31D56EB3FA80EBB6F0606036C72576F65988569547029C232200E`
+- Signed update:
+  `9C74369C3A20B8F4165AF98E4265D49B5DFA527A63211998624CDAF2C6802CE0`
+
+The v49.0.0 application release and update feed are Production published and
+independently byte-verified.
+
 ## Optional Official Exchange-rate Reference Catalog
 
 The candidate uses the documented ECB SDMX HTTPS API. It retrieves the latest

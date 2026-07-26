@@ -10,7 +10,7 @@ Current roadmap increment: **v50.0 — Comprehensive User Help and Workflow Guid
 
 Current acceptance note: v49.0.0 is runtime accepted with Full Data Verification 368/368.
 
-Candidate note: v49.0.0 release artifacts and clean-VM installer are runtime accepted; Production publish remains pending.
+Candidate note: None.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
