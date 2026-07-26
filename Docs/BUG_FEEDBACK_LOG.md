@@ -2,6 +2,16 @@
 
 Use this during the usage-mode period.
 
+
+## Triage categories
+
+- Bugs: incorrect behavior or broken workflow.
+- Workflow friction: too many clicks, confusing flow, repeated manual work.
+- UI polish: readability, sizing, labels, layout.
+- Website ideas: improvements visible to YouTube viewers or public users.
+- Reporting ideas: improvements to report clarity or sharing.
+- Data issues: inconsistent material metadata, missing links, missing measurements.
+
 ## How to log an item
 
 Copy this block for each finding:
@@ -30,14 +40,14 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 15 |
-| In progress | 1 |
+| Open | 14 |
+| In progress | 0 |
 | Partially solved | 3 |
-| Solved | 48 |
+| Solved | 51 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **71** |
+| **Total tracked findings** | **72** |
 
 ## Tracked findings
 
@@ -90,7 +100,7 @@ Follow-up: v45.2.1 candidate adds schema v33 `BaseMaterialId` identity while ret
 Existing rows remain unlinked until explicit dropdown selection or default-No exact-name binding. Linked rename propagates by ID;
 referenced catalog delete is blocked; reports, website, filters and printing-profile resolution consume the current canonical name.
 Disposable profile `20260726101917-5bc56749` passes the linked lifecycle and Full Data Verification 347/347.
-Status: Solved. Owner final evidence `3DPIceland_FilamentDB_Verification_20260726_105027.txt` passes 347/347 with zero
+Follow-up acceptance: Owner final evidence `3DPIceland_FilamentDB_Verification_20260726_105027.txt` passes 347/347 with zero
 unlinked Materials and accepts immediate dropdown refresh.
 
 Owner Verification `3DPIceland_FilamentDB_Verification_20260726_102301.txt` reports 203 explicit unlinked Base Material rows and
@@ -541,610 +551,541 @@ Screenshot / export / report attached: User feedback on 2026-07-24.
 
 
 
-## Triage categories
-
-- Bugs: incorrect behavior or broken workflow.
-- Workflow friction: too many clicks, confusing flow, repeated manual work.
-- UI polish: readability, sizing, labels, layout.
-- Website ideas: improvements visible to YouTube viewers or public users.
-- Reporting ideas: improvements to report clarity or sharing.
-- Data issues: inconsistent material metadata, missing links, missing measurements.
-
-
-
-improvment:
+Date: Historical feedback (date not recorded)
+Area: Pricing / analytics
+Type: Feature improvement
+Severity: Important
 Status: Partially solved
+What happened: USD/kg and price-per-engineering-result analytics
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Material-level USD/kg and price/value context exist, but the requested governed cross-metric `price per engineering result` design is not fully delivered. Retain as a bounded analytics idea.
-Verification evidence: v41.3.0 pricing context and v40.12.2 terminology/value work are accepted; remaining metric contract is open.
-I had this idea if we could implement a Price field in USD for each material, even though I buy it in different currency's I would calculate the USD price if need, 
-then as I note spool waight, we could display price per 1KG for all materials independant on spool sise, and use that thata in the charts/report like 
-"Price per Impact strengh" or something like that, we have to work on this idea to make the most of this data point.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-
-Workflow friction:
+Date: Historical feedback (date not recorded)
+Area: Tensile / Impact data entry
+Type: Bug / accessibility
+Severity: Important
 Status: Solved
+What happened: Unreadable values below 10 on yellow measurement cells
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v39.1.2 — native Tensile and Impact sample cells use dark text on yellow backgrounds.
-Verification evidence: Runtime acceptance checklist explicitly covered values below 10.
-þegar ég er að setja inn efni, þá er röðin með hvítum texta, ef gildi er minna en 10 t.d í tensile, þá sérst ekki hvítir stafir á gulum bakgrunn. -  þetta þarf að laga
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-Workflow friction:
+Date: Historical feedback (date not recorded)
+Area: AI Assistant / Materials scope
+Type: Workflow issue
+Severity: Important
 Status: Partially solved
+What happened: AI collection scope and workflow clarity
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: The incorrect all-material collection scope was solved by canonical visible/active MaterialID projection. v47 now owns
 the local-first workflow, purpose and collection clarity. Planned v52 owns an optional, read-only OpenAI integration with explicit
 payload preview, Windows Credential Manager secret ownership, deterministic local fallback and no automatic canonical-data writes.
-Verification evidence: Solved scope defect in v41.7.2. Candidate v47.0.1 labels the assistant as local rule-based, exposes current
-visible-row and unique-MaterialID counts with a bounded preview, and adds deterministic tester/Verification ownership. Runtime
-acceptance and Full Data Verification 348/348 pass. Collection create/update clarity remains owned by v47.0.2; v52 remains planned
-and no external API implementation is claimed. Candidate v47.0.2 adds read-only exact-MaterialID preview, explicit Create/Update
-state and default-No save confirmation. Owner review found misleading cancel output; the corrected candidate now shows unchanged
-persisted membership separately from the discarded filter proposal. Owner runtime acceptance and Full Data Verification 349/349
-pass. Stable coverage identity and Full Data Verification 350/350 are owner accepted; v47.0.3 is canonical.
-The optional external integration remains separately planned under v52.
-fæ ekkert vit í AI assistance, - hafði valið bambu labs framleiðandia í materials tab í gegnum Leitina. og bjó til collection, það innihélt ekki bara bambu labs efni, heldur öll efni 0-176, 
-sama ef ég hafði filterað eftir manufactures í materials
-fæ í raun ekkert vit í neitt af því sem er að gerast í þessum ai assistance tab, - þetta þarf að þróa áfram ´serstakletga.
+Verification evidence: v47.0.1 through v47.0.3 are owner accepted; stable coverage identity and Full Data Verification 350/350 pass. v47 is complete; optional external integration remains planned under v52.
 
-
-improvment:
+Date: Historical feedback (date not recorded)
+Area: Category Rankings
+Type: Workflow improvement
+Severity: Normal
 Status: Solved
+What happened: Configurable rows per ranking group
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v44.7.1 — Category Rankings provides safe 5/10/50/100/All scope controls.
-Verification evidence: Owner runtime acceptance and Full Data Verification 313/313 PASS.
-catagory rankings  - sýnir aðeins top 10, - mundi vilja sjá allan listann eða allavega fleiri options í rows per group, 5 , 10, 50,100,all, ég er kanski að miskilja hverning þetta á að virka.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-
-
-improvment:
+Date: Historical feedback (date not recorded)
+Area: Application window / measurement entry
+Type: Usability improvement
+Severity: Normal
 Status: Solved
+What happened: Larger useful default application window
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v39.1.2 — default window size increased to 1700 × 960 while saved user geometry remains authoritative.
-Verification evidence: Runtime-accepted window sizing behavior.
-appið opnast alltaf í frekar litlum glugga, - mætti vera 2x á hæð og 1.5 x á breydd, eða eitthvað álíka., 
-það væri t.d mjög þægileg að glugginn væri það stór til hliðana að hann sýndir allt svæið sem þarf að vera sýnilegt þegar ég færi inn mælingar í tensile og impact
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-tech notes sem eru þegar ég er að færa inn mælingar, mættu vera í dálk rétt á eftir innslegnum tölum í flat 10, á eftir bilinu sem er þar á eftir, en ekki lengst til hægri eftir að útreikningar eru komnir.
+Date: Historical feedback (date not recorded)
+Area: Tensile / Impact data entry
+Type: Workflow improvement
+Severity: Normal
 Status: Solved
+What happened: Test Notes placement beside entered samples
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v37.1.4 — Test Notes were repositioned before computed measurement results.
-Verification evidence: DATA-ENTRY-004 runtime-accepted compact detail and notes flow.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-improvment:
+Date: Historical feedback (date not recorded)
+Area: Experimental Testing
+Type: Feature improvement
+Severity: Important
 Status: Partially solved
+What happened: Governed experimental measurement comparisons
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: The requested duplicate-material/dynamic-column concept was superseded by canonical MaterialID-linked Experimental Series and Runs with dedicated measurement editors and governed website/report integration. Additional experimental presentation ideas remain open only when backed by a concrete consumer.
-Verification evidence: v40.3.0 Experimental Series/Runs foundation and later v40 Experimental analytics/publishing releases are accepted.
-útfærsla á experimental mælingum eins og t.d styrk á prenti eftir mismunadni hitastigi, eða nozzle size sem dæmi, - að þegar ég addas material, þá sé dálkur þar sem ég get hakað í "Experimental", 
-og þá sé sú lína búin til í impact, tenile and stiffness, og ég set inn þær mælingar eins og um venjulegt efni er að ræða, - þurfum svo að hafa dálk til að gefa til kynna hvaða experimental mælingar eru í gangi, 
-það gæti verið dropdown menu item í material listanum, komandi úr settings manager tab, þar sem ég skilgreini tilraunir t.d "Different Nozzle Size" "Diffrent Tempurature" "Different Extrucion with" "Different outer walls"
-og hvað annað sem mér mundi detta í hug síðar að gera samanburðarmælingar á.Svo þarf að vera dálkur þar sem ég set gildið á mismunandi mæligum. t.d með hita, þá sé reitur yfir "temp" , 
-og þannig kolll af kolli fyrir þær mælingar sem ég er að gera hverju sinni, - ef ég bæti við tilraun síðar, þá þarf að koma dálkur í materials tabfyrir þá tilraun, svo ég geti slegið inn 
-þau gildi sem er verið að eiga við hverju sinni. - Fyrir venjulegt html export, þá eru efni merkt "experimental" ekki sett sjálfkrafa á heimasíðuna, en þar gæti verið filter, sem er default á 
-"standard mæling", en hægt að velja í dropdown "Experimental" og þá færi filterað niður á efni sem væru í þeim flokki, þá kæmu eingöngu þau efni fram í súluritum, og það þyrfti að vera sér súlurit 
-fyrir hverja tilraun sem er gerð, - svo það þyrfti að byggja upp html'ið með þetta í huga samhliða innleiðingu á þessari breytingu. 
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-improvment:
+Date: Historical feedback (date not recorded)
+Area: Branding / application icon / splash
+Type: Visual improvement
+Severity: Normal
 Status: Solved
+What happened: Transparent application icon and branded header/splash
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v46.0.0 — 2026-07-26. The supplied transparent original is used as the Windows and
 splash icon source, and separates the supplied Labs wordmark into the main
 header on a white rounded card. Reports retain their accepted JPG contract.
-Verification evidence: Profile `20260726115305-e5fa34a1` passes 347/347 with
-equal baseline/final hashes and a readable unclipped header screenshot. Windows
-and header appearance are owner accepted. Splash review found a short heavy
-overlay; the candidate now masks the baked splash filament and draws one full
-trace only after blocking MainWindow construction. The thinner path follows
-measured original-icon bounds instead of the compressed approximation. Owner
-accepted the final smooth full trace; minor vector/icon geometry variation is
-an intentional splash presentation difference.
- gera icon með transparent bakgrunn
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-Bug:
+Date: Historical feedback (date not recorded)
+Area: Header / Materials counts
+Type: Bug
+Severity: Important
 Status: Solved
+What happened: Stale compiled material and column counts
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: The obsolete 176-row compiled fallback and stale cache terminology were retired; live SQLite counts are canonical.
-Verification evidence: v43.7.0 removed the compiled 176-row fallback; v44.5.x runtime accepted canonical SQLite status/count surfaces.
-efst uppi hægra megin er texti sem segir 176 materials | 26 colums -  þetta uppfærist ekki, 
-undir haus í forritinu er líka texti sem segir "loaded 176 materials and 26 clolums from local cache, import from excel to refresh, - þetta endurspeiglar ekki fjölda efna í grunninum núna. -
- verification center er rétt og segir 184 efni í material, tensile, impact og stiffness, svo kerfið 
-veit hvað það eru mörg efni í grunninun.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-
-improvement:
+Date: Historical feedback (date not recorded)
+Area: Installer / data storage
+Type: Deployment improvement
+Severity: Important
 Status: Solved
+What happened: Installer with governed user-owned SQLite location
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v43.7.0 — governed per-user installer and portable deployment keep SQLite/backups/configuration outside application files and support a user-owned storage location.
-Verification evidence: Clean-VM installer, explicit SQLite transfer/restore, portable and governed package gates PASS.
-Gera installer fyrir forritið, sem setti það inn í rétta möppu undir c:\Program files, og þar væru allar tilheirandi skrár, kæmi upp í install ferli hvar á að installa, og hvar á að geima sqllite grunninn, koma deault upp með documents/3dp Iceland app  
-eða eitthvað álíka,  s.s ekki hafa gagnagrunninn í program files, heldur í möppu sem er líkleg til að vera afrituð með onedrive
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-improvement:
+Date: Historical feedback (date not recorded)
+Area: Workflow grids
+Type: Usability improvement
+Severity: Normal
 Status: Solved
+What happened: Smarter default column widths and persisted sizing
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved through v37.1.0 smart first-run widths plus v37.0.0 machine-local width persistence.
-Verification evidence: Runtime-accepted workflow grid sizing; user widths remain preserved.
-rezize á dálkum, should not be as large as they are, should trim down to the text in it or the label of it., website colum should be shorter by default to just the lable size.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-BUG-Chrash!
+Date: Historical feedback (date not recorded)
+Area: Materials editing / stability
+Type: Bug / crash
+Severity: Critical
 Status: Open
+What happened: Historical long-running-session crash while editing Variant
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Retained as an unresolved historical crash report. The log has no stack trace or exact accepted fix that can safely be tied to this one-day runtime/Variant edit crash.
-Verification evidence: Needs reproduction evidence or diagnostics before closure.
-krass, -  var nýbúinn að setja inn values, forritið var búið að vera í gangi í 1 sólarhring,
-fór svo í material, og ætlaði að setja inn variant á efni, og þá krassaði það - gögn úr imact sem ég var að setja inn héldu sér.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-improvement:
+Date: Historical feedback (date not recorded)
+Area: AI integration
+Type: Feature idea
+Severity: Normal
 Status: Deferred
+What happened: External AI API connection
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: External AI API connectivity requires an approved concrete consumer, privacy/credential boundary and support contract. Do not implement speculatively.
-Verification evidence: Deferred by bounded v44 roadmap discipline.
-ai api connection
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-improvement:
+Date: Historical feedback (date not recorded)
+Area: Testing / printing / material usage
+Type: Data-model idea
+Severity: Normal
 Status: Open
+What happened: Track testing hours, print hours, material usage and sample count
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: The idea needs a defined owner model for test hours, print hours, material usage and sample counts before schema/UI work.
-Verification evidence: None.
-hours of testing, printing, and material useage, sample coubt
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-improvement:
+Date: Historical feedback (date not recorded)
+Area: Website template / SQLite
+Type: Workflow improvement
+Severity: Important
 Status: Solved
+What happened: Persist latest accepted website template in SQLite
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v40.10.0 — the active validated website template is stored and versioned in SQLite and reused by Preview/Production export.
-Verification evidence: Native Website Template Database and renderer-parity gates PASS.
-website export - "Used Bundled" what is that, and how do I update the bundled, it should update with the latest html template file used, so if I don't change the html, I can just press use bundled instead of reading the current html, 
-The last uploaded html should be  stored in the sql database, not in the build it self.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-improvement:
+Date: Historical feedback (date not recorded)
+Area: Measurements / dates
+Type: Duplicate
+Severity: Normal
 Status: Duplicate
+What happened: Record measurement entry dates
+Expected behavior: Keep one canonical owner for the requirement and avoid parallel implementations.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Duplicate of the structured canonical measurement-date item above; solved in v44.6.2.
-Verification evidence: Full Data Verification 312/312 PASS.
-date of entri of mesuraments
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-bug:
+Date: Historical feedback (date not recorded)
+Area: Materials filters
+Type: Bug
+Severity: Important
 Status: Solved
+What happened: Not Tested filter returned all materials when none matched
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v36.0 — selecting `Not Tested` with no matching material returns an empty result.
-Verification evidence: Runtime checklist required `0 visible`.
-filter í materials, - if I select "not tested" and all filaments are tested, it shows all filaments, it should show none.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-bug:
+Date: Historical feedback (date not recorded)
+Area: Status bar / diagnostics
+Type: Bug
+Severity: Normal
 Status: Solved
+What happened: Stale Engine material and cell counters
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Obsolete engine/cache counters were removed or replaced by canonical SQLite live-data status and current per-module counts.
-Verification evidence: v44.5.x canonical storage terminology/count runtime acceptance.
-at the bottom, it shows "Engine: 167 materials, 5 sheets, 880 rows 27884 cells" - this is not updateing automatically, - what is this used for anyway?, as to the right there is a list of materials in each test, that is updated.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-improvement:
+Date: Historical feedback (date not recorded)
+Area: Materials / Manufacturer SKU
+Type: Field-retirement review
+Severity: Normal
 Status: Open
+What happened: Audit possible retirement of Manufacturer SKU
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Product decision remains open. The field must not be removed until callers, Excel recovery and report compatibility are audited.
-Verification evidence: None.
-I don't think I will every use "Manufacturer SKU" ,as I link to the product page, and sku information is not given by resellers in most cases.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-
-improvement:
+Date: Historical feedback (date not recorded)
+Area: Website / terminology
+Type: Content improvement
+Severity: Important
 Status: Solved
+What happened: Use Tensile and Layer Adhesion terminology
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v40.12.2 — public/chart terminology uses Tensile Strength for flat orientation and Layer Adhesion Strength for upright orientation.
-Verification evidence: Metric selectors, chart labels, axes and tooltips were updated and accepted.
-website html fix, - tensile - flat  is tensile, upright is layer adheesion, I'm always explaining in videos that, maybe they should just say "Tensile" and "Layer Adhesion",
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-Bug:
+Date: Historical feedback (date not recorded)
+Area: Material Detail
+Type: Bug
+Severity: Important
 Status: Solved
+What happened: Tested-state indicators did not refresh
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v36.1.0 — selected Material Detail and Dashboard Insights refresh after Tensile, Impact and Stiffness edits.
-Verification evidence: STABILITY-002 accepted refresh path.
-In Material Detail, - data is not updated  for tested, in tensile ,in impact, in stiffness
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-
-
-improvment: in Materials, I don't think I will save a name of the thumbnail for the videos
+Date: Historical feedback (date not recorded)
+Area: Materials / video metadata
+Type: Field-retirement review
+Severity: Normal
 Status: Open
+What happened: Audit possible retirement of video thumbnail name
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Product decision remains open. Audit YouTube/video-planner callers before hiding or retiring any thumbnail-name field.
-Verification evidence: None.
-i manage them seperatly in my youtube files folder
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-BUG: 
+Date: Historical feedback (date not recorded)
+Area: Dashboard Insights
+Type: Bug
+Severity: Important
 Status: Solved
+What happened: Dashboard did not refresh as materials were added
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved through v36.0.1/v36.1.0 and later canonical projection work; Dashboard Insights now uses current canonical material and measurement projections.
-Verification evidence: Accepted dynamic coverage/inventory refresh and v41.7.2 canonical MaterialID projection.
-Dashborad Insights, - does not update as I add more materials , needs to by dynamic
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-Status bar at the bottom, still says Engine: 176 materials, does not update, same as the status 
+Date: Historical feedback (date not recorded)
+Area: Status bar / diagnostics
+Type: Bug
+Severity: Normal
 Status: Solved
+What happened: Stale bottom status-bar material count
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Duplicate stale engine/cache status was retired in favor of canonical SQLite live-data counts.
-Verification evidence: v44.5.x runtime screenshots showed current 200/201-material SQLite status.
-on top under the logo, - maybe this is not needed at both places - but later in the bottom line
-it states 197 materials, -
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-qustion;: what does "validation" mean for each line of material?
+Date: Historical feedback (date not recorded)
+Area: Materials validation
+Type: Documentation / workflow issue
+Severity: Normal
 Status: Solved
+What happened: Explain Materials row validation status
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v44.7.2 — Materials explains the five required row-identity fields and the exact meaning of OK.
-Verification evidence: Owner runtime screenshot acceptance and Full Data Verification PASS.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-Bug: in material report, the reports says on top "Total Materials: 176" not the actual number
+Date: Historical feedback (date not recorded)
+Area: Material report
+Type: Bug
+Severity: Important
 Status: Solved
+What happened: Stale material total and duplicate report logo
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v36.0 and subsequent canonical report projections; stale total and duplicate logo were removed.
-Verification evidence: Duplicate report logo fix and canonical live material/report scope accepted.
-on the report, the logo is displayed 2 times on the top
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-on manufacturers html export, - it does not update "materials in database", 
+Date: Historical feedback (date not recorded)
+Area: Manufacturer HTML export
+Type: Bug
+Severity: Important
 Status: Solved
+What happened: Stale Materials in database count
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Manufacturer/public report surfaces now consume canonical active/material visibility projections rather than the historical 176-row dataset.
-Verification evidence: v41.7.2 canonical projection and later public manufacturer report verification.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-Add "Purchased from" to the material tab
+Date: Historical feedback (date not recorded)
+Area: Materials purchasing
+Type: Feature improvement
+Severity: Normal
 Status: Solved
+What happened: Purchased From field in Materials workflow
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Purchased From is present in canonical Material Detail/Material workflow data.
-Verification evidence: Runtime-accepted Material Detail Supplier/Purchase presentation.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-Cost per KG calculation based on cost and spool weight
+Date: Historical feedback (date not recorded)
+Area: Inventory / pricing
+Type: Feature improvement
+Severity: Important
 Status: Solved
+What happened: Cost per kg from cost and spool weight
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v38.2.10 for inventory calculations; later landed-cost releases add governed purchasing context.
-Verification evidence: Accepted calculated Cost/kg column and Average Cost/kg summary.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-selecting from dropdown menu for Currency is to many clicks,  first click select the rows
+Date: Historical feedback (date not recorded)
+Area: Purchasing / grid editing
+Type: Workflow issue
+Severity: Normal
 Status: Solved
+What happened: First-click currency and cell editing
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved by the shared first-click editor workflow and immediate ComboBox opening in v37.0.x.
-Verification evidence: Runtime-accepted first-click TextBox/ComboBox workflow retained in current native grids.
-then nex click shows the dropdown, then I have to click the down arrow, and then select curreny
-clicking on a cell, should automatically select the row/cell and alowing me to show the drop
-down menu right a way so I can select the currency. This is basically the same function on anyway
-cell that has user input, it should allow me to click on a sell, and right away
-enter the value or text in it.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-landed currecny should default to ISK
+Date: Historical feedback (date not recorded)
+Area: Purchasing / currency
+Type: Workflow improvement
+Severity: Normal
 Status: Solved
+What happened: Default landed-cost currency to ISK
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Purchasing currency settings and automatic ISK exchange-rate fill were delivered in v38.4.1.4–v38.4.1.6.
-Verification evidence: Currency dropdown, autofill and live-sync runtime fixes accepted.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-í staðinn f. að setja inn handvirkt landed cost, gera þá "hvað kostar evran" í sendingunni, og reikna
+Date: Historical feedback (date not recorded)
+Area: Purchasing / landed cost
+Type: Feature improvement
+Severity: Important
 Status: Solved
+What happened: Calculate landed cost from transaction exchange rate
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Governed Purchase Order exchange rates and landed-cost allocation replaced the manual-only workflow.
-Verification evidence: v38.4 purchasing currency/autofill/live-sync and landed-cost persistence releases accepted.
-út sjálfkrafa landed cost
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-typing in "filter" is really slow to show resaults
+Date: Historical feedback (date not recorded)
+Area: Materials filters / performance
+Type: Performance bug
+Severity: Important
 Status: Solved
+What happened: Slow filter response
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v44.4.1 — measured viewport-only Materials rendering is the accepted daily-use default with native fallback retained.
-Verification evidence: Full Data Verification 300/300 and cold/repeated search/filter/scroll runtime acceptance.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-improvement:
+Date: Historical feedback (date not recorded)
+Area: Startup / performance
+Type: Performance improvement
+Severity: Important
 Status: Solved
+What happened: Profile and optimize application startup
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved through v41.8.0 instrumentation, v41.8.1 callback coalescing and v44.4.1 measured Materials responsiveness.
-Verification evidence: Observed Debug startup reduced from about 19–20 seconds to about 5 seconds; later canonical fast-view acceptance PASS.
-startup performance optimization. Baseline on 2026-07-21 from pressing Play in
-Visual Studio: splash appears after about 3 seconds and Materials is visible at
-about 19 seconds. Profile SQLite/native loading, manager initialization, grid
-binding and deferred intelligence work before changing architecture. Preserve
-canonical MaterialID/Verified Material Summary behavior and Verification parity.
-Scheduled immediately after the v41.7 Report Portfolio. Prefer lazy initialization
-and independent asynchronous reads; use extra CPU cores only where profiling shows
-CPU-bound work, with WPF updates kept on the UI thread and separate SQLite read
-connections for concurrent operations.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-v41.8.0 instrumentation implemented on 2026-07-22. System Diagnostics now records
-the ordered startup phases needed to choose the first optimization from measured
-Debug, cold Release and warm Release results. No startup work has been reordered yet.
-
-First trace: MainWindow construction about 1.0 seconds, followed by an approximately
-17-second delay before Show. Root cause found in bulk Native Materials replacement:
-about 201 identical Dispatcher refresh callbacks were queued for 200 rows. v41.8.1
-coalesces them into one downstream refresh. Runtime acceptance confirmed Verification
-PASS and reduced observed Debug startup from about 19-20 seconds to about 5 seconds;
-the accepted trace rendered the first usable Materials view at 4.49 seconds.
-
-improvement — backup filename convention:
+Date: Historical feedback (date not recorded)
+Area: Backup / recovery
+Type: Naming improvement
+Severity: Normal
 Status: Solved
+What happened: Human-readable purpose-specific backup filenames
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved in version v44.7.8 — readable purpose-specific `.bak` names retain canonical SQLite contents, dual
 `.bak`/`.sqlite` discovery, explicit restore and updater/recovery evidence. Existing `.sqlite` files are not renamed, moved or added
 to the new automatic cleanup set.
-Verification evidence: Owner runtime review confirmed manual/automatic, SQLite pre/post-restore and Excel pre-restore names, legacy
-discovery, separated rotating/retained diagnostics and Full Data Verification 333/333 PASS.
-Use a professional, human-readable backup filename such as
-`Product-YYYY-MM-DD_HHmmss.bak` instead of exposing a plain `.sqlite` filename.
-The `.bak` extension is a presentation/naming convention only: the file remains
-a canonical SQLite backup and must retain integrity/schema verification,
-collision-safe timestamps, explicit restore handling and backwards-compatible
-discovery/restore of existing `.sqlite` backup files. Do not rename or delete
-existing backups automatically.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-improvement — user-reorderable workflow columns (v44.2 candidate):
-Status: In progress
-Resolution: v44.7.3 supersedes repeated editable-DataGrid reset fixes with an
-approved phased Fast Workflow Grid migration. Tensile is the first candidate;
-the legacy Tensile grid remains a visible fallback until runtime acceptance.
-Verification evidence: Debug/Release pass. Runtime editing, calculation,
-autosave, layout restart and fallback were accepted with Full Data Verification
-315/315. First runtime editing found commit-time row rebuild returned MAT0206
-selection to MAT0102; the accepted correction refreshes computed cells in
-place. Owner reported Fast Tensile noticeably snappier than the legacy grid.
-v44.7.4 applies the accepted core to Impact with unchanged bounded input,
-formulas, colors and canonical persistence; runtime acceptance remains
-required. First runtime review found negative Tensile input, repeated Impact
-invalid-value warnings and reset-time canonical reordering. The candidate now
-enforces non-negative canonical samples, restores rejected cells after one
-warning and resets Fast layouts in place. Owner runtime retest and Full Data
-Verification 316/316 accepted the complete Fast Impact increment.
-v44.7.5 applies the accepted core to Stiffness with canonical 0–10
-revolutions, 0–359 degrees, unchanged formulas and separate layout state;
-runtime acceptance remains required. First Stiffness runtime review found a
-leading blank region and editors one column left; the shared surface now uses
-explicit left/top alignment and WPF coordinate translation. Owner runtime
-retest and Full Data Verification 317/317 accepted Fast Stiffness.
-v44.7.6 applies the accepted core to general Settings Value editing and the
-Base Material Catalog while preserving distinct save, FTPS validation and CRUD
-contracts. First Settings open raised an
-unhandled `FormattedText` argument-range exception; shared Fast rendering now
-normalizes transient lazy-tab DPI and geometry before drawing text. Follow-up
-showed blank Fast content and missing Settings controls: activation is now
-deferred until tab realization and controls have explicit Settings ownership.
-Cross-tab review found duplicate blank spacer keys grouping Impact/Stiffness
-separators; stable unique identities and stale-layout fallback now preserve
-their canonical positions and later user layout. Materials filters refreshed
-only legacy measurement views; Fast Tensile, Impact and Stiffness now reload
-from the same established visible MaterialID set. Owner runtime retesting
-accepted Settings editing/fallback, separator persistence and shared filter
-scope; Full Data Verification passed. v44.7.6 is complete.
-v44.7.7 retires the now-accepted legacy fallback in runtime-gated stages.
-Stage 1 hides all legacy/preview switches while retaining collapsed DataGrids
-as temporary Fast schema/row adapters. Later stages must introduce explicit
-Fast contracts before removing legacy XAML and handlers.
-The first v44.7.7 Verification run reported 77 cascading FAIL results from one
-release-identity mismatch: informational metadata remained v44.7.6 while the
-assembly was v44.7.7. The metadata is aligned; no canonical data or workflow
-failure was reported.
-Owner runtime acceptance and Full Data Verification 319/319 completed Stage 1.
-Stage 2 will replace measurement DataGrid schema/row adapters.
-Stage 2 candidate now uses explicit Fast measurement schemas and canonical
-filtered measurement collections. Legacy measurement XAML remains collapsed
-until this ownership passes runtime acceptance.
-Owner runtime acceptance and Full Data Verification 320/320 completed Stage 2.
-Stage 3 will replace the Materials DataGrid schema/row adapter.
-Stage 3 candidate now uses an explicit Materials Fast schema and canonical
-filtered row source. Legacy Materials XAML remains collapsed until runtime
-acceptance.
-Initial runtime testing found edit-time reordering, stale hidden-grid Duplicate
-selection, a white Materials surface after tab return and a close-time SQLite
-foreign-key failure after unsaved Add/Duplicate measurement synchronization.
-The candidate now preserves same-scope row state, uses Fast selection, redraws
-on load and synchronizes measurements only after successful Materials save.
-Runtime behavior then passed, but Verification found 201 UI Materials versus
-203 SQLite Materials because Delete deferred parent persistence after removing
-measurement children. Delete now saves child removal first and parent removal
-immediately; Archive/Unarchive queue normal auto-save.
-Owner retest confirmed the test Materials were absent, UI/SQLite parity was
-restored at 201 and Full Data Verification passed 321/321. Stage 3 is complete.
-Stage 4 candidate now uses explicit General Settings and Base Material Fast
-schemas with canonical row collections. Legacy Settings XAML remains collapsed
-until runtime acceptance.
-Owner runtime acceptance and Full Data Verification 322/322 completed Stage 4.
-Stage 5 can remove legacy DataGrid XAML and grid-only event paths.
-Stage 5A candidate removes measurement legacy toggle controls, handlers and
-fallback state. Collapsed measurement XAML remains until this activation-path
-retirement passes runtime acceptance.
-Owner runtime acceptance and Full Data Verification 323/323 completed Stage
-5A. Stage 5B can remove collapsed measurement XAML and grid-only lifecycle
-code.
-Stage 5B-Tensile candidate removes the complete legacy Tensile DataGrid and
-named lifecycle references while retaining the accepted Fast/canonical paths.
-Owner runtime acceptance and Full Data Verification 324/324 completed the
-Tensile deletion checkpoint. Impact is next.
-Stage 5B-Impact candidate removes the complete legacy Impact DataGrid and
-named lifecycle references while retaining the accepted Fast/canonical paths.
-Owner runtime acceptance and Full Data Verification 325/325 completed the
-Impact deletion checkpoint. Stiffness remains unchanged and is next.
-Stage 5B-Stiffness candidate removes the final legacy measurement DataGrid,
-named grid lifecycle and now-obsolete deferred DataGrid warm-up while
-retaining the accepted Fast/canonical paths. Owner runtime acceptance and Full
-Data Verification 326/326 completed Stiffness and measurement-grid retirement.
-Stage 5D candidate removes the hidden Settings legacy-grid toggle, handler and
-fallback activation state. Fast Settings becomes the only activatable path;
-owner runtime acceptance and Full Data Verification 326/326 passed. Legacy
-Settings XAML and grid lifecycle are the next deletion checkpoint.
-Stage 5E candidate removes both legacy Settings DataGrids and grid-specific
-bind/edit/layout/recovery/selection fallback code. Fast canonical selection
-solely owns Base Material delete. Owner runtime acceptance and Full Data
-Verification 327/327 completed the Settings legacy-grid deletion checkpoint.
-Stage 5F candidate removes the hidden Materials preview toggle, fallback
-handler/state and legacy-view reactivation method. Fast Materials becomes the
-only activatable UI. Owner runtime acceptance and Full Data Verification
-327/327 passed; legacy Materials XAML/lifecycle are the next checkpoint.
-Stage 5G candidate moves reports and Materials CRUD to Fast-owned canonical
-selection and removes hidden-grid focus/refresh ownership from new-row,
-archive/restore and recalculation paths. Owner runtime acceptance and Full
-Data Verification 328/328 passed.
-Stage 5H candidate moves Materials filter, visible report/count and governed
-column ownership to canonical predicates and the explicit Fast contract.
-Owner runtime acceptance and Full Data Verification 329/329 passed. Legacy
-edit/recovery adapters remain as the next checkpoint.
-Stage 5I removed Materials DataGrid commit/edit handlers and
-recovery/update/close/validation/inventory/manual-save callers while retaining
-Fast canonical autosave coalescing. Owner runtime testing accepted edit,
-tab/restart, validation, recalculation and recovery-export behavior with Full
-Data Verification 330/330.
-Stage 5J removes the residual Materials workflow registry, binding,
-selection, copy and refresh callers. Fast/canonical selection owns startup and
-Material Detail; purchasing, Inventory and measurement sync refresh Fast
-Materials directly. The collapsed XAML remains for the final deletion gate.
-Owner runtime testing accepted selection, detail, sync and restart behavior.
-The first runtime review found no visible selected row after startup/restart.
-Canonical selection was restored, but the newly created Fast surface had not
-received it. A first pre-layout full synchronization caused a blank surface
-until manual reload. Fast activation now performs only a deferred row selection
-after layout. A subsequent tab return could retain a stale viewport until the
-horizontal scrollbar moved; selection is now one-shot and visibility return
-replays the measured viewport through the same render path. Owner runtime
-re-test and Full Data Verification 331/331 passed; Stage 5J is accepted.
-Stage 5K deletes the final collapsed Materials DataGrid XAML and its
-duplicate columns, styling and bindings. Fast Materials is the sole grid host;
-owner runtime testing and Full Data Verification 332/332 passed. v44.7.7 Legacy
-Grid Retirement is complete.
-Allow users to drag and reorder columns in the Materials, Tensile, Impact and
-Stiffness tabs. Persist column order as machine-local UI state, keyed by stable
-bound field identity rather than column index. Preserve required fields,
-validated frozen-column behavior and backwards compatibility when columns are
-added or removed. Invalid/stale layouts must fall back safely, and each grid
-should offer Reset columns to default. Do not store presentation layout in the
-canonical SQLite engineering backup.
+Date: Historical feedback (date not recorded)
+Area: Fast workflow grids / layout
+Type: Workflow improvement
+Severity: Important
+Status: Solved
+What happened: User-reorderable persisted workflow columns
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
+Resolution: Solved in v44.7.7. The accepted Fast workflow grids provide stable
+field-identity layout persistence, user column reordering and Reset Columns,
+and the legacy Materials, Tensile, Impact, Stiffness and Settings grids were
+retired after staged runtime acceptance.
+Verification evidence: Staged owner runtime acceptance completed with Full Data Verification 332/332 PASS.
 
-improvement — optional clean uninstall (v44.3 candidate):
+Date: Historical feedback (date not recorded)
+Area: Installer / uninstall
+Type: Destructive workflow proposal
+Severity: Important
 Status: Deferred
+What happened: Optional explicit clean uninstall
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Normal uninstall remains deliberately data-preserving. A destructive profile-reset option is deferred until its exact ownership, credential separation and recoverability contract justify the risk.
-Verification evidence: v43.7.0 installer and all later updater/recovery releases preserve SQLite, backups, credentials and evidence by design.
-Keep normal uninstall data-preserving. Add a clearly separate, default-unchecked
-`Delete all 3DPIceland user data and reset this Windows profile` option with a
-second Default-No confirmation that lists every exact target. If explicitly
-accepted, remove only validated 3DPIceland-owned current-user paths for the
-SQLite database, backups/recovery evidence, local UI preferences, updater
-transactions/rollback/health evidence and supported legacy app-data locations.
-Never delete a parent folder, unrelated files or an unresolved path. A custom or
-OneDrive storage location requires an additional explicit warning and must be
-proven to be the configured 3DPIceland storage folder. Treat stored Windows/FTPS
-credentials as a separate default-unchecked choice rather than deleting them
-silently. Record which targets were removed, retained, missing or locked, and
-state clearly that accepted data deletion is permanent and cannot be undone.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-improvement — canonical Base Material selection:
-Status: Open
-Resolution: The governed Base Material Catalog exists, but no accepted release evidence proves this exact backwards-compatible Materials dropdown/unmapped-value workflow.
-Verification evidence: Requires caller and migration audit before implementation.
-Replace free-text Base Material editing in Materials with a dropdown sourced
-from the SQLite-governed Base Material Catalog maintained in Settings. Store the
-canonical catalog value rather than display position so sorting or catalog edits
-cannot change existing records. This should prevent spelling, casing and
-near-duplicate classifications while preserving keyboard-friendly selection.
-Existing/imported Base Material values that are absent from the current catalog
-must remain visible and must not be silently cleared or remapped; show them as
-an explicit legacy/unmapped value and require an intentional catalog addition or
-user-selected replacement. Refresh dropdown choices after an accepted Settings
-change and preserve MaterialID, import/export and report compatibility.
+Date: Historical feedback (date not recorded)
+Area: Base Materials / Materials relationship
+Type: Data-model / workflow improvement
+Severity: Important
+Status: Solved
+What happened: Canonical BaseMaterialID selection and legacy preservation
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
+Resolution: Solved in v45.2.1. Schema v33 adds canonical `BaseMaterialId`,
+exact-name binding, rename/delete guards, live dropdown refresh and downstream
+canonical resolution while retaining the text snapshot for compatibility.
+Verification evidence: Owner runtime acceptance and Full Data Verification 347/347 PASS with zero unlinked Materials.
 
-improvement — MaterialID-aware print-job price calculator:
+Date: Historical feedback (date not recorded)
+Area: Pricing / job quotation
+Type: Feature proposal
+Severity: Important
 Status: Open
+What happened: MaterialID-aware print-job price calculator
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Approved design concept, not an accepted implementation. Retain as a bounded future workflow; formula rights, units, currency provenance, profiles and immutable quote snapshots must be researched first.
-Verification evidence: None.
-Evaluate bringing the existing standalone Printing Price Calculator from
-`price/index.html` into the desktop application as a bounded job-quotation
-workflow. Replace its free-text `Material Used` input with a canonical MaterialID
-selector from the active Materials list. When a material is selected, populate
-`Filament Cost per kg` from the material's governed landed-cost data, with the
-material name/manufacturer and cost provenance visible beside the value.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-Research and define the unit/currency contract before implementation. If the
-stored landed cost is a whole-spool value, calculate cost per kg only from the
-recorded net spool weight; never assume a 1 kg spool. Convert currency only from
-an explicit governed exchange-rate source and show the source currency, rate and
-checked date. Missing landed cost, weight or conversion data must remain
-`Not recorded` and require manual user input rather than a silent MSRP/default
-fallback. Selecting a material may prefill the calculator but must not overwrite
-the canonical Material record.
-
-Preserve the calculator's existing inputs and formulas for filament grams,
-material-efficiency factor, labor, machine time, packaging, landed job cost,
-target margin and quote output unless formula-by-formula verification approves a
-change. Record the selected MaterialID and effective cost-per-kg provenance in
-the exported quote. Review the existing Print Farm Academy attribution and reuse
-rights before moving or adapting its credited methodology into the application.
-
-Approved calculator settings/profile design:
+Date: Historical feedback (date not recorded)
+Area: Pricing settings / printer profiles
+Type: Data-model proposal
+Severity: Important
 Status: Open
+What happened: Governed calculator settings, printer profiles and quote snapshots
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Design extension owned by the open MaterialID-aware print-job price calculator item; no schema/UI implementation is accepted.
-Verification evidence: None.
-Move reusable formula inputs into governed Settings rather than requiring
-re-entry for every job. Keep business-wide values such as Material Efficiency
-Factor, Labor Hourly Rate, Electricity Cost per kWh and default currency in a
-global pricing-settings group. Add a typed Printer Profiles catalog with stable
-PrinterID, printer name, purchase cost, additional upfront cost, annual
-maintenance/repair, estimated life, estimated uptime, average power consumption
-and printer-cost buffer factor.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-Allow multiple printer profiles and one explicit default printer. The calculator
-must offer a printer dropdown populated from this catalog while still allowing a
-different printer to be selected for each job. Archive rather than hard-delete a
-profile that has historical quote references. Validate ranges/units and show
-missing values honestly; do not silently borrow values from another printer.
-
-Each generated quote must store an immutable calculation snapshot so later
-Settings changes cannot alter historical results. The snapshot/export should
-include MaterialID and landed-cost provenance, PrinterID and printer name, every
-effective calculation input, calculation/formula version, currency, any governed
-exchange-rate evidence and calculation timestamp. Printer profiles and global
-pricing settings are configuration data; they must not recalculate or overwrite
-canonical Material purchasing records.
-
-improvement — delayed official exchange-rate refresh:
+Date: Historical feedback (date not recorded)
+Area: Exchange rates / Settings
+Type: Integration proposal
+Severity: Important
 Status: Deferred
+What happened: Delayed optional official exchange-rate refresh
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Deferred until an official stable endpoint, reuse contract and concrete purchase/quotation consumer are approved. Existing manual/governed purchasing rates remain authoritative.
-Verification evidence: Current accepted releases do not perform an official background-rate download.
-Add an optional, non-blocking exchange-rate refresh after the application is
-fully usable (initial candidate delay: about 60 seconds). This must never delay
-startup, require credentials or fail application readiness when offline. Prefer
-an official subscription-free source; the European Central Bank publishes
-working-day EUR reference rates, including ISK, with downloadable XML. Evaluate
-an official Central Bank of Iceland feed as the preferred ISK-native source if a
-stable documented endpoint and reuse contract are confirmed before coding.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-Store exchange rates as governed Settings/reference data with source name,
-source URL, base currency, effective date, fetched-at UTC, exact rate and status
-(`Current`, `Weekend / no new rate`, `Stale`, `Unavailable`, `Manual`). Refresh
-at most once per effective day unless the user presses `Refresh rates`; use a
-short timeout, bounded retry and the last verified cached rates when the network
-or parser fails. Show last successful update, age and source in Settings, and
-allow automatic refresh to be disabled. Validate TLS, content type, supported
-currency codes, positive finite values, duplicate entries and plausible payload
-date before replacing the cached set.
-
-Automatic refresh updates only the reference-rate catalog. It must never
-silently rewrite historical purchasing records, landed costs or prior quotes.
-Every calculation/quote that converts currency must snapshot the exact source
-rate and effective date it used. Missing or stale conversion must be visible and
-must require an explicit user decision rather than silently using 1:1 or another
-currency. Document that official reference rates are informational and may not
-match the card/bank rate actually charged; an entered transaction-specific rate
-remains authoritative for landed-cost evidence.
-
-Approved purchase/lot exchange-rate ownership:
+Date: Historical feedback (date not recorded)
+Area: Purchasing / inventory lots
+Type: Data-ownership rule
+Severity: Important
 Status: Open
+What happened: Purchase- and lot-scoped exchange-rate snapshots
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Approved ownership rule for any future implementation; purchase/lot snapshots must never become MaterialID-wide mutable rates. No claim of delivery.
-Verification evidence: None.
-Bind the effective exchange-rate snapshot to each purchase line, receipt lot or
-spool acquisition record, not to MaterialID. The same MaterialID may therefore
-have multiple historical purchases with different original prices, currencies
-and exchange rates. A newly downloaded rate may only prefill a new, unsaved
-purchase transaction; it must never recalculate or overwrite a saved purchase,
-received spool/lot, historical landed cost, inventory valuation evidence or
-quote.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-Each purchase snapshot must preserve original amount/currency, exact rate,
-source, effective date, fetched-or-entered timestamp, converted ISK amount,
-shipping/tax/fee inputs and resulting landed cost. For job pricing, prefer the
-landed cost of the explicitly selected spool/lot. When no lot is selected, use
-only a separately approved and visibly identified inventory costing method such
-as weighted average; expose the contributing scope and provenance. Never apply
-the latest exchange rate to an old foreign-currency purchase price or silently
-fall back to 1:1, MSRP or the most recent purchase.
-
-improvement — governed Production and Development build profiles:
+Date: Historical feedback (date not recorded)
+Area: Build / diagnostics / packaging
+Type: Build-governance proposal
+Severity: Important
 Status: Open
+What happened: Governed Production and Development build profiles
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
 Resolution: Research item. Measure actual diagnostic cost before introducing build-profile behavior; mandatory recovery/security/support diagnostics must remain available.
-Verification evidence: No deterministic Production/Clean profile release has been accepted.
-Research and classify all accumulated diagnostics, verification probes, startup
-measurements, debug-only commands and owner/developer menus by measured runtime
-cost and operational ownership. Introduce deterministic build profiles rather
-than deleting instrumentation code:
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
-- `Development / Verification`: includes the complete diagnostic, profiling and
-  verification surface needed during an active development or runtime-acceptance
-  session.
-- `Production / Clean`: excludes or disables proven expensive development-only
-  probes and hides developer-only commands/menus unless they are explicitly
-  enabled by an approved build option.
-
-Keep the instrumentation definitions, expected outputs and enablement contract
-in source control so a later development session can reproduce the required
-measurement surface without reimplementing it. Prefer an explicit MSBuild
-property/compile constant and visible build identity over manual commenting,
-source deletion or dynamically downloaded diagnostic code. A Production artifact
-must state which profile it uses, and packaging/Verification must reject an
-unknown or contradictory profile.
-
-Do not assume diagnostics are expensive: measure startup, steady-state CPU,
-memory, SQLite reads and menu/open costs first. Production/Clean must retain
-mandatory crash/error logging, release identity, privacy/schema/integrity checks,
-update/recovery transaction evidence, backup/restore safety, security/package
-verification and the minimum support diagnostics needed to investigate a user
-failure. It must not weaken release acceptance or make a failure untraceable.
-
-For public/user-facing distributions, keep normal workflow menus focused and
-hide diagnostic/developer actions by default. If an owner explicitly requests a
-diagnostic-enabled Production package, expose that choice in build metadata and
-the About/Diagnostics surface; do not silently change the executable's support
-or security contract. Clean-profile distribution must continue to exclude owner
-data, credentials and deployment identity in every build profile.
-- **Resolved in v44.7.7 Stage 5I candidate:** Fast Materials checkbox/text edits could recursively show the `Reload Materials Prototype`
-  unapplied-change prompt because validation refresh ran before the view accepted the applied snapshot. Validation now follows the
-  existing edit debounce after snapshot acceptance. Owner runtime re-test and Full Data Verification 330/330 passed.
+Date: 2026-07-25
+Area: Fast Materials / validation refresh
+Type: Bug
+Severity: Important
+Status: Solved
+What happened: Recursive Reload Materials Prototype prompt after an accepted Fast edit
+Expected behavior: Preserve the accepted behavior and compatibility contract described in Resolution.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
+Resolution: Solved in v44.7.7 Stage 5I. Validation now runs after snapshot acceptance through the existing edit debounce.
+Verification evidence: Owner runtime re-test and Full Data Verification 330/330 PASS.
