@@ -545,8 +545,10 @@ Verification evidence: Runtime acceptance checklist explicitly covered values be
 
 Workflow friction:
 Status: Partially solved
-Resolution: The incorrect all-material collection scope was solved by canonical visible/active MaterialID projection. Broader AI Assistant usability and product purpose remain open for separate research.
-Verification evidence: Solved scope defect in v41.7.2; no claim that the complete AI Assistant redesign is finished.
+Resolution: The incorrect all-material collection scope was solved by canonical visible/active MaterialID projection. v47 now owns
+the local-first workflow, purpose and collection clarity. Planned v52 owns an optional, read-only OpenAI integration with explicit
+payload preview, Windows Credential Manager secret ownership, deterministic local fallback and no automatic canonical-data writes.
+Verification evidence: Solved scope defect in v41.7.2; v47 and v52 are planned and no external API implementation is yet claimed.
 fæ ekkert vit í AI assistance, - hafði valið bambu labs framleiðandia í materials tab í gegnum Leitina. og bjó til collection, það innihélt ekki bara bambu labs efni, heldur öll efni 0-176, 
 sama ef ég hafði filterað eftir manufactures í materials
 fæ í raun ekkert vit í neitt af því sem er að gerast í þessum ai assistance tab, - þetta þarf að þróa áfram ´serstakletga.

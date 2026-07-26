@@ -36,6 +36,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v49 | Experimental Workflow Extension | ★★★★☆ | Planned |
 | v50 | Comprehensive User Help | ★★★★★ | Planned |
 | v51 | Governed Runtime Profiles | ★★★☆☆ | Research only |
+| v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Planned |
 
 ## Reconciliation of the older plans
 
@@ -1893,8 +1894,14 @@ to unstarted authoritative planning slots.
   - v46.0 is complete, canonical and runtime accepted.
 - **v47.0 — AI Assistant Workflow Clarity**
   - Feedback disposition: Partially solved.
-  - Explain the feature, prove filtered MaterialID scope and simplify collections.
-  - This does **not** include an external AI API.
+  - Keep the current deterministic assistant local-first and explain its product purpose, inputs and outputs.
+  - Prove visible/filtered MaterialID scope and simplify collection creation, inspection, reuse and removal.
+  - Show whether each result is a local brief and make canonical-source, evidence and non-mutation boundaries explicit.
+  - Research the minimum allowlisted data contract that a future external assistant may consume.
+  - Record privacy, credential, retention, failure, cost and human-review requirements for the future integration.
+  - Assess deterministic tester, AutomationId, scenario, evidence and Full Data Verification ownership.
+  - Completion condition: the local workflow is owner-accepted and the future external boundary is documented.
+  - This increment does **not** call an external AI API or store an external API credential.
 - **v48.0 — Pricing and Usage Analytics Foundation**
   - Feedback disposition: Partially solved.
   - Define governed USD/kg provenance and one honest price/performance metric.
@@ -1925,6 +1932,33 @@ to unstarted authoritative planning slots.
 - **v51.0 — Governed Development/Verification and Production/Clean Profiles**
   - State: Research only until diagnostics have measured cost.
   - Mandatory crash, recovery, security and support evidence can never be removed.
+- **v52.0 — Optional OpenAI Assistant Integration Contract**
+  - State: Planned; implementation cannot begin before v47 workflow and data-boundary acceptance.
+  - Keep the accepted local deterministic assistant available as the offline and failure-safe path.
+  - Add an explicit optional OpenAI provider behind a replaceable provider interface; do not couple canonical data to one API.
+  - Store provider, pinned model and non-secret preferences separately from the API credential.
+  - Store the API credential only in Windows Credential Manager; never persist it in SQLite, backups, exports or logs.
+  - Show an allowlisted payload preview and require an explicit user action before any selected data leaves the computer.
+  - Default to selected or visible MaterialIDs and exclude credentials, local paths and unrelated private/business data.
+  - Use read-only structured responses with validated evidence MaterialIDs, bounded timeouts, cancellation and safe refusal handling.
+  - Never let model output silently mutate canonical engineering, material, measurement, report or website data.
+  - Record provider, pinned model, prompt/schema version, input MaterialIDs and timestamp without recording the credential.
+  - Evaluate data retention, API billing, usage limits, support ownership and model-change policy before runtime activation.
+  - Standard automation uses a deterministic fake provider and no network or real credential.
+  - Live API acceptance is manual, opt-in and limited to an approved synthetic or disposable payload.
+  - Completion condition: owner accepts security and payload preview, local fallback, structured evidence and Verification PASS.
+- **v52.1 — Credential and Provider Foundation**
+  - Add masked Save/Replace/Delete/Test controls in Settings while Windows Credential Manager remains the secret owner.
+  - Add the provider abstraction, pinned configuration, connection diagnostics and safe local fallback.
+  - Prove that credentials cannot enter SQLite, import/export, backup/recovery, diagnostics or retained tester evidence.
+- **v52.2 — Read-only OpenAI Responses Pilot**
+  - Add explicit `Generate with OpenAI`, exact outbound preview, cancellation and bounded error handling.
+  - Use structured output for summary, findings, evidence MaterialIDs, uncertainties and suggested next actions.
+  - Reject unknown evidence IDs and retain all generated content as advisory until the user explicitly saves an assistant session.
+- **v52.3 — Governed Acceptance and Operational Evidence**
+  - Evaluate quality, latency and cost with approved representative scenarios before pinning the accepted model.
+  - Extend deterministic automation for payload allowlists, response validation, fallback, cancellation and secret non-persistence.
+  - Require Debug/Release, security/static gates, Full Data Verification and owner runtime acceptance before closure.
 
 ### Intentionally unscheduled
 
@@ -1932,8 +1966,7 @@ to unstarted authoritative planning slots.
   investigation, not a feature version. If reproduced with diagnostics it takes
   priority as the next bounded patch; it is not marked solved by similarity to
   another crash fix.
-- External AI API connectivity remains deferred until a concrete consumer,
-  privacy/credential boundary and support contract are approved.
+- External providers other than the planned optional OpenAI integration remain demand-only.
 - Optional destructive clean uninstall remains deferred. Normal uninstall stays
   data-preserving; no evidence, backups, SQLite or credentials may be deleted
   automatically.
