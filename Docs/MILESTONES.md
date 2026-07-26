@@ -3,6 +3,12 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v48.0.4 - Disposable Usage Domain Prototype
+
+The accepted pure domain prototype proves append-only correction, missing-data
+honesty and exact linked-inventory delta semantics without persistence or UI.
+Owner Full Data Verification passes 358/358.
+
 # v48.0.3 - Usage Event Contract
 
 Owner-approved append-only usage ownership separates observed consumption/time

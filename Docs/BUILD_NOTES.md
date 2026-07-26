@@ -1,4 +1,22 @@
-# Current Build Notes - v48.0.3 Usage Event Contract
+# Current Build Notes - v48.0.4
+
+## Disposable Usage Domain Prototype
+
+Pure immutable records and `UsageEventDomainService` implement the accepted
+contract without persistence or UI. The service validates canonical identity,
+UTC evidence, exact inventory/material compatibility, quantity provenance and
+entry-kind rules. It builds exact reversal/replacement corrections, nullable
+MaterialID projections and equal/opposite inventory delta plans.
+
+The prototype does not read or write SQLite, Inventory collections, owner data,
+reports, website output, preferences or the tester seed. Verification uses
+fully synthetic records. AutomationRunner receives no new action because no
+workflow or write authorization exists; its smoke scenario will execute the
+new Full Data Verification contracts.
+
+Owner runtime accepted normal startup, unchanged Materials/Inventory and all
+four synthetic usage-domain gates. Full Data Verification passes 358/358;
+v48.0.4 is canonical.
 
 ## Usage Event Contract Audit
 

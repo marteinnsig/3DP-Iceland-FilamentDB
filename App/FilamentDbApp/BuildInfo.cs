@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "GOVERNED-VALUE-INDEX";
-    public const string ReleaseTitle = "Governed Value Index";
+    public const string ReleaseCode = "USAGE-DOMAIN-PROTOTYPE";
+    public const string ReleaseTitle = "Disposable Usage Domain Prototype";
 
     public static string Version
     {

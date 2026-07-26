@@ -85,6 +85,7 @@ public partial class MainWindow : Window
     private readonly EngineeringContextService _engineeringContextService = new();
     private readonly PricingProvenanceService _pricingProvenanceService = new();
     private readonly EngineeringValueIndexService _engineeringValueIndexService = new();
+    private readonly UsageEventDomainService _usageEventDomainService = new();
     private readonly EngineeringPeerPositionService _engineeringPeerPositionService = new();
     private readonly EngineeringIntelligenceHandoffService _engineeringIntelligenceHandoffService = new();
     private readonly ObservableCollection<InventorySpoolRecord> _inventorySpoolRows = new();
@@ -14432,6 +14433,109 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             null,
             40,
             "current filtered PLA group");
+        var usageOccurredAtProbe = new DateTimeOffset(2026, 7, 26, 12, 0, 0, TimeSpan.Zero);
+        var usageOriginalProbe = new UsageEventRecord
+        {
+            UsageEventId = "USE-PROBE-ORIGINAL",
+            MaterialId = "MAT-PROBE",
+            EventType = UsageEventType.TestPrint,
+            OccurredAtUtc = usageOccurredAtProbe,
+            CreatedAtUtc = usageOccurredAtProbe,
+            InventoryItemId = "INV-PROBE",
+            FilamentUsedGrams = 100m,
+            FilamentProvenance = UsageQuantityProvenance.MeasuredActual,
+            PrintDurationSeconds = 3600,
+            ProducedCount = 10,
+            AcceptedCount = 8,
+            RejectedCount = 2,
+            Source = "Verification probe",
+            Origin = "Deterministic Verification"
+        };
+        var usageMaterialsProbe = new[] { "MAT-PROBE", "MAT-EMPTY" };
+        var usageInventoryProbe = new[]
+        {
+            new UsageInventoryIdentity("INV-PROBE", "MAT-PROBE"),
+            new UsageInventoryIdentity("INV-OTHER", "MAT-EMPTY")
+        };
+        var usageOriginalValidationProbe = _usageEventDomainService.Validate(
+            usageOriginalProbe,
+            usageMaterialsProbe,
+            usageInventoryProbe);
+        var usageReversalProbe = _usageEventDomainService.CreateReversal(
+            usageOriginalProbe,
+            "USE-PROBE-REVERSAL",
+            usageOccurredAtProbe.AddHours(2),
+            usageOccurredAtProbe.AddHours(2),
+            "Correction",
+            "Reverse original",
+            new[] { usageOriginalProbe });
+        var usageReversalValidationProbe = _usageEventDomainService.Validate(
+            usageReversalProbe,
+            usageMaterialsProbe,
+            usageInventoryProbe,
+            new[] { usageOriginalProbe });
+        var usageReplacementProbe = usageOriginalProbe with
+        {
+            UsageEventId = "USE-PROBE-REPLACEMENT",
+            FilamentUsedGrams = 80m,
+            PrintDurationSeconds = 3300,
+            ProducedCount = 9,
+            AcceptedCount = 8,
+            RejectedCount = 1,
+            CreatedAtUtc = usageOccurredAtProbe.AddHours(2)
+        };
+        var usageCorrectionProbe = _usageEventDomainService.CreateCorrection(
+            usageOriginalProbe,
+            usageReplacementProbe,
+            "USE-PROBE-CORRECTION-REVERSAL",
+            usageOccurredAtProbe.AddHours(2),
+            "Correction",
+            "Replace observed quantities",
+            new[] { usageOriginalProbe });
+        var usageReplacementValidationProbe = _usageEventDomainService.Validate(
+            usageCorrectionProbe.Replacement,
+            usageMaterialsProbe,
+            usageInventoryProbe,
+            new[] { usageOriginalProbe, usageCorrectionProbe.Reversal });
+        var usageProjectionProbe = _usageEventDomainService.ProjectMaterial(
+            "MAT-PROBE",
+            new[]
+            {
+                usageOriginalProbe,
+                usageCorrectionProbe.Reversal,
+                usageCorrectionProbe.Replacement
+            });
+        var usageEmptyEvidenceProbe = _usageEventDomainService.ProjectMaterial(
+            "MAT-EMPTY",
+            new[]
+            {
+                new UsageEventRecord
+                {
+                    UsageEventId = "USE-PROBE-EMPTY",
+                    MaterialId = "MAT-EMPTY",
+                    EventType = UsageEventType.InventoryAdjustment,
+                    OccurredAtUtc = usageOccurredAtProbe,
+                    CreatedAtUtc = usageOccurredAtProbe,
+                    FilamentProvenance = UsageQuantityProvenance.NotRecorded
+                }
+            });
+        var usageOriginalInventoryDeltaProbe =
+            _usageEventDomainService.BuildInventoryDelta(usageOriginalProbe);
+        var usageReversalInventoryDeltaProbe =
+            _usageEventDomainService.BuildInventoryDelta(usageReversalProbe);
+        var usageInventoryMismatchProbe = _usageEventDomainService.Validate(
+            usageOriginalProbe with
+            {
+                UsageEventId = "USE-PROBE-MISMATCH",
+                InventoryItemId = "INV-OTHER"
+            },
+            usageMaterialsProbe,
+            usageInventoryProbe);
+        var usageDuplicateReversalProbe = _usageEventDomainService.Validate(
+            usageReversalProbe with { UsageEventId = "USE-PROBE-REVERSAL-2" },
+            usageMaterialsProbe,
+            usageInventoryProbe,
+            new[] { usageOriginalProbe, usageReversalProbe });
         var peerCandidates = new[]
         {
             new EngineeringPeerCandidate { MaterialId = "peer-selected", Label = "Selected", Manufacturer = "Maker A", Category = "Engineering", OverallScore = 80 },
@@ -15054,6 +15158,37 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             FindName("RecommendationDetailValueIndex") is TextBlock valueIndexText &&
             AutomationProperties.GetAutomationId(valueIndexText) == "RecommendationDetailValueIndex",
             "Overall score/MSRP index exposes both governed inputs, comparison scope and honest missing-data reasons"));
+        checks.Add(new VerificationCheck("Usage event pure-domain validation",
+            usageOriginalValidationProbe.IsValid &&
+            usageReversalValidationProbe.IsValid &&
+            usageOriginalProbe.FilamentProvenance == UsageQuantityProvenance.MeasuredActual &&
+            usageOriginalProbe.PrintDurationSeconds == 3600,
+            "Required canonical MaterialID, exact inventory identity, UTC evidence, measured/slicer provenance and seconds-based duration validate without persistence"));
+        checks.Add(new VerificationCheck("Usage event reversal and replacement",
+            usageCorrectionProbe.Reversal.EntryKind == UsageEventEntryKind.Reversal &&
+            usageCorrectionProbe.Reversal.ReversesUsageEventId == usageOriginalProbe.UsageEventId &&
+            usageCorrectionProbe.Reversal.FilamentUsedGrams == -100m &&
+            usageCorrectionProbe.Replacement.EntryKind == UsageEventEntryKind.Replacement &&
+            usageCorrectionProbe.Replacement.CorrectsUsageEventId == usageOriginalProbe.UsageEventId &&
+            usageReplacementValidationProbe.IsValid &&
+            !usageDuplicateReversalProbe.IsValid,
+            "Correction appends one exact reversal plus one replacement; duplicate reversal is rejected"));
+        checks.Add(new VerificationCheck("Usage event nullable projections",
+            usageProjectionProbe.FilamentUsedGrams == 80m &&
+            usageProjectionProbe.PrintDurationSeconds == 3300 &&
+            usageProjectionProbe.ProducedCount == 9 &&
+            usageProjectionProbe.AcceptedCount == 8 &&
+            usageProjectionProbe.RejectedCount == 1 &&
+            usageEmptyEvidenceProbe.FilamentUsedGrams is null &&
+            usageEmptyEvidenceProbe.PrintDurationSeconds is null &&
+            usageEmptyEvidenceProbe.FilamentEvidenceEventCount == 0,
+            "Read-only totals project accepted event/reversal/replacement facts while missing evidence remains Not recorded rather than zero"));
+        checks.Add(new VerificationCheck("Usage event atomic inventory delta",
+            usageOriginalInventoryDeltaProbe?.InventoryItemId == "INV-PROBE" &&
+            usageOriginalInventoryDeltaProbe.RemainingWeightDeltaGrams == -100m &&
+            usageReversalInventoryDeltaProbe?.RemainingWeightDeltaGrams == 100m &&
+            !usageInventoryMismatchProbe.IsValid,
+            "Exact linked spool delta is negative for usage and equal/opposite for reversal; cross-Material inventory linkage is rejected"));
         var selectedAsaRecommendationScope = ResolveRecommendationBaseMaterialScope(
             " ASA ",
             new[] { "All", "PLA", "ASA" });

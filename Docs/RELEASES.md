@@ -1,6 +1,13 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v48.0.4 - Disposable Usage Domain Prototype
+
+Pure non-persistent Usage Event contracts validate canonical identity, UTC
+evidence, provenance, reversal/replacement, nullable projections and
+equal/opposite inventory deltas. No schema or UI changed. Owner runtime
+acceptance and Full Data Verification 358/358 pass.
+
 ## v48.0.2 - Governed Value Index
 
 Recommendation intelligence now uses one governed Overall-score/canonical-MSRP

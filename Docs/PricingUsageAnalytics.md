@@ -317,6 +317,23 @@ Approved decisions:
 - v48.0.4 may implement a pure disposable domain prototype only, without
   schema, UI, seed or owner-data writes.
 
+#### v48.0.4 canonical implementation
+
+The candidate adds immutable Usage Event records plus one pure domain service.
+Synthetic Verification proves:
+
+- canonical MaterialID and exact inventory/material identity validation;
+- required UTC timestamps and seconds-based duration;
+- measured/slicer grams provenance with nullable missing values;
+- exact reversal plus replacement correction and duplicate-reversal blocking;
+- read-only totals where missing evidence remains null/`Not recorded`;
+- equal/opposite inventory delta plans without mutating Inventory.
+
+No database, UI, seed, public output or owner-data caller is added.
+
+Owner runtime accepted normal startup and all four usage-domain Verification
+contracts. Full Data Verification passes 358/358; v48.0.4 is canonical.
+
 #### Risks and open decisions
 
 1. Decide whether inventory decrement is mandatory whenever

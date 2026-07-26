@@ -1,3 +1,21 @@
+# v48.0.4 - Disposable Usage Domain Prototype
+
+Date: 2026-07-26
+
+- Adds synthetic pure-domain checks for validation, exact reversal/replacement,
+  nullable projections and equal/opposite linked-inventory deltas.
+- No SQLite, UI, seed, report, website or owner-data change.
+- Debug/Release pass with zero warnings/errors.
+- Disposable profile `20260726165857-04d43636`: PASS 358/358.
+- Database hash remains
+  `F0EDCC3295A114C935668D2B92D7A1AEB1C67C4D1630EFC89F11B7FCDC556E5F`.
+- Business-state hash remains
+  `4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`.
+- Owner evidence `3DPIceland_FilamentDB_Verification_20260726_170130.txt`:
+  PASS 358/358.
+- Owner runtime accepted normal startup and all four usage-domain gates.
+  v48.0.4 is canonical.
+
 # v48.0.2 - Governed Value Index
 
 Date: 2026-07-26

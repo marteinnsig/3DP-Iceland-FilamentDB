@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v48.0.2 — Governed Value Index**
+Current canonical release: **v48.0.4 — Disposable Usage Domain Prototype**
 
-Last runtime-accepted baseline: **v48.0.2 — Governed Value Index**
+Last runtime-accepted baseline: **v48.0.4 — Disposable Usage Domain Prototype**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v48.0.4 — Disposable Usage Domain Prototype**
+Current roadmap increment: **v48.0.5 — Canonical Usage Persistence and Recovery**
 
-Current acceptance note: v48.0.3 usage-event ownership and correction contract is owner approved; no runtime release changed.
+Current acceptance note: v48.0.4 pure usage-domain contracts are runtime accepted with Full Data Verification 358/358.
 
 Candidate note: None.
 
@@ -1952,7 +1952,12 @@ to unstarted authoritative planning slots.
   - Schema/UI remain blocked until event vocabulary, null semantics, inventory atomicity and private/public scope are accepted.
   - Proposed delivery: contract acceptance, disposable domain prototype, persistence/recovery, bounded UI/automation, analytics.
   - Approved: atomic inventory update, measured/slicer grams provenance, duration storage in seconds and private-by-default usage.
-  - Current implementation increment: v48.0.4 — Disposable Usage Domain Prototype.
+  - v48.0.4 adds pure immutable records and a non-persistent domain service.
+  - Deterministic Verification owns identity, UTC, null/zero, correction, projection and exact inventory-delta behavior.
+  - SQLite, UI, seed, reports, website and owner data remain unchanged.
+  - Owner runtime accepted normal startup and all four usage-domain gates; Verification 358/358 passes.
+  - v48.0.4 is complete, canonical and runtime accepted.
+  - Current implementation increment: v48.0.5 — Canonical Usage Persistence and Recovery.
 - **v48.1 — MaterialID-aware Print Job Pricing and Immutable Quote Snapshots**
   - State: Open design.
   - Requires formula/reuse-rights, unit, currency-provenance and Printer Profile approval before coding.

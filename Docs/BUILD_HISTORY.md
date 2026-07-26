@@ -2,6 +2,23 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v48.0.4 - Disposable Usage Domain Prototype
+
+Added immutable Usage Event records and one pure non-persistent domain service.
+Synthetic contracts validate canonical identity, UTC timestamps, exact
+inventory/material linkage, provenance, explicit reversal/replacement,
+duplicate-reversal blocking, nullable projections and equal/opposite inventory
+delta plans.
+
+Debug and Release pass with zero warnings/errors. Disposable profile
+`20260726165857-04d43636` passes Full Data Verification 358/358 with equal
+database and business-state hashes. No schema, UI, seed, report, website,
+Inventory collection or owner-data write is included.
+
+Owner evidence `3DPIceland_FilamentDB_Verification_20260726_170130.txt` passes
+358/358. Normal startup, unchanged Materials/Inventory and all four
+usage-domain gates are accepted; v48.0.4 is canonical.
+
 ## v48.0.3 - Usage Event Contract
 
 Completed the ownership audit before schema/UI work. Native specimen counts

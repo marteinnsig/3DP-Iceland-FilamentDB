@@ -1,5 +1,18 @@
 # Automated Runtime Acceptance
 
+## v48.0.4 - Disposable usage domain prototype
+
+- No runtime write workflow or UI action exists, so no new scenario
+  authorization or AutomationId is added.
+- Smoke Full Data Verification executes synthetic identity, correction,
+  projection and inventory-delta contracts.
+- SQLite, seed, Inventory state and baseline/final business state must remain
+  unchanged.
+- Production, FTPS, owner-database and unexpected-dialog guards are unchanged.
+- Disposable profile `20260726165857-04d43636` passes Full Data Verification
+  358/358 with exact database and business-state hash equality.
+- Owner runtime accepted normal startup and Full Data Verification 358/358.
+
 ## v48.0.3 - Usage event contract
 
 - Documentation/ownership contract only; no runtime behavior or schema changed.

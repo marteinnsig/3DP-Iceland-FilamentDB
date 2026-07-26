@@ -2,6 +2,21 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v48.0.4 - Disposable Usage Domain Prototype
+
+- Adds pure immutable Usage Event domain records and a non-persistent service.
+- Validates canonical MaterialID, exact compatible InventoryItemID, UTC
+  evidence, non-negative originals and measured/slicer grams provenance.
+- Builds exact append-only reversal and replacement corrections while blocking
+  duplicate reversal and cross-Material correction.
+- Projects nullable private totals without turning missing evidence into zero.
+- Produces equal/opposite inventory deltas for original/reversal events without
+  writing Inventory.
+- Adds deterministic Verification; no schema, UI, seed, report, website or
+  owner-data behavior changes.
+- Owner runtime accepted normal startup and all four usage-domain contracts;
+  Full Data Verification passes 358/358.
+
 ## v48.0.3 - Usage Event Contract Research
 
 - Audits native measurement, Experimental Run, Inventory, Purchasing, report,
