@@ -1,3 +1,34 @@
+# v48.2.0 - Optional Official Exchange-rate Reference Catalog
+
+Date: 2026-07-26
+
+- ECB SDMX parsing and EUR-to-ISK cross-rate derivation are deterministic.
+- Automation is offline and must never call the live ECB endpoint.
+- Schema v37 owns Purchase Order rate provenance; schema-v36 recovery remains
+  compatible.
+- Loaded purchases, Inventory, Materials and quotes are excluded from refresh.
+- Debug/Release app and AutomationRunner builds pass with zero warnings/errors.
+- Documentation and roadmap-line gates pass; the read-only NuGet vulnerability
+  scan reports no vulnerable direct or transitive packages.
+- Initial smoke `20260726203553-6fe655e4` found 13 recovery gates still bounded
+  to schema v36; the bounded schema-v37 compatibility correction removed them.
+- Disposable smoke `20260726203714-dcbdce20` passes Full Data Verification
+  364/364 and exact logical/business-state preservation.
+- Disposable recovery `20260726203749-a8eac754` passes schema-v36 migration,
+  24-table restore, restart and exact final business-state recovery.
+- Owner Verification
+  `3DPIceland_FilamentDB_Verification_20260726_210009.txt` passes 364/364.
+- Owner diagnostics confirm schema v37, live ECB observation `2026-07-24` and
+  the new-order-only ownership boundary.
+- Canonical schema-v37 seed SHA-256 is
+  `43503623D8D19A1F38B1505F456BDAA34E9B33AFF4609AD2F79CC2321B7150AE`.
+- Preserved schema-v36 migration fixture SHA-256 is
+  `6E276E26FB218BC588CC70DA57E10FE2E812A1CA5420494315BE2B22C205EAB0`.
+- Final refreshed-seed smoke `20260726210132-f34523ba` passes 364/364 with
+  exact logical/business-state preservation.
+- v48.2.0 is complete, canonical and runtime accepted.
+- Production, FTPS and owner database remain blocked.
+
 # v48.0.7 - Internal Usage Analytics candidate
 
 Date: 2026-07-26

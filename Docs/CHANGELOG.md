@@ -2,6 +2,27 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v48.2.0 - Optional Official Exchange-rate Reference Catalog
+
+- Selects the documented ECB SDMX HTTPS API and derives ISK cross-rates through
+  the shared EUR reference observations.
+- Adds schema v37 Purchase Order rate source, observation date and fetch-time
+  provenance while preserving schema-v36 Excel recovery compatibility.
+- Restricts ECB prefill to Purchase Orders created in the current session.
+- Removes the legacy Settings live-sync that rewrote persisted Purchase Order
+  exchange rates.
+- Keeps ECB refresh out of Materials, Inventory, Printers, saved purchases and
+  immutable quote snapshots.
+- Uses a validated per-profile cache with bounded timeout, response-size limit,
+  no redirects and manual governed Settings fallback.
+- Adds offline-safe diagnostics, deterministic parser/immutability Verification
+  and Purchase Orders smoke navigation without live-network automation.
+- Automated gates and Full Data Verification 364/364 pass. Owner accepted live
+  ECB retrieval, new-order prefill, offline behavior and historical-data
+  immutability.
+- Canonical tester seed is schema v37; the prior schema-v36 seed is retained as
+  an explicit migration fixture.
+
 ## v48.1.2 - Print Job Quote Workflow
 
 - Adds schema v36 with append-only immutable PrintJobQuotes snapshots.

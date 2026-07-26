@@ -416,7 +416,8 @@
         <TextBlock Grid.Row="2" x:Name="ManufacturerManagerStatusText" Text="SQLite-backed manufacturer knowledge records." Foreground="#64748B" Margin="0,8,0,0"/>
     </Grid>
 </TabItem>
-<TabItem Header="Purchase Orders">
+<TabItem x:Name="PurchaseOrdersTab" Header="Purchase Orders"
+         AutomationProperties.AutomationId="PurchaseOrdersTab">
     <Grid Margin="12">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="210"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
         <WrapPanel Margin="0,0,0,8">
@@ -429,6 +430,13 @@
             <Button Click="ReceivePurchaseOrder_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Receive / Reconcile"/></Button>
             <Button Click="CreateInventoryFromPurchaseOrder_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Create Materials + Received Spools"/></Button>
             <Button Click="CalculatePurchaseCosts_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Calculate Landed Costs"/></Button>
+            <Button x:Name="RefreshEcbExchangeRates" Click="RefreshEcbExchangeRates_Click"
+                    Style="{StaticResource IconActionButton}" Margin="0,0,8,8"
+                    AutomationProperties.AutomationId="RefreshEcbExchangeRates"><TextBlock Text="Refresh ECB Reference"/></Button>
+            <TextBlock x:Name="EcbExchangeRateStatusText"
+                       AutomationProperties.AutomationId="EcbExchangeRateStatus"
+                       Text="ECB reference not loaded. Manual governed Settings remain available."
+                       Foreground="#64748B" Margin="4,5,0,8" TextWrapping="Wrap" MaxWidth="520"/>
         </WrapPanel>
         <DataGrid Grid.Row="1" Name="PurchaseOrdersGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" SelectionChanged="PurchaseOrdersGrid_SelectionChanged" CellEditEnding="PurchaseOrderGrid_CellEditEnding">
             <DataGrid.Columns>
@@ -440,6 +448,8 @@
                 <DataGridTextColumn Header="Received date" Binding="{Binding ReceivedDate, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
                 <DataGridComboBoxColumn Header="Currency" SelectedItemBinding="{Binding Currency, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="85"/>
                 <DataGridTextColumn Header="1 currency unit = ISK" Binding="{Binding ExchangeRate, UpdateSourceTrigger=PropertyChanged}" Width="125"/>
+                <DataGridTextColumn Header="Rate source" Binding="{Binding ExchangeRateSource}" Width="210" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Rate date" Binding="{Binding ExchangeRateObservationDate}" Width="95" IsReadOnly="True"/>
                 <DataGridComboBoxColumn Header="Tax treatment" SelectedItemBinding="{Binding TaxTreatment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="190"><DataGridComboBoxColumn.ItemsSource><x:Array Type="{x:Type sys:String}"><sys:String>VAT included in invoice</sys:String><sys:String>Import VAT paid separately</sys:String><sys:String>Tax exempt / none</sys:String></x:Array></DataGridComboBoxColumn.ItemsSource></DataGridComboBoxColumn>
                 <DataGridTextColumn Header="Items total" Binding="{Binding SupplierItemsTotal, UpdateSourceTrigger=PropertyChanged}" Width="90"/>
                 <DataGridTextColumn Header="Shipping" Binding="{Binding SupplierShipping, UpdateSourceTrigger=PropertyChanged}" Width="85"/>

@@ -40,16 +40,33 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 16 |
+| Open | 18 |
 | In progress | 0 |
 | Partially solved | 3 |
-| Solved | 53 |
+| Solved | 54 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **76** |
+| **Total tracked findings** | **79** |
 
 ## Tracked findings
+
+Date: 2026-07-26
+Area: Purchase Orders / Exchange-rate provenance
+Type: Workflow improvement / Data integrity
+Severity: Important
+Status: Solved
+What happened: Purchasing used manual Settings rates and a legacy live-sync could rewrite persisted Purchase Order exchange rates.
+Expected behavior: An optional official reference may prefill only a new Purchase Order. Saved purchases, Inventory lots, Materials
+prices, Printers and quotes must retain their original values.
+Steps to reproduce: Change a Purchasing currency rate in Settings, reload/reset Settings and inspect existing Purchase Orders.
+Screenshot / export / report attached: Capture new-order ECB provenance, offline fallback and a retained older order during runtime.
+Resolution: v48.2.0 candidate uses ECB SDMX observations, derives ISK through EUR, snapshots source/date/fetch provenance and removes
+the saved-order Settings live-sync. A validated per-profile cache and manual governed fallback preserve offline operation.
+Verification evidence: Debug/Release and documentation/roadmap gates pass. NuGet vulnerability scan is clean. Disposable smoke
+`20260726203714-dcbdce20`, recovery `20260726203749-a8eac754` and refreshed-seed smoke `20260726210132-f34523ba` pass Full Data
+Verification 364/364. Owner evidence `3DPIceland_FilamentDB_Verification_20260726_210009.txt` accepts live ECB, prefill and immutable
+historical values.
 
 Date: 2026-07-26
 Area: Public website / Navigation / Printing Price Calculator
@@ -1164,6 +1181,47 @@ Verification evidence: Owner runtime re-test and Full Data Verification 330/330 
 PrinterProfiles, seven governed Print Job Pricing defaults and a separate
 Printers CRUD/archive workspace. Deterministic hourly cost treats uptime as an
 explicit 0–100 percent. Quotes remain deliberately out of scope until v48.1.2.
+
+Date: 2026-07-26
+Area: Public website / Canonical branding / Favicon
+Type: Website idea / UI polish
+Severity: Normal
+Status: Open
+What happened: The main public 3DPIceland website does not consistently expose the canonical 3DPIceland logo in its page header or
+the small application-icon artwork as the browser favicon.
+Expected behavior: Add the canonical 3DPIceland logo to the main public website and use the approved small 3DPIceland icon artwork
+for favicon output. Preserve the accepted website layout, responsive behavior and report branding contracts.
+Steps to reproduce: Open the main website, inspect the visible header branding, browser tab icon and generated page metadata.
+Screenshot / export / report attached: Capture desktop, narrow/mobile and browser-tab presentation during implementation.
+Resolution: Unimplemented. Audit the active SQLite-governed website template, preview/Production renderers, static assets, relative
+paths and every generated route before changing branding. Reuse the approved canonical logo/icon sources rather than recreating
+them. Generate appropriate favicon formats/sizes, include explicit HTML metadata and retain an honest fallback when an asset is
+missing. Do not couple website branding to user-configurable document logos or permit it to alter desktop app icon/header/splash
+ownership. Preview and visually inspect locally before any separately authorized Production or FTPS action.
+Verification evidence: Future deterministic checks should verify branded asset presence, valid favicon references, generated-route
+path resolution and unchanged template/render parity. Logo scale, whitespace, responsive placement and browser favicon appearance
+remain owner-manual acceptance.
+
+Date: 2026-07-26
+Area: Export branding / Reports / Website documents / Print-job quotes
+Type: Feature idea / Branding workflow
+Severity: Normal
+Status: Open
+What happened: Exported reports and future print-job quotes currently use only the built-in 3DPIceland branding contract.
+Expected behavior: Allow users to configure their own PNG logo for generated HTML/PDF website documents, reports and print-job
+quotes. Custom branding must be confined to generated document output. It must never replace or alter the Windows application icon,
+the logo/header inside the desktop application, the splash screen or other application chrome.
+Steps to reproduce: Generate a report or quote and confirm there is no governed option to select a user-owned document logo.
+Screenshot / export / report attached: Future acceptance should compare default-branded and custom-branded HTML/PDF/quote output.
+Resolution: Unimplemented. Research one governed document-branding owner and every HTML/PDF/report/quote renderer before coding.
+Accept PNG only after validating signature, decoded dimensions, size limits and transparency behavior; never trust extension alone.
+Store or copy the accepted asset into a controlled per-user location without modifying the source file. Provide preview, explicit
+Remove/Restore default branding, honest missing/corrupt fallback and consistent aspect-ratio sizing without stretching or clipping.
+Preserve the built-in 3DPIceland logo as the default. Do not embed local source paths, owner data or unintended metadata in public
+output. Existing report routes and standalone generated artifacts must remain compatible.
+Verification evidence: Future deterministic coverage should verify PNG validation, governed persistence, default fallback and exact
+renderer selection without using Production or FTPS. Visual logo scale, transparency, clipping and HTML/PDF/quote presentation remain
+owner-manual acceptance.
 
 Date: 2026-07-26
 Area: Main application navigation / Tab ordering

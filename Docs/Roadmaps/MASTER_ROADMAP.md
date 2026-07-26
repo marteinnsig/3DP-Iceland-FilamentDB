@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v48.1.2 — Print Job Quote Workflow**
+Current canonical release: **v48.2.0 — Optional Official Exchange-rate Reference Catalog**
 
-Last runtime-accepted baseline: **v48.1.2 — Print Job Quote Workflow**
+Last runtime-accepted baseline: **v48.2.0 — Optional Official Exchange-rate Reference Catalog**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v48.2 — Optional Official Exchange-rate Reference Catalog**
+Current roadmap increment: **v49.0 — Experimental Workflow Extension**
 
-Current acceptance note: v48.1.2 Print Job Quote Workflow is runtime accepted with Full Data Verification 363/363.
+Current acceptance note: v48.2.0 is runtime accepted with Full Data Verification 364/364.
 
 Candidate note: None.
 
@@ -1997,9 +1997,18 @@ to unstarted authoritative planning slots.
   - v48.1.2 now owns quote creation, Material/manual cost selection, immutable snapshots and export.
   - v48.1.2 uses schema v36 and 24-table recovery; owner runtime acceptance and Full Data Verification 363/363 pass.
 - **v48.2 — Optional Official Exchange-rate Reference Catalog**
-  - State: Current decision/research increment; implementation remains conditional.
-  - Requires a stable official endpoint and reuse contract.
-  - May prefill only new unsaved purchase data and must never rewrite saved purchases, lots or quotes.
+  - State: Complete, canonical and runtime accepted as v48.2.0.
+  - Uses the documented ECB SDMX HTTPS API and its official statistics reuse contract.
+  - Derives ISK cross-rates through matching EUR reference observations and labels that derivation explicitly.
+  - Schema v37 snapshots source, observation date and fetch UTC on each eligible new Purchase Order.
+  - ECB prefill is limited to orders created in the current session.
+  - Loaded or saved purchases, Inventory lots, Materials prices, Printers and quotes are never refreshed.
+  - Manual governed Settings and the complete offline workflow remain available.
+  - A validated per-profile cache is operational state, not a canonical recovery table.
+  - Deterministic automation uses parser fixtures and no live network.
+  - Debug/Release, security/static gates, recovery and Full Data Verification 364/364 pass.
+  - Owner accepted live ECB retrieval, prefill, offline behavior and historical-data immutability.
+  - Canonical tester seed is schema v37; the schema-v36 seed remains an explicit migration fixture.
 - **v49.0 — Experimental Workflow Extension**
   - Feedback disposition: Partially solved.
   - Evaluate owner-visible gaps on top of canonical Series/Runs.

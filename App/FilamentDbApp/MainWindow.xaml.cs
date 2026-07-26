@@ -110,6 +110,10 @@ public partial class MainWindow : Window
     private int _experimentalSeriesContextVersion;
     private readonly ObservableCollection<PurchaseOrderRecord> _purchaseOrders = new();
     private readonly ObservableCollection<PurchaseOrderLineRecord> _purchaseOrderLines = new();
+    private readonly EcbExchangeRateReferenceService _ecbExchangeRateReferenceService = new();
+    private readonly HashSet<string> _sessionNewPurchaseOrderIds =
+        new(StringComparer.OrdinalIgnoreCase);
+    private ExchangeRateReferenceCatalog? _ecbExchangeRateCatalog;
     private readonly PurchasingCostAllocationService _purchasingCostAllocationService = new();
     private readonly PurchasingReportService _purchasingReportService = new();
     private ICollectionView? _purchaseOrderLineView;
@@ -13428,6 +13432,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("64-bit process: " + Environment.Is64BitProcess);
         sb.AppendLine();
 
+        sb.AppendLine("ECB Exchange-rate Reference (read-only)");
+        sb.AppendLine("---------------------------------------");
+        sb.AppendLine("Provider: " + EcbExchangeRateReferenceService.ProviderName);
+        sb.AppendLine("Endpoint: " + EcbExchangeRateReferenceService.ApiUrl);
+        sb.AppendLine("Cache: " + EcbExchangeRateCachePath());
+        sb.AppendLine("Cached fetch UTC: " +
+                      (_ecbExchangeRateCatalog?.FetchedAtUtc ?? "Not available"));
+        sb.AppendLine("Latest observation: " +
+                      (_ecbExchangeRateCatalog?.Rates
+                           .Select(rate => rate.ObservationDate)
+                           .OrderByDescending(value => value, StringComparer.Ordinal)
+                           .FirstOrDefault() ?? "Not available"));
+        sb.AppendLine("Ownership: reference prefill is restricted to new Purchase Orders; " +
+                      "saved purchases, inventory, Materials and quotes are never refreshed.");
+        sb.AppendLine();
+
         var updateDiagnostics = GetApplicationUpdateDiagnostics();
         sb.AppendLine("Application Update Transactions (read-only)");
         sb.AppendLine("-------------------------------------------");
@@ -14121,7 +14141,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             header.StartsWith("Cooling ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Drying ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Profile ", StringComparison.OrdinalIgnoreCase));
-        var printingSettingsReady = _database.CurrentSchemaVersion == 36 &&
+        var printingSettingsReady = _database.CurrentSchemaVersion == 37 &&
                                     persistedBaseMaterials.Count == _nativeBaseMaterialRows.Count &&
                                     persistedBaseMaterials.Select(x => x.BaseMaterial).OrderBy(x => x).SequenceEqual(
                                         _nativeBaseMaterialRows.Select(x => x.BaseMaterial).OrderBy(x => x), StringComparer.OrdinalIgnoreCase) &&
@@ -15926,7 +15946,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                                            !string.IsNullOrWhiteSpace(deploymentSettings.FtpsUserName) &&
                                            deploymentSettings.FtpsPort is >= 1 and <= 65535;
         checks.Add(new VerificationCheck("SQLite-governed explicit FTPS publishing contract",
-            _database.CurrentSchemaVersion == 36 &&
+            _database.CurrentSchemaVersion == 37 &&
             (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
             FtpsWebsitePublisherService.MainRemotePath == "/index.html" &&
             FtpsWebsitePublisherService.ManufacturerRemotePath == "/manufacturers/index.html" &&
@@ -16388,7 +16408,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             printingSettingsReady && printingSettingsRemainInternal && incrementalFtpsPublishingReady && releaseIdentityReady
                 ? "Canonical baseline profile identity, cooling/drying units, slicer identity, provenance, source and checked-date contracts passed; public allowlists unchanged"
                 : "Printing-profile governance, provenance, internal-only boundary, prior publishing gate or release identity did not pass"));
-        var deploymentSettingsReady = _database.CurrentSchemaVersion == 36 &&
+        var deploymentSettingsReady = _database.CurrentSchemaVersion == 37 &&
                                       (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
                                       typeof(WindowsCredentialService).GetMethod("ReadPassword", new[] { typeof(string), typeof(string) }) is not null;
         checks.Add(new VerificationCheck("v42.15 Deployment Settings Governance release gate", deploymentSettingsReady && incrementalFtpsPublishingReady && releaseIdentityReady,
@@ -16408,7 +16428,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 : "Native measurement marker, SQLite/UI count parity or release identity failed"));
         var canonicalGeneralSettings = _database.LoadNativeSettingsRows();
         var expectedGeneralSettings = _nativeSettingsRows.Count(row => !string.Equals(row.Section, "Deployment", StringComparison.OrdinalIgnoreCase));
-        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == 36 &&
+        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == 37 &&
                                           _database.LoadNativeMaterialManagerRows().Count == _nativeMaterialRows.Count &&
                                           canonicalGeneralSettings.Count == expectedGeneralSettings &&
                                           canonicalGeneralSettings.Select(row => (row.Section, row.Parameter, row.Unit, row.UsedBy)).Distinct().Count() == canonicalGeneralSettings.Count;
@@ -16417,7 +16437,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? $"SQLite owns {_nativeMaterialRows.Count} Materials rows and {canonicalGeneralSettings.Count} general Settings rows; legacy JSON is snapshot-only"
                 : "Materials/Settings SQLite parity, settings key uniqueness, schema or release identity failed"));
         var latestLocalBackup = _database.GetLocalBackupCatalog()
-            .FirstOrDefault(item => item.CanRestore && item.IsIntegrityValid && item.SchemaVersion is > 0 and <= 36 && item.Materials > 0);
+            .FirstOrDefault(item => item.CanRestore && item.IsIntegrityValid && item.SchemaVersion is > 0 and <= 37 && item.Materials > 0);
         var latestLocalBackupValid = false;
         var latestLocalBackupDetail = "No restore-ready SQLite backup with canonical Materials is available";
         if (latestLocalBackup is not null)
@@ -16425,7 +16445,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             try
             {
                 var inspection = _database.InspectDatabaseBackup(latestLocalBackup.FilePath);
-                latestLocalBackupValid = inspection.IsIntegrityValid && inspection.SchemaVersion is > 0 and <= 36 && inspection.Materials > 0;
+                latestLocalBackupValid = inspection.IsIntegrityValid && inspection.SchemaVersion is > 0 and <= 37 && inspection.Materials > 0;
                 latestLocalBackupDetail = $"{IOPath.GetFileName(latestLocalBackup.FilePath)}: integrity {inspection.IntegrityResult}, schema v{inspection.SchemaVersion}, materials {inspection.Materials:N0}";
             }
             catch (Exception ex) { latestLocalBackupDetail = IOPath.GetFileName(latestLocalBackup.FilePath) + ": " + ex.Message; }
@@ -16442,7 +16462,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var excelRecoverySnapshot = _database.CreateExcelRecoverySnapshot();
         var excelRecoveryRows = excelRecoverySnapshot.Tables.Sum(table => table.Rows.Count);
         var excelRecoveryReady = excelRecoverySnapshot.FormatVersion == ExcelRecoverySnapshot.CurrentFormatVersion &&
-                                 excelRecoverySnapshot.SourceSchemaVersion == 36 &&
+                                 excelRecoverySnapshot.SourceSchemaVersion == 37 &&
                                  excelRecoverySnapshot.Tables.Count == 24 &&
                                  excelRecoverySnapshot.Tables.All(table => !string.IsNullOrWhiteSpace(table.TableName) && table.Columns.Count > 0 && table.Rows.All(row => row.Count == table.Columns.Count) && ExcelDisasterRecoveryService.ComputeTableHash(table).Length == 64) &&
                                  excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMaterialManagerRows").Rows.Count == _nativeMaterialRows.Count &&
@@ -16468,7 +16488,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             row.Section == "Pricing" && row.Parameter == parameter &&
             row.UsedBy == "Print Job Pricing"));
         var printerFoundationReady =
-            _database.CurrentSchemaVersion == 36 &&
+            _database.CurrentSchemaVersion == 37 &&
             printerRecoveryTable is not null &&
             printerRecoveryTable.Columns.Contains("PrinterId") &&
             printerRecoveryTable.Columns.Contains("UptimePercent") &&
@@ -16502,7 +16522,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var quoteRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "PrintJobQuotes");
         var immutableQuoteWorkflowReady =
-            _database.CurrentSchemaVersion == 36 &&
+            _database.CurrentSchemaVersion == 37 &&
             quoteRecoveryTable is not null &&
             quoteRecoveryTable.Columns.Contains("SnapshotJson") &&
             quoteRecoveryTable.Columns.Contains("MaterialCostProvenance") &&
@@ -16531,11 +16551,42 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             excelRecoveryReady && releaseIdentityReady
                 ? $"Schema v36; {_printJobQuoteRows.Count:N0} immutable quote snapshots; exact grams-per-part × quantity probe; Material/manual provenance, Printer/settings/rates and calculation v1 are snapshotted"
                 : "Quote formula, immutable persistence/UI, provenance snapshot, Printer foundation, recovery ownership or release identity failed"));
+        const string ecbProbeCsv =
+            "CURRENCY,TIME_PERIOD,OBS_VALUE\n" +
+            "ISK,2026-07-24,150\n" +
+            "USD,2026-07-24,1.2\n" +
+            "EUR,2026-07-24,1\n";
+        var ecbProbe = EcbExchangeRateReferenceService.ParseCsv(
+            ecbProbeCsv,
+            new DateTime(2026, 7, 24, 16, 0, 0, DateTimeKind.Utc));
+        var purchaseRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
+            table => table.TableName == "PurchaseOrders");
+        var officialReferenceReady =
+            _database.CurrentSchemaVersion == 37 &&
+            purchaseRecoveryTable is not null &&
+            purchaseRecoveryTable.Columns.Contains("ExchangeRateSource") &&
+            purchaseRecoveryTable.Columns.Contains("ExchangeRateObservationDate") &&
+            purchaseRecoveryTable.Columns.Contains("ExchangeRateFetchedAtUtc") &&
+            ecbProbe.Rates.Single(rate => rate.Currency == "USD").IskPerCurrencyUnit == 125m &&
+            ecbProbe.Rates.Single(rate => rate.Currency == "USD").ObservationDate == "2026-07-24" &&
+            FindName("PurchaseOrdersTab") is TabItem &&
+            FindName("RefreshEcbExchangeRates") is Button &&
+            FindName("EcbExchangeRateStatusText") is TextBlock &&
+            typeof(MainWindow).GetMethod(
+                "SyncPurchaseOrderCurrencyRatesFromSettings",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is null;
+        checks.Add(new VerificationCheck(
+            "v48.2 Optional Official Exchange-rate Reference Catalog release gate",
+            officialReferenceReady && excelRecoveryReady && releaseIdentityReady,
+            officialReferenceReady && excelRecoveryReady && releaseIdentityReady
+                ? "Schema v37; deterministic ECB EUR cross-rate parser; Purchase Order provenance recovery; loaded orders are excluded from reference refresh"
+                : "ECB parser, new-order-only ownership, Purchase Order provenance recovery, UI diagnostics or release identity failed"));
         var usageStats = _database.GetUsageEventStats();
         var usageRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "UsageEvents");
         var usagePersistenceReady =
-            _database.CurrentSchemaVersion == 36 &&
+            _database.CurrentSchemaVersion == 37 &&
             usageRecoveryTable is not null &&
             usageRecoveryTable.Columns.Contains("UsageEventId") &&
             usageRecoveryTable.Columns.Contains("MaterialId") &&
@@ -16680,7 +16731,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Original-workbook sheet metadata is absent from Material Detail, Tools and diagnostics while supported-schema inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
                 : "A workbook metadata reader/UI surface remains or a required compatibility/recovery boundary failed"));
         var legacyWorkbookSchemaRetiredReady =
-            _database.CurrentSchemaVersion == 36 &&
+            _database.CurrentSchemaVersion == 37 &&
             _database.LegacyWorkbookTablesAreRetired() &&
             typeof(LocalDatabase).GetMethod("GetTestSummaryMetrics") is null &&
             typeof(MainWindow).GetMethod("GetCanonicalTestSummaryMetrics", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
@@ -16747,7 +16798,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
                                          compatibilityCatalog.Where(item => item.SchemaVersion is > 0 and < 27).All(item => item.CompatibilityStatus == "Legacy / incomplete" && !item.CanRestore) &&
                                          compatibilityCatalog.Where(item => item.SchemaVersion is >= 27 and <= 35).All(item => item.CompatibilityStatus == "Migration required" && !item.CanRestore) &&
-                                         compatibilityCatalog.Where(item => item.SchemaVersion > 36).All(item => item.CompatibilityStatus == "Newer / incompatible" && !item.CanRestore) &&
+                                         compatibilityCatalog.Where(item => item.SchemaVersion > 37).All(item => item.CompatibilityStatus == "Newer / incompatible" && !item.CanRestore) &&
                                          typeof(LocalDatabase).GetMethod("GetLocalBackupCatalog") is not null &&
                                          typeof(LocalDatabase).GetMethod("VerifyBackupCompatibility") is not null &&
                                          typeof(MainWindow).GetMethod("ShowRecoveryCenter_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
@@ -17015,7 +17066,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         measurementDateEditProbe.MeasuredDateText = "";
         var clearedDateAccepted = measurementDateEditProbe.MeasuredDate is null && measurementDateEditProbe.MeasuredDateText == "";
         var measurementDateReady =
-            _database.CurrentSchemaVersion == 36 &&
+            _database.CurrentSchemaVersion == 37 &&
             nativeMetadataTable.Columns.Contains("MeasuredDate", StringComparer.OrdinalIgnoreCase) &&
             experimentalRunsTable.Columns.Contains("MeasuredDate", StringComparer.OrdinalIgnoreCase) &&
             typeof(ExperimentalRunRecord).GetProperty(nameof(ExperimentalRunRecord.MeasuredDate)) is not null &&
@@ -22503,28 +22554,6 @@ private List<string> GetVisibleAiMaterialLabels()
     }
 
 
-    private void SyncPurchaseOrderCurrencyRatesFromSettings()
-    {
-        var changed = false;
-        foreach (var order in _purchaseOrders)
-        {
-            var currency = (order.Currency ?? string.Empty).Trim().ToUpperInvariant();
-            if (string.IsNullOrWhiteSpace(currency)) continue;
-
-            var rate = GetIskRateForPurchaseCurrency(currency);
-            if (rate is null || string.Equals(order.ExchangeRate, rate, StringComparison.Ordinal)) continue;
-
-            order.ExchangeRate = rate;
-            changed = true;
-        }
-
-        if (!changed) return;
-
-        SavePurchaseOrders();
-        SchedulePurchaseOrderGridRefresh();
-        RefreshPurchaseOrderSummary();
-    }
-
     private void SaveNativeSettings_Click(object sender, RoutedEventArgs e)
     {
         SaveCanonicalNativeSettings();
@@ -22556,7 +22585,6 @@ private List<string> GetVisibleAiMaterialLabels()
         // Base Material Catalog is intentionally not replaced from JSON. SQLite owns it.
 
         RefreshNativeInputModulesFromMaterialManager(markDirty: false);
-        SyncPurchaseOrderCurrencyRatesFromSettings();
         ApplyNativeMaterialComputedFieldsToAllRows();
         RefreshNativeMaterialGridValidation();
         RefreshFastSettingsViews();
@@ -22575,7 +22603,6 @@ private List<string> GetVisibleAiMaterialLabels()
         SaveCanonicalNativeSettings();
         RefreshNativeInputModulesFromMaterialManager(markDirty: false);
         RefreshPurchaseCurrencyChoices();
-        SyncPurchaseOrderCurrencyRatesFromSettings();
         ApplyNativeMaterialComputedFieldsToAllRows();
         RefreshNativeMaterialGridValidation();
         RefreshFastSettingsViews();
@@ -24112,6 +24139,8 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void InitializePurchaseOrderManager()
     {
+        _ecbExchangeRateCatalog =
+            EcbExchangeRateReferenceService.LoadCache(EcbExchangeRateCachePath());
         foreach (var order in _database.LoadPurchaseOrders())
         {
             if (string.IsNullOrWhiteSpace(order.LifecycleStatus)) order.LifecycleStatus = "Draft";
@@ -24142,6 +24171,7 @@ private List<string> GetVisibleAiMaterialLabels()
         _purchaseOrderLines.CollectionChanged += (_, _) => SavePurchaseOrders();
         if (_purchaseOrders.Count > 0 && FindName("PurchaseOrdersGrid") is DataGrid grid) grid.SelectedIndex = 0;
         RefreshPurchaseOrderSummary();
+        RefreshEcbExchangeRateStatus();
     }
 
     private void SavePurchaseOrders() => _database.ReplacePurchaseOrders(_purchaseOrders, _purchaseOrderLines);
@@ -24218,18 +24248,119 @@ private List<string> GetVisibleAiMaterialLabels()
     private void ApplyPurchaseCurrencyRate(PurchaseOrderRecord order, bool showMissingRate)
     {
         order.Currency = (order.Currency ?? "ISK").Trim().ToUpperInvariant();
+        if (!_sessionNewPurchaseOrderIds.Contains(order.PurchaseOrderId))
+        {
+            RefreshEcbExchangeRateStatus(
+                "Saved order retained its original exchange rate.");
+            return;
+        }
+
+        var reference = _ecbExchangeRateCatalog?.Rates.FirstOrDefault(rate =>
+            string.Equals(rate.Currency, order.Currency, StringComparison.OrdinalIgnoreCase));
+        if (reference is not null)
+        {
+            order.ExchangeRate = reference.IskPerCurrencyUnit.ToString(
+                "0.######",
+                CultureInfo.InvariantCulture);
+            order.ExchangeRateSource = reference.Source;
+            order.ExchangeRateObservationDate = reference.ObservationDate;
+            order.ExchangeRateFetchedAtUtc = reference.FetchedAtUtc;
+            SchedulePurchaseOrderGridRefresh();
+            RefreshEcbExchangeRateStatus(
+                $"{order.Currency} reference {order.ExchangeRate} ISK; " +
+                $"ECB observation {order.ExchangeRateObservationDate}. " +
+                "Prefilled only for this new order.");
+            return;
+        }
+
         var rate = GetIskRateForPurchaseCurrency(order.Currency);
         if (rate is not null)
         {
             order.ExchangeRate = rate;
+            order.ExchangeRateSource = "Manual governed Settings";
+            order.ExchangeRateObservationDate = string.Empty;
+            order.ExchangeRateFetchedAtUtc = string.Empty;
             SchedulePurchaseOrderGridRefresh();
+            RefreshEcbExchangeRateStatus(
+                $"{order.Currency} used the manual governed Settings fallback.");
             return;
         }
         order.ExchangeRate = string.Empty;
+        order.ExchangeRateSource = string.Empty;
+        order.ExchangeRateObservationDate = string.Empty;
+        order.ExchangeRateFetchedAtUtc = string.Empty;
         SchedulePurchaseOrderGridRefresh();
         if (showMissingRate)
             MessageBox.Show(this, $"No valid ISK exchange rate is configured for {order.Currency}. Update 'ISK per 1 {order.Currency}' in Settings Manager.", "Purchase Currency", MessageBoxButton.OK, MessageBoxImage.Information);
     }
+
+    private string EcbExchangeRateCachePath()
+        => StorageWorkingFilePath("ecb-exchange-rate-reference-cache.json");
+
+    private async Task RefreshEcbExchangeRateCatalogAsync(bool showFailure)
+    {
+        if (AutomationRuntimeProfile.Current is not null)
+        {
+            RefreshEcbExchangeRateStatus(
+                "Automation is offline; deterministic ECB parser checks are used.");
+            return;
+        }
+
+        RefreshEcbExchangeRateStatus("Downloading ECB reference observations...");
+        try
+        {
+            _ecbExchangeRateCatalog =
+                await _ecbExchangeRateReferenceService.FetchAsync(
+                    EcbExchangeRateCachePath());
+            RefreshEcbExchangeRateStatus();
+        }
+        catch (Exception ex)
+        {
+            _ecbExchangeRateCatalog =
+                EcbExchangeRateReferenceService.LoadCache(EcbExchangeRateCachePath());
+            RefreshEcbExchangeRateStatus(
+                _ecbExchangeRateCatalog is null
+                    ? "ECB unavailable; new orders retain the manual governed Settings workflow."
+                    : "ECB unavailable; cached reference retained. " + ex.Message);
+            if (showFailure && _ecbExchangeRateCatalog is null)
+                MessageBox.Show(
+                    this,
+                    "ECB reference rates could not be downloaded. " +
+                    "The new order will use manual governed Settings values.\n\n" +
+                    ex.Message,
+                    "ECB Exchange-rate Reference",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+        }
+    }
+
+    private void RefreshEcbExchangeRateStatus(string? explicitStatus = null)
+    {
+        if (FindName("EcbExchangeRateStatusText") is not TextBlock text) return;
+        if (!string.IsNullOrWhiteSpace(explicitStatus))
+        {
+            text.Text = explicitStatus;
+            return;
+        }
+
+        var latest = _ecbExchangeRateCatalog?.Rates
+            .Select(rate => rate.ObservationDate)
+            .OrderByDescending(value => value, StringComparer.Ordinal)
+            .FirstOrDefault();
+        var stale = DateTime.TryParse(
+                        _ecbExchangeRateCatalog?.FetchedAtUtc,
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.RoundtripKind,
+                        out var fetched) &&
+                    DateTime.UtcNow - fetched.ToUniversalTime() > TimeSpan.FromDays(7);
+        text.Text = latest is null
+            ? "ECB reference not cached. Manual governed Settings remain available."
+            : $"ECB-derived reference cache{(stale ? " (stale)" : "")}: observation {latest}; " +
+              "applies only to new orders created in this session.";
+    }
+
+    private async void RefreshEcbExchangeRates_Click(object sender, RoutedEventArgs e)
+        => await RefreshEcbExchangeRateCatalogAsync(showFailure: true);
 
     private void SchedulePurchaseOrderGridRefresh()
     {
@@ -24259,12 +24390,17 @@ private List<string> GetVisibleAiMaterialLabels()
         foreach(var line in _purchaseOrderLines) line.MaterialDisplayName = labels.TryGetValue(line.MaterialId,out var label)?label:line.MaterialId;
     }
 
-    private void AddPurchaseOrder_Click(object sender, RoutedEventArgs e)
+    private async void AddPurchaseOrder_Click(object sender, RoutedEventArgs e)
     {
-        var order = new PurchaseOrderRecord { PurchaseOrderId = "PO-" + DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture), PurchaseDate = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), Currency = "ISK", ExchangeRate = "1", TaxTreatment = "VAT included in invoice", CostStatus = "Draft", LifecycleStatus = "Draft", ShippingAllocationMethod = "Automatic", TaxAllocationMethod = "By line value", CustomsAllocationMethod = "By line value", FeeAllocationMethod = "By line value" };
+        if (_ecbExchangeRateCatalog is null)
+            await RefreshEcbExchangeRateCatalogAsync(showFailure: false);
+        var order = new PurchaseOrderRecord { PurchaseOrderId = "PO-" + DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture), PurchaseDate = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), Currency = "ISK", ExchangeRate = "1", ExchangeRateSource = _ecbExchangeRateCatalog is null ? "Manual governed Settings" : EcbExchangeRateReferenceService.ProviderName, ExchangeRateObservationDate = _ecbExchangeRateCatalog?.Rates.FirstOrDefault(rate => rate.Currency == "ISK")?.ObservationDate ?? string.Empty, ExchangeRateFetchedAtUtc = _ecbExchangeRateCatalog?.FetchedAtUtc ?? string.Empty, TaxTreatment = "VAT included in invoice", CostStatus = "Draft", LifecycleStatus = "Draft", ShippingAllocationMethod = "Automatic", TaxAllocationMethod = "By line value", CustomsAllocationMethod = "By line value", FeeAllocationMethod = "By line value" };
+        _sessionNewPurchaseOrderIds.Add(order.PurchaseOrderId);
         _purchaseOrders.Add(order); SavePurchaseOrders();
         if (FindName("PurchaseOrdersGrid") is DataGrid grid) { grid.SelectedItem=order; grid.ScrollIntoView(order); }
         RefreshPurchaseOrderSummary();
+        RefreshEcbExchangeRateStatus(
+            "New order created. Select its currency to apply the current ECB reference prefill.");
     }
 
     private void DeletePurchaseOrder_Click(object sender, RoutedEventArgs e)

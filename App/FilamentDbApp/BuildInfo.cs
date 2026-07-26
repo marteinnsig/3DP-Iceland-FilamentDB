@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "PRINT-JOB-QUOTES";
-    public const string ReleaseTitle = "Print Job Quote Workflow";
+    public const string ReleaseCode = "ECB-EXCHANGE-RATE-REFERENCE";
+    public const string ReleaseTitle = "Optional Official Exchange-rate Reference Catalog";
 
     public static string Version
     {

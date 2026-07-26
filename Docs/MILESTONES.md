@@ -3,6 +3,12 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v48.2.0 - Optional Official Exchange-rate Reference Catalog
+
+The accepted ECB-derived Purchase Order reference preserves manual offline
+operation and immutable historical costs. Schema v37, deterministic recovery,
+owner runtime acceptance and Full Data Verification 364/364 pass.
+
 # v48.0.7 - Internal Usage Analytics
 
 Accepted private Usage analytics preserve append-only audit history while

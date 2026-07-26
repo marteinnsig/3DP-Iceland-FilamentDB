@@ -1,6 +1,15 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v48.2.0 - Optional Official Exchange-rate Reference Catalog
+
+Schema v37 adds immutable Purchase Order rate provenance and an optional
+ECB-derived reference prefill for orders created in the current session.
+Saved purchases, Inventory, Materials and quotes are never refreshed.
+Offline/manual Settings remain canonical fallbacks. Automated and owner
+acceptance pass Full Data Verification 364/364. Schema-v37 canonical seed and
+schema-v36 migration fixture are verified.
+
 ## v48.1.2 - Print Job Quote Workflow
 
 Schema v36 owns stable quote calculation snapshots with canonical Material or

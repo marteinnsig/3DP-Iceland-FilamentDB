@@ -8,6 +8,9 @@ public sealed class PurchaseOrderRecord
     public string PurchaseDate { get; set; } = string.Empty;
     public string Currency { get; set; } = "ISK";
     public string ExchangeRate { get; set; } = "1";
+    public string ExchangeRateSource { get; set; } = string.Empty;
+    public string ExchangeRateObservationDate { get; set; } = string.Empty;
+    public string ExchangeRateFetchedAtUtc { get; set; } = string.Empty;
     public string TaxTreatment { get; set; } = "VAT included in invoice";
     public string ShippingMethod { get; set; } = string.Empty;
     public string TrackingNumber { get; set; } = string.Empty;

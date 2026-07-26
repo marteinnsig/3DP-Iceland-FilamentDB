@@ -2,6 +2,19 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v48.2.0 - Optional Official Exchange-rate Reference Catalog
+
+Schema v37 adds ECB-derived Purchase Order rate provenance without introducing
+an automatic rewrite path for saved purchases, Inventory, Materials, Printers
+or quotes. The validated cache is operational and manual Settings remain the
+offline fallback.
+
+Debug/Release, documentation, roadmap, vulnerability, disposable smoke and
+recovery gates pass. Owner evidence confirms live ECB observation `2026-07-24`,
+schema v37 and Full Data Verification 364/364. The canonical tester seed is
+refreshed to schema v37 and schema v36 is retained as a migration fixture.
+v48.2.0 is canonical and runtime accepted.
+
 ## v48.1.2 - Print Job Quote Workflow
 
 Candidate schema v36 adds append-only quote snapshots, exact canonical/manual

@@ -259,7 +259,6 @@ public partial class MainWindow
             }
             RefreshNativeInputModulesFromMaterialManager(markDirty: false);
             RefreshPurchaseCurrencyChoices();
-            SyncPurchaseOrderCurrencyRatesFromSettings();
             return true;
         }
         catch (Exception ex)

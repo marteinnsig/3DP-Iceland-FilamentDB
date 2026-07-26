@@ -85,12 +85,21 @@ internal static class Program
                      {
                          "MaterialsTab", "TensileMeasurementsTab", "ImpactMeasurementsTab",
                          "StiffnessMeasurementsTab", "BaseMaterialsTab", "SettingsManagerTab",
-                         "PrintersTab", "PrintJobQuotesTab", "AiAssistantTab", "ReportsTab"
+                         "PurchaseOrdersTab", "PrintersTab", "PrintJobQuotesTab",
+                         "AiAssistantTab", "ReportsTab"
                      })
             {
                 SelectTab(main, tabId, application.Id);
                 Record("navigate-" + tabId, true, "Tab selected by AutomationId");
             }
+
+            SelectTab(main, "PurchaseOrdersTab", application.Id);
+            var ecbStatus = FindById(main, "EcbExchangeRateStatus").Current.Name;
+            Require(
+                ecbStatus.Contains("Automation is offline", StringComparison.Ordinal) ||
+                ecbStatus.Contains("Manual governed Settings", StringComparison.Ordinal),
+                "Purchase Orders did not retain the offline-safe ECB reference status.");
+            Record("ecb-reference-offline-boundary", true, ecbStatus);
 
             SelectTab(main, "AiAssistantTab", application.Id);
             Invoke(FindById(main, "RefreshAiAssistantScope"), application.Id);

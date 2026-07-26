@@ -1,4 +1,62 @@
-# Current Build Notes - v48.1.2
+# Current Build Notes - v48.2.0
+
+## Optional Official Exchange-rate Reference Catalog
+
+The candidate uses the documented ECB SDMX HTTPS API. It retrieves the latest
+EUR reference observations for ISK and the governed Purchasing currencies,
+then derives `ISK per 1 currency` as `ISK per EUR / currency per EUR`.
+Provenance labels the value as ECB-derived rather than a direct Central Bank
+of Iceland observation.
+
+Schema v37 adds source, observation date and fetch UTC to each Purchase Order.
+Only an order created in the current application session is eligible for ECB
+prefill when its currency is selected. Orders loaded from SQLite retain their
+stored rate and provenance. The legacy Settings reload/reset live-sync that
+rewrote persisted Purchase Orders has been removed.
+
+ECB refresh never edits governed Settings, Materials price fields, Inventory
+lots, Printers or saved quote snapshots. The optional cache is per profile and
+re-downloadable; it is not a canonical recovery table. Invalid, unavailable or
+offline responses fall back to the existing manual governed Settings workflow.
+Automation performs no live network call.
+
+The provider uses a fixed HTTPS host, no redirects, a 12-second timeout, a 1 MB
+response limit, strict CSV/date/positive-rate validation and strict cache
+identity validation. System Diagnostics exposes endpoint, cache path, fetch
+time, observation date and the new-order-only ownership boundary.
+
+Debug/Release app and AutomationRunner builds pass with zero warnings/errors.
+Documentation and 136-column roadmap gates pass. The read-only NuGet
+vulnerability scan reports no vulnerable direct or transitive packages.
+
+The first disposable smoke profile `20260726203553-6fe655e4` exposed 13
+recovery-gate failures because current-schema compatibility comparisons still
+used schema v36. No ECB, purchase or business-state gate failed. Updating those
+bounded comparisons to schema v37 removed the cascade.
+
+Disposable smoke profile `20260726203714-dcbdce20` passes Full Data
+Verification 364/364, offline ECB status, all tab navigation and exact
+logical/business-state preservation. Recovery profile
+`20260726203749-a8eac754` passes 24-table schema-v36 migration, mutation,
+transactional restore, restart and exact final business-state recovery.
+Production and FTPS remained blocked. Owner runtime evidence
+`3DPIceland_FilamentDB_Verification_20260726_210009.txt` passes 364/364.
+Diagnostics `3DPIceland_FilamentDB_System_Diagnostics_20260726_210017.txt`
+confirm schema v37, live ECB fetch UTC `2026-07-26T20:59:36.1893007Z`, latest
+observation `2026-07-24` and new-order-only ownership. Owner accepted live
+retrieval, prefill, offline behavior and historical-data immutability.
+
+Canonical tester seed `C:\Seed-Database\filamentdb.sqlite` is refreshed to
+schema v37 from the accepted disposable derivative. SHA-256 is
+`43503623D8D19A1F38B1505F456BDAA34E9B33AFF4609AD2F79CC2321B7150AE`.
+The prior schema-v36 seed is retained as
+`filamentdb-schema36-migration.sqlite`, SHA-256
+`6E276E26FB218BC588CC70DA57E10FE2E812A1CA5420494315BE2B22C205EAB0`.
+Both pass SQLite integrity and foreign-key checks. The v37 seed has 201
+Materials and zero Printer, Quote, Usage or automation residue. Final smoke
+profile `20260726210132-f34523ba` passes Full Data Verification 364/364 and
+exact logical/business-state preservation. v48.2.0 is complete, canonical and
+runtime accepted.
 
 ## Print Job Quote Workflow
 
