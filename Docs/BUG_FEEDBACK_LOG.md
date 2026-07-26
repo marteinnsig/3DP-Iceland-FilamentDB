@@ -1192,3 +1192,40 @@ rates from Settings; unsupported free text is blocked.
 persistence, Settings-backed currency dropdown and hourly-rate refresh.
 Full Data Verification evidence passes 362/362. Increment complete; immutable
 quote workflow continues in v48.1.2.
+
+2026-07-26 v48.1.2 candidate: schema v36 adds immutable Print Job Quote
+snapshots, canonical Material landed-cost or explicit manual-cost provenance,
+Printer/Settings/FX evidence, deterministic component totals and snapshot-based
+HTML export. Normal update/delete/recalculate actions are deliberately absent.
+
+2026-07-26 v48.1.2 runtime bug: Save Immutable Quote could appear to do
+nothing when draft validation blocked persistence because the reason was shown
+only in the calculation summary. Save now always reports validating, explicit
+not-saved reason, database failure or successful immutable Quote number.
+
+2026-07-26 v48.1.2 runtime bugs: Material selection did not prioritize the
+canonical Website Display Name, making Base Material/variant identity unclear.
+Quote validation also rejected an empty optional Printer upfront cost although
+the Printers workspace correctly treated it as zero. Dropdown labels now use
+Website Display Name first and empty optional numeric values normalize to zero.
+
+2026-07-26 v48.1.2 runtime scope revision: owner requested separate
+print/post-processing, customer consulting and parts design/change labor,
+customer-facing PDF output and deletion of obsolete/test quotes. The workflow
+now snapshots three labor-minute inputs, renders an A4 customer PDF without raw
+JSON, and supports confirmed owner deletion while preventing silent
+recalculation of retained saved quotes. Locale parsing also corrects `1,3`
+Printer buffer from the erroneous 13 to 1.3.
+
+2026-07-26 v48.1.2 customer PDF feedback: owner approved quote generation but
+classified MaterialID and Printer identity as internal-only, requested the
+3DP Iceland Labs logo and removed the external methodology credit from the
+customer document. PDF now shows the customer Material name without MaterialID,
+omits Printer entirely, embeds the canonical Labs logo and contains no
+Print Farm Academy reference. Internal saved snapshots retain exact IDs.
+
+2026-07-26 v48.1.2 acceptance: owner approved separate labor inputs, quote
+deletion, corrected comma-decimal pricing and the final customer PDF with the
+Labs logo and no internal MaterialID, Printer identity or methodology text.
+Full Data Verification passes 363/363. The increment is complete, canonical
+and runtime accepted.

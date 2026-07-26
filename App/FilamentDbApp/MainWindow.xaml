@@ -548,6 +548,92 @@
         </DataGrid>
     </Grid>
 </TabItem>
+<TabItem x:Name="PrintJobQuotesTab" Header="Print Job Quotes"
+         AutomationProperties.AutomationId="PrintJobQuotesTab">
+    <Grid Margin="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="520"/>
+            <ColumnDefinition Width="12"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="Print Job Quote" FontSize="22" FontWeight="SemiBold"/>
+                <TextBlock Text="Build a new quote from canonical Material and Printer data or explicit manual material evidence. Saved calculations stay stable; obsolete quotes can be deleted."
+                           Foreground="#64748B" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                <UniformGrid Columns="2">
+                    <StackPanel Margin="0,0,8,0"><TextBlock Text="Customer"/><TextBox x:Name="QuoteCustomerBox" AutomationProperties.AutomationId="QuoteCustomer"/></StackPanel>
+                    <StackPanel><TextBlock Text="Description"/><TextBox x:Name="QuoteDescriptionBox" AutomationProperties.AutomationId="QuoteDescription"/></StackPanel>
+                    <StackPanel Margin="0,0,8,0"><TextBlock Text="Prepared by"/><TextBox x:Name="QuotePreparedByBox"/></StackPanel>
+                    <StackPanel><TextBlock Text="Quote currency"/><ComboBox x:Name="QuoteCurrencySelector"/></StackPanel>
+                </UniformGrid>
+                <GroupBox Header="Material cost" Margin="0,8,0,8">
+                    <StackPanel>
+                        <ComboBox x:Name="QuoteMaterialSelector"
+                                  AutomationProperties.AutomationId="QuoteMaterialSelector"
+                                  DisplayMemberPath="Label"
+                                  SelectionChanged="QuoteInput_Changed"/>
+                        <CheckBox x:Name="QuoteManualMaterialCheck" Content="Use explicit manual cost per kg"
+                                  AutomationProperties.AutomationId="QuoteManualMaterialCheck"
+                                  Checked="QuoteManualMaterialCheck_Changed"
+                                  Unchecked="QuoteManualMaterialCheck_Changed"/>
+                        <UniformGrid Columns="2">
+                            <StackPanel Margin="0,0,8,0"><TextBlock Text="Manual cost / kg"/><TextBox x:Name="QuoteManualMaterialCostBox" TextChanged="QuoteInput_Changed"/></StackPanel>
+                            <StackPanel><TextBlock Text="Manual currency"/><ComboBox x:Name="QuoteManualCurrencySelector" SelectionChanged="QuoteInput_Changed"/></StackPanel>
+                            <StackPanel Margin="0,0,8,0"><TextBlock Text="Grams per part"/><TextBox x:Name="QuoteGramsPerPartBox" TextChanged="QuoteInput_Changed"/></StackPanel>
+                            <StackPanel><TextBlock Text="Quantity"/><TextBox x:Name="QuoteQuantityBox" TextChanged="QuoteInput_Changed"/></StackPanel>
+                        </UniformGrid>
+                        <TextBlock x:Name="QuoteMaterialEvidenceText" Foreground="#64748B" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Printer and time" Margin="0,0,0,8">
+                    <StackPanel>
+                        <ComboBox x:Name="QuotePrinterSelector"
+                                  AutomationProperties.AutomationId="QuotePrinterSelector"
+                                  DisplayMemberPath="DisplayLabel"
+                                  SelectionChanged="QuoteInput_Changed"/>
+                        <UniformGrid Columns="2">
+                            <StackPanel Margin="0,0,8,0"><TextBlock Text="Print hours"/><TextBox x:Name="QuotePrintHoursBox" TextChanged="QuoteInput_Changed"/></StackPanel>
+                            <StackPanel><TextBlock Text="Print/post-processing labor (min)"/><TextBox x:Name="QuotePrintLaborMinutesBox" TextChanged="QuoteInput_Changed"/></StackPanel>
+                            <StackPanel Margin="0,0,8,0"><TextBlock Text="Customer consulting (min)"/><TextBox x:Name="QuoteConsultingMinutesBox" TextChanged="QuoteInput_Changed"/></StackPanel>
+                            <StackPanel><TextBlock Text="Parts design / changes (min)"/><TextBox x:Name="QuoteDesignMinutesBox" TextChanged="QuoteInput_Changed"/></StackPanel>
+                            <StackPanel Margin="0,0,8,0"><TextBlock Text="Additional charges (ISK)"/><TextBox x:Name="QuoteAdditionalCostBox" TextChanged="QuoteInput_Changed"/></StackPanel>
+                            <StackPanel><TextBlock Text="Target margin (%)"/><TextBox x:Name="QuoteMarginBox" TextChanged="QuoteInput_Changed"/></StackPanel>
+                        </UniformGrid>
+                    </StackPanel>
+                </GroupBox>
+                <TextBlock x:Name="QuoteCalculationSummaryText"
+                           AutomationProperties.AutomationId="QuoteCalculationSummary"
+                           FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,4,0,8"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Save Quote" Click="SavePrintJobQuote_Click"
+                            AutomationProperties.AutomationId="SavePrintJobQuote" Margin="0,0,8,0"/>
+                    <Button Content="Export Selected PDF" Click="ExportPrintJobQuote_Click"
+                            AutomationProperties.AutomationId="ExportPrintJobQuote" Margin="0,0,8,0"/>
+                    <Button x:Name="DeletePrintJobQuote" Content="Delete Selected" Click="DeletePrintJobQuote_Click"
+                            AutomationProperties.AutomationId="DeletePrintJobQuote"/>
+                </StackPanel>
+                <TextBlock x:Name="QuoteStatusText" Foreground="#334155" TextWrapping="Wrap" Margin="0,8,0,0"/>
+            </StackPanel>
+        </ScrollViewer>
+        <GroupBox Grid.Column="2" Header="Saved Quote History">
+            <DataGrid x:Name="PrintJobQuoteHistoryGrid"
+                      AutomationProperties.AutomationId="PrintJobQuoteHistory"
+                      AutoGenerateColumns="False" IsReadOnly="True"
+                      CanUserAddRows="False" SelectionMode="Single">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Quote" Binding="{Binding QuoteNumber}" Width="120"/>
+                    <DataGridTextColumn Header="Created UTC" Binding="{Binding CreatedAtUtc}" Width="170"/>
+                    <DataGridTextColumn Header="Customer" Binding="{Binding CustomerName}" Width="150"/>
+                    <DataGridTextColumn Header="Material snapshot" Binding="{Binding MaterialLabelSnapshot}" Width="220"/>
+                    <DataGridTextColumn Header="Printer snapshot" Binding="{Binding PrinterLabelSnapshot}" Width="200"/>
+                    <DataGridTextColumn Header="Final price" Binding="{Binding FinalPriceQuoteCurrency}" Width="110"/>
+                    <DataGridTextColumn Header="Currency" Binding="{Binding QuoteCurrency}" Width="80"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+    </Grid>
+</TabItem>
 <TabItem Header="Inventory">
     <Grid Margin="12">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="2*"/></Grid.RowDefinitions>

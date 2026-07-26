@@ -1,6 +1,15 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v48.1.2 - Print Job Quote Workflow
+
+Schema v36 owns stable quote calculation snapshots with canonical Material or
+explicit manual-cost provenance, Printer/Settings/FX inputs and separate
+print/post-processing, consulting and design labor. Owners may delete obsolete
+quotes. Customer PDF export embeds the Labs logo while omitting MaterialID,
+Printer identity and internal evidence. Owner runtime/PDF acceptance and Full
+Data Verification 363/363 pass.
+
 ## v48.1.1 - Printer and Pricing Settings Foundation
 
 Schema v35 owns canonical PrinterProfiles, seven governed Pricing defaults and

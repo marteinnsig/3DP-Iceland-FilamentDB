@@ -1,4 +1,67 @@
-# Current Build Notes - v48.1.1
+# Current Build Notes - v48.1.2
+
+## Print Job Quote Workflow
+
+Candidate schema v36 adds append-only `PrintJobQuotes` as immutable calculation
+snapshots. A new Print Job Quotes workspace selects an active canonical
+Printer and either exact MaterialID `LandedCostUsdPerKg` or explicit manual
+cost/kg with governed source currency. Manual evidence never receives a
+MaterialID automatically.
+
+The v1 calculation applies grams per part × quantity exactly once, then the
+governed material-efficiency factor. It snapshots material and quote FX rates,
+all Printer inputs and derived hourly rate, Pricing Settings, time/labor,
+additional cost, margin, component totals and final ISK/quote-currency values.
+Saved quotes do not recalculate from later catalog/Settings changes. The owner
+may explicitly delete obsolete or test quotes from Saved Quote History.
+
+Customer PDF export reads the saved snapshot and never current catalog/Settings
+values. It uses an A4 quote layout with the Labs logo, customer, description,
+customer-safe Material name, quantity, unit price, total, final price and
+estimate terms. MaterialID, Printer identity and internal JSON evidence are not
+shown to the customer.
+Governed Excel recovery expands to 24 tables. Exact schema-v35 packages migrate
+with an empty PrintJobQuotes table; earlier supported packages retain their
+already-governed empty-table migrations.
+
+Disposable CRUD automation creates a quote tied to its disposable Material and
+Printer, verifies persistence and duplicate-ID rejection across restart, then
+uses an explicitly restricted automation-only cleanup adapter. Normal snapshot
+updates/recalculation remain absent; owner-confirmed deletion is available.
+The quote form owns separate minutes for print/post-processing labor, customer
+consulting and parts design/changes, all using the governed labor hourly rate.
+Locale-safe parsing treats `1,3` as 1.3, not 13, for Printer buffer and quote
+inputs.
+
+Debug and Release app/tester builds pass with zero warnings/errors. Disposable
+CRUD profile `20260726200110-78b75cc7` passes Full Data Verification 363/363,
+proves one immutable quote after create and restart/edit, zero after authorized
+cleanup, and exact baseline/final business-state equality. Recovery profile
+`20260726191402-0994d878` passes 24-table export, mutation, transactional
+restore, restart and exact business-state recovery. Owner runtime acceptance
+and owner runtime PDF review are complete. A representative A4 PDF was
+rendered from the customer template and visually inspected: header, customer
+metadata, customer-safe Material context, quote table, final total and terms
+fit one page without clipping or internal JSON exposure.
+The final customer revision embeds the canonical Labs logo, removes MaterialID,
+Printer identity and external methodology credit, and retains those internal
+identities only in the app snapshot.
+Owner accepted the complete workflow, deletion behavior and final customer PDF
+layout. Owner evidence
+`3DPIceland_FilamentDB_Verification_20260726_195537.txt` passes 363/363;
+v48.1.2 is complete, canonical and runtime accepted.
+
+Canonical tester seed `C:\Seed-Database\filamentdb.sqlite` is refreshed from
+the accepted disposable schema-v36 database. SHA-256 is
+`6E276E26FB218BC588CC70DA57E10FE2E812A1CA5420494315BE2B22C205EAB0`.
+The prior schema-v35 seed is retained as
+`filamentdb-schema35-migration.sqlite`, SHA-256
+`2F231B51A9728384979363CAD38AC101D9312AC00D71FC70019185BC99F84A78`.
+Both pass SQLite integrity and foreign-key checks; the v36 seed has zero
+Printer, Quote, Usage and automation residue. Disposable CRUD profile
+`20260726201020-61ee8843` passes Full Data Verification 363/363, quote
+create/restart/delete cleanup and exact final business-state recovery from the
+refreshed canonical seed.
 
 ## Printer and Pricing Settings Foundation
 

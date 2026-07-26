@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v48.0.7 — Internal Usage Analytics**
+Current canonical release: **v48.1.2 — Print Job Quote Workflow**
 
-Last runtime-accepted baseline: **v48.0.7 — Internal Usage Analytics**
+Last runtime-accepted baseline: **v48.1.2 — Print Job Quote Workflow**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v48.1.2 — Immutable Print Job Quote Workflow**
+Current roadmap increment: **v48.2 — Optional Official Exchange-rate Reference Catalog**
 
-Current acceptance note: v48.0.7 private usage analytics is runtime accepted with Full Data Verification 361/361.
+Current acceptance note: v48.1.2 Print Job Quote Workflow is runtime accepted with Full Data Verification 363/363.
 
 Candidate note: None.
 
@@ -1981,22 +1981,23 @@ to unstarted authoritative planning slots.
   - Owner accepted correction netting, coverage semantics, summary layout and exact MaterialID refresh.
   - Owner visually confirmed Usage remains absent from public report and website previews.
   - Owner Full Data Verification 361/361 passes; v48.0.7 is complete, canonical and runtime accepted.
-  - Current implementation increment: v48.1.2 — Immutable Print Job Quote Workflow.
+  - Current decision/research increment: v48.2 — Optional Official Exchange-rate Reference Catalog.
 - **v48.1 — MaterialID-aware Print Job Pricing and Immutable Quote Snapshots**
-  - State: v48.1.1 complete; v48.1.2 authoritative implementation increment.
+  - State: Complete, canonical and runtime accepted through v48.1.2.
   - Grams are per part and multiply quoted quantity exactly once.
   - ISK is default; other currencies require explicit governed rates that are snapshotted.
   - Materials use exact `LandedCostUsdPerKg`; manual cost/kg requires explicit currency and remains manual evidence.
   - Global Advanced defaults belong in Settings; printer ownership belongs in a separate canonical Printers catalog.
   - Uptime is entered and stored as an unambiguous 0–100 percent.
-  - Historical quote snapshots must be immutable.
+  - Saved quote calculations remain stable across Settings/catalog changes; owner-confirmed deletion is supported.
   - v48.1.0 owns contract/attribution; v48.1.1 owns Printers/settings; v48.1.2 owns quotes/export.
   - v48.1.1 adds schema v35, canonical PrinterProfiles, governed Pricing defaults and deterministic ISK/hour calculation.
   - v48.1.1 recovery owns 23 tables and accepts exact v34 packages with an empty PrinterProfiles migration.
   - v48.1.1 owner runtime acceptance and Full Data Verification 362/362 pass.
   - v48.1.2 now owns quote creation, Material/manual cost selection, immutable snapshots and export.
+  - v48.1.2 uses schema v36 and 24-table recovery; owner runtime acceptance and Full Data Verification 363/363 pass.
 - **v48.2 — Optional Official Exchange-rate Reference Catalog**
-  - State: Deferred/conditional.
+  - State: Current decision/research increment; implementation remains conditional.
   - Requires a stable official endpoint and reuse contract.
   - May prefill only new unsaved purchase data and must never rewrite saved purchases, lots or quotes.
 - **v49.0 — Experimental Workflow Extension**

@@ -11,7 +11,7 @@ namespace FilamentDbApp.Data;
 
 public sealed partial class LocalDatabase
 {
-    private const int SchemaVersion = 35;
+    private const int SchemaVersion = 36;
     private const int MinimumStandaloneBackupSchemaVersion = 27;
     private const int MaxAutomaticBackups = 20;
     private const string AutomaticBackupPrefix = "filamentdb_";
@@ -29,7 +29,7 @@ public sealed partial class LocalDatabase
         "Manufacturers", "BaseMaterialCatalog", "NativeMaterialManagerRows", "NativeSettingsRows", "DeploymentSettings", "WebsiteTemplates", "VideoIdeaQueue", "Suppliers",
         "PurchaseOrders", "PurchaseOrderLines", "InventorySpoolItems", "PurchaseDocuments", "ExperimentDefinitions", "MaterialExperiments", "ExperimentalRuns", "ExperimentalMeasurements",
         "NativeTensileSamples", "NativeTensileResults", "NativeImpactSamples", "NativeStiffnessMeasurements", "NativeMeasurementNotes",
-        "PrinterProfiles", "UsageEvents"
+        "PrinterProfiles", "PrintJobQuotes", "UsageEvents"
     };
     private static readonly string[] LegacyWorkbookTablesDropOrder =
     {
@@ -754,8 +754,9 @@ public sealed partial class LocalDatabase
             .ToList();
         var allowedMissingTables = snapshot.SourceSchemaVersion switch
         {
-            < 34 => new[] { "PrinterProfiles", "UsageEvents" },
-            34 => new[] { "PrinterProfiles" },
+            < 34 => new[] { "PrinterProfiles", "PrintJobQuotes", "UsageEvents" },
+            34 => new[] { "PrinterProfiles", "PrintJobQuotes" },
+            35 => new[] { "PrintJobQuotes" },
             _ => Array.Empty<string>()
         };
         var compatibleLegacyPackage =
@@ -795,9 +796,12 @@ public sealed partial class LocalDatabase
                     table = new ExcelRecoveryTable
                     {
                         TableName = tableName,
-                        SheetName = tableName == "PrinterProfiles"
-                            ? "DR22 PrinterProfiles"
-                            : "DR23 UsageEvents",
+                        SheetName = tableName switch
+                        {
+                            "PrinterProfiles" => "DR22 PrinterProfiles",
+                            "PrintJobQuotes" => "DR23 PrintJobQuotes",
+                            _ => "DR24 UsageEvents"
+                        },
                         Columns = GetTableColumnDefinitions(connection, tableName)
                             .Select(column => column.Name)
                             .ToList()
@@ -1419,6 +1423,31 @@ CREATE TABLE IF NOT EXISTS PrinterProfiles (
 );
 CREATE INDEX IF NOT EXISTS IX_PrinterProfiles_ActiveName
     ON PrinterProfiles(IsActive, Name);
+
+CREATE TABLE IF NOT EXISTS PrintJobQuotes (
+    QuoteId TEXT PRIMARY KEY,
+    QuoteNumber TEXT NOT NULL,
+    CreatedAtUtc TEXT NOT NULL,
+    PreparedBy TEXT NOT NULL,
+    CustomerName TEXT NOT NULL,
+    Description TEXT NOT NULL,
+    MaterialId TEXT,
+    MaterialLabelSnapshot TEXT NOT NULL,
+    MaterialCostProvenance TEXT NOT NULL,
+    PrinterId TEXT NOT NULL,
+    PrinterLabelSnapshot TEXT NOT NULL,
+    QuoteCurrency TEXT NOT NULL,
+    FinalPriceQuoteCurrency TEXT NOT NULL,
+    FinalPriceIsk TEXT NOT NULL,
+    CalculationVersion TEXT NOT NULL,
+    SnapshotJson TEXT NOT NULL,
+    FOREIGN KEY (MaterialId) REFERENCES NativeMaterialManagerRows(MaterialId) ON DELETE RESTRICT,
+    FOREIGN KEY (PrinterId) REFERENCES PrinterProfiles(PrinterId) ON DELETE RESTRICT
+);
+CREATE UNIQUE INDEX IF NOT EXISTS UX_PrintJobQuotes_QuoteNumber
+    ON PrintJobQuotes(QuoteNumber);
+CREATE INDEX IF NOT EXISTS IX_PrintJobQuotes_CreatedAtUtc
+    ON PrintJobQuotes(CreatedAtUtc);
 
 CREATE TABLE IF NOT EXISTS PurchaseOrders (
     PurchaseOrderId TEXT PRIMARY KEY, Supplier TEXT, OrderNumber TEXT, PurchaseDate TEXT, Currency TEXT, ExchangeRate TEXT,

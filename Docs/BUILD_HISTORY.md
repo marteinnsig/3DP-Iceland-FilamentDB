@@ -2,6 +2,16 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v48.1.2 - Print Job Quote Workflow
+
+Candidate schema v36 adds append-only quote snapshots, exact canonical/manual
+material-cost provenance, deterministic quote calculation and snapshot-based
+HTML export. Recovery expands to 24 tables.
+Debug/Release and disposable CRUD/recovery automation pass; Full Data
+Verification is 363/363 with exact baseline/final business-state equality.
+Owner accepted labor separation, deletion, corrected comma-decimal pricing and
+the customer-safe branded PDF. v48.1.2 is canonical and runtime accepted.
+
 ## v48.1.1 - Printer and Pricing Settings Foundation
 
 Candidate schema v35 establishes canonical PrinterProfiles, Pricing Settings

@@ -64,12 +64,6 @@ public sealed partial class LocalDatabase
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
         using var transaction = connection.BeginTransaction();
-        using (var clear = connection.CreateCommand())
-        {
-            clear.Transaction = transaction;
-            clear.CommandText = "DELETE FROM PrinterProfiles;";
-            clear.ExecuteNonQuery();
-        }
         foreach (var row in rows)
         {
             using var insert = connection.CreateCommand();
@@ -87,7 +81,23 @@ public sealed partial class LocalDatabase
                                      $id,$name,$manufacturer,$model,$currency,
                                      $purchase,$upfront,$maintenance,$life,
                                      $uptime,$power,$buffer,$active,$notes,
-                                     $provenance,$updated);
+                                     $provenance,$updated)
+                                 ON CONFLICT(PrinterId) DO UPDATE SET
+                                     Name=excluded.Name,
+                                     Manufacturer=excluded.Manufacturer,
+                                     Model=excluded.Model,
+                                     CostCurrency=excluded.CostCurrency,
+                                     PurchaseCostAmount=excluded.PurchaseCostAmount,
+                                     AdditionalUpfrontCostAmount=excluded.AdditionalUpfrontCostAmount,
+                                     AnnualMaintenanceAmount=excluded.AnnualMaintenanceAmount,
+                                     EstimatedLifeYears=excluded.EstimatedLifeYears,
+                                     UptimePercent=excluded.UptimePercent,
+                                     AveragePowerWatts=excluded.AveragePowerWatts,
+                                     BufferOverride=excluded.BufferOverride,
+                                     IsActive=excluded.IsActive,
+                                     Notes=excluded.Notes,
+                                     Provenance=excluded.Provenance,
+                                     UpdatedAtUtc=excluded.UpdatedAtUtc;
                                  """;
             insert.Parameters.AddWithValue("$id", row.PrinterId.Trim());
             insert.Parameters.AddWithValue("$name", row.Name.Trim());
@@ -116,6 +126,24 @@ public sealed partial class LocalDatabase
                 "$updated",
                 DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture));
             insert.ExecuteNonQuery();
+        }
+        var retainedIds = rows.Select(row => row.PrinterId.Trim()).ToList();
+        using (var deleteMissing = connection.CreateCommand())
+        {
+            deleteMissing.Transaction = transaction;
+            if (retainedIds.Count == 0)
+            {
+                deleteMissing.CommandText = "DELETE FROM PrinterProfiles;";
+            }
+            else
+            {
+                var names = retainedIds.Select((_, index) => "$keep" + index).ToList();
+                deleteMissing.CommandText =
+                    $"DELETE FROM PrinterProfiles WHERE PrinterId NOT IN ({string.Join(",", names)});";
+                for (var index = 0; index < retainedIds.Count; index++)
+                    deleteMissing.Parameters.AddWithValue("$keep" + index, retainedIds[index]);
+            }
+            deleteMissing.ExecuteNonQuery();
         }
         transaction.Commit();
     }

@@ -85,7 +85,7 @@ internal static class Program
                      {
                          "MaterialsTab", "TensileMeasurementsTab", "ImpactMeasurementsTab",
                          "StiffnessMeasurementsTab", "BaseMaterialsTab", "SettingsManagerTab",
-                         "PrintersTab", "AiAssistantTab", "ReportsTab"
+                         "PrintersTab", "PrintJobQuotesTab", "AiAssistantTab", "ReportsTab"
                      })
             {
                 SelectTab(main, tabId, application.Id);
@@ -173,6 +173,7 @@ internal static class Program
             {
                 RunCrudAction(main, application.Id, "AutomationCrudCreate", "CREATED");
                 RecordDatabaseEvidence(root, databasePath, "crud-after-create");
+                ValidateQuotePersistence(databasePath, materialCrudId, 1);
                 ValidateUsagePersistence(databasePath, materialCrudId, 1, 0, 0, "900");
                 ValidateUsageWorkspace(main, application.Id, materialCrudId, 1);
                 ValidateUsageAnalytics(main, materialCrudId, 1, 1, "100.00 g", "1 h");
@@ -180,6 +181,7 @@ internal static class Program
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudEdit", "EDITED");
                 RecordDatabaseEvidence(root, databasePath, "crud-after-edit");
+                ValidateQuotePersistence(databasePath, materialCrudId, 1);
                 ValidateUsagePersistence(databasePath, materialCrudId, 3, 1, 1, "920");
                 ValidateUsageWorkspace(main, application.Id, materialCrudId, 3);
                 ValidateUsageAnalytics(main, materialCrudId, 1, 3, "80.00 g", "55 min");
@@ -187,6 +189,7 @@ internal static class Program
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudDelete", "DELETED");
                 RecordDatabaseEvidence(root, databasePath, "crud-after-delete");
+                ValidateQuotePersistence(databasePath, materialCrudId, 0);
                 Record("crud-restart-delete-save", true, materialCrudId);
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudVerifyAbsent", "ABSENT");
@@ -1042,6 +1045,34 @@ internal static class Program
             true,
             $"{materialId}: events={events}; reversals={reversals}; " +
             $"replacements={replacements}; remaining={remainingDetail}");
+    }
+
+    private static void ValidateQuotePersistence(
+        string databasePath,
+        string materialId,
+        int expectedQuotes)
+    {
+        using var connection = new SqliteConnection(
+            $"Data Source={databasePath};Mode=ReadOnly;Pooling=False");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+                              SELECT COUNT(*)
+                              FROM PrintJobQuotes
+                              WHERE MaterialId=$material
+                                AND QuoteId=$quote
+                                AND CalculationVersion='v1'
+                                AND SnapshotJson LIKE '%3dpiceland-print-job-quote-v1%';
+                              """;
+        command.Parameters.AddWithValue("$material", materialId);
+        command.Parameters.AddWithValue("$quote", "AUT-Q-" + materialId);
+        var actual = Convert.ToInt32(
+            command.ExecuteScalar(), CultureInfo.InvariantCulture);
+        Require(actual == expectedQuotes,
+            $"Immutable Quote persistence mismatch for {materialId}: " +
+            $"{actual}/{expectedQuotes}.");
+        Record("quote-persistence-" + expectedQuotes, true,
+            $"{materialId}: immutable v1 snapshot count={actual}");
     }
 
     private static void ValidateUsageWorkspace(

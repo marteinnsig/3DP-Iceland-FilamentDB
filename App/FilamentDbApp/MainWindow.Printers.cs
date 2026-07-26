@@ -109,7 +109,17 @@ public partial class MainWindow
             MessageBoxResult.No);
         if (answer != MessageBoxResult.Yes) return;
         _printerRows.Remove(row);
-        SavePrinters();
+        try
+        {
+            SavePrinters();
+        }
+        catch (Microsoft.Data.Sqlite.SqliteException)
+        {
+            _printerRows.Add(row);
+            PrinterGrid.SelectedItem = row;
+            PrinterRateStatusText.Text =
+                "Delete blocked: an immutable saved quote references this PrinterID. Archive it instead.";
+        }
     }
 
     private void SavePrinters_Click(object sender, RoutedEventArgs e) => SavePrinters();
@@ -200,9 +210,17 @@ public partial class MainWindow
             value = 0;
             return true;
         }
-        return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture,
-                   out value) ||
-               decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture,
-                   out value);
+        var normalized = text.Trim().Replace(" ", "");
+        if (normalized.Contains(',') && !normalized.Contains('.'))
+            normalized = normalized.Replace(',', '.');
+        else if (normalized.Contains(',') && normalized.Contains('.'))
+        {
+            if (normalized.LastIndexOf(',') > normalized.LastIndexOf('.'))
+                normalized = normalized.Replace(".", "").Replace(',', '.');
+            else
+                normalized = normalized.Replace(",", "");
+        }
+        return decimal.TryParse(normalized, NumberStyles.AllowLeadingSign |
+            NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out value);
     }
 }

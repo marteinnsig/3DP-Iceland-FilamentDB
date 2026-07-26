@@ -2,6 +2,24 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v48.1.2 - Print Job Quote Workflow
+
+- Adds schema v36 with append-only immutable PrintJobQuotes snapshots.
+- Supports exact MaterialID landed USD/kg or explicit manual cost/currency.
+- Applies grams per part × quantity once and snapshots Printer, Settings, FX,
+  component totals, margin, provenance and calculation version.
+- Adds saved quote history, explicit owner deletion and customer-facing PDF
+  export without internal JSON evidence.
+- Separates print/post-processing, consulting and design/change labor minutes.
+- Corrects comma-decimal parsing so a Printer buffer of `1,3` remains 1.3.
+- Expands governed Excel recovery to 24 tables with exact v35 compatibility.
+- Extends disposable CRUD automation with quote persistence, identity
+  immutability and exact cleanup.
+- Debug/Release and disposable CRUD/recovery automation pass; candidate Full
+  Data Verification is 363/363.
+- Owner accepted the final quote workflow and customer-safe Labs-branded PDF;
+  Full Data Verification passes 363/363.
+
 ## v48.1.1 - Printer and Pricing Settings Foundation
 
 - Adds schema v35 with canonical PrinterProfiles and exact governed recovery.
