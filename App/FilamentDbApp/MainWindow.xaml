@@ -2069,6 +2069,13 @@
                                        Foreground="#0F172A" Margin="0,0,0,4"/>
                             <TextBlock Text="Collections are local snapshots of canonical MaterialIDs. Pipeline status is local workflow metadata and does not change Materials data."
                                        Foreground="#64748B" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                            <TextBlock Name="AiCollectionActionText"
+                                       AutomationProperties.AutomationId="AiCollectionActionState"
+                                       Text="Action: Create a new collection from the current visible MaterialIDs."
+                                       FontWeight="SemiBold"
+                                       Foreground="#0F172A"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,0,8"/>
                             <WrapPanel>
                                 <TextBlock Text="Intelligence scope" VerticalAlignment="Center" Margin="0,0,8,8"/>
                                 <ComboBox Name="AiMaterialCollectionScopeCombo" Width="170" Height="28" SelectedIndex="0" Margin="0,0,16,8">
@@ -2077,12 +2084,32 @@
                                 </ComboBox>
 
                                 <TextBlock Text="Collection title" VerticalAlignment="Center" Margin="0,0,8,8"/>
-                                <TextBox Name="AiMaterialCollectionTitleBox" Width="220" Height="28" Text="New material collection" Margin="0,0,16,8"/>
+                                <TextBox Name="AiMaterialCollectionTitleBox"
+                                         Width="220"
+                                         Height="28"
+                                         Text="New material collection"
+                                         TextChanged="AiMaterialCollectionTitleBox_TextChanged"
+                                         Margin="0,0,16,8"/>
 
                                 <TextBlock Text="Collections" VerticalAlignment="Center" Margin="0,0,8,8"/>
-                                <ComboBox Name="AiMaterialCollectionsCombo" Width="260" Height="28" Margin="0,0,16,8"/>
+                                <ComboBox Name="AiMaterialCollectionsCombo"
+                                          Width="260"
+                                          Height="28"
+                                          SelectionChanged="AiMaterialCollectionsCombo_SelectionChanged"
+                                          Margin="0,0,16,8"/>
 
-                                <Button Content="Save Visible as Collection" Click="SaveAiMaterialCollection_Click" Padding="12,6" Margin="0,0,8,8"/>
+                                <Button Name="PreviewAiMaterialCollection"
+                                        Content="Preview Visible Collection"
+                                        AutomationProperties.AutomationId="PreviewAiMaterialCollection"
+                                        Click="PreviewAiMaterialCollection_Click"
+                                        Padding="12,6"
+                                        Margin="0,0,8,8"/>
+                                <Button Name="SaveAiMaterialCollection"
+                                        Content="Create / Update Collection..."
+                                        AutomationProperties.AutomationId="SaveAiMaterialCollection"
+                                        Click="SaveAiMaterialCollection_Click"
+                                        Padding="12,6"
+                                        Margin="0,0,8,8"/>
                                 <Button Content="Load Collection Brief" Click="LoadAiMaterialCollectionBrief_Click" Padding="12,6" Margin="0,0,8,8"/>
                                 <Button Content="Delete Collection" Click="DeleteAiMaterialCollection_Click" Padding="12,6" Margin="0,0,20,8"/>
 

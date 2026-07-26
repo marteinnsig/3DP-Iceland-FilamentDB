@@ -13712,6 +13712,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? $"{canonicalVisibleRows.Count} visible and {canonicalActiveRows.Count} active unique MaterialIDs come from the native SQLite-backed Materials view; legacy tab absent"
                 : "Native active/visible MaterialID parity or legacy-tab removal failed"));
         var aiAssistantScopeReady =
+            (!AutomationRuntimeProfile.IsActive ||
+             string.Equals(
+                 AiAssistantStorageFolder,
+                 AutomationRuntimeProfile.Current?.PreferencesFolder,
+                 StringComparison.OrdinalIgnoreCase)) &&
             WorkspaceTabs.Items.OfType<TabItem>().Any(item =>
                 AutomationProperties.GetAutomationId(item) == "AiAssistantTab") &&
             FindName("AiAssistantScopeSummary") is TextBlock aiScopeSummary &&
@@ -13722,11 +13727,36 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             AutomationProperties.GetAutomationId(aiScopeMaterialIds) == "AiAssistantScopeMaterialIds" &&
             aiScopeMaterialIds.Text.StartsWith("MaterialID preview:", StringComparison.Ordinal) &&
             FindName("AiAssistantOutputBox") is TextBox aiAssistantOutput &&
-            AutomationProperties.GetAutomationId(aiAssistantOutput) == "AiAssistantOutput";
+            AutomationProperties.GetAutomationId(aiAssistantOutput) == "AiAssistantOutput" &&
+            FindName("AiCollectionActionText") is TextBlock aiCollectionAction &&
+            AutomationProperties.GetAutomationId(aiCollectionAction) == "AiCollectionActionState" &&
+            aiCollectionAction.Text.StartsWith("Action:", StringComparison.Ordinal) &&
+            FindName("PreviewAiMaterialCollection") is Button aiCollectionPreview &&
+            AutomationProperties.GetAutomationId(aiCollectionPreview) == "PreviewAiMaterialCollection" &&
+            FindName("SaveAiMaterialCollection") is Button aiCollectionSave &&
+            AutomationProperties.GetAutomationId(aiCollectionSave) == "SaveAiMaterialCollection";
         checks.Add(new VerificationCheck("Local AI Assistant scope clarity", aiAssistantScopeReady,
             aiAssistantScopeReady
-                ? $"{canonicalVisibleRows.Count} canonical visible row(s) are exposed as a local-only MaterialID scope before generation"
-                : "Local-only identity, visible MaterialID scope preview or stable AutomationId contract is incomplete"));
+                ? $"{canonicalVisibleRows.Count} canonical visible row(s), read-only collection preview and explicit Create/Update state are exposed"
+                : "Local-only scope, collection preview, Create/Update state or stable AutomationId contract is incomplete"));
+        var cancelledCollectionProbe = BuildAiMaterialCollectionCancelledOutput(
+            new AiMaterialCollection
+            {
+                Title = "Persisted probe",
+                MaterialKeys = new List<string> { "MAT-PERSISTED-1", "MAT-PERSISTED-2" }
+            },
+            "Persisted probe",
+            new List<string> { "MAT-PROPOSED-1" });
+        var aiCollectionCancelReady =
+            cancelledCollectionProbe.Contains("No collection data was changed.", StringComparison.Ordinal) &&
+            cancelledCollectionProbe.Contains("Discarded current-filter proposal: 1 MaterialID(s).", StringComparison.Ordinal) &&
+            cancelledCollectionProbe.Contains("Persisted membership: 2 MaterialID(s)", StringComparison.Ordinal) &&
+            cancelledCollectionProbe.Contains("MAT-PERSISTED-1", StringComparison.Ordinal) &&
+            !cancelledCollectionProbe.Contains("MAT-PROPOSED-1", StringComparison.Ordinal);
+        checks.Add(new VerificationCheck("AI collection cancel-state honesty", aiCollectionCancelReady,
+            aiCollectionCancelReady
+                ? "Cancelled update reports persisted membership separately and discards the current-filter proposal"
+                : "Cancelled update output could misrepresent proposed filter scope as persisted collection membership"));
         var persistedBaseMaterials = _database.LoadBaseMaterialCatalog();
         var materialGridHeaders = BuildFastMaterialsColumns()
             .Select(column => column.Header)
@@ -19550,6 +19580,40 @@ private void UpdateDashboardInsights()
         }
     }
 
+    private void AiMaterialCollectionTitleBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        UpdateAiCollectionActionState();
+    }
+
+    private void AiMaterialCollectionsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var collection = GetSelectedAiMaterialCollection();
+        if (collection is not null)
+        {
+            SetTextBoxText("AiMaterialCollectionTitleBox", collection.Title);
+        }
+
+        UpdateAiCollectionActionState();
+    }
+
+    private void UpdateAiCollectionActionState()
+    {
+        if (FindName("AiCollectionActionText") is not TextBlock actionText)
+        {
+            return;
+        }
+
+        var title = GetTextBoxText("AiMaterialCollectionTitleBox").Trim();
+        var existing = string.IsNullOrWhiteSpace(title)
+            ? null
+            : LoadAiMaterialCollections().FirstOrDefault(item =>
+                string.Equals(item.Title, title, StringComparison.OrdinalIgnoreCase));
+
+        actionText.Text = existing is null
+            ? "Action: Create a new collection from the current visible MaterialIDs."
+            : $"Action: Update existing collection '{existing.Title}' ({(existing.MaterialKeys?.Count ?? 0):N0} saved MaterialID(s)). Confirmation required.";
+    }
+
     private void AiPromptTemplateCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         SetAiPromptTemplateText(GetSelectedAiTemplateName());
@@ -19806,14 +19870,16 @@ private void UpdateDashboardInsights()
         }
     }
 
-    private string AiAssistantStorageFolder => System.IO.Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "3DPIcelandLabs",
-        "FilamentDbApp");
+    private string AiAssistantStorageFolder =>
+        AutomationRuntimeProfile.Current?.PreferencesFolder ??
+        IOPath.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "3DPIcelandLabs",
+            "FilamentDbApp");
 
-    private string AiAssistantSessionsPath => System.IO.Path.Combine(AiAssistantStorageFolder, "ai-assistant-sessions.json");
+    private string AiAssistantSessionsPath => IOPath.Combine(AiAssistantStorageFolder, "ai-assistant-sessions.json");
 
-    private string AiMaterialCollectionsPath => System.IO.Path.Combine(AiAssistantStorageFolder, "ai-material-collections.json");
+    private string AiMaterialCollectionsPath => IOPath.Combine(AiAssistantStorageFolder, "ai-material-collections.json");
 
     private List<AiAssistantSavedSession> LoadAiSavedSessions()
     {
@@ -19864,8 +19930,110 @@ private void UpdateDashboardInsights()
             combo.SelectedIndex = 0;
         }
     }
+    private void PreviewAiMaterialCollection_Click(object sender, RoutedEventArgs e)
+    {
+        SetAiAssistantOutput(BuildAiMaterialCollectionSavePreview());
+    }
 
+    private string BuildAiMaterialCollectionSavePreview()
+    {
+        var rows = GetCanonicalVisibleMaterialRows();
+        var materialKeys = rows
+            .Select(BuildAiMaterialKey)
+            .Where(key => !string.IsNullOrWhiteSpace(key))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var title = GetTextBoxText("AiMaterialCollectionTitleBox").Trim();
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            title = "(automatic timestamp title)";
+        }
 
+        var existing = LoadAiMaterialCollections().FirstOrDefault(item =>
+            string.Equals(item.Title, title, StringComparison.OrdinalIgnoreCase));
+        var lines = new List<string>
+        {
+            "COLLECTION SAVE PREVIEW",
+            "=======================",
+            "No data has been written.",
+            $"Action: {(existing is null ? "Create new collection" : "Update existing collection")}",
+            $"Title: {title}",
+            $"Current visible rows: {rows.Count:N0}",
+            $"Unique MaterialIDs to save: {materialKeys.Count:N0}",
+            existing is null
+                ? "Existing saved membership: not applicable"
+                : $"Existing saved membership: {(existing.MaterialKeys?.Count ?? 0):N0} MaterialID(s)",
+            "",
+            "MATERIALID PREVIEW",
+            "------------------"
+        };
+
+        if (materialKeys.Count == 0)
+        {
+            lines.Add("No visible MaterialIDs are available.");
+        }
+        else
+        {
+            lines.AddRange(materialKeys.Take(20).Select(id => "- " + id));
+            if (materialKeys.Count > 20)
+            {
+                lines.Add($"- ... and {materialKeys.Count - 20:N0} more");
+            }
+        }
+
+        lines.Add("");
+        lines.Add(existing is null
+            ? "Create / Update Collection will ask for confirmation before creating this local snapshot."
+            : "Create / Update Collection will ask before replacing the existing exact saved membership.");
+        return string.Join("\r\n", lines);
+    }
+
+    private static string BuildAiMaterialCollectionCancelledOutput(
+        AiMaterialCollection? existing,
+        string title,
+        IReadOnlyList<string> proposedMaterialKeys)
+    {
+        var lines = new List<string>
+        {
+            "SAVE CANCELLED",
+            "==============",
+            "No collection data was changed.",
+            $"Discarded current-filter proposal: {proposedMaterialKeys.Count:N0} MaterialID(s).",
+            ""
+        };
+
+        if (existing is null)
+        {
+            lines.Add($"No collection named '{title}' was created.");
+            return string.Join("\r\n", lines);
+        }
+
+        var persistedMaterialKeys = existing.MaterialKeys ?? new List<string>();
+        lines.Add("EXISTING COLLECTION REMAINS UNCHANGED");
+        lines.Add("-------------------------------------");
+        lines.Add($"Title: {existing.Title}");
+        lines.Add($"Persisted membership: {persistedMaterialKeys.Count:N0} MaterialID(s)");
+        lines.Add("");
+        lines.Add("PERSISTED MATERIALID PREVIEW");
+        lines.Add("----------------------------");
+
+        if (persistedMaterialKeys.Count == 0)
+        {
+            lines.Add("No saved MaterialIDs.");
+        }
+        else
+        {
+            lines.AddRange(persistedMaterialKeys.Take(20).Select(id => "- " + id));
+            if (persistedMaterialKeys.Count > 20)
+            {
+                lines.Add($"- ... and {persistedMaterialKeys.Count - 20:N0} more");
+            }
+        }
+
+        lines.Add("");
+        lines.Add("Use Load Collection Brief to review the unchanged saved collection.");
+        return string.Join("\r\n", lines);
+    }
 
     private void SaveAiMaterialCollection_Click(object sender, RoutedEventArgs e)
     {
@@ -19882,6 +20050,7 @@ private void UpdateDashboardInsights()
             if (string.IsNullOrWhiteSpace(title))
             {
                 title = $"Material collection {DateTime.Now:yyyy-MM-dd HH.mm}";
+                SetTextBoxText("AiMaterialCollectionTitleBox", title);
             }
 
             var materialKeys = rows.Select(BuildAiMaterialKey).Where(key => !string.IsNullOrWhiteSpace(key)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
@@ -19889,6 +20058,36 @@ private void UpdateDashboardInsights()
 
             var collections = LoadAiMaterialCollections().ToList();
             var existing = collections.FirstOrDefault(item => string.Equals(item.Title, title, StringComparison.OrdinalIgnoreCase));
+            var confirmationIds = string.Join(", ", materialKeys.Take(12));
+            if (materialKeys.Count > 12)
+            {
+                confirmationIds += $" ... and {materialKeys.Count - 12:N0} more";
+            }
+
+            var confirmationText = existing is null
+                ? $"Create new local collection '{title}' with {materialKeys.Count:N0} exact MaterialID(s)?\n\n" +
+                  $"MaterialID preview: {confirmationIds}\n\n" +
+                  "No Materials, measurements, reports or website data will be changed."
+                : $"Update existing local collection '{existing.Title}'?\n\n" +
+                  $"Existing saved membership: {(existing.MaterialKeys?.Count ?? 0):N0} MaterialID(s)\n" +
+                  $"Replacement visible membership: {materialKeys.Count:N0} MaterialID(s)\n\n" +
+                  $"Replacement MaterialID preview: {confirmationIds}\n\n" +
+                  "This replaces the collection's saved membership only. Existing pipeline status metadata is not deleted.";
+            var confirmation = MessageBox.Show(
+                confirmationText,
+                existing is null ? "Create Material Collection?" : "Update Material Collection?",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question,
+                MessageBoxResult.No);
+            if (confirmation != MessageBoxResult.Yes)
+            {
+                SetAiAssistantOutput(BuildAiMaterialCollectionCancelledOutput(
+                    existing,
+                    title,
+                    materialKeys));
+                return;
+            }
+
             if (existing is null)
             {
                 existing = new AiMaterialCollection
@@ -19902,13 +20101,14 @@ private void UpdateDashboardInsights()
 
             existing.Title = title;
             existing.MaterialKeys = materialKeys;
-            existing.MaterialLabels = GetVisibleAiMaterialLabels();
+            existing.MaterialLabels = materialLabels;
             existing.DatabaseContext = $"Saved: {DateTime.Now:yyyy-MM-dd HH:mm}; Materials: {materialKeys.Count}; Source: current visible rows";
             existing.UpdatedAt = DateTime.Now;
 
             SaveAiMaterialCollections(collections.ToList());
             LoadAiMaterialCollectionsIntoCombo(existing.Id);
             SetAiAssistantOutput(BuildAiMaterialCollectionBrief(existing));
+            UpdateAiCollectionActionState();
         }
         catch (Exception ex)
         {

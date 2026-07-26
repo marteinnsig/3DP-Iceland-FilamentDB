@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v47.0.1 — AI Assistant Scope Clarity**
+Current canonical release: **v47.0.2 — AI Collection Workflow Clarity**
 
-Last runtime-accepted baseline: **v47.0.1 — AI Assistant Scope Clarity**
+Last runtime-accepted baseline: **v47.0.2 — AI Collection Workflow Clarity**
 
-Current application candidate: **None — v47.0.1 is canonical**
+Current application candidate: **None — v47.0.2 is canonical**
 
-Current roadmap increment: **v47.0.2 — Collection Workflow Clarity**
+Current roadmap increment: **v47.0.3 — Stable Coverage Identity**
 
-Current acceptance note: v47.0.1 scope clarity is runtime accepted with Full Data Verification 348/348.
+Current acceptance note: v47.0.2 collection workflow is runtime accepted with Full Data Verification 349/349.
 
 Candidate note: None.
 
@@ -1902,6 +1902,12 @@ to unstarted authoritative planning slots.
   - Add preview before saving visible rows and distinguish collection creation from explicit update.
   - Require confirmation before replacing an existing same-name collection.
   - Preserve all existing collection JSON and MaterialID compatibility.
+  - Candidate implements bounded MaterialID preview, explicit action state and default-No create/update confirmation.
+  - Owner accepted create/update, preview, default-No cancel honesty and Full Data Verification 349/349.
+  - v47.0.2 is complete, canonical and runtime accepted.
+  - Current increment: v47.0.3 — Stable Coverage Identity.
+  - Research and migrate coverage ownership from collection-title/material-label to stable collection ID and MaterialID.
+  - Preserve supported legacy coverage entries; bind only exact identities and never perform fuzzy or silent remapping.
   - Keep the current deterministic assistant local-first and explain its product purpose, inputs and outputs.
   - Prove visible/filtered MaterialID scope and simplify collection creation, inspection, reuse and removal.
   - Show whether each result is a local brief and make canonical-source, evidence and non-mutation boundaries explicit.

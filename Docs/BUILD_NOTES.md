@@ -1,4 +1,41 @@
-# Current Build Notes - v47.0.1 Canonical
+# Current Build Notes - v47.0.2 Canonical
+
+## AI Collection Workflow Clarity
+
+Collection saving now has an inspectable read-only preview and explicit action
+state. A unique title is a create action; an existing exact title is an update
+action with its saved MaterialID count.
+
+Preview writes nothing and lists visible-row count, unique MaterialID count,
+existing saved membership and bounded exact MaterialIDs. The final default-No
+confirmation repeats the MaterialID preview. Cancelling writes nothing.
+
+An accepted update preserves collection identity and replaces only its saved
+MaterialID/label snapshot. Existing pipeline status metadata is deliberately
+retained for backwards compatibility; stable identity migration remains owned
+by the later v47.0.3 increment.
+
+Standard automation exercises preview only and cannot write personal AppData
+collections. No schema or JSON format changes in this increment.
+
+An initial disposable run exposed a Verification-only control-name mismatch;
+the buttons had stable AutomationIds but no WPF names for in-process lookup.
+After adding those names, the next pass exposed that legacy AppData ownership
+allowed automation to read an owner collection title. No write occurred.
+Automation now binds AI storage to its disposable PreferencesFolder while
+normal owner AppData remains unchanged.
+
+Owner runtime review found that cancelling an update rebuilt the output from
+the proposed filter and therefore looked like a successful membership update.
+The cancel path now reports the old persisted MaterialIDs as unchanged and the
+current-filter count as a discarded proposal.
+
+Final profile `20260726135702-ceb78987` passes preview automation, cancel-state
+honesty, explicit empty disposable AI-storage evidence, Full Data Verification
+349/349 and exact logical/business-state equality without personal AI storage access.
+Debug/Release and the NuGet vulnerability scan pass. Owner runtime acceptance
+passes for create/update, preview and corrected cancel behavior. Owner Full
+Data Verification passes 349/349; v47.0.2 is canonical.
 
 ## AI Assistant Scope Clarity
 

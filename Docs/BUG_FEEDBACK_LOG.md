@@ -30,16 +30,40 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 14 |
+| Open | 15 |
 | In progress | 1 |
 | Partially solved | 3 |
 | Solved | 48 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **70** |
+| **Total tracked findings** | **71** |
 
 ## Tracked findings
+
+Date: 2026-07-26
+Area: Materials filters / AI Assistant collections / Video planning
+Type: Workflow improvement
+Severity: Important
+Status: Open
+What happened: Materials filters allow only one selected value per category. Building a comparison collection therefore requires
+repeated filtering or manual collection work, while the website already supports multi-select Base Material, Variant / Finish,
+Reinforcement, Color, Manufacturer and Product Line filters.
+Expected behavior: Materials should support visible multi-select values for those six filter categories. Values inside one category
+use OR behavior; categories combine with AND behavior. For example, three selected Manufacturers plus PLA plus Blue and Yellow
+should show PLA records from any selected Manufacturer where Color is Blue or Yellow. AI Assistant scope and saved collections must
+consume the exact visible canonical MaterialID set. Filtering must never change Materials, relationships, measurements or reports.
+The UI must show active selections, resulting MaterialID count, per-filter/global Clear actions and require no Ctrl/Shift modifiers.
+Steps to reproduce: Open Materials and attempt to select three Manufacturers, PLA and two Colors for one comparison collection.
+Only one value can currently be selected in each desktop filter.
+Screenshot / export / report attached: Capture current Materials single-select and website multi-select behavior during implementation.
+Resolution: Unimplemented. Preserve the accepted single-select path until replacement runtime acceptance. Saved AI collections remain
+explicit MaterialID snapshots and must not change silently when filters change. Research archived/unlinked handling and every report,
+website, AI, tester and Verification caller before implementation. Suggested ownership is a bounded v47 follow-up after v47.0.2;
+broader desktop filter redesign requires separate roadmap ownership.
+Verification evidence: Required future coverage includes OR within each filter, AND across filters, Clear restoring accepted scope,
+exact visible MaterialID count and AI preview/save parity. Deterministic scope tests belong in the existing safe acceptance boundary;
+multi-select dropdown layout, wrapping and usability remain owner-manual acceptance.
 
 Date: 2026-07-26
 Area: Base Materials / Settings / Materials
@@ -551,7 +575,10 @@ payload preview, Windows Credential Manager secret ownership, deterministic loca
 Verification evidence: Solved scope defect in v41.7.2. Candidate v47.0.1 labels the assistant as local rule-based, exposes current
 visible-row and unique-MaterialID counts with a bounded preview, and adds deterministic tester/Verification ownership. Runtime
 acceptance and Full Data Verification 348/348 pass. Collection create/update clarity remains owned by v47.0.2; v52 remains planned
-and no external API implementation is claimed.
+and no external API implementation is claimed. Candidate v47.0.2 adds read-only exact-MaterialID preview, explicit Create/Update
+state and default-No save confirmation. Owner review found misleading cancel output; the corrected candidate now shows unchanged
+persisted membership separately from the discarded filter proposal. Owner runtime acceptance and Full Data Verification 349/349
+pass. Stable coverage identity remains owned by v47.0.3.
 fæ ekkert vit í AI assistance, - hafði valið bambu labs framleiðandia í materials tab í gegnum Leitina. og bjó til collection, það innihélt ekki bara bambu labs efni, heldur öll efni 0-176, 
 sama ef ég hafði filterað eftir manufactures í materials
 fæ í raun ekkert vit í neitt af því sem er að gerast í þessum ai assistance tab, - þetta þarf að þróa áfram ´serstakletga.

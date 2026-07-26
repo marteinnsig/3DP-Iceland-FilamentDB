@@ -107,6 +107,19 @@ internal static class Program
                 assistantOutput.Contains("Visible materials used:", StringComparison.Ordinal),
                 "AI Assistant local full brief did not retain visible-scope evidence.");
             Record("ai-assistant-local-scope", true, assistantScope + " " + assistantMaterialIds);
+            var collectionAction = FindById(main, "AiCollectionActionState").Current.Name;
+            Require(
+                collectionAction.StartsWith("Action: Create a new collection", StringComparison.Ordinal),
+                "AI collection workflow read non-disposable collection state.");
+            Invoke(FindById(main, "PreviewAiMaterialCollection"), application.Id);
+            var collectionPreview = FindById(main, "AiAssistantOutput")
+                .GetCurrentPropertyValue(ValuePattern.ValueProperty)?.ToString() ?? string.Empty;
+            Require(
+                collectionPreview.Contains("COLLECTION SAVE PREVIEW", StringComparison.Ordinal) &&
+                collectionPreview.Contains("No data has been written.", StringComparison.Ordinal) &&
+                collectionPreview.Contains("Unique MaterialIDs to save:", StringComparison.Ordinal),
+                "AI collection preview did not expose its read-only exact MaterialID contract.");
+            Record("ai-collection-preview", true, collectionAction);
 
             Expand(FindById(main, "HelpMenu"), application.Id);
             Invoke(FindById(main, "OpenVerificationCenter"), application.Id);
@@ -194,6 +207,12 @@ internal static class Program
             CloseWindow(main, application.Id);
             if (!application.WaitForExit(15000))
                 throw new TimeoutException("Application did not complete controlled shutdown.");
+            Require(
+                !IOFile.Exists(IOPath.Combine(root, "preferences", "ai-assistant-sessions.json")) &&
+                !IOFile.Exists(IOPath.Combine(root, "preferences", "ai-material-collections.json")),
+                "Read-only automation unexpectedly created AI session or collection storage.");
+            Record("ai-storage-isolation", true,
+                "Disposable preferences remained free of AI session/collection files");
             if (string.Equals(options.Scenario, "updater", StringComparison.Ordinal))
             {
                 RunUpdaterAcceptance(

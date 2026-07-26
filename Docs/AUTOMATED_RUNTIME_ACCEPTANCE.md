@@ -1,5 +1,32 @@
 # Automated Runtime Acceptance
 
+## v47.0.2 candidate - AI collection workflow clarity
+
+- Every scenario reads the stable collection Create/Update action state.
+- The runner invokes only the read-only collection preview.
+- Preview must state that no data was written and report unique MaterialIDs.
+- Standard automation never invokes collection create/update or touches
+  personal AppData collection storage.
+- Existing Production, FTPS, owner-database and unexpected-dialog boundaries
+  remain unchanged.
+- Initial profile `20260726133919-b630ebf4` failed only the in-process
+  Verification control-name lookup; no canonical or owner data was involved.
+- Corrected profile `20260726134033-9c21103d` passed but exposed an owner
+  collection title because legacy AI storage still resolved to personal
+  AppData. It did not write collection data.
+- AI session/collection storage now resolves to the disposable PreferencesFolder
+  under automation and retains normal AppData ownership outside automation.
+- Owner review found misleading cancelled-update output; persisted data was not
+  written, but proposed filter scope looked saved.
+- Verification now proves that cancel output retains persisted MaterialIDs and
+  excludes proposed IDs.
+- Final profile `20260726135702-ceb78987` passes read-only preview, cancel-state
+  honesty, explicit absence of disposable AI session/collection files, Full
+  Data Verification 349/349 and exact logical/business-state equality without
+  personal AppData access.
+- Owner runtime accepted the workflow and Full Data Verification 349/349.
+  v47.0.2 is canonical.
+
 ## v47.0.1 candidate - Local AI Assistant scope clarity
 
 - Every scenario navigates `AiAssistantTab` by stable AutomationId.

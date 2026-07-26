@@ -3,6 +3,12 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v47.0.2 - AI Collection Workflow Clarity
+
+Collection creation and update now have explicit intent, exact MaterialID
+preview and honest default-No cancellation. Owner runtime accepted unchanged
+persisted membership after cancel; Verification passes 349/349.
+
 # v47.0.1 - AI Assistant Scope Clarity
 
 The AI Assistant is now an honest local-first planning workspace with visible

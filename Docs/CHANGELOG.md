@@ -2,6 +2,35 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v47.0.2 - AI Collection Workflow Clarity
+
+- Shows whether the current collection title will create a new collection or
+  update an existing one.
+- Adds a read-only visible-collection preview with exact counts and bounded
+  MaterialID evidence.
+- Repeats the bounded MaterialID preview in the final save confirmation.
+- Makes both create and update confirmations default-No.
+- Warns that update replaces saved membership while retaining existing local
+  pipeline-status metadata.
+- Loads a selected existing collection title into the editor so update intent
+  is explicit.
+- Adds stable AutomationIds, deterministic read-only tester coverage and an
+  extended Verification contract.
+- Preserves all existing collection, session and coverage JSON formats.
+- Corrects a candidate-only Verification lookup mismatch by adding stable WPF
+  names alongside the AutomationIds.
+- Routes AI session/collection storage to the disposable PreferencesFolder
+  during automation, preventing personal AppData reads or evidence leakage.
+- Corrects cancelled-update output so it shows unchanged persisted membership
+  instead of presenting the discarded current-filter proposal as the collection.
+- Debug/Release, documentation audit and NuGet vulnerability scan pass.
+- Final profile `20260726135702-ceb78987` passes preview automation, cancel-state
+  honesty, explicit disposable AI-storage isolation, Full Data Verification
+  349/349 and exact business-state equality.
+- Owner runtime accepted create/update state, exact preview, default-No cancel
+  behavior and unchanged persisted membership after cancellation.
+- Owner Full Data Verification passes 349/349; v47.0.2 is canonical.
+
 ## v47.0.1 - AI Assistant Scope Clarity
 
 - Labels the workspace as local rule-based functionality with no external AI.

@@ -2722,3 +2722,30 @@ Status: PASS; RUNTIME ACCEPTED
 - Owner runtime and visual acceptance: PASS
 - Owner Full Data Verification: PASS 348/348
 - Canonical state: v47.0.1
+
+# v47.0.2 - AI Collection Workflow Clarity Candidate
+
+- Date: 2026-07-26
+- Initial disposable profile: `20260726133919-b630ebf4`
+- Initial result: FAIL — Verification WPF-name lookup mismatch; canonical and
+  owner data were not used.
+- Corrected disposable profile: `20260726134033-9c21103d`
+- Corrected result: PASS, but legacy AI AppData resolution exposed an owner
+  collection title in evidence without writing data.
+- Owner runtime finding: cancelled update output looked updated because it
+  displayed the discarded current-filter preview; persistence was not executed.
+- Final hardened disposable profile: `20260726135702-ceb78987`
+- Scenario: smoke
+- Result: PASS
+- Full Data Verification: 349/349
+- Read-only collection preview and explicit Create/Update state: PASS
+- Cancel-state persisted/proposed membership honesty: PASS
+- Disposable AI preferences isolation and personal AppData exclusion: PASS
+- Production, FTPS, updates and owner-database selection: blocked
+- Logical database hash before/after:
+  `F0EDCC3295A114C935668D2B92D7A1AEB1C67C4D1630EFC89F11B7FCDC556E5F`
+- Normalized business-state hash before/after:
+  `4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`
+- Owner runtime acceptance: PASS
+- Owner Full Data Verification: PASS 349/349
+- Canonical state: v47.0.2

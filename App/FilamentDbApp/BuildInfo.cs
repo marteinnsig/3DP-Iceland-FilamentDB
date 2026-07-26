@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "AI-ASSISTANT-SCOPE-CLARITY";
-    public const string ReleaseTitle = "AI Assistant Scope Clarity";
+    public const string ReleaseCode = "AI-COLLECTION-WORKFLOW-CLARITY";
+    public const string ReleaseTitle = "AI Collection Workflow Clarity";
 
     public static string Version
     {

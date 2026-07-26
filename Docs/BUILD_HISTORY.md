@@ -2,6 +2,48 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v47.0.2 - AI Collection Workflow Clarity
+
+The candidate distinguishes collection creation from explicit same-name update
+and exposes the exact action before saving. A read-only preview reports visible
+rows, unique MaterialIDs, existing membership and a bounded MaterialID list.
+Both create and update require default-No confirmation with repeated identity
+evidence.
+
+No schema or JSON format changes. Accepted updates retain collection identity,
+replace only the saved membership snapshot and deliberately leave existing
+pipeline-status metadata intact for backwards compatibility.
+
+The first disposable smoke profile `20260726133919-b630ebf4` correctly exercised
+preview but Verification failed because its new deterministic check required
+WPF `Name` lookup while the buttons exposed only AutomationIds. Stable WPF names
+were added; the failed disposable database was not a canonical or owner source.
+
+Corrected profile `20260726134033-9c21103d` passed but revealed that the legacy
+AI AppData path allowed automation to read an owner collection title. No write
+occurred. AI session/collection storage now uses the disposable
+`PreferencesFolder` whenever automation is active, while normal owner AppData
+behavior is unchanged.
+
+Owner runtime review then found that cancel output rebuilt the proposed
+current-filter preview, which visually misrepresented the collection as
+updated. Persistence was not executed. The cancel path now shows unchanged
+persisted MaterialIDs and separately counts the discarded proposal.
+
+Final hardened profile `20260726135702-ceb78987` passes preview automation,
+cancel-state honesty, explicit empty disposable AI-storage evidence and Full
+Data Verification 349/349 without reading or creating personal AI files.
+Isolated Debug/Release builds pass with zero warnings and errors, and the
+read-only NuGet vulnerability scan reports no vulnerable packages.
+
+Logical hash before/after:
+`F0EDCC3295A114C935668D2B92D7A1AEB1C67C4D1630EFC89F11B7FCDC556E5F`.
+Normalized business-state hash before/after:
+`4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`.
+Owner runtime accepted create/update state, exact MaterialID preview, default-No
+confirmation and honest unchanged membership after cancellation. Owner Full
+Data Verification passes 349/349; v47.0.2 is canonical.
+
 ## v47.0.1 - AI Assistant Scope Clarity
 
 The candidate makes the existing deterministic AI Assistant contract explicit.

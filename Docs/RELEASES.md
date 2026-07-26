@@ -1,6 +1,13 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v47.0.2 - AI Collection Workflow Clarity
+
+Material Collections now expose exact Create/Update intent, read-only
+MaterialID preview and default-No confirmation. Cancelled updates distinguish
+unchanged persisted membership from discarded filter scope. Disposable AI
+storage isolation, owner runtime acceptance and Verification 349/349 pass.
+
 ## v47.0.1 - AI Assistant Scope Clarity
 
 The local rule-based assistant now states its non-external and non-mutation

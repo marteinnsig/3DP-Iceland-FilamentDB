@@ -1,5 +1,28 @@
 ﻿# AI Assistant
 
+## v47.0.2 - Collection Workflow Clarity
+
+Material Collection saving now exposes its exact action and scope before local
+JSON is changed.
+
+- The collection title resolves to `Create new` or `Update existing`.
+- A read-only preview shows visible-row count, unique MaterialID count, existing
+  saved membership and up to 20 MaterialIDs.
+- Create and update both use an explicit default-No confirmation.
+- The confirmation repeats a bounded MaterialID preview.
+- Updating replaces only the selected collection's saved membership.
+- Existing pipeline status metadata is not silently deleted.
+
+Selecting an existing collection loads its exact title into the editor and
+marks the action as an update. Typing a unique title changes the action to
+create. Cancelling either confirmation writes nothing. A cancelled update
+shows the unchanged persisted membership and labels the current-filter scope
+as a discarded proposal.
+
+The deterministic tester invokes preview only. It never creates or updates
+personal AppData collections. Existing session, collection and coverage JSON
+formats remain unchanged.
+
 ## v47.0.1 - Local Purpose and MaterialID Scope Clarity
 
 The AI Assistant is a deterministic local planning workspace. It does not call
