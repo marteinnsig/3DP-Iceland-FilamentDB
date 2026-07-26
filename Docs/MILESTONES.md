@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v45.2.0 - Base Materials Workspace
+
+- Separates canonical Base Material master data from application Settings.
+- Adds complete catalog CRUD and tester ownership before identity migration.
+- Owner runtime accepted first-open rendering, CRUD and Verification 346/346;
+  v45.2.1 now owns the `BaseMaterialId` relationship stage.
+
 # v44.7.18 - Guarded Updater Acceptance
 
 Stage 5 proves real helper commit, exact-build health acknowledgement and full

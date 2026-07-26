@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v45.1 — Canonical Manufacturer Selection**
+Current canonical release: **v45.2.0 — Base Materials Workspace**
 
-Last runtime-accepted baseline: **v45.1 — Canonical Manufacturer Selection**
+Last runtime-accepted baseline: **v45.2.0 — Base Materials Workspace**
 
-Current application candidate: **None — v45.1 is canonical**
+Current application candidate: **None — v45.2.0 is canonical**
 
-Current roadmap increment: **v45.2 — Canonical Base Material Selection**
+Current roadmap increment: **v45.2.1 — Canonical Base Material Identity**
 
-Current acceptance note: v45.1 is runtime accepted with zero unlinked Materials and Full Data Verification 345/345.
+Current acceptance note: v45.2.0 Base Materials workspace is runtime accepted with Full Data Verification 346/346.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -1864,6 +1864,13 @@ to unstarted authoritative planning slots.
   - Owner runtime accepted the final workflow and Full Data Verification passed 345/345.
 - **v45.2 — Canonical Base Material Selection**
   - Feedback disposition: Open.
+  - v45.2.0 first moves the governed catalog out of Settings into a dedicated Base Materials workspace.
+  - v45.2.0 is complete, canonical and runtime accepted.
+  - The workspace owns Add, Duplicate, guarded Delete, direct editing and an independent Fast-grid layout.
+  - Settings Manager retains only measurement, calculation, deployment and exchange-rate settings.
+  - Disposable CRUD must navigate the new tab and prove Base Material add/edit/duplicate/delete persistence and cleanup.
+  - Owner accepted immediate startup rendering, full CRUD and Full Data Verification 346/346.
+  - v45.2.1 will add canonical `BaseMaterialId`, exact-name binding, rename/delete guards and downstream resolution.
   - Use a backwards-compatible dropdown sourced from the governed catalog.
   - Preserve explicit legacy/unmapped values and never silently remap.
   - Entry condition: caller, import/export and migration audit complete.

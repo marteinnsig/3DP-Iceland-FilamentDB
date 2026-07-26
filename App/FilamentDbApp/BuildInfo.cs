@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "CANONICAL-MANUFACTURER-SELECTION";
-    public const string ReleaseTitle = "Canonical Manufacturer Selection";
+    public const string ReleaseCode = "BASE-MATERIALS-WORKSPACE";
+    public const string ReleaseTitle = "Base Materials Workspace";
 
     public static string Version
     {

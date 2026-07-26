@@ -1,4 +1,44 @@
-# Current Build Notes - v45.1 Canonical
+# Current Build Notes - v45.2.0 Canonical
+
+## Base Materials Workspace
+
+The SQLite-canonical Base Material Catalog now has a dedicated top-level
+workspace instead of sharing Settings Manager. It retains the accepted
+23-column Fast editor and adds explicit Add, Duplicate, guarded Delete and
+independent column-reset controls. Settings Manager now owns only actual
+measurement, calculation, deployment and exchange-rate settings.
+
+Text-key compatibility remains unchanged in this UI increment. Rename
+propagates exact matching Material text so existing reports, website,
+filters and profile lookup callers continue to receive the current name.
+Delete is blocked while a Material references the catalog name.
+
+Disposable CRUD now navigates `BaseMaterialsTab` and creates, restarts, edits,
+duplicates, restarts, deletes and verifies absence of disposable Base Material
+records alongside the existing Material/Manufacturer lifecycle. Schema and
+`BaseMaterialId` are deliberately deferred until this workspace passes owner
+runtime acceptance.
+
+Debug and Release pass with zero warnings/errors. Disposable profile
+`20260726094502-312196e2` passes Base Materials tab navigation, catalog
+create/edit/duplicate/delete persistence, Full Data Verification 346/346 and
+exact baseline/final business-state recovery. Owner UI/runtime acceptance
+remains pending.
+
+Owner testing passed every CRUD workflow and Full Data Verification 346/346,
+then found that immediate navigation after restart could show an empty Base
+Materials host until another tab transition. The selection handler only
+recognized `Settings Manager` and deferred view creation. It now recognizes
+both tabs and completes lightweight Fast-view creation synchronously before the
+selected workspace is presented.
+
+Startup-fix disposable profile `20260726095812-c88314b0` re-passes immediate
+BaseMaterialsTab navigation, catalog CRUD, Full Data Verification 346/346 and
+exact baseline/final business-state recovery.
+
+Owner retest `3DPIceland_FilamentDB_Verification_20260726_100133.txt` passes
+346/346 and accepts immediate first-open rendering after restart. v45.2.0 is
+closed; v45.2.1 owns canonical Base Material identity.
 
 v45.1 now implements a nullable canonical `ManufacturerId` relationship in
 schema v32. Fast Materials stores the selected catalog identity while retaining

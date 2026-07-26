@@ -33,13 +33,34 @@ idea. Historical free-form entries remain in their original language and order.
 | Open | 15 |
 | In progress | 1 |
 | Partially solved | 3 |
-| Solved | 46 |
+| Solved | 47 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **69** |
+| **Total tracked findings** | **70** |
 
 ## Tracked findings
+
+Date: 2026-07-26
+Area: Base Materials / Settings / Materials
+Type: Workflow improvement
+Severity: Important
+Status: Solved
+Resolution: v45.2.0 moves the 23-field canonical Base Material Catalog into a dedicated tab with Add, Duplicate, guarded Delete,
+direct Fast-grid editing and independent layout reset. Exact-name rename propagation preserves existing text consumers. Schema and
+canonical `BaseMaterialId` mapping remain gated behind workspace runtime acceptance in v45.2.1.
+Verification evidence: Debug/Release pass with zero warnings/errors. Disposable profile `20260726094502-312196e2` passes tab
+navigation, Base Material create/edit/duplicate/delete persistence, Full Data Verification 346/346 and exact business-state cleanup.
+Owner runtime accepted CRUD and Verification 346/346 but exposed an immediate-restart blank-tab race. Tab selection now synchronously
+creates both Settings/Base Materials Fast views before returning. Owner retest
+`3DPIceland_FilamentDB_Verification_20260726_100133.txt` passes 346/346 and accepts immediate first-open rendering.
+What happened: Canonical Manufacturers had a dedicated workspace while canonical Base Materials were mixed into Settings Manager.
+Expected behavior: Domain catalogs should have consistent discoverable ownership, complete CRUD and tester coverage before identity
+relationships are introduced.
+Steps to reproduce: Open Settings Manager and locate Base Material Catalog beneath measurement/calculation settings.
+Screenshot / export / report attached: Not required.
+`codex-clipboard-478305e4-d56a-4fa3-816a-9f7da612508e.png` and
+`3DPIceland_FilamentDB_Verification_20260726_095539.txt`.
 
 Date: 2026-07-25
 Area: Verification / Materials filters

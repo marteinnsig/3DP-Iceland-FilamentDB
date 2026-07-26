@@ -1873,6 +1873,49 @@
                     </Grid>
                 </Grid>
             </TabItem>
+<TabItem x:Name="BaseMaterialsTab" Header="Base Materials" AutomationProperties.AutomationId="BaseMaterialsTab">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                        <TextBlock Text="Base Materials"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   Foreground="#0F172A"
+                                   Margin="0,0,0,4"/>
+                        <TextBlock Text="Maintain the canonical base-material catalog and controlled 3DPIceland test-print profiles."
+                                   Foreground="#64748B"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <WrapPanel Grid.Row="1" Margin="0,0,0,10">
+                        <Button x:Name="AddBaseMaterialButton" Content="Add Base Material"
+                                AutomationProperties.AutomationId="AddBaseMaterial"
+                                Click="AddBaseMaterialRow_Click" Padding="12,6" Margin="0,0,8,8"/>
+                        <Button x:Name="DuplicateBaseMaterialButton" Content="Duplicate"
+                                AutomationProperties.AutomationId="DuplicateBaseMaterial"
+                                Click="DuplicateBaseMaterialRow_Click" Padding="12,6" Margin="0,0,8,8"
+                                ToolTip="Duplicate the selected base-material definition with a new unique name."/>
+                        <Button x:Name="DeleteBaseMaterialButton" Content="Delete"
+                                AutomationProperties.AutomationId="DeleteBaseMaterial"
+                                Click="DeleteBaseMaterialRow_Click" Padding="12,6" Margin="0,0,16,8"
+                                ToolTip="Delete the selected unreferenced base-material definition."/>
+                        <Button x:Name="ResetBaseMaterialColumnsButton" Content="Reset Columns"
+                                Click="ResetFastBaseMaterialColumns_Click" Padding="12,6" Margin="0,0,8,8"
+                                ToolTip="Reset the Base Materials column layout. Saved data is unchanged."/>
+                    </WrapPanel>
+
+                    <GroupBox Grid.Row="2" Header="Base Material Catalog / Controlled Test-Print Profiles">
+                        <Grid>
+                            <ContentControl Name="FastBaseMaterialsViewHost" Margin="8"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
 <TabItem Header="Settings Manager" AutomationProperties.AutomationId="SettingsManagerTab">
                 <Grid Margin="12">
                     <Grid.RowDefinitions>
@@ -1887,43 +1930,22 @@
                                    FontWeight="SemiBold"
                                    Foreground="#0F172A"
                                    Margin="0,0,0,4"/>
-                        <TextBlock Text="Maintain material definitions, measurement settings and USD exchange rates. Material pricing is normalized to USD automatically."
+                        <TextBlock Text="Maintain measurement, calculation, deployment and USD exchange-rate settings. Material pricing is normalized to USD automatically."
                                    Foreground="#64748B"
                                    TextWrapping="Wrap"/>
                     </StackPanel>
 
                     <WrapPanel Grid.Row="1" Margin="0,0,0,10">
-                        <Button Name="ResetSettingsColumnsButton" Content="Reset Columns" Click="ResetFastSettingsColumns_Click" Padding="12,6" Margin="0,0,16,8" ToolTip="Reset the General Settings and Base Material Catalog column layouts. Saved data is unchanged."/>
+                        <Button Name="ResetSettingsColumnsButton" Content="Reset Columns" Click="ResetFastSettingsColumns_Click" Padding="12,6" Margin="0,0,16,8" ToolTip="Reset the Settings column layout. Saved data is unchanged."/>
                         <Button Click="SaveNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE74E;"/><TextBlock Text="Save Settings"/></StackPanel></Button>
                         <Button Name="ReloadSavedSettingsButton" Click="LoadNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" ToolTip="Reload saved General and Deployment settings from SQLite. Base Material Catalog is unchanged."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE8E5;"/><TextBlock Text="Reload Saved Settings"/></StackPanel></Button>
                         <Button Name="RestoreBuiltInSettingsButton" Click="ResetNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" ToolTip="Replace General Settings with built-in defaults. Deployment Settings and Base Material Catalog are unchanged."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE777;"/><TextBlock Text="Restore Built-in Defaults"/></StackPanel></Button>
-                        <Button Content="Add Base Material" Click="AddBaseMaterialRow_Click" Padding="12,6" Margin="16,0,8,8"/>
-                        <Button Content="Delete Selected Base Material" Click="DeleteBaseMaterialRow_Click" Padding="12,6" Margin="0,0,8,8" ToolTip="Delete the selected base-material definition from Settings."/>
                     </WrapPanel>
 
                     <Grid Grid.Row="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="2*"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <GroupBox Grid.Row="0" Header="Measurement / Calculation Settings - only Value is editable" Margin="0,0,0,10">
+                        <GroupBox Header="Measurement / Calculation Settings - only Value is editable">
                             <Grid>
                                 <ContentControl Name="FastNativeSettingsViewHost" Margin="8"/>
-                            </Grid>
-                        </GroupBox>
-
-                        <TextBlock Grid.Row="1"
-                                   Text="Base Material Catalog"
-                                   FontSize="16"
-                                   FontWeight="SemiBold"
-                                   Foreground="#0F172A"
-                                   Margin="0,0,0,6"/>
-
-                        <GroupBox Grid.Row="2" Header="Base Material Catalog / Lookup">
-                            <Grid>
-                                <ContentControl Name="FastBaseMaterialsViewHost" Margin="8"/>
                             </Grid>
                         </GroupBox>
                     </Grid>

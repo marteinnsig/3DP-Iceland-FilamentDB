@@ -1,3 +1,21 @@
+# v45.2.0 candidate - Base Materials workspace
+
+Date: 2026-07-26
+
+- Verification adds a dedicated-tab, CRUD-control, 23-column Fast contract and
+  independent layout-ownership gate.
+- Disposable CRUD now includes Base Material create/edit/duplicate/delete
+  persistence and exact business-state cleanup.
+- Profile `20260726094502-312196e2`: PASS 346/346 with Base Materials tab
+  navigation and equal baseline/final business-state hash.
+- Owner evidence `3DPIceland_FilamentDB_Verification_20260726_095539.txt` passes
+  346/346; immediate-restart visual review found a blank-host activation race
+  that is corrected pending owner retest.
+- Startup-fix profile `20260726095812-c88314b0` passes immediate
+  BaseMaterialsTab activation, CRUD, 346/346 and exact business-state cleanup.
+- Final owner evidence `3DPIceland_FilamentDB_Verification_20260726_100133.txt`
+  passes 346/346 and accepts immediate first-open rendering. v45.2.0 is canonical.
+
 # v45.1 candidate - Owner relationship acceptance
 
 Date: 2026-07-25

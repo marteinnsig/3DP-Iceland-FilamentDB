@@ -1,6 +1,12 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v45.2.0 - Base Materials Workspace
+
+Dedicated Base Materials catalog UI, immediate startup rendering and disposable
+CRUD are runtime accepted with Full Data Verification 346/346. Canonical
+`BaseMaterialId` remains owned by v45.2.1.
+
 ## v44.7.18 - Guarded Updater Acceptance
 
 - Runtime-accepted Stage 5 targets only an isolated disposable portable build.

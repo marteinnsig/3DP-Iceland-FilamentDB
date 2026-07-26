@@ -2,6 +2,15 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v45.2.0 - Base Materials Workspace
+
+The accepted Base Material Fast catalog is separated from Settings without
+changing SQLite schema or its 23-field data contract. The new tab owns complete
+catalog CRUD and tester navigation; canonical identity mapping remains the
+runtime-gated v45.2.1 stage.
+Owner runtime accepted immediate first-open rendering and Full Data Verification
+346/346 after the tab-selection initialization race was corrected.
+
 ## v44.7.18 - Guarded Updater Acceptance
 
 Stage 5 uses the real updater helper only against a disposable

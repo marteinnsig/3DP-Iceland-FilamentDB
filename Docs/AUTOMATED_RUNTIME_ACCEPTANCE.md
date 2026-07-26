@@ -202,6 +202,23 @@ The prior schema-v31 fixture remains at
 Profile `20260725233352-929a4f1a` passes CRUD, Full Data Verification 345/345
 and exact baseline/final business-state hash equality on the schema-v32 seed.
 
+## v45.2.0 Base Materials workspace extension
+
+Every scenario now navigates `BaseMaterialsTab` by stable AutomationId.
+Disposable CRUD additionally creates one uniquely named Base Material, restarts
+and verifies it, edits it, creates a duplicate, restarts and verifies both,
+then removes both and proves absence. This reuses the exact disposable profile
+and business-state rollback boundary; owner paths, Production and FTPS remain
+blocked. Fast-grid visual editing remains owner-manual because the owner-drawn
+cells do not expose stable per-cell automation peers.
+
+Profile `20260726094502-312196e2` passes the extended CRUD lifecycle and Full
+Data Verification 346/346. The final business-state hash equals baseline
+`5922D4E7B8AF2FB045C07F1F5F813E1C050C5F17B562003504FCBC15EDBDBDF0`,
+and the canonical schema-v32 seed remains byte-identical.
+Startup-fix profile `20260726095812-c88314b0` also passes immediate tab
+navigation, CRUD, 346/346 and exact business-state cleanup.
+
 The `crud` scenario remains confined to its exact generated disposable
 MaterialID and a disposable Manufacturer catalog record. Create stores a
 deliberate legacy/unmapped Manufacturer with null ID and restart preserves it

@@ -245,6 +245,19 @@ public partial class MainWindow : Window
         };
         ApplyNativeMaterialComputedFields(row, _nativeMaterialRows.Count);
         _nativeMaterialRows.Add(row);
+        var automationBaseMaterialName = "Automation Base " + materialId;
+        if (_nativeBaseMaterialRows.Any(item =>
+                string.Equals(item.BaseMaterial, automationBaseMaterialName, StringComparison.Ordinal)))
+            throw new InvalidOperationException("Authorized disposable Base Material already exists.");
+        _nativeBaseMaterialRows.Add(new NativeBaseMaterialRow
+        {
+            BaseMaterial = automationBaseMaterialName,
+            Category = "Automation",
+            SortOrder = "9998",
+            NozzleTemperatureRecommendedC = "205",
+            ProfileId = "AUTOMATION-BASE-CREATED"
+        });
+        SaveBaseMaterialCatalogToDatabase();
         RequireAutomationCrudSave("CREATED");
     }
 
@@ -258,6 +271,22 @@ public partial class MainWindow : Window
             throw new InvalidOperationException("Unmapped Manufacturer text was not preserved through create/restart.");
         if (!_fastManufacturerChoices.Contains(row.Manufacturer, StringComparer.Ordinal))
             throw new InvalidOperationException("Current unmapped Manufacturer is missing from the dropdown choices.");
+        var automationBaseMaterialName = "Automation Base " + row.MaterialID;
+        var automationBaseMaterial = _nativeBaseMaterialRows.SingleOrDefault(item =>
+            string.Equals(item.BaseMaterial, automationBaseMaterialName, StringComparison.Ordinal))
+            ?? throw new InvalidOperationException("Disposable Base Material was not persisted through restart.");
+        var automationBaseMaterialCopyName = automationBaseMaterialName + " Copy";
+        _nativeBaseMaterialRows.Add(new NativeBaseMaterialRow
+        {
+            BaseMaterial = automationBaseMaterialCopyName,
+            Category = automationBaseMaterial.Category,
+            SortOrder = "9999",
+            NozzleTemperatureRecommendedC = "210",
+            ProfileId = "AUTOMATION-BASE-DUPLICATED"
+        });
+        automationBaseMaterial.Category = "Automation edited";
+        automationBaseMaterial.ProfileId = "AUTOMATION-BASE-EDITED";
+        SaveBaseMaterialCatalogToDatabase();
         var originalManufacturerSequence = _database.LoadManufacturerSequenceForAuthorizedAutomation();
         var canonicalManufacturer = new ManufacturerRecord
         {
@@ -290,6 +319,15 @@ public partial class MainWindow : Window
                 item.ManufacturerId == row.ManufacturerId &&
                 string.Equals(item.Name, row.Manufacturer, StringComparison.OrdinalIgnoreCase)))
             throw new InvalidOperationException("Canonical Manufacturer selection was not persisted through edit/restart.");
+        var automationBaseMaterialName = "Automation Base " + row.MaterialID;
+        var automationBaseMaterialCopyName = automationBaseMaterialName + " Copy";
+        if (!_nativeBaseMaterialRows.Any(item =>
+                string.Equals(item.BaseMaterial, automationBaseMaterialName, StringComparison.Ordinal) &&
+                string.Equals(item.ProfileId, "AUTOMATION-BASE-EDITED", StringComparison.Ordinal)) ||
+            !_nativeBaseMaterialRows.Any(item =>
+                string.Equals(item.BaseMaterial, automationBaseMaterialCopyName, StringComparison.Ordinal) &&
+                string.Equals(item.ProfileId, "AUTOMATION-BASE-DUPLICATED", StringComparison.Ordinal)))
+            throw new InvalidOperationException("Disposable Base Material edit/duplicate did not persist through restart.");
         if (_fastManufacturerChoices.Contains("3DPIceland Automation Legacy", StringComparer.Ordinal))
             throw new InvalidOperationException("Removed unmapped Manufacturer remains stale in the dropdown choices.");
         var canonicalManufacturer = _manufacturerRows.Single(item =>
@@ -317,6 +355,11 @@ public partial class MainWindow : Window
         RenameManufacturerForAuthorizedAutomation(canonicalManufacturer, originalManufacturerName);
         if (!string.Equals(row.Manufacturer, originalManufacturerName, StringComparison.Ordinal))
             throw new InvalidOperationException("Canonical Manufacturer rename restore did not propagate.");
+        foreach (var baseMaterial in _nativeBaseMaterialRows.Where(item =>
+                     string.Equals(item.BaseMaterial, automationBaseMaterialName, StringComparison.Ordinal) ||
+                     string.Equals(item.BaseMaterial, automationBaseMaterialCopyName, StringComparison.Ordinal)).ToList())
+            _nativeBaseMaterialRows.Remove(baseMaterial);
+        SaveBaseMaterialCatalogToDatabase();
         _nativeMaterialRows.Remove(row);
         RequireAutomationCrudSave("DELETED");
         var sequenceText = canonicalManufacturer.Notes["AUTOMATION-ORIGINAL-SEQUENCE:".Length..];
@@ -335,6 +378,10 @@ public partial class MainWindow : Window
     {
         if (GetAuthorizedAutomationMaterial() is not null)
             throw new InvalidOperationException("Authorized disposable MaterialID still exists after delete.");
+        var materialId = AutomationRuntimeProfile.Current?.MaterialCrudId ?? string.Empty;
+        if (_nativeBaseMaterialRows.Any(item =>
+                item.BaseMaterial.StartsWith("Automation Base " + materialId, StringComparison.Ordinal)))
+            throw new InvalidOperationException("Authorized disposable Base Material still exists after delete.");
         SetAutomationCrudStatus("ABSENT");
     }
 
@@ -2261,15 +2308,19 @@ public partial class MainWindow : Window
     {
         if (!ReferenceEquals(e.Source, WorkspaceTabs) ||
             WorkspaceTabs.SelectedItem is not TabItem selectedTab ||
-            !string.Equals(selectedTab.Header?.ToString(), "Settings Manager", StringComparison.Ordinal) ||
-            _embeddedFastNativeSettingsView is not null)
+            selectedTab.Header?.ToString() is not { } header ||
+            (!string.Equals(header, "Settings Manager", StringComparison.Ordinal) &&
+             !string.Equals(header, "Base Materials", StringComparison.Ordinal)) ||
+            (_embeddedFastNativeSettingsView is not null &&
+             _embeddedFastBaseMaterialsView is not null))
         {
             return;
         }
 
-        _ = Dispatcher.BeginInvoke(
-            System.Windows.Threading.DispatcherPriority.Loaded,
-            ActivateDefaultFastSettingsViews);
+        // The selected tab must never appear ready with an empty Fast host.
+        // Native settings/catalog rows are loaded synchronously in the constructor,
+        // so the lightweight view creation is safe to complete before selection returns.
+        ActivateDefaultFastSettingsViews();
     }
 
     private static TestSummaryMetric? FindMetric(IEnumerable<TestSummaryMetric> metrics, params string[] terms)
@@ -16401,6 +16452,24 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             measurementFastContractsReady && legacyGridRetirementUiReady && releaseIdentityReady
                 ? "General Settings and Base Materials use explicit Fast schemas and canonical row collections"
                 : "A Settings schema, Value-only boundary, ComboBox contract, row source, prior stage or release identity failed"));
+        var baseMaterialsWorkspaceReady =
+            BaseMaterialsTab is not null &&
+            FastBaseMaterialsViewHost is not null &&
+            _embeddedFastBaseMaterialsView is not null &&
+            ReferenceEquals(FastBaseMaterialsViewHost.Content, _embeddedFastBaseMaterialsView) &&
+            AddBaseMaterialButton is not null &&
+            DuplicateBaseMaterialButton is not null &&
+            DeleteBaseMaterialButton is not null &&
+            ResetBaseMaterialColumnsButton is not null &&
+            BuildFastBaseMaterialColumns().Count == 23 &&
+            typeof(MainWindow).GetMethod(
+                nameof(DuplicateBaseMaterialRow_Click),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v45.2 Base Materials workspace contract",
+            baseMaterialsWorkspaceReady && fastSettingsContractsReady && releaseIdentityReady,
+            baseMaterialsWorkspaceReady && fastSettingsContractsReady && releaseIdentityReady
+                ? "Dedicated Base Materials tab owns Add, Duplicate, Delete, editable Fast catalog and independent layout reset"
+                : "Base Materials tab, CRUD controls, Fast catalog, independent layout or release identity failed"));
         var measurementFallbackCodeRetired =
             FindName("FastTensileToggleButton") is null &&
             FindName("FastImpactToggleButton") is null &&
@@ -21227,13 +21296,57 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void AddBaseMaterialRow_Click(object sender, RoutedEventArgs e)
     {
-        _nativeBaseMaterialRows.Add(new NativeBaseMaterialRow
+        var row = new NativeBaseMaterialRow
         {
-            BaseMaterial = "New material",
+            BaseMaterial = NextUniqueBaseMaterialName("New material"),
             Category = "Standard",
             SortOrder = ""
-        });
+        };
+        _nativeBaseMaterialRows.Add(row);
+        SaveBaseMaterialCatalogToDatabase();
         RefreshFastSettingsViews();
+        ShowTransientStatus($"{row.BaseMaterial} added to the canonical Base Material Catalog.");
+    }
+
+    private void DuplicateBaseMaterialRow_Click(object sender, RoutedEventArgs e)
+    {
+        var source = _selectedFastBaseMaterialRow;
+        if (source is null)
+        {
+            ShowTransientStatus("Select a Base Material row before duplicating.");
+            return;
+        }
+
+        var copy = new NativeBaseMaterialRow
+        {
+            BaseMaterial = NextUniqueBaseMaterialName(source.BaseMaterial + " Copy"),
+            Category = source.Category,
+            SortOrder = source.SortOrder,
+            NozzleTemperatureMinC = source.NozzleTemperatureMinC,
+            NozzleTemperatureRecommendedC = source.NozzleTemperatureRecommendedC,
+            NozzleTemperatureMaxC = source.NozzleTemperatureMaxC,
+            BedTemperatureMinC = source.BedTemperatureMinC,
+            BedTemperatureRecommendedC = source.BedTemperatureRecommendedC,
+            BedTemperatureMaxC = source.BedTemperatureMaxC,
+            PrintSpeedMinMmPerS = source.PrintSpeedMinMmPerS,
+            PrintSpeedRecommendedMmPerS = source.PrintSpeedRecommendedMmPerS,
+            PrintSpeedMaxMmPerS = source.PrintSpeedMaxMmPerS,
+            CoolingMinPercent = source.CoolingMinPercent,
+            CoolingRecommendedPercent = source.CoolingRecommendedPercent,
+            CoolingMaxPercent = source.CoolingMaxPercent,
+            CoolingGuidance = source.CoolingGuidance,
+            DryingTemperatureC = source.DryingTemperatureC,
+            DryingTimeHours = source.DryingTimeHours,
+            EnclosureRequirement = source.EnclosureRequirement,
+            PrinterProfileReference = source.PrinterProfileReference,
+            SlicerProfileReference = source.SlicerProfileReference,
+            ProfileId = source.ProfileId,
+            ProfileKind = source.ProfileKind
+        };
+        _nativeBaseMaterialRows.Add(copy);
+        SaveBaseMaterialCatalogToDatabase();
+        RefreshFastSettingsViews();
+        ShowTransientStatus($"{copy.BaseMaterial} duplicated from {source.BaseMaterial}.");
     }
 
     private void DeleteBaseMaterialRow_Click(object sender, RoutedEventArgs e)
@@ -21242,6 +21355,20 @@ private List<string> GetVisibleAiMaterialLabels()
         var row = _selectedFastBaseMaterialRow;
         if (row is not null)
         {
+            if (_nativeMaterialRows.Any(material =>
+                    string.Equals(
+                        material.BaseMaterial?.Trim(),
+                        row.BaseMaterial.Trim(),
+                        StringComparison.OrdinalIgnoreCase)))
+            {
+                MessageBox.Show(
+                    this,
+                    $"{row.BaseMaterial} is referenced by Materials and cannot be deleted.",
+                    "Base Material In Use",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return;
+            }
             _nativeBaseMaterialRows.Remove(row);
             _selectedFastBaseMaterialRow = null;
             SaveBaseMaterialCatalogToDatabase();
@@ -21249,7 +21376,22 @@ private List<string> GetVisibleAiMaterialLabels()
             RefreshNativeMaterialGridValidation();
             RefreshNativeInputModulesFromMaterialManager(markDirty: false);
             RefreshFastSettingsViews();
+            ShowTransientStatus($"{row.BaseMaterial} deleted from the canonical Base Material Catalog.");
         }
+    }
+
+    private string NextUniqueBaseMaterialName(string preferred)
+    {
+        var candidate = preferred.Trim();
+        var suffix = 2;
+        while (_nativeBaseMaterialRows.Any(row =>
+                   string.Equals(row.BaseMaterial.Trim(), candidate, StringComparison.OrdinalIgnoreCase)) ||
+               _nativeMaterialRows.Any(row =>
+                   string.Equals(row.BaseMaterial?.Trim(), candidate, StringComparison.OrdinalIgnoreCase)))
+        {
+            candidate = $"{preferred.Trim()} {suffix++}";
+        }
+        return candidate;
     }
 
     private sealed record ManufacturerMetricLeader(

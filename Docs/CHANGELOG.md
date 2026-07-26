@@ -2,6 +2,17 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v45.2.0 - Base Materials Workspace
+
+- Moves the canonical Base Material Catalog from Settings Manager into a
+  dedicated top-level tab.
+- Adds Add, Duplicate, guarded Delete, editable Fast-grid and independent
+  column-layout controls.
+- Extends disposable CRUD across Base Material create/edit/duplicate/delete
+  persistence while leaving schema and `BaseMaterialId` for v45.2.1.
+- Owner accepted immediate startup rendering, catalog CRUD and Full Data
+  Verification 346/346.
+
 ## v44.7.18 - Guarded Updater Acceptance
 
 - Added explicit `updater` scenario authorization without releasing general

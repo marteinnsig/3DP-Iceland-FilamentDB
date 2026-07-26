@@ -83,7 +83,7 @@ internal static class Program
             foreach (var tabId in new[]
                      {
                          "MaterialsTab", "TensileMeasurementsTab", "ImpactMeasurementsTab",
-                         "StiffnessMeasurementsTab", "SettingsManagerTab", "ReportsTab"
+                         "StiffnessMeasurementsTab", "BaseMaterialsTab", "SettingsManagerTab", "ReportsTab"
                      })
             {
                 SelectTab(main, tabId, application.Id);

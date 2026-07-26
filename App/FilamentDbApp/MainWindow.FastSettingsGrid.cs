@@ -27,7 +27,7 @@ public partial class MainWindow
     {
         var confirmation = MessageBox.Show(
             this,
-            "Reset both Settings Manager column layouts to application defaults?\n\nSaved Settings and Base Material data are unchanged.",
+            "Reset the Settings Manager column layout to the application default?\n\nSaved Settings are unchanged.",
             "Reset Settings Columns",
             MessageBoxButton.YesNo,
             MessageBoxImage.Question,
@@ -35,12 +35,26 @@ public partial class MainWindow
         if (confirmation != MessageBoxResult.Yes) return;
 
         _workflowPreferencesService.SetFastGridLayout("Settings", Array.Empty<Services.WorkflowColumnLayout>());
-        _workflowPreferencesService.SetFastGridLayout("BaseMaterials", Array.Empty<Services.WorkflowColumnLayout>());
         _embeddedFastNativeSettingsView?.ResetLayout(
             _defaultFastNativeSettingsColumns ?? BuildFastNativeSettingsColumns());
+        ShowTransientStatus("Settings Manager columns reset to defaults; saved data was unchanged.");
+    }
+
+    private void ResetFastBaseMaterialColumns_Click(object sender, RoutedEventArgs e)
+    {
+        var confirmation = MessageBox.Show(
+            this,
+            "Reset the Base Materials column layout to the application default?\n\nSaved catalog data is unchanged.",
+            "Reset Base Material Columns",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question,
+            MessageBoxResult.No);
+        if (confirmation != MessageBoxResult.Yes) return;
+
+        _workflowPreferencesService.SetFastGridLayout("BaseMaterials", Array.Empty<Services.WorkflowColumnLayout>());
         _embeddedFastBaseMaterialsView?.ResetLayout(
             _defaultFastBaseMaterialsColumns ?? BuildFastBaseMaterialColumns());
-        ShowTransientStatus("Settings Manager columns reset to defaults; saved data was unchanged.");
+        ShowTransientStatus("Base Materials columns reset to defaults; saved catalog data was unchanged.");
     }
 
     private MaterialsRenderingPrototypeView CreateFastNativeSettingsView()
@@ -182,9 +196,43 @@ public partial class MainWindow
 
     private bool ApplyFastBaseMaterialChanges(IReadOnlyList<MaterialsPrototypeChange> changes)
     {
+        var renamedMaterials = new List<(NativeMaterialRow Material, string OldName)>();
         foreach (var change in changes)
         {
             SetPropertyValue(change.Row.Source, change.Column.PropertyName!, change.NewValue);
+            if (change.Row.Source is NativeBaseMaterialRow &&
+                string.Equals(
+                    change.Column.PropertyName,
+                    nameof(NativeBaseMaterialRow.BaseMaterial),
+                    StringComparison.Ordinal))
+            {
+                if (string.IsNullOrWhiteSpace(change.NewValue) ||
+                    _nativeBaseMaterialRows.Count(row =>
+                        string.Equals(
+                            row.BaseMaterial.Trim(),
+                            change.NewValue.Trim(),
+                            StringComparison.OrdinalIgnoreCase)) > 1)
+                {
+                    SetPropertyValue(change.Row.Source, change.Column.PropertyName!, change.OldValue);
+                    MessageBox.Show(
+                        this,
+                        "Base Material names must be non-empty and unique.",
+                        "Base Material Catalog",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return false;
+                }
+
+                foreach (var material in _nativeMaterialRows.Where(material =>
+                             string.Equals(
+                                 material.BaseMaterial?.Trim(),
+                                 change.OldValue.Trim(),
+                                 StringComparison.OrdinalIgnoreCase)))
+                {
+                    renamedMaterials.Add((material, material.BaseMaterial));
+                    material.BaseMaterial = change.NewValue.Trim();
+                }
+            }
         }
 
         try
@@ -192,7 +240,10 @@ public partial class MainWindow
             SaveBaseMaterialCatalogToDatabase();
             ApplyNativeMaterialComputedFieldsToAllRows();
             RefreshNativeMaterialGridValidation();
+            if (renamedMaterials.Count > 0 && !SaveNativeMaterialsSilent())
+                throw new InvalidOperationException("Linked Material Base Material names could not be saved.");
             RefreshNativeInputModulesFromMaterialManager(markDirty: false);
+            RefreshCanonicalMaterialConsumerFilters();
             return true;
         }
         catch (Exception ex)
@@ -200,6 +251,18 @@ public partial class MainWindow
             foreach (var change in changes)
             {
                 SetPropertyValue(change.Row.Source, change.Column.PropertyName!, change.OldValue);
+            }
+            foreach (var renamed in renamedMaterials)
+                renamed.Material.BaseMaterial = renamed.OldName;
+            try
+            {
+                SaveBaseMaterialCatalogToDatabase();
+                if (renamedMaterials.Count > 0) SaveNativeMaterialsSilent();
+            }
+            catch
+            {
+                // The original failure remains the actionable error. The automatic
+                // database backup and normal recovery surfaces retain rollback evidence.
             }
             MessageBox.Show(this, ex.Message, "Base Material Catalog", MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
