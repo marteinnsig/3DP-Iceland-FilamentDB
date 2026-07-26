@@ -2,6 +2,19 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v48.0.5 - Canonical Usage Persistence and Recovery
+
+- Adds schema v34 with private append-only `UsageEvents`, exact canonical
+  relationships and one-reversal-per-original enforcement.
+- Commits linked Inventory weight deltas atomically with original, reversal
+  and replacement events.
+- Expands governed Excel recovery to 22 tables while accepting exact schema-v33
+  packages as an empty UsageEvents migration.
+- Extends disposable CRUD automation with restart, correction, Inventory and
+  cleanup evidence. No normal Usage UI or public output is added.
+- Owner runtime accepted normal behavior and Full Data Verification 359/359;
+  v48.0.5 is canonical.
+
 ## v48.0.4 - Disposable Usage Domain Prototype
 
 - Adds pure immutable Usage Event domain records and a non-persistent service.
@@ -17,7 +30,7 @@
 - Owner runtime accepted normal startup and all four usage-domain contracts;
   Full Data Verification passes 358/358.
 
-## v48.0.3 - Usage Event Contract Research
+## v48.0.3 - Usage Event Contract
 
 - Audits native measurement, Experimental Run, Inventory, Purchasing, report,
   recovery, diagnostics and automation ownership before schema/UI work.

@@ -1,6 +1,13 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v48.0.5 - Canonical Usage Persistence and Recovery
+
+Schema v34 persists private append-only UsageEvents with atomic linked-Inventory
+deltas and explicit reversal/replacement corrections. Governed Excel recovery
+owns 22 tables with exact v33 compatibility. Disposable CRUD/recovery and owner
+Full Data Verification pass 359/359.
+
 ## v48.0.4 - Disposable Usage Domain Prototype
 
 Pure non-persistent Usage Event contracts validate canonical identity, UTC

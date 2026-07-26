@@ -1,3 +1,24 @@
+# v48.0.5 - Canonical Usage Persistence and Recovery
+
+Date: 2026-07-26
+
+- Debug/Release app and AutomationRunner builds pass with zero warnings/errors.
+- NuGet vulnerability audit reports no vulnerable direct or transitive
+  packages.
+- Release documentation audit passes; Master Roadmap has zero lines over 136
+  characters.
+- Disposable CRUD profile `20260726171743-3d1e2a09`: PASS 359/359.
+- CRUD evidence: original event/900 g, reversal plus replacement/920 g,
+  restart persistence and exact cleanup.
+- Disposable recovery profile `20260726172034-4e048744`: PASS 359/359.
+- Governed 22-table Excel restore and seven SQLite backup artifacts pass.
+- Both profiles preserve baseline/final business-state hash
+  `E26A54CFF9E6DE6566D3683EE4EACEAC210B225DD4F20925B39DCACCA01E7B09`.
+- Production, FTPS and owner database remained blocked.
+- Owner evidence `3DPIceland_FilamentDB_Verification_20260726_172529.txt`:
+  PASS 359/359.
+- Owner accepted normal runtime behavior; v48.0.5 is canonical.
+
 # v48.0.4 - Disposable Usage Domain Prototype
 
 Date: 2026-07-26

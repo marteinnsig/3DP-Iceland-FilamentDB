@@ -3,6 +3,12 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v48.0.5 - Canonical Usage Persistence and Recovery
+
+Private immutable Usage Events now persist with exact canonical relationships,
+atomic Inventory reconciliation, governed recovery and deterministic disposable
+acceptance. Owner Full Data Verification passes 359/359.
+
 # v48.0.4 - Disposable Usage Domain Prototype
 
 The accepted pure domain prototype proves append-only correction, missing-data

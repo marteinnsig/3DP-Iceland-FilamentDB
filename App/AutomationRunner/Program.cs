@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Windows.Automation;
 using Microsoft.Data.Sqlite;
+using System.Globalization;
 using FilamentDbApp.UpdateCore;
 
 namespace FilamentDbApp.AutomationRunner;
@@ -172,10 +173,12 @@ internal static class Program
             {
                 RunCrudAction(main, application.Id, "AutomationCrudCreate", "CREATED");
                 RecordDatabaseEvidence(root, databasePath, "crud-after-create");
+                ValidateUsagePersistence(databasePath, materialCrudId, 1, 0, 0, "900");
                 Record("crud-create-save", true, materialCrudId);
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudEdit", "EDITED");
                 RecordDatabaseEvidence(root, databasePath, "crud-after-edit");
+                ValidateUsagePersistence(databasePath, materialCrudId, 3, 1, 1, "920");
                 Record("crud-restart-edit-save", true, materialCrudId);
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudDelete", "DELETED");
@@ -183,6 +186,7 @@ internal static class Program
                 Record("crud-restart-delete-save", true, materialCrudId);
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudVerifyAbsent", "ABSENT");
+                ValidateUsagePersistence(databasePath, materialCrudId, 0, 0, 0, null);
                 Record("crud-restart-verify-absent", true, materialCrudId);
                 CaptureWindow(main, IOPath.Combine(root, "evidence", "crud-complete.png"));
             }
@@ -978,6 +982,62 @@ internal static class Program
             true,
             $"logical={ComputeLogicalDatabaseHash(snapshot)}; " +
             $"business={ComputeLogicalDatabaseHash(snapshot, excludeVolatileTimestamps: true)}");
+    }
+
+    private static void ValidateUsagePersistence(
+        string databasePath,
+        string materialId,
+        int expectedEvents,
+        int expectedReversals,
+        int expectedReplacements,
+        string? expectedRemainingWeight)
+    {
+        using var connection = new SqliteConnection(
+            $"Data Source={databasePath};Mode=ReadOnly;Pooling=False");
+        connection.Open();
+
+        int Count(string predicate)
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText =
+                $"SELECT COUNT(*) FROM UsageEvents WHERE MaterialId=$material {predicate};";
+            command.Parameters.AddWithValue("$material", materialId);
+            return Convert.ToInt32(command.ExecuteScalar(), CultureInfo.InvariantCulture);
+        }
+
+        var events = Count(string.Empty);
+        var reversals = Count("AND EntryKind='Reversal'");
+        var replacements = Count("AND EntryKind='Replacement'");
+        Require(
+            events == expectedEvents &&
+            reversals == expectedReversals &&
+            replacements == expectedReplacements,
+            $"Usage persistence mismatch for {materialId}: " +
+            $"events {events}/{expectedEvents}, reversals {reversals}/{expectedReversals}, " +
+            $"replacements {replacements}/{expectedReplacements}.");
+
+        string remainingDetail;
+        using (var inventory = connection.CreateCommand())
+        {
+            inventory.CommandText = """
+                                    SELECT RemainingWeightG
+                                    FROM InventorySpoolItems
+                                    WHERE MaterialId=$material;
+                                    """;
+            inventory.Parameters.AddWithValue("$material", materialId);
+            var remaining = inventory.ExecuteScalar()?.ToString();
+            Require(
+                string.Equals(remaining, expectedRemainingWeight, StringComparison.Ordinal),
+                $"Usage inventory mismatch for {materialId}: " +
+                $"{remaining ?? "<absent>"}/{expectedRemainingWeight ?? "<absent>"}.");
+            remainingDetail = remaining ?? "absent";
+        }
+
+        Record(
+            "usage-persistence-" + expectedEvents.ToString(CultureInfo.InvariantCulture),
+            true,
+            $"{materialId}: events={events}; reversals={reversals}; " +
+            $"replacements={replacements}; remaining={remainingDetail}");
     }
 
     private static string ComputeLogicalDatabaseHash(

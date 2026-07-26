@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v48.0.4 — Disposable Usage Domain Prototype**
+Current canonical release: **v48.0.5 — Canonical Usage Persistence and Recovery**
 
-Last runtime-accepted baseline: **v48.0.4 — Disposable Usage Domain Prototype**
+Last runtime-accepted baseline: **v48.0.5 — Canonical Usage Persistence and Recovery**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v48.0.5 — Canonical Usage Persistence and Recovery**
+Current roadmap increment: **v48.0.6 — Bounded Usage UI and Automation**
 
-Current acceptance note: v48.0.4 pure usage-domain contracts are runtime accepted with Full Data Verification 358/358.
+Current acceptance note: v48.0.5 persistence/recovery is runtime accepted with Full Data Verification 359/359.
 
 Candidate note: None.
 
@@ -1957,7 +1957,14 @@ to unstarted authoritative planning slots.
   - SQLite, UI, seed, reports, website and owner data remain unchanged.
   - Owner runtime accepted normal startup and all four usage-domain gates; Verification 358/358 passes.
   - v48.0.4 is complete, canonical and runtime accepted.
-  - Current implementation increment: v48.0.5 — Canonical Usage Persistence and Recovery.
+  - v48.0.5 adds schema v34 and a private append-only UsageEvents store.
+  - Linked Inventory deltas commit atomically with original, reversal and replacement events.
+  - Governed Excel recovery owns 22 tables; exact v33 packages remain compatible with an empty UsageEvents migration.
+  - Existing disposable CRUD automation proves persistence across restart, correction, Inventory reconciliation and exact cleanup.
+  - No normal Usage UI or public report/website allowlist is added in this increment.
+  - Owner accepted normal runtime behavior and Full Data Verification 359/359.
+  - v48.0.5 is complete, canonical and runtime accepted.
+  - Current implementation increment: v48.0.6 — Bounded Usage UI and Automation.
 - **v48.1 — MaterialID-aware Print Job Pricing and Immutable Quote Snapshots**
   - State: Open design.
   - Requires formula/reuse-rights, unit, currency-provenance and Printer Profile approval before coding.

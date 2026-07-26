@@ -1,4 +1,26 @@
-# Current Build Notes - v48.0.4
+# Current Build Notes - v48.0.5
+
+## Canonical Usage Persistence and Recovery
+
+Schema v34 persists private immutable Usage Events with exact Material,
+Inventory and Experimental Run relationships. Event insertion and linked
+Inventory weight adjustment share one SQLite transaction. Corrections append
+an equal/opposite reversal plus replacement; accepted rows are never edited.
+
+Governed Excel recovery now owns 22 tables. Exact schema-v33 packages remain
+supported and restore with an empty UsageEvents table; incomplete or ambiguous
+table sets remain blocked. The existing disposable CRUD scenario proves
+original persistence, restart, correction, Inventory reconciliation and exact
+cleanup. Normal Usage UI and public report/website exposure remain out of
+scope pending later increments.
+
+Candidate automation profiles `20260726171743-3d1e2a09` (CRUD) and
+`20260726172034-4e048744` (recovery) pass Full Data Verification 359/359.
+CRUD proves 1/0/0 events at 900 g, then 3/1/1 at 920 g and exact cleanup.
+Recovery proves the 22-table workbook, pre/post backups and equal baseline/final
+business-state hash. Owner runtime accepted normal behavior and Full Data
+Verification 359/359 from
+`3DPIceland_FilamentDB_Verification_20260726_172529.txt`; v48.0.5 is canonical.
 
 ## Disposable Usage Domain Prototype
 

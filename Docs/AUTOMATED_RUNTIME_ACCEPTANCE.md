@@ -1,5 +1,25 @@
 # Automated Runtime Acceptance
 
+## v48.0.5 - Canonical usage persistence and recovery
+
+- Reuses the authorized disposable `crud` scenario; no new broad write
+  authorization is introduced.
+- After create, SQLite evidence requires one original event and linked
+  Inventory remaining weight of 900 g.
+- After restart/edit, evidence requires original plus reversal and replacement,
+  with linked Inventory reconciled to 920 g.
+- After delete/restart, UsageEvents, disposable Inventory and Material rows
+  must all be absent and baseline/final business state must match.
+- The recovery scenario must prove the governed 22-table workbook and
+  transactional restore. Exact schema-v33 workbooks remain supported.
+- Production, FTPS, owner database and unexpected-dialog guards are unchanged.
+- CRUD profile `20260726171743-3d1e2a09` passes Verification 359/359 and
+  restores the exact baseline business-state hash.
+- Recovery profile `20260726172034-4e048744` passes Verification 359/359,
+  verifies seven backup artifacts and restores the exact baseline
+  business-state hash.
+- Owner runtime accepted normal behavior with Full Data Verification 359/359.
+
 ## v48.0.4 - Disposable usage domain prototype
 
 - No runtime write workflow or UI action exists, so no new scenario

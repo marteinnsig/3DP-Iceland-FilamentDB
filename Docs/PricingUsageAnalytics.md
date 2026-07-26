@@ -334,6 +334,21 @@ No database, UI, seed, public output or owner-data caller is added.
 Owner runtime accepted normal startup and all four usage-domain Verification
 contracts. Full Data Verification passes 358/358; v48.0.4 is canonical.
 
+#### v48.0.5 canonical implementation
+
+Schema v34 adds the private append-only UsageEvents ledger. Original events,
+reversals and replacements use the accepted domain validation, while linked
+Inventory deltas commit in the same SQLite transaction. Governed Excel
+recovery expands from 21 to 22 tables and exact schema-v33 packages migrate
+with no inferred usage rows.
+
+The disposable CRUD scenario owns deterministic create, restart, correction,
+Inventory reconciliation and cleanup evidence. No normal Usage UI, report or
+website allowlist is added in this increment.
+
+Owner runtime accepted normal behavior and Full Data Verification 359/359.
+v48.0.5 is canonical; v48.0.6 owns the bounded Usage UI and automation.
+
 #### Risks and open decisions
 
 1. Decide whether inventory decrement is mandatory whenever

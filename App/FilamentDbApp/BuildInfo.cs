@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "USAGE-DOMAIN-PROTOTYPE";
-    public const string ReleaseTitle = "Disposable Usage Domain Prototype";
+    public const string ReleaseCode = "CANONICAL-USAGE-PERSISTENCE";
+    public const string ReleaseTitle = "Canonical Usage Persistence and Recovery";
 
     public static string Version
     {

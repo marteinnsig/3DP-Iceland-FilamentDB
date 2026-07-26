@@ -2,6 +2,15 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v48.0.5 - Canonical Usage Persistence and Recovery
+
+Candidate schema v34 adds append-only UsageEvents, atomic linked-Inventory
+deltas, reversal/replacement persistence and governed 22-table Excel recovery.
+Disposable CRUD automation owns restart, correction and cleanup evidence.
+No normal Usage UI or public publishing contract is introduced.
+Owner evidence `3DPIceland_FilamentDB_Verification_20260726_172529.txt` passes
+359/359; v48.0.5 is canonical and runtime accepted.
+
 ## v48.0.4 - Disposable Usage Domain Prototype
 
 Added immutable Usage Event records and one pure non-persistent domain service.

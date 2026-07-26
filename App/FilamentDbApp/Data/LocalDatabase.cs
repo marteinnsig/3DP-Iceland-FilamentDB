@@ -11,7 +11,7 @@ namespace FilamentDbApp.Data;
 
 public sealed partial class LocalDatabase
 {
-    private const int SchemaVersion = 33;
+    private const int SchemaVersion = 34;
     private const int MinimumStandaloneBackupSchemaVersion = 27;
     private const int MaxAutomaticBackups = 20;
     private const string AutomaticBackupPrefix = "filamentdb_";
@@ -26,9 +26,9 @@ public sealed partial class LocalDatabase
     private bool _requiredCanonicalMigrationBackupCreated;
     private static readonly string[] ExcelRecoveryTableInsertOrder =
     {
-        "Manufacturers", "NativeMaterialManagerRows", "BaseMaterialCatalog", "NativeSettingsRows", "DeploymentSettings", "WebsiteTemplates", "VideoIdeaQueue", "Suppliers",
+        "Manufacturers", "BaseMaterialCatalog", "NativeMaterialManagerRows", "NativeSettingsRows", "DeploymentSettings", "WebsiteTemplates", "VideoIdeaQueue", "Suppliers",
         "PurchaseOrders", "PurchaseOrderLines", "InventorySpoolItems", "PurchaseDocuments", "ExperimentDefinitions", "MaterialExperiments", "ExperimentalRuns", "ExperimentalMeasurements",
-        "NativeTensileSamples", "NativeTensileResults", "NativeImpactSamples", "NativeStiffnessMeasurements", "NativeMeasurementNotes"
+        "NativeTensileSamples", "NativeTensileResults", "NativeImpactSamples", "NativeStiffnessMeasurements", "NativeMeasurementNotes", "UsageEvents"
     };
     private static readonly string[] LegacyWorkbookTablesDropOrder =
     {
@@ -748,8 +748,17 @@ public sealed partial class LocalDatabase
         if (snapshot.SourceSchemaVersion <= 0 || snapshot.SourceSchemaVersion > SchemaVersion)
             throw new InvalidOperationException($"Excel recovery schema v{snapshot.SourceSchemaVersion} is not compatible with application schema v{SchemaVersion}.");
         var supplied = snapshot.Tables.Select(table => table.TableName).ToList();
-        if (supplied.Count != ExcelRecoveryTableInsertOrder.Length || supplied.Distinct(StringComparer.OrdinalIgnoreCase).Count() != supplied.Count ||
-            ExcelRecoveryTableInsertOrder.Any(required => !supplied.Contains(required, StringComparer.OrdinalIgnoreCase)))
+        var missingTables = ExcelRecoveryTableInsertOrder
+            .Where(required => !supplied.Contains(required, StringComparer.OrdinalIgnoreCase))
+            .ToList();
+        var legacyPreUsagePackage = snapshot.SourceSchemaVersion < 34 &&
+                                    missingTables.Count == 1 &&
+                                    missingTables[0] == "UsageEvents" &&
+                                    supplied.Count == ExcelRecoveryTableInsertOrder.Length - 1;
+        if (supplied.Distinct(StringComparer.OrdinalIgnoreCase).Count() != supplied.Count ||
+            (!legacyPreUsagePackage &&
+             (supplied.Count != ExcelRecoveryTableInsertOrder.Length ||
+              missingTables.Count > 0)))
             throw new InvalidOperationException("Excel recovery package does not contain the exact governed canonical table set.");
         var materials = snapshot.Tables.First(table => string.Equals(table.TableName, "NativeMaterialManagerRows", StringComparison.OrdinalIgnoreCase));
         if (materials.Rows.Count == 0) throw new InvalidOperationException("Excel recovery restore blocked: no canonical Materials rows are present.");
@@ -769,7 +778,22 @@ public sealed partial class LocalDatabase
             long rowsRestored = 0;
             foreach (var tableName in ExcelRecoveryTableInsertOrder)
             {
-                var table = snapshot.Tables.Single(item => string.Equals(item.TableName, tableName, StringComparison.OrdinalIgnoreCase));
+                var table = snapshot.Tables.SingleOrDefault(item =>
+                    string.Equals(item.TableName, tableName, StringComparison.OrdinalIgnoreCase));
+                if (table is null && legacyPreUsagePackage && tableName == "UsageEvents")
+                {
+                    table = new ExcelRecoveryTable
+                    {
+                        TableName = "UsageEvents",
+                        SheetName = "DR22 UsageEvents",
+                        Columns = GetTableColumnDefinitions(connection, "UsageEvents")
+                            .Select(column => column.Name)
+                            .ToList()
+                    };
+                }
+                if (table is null)
+                    throw new InvalidOperationException(
+                        "Excel recovery package is missing canonical table: " + tableName);
                 var currentColumns = GetTableColumnDefinitions(connection, tableName).Select(column => column.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
                 if (table.Columns.Count == 0 || table.Columns.Any(column => !currentColumns.Contains(column)))
                     throw new InvalidOperationException("Excel recovery table has incompatible columns: " + tableName);
@@ -1326,6 +1350,43 @@ CREATE TABLE IF NOT EXISTS InventorySpoolItems (
 );
 CREATE INDEX IF NOT EXISTS IX_InventorySpoolItems_MaterialId ON InventorySpoolItems(MaterialId);
 
+CREATE TABLE IF NOT EXISTS UsageEvents (
+    UsageEventId TEXT PRIMARY KEY,
+    MaterialId TEXT NOT NULL,
+    EventType TEXT NOT NULL,
+    EntryKind TEXT NOT NULL,
+    OccurredAtUtc TEXT NOT NULL,
+    CreatedAtUtc TEXT NOT NULL,
+    InventoryItemId TEXT,
+    ExperimentalRunId TEXT,
+    FuturePrintJobId TEXT,
+    FutureTestSessionId TEXT,
+    FilamentUsedGrams TEXT,
+    FilamentProvenance TEXT NOT NULL,
+    PrintDurationSeconds INTEGER,
+    HandsOnDurationSeconds INTEGER,
+    ProducedCount INTEGER,
+    AcceptedCount INTEGER,
+    RejectedCount INTEGER,
+    Source TEXT,
+    Note TEXT,
+    Origin TEXT,
+    ReversesUsageEventId TEXT,
+    CorrectsUsageEventId TEXT,
+    FOREIGN KEY (MaterialId) REFERENCES NativeMaterialManagerRows(MaterialId) ON DELETE RESTRICT,
+    FOREIGN KEY (InventoryItemId) REFERENCES InventorySpoolItems(InventoryItemId) ON DELETE RESTRICT,
+    FOREIGN KEY (ExperimentalRunId) REFERENCES ExperimentalRuns(ExperimentalRunId) ON DELETE RESTRICT,
+    FOREIGN KEY (ReversesUsageEventId) REFERENCES UsageEvents(UsageEventId) ON DELETE RESTRICT,
+    FOREIGN KEY (CorrectsUsageEventId) REFERENCES UsageEvents(UsageEventId) ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS IX_UsageEvents_MaterialId_OccurredAtUtc
+    ON UsageEvents(MaterialId, OccurredAtUtc);
+CREATE INDEX IF NOT EXISTS IX_UsageEvents_InventoryItemId
+    ON UsageEvents(InventoryItemId);
+CREATE UNIQUE INDEX IF NOT EXISTS UX_UsageEvents_ReversesUsageEventId
+    ON UsageEvents(ReversesUsageEventId)
+    WHERE ReversesUsageEventId IS NOT NULL;
+
 CREATE TABLE IF NOT EXISTS PurchaseOrders (
     PurchaseOrderId TEXT PRIMARY KEY, Supplier TEXT, OrderNumber TEXT, PurchaseDate TEXT, Currency TEXT, ExchangeRate TEXT,
     TaxTreatment TEXT, ShippingMethod TEXT, TrackingNumber TEXT, SupplierItemsTotal TEXT, SupplierShipping TEXT, SupplierTax TEXT,
@@ -1682,9 +1743,9 @@ DROP TABLE IF EXISTS MaterialsImport;";
         }
         using var update = connection.CreateCommand();
         update.Transaction = transaction;
-        update.CommandText = """
+        update.CommandText = $"""
             INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('LegacyWorkbookTablesRetiredV1', 'complete');
-            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('SchemaVersion', '33');
+            INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('SchemaVersion', '{SchemaVersion}');
             """;
         update.ExecuteNonQuery();
         transaction.Commit();
