@@ -1,4 +1,31 @@
-# Current Build Notes - v48.0.6
+# Current Build Notes - v48.0.7
+
+## Internal Usage Analytics
+
+The candidate adds private analytics to the selected MaterialID in the Usage
+workspace. Summary cards show immutable ledger rows separately from effective
+events, then net filament, print/hands-on time, produced/accepted/rejected
+counts and evidence coverage.
+
+The pure projection now excludes reversal rows and reversed originals from
+effective-event and coverage counts. Quantitative totals still net the complete
+append-only ledger, so a 100 g original corrected to 80 g shows three audit
+rows, one effective event and 80 g. Missing active evidence remains
+`Not recorded`.
+
+No schema, public report, website, price or cost analytics change is included.
+The disposable CRUD scenario now reads the visible analytics through stable
+AutomationIds before and after correction.
+
+Candidate profile `20260726175433-70e8dba1` passes Full Data Verification
+361/361. Visible analytics prove 1 effective/1 ledger row, 100 g and 1 hour
+before correction; after correction they prove 1 effective/3 ledger rows,
+80 g and 55 minutes. Cleanup restores exact baseline business state.
+
+Owner accepted the summary layout, effective/ledger semantics and MaterialID
+refresh. HTML/PDF/website previews remain free of Usage fields. Owner evidence
+`3DPIceland_FilamentDB_Verification_20260726_181431.txt` passes 361/361;
+v48.0.7 is canonical.
 
 ## Bounded Usage UI and Automation
 

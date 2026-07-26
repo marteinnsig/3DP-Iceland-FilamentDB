@@ -2,6 +2,14 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v48.0.7 - Internal Usage Analytics
+
+Candidate selected-Material private analytics separate audit-row count from
+effective usage count and expose net quantities plus evidence coverage. The
+tester proves correction netting; schema and public outputs remain unchanged.
+Owner accepted the private analytics and public-output isolation. Full Data
+Verification passes 361/361; v48.0.7 is canonical.
+
 ## v48.0.6 - Bounded Usage UI and Automation
 
 Candidate private Usage workspace provides exact MaterialID capture, optional

@@ -366,6 +366,21 @@ Owner accepted optional no-spool capture when Inventory is empty, then added
 canonical spools and accepted atomic linked-weight updates and correction.
 Full Data Verification passes 360/360; v48.0.6 is canonical.
 
+#### v48.0.7 candidate implementation
+
+Private selected-Material analytics now distinguish immutable ledger-row count
+from effective events. Reversal rows and reversed originals do not inflate
+effective-event or evidence coverage, while quantities continue to net the
+complete append-only ledger.
+
+The Usage workspace presents net grams, print/hands-on duration, part counts
+and effective evidence coverage. No schema, price/cost calculation, public
+report or website payload is changed.
+
+Owner accepted correction netting, evidence coverage and summary presentation,
+and visually confirmed Usage remains absent from report and website previews.
+Full Data Verification passes 361/361; v48.0.7 is canonical.
+
 #### Risks and open decisions
 
 1. Decide whether inventory decrement is mandatory whenever

@@ -1,4 +1,24 @@
-# v48.0.6 - Bounded Usage UI and Automation candidate
+# v48.0.7 - Internal Usage Analytics candidate
+
+Date: 2026-07-26
+
+- Debug/Release app and AutomationRunner builds pass with zero warnings/errors.
+- NuGet vulnerability audit reports no vulnerable direct or transitive
+  packages.
+- Release documentation audit passes; Master Roadmap has zero lines over 136
+  characters.
+- Disposable CRUD profile `20260726175433-70e8dba1`: PASS 361/361.
+- Visible analytics prove 1 effective/1 ledger row, 100 g and 1 hour before
+  correction.
+- After correction they prove 1 effective/3 ledger rows, 80 g and 55 minutes.
+- Final cleanup restores exact baseline business state.
+- Production, FTPS, owner database and public publishing remained blocked.
+- Owner evidence `3DPIceland_FilamentDB_Verification_20260726_181431.txt`:
+  PASS 361/361.
+- Owner accepted private analytics and visually confirmed public report/website
+  previews contain no Usage fields; v48.0.7 is canonical.
+
+# v48.0.6 - Bounded Usage UI and Automation
 
 Date: 2026-07-26
 

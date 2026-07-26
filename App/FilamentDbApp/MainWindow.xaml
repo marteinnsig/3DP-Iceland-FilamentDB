@@ -572,6 +572,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -623,7 +624,16 @@
             <Button x:Name="CancelUsageCorrectionButton" Content="Cancel Correction"
                     Click="CancelUsageCorrection_Click" Padding="10,4" Visibility="Collapsed" Margin="0,0,8,8"/>
         </WrapPanel>
-        <DataGrid Grid.Row="4" x:Name="UsageLedgerGrid" AutomationProperties.AutomationId="UsageLedgerGrid"
+        <UniformGrid Grid.Row="4" Columns="7" Margin="0,0,0,10">
+            <GroupBox Header="Effective events"><TextBlock x:Name="UsageEffectiveEventsText" AutomationProperties.AutomationId="UsageEffectiveEvents" FontSize="20" Margin="10"/></GroupBox>
+            <GroupBox Header="Ledger rows"><TextBlock x:Name="UsageLedgerRowsText" AutomationProperties.AutomationId="UsageLedgerRows" FontSize="20" Margin="10"/></GroupBox>
+            <GroupBox Header="Net filament"><TextBlock x:Name="UsageFilamentTotalText" AutomationProperties.AutomationId="UsageFilamentTotal" FontSize="17" Margin="10" TextWrapping="Wrap"/></GroupBox>
+            <GroupBox Header="Print time"><TextBlock x:Name="UsagePrintTimeTotalText" AutomationProperties.AutomationId="UsagePrintTimeTotal" FontSize="17" Margin="10" TextWrapping="Wrap"/></GroupBox>
+            <GroupBox Header="Hands-on time"><TextBlock x:Name="UsageHandsOnTimeTotalText" FontSize="17" Margin="10" TextWrapping="Wrap"/></GroupBox>
+            <GroupBox Header="Parts"><TextBlock x:Name="UsagePartsTotalText" FontSize="15" Margin="10" TextWrapping="Wrap"/></GroupBox>
+            <GroupBox Header="Evidence coverage"><TextBlock x:Name="UsageCoverageText" AutomationProperties.AutomationId="UsageCoverage" FontSize="13" Margin="10" TextWrapping="Wrap"/></GroupBox>
+        </UniformGrid>
+        <DataGrid Grid.Row="5" x:Name="UsageLedgerGrid" AutomationProperties.AutomationId="UsageLedgerGrid"
                   Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False"
                   IsReadOnly="True" CanUserAddRows="False" SelectionMode="Single">
             <DataGrid.Columns>
@@ -644,7 +654,7 @@
                 <DataGridTextColumn Header="Event ID" Binding="{Binding UsageEventId}" Width="210"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBlock Grid.Row="5" x:Name="UsageStatusText" AutomationProperties.AutomationId="UsageStatus"
+        <TextBlock Grid.Row="6" x:Name="UsageStatusText" AutomationProperties.AutomationId="UsageStatus"
                    Foreground="#64748B" Margin="0,8,0,0" TextWrapping="Wrap"/>
     </Grid>
 </TabItem>

@@ -15311,6 +15311,10 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             usageProjectionProbe.ProducedCount == 9 &&
             usageProjectionProbe.AcceptedCount == 8 &&
             usageProjectionProbe.RejectedCount == 1 &&
+            usageProjectionProbe.LedgerRowCount == 3 &&
+            usageProjectionProbe.EffectiveEventCount == 1 &&
+            usageProjectionProbe.FilamentEvidenceEventCount == 1 &&
+            usageProjectionProbe.PrintDurationEvidenceEventCount == 1 &&
             usageEmptyEvidenceProbe.FilamentUsedGrams is null &&
             usageEmptyEvidenceProbe.PrintDurationSeconds is null &&
             usageEmptyEvidenceProbe.FilamentEvidenceEventCount == 0,
@@ -16398,6 +16402,31 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                   "append-only record/correction actions and stable automation identities are present; " +
                   "no Print Job/Test Session or public-output surface is added"
                 : "Bounded Usage UI, stable automation identity, canonical persistence or release identity failed"));
+        var internalUsageAnalyticsReady =
+            FindName("UsageEffectiveEventsText") is TextBlock &&
+            FindName("UsageLedgerRowsText") is TextBlock &&
+            FindName("UsageFilamentTotalText") is TextBlock &&
+            FindName("UsagePrintTimeTotalText") is TextBlock &&
+            FindName("UsageCoverageText") is TextBlock &&
+            AutomationProperties.GetAutomationId(UsageEffectiveEventsText) ==
+            "UsageEffectiveEvents" &&
+            AutomationProperties.GetAutomationId(UsageLedgerRowsText) ==
+            "UsageLedgerRows" &&
+            AutomationProperties.GetAutomationId(UsageFilamentTotalText) ==
+            "UsageFilamentTotal" &&
+            usageProjectionProbe.LedgerRowCount == 3 &&
+            usageProjectionProbe.EffectiveEventCount == 1 &&
+            usageProjectionProbe.FilamentUsedGrams == 80m &&
+            usageProjectionProbe.PrintDurationSeconds == 3300;
+        checks.Add(new VerificationCheck(
+            "v48.0.7 Internal Usage Analytics release gate",
+            internalUsageAnalyticsReady && boundedUsageUiReady &&
+            usagePersistenceReady && releaseIdentityReady,
+            internalUsageAnalyticsReady && boundedUsageUiReady &&
+            usagePersistenceReady && releaseIdentityReady
+                ? "Private selected-Material projection distinguishes 3 immutable ledger rows from 1 effective event, " +
+                  "nets correction to 80 g/3,300 seconds and exposes honest evidence coverage with stable AutomationIds"
+                : "Private Usage projection netting, evidence coverage, stable UI identity, persistence or release identity failed"));
         var retiredOriginalExcelImportSurfaceReady =
             typeof(MainWindow).GetMethod("ImportExcel_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
             typeof(ExcelDisasterRecoveryService).GetMethod("AddRecoveryPackage") is not null &&
@@ -25426,7 +25455,36 @@ private List<string> GetVisibleAiMaterialLabels()
                 .OrderByDescending(item => item.OccurredAtUtc)
                 .ThenByDescending(item => item.CreatedAtUtc)
                 .ToList();
+        var projection = string.IsNullOrWhiteSpace(materialId)
+            ? null
+            : _usageEventDomainService.ProjectMaterial(materialId, events);
         UsageLedgerGrid.ItemsSource = events;
+        UsageEffectiveEventsText.Text =
+            projection?.EffectiveEventCount.ToString("N0", CultureInfo.CurrentCulture) ?? "0";
+        UsageLedgerRowsText.Text =
+            projection?.LedgerRowCount.ToString("N0", CultureInfo.CurrentCulture) ?? "0";
+        UsageFilamentTotalText.Text = projection is null ||
+                                      projection.FilamentEvidenceEventCount == 0
+            ? "Not recorded"
+            : $"{projection.FilamentUsedGrams:N2} g";
+        UsagePrintTimeTotalText.Text = projection is null ||
+                                      projection.PrintDurationEvidenceEventCount == 0
+            ? "Not recorded"
+            : FormatUsageDuration(projection.PrintDurationSeconds);
+        UsageHandsOnTimeTotalText.Text = projection is null ||
+                                        projection.HandsOnDurationEvidenceEventCount == 0
+            ? "Not recorded"
+            : FormatUsageDuration(projection.HandsOnDurationSeconds);
+        UsagePartsTotalText.Text = projection is null
+            ? "Not recorded"
+            : $"Produced {FormatUsageCount(projection.ProducedCount)}\n" +
+              $"Accepted {FormatUsageCount(projection.AcceptedCount)}\n" +
+              $"Rejected {FormatUsageCount(projection.RejectedCount)}";
+        UsageCoverageText.Text = projection is null
+            ? "No MaterialID selected"
+            : $"Grams {projection.FilamentEvidenceEventCount}/{projection.EffectiveEventCount}\n" +
+              $"Print {projection.PrintDurationEvidenceEventCount}/{projection.EffectiveEventCount}\n" +
+              $"Hands-on {projection.HandsOnDurationEvidenceEventCount}/{projection.EffectiveEventCount}";
         UsageMaterialIdentityText.Text = string.IsNullOrWhiteSpace(materialId)
             ? "No canonical MaterialID selected"
             : $"Canonical MaterialID: {materialId}";
@@ -25639,6 +25697,18 @@ private List<string> GetVisibleAiMaterialLabels()
         seconds.HasValue
             ? (seconds.Value / 60m).ToString("0.##", CultureInfo.CurrentCulture)
             : string.Empty;
+
+    private static string FormatUsageDuration(long? seconds)
+    {
+        if (!seconds.HasValue) return "Not recorded";
+        var duration = TimeSpan.FromSeconds(seconds.Value);
+        return Math.Abs(duration.TotalHours) >= 1
+            ? $"{duration.TotalHours:0.##} h"
+            : $"{duration.TotalMinutes:0.##} min";
+    }
+
+    private static string FormatUsageCount(int? value) =>
+        value?.ToString("N0", CultureInfo.CurrentCulture) ?? "Not recorded";
 
     private void InitializeInventorySpoolManager()
     {

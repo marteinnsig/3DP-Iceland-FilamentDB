@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "BOUNDED-USAGE-WORKSPACE";
-    public const string ReleaseTitle = "Bounded Usage UI and Automation";
+    public const string ReleaseCode = "INTERNAL-USAGE-ANALYTICS";
+    public const string ReleaseTitle = "Internal Usage Analytics";
 
     public static string Version
     {

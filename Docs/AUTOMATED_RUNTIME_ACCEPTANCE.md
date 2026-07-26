@@ -1,5 +1,21 @@
 # Automated Runtime Acceptance
 
+## v48.0.7 - Internal usage analytics
+
+- Reuses the existing disposable `crud` scenario and write authorization.
+- Stable AutomationIds expose effective events, ledger rows, net filament,
+  print duration and evidence coverage.
+- Before correction the tester requires one effective/one ledger row, 100 g
+  and 60 minutes.
+- After correction it requires one effective/three ledger rows, 80 g and
+  55 minutes.
+- Exact cleanup and baseline/final business-state equality remain mandatory.
+- Production, FTPS, owner database and public publishing remain blocked.
+- Profile `20260726175433-70e8dba1` passes Verification 361/361 and proves
+  both visible analytics states plus exact final cleanup.
+- Owner accepted the visible analytics, manually confirmed public-output
+  isolation and passed Full Data Verification 361/361.
+
 ## v48.0.6 - Bounded usage UI and automation
 
 - Reuses only the existing disposable `crud` authorization.

@@ -68,6 +68,7 @@ public sealed record UsageEventProjection(
     int? ProducedCount,
     int? AcceptedCount,
     int? RejectedCount,
+    int LedgerRowCount,
     int EffectiveEventCount,
     int FilamentEvidenceEventCount,
     int PrintDurationEvidenceEventCount,

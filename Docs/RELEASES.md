@@ -1,6 +1,13 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v48.0.7 - Internal Usage Analytics
+
+Private selected-Material analytics separate immutable ledger rows from
+effective events and expose net quantities plus honest evidence coverage.
+Public report/website previews remain unchanged. Owner runtime acceptance and
+Full Data Verification 361/361 pass.
+
 ## v48.0.6 - Bounded Usage UI and Automation
 
 Private exact-MaterialID usage capture supports optional same-Material Inventory

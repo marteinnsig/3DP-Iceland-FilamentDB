@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v48.0.6 — Bounded Usage UI and Automation**
+Current canonical release: **v48.0.7 — Internal Usage Analytics**
 
-Last runtime-accepted baseline: **v48.0.6 — Bounded Usage UI and Automation**
+Last runtime-accepted baseline: **v48.0.7 — Internal Usage Analytics**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v48.0.7 — Internal Usage Analytics**
+Current roadmap increment: **v48.1 — MaterialID-aware Print Job Pricing and Immutable Quote Snapshots**
 
-Current acceptance note: v48.0.6 bounded Usage UI is runtime accepted with Full Data Verification 360/360.
+Current acceptance note: v48.0.7 private usage analytics is runtime accepted with Full Data Verification 361/361.
 
 Candidate note: None.
 
@@ -1973,6 +1973,15 @@ to unstarted authoritative planning slots.
   - Owner accepted optional no-spool capture, linked-spool Inventory reconciliation, correction and tab refresh.
   - Owner Full Data Verification 360/360 passes; v48.0.6 is complete, canonical and runtime accepted.
   - Current implementation increment: v48.0.7 — Internal Usage Analytics.
+  - v48.0.7 candidate adds private selected-Material summary cards in the Usage workspace.
+  - Correction analytics distinguish immutable ledger rows from the remaining effective events.
+  - Net grams, durations and counts reuse the pure domain projection; missing evidence remains `Not recorded`.
+  - Evidence coverage reports effective events with grams, print-time and hands-on observations.
+  - Public reports, website payloads, MSRP/cost analytics and schema remain unchanged.
+  - Owner accepted correction netting, coverage semantics, summary layout and exact MaterialID refresh.
+  - Owner visually confirmed Usage remains absent from public report and website previews.
+  - Owner Full Data Verification 361/361 passes; v48.0.7 is complete, canonical and runtime accepted.
+  - Current implementation increment: v48.1 — MaterialID-aware Print Job Pricing and Immutable Quote Snapshots.
 - **v48.1 — MaterialID-aware Print Job Pricing and Immutable Quote Snapshots**
   - State: Open design.
   - Requires formula/reuse-rights, unit, currency-provenance and Printer Profile approval before coding.

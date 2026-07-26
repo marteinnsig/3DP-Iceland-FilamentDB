@@ -145,6 +145,17 @@ public sealed class UsageEventDomainService
                 normalizedMaterialId,
                 StringComparison.OrdinalIgnoreCase))
             .ToList();
+        var reversedIds = events
+            .Where(item =>
+                item.EntryKind == UsageEventEntryKind.Reversal &&
+                !string.IsNullOrWhiteSpace(item.ReversesUsageEventId))
+            .Select(item => item.ReversesUsageEventId!)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var effectiveEvents = events
+            .Where(item =>
+                item.EntryKind != UsageEventEntryKind.Reversal &&
+                !reversedIds.Contains(item.UsageEventId))
+            .ToList();
 
         return new UsageEventProjection(
             normalizedMaterialId,
@@ -155,9 +166,10 @@ public sealed class UsageEventDomainService
             SumNullable(events.Select(item => item.AcceptedCount)),
             SumNullable(events.Select(item => item.RejectedCount)),
             events.Count,
-            events.Count(item => item.FilamentUsedGrams.HasValue),
-            events.Count(item => item.PrintDurationSeconds.HasValue),
-            events.Count(item => item.HandsOnDurationSeconds.HasValue));
+            effectiveEvents.Count,
+            effectiveEvents.Count(item => item.FilamentUsedGrams.HasValue),
+            effectiveEvents.Count(item => item.PrintDurationSeconds.HasValue),
+            effectiveEvents.Count(item => item.HandsOnDurationSeconds.HasValue));
     }
 
     private static void ValidateInventoryRelationship(

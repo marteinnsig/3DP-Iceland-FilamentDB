@@ -3,6 +3,12 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v48.0.7 - Internal Usage Analytics
+
+Accepted private Usage analytics preserve append-only audit history while
+showing effective-event totals, net quantities and evidence coverage without
+public exposure. Owner Verification passes 361/361.
+
 # v48.0.6 - Bounded Usage UI and Automation
 
 The accepted private Usage workspace records exact MaterialID-led evidence,

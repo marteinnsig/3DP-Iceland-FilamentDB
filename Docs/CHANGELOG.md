@@ -2,6 +2,19 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v48.0.7 - Internal Usage Analytics
+
+- Adds private selected-Material summary cards for effective events, immutable
+  ledger rows, net grams, durations, counts and evidence coverage.
+- Corrects projection semantics so reversed originals and reversal rows do not
+  inflate effective-event or evidence counts.
+- Keeps quantitative totals as append-only net projections and missing evidence
+  as `Not recorded`.
+- Extends disposable CRUD automation to prove 100 g/60 minutes before
+  correction and 80 g/55 minutes after correction. Public outputs are unchanged.
+- Owner accepted private analytics and visually confirmed no Usage fields in
+  public report/website previews; Verification passes 361/361.
+
 ## v48.0.6 - Bounded Usage UI and Automation
 
 - Adds a private Usage tab with exact canonical MaterialID selection and

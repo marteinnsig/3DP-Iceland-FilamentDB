@@ -175,12 +175,14 @@ internal static class Program
                 RecordDatabaseEvidence(root, databasePath, "crud-after-create");
                 ValidateUsagePersistence(databasePath, materialCrudId, 1, 0, 0, "900");
                 ValidateUsageWorkspace(main, application.Id, materialCrudId, 1);
+                ValidateUsageAnalytics(main, materialCrudId, 1, 1, "100.00 g", "1 h");
                 Record("crud-create-save", true, materialCrudId);
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudEdit", "EDITED");
                 RecordDatabaseEvidence(root, databasePath, "crud-after-edit");
                 ValidateUsagePersistence(databasePath, materialCrudId, 3, 1, 1, "920");
                 ValidateUsageWorkspace(main, application.Id, materialCrudId, 3);
+                ValidateUsageAnalytics(main, materialCrudId, 1, 3, "80.00 g", "55 min");
                 Record("crud-restart-edit-save", true, materialCrudId);
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudDelete", "DELETED");
@@ -1067,6 +1069,40 @@ internal static class Program
             "usage-workspace-" + expectedEvents.ToString(CultureInfo.InvariantCulture),
             true,
             $"{materialId}: bounded controls present; {status}");
+    }
+
+    private static void ValidateUsageAnalytics(
+        AutomationElement main,
+        string materialId,
+        int expectedEffectiveEvents,
+        int expectedLedgerRows,
+        string expectedFilament,
+        string expectedPrintTime)
+    {
+        string Name(string automationId) =>
+            FindById(main, automationId)
+                .GetCurrentPropertyValue(AutomationElement.NameProperty)?
+                .ToString() ?? string.Empty;
+        var effective = Name("UsageEffectiveEvents");
+        var ledger = Name("UsageLedgerRows");
+        var filament = Name("UsageFilamentTotal");
+        var printTime = Name("UsagePrintTimeTotal");
+        var coverage = Name("UsageCoverage");
+        Require(
+            effective == expectedEffectiveEvents.ToString(CultureInfo.CurrentCulture) &&
+            ledger == expectedLedgerRows.ToString(CultureInfo.CurrentCulture) &&
+            filament.Replace(',', '.') == expectedFilament &&
+            printTime == expectedPrintTime &&
+            coverage.Contains(
+                $"Grams 1/{expectedEffectiveEvents}",
+                StringComparison.Ordinal),
+            $"Usage analytics mismatch for {materialId}: effective={effective}; " +
+            $"ledger={ledger}; filament={filament}; print={printTime}; coverage={coverage}");
+        Record(
+            "usage-analytics-" + expectedLedgerRows.ToString(CultureInfo.InvariantCulture),
+            true,
+            $"{materialId}: effective={effective}; ledger={ledger}; " +
+            $"filament={filament}; print={printTime}; coverage={coverage}");
     }
 
     private static string ComputeLogicalDatabaseHash(
