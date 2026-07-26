@@ -1,5 +1,17 @@
 # Automated Runtime Acceptance
 
+## v48.0.1 candidate - Canonical pricing provenance
+
+- No new UI action or write workflow is introduced, so no tester scenario is
+  added.
+- Verification deterministically proves valid configured-rate conversion.
+- Missing rates, unsupported currencies and missing canonical MSRP remain
+  unavailable without 1:1, landed-cost or legacy substitution.
+- Profile `20260726150144-83168b2e` passes 351/351 with exact database byte and
+  business-state equality.
+- Production, FTPS, owner-database and unexpected-dialog guards are unchanged.
+- Owner runtime accepted the pricing surfaces and Full Data Verification PASS.
+
 ## v47.0.3 candidate - Stable coverage identity
 
 - Smoke automation reads the coverage identity summary from disposable storage.

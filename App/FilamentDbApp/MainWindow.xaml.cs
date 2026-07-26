@@ -83,6 +83,7 @@ public partial class MainWindow : Window
     private readonly WorkflowPreferencesService _workflowPreferencesService = new();
     private readonly InventoryEngineService _inventoryEngineService = new();
     private readonly EngineeringContextService _engineeringContextService = new();
+    private readonly PricingProvenanceService _pricingProvenanceService = new();
     private readonly EngineeringPeerPositionService _engineeringPeerPositionService = new();
     private readonly EngineeringIntelligenceHandoffService _engineeringIntelligenceHandoffService = new();
     private readonly ObservableCollection<InventorySpoolRecord> _inventorySpoolRows = new();
@@ -4526,16 +4527,12 @@ public partial class MainWindow : Window
 
     private static double? ResolveCanonicalMsrpUsdPerKg(NativeMaterialRow? nativeMaterial, DataRow? legacyProjection)
     {
-        if (nativeMaterial is not null)
-        {
-            // An existing native Materials record is authoritative even when MSRP is empty.
-            // Never relabel landed cost or a stale legacy projection as canonical public MSRP.
-            return NumberValue(nativeMaterial.MsrpUsdPerKg);
-        }
-
-        return legacyProjection is null
-            ? null
-            : NumberValue(DataTableHelpers.FirstValue(legacyProjection, "MSRP USD/kg", "MsrpUsdPerKg"));
+        return new PricingProvenanceService().ResolveCanonicalMsrpUsdPerKg(
+            nativeMaterial is not null,
+            nativeMaterial?.MsrpUsdPerKg,
+            legacyProjection is null
+                ? null
+                : DataTableHelpers.FirstValue(legacyProjection, "MSRP USD/kg", "MsrpUsdPerKg"));
     }
 
 
@@ -7752,16 +7749,12 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             var label = !string.IsNullOrWhiteSpace(GetCell(row, "Website Display Name"))
                 ? GetCell(row, "Website Display Name")!.Trim()
                 : _detailService.BuildTitle(row);
-            // Manufacturer value intelligence must use the same native SQLite pricing source as
-            // the Website Pricing & Value surfaces. The portal DataRow is an export projection and
-            // may not expose every current pricing column name, so resolve the canonical material
-            // record by MaterialID first. MSRP USD/kg is the public value denominator; landed cost
-            // remains a compatibility fallback for older imported rows.
             var nativePricingRow = _nativeMaterialRows.FirstOrDefault(item =>
                 string.Equals(item.MaterialID, materialId, StringComparison.OrdinalIgnoreCase));
-            var pricePerKg = NumberValue(nativePricingRow?.MsrpUsdPerKg)
-                ?? NumberValue(nativePricingRow?.LandedCostUsdPerKg)
-                ?? NumberValue(GetCell(row, "MSRP USD/kg", "MsrpUsdPerKg", "Landed USD/kg", "Landed Cost USD/kg", "LandedCostUsdPerKg"));
+            var pricePerKg = _pricingProvenanceService.ResolveCanonicalMsrpUsdPerKg(
+                nativePricingRow is not null,
+                nativePricingRow?.MsrpUsdPerKg,
+                GetCell(row, "MSRP USD/kg", "MsrpUsdPerKg"));
             var valueScore = profile.OverallScore.HasValue && pricePerKg is > 0
                 ? profile.OverallScore.Value / pricePerKg.Value
                 : (double?)null;
@@ -13567,8 +13560,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
             if (hasAnyPricing && (!weight.HasValue || weight <= 0)) result.MissingWeight++;
             if (string.IsNullOrWhiteSpace(row.PriceCheckedDate)) result.MissingCheckedDate++;
-            if (NormalizePriceCurrency(row.MsrpCurrency) != row.MsrpCurrency?.Trim().ToUpperInvariant() ||
-                NormalizePriceCurrency(row.LandedCostCurrency) != row.LandedCostCurrency?.Trim().ToUpperInvariant()) result.InvalidCurrency++;
+            if (!PricingProvenanceService.IsSupportedCurrency(row.MsrpCurrency) ||
+                !PricingProvenanceService.IsSupportedCurrency(row.LandedCostCurrency)) result.InvalidCurrency++;
             if ((msrp.HasValue && msrp <= 0) || (landed.HasValue && landed <= 0) ||
                 (msrpPerKg.HasValue && msrpPerKg <= 0) || (landedPerKg.HasValue && landedPerKg <= 0)) result.InvalidPriceValues++;
             if ((msrp.HasValue && weight is > 0 && !msrpPerKg.HasValue) ||
@@ -14341,6 +14334,18 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             emptyCanonicalPrice,
             new InventorySummary(),
             Array.Empty<ManufacturerRecord>());
+        var pricingRatesProbe = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["USD"] = 1m,
+            ["ISK"] = 125m
+        };
+        var validIskConversionProbe = _pricingProvenanceService.ConvertToUsd("2500", "ISK", pricingRatesProbe);
+        var missingRateConversionProbe = _pricingProvenanceService.ConvertToUsd("25", "EUR", pricingRatesProbe);
+        var unsupportedCurrencyConversionProbe = _pricingProvenanceService.ConvertToUsd("25", "XYZ", pricingRatesProbe);
+        var manufacturerMissingMsrpProbe = _pricingProvenanceService.ResolveCanonicalMsrpUsdPerKg(
+            true,
+            string.Empty,
+            "44.20");
         var peerCandidates = new[]
         {
             new EngineeringPeerCandidate { MaterialId = "peer-selected", Label = "Selected", Manufacturer = "Maker A", Category = "Engineering", OverallScore = 80 },
@@ -14928,6 +14933,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             !emptyCanonicalPrice.HasValue &&
             missingPriceContextInsight.PriceSummary.Contains("not available", StringComparison.Ordinal),
             "MSRP uses Materials without landed-cost or stale-projection fallback; stock uses InventoryEngineService output; manufacturer context uses active SQLite records"));
+        checks.Add(new VerificationCheck("Canonical pricing provenance", validIskConversionProbe.HasValue &&
+            validIskConversionProbe.UsdAmount == "20.00" &&
+            validIskConversionProbe.CurrencyUnitsPerUsd == 125m &&
+            !missingRateConversionProbe.HasValue &&
+            missingRateConversionProbe.UsdAmount.Length == 0 &&
+            !unsupportedCurrencyConversionProbe.HasValue &&
+            unsupportedCurrencyConversionProbe.UsdAmount.Length == 0 &&
+            !manufacturerMissingMsrpProbe.HasValue,
+            "Configured rates convert explicitly; missing/unsupported currency and missing canonical MSRP remain Not recorded without landed-cost or 1:1 fallback"));
         checks.Add(new VerificationCheck("Engineering cross-context interpretation", contextInsight.PriceSummary.Contains("$32.50 USD/kg", StringComparison.Ordinal) &&
             contextInsight.InventoryStatus == "In stock" &&
             contextInsight.InventorySummary.Contains("2 spools linked; 1250 g remaining", StringComparison.Ordinal) &&
@@ -23382,47 +23396,39 @@ private List<string> GetVisibleAiMaterialLabels()
         ApplyMaterialPricingCalculations(row);
     }
 
-    private decimal GetCurrencyUnitsPerUsd(string currency)
+    private IReadOnlyDictionary<string, decimal> GetMaterialPricingCurrencyUnitsPerUsd()
     {
-        var code = NormalizePriceCurrency(currency);
-        if (code == "USD") return 1m;
-
-        var parameter = code switch
+        var rates = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase)
         {
-            "ISK" => "ISK per 1 USD",
-            "EUR" => "EUR per 1 USD",
-            "GBP" => "GBP per 1 USD",
-            _ => string.Empty
+            ["USD"] = 1m
         };
-
-        var value = _nativeSettingsRows.FirstOrDefault(r =>
-            string.Equals(r.Section, "Currency", StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(r.Parameter, parameter, StringComparison.OrdinalIgnoreCase))?.Value;
-
-        return decimal.TryParse(value?.Replace(',', '.'), NumberStyles.Number, CultureInfo.InvariantCulture, out var rate) && rate > 0m
-            ? rate
-            : 1m;
-    }
-
-    private static string NormalizePriceCurrency(string? currency)
-    {
-        var code = (currency ?? "USD").Trim().ToUpperInvariant();
-        return code is "ISK" or "EUR" or "USD" or "GBP" ? code : "USD";
+        foreach (var (currency, parameter) in new[]
+                 {
+                     ("ISK", "ISK per 1 USD"),
+                     ("EUR", "EUR per 1 USD"),
+                     ("GBP", "GBP per 1 USD")
+                 })
+        {
+            var value = _nativeSettingsRows.FirstOrDefault(r =>
+                string.Equals(r.Section, "Currency", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(r.Parameter, parameter, StringComparison.OrdinalIgnoreCase) &&
+                r.UsedBy.Contains("Material Pricing", StringComparison.OrdinalIgnoreCase))?.Value;
+            if (decimal.TryParse(value?.Replace(',', '.'), NumberStyles.Number, CultureInfo.InvariantCulture, out var rate) &&
+                rate > 0m)
+                rates[currency] = rate;
+        }
+        return rates;
     }
 
     private string ConvertPriceToUsd(string? amountText, string? currency)
-    {
-        if (!decimal.TryParse((amountText ?? string.Empty).Replace(',', '.'), NumberStyles.Number, CultureInfo.InvariantCulture, out var amount) || amount < 0m)
-            return string.Empty;
-
-        var usd = amount / GetCurrencyUnitsPerUsd(NormalizePriceCurrency(currency));
-        return usd.ToString("0.00", CultureInfo.InvariantCulture);
-    }
+        => _pricingProvenanceService
+            .ConvertToUsd(amountText, currency, GetMaterialPricingCurrencyUnitsPerUsd())
+            .UsdAmount;
 
     private void ApplyMaterialPricingCalculations(NativeMaterialRow row)
     {
-        row.MsrpCurrency = NormalizePriceCurrency(row.MsrpCurrency);
-        row.LandedCostCurrency = NormalizePriceCurrency(row.LandedCostCurrency);
+        row.MsrpCurrency = PricingProvenanceService.NormalizeCurrencyForStorage(row.MsrpCurrency);
+        row.LandedCostCurrency = PricingProvenanceService.NormalizeCurrencyForStorage(row.LandedCostCurrency);
         row.MsrpUsd = ConvertPriceToUsd(row.MsrpAmount, row.MsrpCurrency);
         row.LandedCostUsd = ConvertPriceToUsd(row.LandedCostAmount, row.LandedCostCurrency);
         row.MsrpUsdPerKg = CalculateUsdPerKg(row.MsrpUsd, row.SpoolWeightG);

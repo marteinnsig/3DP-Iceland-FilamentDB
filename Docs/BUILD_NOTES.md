@@ -1,4 +1,22 @@
-# Current Build Notes - v47.0.3 Canonical
+# Current Build Notes - v48.0.1 Canonical
+
+## Canonical Pricing Provenance
+
+One service now owns canonical MSRP selection and material-price USD conversion.
+Canonical Materials MSRP wins even when blank; landed cost and legacy
+projections cannot substitute for it. Missing/invalid configured rates and
+unsupported currencies produce `Not recorded` calculated fields instead of a
+silent 1:1 conversion.
+
+Purchase-order, inventory and material source fields remain unchanged. No
+schema, import/export, recovery or public allowlist expansion is included.
+Verification receives deterministic valid-rate, missing-rate,
+unsupported-currency and no-landed-fallback probes. No tester scenario change
+is warranted because no new UI action or safely isolated write workflow exists.
+
+Owner runtime accepted Materials pricing, separated MSRP/landed values,
+Advisor context, Manufacturer/website behavior and Full Data Verification
+351/351. v48.0.1 is canonical.
 
 ## Stable Coverage Identity
 

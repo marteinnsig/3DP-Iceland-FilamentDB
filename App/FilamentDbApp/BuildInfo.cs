@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "STABLE-AI-COVERAGE-IDENTITY";
-    public const string ReleaseTitle = "Stable AI Coverage Identity";
+    public const string ReleaseCode = "CANONICAL-PRICING-PROVENANCE";
+    public const string ReleaseTitle = "Canonical Pricing Provenance";
 
     public static string Version
     {

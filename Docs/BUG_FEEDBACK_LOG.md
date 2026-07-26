@@ -560,8 +560,13 @@ What happened: USD/kg and price-per-engineering-result analytics
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: Material-level USD/kg and price/value context exist, but the requested governed cross-metric `price per engineering result` design is not fully delivered. Retain as a bounded analytics idea.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+Resolution: Material-level USD/kg and price/value context exist. v48.0 research
+selects Overall engineering score points per canonical MSRP USD/kg as the
+minimum honest candidate metric, with both inputs and comparison scope visible.
+No landed-cost fallback or stored metric is allowed.
+Verification evidence: `Docs/PricingUsageAnalytics.md` maps ownership and
+staged implementation. v48.0.1 canonical pricing provenance is owner accepted
+with Full Data Verification 351/351; the value index remains owned by v48.0.2.
 
 Date: Historical feedback (date not recorded)
 Area: Tensile / Impact data entry
@@ -720,8 +725,12 @@ What happened: Track testing hours, print hours, material usage and sample count
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: The idea needs a defined owner model for test hours, print hours, material usage and sample counts before schema/UI work.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+Resolution: v48.0 research assigns hours and filament consumption to future
+append-only job/usage events. Existing specimen counts remain measurement
+evidence and are not usage history. Schema remains blocked until the capture and
+correction workflow is owner approved.
+Verification evidence: `Docs/PricingUsageAnalytics.md` defines the proposed
+identity, provenance, missing-data and recovery boundaries.
 
 Date: Historical feedback (date not recorded)
 Area: Website template / SQLite

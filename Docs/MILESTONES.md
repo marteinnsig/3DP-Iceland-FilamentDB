@@ -3,6 +3,12 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v48.0.1 - Canonical Pricing Provenance
+
+Public MSRP, purchase landed cost and inventory cost now retain explicit
+ownership boundaries. Missing conversion evidence remains unavailable rather
+than silently becoming 1:1 USD. Owner acceptance and Verification 351/351 pass.
+
 # v47.0.3 - Stable Coverage Identity
 
 Collection coverage and pipeline status now use stable collection and material

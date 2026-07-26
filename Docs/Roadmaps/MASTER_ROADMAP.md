@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v47.0.3 — Stable Coverage Identity**
+Current canonical release: **v48.0.1 — Canonical Pricing Provenance**
 
-Last runtime-accepted baseline: **v47.0.3 — Stable Coverage Identity**
+Last runtime-accepted baseline: **v48.0.1 — Canonical Pricing Provenance**
 
-Current application candidate: **None — v47.0.3 is canonical**
+Current application candidate: **None — v48.0.1 is canonical**
 
-Current roadmap increment: **v48.0 — Pricing and Usage Analytics Foundation**
+Current roadmap increment: **v48.0.2 — Governed Value Index**
 
-Current acceptance note: v47.0.3 stable coverage identity is runtime accepted with Full Data Verification 350/350.
+Current acceptance note: v48.0.1 pricing provenance is runtime accepted with Full Data Verification 351/351.
 
 Candidate note: None.
 
@@ -31,8 +31,8 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v44 | Daily Use, Reliability & Maintainability | ★★★★★ | Complete — canonical v44.7.18 runtime accepted |
 | v45 | Material Model and Canonical Relationships | ★★★★★ | Complete — canonical v45.2.1 runtime accepted |
 | v46 | Application Branding | ★★★☆☆ | Complete — canonical v46.0.0 runtime accepted |
-| v47 | AI Assistant Workflow | ★★★★☆ | Current |
-| v48 | Pricing and Usage Analytics | ★★★★☆ | Planned |
+| v47 | AI Assistant Workflow | ★★★★☆ | Complete — canonical v47.0.3 runtime accepted |
+| v48 | Pricing and Usage Analytics | ★★★★☆ | Current |
 | v49 | Experimental Workflow Extension | ★★★★☆ | Planned |
 | v50 | Comprehensive User Help | ★★★★★ | Planned |
 | v51 | Governed Runtime Profiles | ★★★☆☆ | Research only |
@@ -1929,6 +1929,17 @@ to unstarted authoritative planning slots.
   - Define governed USD/kg provenance and one honest price/performance metric.
   - Define ownership for print hours, test hours, material usage and sample-count history.
   - Missing cost and history remain `Not recorded`; do not add schema before a proven capture/report workflow.
+  - Research candidate maps public MSRP, purchase landed cost, inventory cost and compatibility snapshots.
+  - Public value uses canonical MSRP only; purchase, inventory and landed-cost fields never substitute for missing MSRP.
+  - First bounded correction: remove the remaining manufacturer-intelligence landed-cost fallback.
+  - Proposed value index is Overall engineering score points per MSRP USD/kg with both inputs and scope visible.
+  - Usage belongs to append-only job/event records; sample counts remain measurement evidence, not usage history.
+  - Proposed sequence: v48.0.1 provenance, v48.0.2 value index, v48.0.3 usage event contract.
+  - Research evidence: `Docs/PricingUsageAnalytics.md`.
+  - v48.0.1 centralizes MSRP provenance and rejects landed-cost or silent 1:1 substitution.
+  - Owner accepted Materials, Advisor, Manufacturer/website behavior and Full Data Verification 351/351.
+  - v48.0.1 is complete, canonical and runtime accepted.
+  - Current implementation increment: v48.0.2 — Governed Value Index.
 - **v48.1 — MaterialID-aware Print Job Pricing and Immutable Quote Snapshots**
   - State: Open design.
   - Requires formula/reuse-rights, unit, currency-provenance and Printer Profile approval before coding.

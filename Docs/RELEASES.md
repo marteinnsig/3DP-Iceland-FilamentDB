@@ -1,6 +1,12 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v48.0.1 - Canonical Pricing Provenance
+
+Canonical MSRP resolution and material USD conversion now fail closed: missing
+rates, unsupported currencies and missing MSRP never become landed-cost or 1:1
+substitutions. Owner runtime acceptance and Verification 351/351 pass.
+
 ## v47.0.3 - Stable Coverage Identity
 
 AI coverage status now prefers stable collection ID and MaterialID ownership

@@ -2,6 +2,16 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v48.0.1 - Canonical Pricing Provenance
+
+- Centralizes canonical MSRP resolution and material USD conversion.
+- Removes landed-cost substitution from manufacturer value intelligence.
+- Makes missing rates and unsupported currencies `Not recorded`, never 1:1 USD.
+- Preserves source amounts, source currency, purchase, inventory and landed-cost evidence.
+- Adds deterministic pricing-provenance Verification without a schema change.
+- Owner runtime accepted Materials, Advisor and Manufacturer/website behavior;
+  Full Data Verification passes 351/351.
+
 ## v47.0.3 - Stable Coverage Identity
 
 - Extends coverage JSON with optional stable collection-ID and MaterialID fields.

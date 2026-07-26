@@ -1,3 +1,16 @@
+# v48.0.1 - Canonical Pricing Provenance
+
+Date: 2026-07-26
+
+- Adds deterministic explicit-rate, missing-rate, unsupported-currency and
+  canonical-MSRP precedence verification.
+- Profile `20260726150144-83168b2e`: PASS 351/351.
+- Database byte and business-state hashes are exactly equal before and after.
+- Schema remains v33; Production, FTPS and owner database remained blocked.
+- Owner runtime accepted Materials, Advisor and Manufacturer/website pricing
+  behavior with Full Data Verification PASS.
+- Canonical state: v48.0.1.
+
 # v47.0.3 - Stable Coverage Identity
 
 Date: 2026-07-26

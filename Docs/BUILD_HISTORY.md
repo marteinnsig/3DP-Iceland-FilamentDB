@@ -2,6 +2,25 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v48.0.1 - Canonical Pricing Provenance
+
+One service now owns canonical MSRP selection and material-price USD
+conversion. Existing canonical Materials rows remain authoritative even when
+MSRP is blank. Manufacturer value intelligence no longer substitutes landed
+cost or a legacy landed projection.
+
+Missing configured rates and unsupported currencies retain the source
+amount/currency but produce blank calculated USD/USD-per-kg fields rather than
+a plausible false 1:1 result. Purchase, inventory and landed-cost evidence is
+otherwise unchanged; schema remains v33.
+
+Debug and Release builds pass with zero warnings/errors. Documentation and
+NuGet vulnerability gates pass. Disposable profile
+`20260726150144-83168b2e` passes Full Data Verification 351/351 and exact
+pre/post database byte and business-state equality. Owner runtime accepted
+Materials, separated MSRP/landed values, Advisor context, Manufacturer/website
+behavior and Verification PASS. v48.0.1 is canonical.
+
 ## v47.0.3 - Stable Coverage Identity
 
 Coverage status ownership now supports optional stable collection ID and
