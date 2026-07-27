@@ -358,7 +358,7 @@ internal static class Program
                         new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
                         new PropertyCondition(AutomationElement.NameProperty, "OK")));
                 Require(previewSaveOk is not null, "OpenAI preview session-save guard has no OK action.");
-                Invoke(previewSaveOk, application.Id);
+                Invoke(previewSaveOk!, application.Id);
                 AssertNoUnexpectedWindows(application.Id, "MainWindow");
                 Record("openai-pilot-payload-isolation", true, openAiStatus);
                 Record(

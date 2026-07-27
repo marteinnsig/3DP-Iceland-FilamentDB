@@ -1,6 +1,15 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v52.3.3 - Bounded Owner Live Evaluation and Closure
+
+Governance closure: five bounded live scenarios produced four PASS results and
+one strict grounding/no-invention failure. Current project Usage reconciles to
+seven requests, 13,461 tokens and USD 0.37. `gpt-5.6-sol` remains Provisional,
+not pinned. Runtime stays at accepted v52.3.2, schema v37; parent v52 is
+complete. Disposable Release smoke `20260727182043-ab84a0eb` passes 385/385
+with exact logical and business-state equality.
+
 ## v52.3.2 - OpenAI Operational Evidence and Failure Harness
 
 Canonical release: secret-safe in-memory operational evidence, explicit clipboard

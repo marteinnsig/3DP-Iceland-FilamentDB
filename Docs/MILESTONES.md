@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v52.3.3 - Bounded Owner Live Evaluation and Closure
+
+Five owner calls, strict rubric review and current project Usage evidence
+produce a governed Provisional decision. Four scenarios pass; one cohort-count
+error prevents model pinning. The accepted read-only pilot remains available
+with local fallback, and parent v52 closes without a runtime/schema change.
+
 # v52.3.2 - OpenAI Operational Evidence and Failure Harness
 
 Accepted operational evidence and deterministic failure coverage preserve the

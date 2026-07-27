@@ -1,3 +1,21 @@
+# v52.3.3 - Bounded Owner Live Evaluation and Closure
+
+Date: 2026-07-27
+
+- Five owner-approved live calls complete; four score 12/12.
+- One comparison call scores 10/12 and fails mandatory full grounding and
+  no-invention because a seven-ID cohort was called eight records.
+- Exact-request repeat stability passes with the same request SHA-256.
+- Current project Usage reconciles at seven requests, 13,461 tokens and
+  USD 0.37; the owner accepts the model as Provisional, not pinned.
+- Debug and isolated Release builds pass with zero warnings/errors.
+- NuGet vulnerability scan reports no vulnerable packages.
+- Release documentation and Help control coverage audits pass.
+- Disposable Release smoke `20260727182043-ab84a0eb` passes 385/385 with
+  zero fail/N/A and exact logical/business-state equality.
+- Production, FTPS, owner credentials and live OpenAI Generate remain blocked.
+- Runtime remains v52.3.2; schema remains v37; parent v52 is complete.
+
 # v52.3.2 - OpenAI Operational Evidence and Failure Harness
 
 Date: 2026-07-27

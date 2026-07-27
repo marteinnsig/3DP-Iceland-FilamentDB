@@ -4,9 +4,9 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v51.1.0 — Runtime Profile Foundation
+- **Current runtime-accepted release:** v52.3.2 — OpenAI Operational Evidence and Failure Harness
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current candidate:** None — v51.2 Clean Readiness Profile is current
+- **Current candidate:** None — v52 is complete; v53.0 research is current
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Download the Windows application
@@ -124,13 +124,14 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 50.3.0 is the current canonical runtime-accepted release. It adds
-guarded safety, recovery, Verification, Diagnostics, update/publishing and
-troubleshooting Help with Full Data Verification 374/374.
+Version 52.3.2 is the current runtime-accepted application release. It provides
+the optional read-only OpenAI pilot with exact payload preview, explicit
+consent, strict response validation, secret-safe operational evidence and an
+offline local fallback. The v52.3.3 governance evaluation leaves
+`gpt-5.6-sol` Provisional rather than pinned and closes parent v52.
 
-The current roadmap increment is v50.4 — Exhaustive UI Control and Field Help
-Audit and Final Acceptance. Parent v50 cannot close until every supported
-control and editable field has explicit Help ownership and accepted coverage.
+The current roadmap increment is v53.0 — Governed Landed-cost Currency,
+research-first before schema or UI changes.
 
 The clean-install profile contains no material dataset or private FTPS
 identity. SQLite is never restored automatically by application update

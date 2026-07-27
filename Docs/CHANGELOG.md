@@ -2,6 +2,23 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v52.3.3 - Bounded Owner Live Evaluation and Closure
+
+- Completes the five-call owner evaluation with four PASS and one strict
+  grounding/no-invention failure.
+- Proves exact-request repeat stability with the same SHA-256 and materially
+  consistent advisory boundaries.
+- Reconciles current project Usage at seven requests, 13,461 tokens and
+  USD 0.37.
+- Retains `gpt-5.6-sol` as Provisional rather than pinned.
+- Makes no runtime, schema, Help or deterministic automation change.
+- Removes one tester nullable warning after an existing mandatory UI guard;
+  behavior and authorization remain unchanged.
+- Debug and isolated Release builds pass with zero warnings/errors.
+- Disposable smoke `20260727182043-ab84a0eb` passes 385/385 with exact logical
+  and business-state equality and no live network action.
+- Closes parent v52 with the accepted read-only pilot and offline fallback.
+
 ## v52.3.2 - OpenAI Operational Evidence and Failure Harness
 
 - Constrains structured `evidenceMaterialIds` to an exact enum of outbound

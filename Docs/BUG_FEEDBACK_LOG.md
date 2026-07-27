@@ -39,7 +39,7 @@ Expected behavior: Local deterministic behavior remains available; secrets and c
 the computer without an exact preview and explicit action.
 Steps to reproduce: Open Settings Manager and inspect Optional AI Assistant Provider.
 Screenshot / export / report attached: None.
-Status: Partially solved
+Status: Solved
 Resolution: v52.0 research was owner accepted. v52.1 adds provider/model preferences, Windows Credential Manager ownership,
 local-only diagnostics and a deterministic fake provider. An owner-reported Settings overlap was corrected by assigning the
 provider panel its own Auto-sized Grid row and retaining the settings table in the sole expanding row. Live generation remains
@@ -52,6 +52,10 @@ Verification evidence: v52.2 Release smoke `20260727162340-f07d3caa` passes 384/
 `20260727162422-0de18a69` passes 284/284 plus 100 N/A. Both retain exact business-state equality. Owner preview, consent,
 live advisory output, cancellation boundary and Full Data Verification acceptance pass on 2026-07-27. v52.3 retains
 representative quality, latency, cost and operational-evidence evaluation.
+The five-call evaluation completes with four PASS results and one strict cohort-count failure. Current project Usage reports
+seven requests, 13,461 tokens and USD 0.37. The owner accepts `gpt-5.6-sol` as Provisional, not pinned; the read-only pilot and
+local fallback remain available. Disposable smoke `20260727182043-ab84a0eb` passes 385/385 with exact state. Parent v52 is
+complete.
 
 ## Status review — 2026-07-25
 

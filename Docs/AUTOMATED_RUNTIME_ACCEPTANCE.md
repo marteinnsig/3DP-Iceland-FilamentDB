@@ -1,5 +1,18 @@
 # Automated Runtime Acceptance
 
+## v52.3.3 - Bounded Owner Live Evaluation and Closure accepted
+
+- Automation remains no-network and never invokes Generate.
+- Subjective rubric scoring and project Usage reconciliation are manual owner
+  evidence and are not duplicated by low-value deterministic automation.
+- Existing payload, validation, safe-failure, credential, Production, FTPS and
+  exact-state contracts remain unchanged.
+- No AutomationRunner or Verification contract change is warranted. One
+  compiler-only nullability annotation preserves the existing required guard.
+- The owner accepts the Provisional, not-pinned model disposition.
+- Disposable Release smoke `20260727182043-ab84a0eb` passes 385/385 with exact
+  logical and business-state equality and no live network request.
+
 ## v52.3.2 - OpenAI Operational Evidence and Failure Harness accepted
 
 - Automation invokes Preview OpenAI Payload but never Generate or Copy
@@ -28,8 +41,6 @@
   with exact state.
 - Owner live generation, secret-safe evidence, validated advisory Save Session
   and Full Data Verification 385/385 pass on 2026-07-27.
-- Owner live-result, evidence-copy and Full Data Verification acceptance remain
-  pending.
 
 ## v52.2.0 - Read-only OpenAI Responses Pilot accepted
 

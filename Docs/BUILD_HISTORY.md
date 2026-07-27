@@ -2,6 +2,29 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v52.3.3 - Bounded Owner Live Evaluation and Closure
+
+The owner completed the maximum five approved live calls. Forty-row, small
+grounded, sparse-metadata and exact-repeat scenarios pass 12/12. The comparison
+scenario correctly avoids performance inference but calls a seven-ID cohort
+eight records, scoring 10/12 and failing mandatory full grounding and
+no-invention.
+
+The repeat uses the exact call-2 request SHA-256 and retains materially
+consistent conclusions. Current project Usage evidence reports seven requests,
+13,461 tokens and USD 0.37, including two earlier live pilot attempts. The owner
+accepts `gpt-5.6-sol` as Provisional, not pinned. Runtime remains v52.3.2 and
+schema v37; no tester change is warranted because no deterministic runtime
+contract changed. A compiler-only nullability annotation after the existing
+required preview-dialog OK guard removes an SDK warning without changing the
+scenario contract or authorization.
+
+Debug and isolated Release builds pass with zero warnings/errors. Disposable
+Release smoke `20260727182043-ab84a0eb` passes all 385 applicable checks with
+zero fail/N/A and exact logical/business-state equality. The runner invokes
+only payload preview and scripted no-network Verification; owner credentials,
+Production, FTPS and live Generate remain blocked.
+
 ## v52.3.2 - OpenAI Operational Evidence and Failure Harness
 
 The candidate adds a narrow injectable HTTP/time/request-ID seam used only by

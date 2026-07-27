@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v52.2.0 — Read-only OpenAI Responses Pilot**
+Current canonical release: **v52.3.3 — Bounded Owner Live Evaluation and Closure**
 
 Last runtime-accepted baseline: **v52.3.2 — OpenAI Operational Evidence and Failure Harness**
 
 Current canonical application release: **v52.3.2 — OpenAI Operational Evidence and Failure Harness**
 
-Current roadmap increment: **v52.3.3 — Bounded Owner Live Evaluation, Model Decision and Closure**
+Current roadmap increment: **v53.0 — Governed Landed-cost Currency**
 
-Current acceptance note: v52.3.2 is complete, canonical and owner runtime accepted.
+Current acceptance note: v52 is complete; app v52.3.2 remains the runtime-accepted binary.
 
-Next note: v52.3.3 owns the bounded quality, latency, usage, cost and model decision.
+Next note: v53.0 begins with research before schema or UI changes.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -36,7 +36,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v49 | Experimental Workflow Extension | ★★★★☆ | Complete — canonical v49.0.0 runtime accepted |
 | v50 | Comprehensive User Help | ★★★★★ | Complete — canonical v50.4.4 runtime accepted |
 | v51 | Governed Runtime Profiles | ★★★☆☆ | Complete — canonical v51.4.0 runtime accepted |
-| v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Current — v52.2 accepted; v52.3 next |
+| v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Complete — Provisional model; runtime v52.3.2 |
 
 | v53 | Governed Landed-cost Currency | ★★★★☆ | Planned |
 
@@ -2248,7 +2248,7 @@ to unstarted authoritative planning slots.
   - Clean Readiness `20260727162422-0de18a69` passes 284/284 plus 100 N/A with exact state equality.
   - Owner accepted preview, consent, live advisory output, cancellation boundary and Full Data Verification.
 - **v52.3 — Governed Acceptance and Operational Evidence**
-  - State: Research complete; delivery is governed by v52.3.1-v52.3.3 before parent closure.
+  - State: Complete; v52.3.1-v52.3.3 are accepted and parent v52 is closed.
   - Evaluate quality, latency and cost with approved representative scenarios before pinning the accepted model.
   - Extend deterministic automation for payload allowlists, response validation, fallback, cancellation and secret non-persistence.
   - Require Debug/Release, security/static gates, Full Data Verification and owner runtime acceptance before closure.
@@ -2269,6 +2269,8 @@ to unstarted authoritative planning slots.
   - Deterministically test completed, refusal, incomplete, malformed/no-output, unknown-ID, cancellation and safe API errors.
   - Prove automation cannot issue a live request, read owner credentials, retain raw payloads or change canonical business state.
 - **v52.3.3 — Bounded Owner Live Evaluation, Model Decision and Closure**
+  - State: Complete; owner accepted the Provisional, not-pinned model decision on 2026-07-27.
+  - Use `Docs/OPENAI_OWNER_EVALUATION_V52_3_3.md` as the bounded evidence and owner test contract.
   - Run at most five owner-approved live calls against reviewed non-sensitive material scope.
   - Record observed quality, latency and usage; reconcile project cost through current official Usage/Costs evidence.
   - Pin the model only if all hard gates, quality thresholds, cost review, failure fallback and owner acceptance pass.

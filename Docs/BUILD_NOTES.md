@@ -1,4 +1,24 @@
-# Current Build Notes - v52.3.2
+# Current Build Notes - v52.3.3
+
+## Bounded Owner Live Evaluation and v52 Closure
+
+Five owner-approved `gpt-5.6-sol` calls completed against reviewed scopes.
+Four scenarios passed 12/12. The comparison scenario scored 10/12 because it
+called a seven-ID cohort eight records; required full grounding/no-invention
+therefore failed. The exact repeat retained the same request SHA-256 and
+materially consistent grounded conclusions.
+
+Owner-reviewed project Usage reports seven total pilot requests, 13,461 tokens
+and USD 0.37. Because every scenario did not pass, the model is Provisional and
+not pinned. The accepted read-only preview, consent, validation, failure and
+offline-local boundaries remain unchanged. No runtime code, schema, Help
+surface or deterministic tester contract changed. Schema remains v37.
+A compiler-only nullability annotation after an existing required OK-button
+guard removes one SDK warning without changing tester behavior or authority.
+Debug and isolated Release builds pass with zero warnings/errors. Disposable
+Release smoke `20260727182043-ab84a0eb` passes Full Data Verification 385/385
+with exact logical and business-state equality. Production, FTPS, owner
+credentials and live OpenAI generation remain blocked.
 
 ## OpenAI Operational Evidence and Failure Harness
 
