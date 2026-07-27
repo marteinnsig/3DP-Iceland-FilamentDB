@@ -87,6 +87,10 @@ public sealed class EcbExchangeRateReferenceService
                 DateTimeStyles.RoundtripKind,
                 out _) ||
             catalog.Rates.Count == 0 ||
+            !catalog.Rates.Any(rate =>
+                string.Equals(rate.Currency, "ISK", StringComparison.OrdinalIgnoreCase)) ||
+            !catalog.Rates.Any(rate =>
+                string.Equals(rate.Currency, "EUR", StringComparison.OrdinalIgnoreCase)) ||
             catalog.Rates.Select(rate => rate.Currency)
                 .Distinct(StringComparer.OrdinalIgnoreCase).Count() != catalog.Rates.Count)
             return false;
@@ -148,10 +152,13 @@ public sealed class EcbExchangeRateReferenceService
         var fetched = fetchedAtUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture);
         var rates = new List<ExchangeRateReference>
         {
-            new("ISK", 1m, isk.Date, ProviderName, ApiUrl, fetched)
+            new("ISK", 1m, isk.Date, ProviderName, ApiUrl, fetched),
+            new("EUR", isk.Value, isk.Date, ProviderName, ApiUrl, fetched)
         };
         foreach (var (currency, observation) in observations
-                     .Where(item => !string.Equals(item.Key, "ISK", StringComparison.OrdinalIgnoreCase))
+                     .Where(item =>
+                         !string.Equals(item.Key, "ISK", StringComparison.OrdinalIgnoreCase) &&
+                         !string.Equals(item.Key, "EUR", StringComparison.OrdinalIgnoreCase))
                      .OrderBy(item => item.Key, StringComparer.Ordinal))
         {
             rates.Add(new ExchangeRateReference(

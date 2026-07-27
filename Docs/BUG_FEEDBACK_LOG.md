@@ -31,6 +31,57 @@ Verification evidence:
 ```
 
 Date: 2026-07-27
+Area: Purchase Orders landed-cost snapshot lock
+Type: Bug
+Severity: Blocker
+What happened: After calculation, Unit price still entered edit mode. The property changed before CellEditEnding cancelled the
+commit, and leaving the cell could crash the WPF DataGrid edit transaction.
+Expected behavior: Financial inputs on a calculated snapshot never enter edit mode and saved results remain unchanged.
+Steps to reproduce: Calculate landed costs, type a new Unit price, then click outside the cell.
+Screenshot / export / report attached: Owner screenshot `codex-clipboard-a7f75fec-e65a-46ce-9a4f-08d3e2200879.png`.
+Status: Solved
+Resolution: The candidate now blocks protected cells in DataGrid BeginningEdit, before PropertyChanged can mutate the row.
+CellEditEnding remains a defensive fallback. Verification checks that Unit price is locked while Received remains editable.
+Verification evidence: Debug/Release pass with 0 warnings/errors. Disposable Release smoke
+`20260727214133-34260e52` passes 388/388 with exact database and business-state equality. Owner confirms Unit price remains locked,
+the app does not crash and Full Data Verification passes.
+
+Date: 2026-07-27
+Area: Purchase Orders exchange-rate refresh
+Type: Workflow friction
+Severity: Minor
+What happened: Currency required leaving the cell before rate/source refreshed. A live ECB cache still used manual EUR fallback
+because the ECB base EUR leg was absent from the parsed catalog, and existing cache was not opportunistically refreshed daily.
+Expected behavior: Dropdown close immediately commits currency; official EUR/ISK provenance is available; a new-order action
+refreshes missing or older-than-24-hour cache while offline/manual operation and saved history remain unchanged.
+Steps to reproduce: Create a new order, select EUR and inspect Rate source, observation date and ECB cache status.
+Screenshot / export / report attached: Owner screenshots `codex-clipboard-31b7e94c-b01d-48f0-9afe-0d4dd73bbe0e.png` and
+`codex-clipboard-7fb3c07a-35d4-49c3-8746-501d54789b4c.png`.
+Status: Deferred
+Resolution: Owner accepted the standard DataGrid commit behavior as a minor detail: rate/source refresh after Enter or focus change.
+Unsuccessful immediate-event adapters were removed rather than retaining unnecessary UI complexity. The material defects are fixed:
+the parser adds the official EUR base leg, old cache without EUR is rejected, and New Order refreshes missing/older-than-24-hour
+cache with cache/manual fallback on failure and no saved-order rewrite.
+Verification evidence: Owner confirms correct post-commit rate behavior and Full Data Verification PASS. Final regression gates pass;
+the immediate-without-cell-commit enhancement is deliberately deferred.
+
+Date: 2026-07-27
+Area: Full Data Verification OpenAI timeout probe
+Type: Bug
+Severity: Blocker
+What happened: Help -> Verify stopped under the Visual Studio debugger on the intentionally cancelled fake timeout request.
+Expected behavior: Verification deterministically validates timeout/caller-cancellation classification without surfacing a
+first-chance or user-unhandled TaskCanceledException.
+Steps to reproduce: Run the Debug application under Visual Studio, open Help -> Verify and start Full Data Verification.
+Screenshot / export / report attached: Owner screenshot `codex-clipboard-3e920095-2f8e-466b-994d-3b96f657dd2d.png`.
+Status: Solved
+Resolution: The production catch path and deterministic gate now share a pure cancellation classifier. Verification exercises
+both classifications directly and no longer creates an intentionally cancelled task.
+Verification evidence: Debug/Release pass with 0 warnings/errors. Disposable Release smoke
+`20260727214133-34260e52` passes 388/388 with exact database and business-state equality. Owner confirms Help -> Verify completes
+without debugger interruption and Full Data Verification passes.
+
+Date: 2026-07-27
 Area: Optional OpenAI Assistant integration
 Type: Workflow improvement
 Severity: Important
@@ -212,6 +263,9 @@ Owner runtime review then found two candidate defects: the Settings value used a
 new v53 Draft as legacy. The correction uses a governed currency dropdown and limits legacy backfill to actual pre-v38 migration,
 with a narrow repair for affected uncalculated Drafts. Replacement smoke `20260727200102-a16f943f` passes 387/387 with exact state;
 owner runtime re-acceptance confirms dropdown, override, restart persistence and Full Data Verification PASS.
+v53.0.3 candidate now converts only final landed outputs, stamps one calculation snapshot, separates downstream invoice/landed
+evidence and updates saved-snapshot reports. Disposable smoke `20260727213614-403d89af` passes 388/388 with exact state after
+the calculated-input, debugger-safe Verification and daily ECB/EUR fixes; owner runtime acceptance remains pending.
 
 Date: 2026-07-27
 Area: Automated acceptance / Application-wide navigation

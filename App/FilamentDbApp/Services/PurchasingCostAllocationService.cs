@@ -17,10 +17,22 @@ public sealed class PurchasingCostAllocationService
         decimal LandedTotal,
         string EffectiveShippingMethod);
 
-    public Result Calculate(PurchaseOrderRecord order, IReadOnlyList<PurchaseOrderLineRecord> lines)
+    public Result Calculate(
+        PurchaseOrderRecord order,
+        IReadOnlyList<PurchaseOrderLineRecord> lines,
+        decimal landedCostConversionRate = 1m)
     {
-        var included = lines.Where(x => x.IncludeInCostAllocation).ToList();
-        foreach (var l in lines) Clear(l);
+        if (landedCostConversionRate <= 0)
+            return new(
+                false,
+                "Validation failed",
+                "Landed-cost conversion rate must be positive.",
+                0, 0, 0, 0, 0, 0,
+                order.ShippingAllocationMethod);
+
+        var workingLines = lines.Select(CloneForCalculation).ToList();
+        var included = workingLines.Where(x => x.IncludeInCostAllocation).ToList();
+        foreach (var l in workingLines) Clear(l);
         if (included.Count == 0)
             return new(false, "Validation failed", "No purchase lines are included in cost allocation.", 0, 0, 0, 0, 0, 0, order.ShippingAllocationMethod);
         foreach (var l in included) l.NetLineCost = F(Net(l));
@@ -47,10 +59,45 @@ public sealed class PurchasingCostAllocationService
         Allocate(included, tax, order.TaxAllocationMethod, x=>x.ManualTaxAllocation, (x,v)=>x.AllocatedTax=F(v), issues, "tax");
         Allocate(included, customs, order.CustomsAllocationMethod, x=>x.ManualCustomsAllocation, (x,v)=>x.AllocatedCustoms=F(v), issues, "customs");
         Allocate(included, fees, order.FeeAllocationMethod, x=>x.ManualFeesAllocation, (x,v)=>x.AllocatedFees=F(v), issues, "fees");
-        foreach(var l in included){var landed=Net(l)+Num(l.AllocatedShipping)+Num(l.AllocatedTax)+Num(l.AllocatedCustoms)+Num(l.AllocatedFees); l.LandedLineCost=F(landed); var q=Qty(l); l.LandedUnitCost=q>0?F(landed/q):""; var kg=Weight(l)*q/1000m; l.LandedCostPerKg=kg>0?F(landed/kg):""; l.AllocationStatus=issues.Count==0?"Ready":string.Join("; ",issues.Distinct());}
+        foreach(var l in included){var landedInvoice=Net(l)+Num(l.AllocatedShipping)+Num(l.AllocatedTax)+Num(l.AllocatedCustoms)+Num(l.AllocatedFees); var landed=landedInvoice*landedCostConversionRate; l.LandedLineCost=F(landed); var q=Qty(l); l.LandedUnitCost=q>0?F(landed/q):""; var kg=Weight(l)/1000m; l.LandedCostPerKg=kg>0?F(landed/kg):""; l.AllocationStatus=issues.Count==0?"Ready":string.Join("; ",issues.Distinct());}
         var item=included.Sum(Net);
         var status = issues.Count==0 ? "Ready" : string.Join("; ",issues.Distinct());
-        return new(issues.Count==0, status, issues.Count==0 ? BuildSuccessDetails(order.ShippingAllocationMethod, effective) : status, item, shipping, tax, customs, fees, item+shipping+tax+customs+fees, effective);
+        if (issues.Count == 0)
+        {
+            for (var index = 0; index < lines.Count; index++)
+                CopyCalculatedFields(workingLines[index], lines[index]);
+        }
+        return new(issues.Count==0, status, issues.Count==0 ? BuildSuccessDetails(order.ShippingAllocationMethod, effective) : status, item, shipping, tax, customs, fees, (item+shipping+tax+customs+fees)*landedCostConversionRate, effective);
+    }
+
+    private static PurchaseOrderLineRecord CloneForCalculation(PurchaseOrderLineRecord source) =>
+        new()
+        {
+            PurchaseOrderLineId = source.PurchaseOrderLineId,
+            PurchaseOrderId = source.PurchaseOrderId,
+            Description = source.Description,
+            Quantity = source.Quantity,
+            UnitPrice = source.UnitPrice,
+            DiscountAmount = source.DiscountAmount,
+            UnitWeightG = source.UnitWeightG,
+            IncludeInCostAllocation = source.IncludeInCostAllocation,
+            ManualShippingAllocation = source.ManualShippingAllocation,
+            ManualTaxAllocation = source.ManualTaxAllocation,
+            ManualCustomsAllocation = source.ManualCustomsAllocation,
+            ManualFeesAllocation = source.ManualFeesAllocation
+        };
+
+    private static void CopyCalculatedFields(PurchaseOrderLineRecord source, PurchaseOrderLineRecord target)
+    {
+        target.NetLineCost = source.NetLineCost;
+        target.AllocatedShipping = source.AllocatedShipping;
+        target.AllocatedTax = source.AllocatedTax;
+        target.AllocatedCustoms = source.AllocatedCustoms;
+        target.AllocatedFees = source.AllocatedFees;
+        target.LandedLineCost = source.LandedLineCost;
+        target.LandedUnitCost = source.LandedUnitCost;
+        target.LandedCostPerKg = source.LandedCostPerKg;
+        target.AllocationStatus = source.AllocationStatus;
     }
 
     static void ValidateWeightMethod(List<PurchaseOrderLineRecord> lines, decimal total, string? method, string label, List<string> issues)

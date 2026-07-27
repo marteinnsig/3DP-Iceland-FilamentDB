@@ -51,11 +51,17 @@ public sealed class PurchasingReportService
         return 0m;
     }
 
-    private static decimal Rate(PurchaseOrderRecord order) => Num(order.ExchangeRate) > 0 ? Num(order.ExchangeRate) : 1m;
+    private static decimal InvoiceRate(PurchaseOrderRecord order) =>
+        Num(order.ExchangeRate) > 0 ? Num(order.ExchangeRate) : 1m;
+    internal static decimal LandedIskRate(PurchaseOrderRecord order)
+    {
+        var conversionRate = Num(order.LandedCostConversionRate);
+        return conversionRate > 0 ? InvoiceRate(order) / conversionRate : 0m;
+    }
     private static string Money(decimal value) => value.ToString("N2", CultureInfo.CurrentCulture);
     private static string H(string? value) => WebUtility.HtmlEncode(value ?? string.Empty);
     private static decimal OrderLandedIsk(PurchaseOrderRecord order, IEnumerable<PurchaseOrderLineRecord> lines)
-        => lines.Where(x => x.PurchaseOrderId == order.PurchaseOrderId).Sum(x => Num(x.LandedLineCost)) * Rate(order);
+        => lines.Where(x => x.PurchaseOrderId == order.PurchaseOrderId).Sum(x => Num(x.LandedLineCost)) * LandedIskRate(order);
 
     public bool IsPurchasingReport(string key) => key is "inventory-report" or "purchase-report" or "supplier-report" or "low-stock-report" or "inventory-verification-report" or "purchasing-intelligence-report";
 
@@ -84,7 +90,7 @@ public sealed class PurchasingReportService
         var active = rows.Where(x => !string.Equals(x.Status, "Empty", StringComparison.OrdinalIgnoreCase)).ToList();
         var totalSpools = rows.Sum(x => Math.Max(1m, Num(x.Quantity)));
         var remaining = rows.Sum(x => Num(x.RemainingWeightG) * Math.Max(1m, Num(x.Quantity)));
-        var valueGroups = rows.GroupBy(x => string.IsNullOrWhiteSpace(x.PurchaseCurrency) ? "ISK" : x.PurchaseCurrency.Trim().ToUpperInvariant())
+        var valueGroups = rows.GroupBy(x => string.IsNullOrWhiteSpace(x.LandedCostCurrency) ? "ISK" : x.LandedCostCurrency.Trim().ToUpperInvariant())
             .Select(g => new { Currency = g.Key, Value = g.Sum(x => Num(x.LandedCostAmount) * Math.Max(1m, Num(x.Quantity))) }).OrderBy(x => x.Currency).ToList();
         var status = rows.GroupBy(x => string.IsNullOrWhiteSpace(x.Status) ? "Unknown" : x.Status).Select(g => (g.Key, Count:g.Sum(x => Math.Max(1m, Num(x.Quantity))))).OrderByDescending(x=>x.Count).ToList();
         var text=new StringBuilder(); Header(text,"Inventory Report",at); text.AppendLine($"Inventory rows: {rows.Count}"); text.AppendLine($"Total spools: {totalSpools:N0}"); text.AppendLine($"Active rows: {active.Count}"); text.AppendLine($"Remaining weight: {remaining:N0} g"); text.AppendLine(); text.AppendLine("Value by currency:"); foreach(var g in valueGroups) text.AppendLine($"- {g.Currency}: {Money(g.Value)}"); text.AppendLine(); text.AppendLine("Status totals:"); foreach(var s in status) text.AppendLine($"- {s.Key}: {s.Count:N0}");
@@ -92,13 +98,13 @@ public sealed class PurchasingReportService
         var unopened = rows.Where(x => string.Equals(x.Status, "Unopened", StringComparison.OrdinalIgnoreCase)).Sum(x => Math.Max(1m, Num(x.Quantity)));
         var suppliers = rows.Where(x => !string.IsNullOrWhiteSpace(x.PurchasedFrom)).Select(x => x.PurchasedFrom.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).Count();
         var totalValueLabel = valueGroups.Count == 1 ? $"{Money(valueGroups[0].Value)} {H(valueGroups[0].Currency)}" : $"{valueGroups.Count} currencies";
-        var body=$"<div class='section-title'>Inventory Overview</div><div class='cards'><div><b>Estimated value</b><span>{totalValueLabel}</span></div><div><b>Remaining weight</b><span>{remaining / 1000m:N2} kg</span></div><div><b>Total spools</b><span>{totalSpools:N0}</span></div><div><b>Opened</b><span>{opened:N0}</span></div><div><b>Unopened</b><span>{unopened:N0}</span></div><div><b>Suppliers</b><span>{suppliers}</span></div></div><h2>Value by currency</h2>{Table(new[]{"Currency","Estimated landed value"},valueGroups.Select(x=>new[]{H(x.Currency),Money(x.Value)}))}<h2>Inventory status</h2>{Table(new[]{"Status","Spools"},status.Select(x=>new[]{H(x.Key),x.Count.ToString("N0")}))}<h2>Inventory detail</h2>{Table(new[]{"Material","Status","Qty","Remaining g","Location","Supplier","Landed cost","Currency"},rows.OrderBy(x=>x.MaterialDisplayName).Select(x=>new[]{H(x.MaterialDisplayName),H(x.Status),H(x.Quantity),H(x.RemainingWeightG),H(x.StorageLocation),H(x.PurchasedFrom),H(x.LandedCostAmount),H(x.PurchaseCurrency)}))}";
+        var body=$"<div class='section-title'>Inventory Overview</div><div class='cards'><div><b>Estimated value</b><span>{totalValueLabel}</span></div><div><b>Remaining weight</b><span>{remaining / 1000m:N2} kg</span></div><div><b>Total spools</b><span>{totalSpools:N0}</span></div><div><b>Opened</b><span>{opened:N0}</span></div><div><b>Unopened</b><span>{unopened:N0}</span></div><div><b>Suppliers</b><span>{suppliers}</span></div></div><h2>Value by currency</h2>{Table(new[]{"Currency","Estimated landed value"},valueGroups.Select(x=>new[]{H(x.Currency),Money(x.Value)}))}<h2>Inventory status</h2>{Table(new[]{"Status","Spools"},status.Select(x=>new[]{H(x.Key),x.Count.ToString("N0")}))}<h2>Inventory detail</h2>{Table(new[]{"Material","Status","Qty","Remaining g","Location","Supplier","Landed cost","Currency"},rows.OrderBy(x=>x.MaterialDisplayName).Select(x=>new[]{H(x.MaterialDisplayName),H(x.Status),H(x.Quantity),H(x.RemainingWeightG),H(x.StorageLocation),H(x.PurchasedFrom),H(x.LandedCostAmount),H(x.LandedCostCurrency)}))}";
         return Result("inventory-report","Inventory Report",text.ToString(),body,at,rows.Count);
     }
 
     private PurchasingReportResult Purchase(IReadOnlyList<PurchaseOrderRecord> orders, IReadOnlyList<PurchaseOrderLineRecord> lines, DateTime at)
     {
-        var landed=orders.Sum(o=>OrderLandedIsk(o,lines)); var shipping=orders.Sum(o=>Num(o.SupplierShipping)*Rate(o)); var vat=orders.Sum(o=>(Num(o.SupplierTax)+Num(o.ImportVat))*Rate(o)); var customs=orders.Sum(o=>Num(o.CustomsDuty)*Rate(o));
+        var landed=orders.Sum(o=>OrderLandedIsk(o,lines)); var shipping=orders.Sum(o=>Num(o.SupplierShipping)*InvoiceRate(o)); var vat=orders.Sum(o=>(Num(o.SupplierTax)+Num(o.ImportVat))*InvoiceRate(o)); var customs=orders.Sum(o=>Num(o.CustomsDuty)*InvoiceRate(o));
         var text=new StringBuilder(); Header(text,"Purchase Report",at); text.AppendLine($"Orders: {orders.Count}"); text.AppendLine($"Order lines: {lines.Count}"); text.AppendLine($"Total landed cost: {Money(landed)} ISK"); text.AppendLine($"Shipping: {Money(shipping)} ISK"); text.AppendLine($"Tax / VAT: {Money(vat)} ISK"); text.AppendLine($"Customs: {Money(customs)} ISK");
         var averageOrder = orders.Count == 0 ? 0m : landed / orders.Count;
         var largestOrder = orders.Select(o => OrderLandedIsk(o, lines)).DefaultIfEmpty(0m).Max();
@@ -108,7 +114,7 @@ public sealed class PurchasingReportService
 
     private PurchasingReportResult Supplier(IReadOnlyList<PurchaseOrderRecord> orders, IReadOnlyList<PurchaseOrderLineRecord> lines, DateTime at)
     {
-        var groups=orders.GroupBy(x=>string.IsNullOrWhiteSpace(x.Supplier)?"Unknown supplier":x.Supplier.Trim()).Select(g=>new { Supplier=g.Key, Orders=g.Count(), First=g.Min(x=>x.PurchaseDate), Last=g.Max(x=>x.PurchaseDate), Landed=g.Sum(o=>OrderLandedIsk(o,lines)), Shipping=g.Sum(o=>Num(o.SupplierShipping)*Rate(o)), Lines=g.Sum(o=>lines.Count(l=>l.PurchaseOrderId==o.PurchaseOrderId)) }).OrderByDescending(x=>x.Landed).ToList();
+        var groups=orders.GroupBy(x=>string.IsNullOrWhiteSpace(x.Supplier)?"Unknown supplier":x.Supplier.Trim()).Select(g=>new { Supplier=g.Key, Orders=g.Count(), First=g.Min(x=>x.PurchaseDate), Last=g.Max(x=>x.PurchaseDate), Landed=g.Sum(o=>OrderLandedIsk(o,lines)), Shipping=g.Sum(o=>Num(o.SupplierShipping)*InvoiceRate(o)), Lines=g.Sum(o=>lines.Count(l=>l.PurchaseOrderId==o.PurchaseOrderId)) }).OrderByDescending(x=>x.Landed).ToList();
         var text=new StringBuilder(); Header(text,"Supplier Report",at); text.AppendLine($"Suppliers: {groups.Count}"); text.AppendLine($"Orders: {orders.Count}"); foreach(var g in groups) text.AppendLine($"- {g.Supplier}: {g.Orders} orders, {Money(g.Landed)} ISK landed cost");
         var topSupplier = groups.FirstOrDefault();
         var totalSupplierSpend = groups.Sum(x => x.Landed);
@@ -130,7 +136,7 @@ public sealed class PurchasingReportService
         var orderById = orders.ToDictionary(x => x.PurchaseOrderId, StringComparer.OrdinalIgnoreCase);
         var calculatedLines = lines.Where(x => Num(x.LandedLineCost) > 0m && orderById.ContainsKey(x.PurchaseOrderId)).ToList();
         var totalSpend = orders.Sum(o => OrderLandedIsk(o, lines));
-        var totalShipping = orders.Sum(o => Num(o.SupplierShipping) * Rate(o));
+        var totalShipping = orders.Sum(o => Num(o.SupplierShipping) * InvoiceRate(o));
         var averageOrder = orders.Count == 0 ? 0m : totalSpend / orders.Count;
         var shippingShare = totalSpend <= 0m ? 0m : totalShipping / totalSpend * 100m;
 
@@ -141,7 +147,7 @@ public sealed class PurchasingReportService
                 Supplier = g.Key,
                 Orders = g.Count(),
                 Spend = g.Sum(o => OrderLandedIsk(o, lines)),
-                Shipping = g.Sum(o => Num(o.SupplierShipping) * Rate(o)),
+                Shipping = g.Sum(o => Num(o.SupplierShipping) * InvoiceRate(o)),
                 LastPurchase = g.Select(o => ParseDate(o.PurchaseDate)).Where(d => d.HasValue).Select(d => d!.Value).DefaultIfEmpty().Max()
             })
             .OrderByDescending(x => x.Spend)
@@ -164,7 +170,7 @@ public sealed class PurchasingReportService
             {
                 Category = g.Key,
                 Lines = g.Count(),
-                Spend = g.Sum(x => Num(x.LandedLineCost) * Rate(orderById[x.PurchaseOrderId]))
+                Spend = g.Sum(x => Num(x.LandedLineCost) * LandedIskRate(orderById[x.PurchaseOrderId]))
             })
             .OrderByDescending(x => x.Spend)
             .ToList();
@@ -178,7 +184,7 @@ public sealed class PurchasingReportService
                 {
                     Line = x,
                     Order = orderById[x.PurchaseOrderId],
-                    UnitIsk = Num(x.LandedUnitCost) * Rate(orderById[x.PurchaseOrderId])
+                    UnitIsk = Num(x.LandedUnitCost) * LandedIskRate(orderById[x.PurchaseOrderId])
                 }).Where(x => x.UnitIsk > 0m).ToList();
                 var latest = purchases.OrderByDescending(x => ParseDate(x.Order.PurchaseDate) ?? DateTime.MinValue).FirstOrDefault();
                 return new
@@ -248,7 +254,7 @@ public sealed class PurchasingReportService
     {
         var orderIds=orders.Select(x=>x.PurchaseOrderId).ToHashSet(StringComparer.OrdinalIgnoreCase); var lineIds=lines.Select(x=>x.PurchaseOrderLineId).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var issues=new List<(string,string,string)>();
-        foreach(var x in rows){if(Num(x.RemainingWeightG)<0)issues.Add((x.InventoryItemId,"Negative remaining weight",x.RemainingWeightG)); if(string.IsNullOrWhiteSpace(x.MaterialId))issues.Add((x.InventoryItemId,"Missing material link",x.MaterialDisplayName)); if(string.IsNullOrWhiteSpace(x.PurchaseCurrency))issues.Add((x.InventoryItemId,"Missing currency",x.MaterialDisplayName)); if(!string.IsNullOrWhiteSpace(x.PurchaseOrderLineId)&&!lineIds.Contains(x.PurchaseOrderLineId))issues.Add((x.InventoryItemId,"Orphan purchase-line link",x.PurchaseOrderLineId));}
+        foreach(var x in rows){if(Num(x.RemainingWeightG)<0)issues.Add((x.InventoryItemId,"Negative remaining weight",x.RemainingWeightG)); if(string.IsNullOrWhiteSpace(x.MaterialId))issues.Add((x.InventoryItemId,"Missing material link",x.MaterialDisplayName)); if(string.IsNullOrWhiteSpace(x.PurchaseCurrency)||string.IsNullOrWhiteSpace(x.LandedCostCurrency))issues.Add((x.InventoryItemId,"Missing currency",x.MaterialDisplayName)); if(!string.IsNullOrWhiteSpace(x.PurchaseOrderLineId)&&!lineIds.Contains(x.PurchaseOrderLineId))issues.Add((x.InventoryItemId,"Orphan purchase-line link",x.PurchaseOrderLineId));}
         foreach(var x in lines){if(!orderIds.Contains(x.PurchaseOrderId))issues.Add((x.PurchaseOrderLineId,"Orphan purchase-order line",x.PurchaseOrderId)); if(string.Equals(x.AllocationStatus,"Calculated",StringComparison.OrdinalIgnoreCase)&&string.IsNullOrWhiteSpace(x.LandedLineCost))issues.Add((x.PurchaseOrderLineId,"Calculated line missing landed cost",x.Description));}
         foreach(var g in rows.Where(x=>!string.IsNullOrWhiteSpace(x.BatchNumber)).GroupBy(x=>x.BatchNumber,StringComparer.OrdinalIgnoreCase).Where(g=>g.Count()>1))issues.Add((g.Key,"Duplicate batch number",$"{g.Count()} rows"));
         var text=new StringBuilder(); Header(text,"Inventory Verification Report",at); text.AppendLine($"Overall: {(issues.Count==0?"PASS":"REVIEW")}"); text.AppendLine($"Issues: {issues.Count}"); foreach(var i in issues)text.AppendLine($"- {i.Item1}: {i.Item2} ({i.Item3})");

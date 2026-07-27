@@ -288,12 +288,7 @@ public sealed class OpenAiAssistantPilotService
         }
         catch (OperationCanceledException ex)
         {
-            var outcome = cancellationToken.IsCancellationRequested
-                ? OpenAiPilotOutcome.Cancelled
-                : OpenAiPilotOutcome.TimedOut;
-            var category = outcome == OpenAiPilotOutcome.Cancelled
-                ? "Caller cancellation"
-                : "60-second timeout";
+            var (outcome, category) = ClassifyCancellation(cancellationToken.IsCancellationRequested);
             throw new OpenAiPilotExecutionException(
                 outcome == OpenAiPilotOutcome.Cancelled
                     ? "OpenAI request was cancelled. Canonical data is unchanged."
@@ -323,6 +318,12 @@ public sealed class OpenAiAssistantPilotService
                 ex);
         }
     }
+
+    internal static (OpenAiPilotOutcome Outcome, string Category) ClassifyCancellation(
+        bool callerCancellationRequested) =>
+        callerCancellationRequested
+            ? (OpenAiPilotOutcome.Cancelled, "Caller cancellation")
+            : (OpenAiPilotOutcome.TimedOut, "60-second timeout");
 
     public OpenAiPilotResult ParseAndValidateResponse(
         string responseJson,

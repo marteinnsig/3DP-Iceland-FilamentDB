@@ -1,4 +1,46 @@
-# Current Build Notes - v53.0.2
+# Current Build Notes - v53.0.3
+
+## Cross-currency Landed-cost Calculation
+
+v53.0.3 preserves every Purchase Order input and allocated component in the
+invoice currency, then converts only Landed line/unit/kg outputs with the
+accepted `1 invoice currency = X landed currency` snapshot. Validation uses
+temporary line results so failure cannot clear a previously saved calculation.
+One successful calculation stamps UTC plus `landed-currency-v2` and blocks
+every later recalculation.
+
+Linked Materials retain invoice purchase price/currency and receive the
+selected landed amount/currency only from the explicitly calculated order.
+New Inventory spools retain those two currencies separately and snapshot all
+landed-rate provenance. Existing Inventory, saved Purchase Orders, Usage and
+Quotes are never refreshed. Purchasing reports derive ISK per landed currency
+from the saved invoice and landed rates. Debug/Release, documentation, Help and
+NuGet gates pass. Disposable Release smoke `20260727203738-89c19f55` passes
+388/388 with exact database and business-state equality. Smoke exposed and
+corrected an existing quantity-squared per-kg formula defect plus a
+locale-sensitive Verification comparison. Owner runtime acceptance and Full
+Data Verification 388/388 pass.
+Owner runtime testing then exposed a blocker in the calculated-input lock:
+`Unit price` entered edit mode and its PropertyChanged binding mutated the row
+before CellEditEnding cancelled the transaction, which could crash WPF when
+focus moved away. The correction blocks protected financial cells in
+BeginningEdit before an editor is created, retains CellEditEnding only as a
+defensive fallback and verifies that receiving fields remain editable.
+Replacement Release smoke `20260727214133-34260e52` passes 388/388 with exact
+database and business-state equality.
+Owner Debug testing also exposed an intentional TaskCanceledException in the
+OpenAI timeout Verification probe as user-unhandled under Visual Studio. The
+production catch path and deterministic gate now share a pure cancellation
+classifier, so Verification retains timeout/caller-cancellation coverage
+without deliberately throwing from a fake HTTP handler.
+Currency retains standard DataGrid commit behavior: rate/source refresh after
+Enter or focus change. Owner accepted this as minor UI friction; unsuccessful
+immediate-event adapters were removed rather than retained. The ECB parser now
+adds EUR as the official base leg
+even though the live series response does not contain an EUR/EUR observation.
+New Order refreshes a missing or older-than-24-hour cache at most once daily;
+offline failure retains valid cache/manual fallback and saved orders remain
+untouched. Status shows both observation date and fetched UTC.
 
 ## Landed-cost Currency Default and Draft Override
 

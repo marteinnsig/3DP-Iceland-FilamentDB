@@ -2,6 +2,32 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v53.0.3 - Cross-currency Landed-cost Calculation
+
+- Keeps invoice inputs and allocated components in invoice currency.
+- Converts only accepted Landed line/unit/kg outputs using the saved cross-rate.
+- Computes on temporary results so validation failure cannot erase saved values.
+- Stamps a one-time UTC/version snapshot and blocks later recalculation.
+- Separates invoice and landed values in Material and new Inventory handoffs.
+- Copies full landed-rate provenance into newly created Inventory spools.
+- Updates purchasing reports to use saved landed-currency-to-ISK derivation.
+- Adds Help, diagnostics and deterministic Verification coverage.
+- Corrects the prior per-kg formula so total line weight includes quantity once.
+- Prevents calculated financial cells from entering edit mode, avoiding a WPF
+  edit-transaction crash after PropertyChanged updated a locked row.
+- Makes the OpenAI timeout/cancellation Verification deterministic without an
+  intentional TaskCanceledException under Visual Studio.
+- Retains standard DataGrid currency commit behavior after owner accepted the
+  required Enter/focus-change as minor deferred UI friction; experimental
+  immediate-event adapters were removed.
+- Adds the omitted ECB EUR base leg and refreshes missing or older-than-24-hour
+  cache opportunistically when New Order is explicitly requested.
+- Disposable Release smoke `20260727214133-34260e52` passes 388/388 with exact
+  database and business-state equality.
+- Owner runtime acceptance and Full Data Verification 388/388 pass. Standard
+  DataGrid currency commit after Enter/focus-change remains accepted minor
+  deferred UI friction.
+
 ## v53.0.2 - Landed-cost Currency Default and Draft Override
 
 - Adds the governed Purchasing Settings default for newly created Drafts only.

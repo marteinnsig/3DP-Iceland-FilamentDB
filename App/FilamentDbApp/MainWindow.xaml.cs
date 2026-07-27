@@ -121,6 +121,7 @@ public partial class MainWindow : Window
         new(StringComparer.OrdinalIgnoreCase);
     private ExchangeRateReferenceCatalog? _ecbExchangeRateCatalog;
     private readonly PurchasingCostAllocationService _purchasingCostAllocationService = new();
+    private const string LandedCostCalculationVersion = "landed-currency-v2";
     private readonly PurchasingReportService _purchasingReportService = new();
     private ICollectionView? _purchaseOrderLineView;
     private ICollectionView? _inventorySpoolView;
@@ -13549,6 +13550,16 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                           ? "Not configured"
                           : configuredLandedCostCurrency));
         sb.AppendLine("Effective landed-cost default: " + GetDefaultLandedCostCurrency());
+        var diagnosticPurchaseOrders = _database.LoadPurchaseOrders();
+        sb.AppendLine("Purchase Order snapshots: " +
+                      diagnosticPurchaseOrders.Count(order =>
+                          !string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion)) +
+                      " calculated/legacy; " +
+                      diagnosticPurchaseOrders.Count(order =>
+                          string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion)) +
+                      " uncalculated.");
+        sb.AppendLine("Calculation contract: invoice inputs/allocations stay in invoice currency; " +
+                      "only landed line/unit/kg results use the snapshotted landed currency.");
         sb.AppendLine("Ownership: reference data may prefill only a newly created uncalculated Draft. " +
                       "Saved purchases, inventory, Materials and quotes are never refreshed or recalculated.");
         sb.AppendLine();
@@ -14645,29 +14656,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                     !JsonSerializer.Serialize(ex.Evidence).Contains("SECRET-", StringComparison.Ordinal);
             }
 
-            var timeoutClassified = false;
-            var timeoutHandler = new ScriptedOpenAiHandler(async (_, token) =>
-            {
-                await Task.Delay(Timeout.Infinite, token);
-                return new HttpResponseMessage(HttpStatusCode.OK);
-            });
-            try
-            {
-                var timeoutService = new OpenAiAssistantPilotService(
-                    new HttpClient(timeoutHandler) { Timeout = Timeout.InfiniteTimeSpan },
-                    requestTimeout: TimeSpan.FromMilliseconds(1),
-                    clientRequestIdFactory: () => "client-verification-timeout");
-                Task.Run(() => timeoutService.GenerateAsync(
-                        boundaryPreview,
-                        "SECRET-VERIFICATION-KEY",
-                        CancellationToken.None))
-                    .GetAwaiter()
-                    .GetResult();
-            }
-            catch (OpenAiPilotExecutionException ex)
-            {
-                timeoutClassified = ex.Evidence.Outcome == OpenAiPilotOutcome.TimedOut;
-            }
+            var (timeoutOutcome, timeoutCategory) =
+                OpenAiAssistantPilotService.ClassifyCancellation(callerCancellationRequested: false);
+            var (cancelledOutcome, cancelledCategory) =
+                OpenAiAssistantPilotService.ClassifyCancellation(callerCancellationRequested: true);
+            var timeoutClassified =
+                timeoutOutcome == OpenAiPilotOutcome.TimedOut &&
+                timeoutCategory == "60-second timeout" &&
+                cancelledOutcome == OpenAiPilotOutcome.Cancelled &&
+                cancelledCategory == "Caller cancellation";
 
             var incompleteClassified = false;
             var incompleteHandler = new ScriptedOpenAiHandler((_, _) =>
@@ -16305,12 +16302,12 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("Cost allocation strict weight validation", !strictWeightValidation.IsValid && strictWeightValidationLines.All(line => string.IsNullOrWhiteSpace(line.AllocatedShipping)),
             !strictWeightValidation.IsValid ? "By weight blocks calculation when any included line has no weight" : "By weight unexpectedly allowed a missing-weight line"));
         var pricingSyncMaterial = new NativeMaterialRow { MaterialID = "VERIFY-PRICE-SYNC", SpoolWeightG = "1000" };
-        var pricingSyncOrder = new PurchaseOrderRecord { PurchaseOrderId = "VERIFY-PO", Supplier = "Verification Supplier", OrderNumber = "VERIFY-001", PurchaseDate = "2026-07-20", Currency = "EUR" };
+        var pricingSyncOrder = new PurchaseOrderRecord { PurchaseOrderId = "VERIFY-PO", Supplier = "Verification Supplier", OrderNumber = "VERIFY-001", PurchaseDate = "2026-07-20", Currency = "EUR", LandedCostCurrency = "USD" };
         var pricingSyncLine = new PurchaseOrderLineRecord { MaterialId = pricingSyncMaterial.MaterialID, StorageLocation = "Shelf A-2", UnitPrice = "25.00", UnitWeightG = "1000", Quantity = "1", AllocatedShipping = "5.00", AllocatedTax = "6.00", LandedUnitCost = "36.00" };
         SyncMaterialPricingFromPurchaseLine(pricingSyncMaterial, pricingSyncLine, pricingSyncOrder);
         var pricingSyncPassed = pricingSyncMaterial.PurchasePriceAmount == "25.00" && pricingSyncMaterial.MsrpAmount == "25.00" &&
                                 pricingSyncMaterial.MsrpCurrency == "EUR" && pricingSyncMaterial.LandedCostAmount == "36.00" &&
-                                pricingSyncMaterial.LandedCostCurrency == "EUR" && pricingSyncMaterial.PurchasedFrom == "Verification Supplier" &&
+                                pricingSyncMaterial.LandedCostCurrency == "USD" && pricingSyncMaterial.PurchasedFrom == "Verification Supplier" &&
                                 pricingSyncMaterial.StorageLocation == "Shelf A-2";
         checks.Add(new VerificationCheck("Purchase-to-material pricing sync", pricingSyncPassed,
             pricingSyncPassed ? "Purchase price/MSRP, supplier metadata, storage location and landed cost sync to the linked material" : "Purchase-to-material pricing and storage fields did not remain aligned"));
@@ -17299,8 +17296,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         const string ecbProbeCsv =
             "CURRENCY,TIME_PERIOD,OBS_VALUE\n" +
             "ISK,2026-07-24,150\n" +
-            "USD,2026-07-24,1.2\n" +
-            "EUR,2026-07-24,1\n";
+            "USD,2026-07-24,1.2\n";
         var ecbProbe = EcbExchangeRateReferenceService.ParseCsv(
             ecbProbeCsv,
             new DateTime(2026, 7, 24, 16, 0, 0, DateTimeKind.Utc));
@@ -17312,8 +17308,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             purchaseRecoveryTable.Columns.Contains("ExchangeRateSource") &&
             purchaseRecoveryTable.Columns.Contains("ExchangeRateObservationDate") &&
             purchaseRecoveryTable.Columns.Contains("ExchangeRateFetchedAtUtc") &&
+            ecbProbe.Rates.Single(rate => rate.Currency == "EUR").IskPerCurrencyUnit == 150m &&
             ecbProbe.Rates.Single(rate => rate.Currency == "USD").IskPerCurrencyUnit == 125m &&
             ecbProbe.Rates.Single(rate => rate.Currency == "USD").ObservationDate == "2026-07-24" &&
+            EcbExchangeRateCatalogNeedsRefresh(
+                ecbProbe,
+                new DateTime(2026, 7, 25, 16, 0, 1, DateTimeKind.Utc)) &&
+            !EcbExchangeRateCatalogNeedsRefresh(
+                ecbProbe,
+                new DateTime(2026, 7, 25, 15, 59, 59, DateTimeKind.Utc)) &&
             FindName("PurchaseOrdersTab") is TabItem &&
             FindName("RefreshEcbExchangeRates") is Button &&
             FindName("EcbExchangeRateStatusText") is TextBlock &&
@@ -17422,6 +17425,125 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             landedCostDraftWorkflowReady && excelRecoveryReady && releaseIdentityReady
                 ? "Governed default; invoice-ISK / landed-ISK cross-rate direction; restart-stable uncalculated Draft override; legacy lock and explicit UI contract pass"
                 : "Settings default, cross-rate direction, Draft/legacy lock, persistence, UI or release identity failed"));
+        var landedCalculationOrder = new PurchaseOrderRecord
+        {
+            PurchaseOrderId = "VERIFY-V53-CALC",
+            Currency = "EUR",
+            ExchangeRate = "125",
+            LandedCostCurrency = "USD",
+            LandedCostConversionRate = "0.5",
+            LandedCostRateSource = "Verification cross-rate",
+            SupplierShipping = "20",
+            ShippingAllocationMethod = "By line value",
+            TaxAllocationMethod = "By line value",
+            CustomsAllocationMethod = "By line value",
+            FeeAllocationMethod = "By line value"
+        };
+        var landedCalculationLine = new PurchaseOrderLineRecord
+        {
+            PurchaseOrderLineId = "VERIFY-V53-LINE",
+            PurchaseOrderId = landedCalculationOrder.PurchaseOrderId,
+            MaterialId = "VERIFY-MATERIAL",
+            Quantity = "2",
+            UnitPrice = "100",
+            UnitWeightG = "1000",
+            IncludeInCostAllocation = true
+        };
+        var landedCalculation = _purchasingCostAllocationService.Calculate(
+            landedCalculationOrder,
+            [landedCalculationLine],
+            0.5m);
+        StampLandedCostCalculation(
+            landedCalculationOrder,
+            new DateTimeOffset(2026, 7, 27, 20, 30, 0, TimeSpan.Zero));
+        var landedInventoryProbe = BuildInventorySpoolFromPurchaseLine(
+            landedCalculationOrder,
+            landedCalculationLine);
+        var landedInventoryReportProbe = _purchasingReportService.Build(
+            "inventory-report",
+            [landedInventoryProbe],
+            [landedCalculationOrder],
+            [landedCalculationLine],
+            new DateTime(2026, 7, 27, 20, 30, 0, DateTimeKind.Utc));
+        var nonDestructiveFailureLine = new PurchaseOrderLineRecord
+        {
+            PurchaseOrderLineId = "VERIFY-V53-FAIL",
+            Quantity = "1",
+            UnitPrice = "10",
+            LandedLineCost = "77.00",
+            IncludeInCostAllocation = true
+        };
+        var nonDestructiveFailure = _purchasingCostAllocationService.Calculate(
+            new PurchaseOrderRecord
+            {
+                SupplierShipping = "5",
+                ShippingAllocationMethod = "By weight",
+                TaxAllocationMethod = "By line value",
+                CustomsAllocationMethod = "By line value",
+                FeeAllocationMethod = "By line value"
+            },
+            [nonDestructiveFailureLine],
+            1m);
+        double landedNet = 0;
+        double landedShipping = 0;
+        double landedLine = 0;
+        double landedUnit = 0;
+        double landedPerKg = 0;
+        double inventoryLanded = 0;
+        var landedProbeNumbersReady =
+            TryParseDecimalAware(landedCalculationLine.NetLineCost, out landedNet) &&
+            TryParseDecimalAware(landedCalculationLine.AllocatedShipping, out landedShipping) &&
+            TryParseDecimalAware(landedCalculationLine.LandedLineCost, out landedLine) &&
+            TryParseDecimalAware(landedCalculationLine.LandedUnitCost, out landedUnit) &&
+            TryParseDecimalAware(landedCalculationLine.LandedCostPerKg, out landedPerKg) &&
+            TryParseDecimalAware(landedInventoryProbe.LandedCostAmount, out inventoryLanded);
+        var landedCalculationReady =
+            landedCalculation.IsValid &&
+            landedProbeNumbersReady &&
+            landedNet == 200d &&
+            landedShipping == 20d &&
+            landedLine == 110d &&
+            landedUnit == 55d &&
+            landedPerKg == 55d &&
+            landedCalculationOrder.LandedCostCalculationVersion == LandedCostCalculationVersion &&
+            landedCalculationOrder.LandedCostCalculatedAtUtc.StartsWith(
+                "2026-07-27T20:30:00",
+                StringComparison.Ordinal) &&
+            PurchasingReportService.LandedIskRate(landedCalculationOrder) == 250m &&
+            landedInventoryProbe.PurchasePriceAmount == "100" &&
+            landedInventoryProbe.PurchaseCurrency == "EUR" &&
+            inventoryLanded == 55d &&
+            landedInventoryProbe.LandedCostCurrency == "USD" &&
+            landedInventoryProbe.LandedCostConversionRate == "0.5" &&
+            landedInventoryProbe.LandedCostCalculationVersion == LandedCostCalculationVersion &&
+            landedInventoryReportProbe.Text.Contains("- USD:", StringComparison.Ordinal) &&
+            landedInventoryReportProbe.Html.Contains(">USD<", StringComparison.Ordinal) &&
+            !nonDestructiveFailure.IsValid &&
+            nonDestructiveFailureLine.LandedLineCost == "77.00" &&
+            FindName("PurchaseOrderLinesGrid") is DataGrid landedLinesGrid &&
+            IsPurchaseOrderFinancialEditLocked(
+                landedLinesGrid,
+                landedCalculationOrder,
+                "Unit price") &&
+            !IsPurchaseOrderFinancialEditLocked(
+                landedLinesGrid,
+                landedCalculationOrder,
+                "Received");
+        checks.Add(new VerificationCheck(
+            "v53.0.3 Cross-currency calculation and downstream snapshot release gate",
+            landedCalculationReady && releaseIdentityReady,
+            landedCalculationReady && releaseIdentityReady
+                ? "Invoice allocations remain EUR; landed outputs convert to USD; report ISK factor, one-time stamp, Inventory provenance and non-destructive failure pass"
+                : $"Conversion gate failed: valid={landedCalculation.IsValid}; net={landedCalculationLine.NetLineCost}; " +
+                  $"shipping={landedCalculationLine.AllocatedShipping}; line={landedCalculationLine.LandedLineCost}; " +
+                  $"unit={landedCalculationLine.LandedUnitCost}; kg={landedCalculationLine.LandedCostPerKg}; " +
+                  $"version={landedCalculationOrder.LandedCostCalculationVersion}; " +
+                  $"rate={PurchasingReportService.LandedIskRate(landedCalculationOrder)}; " +
+                  $"inventory={landedInventoryProbe.PurchasePriceAmount}/{landedInventoryProbe.PurchaseCurrency}/" +
+                  $"{landedInventoryProbe.LandedCostAmount}/{landedInventoryProbe.LandedCostCurrency}; " +
+                  $"reportTextUsd={landedInventoryReportProbe.Text.Contains("- USD:", StringComparison.Ordinal)}; " +
+                  $"reportHtmlUsd={landedInventoryReportProbe.Html.Contains(">USD<", StringComparison.Ordinal)}; " +
+                  $"failureValid={nonDestructiveFailure.IsValid}; preserved={nonDestructiveFailureLine.LandedLineCost}"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {
@@ -26104,9 +26226,35 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         CommitPurchaseOrderEdits(false);
         if (FindName("PurchaseOrdersGrid") is not DataGrid grid || grid.SelectedItem is not PurchaseOrderRecord order) return;
+        if (!string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion))
+        {
+            MessageBox.Show(
+                this,
+                "This Purchase Order already has a saved landed-cost calculation snapshot. " +
+                "Saved calculations are never recalculated.",
+                "Landed Cost Snapshot Locked",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            RefreshLandedCostCurrencyReview();
+            return;
+        }
+        if (!TryParseDecimalAware(order.LandedCostConversionRate, out var parsedConversionRate) ||
+            parsedConversionRate <= 0)
+        {
+            MessageBox.Show(
+                this,
+                "Review and apply a valid landed-cost currency conversion rate before calculating.",
+                "Landed Cost Currency",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return;
+        }
         var lines = _purchaseOrderLines.Where(x => x.PurchaseOrderId == order.PurchaseOrderId).ToList();
-        var result = _purchasingCostAllocationService.Calculate(order, lines);
-        order.CostStatus = result.Status;
+        var result = _purchasingCostAllocationService.Calculate(
+            order,
+            lines,
+            Convert.ToDecimal(parsedConversionRate, CultureInfo.InvariantCulture));
+        order.CostStatus = result.IsValid ? result.Status : "Draft";
         if (FindName("PurchaseCostValidationText") is TextBlock validationText)
         {
             validationText.Text = result.ValidationDetails;
@@ -26114,8 +26262,14 @@ private List<string> GetVisibleAiMaterialLabels()
                 ? new SolidColorBrush(Color.FromRgb(22, 101, 52))
                 : new SolidColorBrush(Color.FromRgb(185, 28, 28));
         }
+        if (result.IsValid)
+        {
+            StampLandedCostCalculation(order, DateTimeOffset.UtcNow);
+        }
         SavePurchaseOrders();
-        var syncedMaterials = SyncLinkedMaterialsFromPurchaseOrder(order, lines);
+        var syncedMaterials = result.IsValid
+            ? SyncLinkedMaterialsFromPurchaseOrder(order, lines)
+            : 0;
         if (syncedMaterials > 0)
         {
             SaveNativeMaterialsSilent();
@@ -26124,6 +26278,7 @@ private List<string> GetVisibleAiMaterialLabels()
         grid.Items.Refresh();
         if (FindName("PurchaseOrderLinesGrid") is DataGrid lg) lg.Items.Refresh();
         RefreshPurchaseOrderSummary();
+        RefreshLandedCostCurrencyReview();
         if (!result.IsValid)
         {
             MessageBox.Show(this, result.ValidationDetails, "Cost Allocation Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -26131,6 +26286,15 @@ private List<string> GetVisibleAiMaterialLabels()
     }
 
     private void CalculatePurchaseCosts_Click(object sender, RoutedEventArgs e) => CalculateSelectedPurchaseOrderCosts();
+
+    private static void StampLandedCostCalculation(
+        PurchaseOrderRecord order,
+        DateTimeOffset calculatedAtUtc)
+    {
+        order.LandedCostCalculatedAtUtc =
+            calculatedAtUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture);
+        order.LandedCostCalculationVersion = LandedCostCalculationVersion;
+    }
 
     private IReadOnlyList<string> GetPurchasingCurrencyCodes()
     {
@@ -26301,8 +26465,10 @@ private List<string> GetVisibleAiMaterialLabels()
                   ? string.Empty
                   : $"; observation {order.LandedCostRateObservationDate}");
         statusText.Text = canOverride
-            ? provenance + " Draft override is available; applying it requires confirmation."
-            : provenance + " Snapshot is locked because this is not an uncalculated v53 Draft.";
+            ? provenance + $" Allocation fields use {order.Currency}; Landed result fields use " +
+              $"{order.LandedCostCurrency}. Draft override is available; applying it requires confirmation."
+            : provenance + $" Allocation fields use {order.Currency}; Landed result fields use " +
+              $"{order.LandedCostCurrency}. Snapshot is locked because this is not an uncalculated v53 Draft.";
     }
 
     private void ApplyLandedCostCurrencyOverride_Click(object sender, RoutedEventArgs e)
@@ -26416,6 +26582,20 @@ private List<string> GetVisibleAiMaterialLabels()
     private string EcbExchangeRateCachePath()
         => StorageWorkingFilePath("ecb-exchange-rate-reference-cache.json");
 
+    private static bool EcbExchangeRateCatalogNeedsRefresh(
+        ExchangeRateReferenceCatalog? catalog,
+        DateTime utcNow)
+    {
+        if (catalog is null ||
+            !DateTime.TryParse(
+                catalog.FetchedAtUtc,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.RoundtripKind,
+                out var fetchedAt))
+            return true;
+        return utcNow.ToUniversalTime() - fetchedAt.ToUniversalTime() > TimeSpan.FromDays(1);
+    }
+
     private async Task RefreshEcbExchangeRateCatalogAsync(bool showFailure)
     {
         if (AutomationRuntimeProfile.Current is not null)
@@ -26466,16 +26646,20 @@ private List<string> GetVisibleAiMaterialLabels()
             .Select(rate => rate.ObservationDate)
             .OrderByDescending(value => value, StringComparer.Ordinal)
             .FirstOrDefault();
-        var stale = DateTime.TryParse(
+        var hasFetchedAt = DateTime.TryParse(
                         _ecbExchangeRateCatalog?.FetchedAtUtc,
                         CultureInfo.InvariantCulture,
                         DateTimeStyles.RoundtripKind,
-                        out var fetched) &&
-                    DateTime.UtcNow - fetched.ToUniversalTime() > TimeSpan.FromDays(7);
+                        out var fetched);
+        var stale = hasFetchedAt &&
+                    DateTime.UtcNow - fetched.ToUniversalTime() > TimeSpan.FromDays(1);
+        var fetchedLabel = hasFetchedAt
+            ? $"; fetched {fetched.ToUniversalTime():yyyy-MM-dd HH:mm} UTC"
+            : string.Empty;
         text.Text = latest is null
             ? "ECB reference not cached. Manual governed Settings remain available."
             : $"ECB-derived reference cache{(stale ? " (stale)" : "")}: observation {latest}; " +
-              "applies only to new orders created in this session.";
+              $"applies only to new orders created in this session{fetchedLabel}.";
     }
 
     private async void RefreshEcbExchangeRates_Click(object sender, RoutedEventArgs e)
@@ -26511,7 +26695,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private async void AddPurchaseOrder_Click(object sender, RoutedEventArgs e)
     {
-        if (_ecbExchangeRateCatalog is null)
+        if (EcbExchangeRateCatalogNeedsRefresh(_ecbExchangeRateCatalog, DateTime.UtcNow))
             await RefreshEcbExchangeRateCatalogAsync(showFailure: false);
         var order = new PurchaseOrderRecord
         {
@@ -26575,6 +26759,11 @@ private List<string> GetVisibleAiMaterialLabels()
     private void AddPurchaseOrderLine_Click(object sender, RoutedEventArgs e)
     {
         if (FindName("PurchaseOrdersGrid") is not DataGrid grid || grid.SelectedItem is not PurchaseOrderRecord order) { MessageBox.Show(this,"Create or select a purchase order first.","Purchase Orders",MessageBoxButton.OK,MessageBoxImage.Information); return; }
+        if (!string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion))
+        {
+            MessageBox.Show(this, "Calculated Purchase Order items are locked.", "Landed Cost Snapshot Locked", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
         var line = new PurchaseOrderLineRecord { PurchaseOrderLineId="POL-"+Guid.NewGuid().ToString("N")[..10].ToUpperInvariant(), PurchaseOrderId=order.PurchaseOrderId, Quantity="1", ReceivedQuantity="0", ReceivingStatus="Not checked", InventoryCategory="Filament" };
         _purchaseOrderLines.Add(line); SavePurchaseOrders(); _purchaseOrderLineView?.Refresh();
         if (FindName("PurchaseOrderLinesGrid") is DataGrid lines){lines.SelectedItem=line;lines.ScrollIntoView(line);lines.BeginEdit();}
@@ -26584,11 +26773,38 @@ private List<string> GetVisibleAiMaterialLabels()
     private void DeletePurchaseOrderLine_Click(object sender, RoutedEventArgs e)
     {
         if (IsAutomationActionBlocked("Purchase Order item deletion")) return;
-        if (FindName("PurchaseOrderLinesGrid") is DataGrid grid && grid.SelectedItem is PurchaseOrderLineRecord line){_purchaseOrderLines.Remove(line);SavePurchaseOrders();_purchaseOrderLineView?.Refresh();RefreshPurchaseOrderSummary();}
+        if (FindName("PurchaseOrderLinesGrid") is DataGrid grid && grid.SelectedItem is PurchaseOrderLineRecord line)
+        {
+            var order = _purchaseOrders.FirstOrDefault(candidate =>
+                string.Equals(candidate.PurchaseOrderId, line.PurchaseOrderId, StringComparison.OrdinalIgnoreCase));
+            if (!string.IsNullOrWhiteSpace(order?.LandedCostCalculationVersion))
+            {
+                MessageBox.Show(this, "Calculated Purchase Order items are locked.", "Landed Cost Snapshot Locked", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            _purchaseOrderLines.Remove(line);SavePurchaseOrders();_purchaseOrderLineView?.Refresh();RefreshPurchaseOrderSummary();
+        }
+    }
+
+    private void PurchaseOrderGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+    {
+        if (!IsPurchaseOrderFinancialEditLocked(sender as DataGrid, e.Row.Item, e.Column.Header?.ToString()))
+        {
+            return;
+        }
+
+        e.Cancel = true;
+        ShowTransientStatus("Calculated landed-cost inputs are locked; saved results were not changed.");
     }
 
     private void PurchaseOrderGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
     {
+        if (IsPurchaseOrderFinancialEditLocked(sender as DataGrid, e.Row.Item, e.Column.Header?.ToString()))
+        {
+            e.Cancel = true;
+            ShowTransientStatus("Calculated landed-cost inputs are locked; saved results were not changed.");
+            return;
+        }
         var editedCurrency = sender is DataGrid grid && ReferenceEquals(grid, FindName("PurchaseOrdersGrid")) &&
                              string.Equals(e.Column.Header?.ToString(), "Currency", StringComparison.OrdinalIgnoreCase);
         var order = e.Row.Item as PurchaseOrderRecord;
@@ -26614,6 +26830,45 @@ private List<string> GetVisibleAiMaterialLabels()
         }), DispatcherPriority.Background);
     }
 
+    private bool IsPurchaseOrderFinancialEditLocked(DataGrid? grid, object? rowItem, string? header)
+    {
+        var protectedOrder = rowItem switch
+        {
+            PurchaseOrderRecord order => order,
+            PurchaseOrderLineRecord line => _purchaseOrders.FirstOrDefault(candidate =>
+                string.Equals(candidate.PurchaseOrderId, line.PurchaseOrderId, StringComparison.OrdinalIgnoreCase)),
+            _ => null
+        };
+        return IsPurchaseOrderFinancialEditLocked(grid, protectedOrder, header);
+    }
+
+    private bool IsPurchaseOrderFinancialEditLocked(
+        DataGrid? grid,
+        PurchaseOrderRecord? protectedOrder,
+        string? header) =>
+        !string.IsNullOrWhiteSpace(protectedOrder?.LandedCostCalculationVersion) &&
+               IsLandedCostInputColumn(grid, header);
+
+    private bool IsLandedCostInputColumn(DataGrid? grid, string? header)
+    {
+        if (grid is null || string.IsNullOrWhiteSpace(header)) return false;
+        if (ReferenceEquals(grid, FindName("PurchaseOrdersGrid")))
+        {
+            return header is
+                "Currency" or "1 currency unit = ISK" or "Tax treatment" or
+                "Items total" or "Shipping" or "Shipping allocation" or
+                "Supplier VAT" or "Invoice total" or "Import VAT" or
+                "Customs" or "Clearance" or "Other fees";
+        }
+        if (ReferenceEquals(grid, FindName("PurchaseOrderLinesGrid")))
+        {
+            return header is
+                "Expected" or "Unit price" or "Discount" or "Unit weight g" or
+                "Allocate" or "Manual shipping";
+        }
+        return false;
+    }
+
     private int SyncLinkedMaterialsFromPurchaseOrder(PurchaseOrderRecord order, IReadOnlyList<PurchaseOrderLineRecord> lines)
     {
         var synced = 0;
@@ -26632,6 +26887,9 @@ private List<string> GetVisibleAiMaterialLabels()
     private void SyncMaterialPricingFromPurchaseLine(NativeMaterialRow material, PurchaseOrderLineRecord line, PurchaseOrderRecord? order)
     {
         var currency = string.IsNullOrWhiteSpace(order?.Currency) ? "ISK" : order.Currency.Trim().ToUpperInvariant();
+        var landedCurrency = string.IsNullOrWhiteSpace(order?.LandedCostCurrency)
+            ? currency
+            : order.LandedCostCurrency.Trim().ToUpperInvariant();
         var spoolWeight = string.IsNullOrWhiteSpace(line.UnitWeightG) ? material.SpoolWeightG : line.UnitWeightG;
 
         material.PurchaseId = order?.PurchaseOrderId ?? material.PurchaseId;
@@ -26653,7 +26911,7 @@ private List<string> GetVisibleAiMaterialLabels()
         material.ShippingAmount = PerUnit(line.AllocatedShipping, line.Quantity);
         material.VatAmount = PerUnit(line.AllocatedTax, line.Quantity);
         material.LandedCostAmount = line.LandedUnitCost;
-        material.LandedCostCurrency = currency;
+        material.LandedCostCurrency = landedCurrency;
         material.PriceCheckedDate = string.IsNullOrWhiteSpace(order?.PurchaseDate)
             ? material.PriceCheckedDate
             : order.PurchaseDate;
@@ -26697,7 +26955,9 @@ private List<string> GetVisibleAiMaterialLabels()
             ShippingAmount = PerUnit(line.AllocatedShipping, line.Quantity),
             VatAmount = PerUnit(line.AllocatedTax, line.Quantity),
             LandedCostAmount = line.LandedUnitCost,
-            LandedCostCurrency = order?.Currency ?? "ISK",
+            LandedCostCurrency = string.IsNullOrWhiteSpace(order?.LandedCostCurrency)
+                ? order?.Currency ?? "ISK"
+                : order.LandedCostCurrency,
             PriceCheckedDate = order?.PurchaseDate ?? "",
             PurchaseId = order?.PurchaseOrderId ?? "",
             InventoryStatus = "Unopened",
@@ -26785,6 +27045,20 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         CommitPurchaseOrderEdits();
         if (FindName("PurchaseOrdersGrid") is not DataGrid grid || grid.SelectedItem is not PurchaseOrderRecord order) return;
+        if (!string.Equals(
+                order.LandedCostCalculationVersion,
+                LandedCostCalculationVersion,
+                StringComparison.Ordinal) ||
+            string.IsNullOrWhiteSpace(order.LandedCostCalculatedAtUtc))
+        {
+            MessageBox.Show(
+                this,
+                "Calculate and save the landed-cost snapshot before creating Inventory spools.",
+                "Landed Cost Required",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
 
         var lines = _purchaseOrderLines.Where(x => x.PurchaseOrderId == order.PurchaseOrderId).ToList();
         var receivedLines = lines.Where(x => ParsePositiveInt(x.ReceivedQuantity) > 0).ToList();
@@ -26835,28 +27109,7 @@ private List<string> GetVisibleAiMaterialLabels()
             var existing = _inventorySpoolRows.Count(x => x.PurchaseOrderLineId == line.PurchaseOrderLineId);
             for (var i = existing; i < target; i++)
             {
-                _inventorySpoolRows.Add(new InventorySpoolRecord
-                {
-                    InventoryItemId = "INV-" + Guid.NewGuid().ToString("N")[..8].ToUpperInvariant(),
-                    MaterialId = line.MaterialId,
-                    PurchaseOrderLineId = line.PurchaseOrderLineId,
-                    PurchaseId = order.PurchaseOrderId,
-                    PurchasedFrom = order.Supplier,
-                    PurchaseDate = order.PurchaseDate,
-                    OrderNumber = order.OrderNumber,
-                    PurchasePriceAmount = line.LandedUnitCost.Length > 0 ? line.LandedUnitCost : line.UnitPrice,
-                    PurchaseCurrency = order.Currency,
-                    ShippingAmount = PerUnit(line.AllocatedShipping, line.Quantity),
-                    VatAmount = PerUnit(line.AllocatedTax, line.Quantity),
-                    CustomsAmount = PerUnit(line.AllocatedCustoms, line.Quantity),
-                    OtherFeesAmount = PerUnit(line.AllocatedFees, line.Quantity),
-                    LandedCostAmount = line.LandedUnitCost,
-                    SpoolWeightG = line.UnitWeightG,
-                    RemainingWeightG = line.UnitWeightG,
-                    StorageLocation = line.StorageLocation,
-                    Quantity = "1",
-                    Status = "Unopened"
-                });
+                _inventorySpoolRows.Add(BuildInventorySpoolFromPurchaseLine(order, line));
                 createdSpools++;
             }
         }
@@ -26879,6 +27132,39 @@ private List<string> GetVisibleAiMaterialLabels()
             : "No new filament materials or spools were needed." + deferredNote;
         MessageBox.Show(this, message, "Purchase Orders", MessageBoxButton.OK, MessageBoxImage.Information);
     }
+
+    private static InventorySpoolRecord BuildInventorySpoolFromPurchaseLine(
+        PurchaseOrderRecord order,
+        PurchaseOrderLineRecord line) =>
+        new()
+        {
+            InventoryItemId = "INV-" + Guid.NewGuid().ToString("N")[..8].ToUpperInvariant(),
+            MaterialId = line.MaterialId,
+            PurchaseOrderLineId = line.PurchaseOrderLineId,
+            PurchaseId = order.PurchaseOrderId,
+            PurchasedFrom = order.Supplier,
+            PurchaseDate = order.PurchaseDate,
+            OrderNumber = order.OrderNumber,
+            PurchasePriceAmount = line.UnitPrice,
+            PurchaseCurrency = order.Currency,
+            ShippingAmount = PerUnit(line.AllocatedShipping, line.Quantity),
+            VatAmount = PerUnit(line.AllocatedTax, line.Quantity),
+            CustomsAmount = PerUnit(line.AllocatedCustoms, line.Quantity),
+            OtherFeesAmount = PerUnit(line.AllocatedFees, line.Quantity),
+            LandedCostAmount = line.LandedUnitCost,
+            LandedCostCurrency = order.LandedCostCurrency,
+            LandedCostConversionRate = order.LandedCostConversionRate,
+            LandedCostRateSource = order.LandedCostRateSource,
+            LandedCostRateObservationDate = order.LandedCostRateObservationDate,
+            LandedCostRateFetchedAtUtc = order.LandedCostRateFetchedAtUtc,
+            LandedCostCalculatedAtUtc = order.LandedCostCalculatedAtUtc,
+            LandedCostCalculationVersion = order.LandedCostCalculationVersion,
+            SpoolWeightG = line.UnitWeightG,
+            RemainingWeightG = line.UnitWeightG,
+            StorageLocation = line.StorageLocation,
+            Quantity = "1",
+            Status = "Unopened"
+        };
 
     private static string PerUnit(string? total, string? quantity)
     {

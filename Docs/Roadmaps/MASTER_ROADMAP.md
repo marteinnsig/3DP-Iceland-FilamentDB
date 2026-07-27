@@ -2,15 +2,15 @@
 
 Current canonical release: **v53.0.2 — Settings Default and Draft Override**
 
-Last runtime-accepted baseline: **v53.0.2 — Settings Default and Draft Override**
+Last runtime-accepted baseline: **v53.0.3 — Cross-currency Calculation and Downstream Snapshots**
 
-Current canonical application release: **v53.0.2 — Settings Default and Draft Override**
+Current canonical application release: **v53.0.3 — Cross-currency Calculation and Downstream Snapshots**
 
-Current roadmap increment: **v53.0.3 — Cross-currency Calculation and Downstream Snapshots**
+Current roadmap increment: **v53.0.4 — Diagnostics, Help and Deterministic Acceptance**
 
-Current acceptance note: v53.0.2 is runtime accepted with Full Data Verification 387/387.
+Current acceptance note: v53.0.3 is runtime accepted with Full Data Verification 388/388.
 
-Next note: v53.0.3 owns monetary conversion and downstream Inventory/Material snapshots.
+Next note: v53.0.4 owns broader diagnostics, Help and deterministic workflow acceptance.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2306,12 +2306,12 @@ to unstarted authoritative planning slots.
   - Snapshot manual or optional ECB reference provenance without requiring network access or changing saved orders.
   - Completion condition: owner accepts default, override, offline and restart behavior for new Purchase Orders.
 - **v53.0.3 — Cross-currency Calculation and Downstream Snapshots**
-  - State: Current after v53.0.2 runtime acceptance.
+  - State: Complete; owner runtime acceptance and Full Data Verification 388/388 pass on 2026-07-27.
   - Convert accepted landed results while preserving invoice inputs, then snapshot Inventory and Material handoff evidence.
   - Update governed purchasing reports to use landed-currency provenance and preserve saved Usage and Quote history.
   - Completion condition: owner accepts cross-currency results and unchanged historical/downstream records.
 - **v53.0.4 — Diagnostics, Help and Deterministic Acceptance**
-  - State: Planned after v53.0.3 runtime acceptance.
+  - State: Current authoritative increment after v53.0.3 runtime acceptance.
   - Add safe diagnostics, field/workflow Help and the required AutomationIds.
   - Extend disposable automation for defaults, override, restart, migration, recovery and historical stability.
   - Completion condition: all relevant gates and Full Data Verification pass, then owner accepts the completed v53 workflow.

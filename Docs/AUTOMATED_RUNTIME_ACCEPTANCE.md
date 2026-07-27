@@ -1,5 +1,21 @@
 # Automated Runtime Acceptance
 
+## v53.0.3 - Cross-currency calculation accepted
+
+- Full Verification covers invoice allocation, final-output conversion,
+  deterministic rounding, non-destructive failure and one-time stamping.
+- Material and Inventory probes require separate invoice/landed currencies and
+  exact downstream provenance.
+- Report verification derives ISK per landed currency from saved order rates.
+- Existing smoke remains read-only; broader mutation/restart automation remains
+  authoritative in v53.0.4.
+- Production, FTPS, owner database and live-network actions remain blocked.
+- Release smoke `20260727214133-34260e52` passes 388/388 with exact database and
+  business-state equality after the calculated-input, debugger-safe
+  Verification and daily ECB/EUR reference fixes.
+- Owner runtime accepts calculation, locking, ECB provenance and standard
+  DataGrid currency commit behavior; Full Data Verification passes 388/388.
+
 ## v53.0.2 - Landed-cost Currency Draft workflow accepted
 
 - Full Verification checks the governed Settings default, cross-rate direction,

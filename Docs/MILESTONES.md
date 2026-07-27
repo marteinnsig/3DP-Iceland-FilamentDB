@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v53.0.3 - Cross-currency Landed-cost Calculation
+
+Accepted calculation and downstream snapshots preserve invoice evidence while
+producing governed landed-currency outputs. One-time locks, non-destructive
+validation, Material/Inventory provenance, report conversion, daily ECB
+new-order freshness, owner runtime review and 388/388 Verification pass.
+
 # v53.0.2 - Landed-cost Currency Default and Draft Override
 
 New Purchase Order Drafts receive a governed landed-currency default and may

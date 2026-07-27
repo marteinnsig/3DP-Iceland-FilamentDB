@@ -2,6 +2,25 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v53.0.3 - Cross-currency Landed-cost Calculation
+
+The accepted v53.0.3 contract allocates invoice values first and converts only
+final landed outputs. Calculation is non-destructive until validation passes;
+success stamps one immutable order-level version/time. Material and new
+Inventory handoffs retain invoice purchase evidence separately from landed
+amount/currency, and new spools copy the full order provenance. Reports consume
+saved snapshots rather than current Settings or ECB cache. Owner runtime
+acceptance and Full Data Verification 388/388 pass. Disposable smoke first
+exposed the prior quantity-squared per-kg
+formula and a locale-sensitive deterministic assertion. Both were corrected.
+Owner testing then exposed a WPF crash because calculated inputs were blocked
+after PropertyChanged had already mutated the row. BeginningEdit now prevents
+the editor from opening. The fake timeout probe no longer throws an intentional
+TaskCanceledException under Visual Studio. Daily new-order ECB freshness and
+the EUR base leg were added after owner review. Standard DataGrid currency
+commit remains accepted minor friction. Release smoke
+`20260727214133-34260e52` passes 388/388 with exact state.
+
 ## v53.0.2 - Landed-cost Currency Default and Draft Override
 
 The governed Settings default is copied only into a newly created Purchase

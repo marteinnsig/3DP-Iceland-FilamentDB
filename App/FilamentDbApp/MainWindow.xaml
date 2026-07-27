@@ -454,7 +454,9 @@
         </WrapPanel>
         <DataGrid Grid.Row="1" Name="PurchaseOrdersGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False"
                   AutomationProperties.AutomationId="PurchaseOrdersGrid"
-                  SelectionChanged="PurchaseOrdersGrid_SelectionChanged" CellEditEnding="PurchaseOrderGrid_CellEditEnding">
+                  SelectionChanged="PurchaseOrdersGrid_SelectionChanged"
+                  BeginningEdit="PurchaseOrderGrid_BeginningEdit"
+                  CellEditEnding="PurchaseOrderGrid_CellEditEnding">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="PO ID" Binding="{Binding PurchaseOrderId}" Width="145" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Supplier" Binding="{Binding Supplier, UpdateSourceTrigger=PropertyChanged}" Width="150"/>
@@ -520,7 +522,10 @@
                 <TextBlock Name="PurchaseCostValidationText" Margin="0,3,0,0" Foreground="#64748B" TextWrapping="Wrap" Text="Cost allocation validation will appear here after calculation."/>
             </StackPanel>
         </Border>
-        <DataGrid Grid.Row="5" Name="PurchaseOrderLinesGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CellEditEnding="PurchaseOrderGrid_CellEditEnding">
+        <DataGrid Grid.Row="5" Name="PurchaseOrderLinesGrid" Style="{StaticResource HighPerformanceDataGrid}"
+                  AutoGenerateColumns="False"
+                  BeginningEdit="PurchaseOrderGrid_BeginningEdit"
+                  CellEditEnding="PurchaseOrderGrid_CellEditEnding">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Line ID" Binding="{Binding PurchaseOrderLineId}" Width="140" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Ordered item / invoice description" Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Width="270"/>

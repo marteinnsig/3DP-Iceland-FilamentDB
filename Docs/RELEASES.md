@@ -1,6 +1,18 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v53.0.3 - Cross-currency Landed-cost Calculation
+
+Purchase Order allocations remain in invoice currency while only final landed
+line/unit/kg results convert through a saved, provenance-bearing cross-rate.
+Successful calculation stamps one locked snapshot; validation failure preserves
+prior results. Material and new Inventory handoffs retain invoice and landed
+evidence separately, and saved history is never recalculated. ECB EUR-base and
+daily new-order cache freshness corrections are included. Owner runtime and
+Full Data Verification 388/388 pass; standard DataGrid currency commit after
+Enter/focus-change is retained as accepted minor UI friction. Release smoke
+`20260727214133-34260e52` passes with exact state.
+
 ## v53.0.2 - Landed-cost Currency Default and Draft Override
 
 Governed Purchasing Settings now supply an exact currency dropdown whose

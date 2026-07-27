@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "LANDED-COST-CURRENCY-DRAFT";
-    public const string ReleaseTitle = "Landed-cost Currency Default and Draft Override";
+    public const string ReleaseCode = "LANDED-COST-CURRENCY-CALCULATION";
+    public const string ReleaseTitle = "Cross-currency Landed-cost Calculation";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 38;
 
