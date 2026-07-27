@@ -40,16 +40,47 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 18 |
+| Open | 20 |
 | In progress | 0 |
 | Partially solved | 2 |
 | Solved | 56 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **80** |
+| **Total tracked findings** | **82** |
 
 ## Tracked findings
+
+Date: 2026-07-27
+Area: Purchase Orders / Landed-cost currency
+Type: Workflow improvement / Data integrity
+Severity: Important
+Status: Open
+What happened: Purchase Orders calculate landed cost in the transaction currency, but an owner may need governed landed-cost results
+in a different operational currency such as ISK while retaining the original invoice currency and values.
+Expected behavior: Add a Settings-owned Default Landed Cost Currency for new Purchase Orders plus a reviewed per-order override.
+Snapshot the accepted conversion rate, date, source and provenance; never recalculate saved Purchase Orders, Inventory, Material cost
+evidence, Usage history or saved Quotes. Preserve manual/offline operation and keep ECB optional.
+Steps to reproduce: Create a Purchase Order with an EUR or USD invoice while operational landed-cost review is required in ISK.
+Screenshot / export / report attached: Owner workflow idea recorded on 2026-07-27.
+Resolution: Planned as research-first v53.0 — Governed Landed-cost Currency. Schema compatibility, migration, import/export, recovery,
+diagnostics, reporting and deterministic acceptance must be mapped before implementation.
+Verification evidence: Not implemented; roadmap scope and completion condition are recorded.
+
+Date: 2026-07-27
+Area: Automated acceptance / Application-wide navigation
+Type: Workflow improvement / Test coverage
+Severity: Important
+Status: Open
+What happened: The disposable tester visibly visits several tabs, but it does not yet provide exact evidence that every supported
+top-level tab and eligible nested tab was selected and rendered.
+Expected behavior: Add an all-top-level-tab navigation sweep with exact visited/expected evidence and nested-tab checks where stable
+AutomationIds exist. Require no crash, unexpected dialog or business-state change. Keep mutating workflows in separately authorized
+CRUD, Reports, Recovery and Updater scenarios; Production and FTPS remain blocked.
+Steps to reproduce: Run the smoke scenario and compare its navigation evidence with the authoritative tab inventory.
+Screenshot / export / report attached: Owner tester observation recorded on 2026-07-27.
+Resolution: Planned in v50.2.4 — Contextual Help Entry Points and Coverage Acceptance.
+Verification evidence: Not implemented; roadmap scope explicitly distinguishes navigation/rendering coverage from full action testing.
 
 Date: 2026-07-26
 Area: Application release / signed update packaging
@@ -599,6 +630,20 @@ Owner review found Help > Documentation opening Materials reference because it r
 whole-system Start-to-finish overview; F1 remains contextual. Profile `20260727105308-cc3ce0b1` passes 371/371 and exact state equality.
 Owner accepted the complete v50.2.2 content, terminology, search/discovery and Help entry behavior on 2026-07-27. v50.2.2 is canonical;
 the parent item remains In progress for v50.2.3-v50.2.4 and v50.3.
+The v50.2.3 candidate adds 34 stable Reports, Website, AI, YouTube and packaged Help/support destinations. It corrects stale Reports
+UI guidance and adds deterministic local-versus-publish/clipboard/calendar safety contracts. Owner acceptance is pending.
+Profile `20260727110155-90afdea3` passes the expanded Help searches, Full Data Verification 372/372 and exact state equality.
+Owner review found that the initial v50.2.3 leaf topics were structural placeholders rather than the promised detailed reference.
+Every destination is now expanded with exact controls, scope, writes, failure behavior, evidence and handoff boundaries. Verification
+now enforces substantive multi-paragraph content, so the earlier 372/372 evidence is superseded pending a new disposable run.
+The first expanded-content smoke then failed because calendar wording changed the accepted visible search phrase from `do not create`
+to `does not create`. The text now retains the stable owner-searchable phrase; this was a Help search-contract correction only.
+The next Full Verification run exposed a line-ending assumption in the paragraph-depth gate: LF source strings were checked with the
+Windows CRLF separator. The gate now normalizes CRLF to LF before requiring a blank-line paragraph boundary.
+Disposable profile `20260727111924-0056eda1` then passes the detailed Help contract, Full Data Verification 372/372 and exact
+logical/business-state equality. Owner runtime/content acceptance was the remaining gate.
+Owner accepted the complete v50.2.3 output/tool Help content on 2026-07-27. v50.2.3 is canonical; the parent Help milestone remains
+In progress at v50.2.4 for contextual entry points and full coverage acceptance.
 What happened: The application has many connected workflows, but no single structured user guide explains what every tab does or how
 data should move through the platform from purchase entry to measurements, reports and website publication.
 Expected behavior: Provide a well-organized user-help system with a start-to-finish workflow, per-tab reference, field-entry guidance,

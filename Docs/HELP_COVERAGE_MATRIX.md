@@ -232,6 +232,12 @@ Required leaf destinations:
 | Changelog | `help.changelog` | Packaged release history viewer | v50.2.3 |
 | About | `help.about` | Version, storage model, license and notices | v50.2.3 |
 
+v50.2.3 accepted status: all 34 overview, leaf and packaged Help destinations
+contain substantive multi-paragraph control, scope, write, failure, evidence
+and handoff guidance. The initial short leaf draft was rejected during owner
+review. Profile `20260727111924-0056eda1` passes the refreshed deterministic
+gates and owner runtime/content acceptance passes on 2026-07-27.
+
 ## Confirmed stale or misleading UI/documentation
 
 | Location | Finding | Planned owner |

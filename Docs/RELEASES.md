@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v50.2.3 - Output and Tool Reference
+
+Thirty-four detailed searchable destinations cover Reports/PDF, Website
+Export, AI Assistant, YouTube Research and packaged Help/support. References
+document controls, scope, persistence, failure handling, evidence and external
+handoff boundaries. Verification enforces stable IDs, mappings and substantive
+multi-paragraph content. Debug/Release, security, documentation and disposable
+Full Data Verification 372/372 pass with exact state equality. Owner
+runtime/content acceptance passes. Schema remains v37; parent v50 continues at
+v50.2.4.
+
 ## v50.2.2 - Testing and Analysis Reference
 
 Twenty-two stable Help destinations cover native measurements, Experimental

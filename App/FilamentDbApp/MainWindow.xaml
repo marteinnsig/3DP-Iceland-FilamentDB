@@ -2543,7 +2543,7 @@
                                          x:Name="ReportPreviewLog"
                                          AutomationProperties.AutomationId="ReportPreviewLog"
                                          Style="{x:Null}"
-                                         Text="Import data, choose a report type and output folder, then refresh the preview."
+                                         Text="Choose a report type, scope and output folder, then refresh the preview."
                                          IsReadOnly="True"
                                          AcceptsReturn="True"
                                          TextWrapping="Wrap"
@@ -2562,7 +2562,7 @@
                         <Border Grid.Column="2" Padding="12" Background="#F8FAFC" BorderBrush="#D7DBE3" BorderThickness="1" CornerRadius="6">
                             <StackPanel>
                                 <TextBlock Text="Verified Report Workflow" FontSize="16" FontWeight="SemiBold" Foreground="#0F172A" />
-                                <TextBlock Text="• Adds the first production report: Material Engineering Report." TextWrapping="Wrap" Foreground="#475569" Margin="0,8,0,0" />
+                                <TextBlock Text="• Builds governed report models and artifacts from canonical verified data." TextWrapping="Wrap" Foreground="#475569" Margin="0,8,0,0" />
                                 <TextBlock Text="• Uses selected material scope to generate material identity, engineering summary and metric sections." TextWrapping="Wrap" Foreground="#475569" Margin="0,6,0,0" />
                                 <TextBlock Text="• Builds preview/PDF content from verified report models and Material Summary outputs." TextWrapping="Wrap" Foreground="#475569" Margin="0,6,0,0" />
                                 <TextBlock Text="• Preserves existing template/export UI while adding REPORT-100 verification gates." TextWrapping="Wrap" Foreground="#475569" Margin="0,6,0,0" />

@@ -1,5 +1,23 @@
 # Automated Runtime Acceptance
 
+## v50.2.3 - Output and tool reference accepted
+
+Full Data Verification requires 34 stable Reports, Website, AI, YouTube and
+packaged Help destinations, four exact top-level mappings, substantive
+multi-paragraph content in every destination and representative local-output,
+FTPS, persistence, status and external-calendar boundaries.
+
+The content-depth rule was added after owner review rejected the initially
+short structural leaf texts as placeholder-like. The earlier 372/372 result is
+therefore superseded and the expanded contract must be rerun.
+
+The read-only Help smoke searches `does not perform FTPS` and
+`do not create external calendar events`. Production, FTPS, updates, clipboard
+writes and owner database selection remain blocked. Profile
+`20260727111924-0056eda1` passes the expanded Help contract, Full Data
+Verification 372/372 and exact logical/business-state equality.
+Owner runtime/content acceptance passes on 2026-07-27.
+
 ## v50.2.2 - Testing and analysis reference accepted
 
 Full Data Verification requires 22 stable Help destinations, exact top-level

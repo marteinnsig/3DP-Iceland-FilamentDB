@@ -1,4 +1,44 @@
-# Current Build Notes - v50.2.2
+# Current Build Notes - v50.2.3
+
+## Output and Tool Reference
+
+The v50.2.0 matrix defines four overview and 30 leaf/support destinations for
+Reports/PDF, Website Export, AI Assistant, YouTube Research, Whitepaper,
+Changelog and About. All 34 now exist in the central searchable catalog.
+
+Owner review correctly found the first leaf-topic draft too close to
+placeholders. Every v50.2.3 destination now has substantive multi-paragraph
+guidance covering the visible controls, input scope, explicit write boundary,
+validation/failure behavior, evidence and safe handoff.
+
+Reports now names all twelve templates and each package/public family. Website
+separates root/template ownership, Preview, local Production, FTPS Test/live
+Production, restore and evidence. AI covers every brief action, sessions,
+collections, workflow status/legacy binding and output. YouTube covers all
+seven clipboard actions and every displayed planning projection.
+
+Reports placeholder text no longer requests import or describes Material
+Engineering Report as the first production report. No schema, report model,
+publishing, credential or creator-tool behavior changes.
+
+Verification requires every stable ID, four top-level mappings, at least 300
+characters and multiple paragraphs per destination, plus representative
+control/write/safety markers. Smoke searches the local Production-versus-FTPS
+and creator-calendar boundaries.
+
+The first smoke reached the new title-ranked Report scope leaf but the older
+wrapping assertion still expected overview content. The normalized
+`scope and output folder` probe now belongs to that leaf. Profile
+`20260727110155-90afdea3` passes Full Data Verification 372/372 and exact
+logical/business-state equality.
+
+The expanded-content rerun first preserved the stable calendar search phrase,
+then exposed and corrected a CRLF-only paragraph-depth assumption. Disposable
+profile `20260727111924-0056eda1` now passes the detailed contract, Full Data
+Verification 372/372 and exact logical/business-state equality. Debug and
+Release build with zero warnings; documentation and vulnerability gates pass.
+Owner runtime/content acceptance passes on 2026-07-27. v50.2.3 is canonical;
+the parent v50 milestone continues at authoritative increment v50.2.4.
 
 ## Testing and Analysis Reference
 

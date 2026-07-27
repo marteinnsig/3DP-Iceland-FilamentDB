@@ -199,6 +199,10 @@ internal static class Program
             ((ValuePattern)helpValuePattern).SetValue("scope and output");
             var normalizedHelpBody = FindById(help, "HelpSectionBody").Current.Name;
             Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Report scope and output reference",
+                    StringComparison.Ordinal) &&
                 normalizedHelpBody.Contains("scope and output folder", StringComparison.Ordinal),
                 "Central Help retained source-only line breaks instead of wrapping text to the visible width.");
             ((ValuePattern)helpValuePattern).SetValue("manual backup creates evidence");
@@ -249,10 +253,24 @@ internal static class Program
                     "Experimental Table reference",
                     StringComparison.Ordinal),
                 "Central Help did not expose the owner-searchable Experimental Table reference.");
+            ((ValuePattern)helpValuePattern).SetValue("does not perform FTPS");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Generate Production reference",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the local Production versus FTPS boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("do not create external calendar events");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "YouTube calendar reference",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the local-only creator calendar boundary.");
             Record(
                 "central-help",
                 true,
-                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1/v50.2.2 reference searches");
+                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1-v50.2.3 reference searches");
             CloseWindow(help, application.Id);
 
             Expand(FindById(main, "HelpMenu"), application.Id);

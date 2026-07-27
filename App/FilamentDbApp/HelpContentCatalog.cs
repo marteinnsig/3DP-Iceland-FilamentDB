@@ -621,6 +621,511 @@ internal static class HelpContentCatalog
             """,
             "settings", "currency", "AI Assistant", "collection", "YouTube", "video"),
         new(
+            "reports.overview", "Output and publishing", "Reports / PDF Export reference",
+            "Governed templates, scope, previews, exports, public builds and retained evidence.",
+            """
+            Choose one of the governed report templates, Selected or Visible Material scope and an output folder. Refresh Preview builds
+            a read-only canonical model; preview/export actions write local artifacts only. Public builds use explicit publication
+            choices rather than the current preview selection.
+
+            Current report, Engineering Package and public-build actions have different output contracts. Inspect HTML/PDF visually and
+            retain status/log evidence. Reports consume canonical results; they never repair or recalculate raw measurements.
+            """, "reports", "PDF", "template", "scope", "preview", "export", "public builds"),
+        new(
+            "reports.current-report", "Reports", "Current report reference",
+            "Preview and export one of the twelve governed report templates.",
+            """
+            Report template selects one of twelve governed report templates. The six engineering templates are Material Summary, Material Engineering,
+            Comparison, Manufacturer, Test Session and Printing Recommendation. The six purchasing templates are Inventory, Purchase,
+            Supplier, Low Stock, Inventory Verification and Purchasing Intelligence. A separator in the list only distinguishes the
+            families; it does not change scope or output behavior.
+
+            Selected Material Only uses the current MaterialID where that template supports material scope. All Visible Materials uses
+            the current Materials search/filter projection, so inspect the selected-material/scope line and clear unintended filters.
+            Refresh Preview rebuilds the read-only preview log from canonical SQLite-backed models. Export Current Report validates the
+            same selection and writes the canonical HTML, PDF, text, metadata and manifest set to the chosen local output folder.
+
+            Preview and export do not publish, upload, edit measurements or change saved source records. A generated PDF still needs
+            visual inspection for pagination, clipping and customer-facing content before it is handed off externally.
+            """,
+            "current report", "twelve templates", "Material Summary", "Inventory Report", "preview", "export"),
+        new(
+            "reports.engineering-package", "Reports", "Engineering Report Package reference",
+            "Build the complete accepted engineering-report family as one local package.",
+            """
+            Export Engineering Package is separate from Export Current Report. It builds all six accepted engineering templates:
+            Material Summary, Material Engineering, Comparison, Manufacturer, Test Session and Printing Recommendation. The selected
+            purchasing template does not become part of this package.
+
+            The action validates the canonical report set and creates an indexed local package containing HTML, PDF, text, metadata,
+            manifests and required assets. The index and manifests describe the generated package; they are not proof that every page
+            has been visually accepted.
+
+            Review representative HTML and PDF files, confirm intended material scope, and retain the manifest and status evidence.
+            The package action performs no FTPS transfer and does not alter source measurements, materials or saved report inputs.
+            """,
+            "engineering package", "six accepted engineering reports", "manifest", "metadata", "local package"),
+        new(
+            "reports.public-builds", "Reports", "Public report builds reference",
+            "Build explicitly eligible public report families and the canonical public package.",
+            """
+            Each public button owns its own scope; Report template and Report scope do not control these batch actions. Build Public
+            Material Reports uses active MaterialIDs opted into Public reports. Public Comparisons, Manufacturers, Test Sessions,
+            Recommendations and Material Summary apply their named report-family rules and explicit MaterialID allowlists. Public Test
+            Sessions exposes raw inputs or notes only when the separate Public test details approval permits them.
+
+            Build Public Report Package ensures missing or stale eligible reports, verifies the six public report families and creates
+            the canonical portfolio index, manifest and catalog. Main Website DATA is different: Website Export includes every active,
+            non-archived MaterialID while the public-report flags govern linked report artifacts.
+
+            These actions write local public artifacts only. They do not upload or make a Material public by themselves. Inspect the
+            generated pages and exclusions before Website Preview or any separately guarded FTPS action.
+            """,
+            "public builds", "public reports", "public test details", "allowlist", "MaterialID", "portfolio catalog"),
+        new("reports.scope-and-output", "Reports", "Report scope and output reference", "Selected/Visible scope and governed output-folder ownership.",
+            """
+            Selected Material Only resolves the current Materials selection to its stable MaterialID. If nothing valid is selected,
+            a material-scoped report cannot safely proceed. All Visible Materials uses the current Materials search and filter
+            projection, not automatically every row in SQLite; archived or filtered-out rows remain outside that projection.
+
+            The chosen output folder is a local artifact destination shared by preview/export actions. Choose Folder changes that
+            destination and Open Folder only opens it in Windows Explorer. Confirm the intended scope and output
+            folder before generating, and clear filters when the real intent is the whole eligible database.
+
+            Changing scope or folder does not modify Materials. Generated files can replace same-named artifacts in the selected
+            destination, so keep accepted external copies in a governed release/evidence location.
+            """,
+            "selected", "visible", "output folder"),
+        new(
+            "reports.preview-evidence", "Reports", "Report preview and evidence reference",
+            "Interpret the preview, status line, logs and generated artifact evidence.",
+            """
+            Refresh Preview rebuilds the chosen report model and shows a readable summary in Report Preview. The blue summary line
+            identifies the latest result. Treat missing-data, scope or validation messages as blockers; do not export a different
+            report and assume the requested one passed.
+
+            After export, retain the report manifest, metadata, output paths and relevant Verification result. Open representative HTML
+            and PDF artifacts and check headings, values, wrapping, page breaks, charts and intended public/customer-safe fields.
+            Deterministic Verification can prove structure and data contracts, but visual acceptance remains manual.
+
+            A successful local build does not prove Website generation, FTPS transfer or live-site correctness. Those stages have their
+            own logs, confirmations and evidence in Website Export.
+            """,
+            "preview", "evidence", "logs", "visual acceptance", "successful build"),
+        new(
+            "website.overview", "Output and publishing", "Website Export reference",
+            "SQLite templates, Preview, guarded Production, FTPS and restore evidence.",
+            """
+            Choose the website root and active SQLite template. Generate Preview writes index-test.html and ensures public reports without
+            touching Production. Generate Production validates, confirms default-No, backs up existing output and creates a publish plan.
+
+            FTPS Test and Production are separate guarded transfers. Production publishing regenerates first and requires a second live
+            confirmation. Credentials remain governed outside exported files. Retain logs/manifests and use Restore only for the last
+            governed Production backup.
+            """, "website", "template", "preview", "production", "FTPS", "restore"),
+        new(
+            "website.folder", "Website Export", "Website folder reference",
+            "Choose and retain the local website root used by generation and recovery.",
+            """
+            Website root folder must be the local root containing the canonical index.html location. Choose Folder stores the selected
+            root for later sessions; Open Folder only opens that location and does not generate or publish anything. Check the full path
+            before every Production action, especially after moving or restoring a website working copy.
+
+            Preview, Production, ExportLogs and Backups use governed locations beneath this root. The manufacturers redirect is also
+            maintained by export. An external index.html may be inspected as read-only input, but generated index files are never
+            promoted into SQLite as templates.
+
+            A restored folder path is convenience state, not readiness evidence. If the root is missing, unexpected or read-only, stop
+            and select the correct owner-controlled location before generating.
+            """,
+            "folder", "root", "Open Folder", "ExportLogs", "Backups"),
+        new(
+            "website.templates", "Website Export", "Website templates reference",
+            "Import, activate, review and export SQLite-owned website template versions.",
+            """
+            Template database status identifies the active SQLite template, stored-version count and digest. Every main website export
+            uses that active database version. The Template versions list lets you inspect stored versions without silently changing
+            which one is active.
+
+            Import HTML validates a selected source file, stores it as a new version and activates it. Use only an intentional master
+            template, never index.html or index-test.html generated by the application. Activate Selected explicitly restores the
+            chosen stored version as canonical. Export Active Template writes a standalone review/backup copy and does not activate a
+            different version.
+
+            Template operations change template ownership, not Materials or measurements. After importing or activating, generate a
+            Preview and visually inspect navigation, embedded data, report links and responsive layout before Production.
+            """,
+            "template", "Import HTML", "Activate Selected", "Export Active Template", "digest", "SQLite"),
+        new(
+            "website.preview", "Website Export", "Website Preview reference",
+            "Generate an isolated local website preview and inspect all dependent output.",
+            """
+            Generate Preview validates the active SQLite template and current canonical data, automatically rebuilds missing or stale
+            eligible public reports, and writes index-test.html. It also writes export-manifest.txt and a timestamped ExportLogs entry.
+            Main Website DATA includes every active, non-archived MaterialID; public-report checkboxes control linked report artifacts.
+
+            Preview does not replace index.html, use Production paths or perform FTPS. Open index-test.html and inspect navigation,
+            material counts, representative cards, report links and browser layout. Missing public artifacts or validation failures must
+            be resolved before Production.
+
+            Preview success is local evidence only. Retain its manifest/log when diagnosing differences, but do not describe the live
+            website as updated until a separately authorized Production transfer and independent live check succeed.
+            """,
+            "preview", "index-test.html", "export-manifest.txt", "ExportLogs", "public reports"),
+        new(
+            "website.production-generate", "Website Export", "Generate Production reference",
+            "Create guarded local Production with preflight validation, backup and publish plan.",
+            """
+            Generate Production first performs readiness validation and presents a default-No confirmation describing the target and
+            consequences. If approved, it ensures required public artifacts, backs up the existing index.html under Backups and then
+            writes the new local index.html. The selected external index is never modified as template input.
+
+            A successful generation records export evidence and creates the publish plan used to compare local output with a completed
+            remote deployment state. Review the local index.html and plan before any transfer. If validation, backup or generation
+            fails, stop; do not bypass the missing stage or infer that the previous file is safe.
+
+            Generate Production does not perform FTPS. It changes local website artifacts only and leaves SQLite business data
+            unchanged.
+            """,
+            "production", "default-No", "index.html", "publish plan", "backup", "does not perform FTPS"),
+        new(
+            "website.ftps-test", "Website Export", "Website FTPS Test reference",
+            "Validate credentials and publish only to the isolated server test route.",
+            """
+            FTPS uses the governed endpoint displayed in the tab and a password entered in the Password box. Test Connection checks the
+            explicit TLS/passive connection and credentials without uploading website content. After a successful encrypted
+            connection, the password may be retained in Windows Credential Manager; it is never embedded in exported files.
+
+            Publish Website Test builds the current Preview and transfers it only to the isolated server test route. It does not replace
+            Production. Inspect the test URL and retain the transfer log, including the exact remote target and completion result.
+
+            Connection success proves only authentication/connectivity. Test-publish success is not Production approval, does not
+            authorize a live transfer and cannot substitute for checking the live Production site.
+            """,
+            "FTPS test", "Test Connection", "Publish Website Test", "Credential Manager", "isolated"),
+        new(
+            "website.ftps-production", "Website Export", "Website FTPS Production reference",
+            "Perform the separately guarded live transfer and verify the deployed site.",
+            """
+            Publish Website Production is a live action. It regenerates and verifies guarded Production first, compares local files
+            with completed remote deployment evidence, and shows a second default-No confirmation specifically for FTPS. Cancel at
+            either confirmation if the root, endpoint, file set or release intent is wrong.
+
+            When approved, the publisher takes the governed recovery snapshot and transfers only changed files over explicit FTPS,
+            ordering the root index last. Completion requires retained transfer evidence; a partial or failed operation must remain
+            visibly incomplete and must not be described as published.
+
+            After success, independently open the live HTTPS site, bypass stale cache if necessary, and check version/data,
+            representative downloads and public-report links. Local generation or a green connection test alone is not live acceptance.
+            """,
+            "FTPS production", "Publish Website Production", "live", "second confirmation", "root index last"),
+        new(
+            "website.restore", "Website Export", "Website restore reference",
+            "Restore the latest completed Production deployment backup through the guarded recovery path.",
+            """
+            Restore Last Production Backup is for website deployment recovery, not database recovery. It requires confirmation, creates
+            a recovery snapshot of the current remote state, then restores the latest completed Production deployment backup with the
+            root index transferred last.
+
+            Only a completed governed backup is eligible. Inspect the named backup and target before approval. If no valid completed
+            backup exists, stop and investigate rather than choosing an arbitrary local file.
+
+            Restore does not restore SQLite, change Materials or silently reuse a preview as Production. Retain restore/transfer logs and
+            inspect the live site after completion; a successful file transfer still needs functional verification.
+            """,
+            "restore", "Restore Last Production Backup", "completed Production deployment", "recovery snapshot", "SQLite"),
+        new(
+            "website.logs-evidence", "Website Export", "Website logs and evidence reference",
+            "Interpret export logs, manifests, publish plans, backups and transfer results.",
+            """
+            Export Log is the immediate readable account of Preview, Production, FTPS and restore actions. Preview evidence normally
+            includes index-test.html, export-manifest.txt and a timestamped ExportLogs entry. Production adds the backed-up index path,
+            generated index.html and publish-plan/deployment comparison evidence.
+
+            FTPS and restore evidence must identify the endpoint/route, intended file set, changed/skipped results, completion state and
+            any recovery snapshot. Passwords must never appear in logs, manifests or exported website files. Retain Verification output
+            with release evidence when publication depends on it.
+
+            Missing, contradictory, partial or failed evidence means stop and investigate. Never infer upload success from local file
+            existence, infer visual correctness from a manifest, or infer current live state from an older completed transfer.
+            """,
+            "logs", "manifest", "publish plan", "transfer results", "passwords", "evidence"),
+        new(
+            "ai.overview", "Assistant", "AI Assistant reference",
+            "Local deterministic analysis, planning sessions, collections and read-only output.",
+            """
+            AI Assistant works from the current visible MaterialID scope and local deterministic services. Review the exact scope preview
+            before generating briefs. Sessions and collections are owner-managed local planning records, separate from engineering data.
+
+            Generated output is advisory/read-only. Preview actions write nothing; explicit collection/session actions own their local
+            persistence. No external AI service is implied, and Assistant output never replaces measurements or Verification.
+            """, "AI Assistant", "visible scope", "sessions", "collections", "output"),
+        new(
+            "ai.visible-scope", "AI Assistant", "AI visible scope reference",
+            "Review the exact visible MaterialID input before any analysis.",
+            """
+            AI Assistant uses the current Materials search/filter projection. Refresh Visible Scope rebuilds the scope summary and
+            MaterialID preview, including row count, unique stable IDs and representative identifiers. Filtering Materials therefore
+            changes later briefs even though no engineering row is edited.
+
+            Review the count and IDs before generating. Clear Materials filters for whole-database intent, or deliberately keep them to
+            analyze a bounded family/manufacturer subset. Empty, duplicate or legacy identity warnings should be resolved or explicitly
+            understood before trusting coverage conclusions.
+
+            Refresh Visible Scope is read-only. It does not save a collection, change lifecycle status or contact an external AI
+            service.
+            """,
+            "visible scope", "Refresh Visible Scope", "MaterialID", "filters", "read-only"),
+        new(
+            "ai.planning-briefs", "AI Assistant", "AI planning briefs reference",
+            "Generate deterministic local briefs from templates or named analysis actions.",
+            """
+            Template chooses Video Ideas, Comparison Planning, Thumbnail Hooks, Full Assistant Brief or Playlist Suggestions. Planning
+            note is included as owner-authored context; it is not interpreted by an external model. Generate From Template uses the
+            selected template, while the named buttons generate Video Ideas, Comparisons, Recommended Next Video, Recommended
+            Comparisons, Hidden Gems or the complete Full Assistant Brief.
+
+            Every action consumes the reviewed visible MaterialID scope and canonical local summaries. Results are deterministic
+            advisory text in the read-only output box. Check cited materials, missing evidence and scope before reusing a recommendation.
+
+            Generation does not edit Materials, measurements, reports or website data and does not save a session automatically. Use
+            Save Session only when the current title, template, note and output should become a retained local planning record.
+            """,
+            "briefs", "Generate From Template", "Recommended Next Video", "Hidden Gems", "planning note"),
+        new(
+            "ai.sessions", "AI Assistant", "AI sessions reference",
+            "Save, reload, refresh and explicitly delete local planning sessions.",
+            """
+            Session title names the planning record. Save Session retains the current planning context and generated output locally;
+            confirm the intended title and current scope before saving. Research sessions selects an existing record. Load Session
+            restores its saved planning state, while Refresh Sessions reloads the list from storage.
+
+            Delete Session is an explicit destructive planning-data action and requires the intended saved session to be selected.
+            Deletion does not delete Materials or measurements, but the session context cannot be inferred later from engineering data.
+
+            Sessions are owner-managed planning history, not canonical evidence and not an external conversation. Loading an older
+            session does not recalculate it against today’s visible rows; generate again when a fresh projection is required.
+            """,
+            "sessions", "Save Session", "Load Session", "Delete Session", "Refresh Sessions"),
+        new(
+            "ai.collections", "AI Assistant", "AI collections reference",
+            "Preview, create, update, reuse and delete exact MaterialID collections.",
+            """
+            Intelligence scope chooses Current visible rows or Selected collection. Preview Visible Collection shows the exact unique
+            MaterialIDs that would be used and performs no write. Collection title names a new collection; Collections selects an
+            existing stable collection. The action-state line explains whether Create / Update Collection will create or replace the
+            selected planning snapshot.
+
+            Create / Update Collection is the explicit persistence boundary. Load Collection Brief analyzes the selected saved
+            collection. Delete Collection removes that planning collection after owner intent; it does not delete the referenced
+            Materials. A collection stores stable MaterialID membership rather than duplicate material records.
+
+            Collection Dashboard and Video Pipeline Dashboard summarize local planning coverage. Review missing/legacy identity before
+            treating their counts as complete, and re-preview visible rows before updating membership.
+            """,
+            "collections", "Preview Visible Collection", "Create / Update Collection", "Load Collection Brief", "Dashboard"),
+        new(
+            "ai.coverage-status", "AI Assistant", "AI coverage status reference",
+            "Manage local workflow status and resolve legacy coverage identity safely.",
+            """
+            Material status offers Untested, Tested, Video Planned, Filmed, Edited and Published. Apply Status writes the chosen local
+            workflow state for the selected collection/material scope. Mark Collection Published applies the published workflow state
+            deliberately. These statuses describe creator planning; they do not change Material lifecycle, test readiness or website
+            publication.
+
+            Clear Selected Collection Status removes saved workflow statuses for the selected collection without deleting the
+            collection. Bind Exact Legacy Coverage first previews legacy collection-title/material-label rows and only binds candidates
+            when exact unique CollectionID and MaterialID matches exist; ambiguous or unmatched rows remain visible for review.
+
+            Coverage identity status reports stable bindings, legacy rows and candidates. It is diagnostic evidence for planning
+            ownership, not proof of measurements, video publication or Verification readiness.
+            """,
+            "coverage", "Apply Status", "Mark Collection Published", "Clear Selected Collection Status", "Bind Exact Legacy Coverage"),
+        new(
+            "ai.output", "AI Assistant", "AI output reference",
+            "Interpret the read-only local output and hand it off only after owner review.",
+            """
+            AI Assistant Output displays generated briefs, collection previews, dashboards, coverage diagnostics and action results in
+            a read-only text surface. A new action replaces the visible output, so save a session or copy intentionally when the current
+            planning result must be retained.
+
+            Output is rule-based local analysis, not a response from an external AI service. Recommendations depend on the visible or
+            selected collection scope and available canonical summaries; missing measurements must remain visible as missing rather
+            than being invented.
+
+            Any copy/manual handoff leaves the governed application context. Review material identity, claims, dates and intended
+            audience first. Reading or copying output does not publish, edit SQLite engineering data or certify the recommendation.
+            """,
+            "output", "read-only", "local rule-based", "copy", "missing measurements"),
+        new(
+            "youtube.overview", "Creator tools", "YouTube Research reference",
+            "Generate local creator research, review evidence and copy owner-selected planning text.",
+            """
+            Generate YouTube Research derives local title, thumbnail, comparison, gap, calendar, playlist and candidate planning from
+            canonical visible data. It changes no engineering measurement or public website.
+
+            Seven copy actions place owner-review text on the clipboard. Review scope and claims before external use; clipboard success
+            is not publication or evidence that a video was produced.
+            """, "YouTube", "generate", "titles", "thumbnail", "calendar", "playlist"),
+        new(
+            "youtube.generate", "YouTube Research", "Generate YouTube Research reference",
+            "Refresh every local title, thumbnail, comparison, calendar, gap and playlist projection.",
+            """
+            Generate YouTube Research rebuilds all creator-research sections from the current Materials filter projection and canonical
+            local analysis signals. Inputs include no-video priority, score profile, reinforcement/variant hooks, comparison gaps and
+            data outliers. The status line reports the resulting candidate state.
+
+            Generation refreshes Top Thumbnail, Comparison Discovery, the 12-week Content Calendar, Channel Gap Analysis, Playlist
+            Discovery and the ranked title-candidate table together. Review the visible Materials scope before generating; clearing or
+            changing filters changes the candidate population.
+
+            The operation is read-only for engineering and website data. It does not contact YouTube, publish content, save an external
+            plan or prove that suggested claims have enough evidence for production.
+            """,
+            "Generate YouTube Research", "filters", "no-video priority", "data outliers", "read-only"),
+        new(
+            "youtube.copy-actions", "YouTube Research", "YouTube copy actions reference",
+            "Understand the seven explicit clipboard handoffs and their review boundary.",
+            """
+            Copy Top 10 Title Prompt copies ranked title-planning text. Copy Best Thumbnail copies the leading thumbnail recommendation;
+            Copy Top 10 Thumbnail Briefs copies the wider thumbnail set. Copy Top Comparisons, Copy 12 Week Plan, Copy Top Gaps and Copy
+            Top Playlists copy their named generated sections. Each action uses the most recently generated local results.
+
+            These seven buttons write formatted text to the Windows clipboard only. They do not create files, send prompts, call an AI
+            service, publish to YouTube or change SQLite. If research has not been generated or has become stale after filters changed,
+            regenerate before copying.
+
+            Clipboard content is an external handoff once pasted elsewhere. Inspect Material names, evidence-sensitive claims, scope,
+            dates and formatting before use; clipboard success is not publication or acceptance evidence.
+            """,
+            "seven", "Copy Top 10 Title Prompt", "Copy Best Thumbnail", "Copy 12 Week Plan", "clipboard"),
+        new(
+            "youtube.thumbnail", "YouTube Research", "YouTube thumbnail reference",
+            "Interpret the top thumbnail recommendation and ranked thumbnail briefs.",
+            """
+            Top Thumbnail Recommendation displays main text, grade, pattern, visual layout, face/reaction direction and the reason for
+            the selection. The ranked candidate table adds thumbnail score, hook angle and per-material context. These fields are
+            planning prompts for a human-designed asset.
+
+            Compare the suggested hook with the underlying material and available results. A high thumbnail grade ranks the local
+            presentation pattern; it does not certify a scientific claim, predict platform performance or establish a public result.
+
+            Copy Best Thumbnail and Copy Top 10 Thumbnail Briefs place text on the clipboard. They do not generate an image asset,
+            modify branding, upload a thumbnail or create a YouTube draft.
+            """,
+            "thumbnail", "grade", "visual layout", "face reaction", "image asset"),
+        new(
+            "youtube.comparisons", "YouTube Research", "YouTube comparisons reference",
+            "Review ranked comparison opportunities without changing engineering rankings.",
+            """
+            Comparison Discovery shows the leading video angle, score, pattern, thumbnail text, Material A, Material B and reason, then
+            lists additional candidates. The ranking looks for comparable visible materials and useful gaps; it is a creator-planning
+            projection rather than the canonical Rankings Dashboard.
+
+            Confirm that both materials belong in the intended comparison and that missing or unequal test coverage is stated honestly.
+            Suggested pairings must not be presented as measured winners unless the canonical results support that conclusion.
+
+            Copy Top Comparisons writes the generated planning text to the clipboard only. Comparison research never adds measurements,
+            changes scores, opts materials into public reports or publishes a comparison page.
+            """,
+            "comparisons", "Material A", "Material B", "canonical Rankings Dashboard", "Copy Top Comparisons"),
+        new(
+            "youtube.gaps", "YouTube Research", "YouTube content gaps reference",
+            "Interpret channel coverage gaps separately from engineering-data gaps.",
+            """
+            Channel Gap Analysis ranks uncovered creator opportunities by gap score and type. It shows material, manufacturer, family,
+            proposed video, thumbnail text, playlist completion and the reason the opportunity is considered a gap.
+
+            A channel gap means absent or weak creator coverage in the local planning model. It does not automatically mean missing
+            measurements, failed Verification or an incomplete Material record. Read the source status and canonical results before
+            making an engineering claim.
+
+            Copy Top Gaps copies owner-review planning text to the clipboard. Gap analysis does not create tasks, videos, Materials or
+            external channel state.
+            """,
+            "gaps", "gap score", "playlist completion", "engineering-data gaps", "Copy Top Gaps"),
+        new(
+            "youtube.calendar", "YouTube Research", "YouTube calendar reference",
+            "Review the generated 12-week publishing sequence and its diversity rules.",
+            """
+            Content Calendar Planner assigns candidate videos to weeks with publish priority, manufacturer, material family, thumbnail
+            and a reason for that week. The planner avoids long runs from the same manufacturer or family and uses the currently
+            generated candidate population.
+
+            Treat the sequence as advisory. Confirm production capacity, embargoes, evidence readiness and owner priorities before
+            adopting dates. Regenerate after material filters or relevant planning signals change.
+
+            Copy 12 Week Plan writes text to the clipboard only. These suggestions do not create external calendar events, reminders,
+            YouTube schedules or Material lifecycle changes.
+            """,
+            "calendar", "12-week", "diversity", "Copy 12 Week Plan", "do not create external calendar events"),
+        new(
+            "youtube.playlists", "YouTube Research", "YouTube playlists reference",
+            "Review grouped playlist opportunities, coverage and proposed next videos.",
+            """
+            Playlist Discovery ranks candidate groups by score and type. For each group it shows coverage, videos already represented,
+            missing/next candidates and the reason the grouping may be useful. The top panel summarizes the strongest current
+            opportunity.
+
+            Coverage is local planning coverage, not a query of the live YouTube channel. Verify actual channel state and confirm that
+            grouped materials belong together before adopting the recommendation.
+
+            Copy Top Playlists copies formatted suggestions to the clipboard. It does not create, rename or modify YouTube playlists,
+            and it does not change engineering or Material data.
+            """,
+            "playlists", "coverage", "missing next", "Copy Top Playlists", "live YouTube channel"),
+        new(
+            "youtube.candidates", "YouTube Research", "YouTube candidates reference",
+            "Read the ranked per-material title, hook and comparison candidate table.",
+            """
+            The candidate table shows thumbnail score and grade, pattern, Material, manufacturer, type, reinforcement, advanced title,
+            hook angle, main thumbnail text, visual layout, face/reaction direction and comparison idea. Sort/read these as planning
+            attributes tied to the current generated scope.
+
+            Candidate order combines local signals such as missing-video priority, score profile, variants and outliers. It is not an
+            engineering ranking and does not guarantee audience performance. Confirm every evidence-sensitive title against canonical
+            measurements and public-safe wording.
+
+            The grid is read-only. Generate refreshes it; copy actions hand off selected sections, but no candidate is automatically
+            saved, produced or published.
+            """,
+            "candidates", "advanced title", "reinforcement", "hook angle", "read-only"),
+        new(
+            "help.whitepaper", "Help and support", "Engineering Whitepaper reference",
+            "Export the governed engineering-methodology PDF to an owner-selected path.",
+            """
+            Export Engineering Methodology Whitepaper builds the packaged methodology document for the running release and asks for a
+            local destination. Review the selected filename and folder before saving, then open the PDF and inspect page layout,
+            branding, formulas and version context.
+
+            The whitepaper explains governed methodology; it is not a database backup, Verification report or live website action.
+            Export writes only the selected local PDF and does not alter SQLite, measurements or publishing state.
+            """,
+            "whitepaper", "methodology", "PDF", "local destination"),
+        new(
+            "help.changelog", "Help and support", "Changelog reference",
+            "Read the packaged chronological release history for the installed application.",
+            """
+            Changelog opens the release-history document shipped with the running build. Use it to identify delivered features,
+            corrections and compatibility notes for earlier versions. It is read-only and may describe historical behavior that has
+            since been replaced.
+
+            The Changelog is not the authoritative plan for unstarted work; current roadmap governance remains in project documentation.
+            Opening it changes no settings, files or SQLite data.
+            """,
+            "changelog", "release history", "historical behavior", "roadmap"),
+        new(
+            "help.about", "Help and support", "About reference",
+            "Confirm the running version, storage model, license and third-party notices.",
+            """
+            About identifies the installed 3DPIceland release and its native SQLite storage model. Use the displayed version when
+            collecting diagnostics, comparing an update feed or reporting a runtime issue.
+
+            License and third-party notices describe distribution and dependency obligations. They are informational and do not grant
+            publishing readiness or database compatibility by themselves. About changes no settings, files or data.
+            """,
+            "about", "version", "SQLite", "license", "third-party notices"),
+        new(
             "verification-recovery",
             "Safety and support",
             "Verification, diagnostics, backup and recovery",
@@ -659,8 +1164,10 @@ internal static class HelpContentCatalog
         "Category Rankings" => "analysis.category-rankings",
         "Awards & Winners" => "analysis.awards",
         "Dashboard Insights" => "analysis.dashboard-insights",
-        "Reports / PDF Export" or "Website Export" => "reports-website",
-        "AI Assistant" or "YouTube Research" => "settings-tools",
+        "Reports / PDF Export" => "reports.overview",
+        "Website Export" => "website.overview",
+        "AI Assistant" => "ai.overview",
+        "YouTube Research" => "youtube.overview",
         _ => StartHereId
     };
 }

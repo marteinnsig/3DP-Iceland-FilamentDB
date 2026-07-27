@@ -2,6 +2,27 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v50.2.3 - Output and Tool Reference
+
+- Adds 34 stable searchable destinations for Reports/PDF, Website Export,
+  AI Assistant, YouTube Research and packaged Whitepaper/Changelog/About help.
+- Expands every destination from the initial structural draft into
+  multi-paragraph control, scope, write-boundary, failure and evidence guidance
+  after owner review found the first leaf texts too placeholder-like.
+- Separates local preview/build actions from guarded Production and FTPS.
+- Documents scope, template, credential, allowlist, evidence, clipboard and
+  local-planning boundaries without changing output behavior.
+- Corrects stale Reports import and first-production-report UI guidance.
+- Adds exact IDs/mappings, minimum substantive-content rules and
+  local-versus-publish safety markers to Verification and disposable smoke.
+- Aligns the accepted wrapping probe with the new direct Report scope leaf.
+- Disposable smoke `20260727110155-90afdea3` passes Full Data Verification
+  372/372 with exact logical/business-state equality.
+- Expanded-content smoke `20260727111924-0056eda1` supersedes that evidence and
+  passes the deeper contract, 372/372 and exact state equality.
+- Owner runtime/content acceptance passes on 2026-07-27.
+- Schema remains v37; parent v50 continues at v50.2.4.
+
 ## v50.2.2 - Testing and Analysis Reference
 
 - Adds 22 stable searchable Help destinations for native measurements,

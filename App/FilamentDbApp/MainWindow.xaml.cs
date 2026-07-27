@@ -16995,7 +16995,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 !string.IsNullOrWhiteSpace(section.Body)) &&
             helpSections.Select(section => section.Id).Distinct(StringComparer.Ordinal).Count() == helpSections.Count &&
             HelpContentCatalog.SectionIdForTab("Experimental Testing") == "experimental.series" &&
-            HelpContentCatalog.SectionIdForTab("Website Export") == "reports-website" &&
+            HelpContentCatalog.SectionIdForTab("Website Export") == "website.overview" &&
             typeof(MainWindow).GetMethod("OpenHelp", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         var v5021ReferenceContractReady =
             v5021RequiredHelpSections.All(required =>
@@ -17059,6 +17059,80 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             helpContractReady && v5022ReferenceContractReady
                 ? "22 stable testing/analysis Help destinations, exact top-level mappings and representative scope/save/lifecycle markers are present."
                 : "A required testing/analysis Help destination, mapping or reference marker is missing."));
+        var v5023RequiredHelpSectionIds = new[]
+        {
+            "reports.overview", "reports.current-report", "reports.engineering-package", "reports.public-builds",
+            "reports.scope-and-output", "reports.preview-evidence",
+            "website.overview", "website.folder", "website.templates", "website.preview",
+            "website.production-generate", "website.ftps-test", "website.ftps-production", "website.restore",
+            "website.logs-evidence",
+            "ai.overview", "ai.visible-scope", "ai.planning-briefs", "ai.sessions", "ai.collections",
+            "ai.coverage-status", "ai.output",
+            "youtube.overview", "youtube.generate", "youtube.copy-actions", "youtube.thumbnail",
+            "youtube.comparisons", "youtube.gaps", "youtube.calendar", "youtube.playlists", "youtube.candidates",
+            "help.whitepaper", "help.changelog", "help.about"
+        };
+        var v5023TabMappings = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["Reports / PDF Export"] = "reports.overview",
+            ["Website Export"] = "website.overview",
+            ["AI Assistant"] = "ai.overview",
+            ["YouTube Research"] = "youtube.overview"
+        };
+        var v5023MissingOrDuplicateIds = v5023RequiredHelpSectionIds
+            .Where(requiredId =>
+                helpSections.Count(section => string.Equals(section.Id, requiredId, StringComparison.Ordinal)) != 1)
+            .ToList();
+        var v5023ShallowIds = v5023RequiredHelpSectionIds
+            .Where(requiredId =>
+            {
+                var section = helpSections.SingleOrDefault(candidate =>
+                    string.Equals(candidate.Id, requiredId, StringComparison.Ordinal));
+                return section is null ||
+                       section.Body.Length < 300 ||
+                       !section.Body.Replace("\r\n", "\n", StringComparison.Ordinal)
+                           .Contains("\n\n", StringComparison.Ordinal);
+            })
+            .ToList();
+        var v5023MappingFailures = v5023TabMappings
+            .Where(mapping =>
+                !string.Equals(HelpContentCatalog.SectionIdForTab(mapping.Key), mapping.Value, StringComparison.Ordinal))
+            .Select(mapping => mapping.Key)
+            .ToList();
+        var v5023RequiredMarkers = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["reports.overview"] = "write local artifacts only",
+            ["reports.current-report"] = "twelve governed report templates",
+            ["reports.public-builds"] = "do not control these batch actions",
+            ["website.production-generate"] = "does not perform FTPS",
+            ["website.ftps-test"] = "Windows Credential Manager",
+            ["ai.collections"] = "explicit persistence boundary",
+            ["ai.coverage-status"] = "do not change Material lifecycle",
+            ["youtube.copy-actions"] = "These seven buttons",
+            ["youtube.calendar"] = "do not create external calendar events"
+        };
+        var v5023MarkerFailures = v5023RequiredMarkers
+            .Where(marker =>
+                !helpSections.Single(section => section.Id == marker.Key).Body.Contains(marker.Value, StringComparison.Ordinal))
+            .Select(marker => marker.Key)
+            .ToList();
+        var v5023ReferenceContractReady =
+            v5023MissingOrDuplicateIds.Count == 0 &&
+            v5023ShallowIds.Count == 0 &&
+            v5023MappingFailures.Count == 0 &&
+            v5023MarkerFailures.Count == 0;
+        var v5023FailureDetail = string.Join("; ", new[]
+        {
+            v5023MissingOrDuplicateIds.Count == 0 ? null : $"ID: {string.Join(", ", v5023MissingOrDuplicateIds)}",
+            v5023ShallowIds.Count == 0 ? null : $"depth: {string.Join(", ", v5023ShallowIds)}",
+            v5023MappingFailures.Count == 0 ? null : $"mapping: {string.Join(", ", v5023MappingFailures)}",
+            v5023MarkerFailures.Count == 0 ? null : $"marker: {string.Join(", ", v5023MarkerFailures)}"
+        }.Where(detail => detail is not null));
+        checks.Add(new VerificationCheck("v50.2.3 output and creator-tool Help reference contract",
+            helpContractReady && v5023ReferenceContractReady,
+            helpContractReady && v5023ReferenceContractReady
+                ? "34 substantive multi-paragraph Reports, Website, AI, YouTube and packaged Help destinations preserve control, write and safety boundaries."
+                : $"A required output/tool Help contract failed ({v5023FailureDetail})."));
         var zeroDataProfileContractReady =
             IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
             IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&

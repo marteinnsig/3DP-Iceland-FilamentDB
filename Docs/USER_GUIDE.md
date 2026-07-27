@@ -1,6 +1,6 @@
 # 3DPIceland Engineering Platform User Guide
 
-Version: v50.2.2 — Testing and Analysis Reference
+Version: v50.2.3 candidate — Output and Tool Reference
 
 The canonical operational guide is built into the application:
 
@@ -13,9 +13,13 @@ The canonical operational guide is built into the application:
 The Help window is local and works offline. It covers the complete workflow
 and now includes exhaustive references for Materials, Manufacturers, Purchase
 Orders, Inventory, Usage, Printers, Print Job Quotes, Base Materials and
-Settings Manager. Remaining per-tab reference coverage is delivered through
-the recorded v50.2.3-v50.2.4 increments. v50.2.2 adds native measurement,
+Settings Manager. Remaining contextual-link coverage is delivered through
+the recorded v50.2.4 increment. v50.2.2 adds native measurement,
 Experimental, Material Detail and analysis references.
+v50.2.3 adds Reports, Website Export, AI Assistant, YouTube Research and
+packaged Help/support references. Each reference explains the visible
+controls, exact input scope, local or persisted writes, validation/failure
+behavior, evidence and the boundary before an external handoff.
 
 Important safety boundaries:
 

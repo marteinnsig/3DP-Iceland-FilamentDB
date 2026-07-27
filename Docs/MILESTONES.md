@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v50.2.3 - Output and Tool Reference
+
+The central Help system now contains detailed reference coverage for
+Reports/PDF, Website Export, AI Assistant, YouTube Research and packaged
+support surfaces. Local generation, persistence, clipboard, credential,
+Production, FTPS and evidence boundaries are explicit. Owner runtime/content
+acceptance and Full Data Verification 372/372 pass with exact state equality.
+Schema remains v37; Comprehensive User Help continues at v50.2.4.
+
 # v50.2.2 - Testing and Analysis Reference
 
 The central Help system now has complete searchable references for native

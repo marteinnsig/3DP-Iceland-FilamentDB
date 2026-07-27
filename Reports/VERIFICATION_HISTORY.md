@@ -1,3 +1,30 @@
+# v50.2.3 - Output and Tool Reference
+
+Date: 2026-07-27
+
+- Thirty-four stable destinations cover the recorded v50.2.3 matrix scope.
+- Owner review rejected the initial short leaf texts as placeholder-like.
+- All destinations now document controls, scope, writes, failure behavior,
+  evidence and handoff boundaries in substantive multi-paragraph references.
+- Verification now owns IDs/mappings, minimum content depth and representative
+  control, persistence and output safety markers.
+- Smoke owns local Production/FTPS and creator-calendar boundary searches.
+- Initial smoke exposed an outdated overview-specific wrapping assertion after
+  title-first search selected the new Report scope leaf; the probe was moved.
+- Profile `20260727110155-90afdea3` passes Full Data Verification 372/372 and
+  exact logical/business-state equality.
+- That profile predates the expanded content-depth contract and is superseded
+  pending a new disposable run.
+- The first expanded-content smoke failed the calendar Help search after an
+  accidental `do not` to `does not` wording change; the stable phrase is kept.
+- The next run exposed CRLF-only paragraph detection against LF source. The
+  content-depth gate now normalizes line endings before checking paragraphs.
+- Profile `20260727111924-0056eda1` passes the detailed contract, Full Data
+  Verification 372/372 and exact logical/business-state equality.
+- Debug/Release, documentation, roadmap and NuGet vulnerability gates pass.
+- Owner runtime/content acceptance passes on 2026-07-27.
+- Schema remains v37; parent v50 continues at v50.2.4.
+
 # v50.2.2 - Testing and Analysis Reference
 
 Date: 2026-07-27

@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v50.2.2 — Testing and Analysis Reference**
+Current canonical release: **v50.2.3 — Output and Tool Reference**
 
-Last runtime-accepted baseline: **v50.2.2 — Testing and Analysis Reference**
+Last runtime-accepted baseline: **v50.2.3 — Output and Tool Reference**
 
-Current application candidate: **None**
+Current application candidate: **None; v50.2.4 is planned but not implemented**
 
-Current roadmap increment: **v50.2.3 — Reports, Website, Assistant and Creator-tool Reference**
+Current roadmap increment: **v50.2.4 — Contextual Help Entry Points and Coverage Acceptance**
 
-Current acceptance note: v50.2.2 is runtime accepted with Full Data Verification 371/371; parent v50 remains active.
+Current acceptance note: v50.2.3 is runtime/content accepted with Full Data Verification 372/372; parent v50 remains active.
 
-Candidate note: None.
+Next note: v50.2.4 must complete contextual entry points and coverage acceptance before v50.3 safety/recovery work.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -37,6 +37,8 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v50 | Comprehensive User Help | ★★★★★ | Current |
 | v51 | Governed Runtime Profiles | ★★★☆☆ | Research only |
 | v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Planned |
+
+| v53 | Governed Landed-cost Currency | ★★★★☆ | Planned |
 
 ## Reconciliation of the older plans
 
@@ -2073,14 +2075,19 @@ to unstarted authoritative planning slots.
   - Document raw/computed fields, auto-save, ranges, filters, comparison scope, readiness and historical-data boundaries.
   - Completion condition: every testing/analysis control and nested tab has searchable reference coverage and owner acceptance.
 - **v50.2.3 — Reports, Website, Assistant and Creator-tool Reference**
-  - State: Current; implement only the recorded output/tool matrix scope.
+  - State: Complete, canonical and runtime/content accepted.
   - Cover Reports/PDF, Website Export, AI Assistant, YouTube Research and remaining creator/output commands, states and handoffs.
   - Preserve public allowlists, local-versus-upload actions, credential boundaries and advisory/local tool ownership.
   - Completion condition: every output/tool control maps to complete searchable reference coverage and owner acceptance.
 - **v50.2.4 — Contextual Help Entry Points and Coverage Acceptance**
-  - State: Planned after all reference content is accepted.
+  - State: Current authoritative increment; research/implementation not started.
   - Add stable contextual Help entry points for every top-level tab and relevant nested workflow using the one central Help window.
   - Add deterministic uniqueness, tab/action coverage and navigation checks; keep visual usability acceptance manual.
+  - Extend smoke with an all-top-level-tab navigation sweep and exact visited/expected count evidence.
+  - Add nested-tab navigation where stable AutomationIds can prove selection without authorizing data mutation.
+  - Require each visited surface to render without crash, unexpected dialog or business-state change.
+  - Keep CRUD, Reports, Recovery, Updater, Production and FTPS behavior in their separately authorized scenarios.
+  - Treat navigation coverage as startup/rendering evidence, not a claim that every workflow action was executed.
   - Completion condition: coverage matrix is complete, every link resolves to the intended section and owner accepts full v50.2.
 - **v50.3 — Troubleshooting, Recovery, Publishing Safety and Final Acceptance**
   - State: Planned after v50.2 acceptance.
@@ -2120,6 +2127,18 @@ to unstarted authoritative planning slots.
   - Evaluate quality, latency and cost with approved representative scenarios before pinning the accepted model.
   - Extend deterministic automation for payload allowlists, response validation, fallback, cancellation and secret non-persistence.
   - Require Debug/Release, security/static gates, Full Data Verification and owner runtime acceptance before closure.
+
+- **v53.0 — Governed Landed-cost Currency**
+  - State: Planned after the recorded v50-v52 sequence; research before schema or UI changes.
+  - Add a governed `Default Landed Cost Currency` choice in Settings, separate from Purchase Order invoice currency.
+  - Prefill the landed-cost currency only for a new Purchase Order and allow a reviewed per-order override before calculation.
+  - Preserve original invoice values/currency while displaying and snapshotting landed-cost results in the selected currency.
+  - Snapshot the conversion rate, effective date, source and provenance used by each accepted landed-cost calculation.
+  - Never recalculate saved Purchase Orders, received Inventory, Material cost evidence, Usage history or saved Quotes.
+  - Preserve offline/manual Settings operation; ECB remains an optional official reference, not mandatory runtime availability.
+  - Research schema compatibility, migration defaults, import/export, recovery, diagnostics and reporting before implementation.
+  - Update deterministic tester and Full Data Verification for new-order defaults, override, restart and historical stability.
+  - Completion condition: owner accepts cross-currency calculations, provenance, offline behavior and unchanged historical records.
 
 ### Intentionally unscheduled
 
