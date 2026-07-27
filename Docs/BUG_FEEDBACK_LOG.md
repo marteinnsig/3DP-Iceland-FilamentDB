@@ -571,6 +571,8 @@ Owner accepted the complete v50.1 workflow, natural wrapping, search highlight/j
 The parent item remains In progress for recorded v50.2 per-tab reference/context links and v50.3 safety/final acceptance.
 Before v50.2 implementation, the exhaustive work is recorded as v50.2.0 inventory, v50.2.1 materials/purchasing/configuration,
 v50.2.2 testing/analysis, v50.2.3 outputs/tools and v50.2.4 contextual-link/coverage acceptance.
+v50.2.0 inventory is complete in `Docs/HELP_COVERAGE_MATRIX.md`: 22 top-level tabs, 16 nested tabs and all identified menu/runtime
+surfaces have owners, stable Help destinations, save-mode contracts, Automation gaps and repair increments. v50.2.1 is current.
 What happened: The application has many connected workflows, but no single structured user guide explains what every tab does or how
 data should move through the platform from purchase entry to measurements, reports and website publication.
 Expected behavior: Provide a well-organized user-help system with a start-to-finish workflow, per-tab reference, field-entry guidance,

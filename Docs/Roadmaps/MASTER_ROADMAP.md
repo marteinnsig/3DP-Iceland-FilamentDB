@@ -6,7 +6,7 @@ Last runtime-accepted baseline: **v50.1.0 — Start-to-finish Workflow Guide**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v50.2.0 — Complete Tab, Action and State Inventory**
+Current roadmap increment: **v50.2.1 — Materials, Purchasing, Inventory, Cost and Configuration Reference**
 
 Current acceptance note: v50.1.0 is runtime accepted with Full Data Verification 370/370; parent v50 remains active.
 
@@ -2056,12 +2056,14 @@ to unstarted authoritative planning slots.
   - Add contextual Help entry points that open the same central window at stable section IDs; do not create parallel help systems.
   - Completion condition: tab/action inventory maps to Help sections and deterministic navigation checks pass.
 - **v50.2.0 — Complete Tab, Action and State Inventory**
-  - State: Current; read-only research before Help or UI edits.
+  - State: Complete research inventory; no application behavior changed.
   - Inventory every top-level/nested tab, visible command, editable/read-only field group, status, filter, save boundary and handoff.
   - Build an authoritative coverage matrix with stable proposed Help section IDs and identify stale or contradictory UI guidance.
   - Completion condition: every supported UI surface has one documented owner and a planned Help destination; no implementation yet.
+  - `Docs/HELP_COVERAGE_MATRIX.md` maps all 22 top-level and 16 nested tabs, menu/runtime support surfaces, save modes,
+    stable Help IDs, AutomationId gaps, stale guidance and v50.2/v50.3 delivery ownership.
 - **v50.2.1 — Materials, Purchasing, Inventory, Cost and Configuration Reference**
-  - State: Planned after v50.2.0 findings.
+  - State: Current; implement only the recorded data/cost/configuration matrix scope.
   - Cover Materials, Manufacturers, Purchase Orders, Inventory, Usage, Printers, Quotes, Base Materials and Settings Manager.
   - Document every command/state, prospective versus immutable values, validation and cross-tab ownership without changing behavior.
   - Completion condition: coverage matrix entries for these surfaces map to complete searchable Help sections and owner acceptance.
