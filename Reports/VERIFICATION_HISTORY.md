@@ -1,3 +1,26 @@
+# v50.1.0 - Start-to-finish Workflow Guide
+
+Date: 2026-07-27
+
+- Three independent read-only code traces mapped purchasing/receiving,
+  measurement/analysis and reports/website/publishing handoffs.
+- Debug and Release solution builds pass with zero warnings and zero errors.
+- Documentation audit and roadmap 136-column gate pass.
+- Read-only NuGet scan reports no vulnerable packages.
+- Initial disposable Verification failed 369/370 on a non-canonical exact text
+  marker; no product/data contract failed and the mismatch was corrected.
+- Disposable smoke `20260727092658-c116167b` passes the central Help workflow
+  and Full Data Verification 370/370.
+- Owner-review correction smoke `20260727094039-c70f0cd7` passes in-body search,
+  normalized wrapping and Full Data Verification 370/370.
+- Refresh-race correction smoke `20260727094810-fa07643d` passes immediate
+  Search highlight, Clear removal, wrapping and Full Data Verification 370/370.
+- Baseline/final logical and business-state hashes are exactly equal.
+- Production, FTPS, updates and owner database selection remain blocked.
+- Schema remains v37.
+- Owner accepted the complete workflow, natural wrapping, highlighted
+  search/jump and immediate Search/Clear refresh. v50.1.0 is canonical.
+
 # v50.0.0 - Comprehensive User Help
 
 Date: 2026-07-27

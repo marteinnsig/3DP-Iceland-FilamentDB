@@ -169,7 +169,7 @@ internal static class Program
             Require(
                 helpSearch.TryGetCurrentPattern(ValuePattern.Pattern, out var helpValuePattern),
                 "Central Help search does not expose the UI Automation value contract.");
-            ((ValuePattern)helpValuePattern).SetValue("recovery");
+            ((ValuePattern)helpValuePattern).SetValue("landed costs");
             var helpStatus = WaitForElement(
                 help,
                 new PropertyCondition(AutomationElement.AutomationIdProperty, "HelpResultStatus"),
@@ -177,8 +177,31 @@ internal static class Program
             Require(
                 helpStatus.Current.Name.Contains("topic", StringComparison.OrdinalIgnoreCase) &&
                 !helpStatus.Current.Name.StartsWith("0 ", StringComparison.Ordinal),
-                "Central Help search did not return a deterministic recovery topic.");
-            Record("central-help", true, $"Opened contextual topic '{helpTitle}' and searched recovery");
+                "Central Help search did not return the deterministic start-to-finish workflow topic.");
+            var helpBody = FindById(help, "HelpSectionBody").Current.Name;
+            Require(
+                helpBody.Contains("Create Materials + Received Spools", StringComparison.Ordinal) &&
+                helpBody.Contains("READY FOR PUBLISH", StringComparison.Ordinal),
+                "Central Help did not expose the required receiving and publish-readiness handoffs.");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionBody").Current.HelpText,
+                    "Highlighted search: landed costs",
+                    StringComparison.Ordinal),
+                "Central Help did not refresh the first filtered topic highlight immediately.");
+            ((ValuePattern)helpValuePattern).SetValue(string.Empty);
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionBody").Current.HelpText,
+                    "No highlighted search",
+                    StringComparison.Ordinal),
+                "Central Help retained a stale highlight after clearing Search.");
+            ((ValuePattern)helpValuePattern).SetValue("scope and output");
+            var normalizedHelpBody = FindById(help, "HelpSectionBody").Current.Name;
+            Require(
+                normalizedHelpBody.Contains("scope and output folder", StringComparison.Ordinal),
+                "Central Help retained source-only line breaks instead of wrapping text to the visible width.");
+            Record("central-help", true, $"Opened contextual topic '{helpTitle}', verified workflow search and normalized wrapping");
             CloseWindow(help, application.Id);
 
             Expand(FindById(main, "HelpMenu"), application.Id);

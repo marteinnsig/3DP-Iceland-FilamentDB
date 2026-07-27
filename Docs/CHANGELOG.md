@@ -2,6 +2,38 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v50.1.0 - Start-to-finish Workflow Guide
+
+- Expands central Help into a thirteen-stage owner workflow from Purchase Order
+  creation through receiving, Inventory, Materials, measurements, engineering
+  review, reports, Website Preview, Verification and guarded publishing.
+- Corrects Purchase auto-save and separates `Receive / Reconcile` from the
+  Inventory-creating `Create Materials + Received Spools` action.
+- Documents `Calculate Landed Costs` as a validating persistence boundary and
+  preserves saved rate, Inventory, Usage and quote history.
+- Corrects native measurement guidance: Materials filters define visible
+  MaterialID rows; valid raw edits calculate and auto-save without a manual
+  Recalculate step.
+- Separates optional Experimental Series/Runs from native measurements and
+  records immediate readiness-confirmed Website persistence.
+- Distinguishes main Website DATA scope from public-report and public-test-detail
+  permissions, plus report preview scope from public package actions.
+- Documents Preview, Verification `READY FOR PUBLISH`, isolated Test, local
+  Production generation and the second live FTPS confirmation.
+- Corrects the Website Export safety panel to match active/non-archived DATA
+  scope.
+- Highlights every match inside the selected Help topic, scrolls the first
+  match into view and normalizes source-only line breaks for natural wrapping.
+- Removes a WPF selection-refresh race by rendering the first filtered topic
+  directly on every Search/Clear change instead of relying on SelectionChanged.
+- Extends smoke and Verification with deterministic start-to-finish handoff
+  checks.
+- Debug/Release, documentation audit, vulnerability scan and disposable smoke
+  pass Full Data Verification 370/370 with exact business-state equality.
+- Schema remains v37. Owner accepted the full workflow, corrected wrapping,
+  highlighted search/jump and immediate Search/Clear refresh; v50.1.0 is
+  canonical.
+
 ## v50.0.0 - Comprehensive User Help
 
 - Replaces the obsolete modal raw-document viewer as the primary Documentation

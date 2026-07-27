@@ -2130,7 +2130,7 @@
                 <StackPanel>
                     <TextBlock Text="Export Safety Rules" FontSize="16" FontWeight="SemiBold" Foreground="#0F172A" />
                     <TextBlock Text="• Preview writes index-test.html, export-manifest.txt and a timestamped ExportLogs entry." TextWrapping="Wrap" Foreground="#475569" Margin="0,8,0,0" />
-                    <TextBlock Text="• It uses the current visible set from the Materials tab, including search and filters." TextWrapping="Wrap" Foreground="#475569" Margin="0,6,0,0" />
+                    <TextBlock Text="• Main Website DATA uses every active, non-archived MaterialID; public-report checkboxes govern linked report artifacts." TextWrapping="Wrap" Foreground="#475569" Margin="0,6,0,0" />
                     <TextBlock Text="• The selected external index.html is read-only input and is never modified." TextWrapping="Wrap" Foreground="#475569" Margin="0,6,0,0" />
                     <TextBlock Text="• Production validates first, confirms, backs up existing index.html, then creates index.html." TextWrapping="Wrap" Foreground="#475569" Margin="0,6,0,0" />
                     <TextBlock Text="• Existing production index.html is backed up to Backups before overwrite." TextWrapping="Wrap" Foreground="#475569" Margin="0,6,0,0" />

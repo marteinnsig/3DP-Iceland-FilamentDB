@@ -1,5 +1,35 @@
 # Automated Runtime Acceptance
 
+## v50.1.0 - Start-to-finish Help accepted
+
+The smoke scenario searches central Help for `landed costs`, requires a
+non-empty result and verifies that the rendered workflow contains both
+`Create Materials + Received Spools` and `READY FOR PUBLISH`. Full Data
+Verification additionally requires ordered guide markers for landed-cost
+persistence, measurement auto-save, public report package handoff and the two
+guarded Production confirmations.
+
+The scenario remains read-only for Help, keeps Production/FTPS/update/owner
+database actions blocked and requires exact baseline/final logical and
+business-state equality. The initial exact-text contract mismatch failed
+369/370 and was corrected to the canonical second live-FTPS confirmation.
+Disposable profile `20260727092658-c116167b` passes the Help workflow step,
+Full Data Verification 370/370 and exact state equality. Owner runtime
+acceptance remains pending.
+
+Owner-review correction profile `20260727094039-c70f0cd7` additionally requires
+the normalized `scope and output folder` accessibility text after a second Help
+search. It passes with Full Data Verification 370/370 and exact state equality.
+
+The follow-up refresh contract exposes only highlight state, never body data,
+through `HelpSectionBody` UI Automation HelpText. Smoke requires immediate
+`Highlighted search: landed costs`, clears Search and requires
+`No highlighted search` before the next query.
+
+Disposable profile `20260727094810-fa07643d` passes that Search/Clear refresh
+contract, normalized wrapping, Full Data Verification 370/370 and exact
+logical/business-state equality. Owner runtime and visual acceptance pass.
+
 ## v50.0.0 - Central user Help accepted
 
 The existing smoke scenario opens the single canonical Help window from the

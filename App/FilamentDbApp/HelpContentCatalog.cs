@@ -20,54 +20,93 @@ internal static class HelpContentCatalog
             "Start-to-finish workflow",
             "The safe order for moving work from a purchase to verified engineering output.",
             """
-            1. Record the purchase
-            Create the Purchase Order and its lines. Refresh the ECB reference only when you need a current reference rate for new,
-            unsaved purchase data. Saved purchases, inventory lots, material costs and quotes are historical snapshots and are never
-            recalculated by a later exchange-rate refresh.
+            1. Create the Purchase Order
+            Click New Order. The Draft order is saved immediately and later grid edits auto-save. Enter supplier, order number/date,
+            currency, tax treatment, charges and allocation method. ECB is an optional reference for a session-new order only; review
+            the displayed rate and provenance before calculating costs or receiving. Later ECB refreshes never rewrite a saved order
+            rate or created Inventory, Usage or quote history.
 
-            2. Receive and identify inventory
-            Receive eligible purchase lines into Inventory. Link the lot to the correct material identity. Use Manufacturers and Base
-            Materials to govern reusable catalog values; do not create near-duplicate names when an accepted value already exists.
+            2. Add and cost every ordered item
+            Click Add Ordered Item for each invoice line. Set description, Category, expected quantity, unit price, discount, unit
+            weight and allocation inputs. Optionally link an existing Material. Click Calculate Landed Costs after committing edits.
+            This validates and saves allocations and synchronizes current pricing/provenance to linked Materials; it is not a read-only
+            preview. Resolve the Cost Allocation Validation message before continuing.
 
-            3. Complete the material record
-            Use Materials and Material Detail for identity, printing profile, links, notes and publication eligibility. Save changes
-            before relying on the record in measurements, reports or website output.
+            3. Record physical receipt
+            When the shipment arrives, click Receive / Reconcile. Review Received quantity and Check status for every line; correct
+            missing, damaged or extra items. This action records receiving state but does not create Inventory.
 
-            4. Record controlled measurements
-            Enter Tensile, Impact and Stiffness samples under the correct MaterialID. Experimental Testing is for governed series and
-            runs; its active/history controls change comparison scope, not the historical records themselves.
+            4. Create Materials and received spools
+            Click Create Materials + Received Spools. Only Filament lines with positive Received quantity participate. Linked materials
+            are reused; otherwise the app can create a draft Material and one Unopened Inventory spool per received unit. Other
+            categories remain recorded on the Purchase Order. The action is repeat-safe and only fills a missing spool deficit.
 
-            5. Review engineering results
-            Review Material Detail, Rankings, Category Rankings, Awards and Dashboard Insights. These surfaces consume canonical
-            calculated results; they do not replace source measurements.
+            5. Govern material identity
+            Review every created or linked row in Materials. Auto-created rows contain draft supplier/base-material defaults, not a
+            guaranteed canonical identity. Complete the Material, use exact Manufacturer/Base Material binding where appropriate, set
+            printing/profile/link data and save before testing. MaterialID is the stable downstream join key.
 
-            6. Produce output
-            Build reports and preview website output. Confirm the intended public material selection and inspect HTML/PDF visually.
-            Run Verification Center and require PASS before release or public publishing.
+            6. Review Inventory and optionally record Usage
+            Confirm spool MaterialID, quantity, weight, remaining weight, storage and immutable purchase snapshot in Inventory.
+            Inventory owns the Materials quantity projection. Usage is optional private evidence: select the active MaterialID and,
+            optionally, a matching spool; record fixed grams, minutes and counts. Corrections append reversal/replacement events.
 
-            7. Publish only with explicit authority
-            Production and FTPS remain guarded and default to No. A preview, verification result or generated package is not proof that
-            Production was published. Retain the resulting transfer or release evidence.
+            7. Enter native measurements
+            Materials search and filters control which MaterialID rows appear in Tensile, Impact and Stiffness; there is no separate
+            measurement MaterialID selector. Enter only editable raw inputs. Committing a valid edit recalculates read-only outputs,
+            auto-saves SQLite and assigns today as measured date only when the first raw input has no existing date.
 
-            8. Recover safely
-            Use governed backups, Recovery Center and diagnostics. Never replace the owner database with an automation fixture. SQLite
-            restore and Excel disaster recovery are explicit operations with validation and evidence.
+            8. Use Experimental Testing only when needed
+            Experimental Testing is a separate optional series/run workflow. Create a material-linked Series, add controlled Runs and
+            enter its five canonical measurement rows. Active/history controls change visibility or comparison scope without deleting
+            history. Website publication is an explicit readiness-confirmed choice for active Series.
+
+            9. Review engineering results in the intended scope
+            Review Material Detail plus Rankings, Category Rankings, Awards and Dashboard Insights. These consume canonical calculated
+            results and never replace source measurements. Materials search/filter scope also narrows comparison dashboards; clear
+            filters before interpreting a whole-database comparison.
+
+            10. Select public boundaries and build reports
+            In Materials, save the intended Publish public reports choices. Publish public test details is a separate raw-detail
+            permission, and Experimental Website selection is separate again. In Reports / PDF Export, preview/export individual
+            reports as needed, then use Build Public Report Package for the canonical website handoff. Inspect representative HTML/PDF
+            manually; building locally uploads nothing.
+
+            11. Generate and inspect Website Preview
+            In Website Export, confirm the active SQLite template and root folder, then click Generate Preview. The main Website DATA
+            contains every active, non-archived MaterialID; Publish public reports controls linked report artifacts. Inspect
+            index-test.html, navigation, experimental content, links and representative reports. Preview never changes Production.
+
+            12. Verify and stop on failure
+            Open Help > Verification Center and click Refresh after final changes. Require Full Data Verification PASS and Website
+            READY FOR PUBLISH, then export the Verification report. Recalculate Native Results is a separate mutating repair action,
+            not a routine read-only refresh. If any required gate fails, stop, fix the named source and repeat Preview plus Verification.
+
+            13. Publish only with explicit authority
+            An optional Publish Website Test is isolated below /preview/ and is not Production evidence. Generate Production requires a
+            default-No confirmation and creates local backups plus a verified publish plan. Publish Website Production regenerates
+            Production, then requires a second default-No live FTPS confirmation. Retain the manifest, publish plan, Verification
+            export and completion log, and independently inspect the live site. Deep failure and recovery guidance is in Safety and
+            support.
             """,
-            "workflow", "purchase", "inventory", "material", "measurements", "verification", "publish", "recovery"),
+            "workflow", "landed costs", "receive reconcile", "inventory", "material", "measurements", "verification",
+            "ready for publish", "production", "FTPS"),
         new(
             "purchasing-inventory",
             "Purchasing and cost",
             "Purchase Orders, Inventory and Usage",
             "Create purchase snapshots, receive lots and record append-only usage.",
             """
-            Purchase Orders own supplier transactions and their currency snapshot. Enter the supplier currency and rate that applies
-            to the new order. ECB data is an optional reference prefill; review it before saving.
+            Purchase Orders own supplier transactions and their currency snapshot. New Order and later grid edits auto-save. ECB data
+            is an optional reference prefill only for a session-new order; review rate/provenance before Calculate Landed Costs or
+            receiving. Calculate Landed Costs validates and persists allocations and updates current linked-Material pricing evidence.
 
-            Receiving creates inventory history from eligible lines. Inventory quantity and value must remain traceable to the saved
-            purchase and lot. A newer exchange rate must never rewrite an older purchase, inventory lot, material price or quote.
+            Receive / Reconcile records counts and check status. Create Materials + Received Spools is the separate Inventory mutation:
+            only Filament lines create/reuse draft Materials and one spool per received unit. Other categories remain PO-only. A newer
+            exchange rate never rewrites the saved PO rate or created Inventory, Usage or quote history.
 
             Usage records consumption as ledger events. Corrections add governed correcting events instead of silently changing
-            history. Confirm the selected material, lot, amount and unit before saving.
+            history. Confirm MaterialID, optional matching spool, fixed grams/minutes/count fields and provenance before recording.
             """,
             "purchase order", "supplier", "ECB", "exchange rate", "inventory", "receive", "usage", "correction"),
         new(
@@ -106,11 +145,16 @@ internal static class HelpContentCatalog
             "Tensile, Impact and Stiffness Measurements",
             "Enter source samples under the correct material and let canonical services calculate results.",
             """
-            Select the intended MaterialID before entering measurements. Use the unit and specimen workflow shown in each measurement
-            tab. Tensile Upright and Flat are independent; Impact and Stiffness use their own accepted input contracts.
+            Complete the canonical Material first. Materials search/filter determines which MaterialID rows appear in all three native
+            measurement grids; the test tabs have no separate MaterialID selector. Identity and computed fields are read-only.
 
-            Validation messages identify missing, malformed or incomplete inputs. Fix source data rather than typing calculated output
-            manually. Recalculate and review results after source changes, then run Verification Center before publishing.
+            Tensile accepts up to ten Upright N and ten Flat N samples, each from 0 through less than 505. Impact accepts up to ten
+            Upright and Flat percentage samples from 0 through 100. Stiffness accepts Revolutions from 0 through 10 and Degrees from
+            0 through 359. Notes and measured date are editable.
+
+            A valid committed raw edit recalculates, updates tested state and auto-saves SQLite. The first raw value assigns today only
+            if measured date is empty. Fix Validation errors in source inputs; do not type MPa, kJ/m², deflection, modulus, standard
+            deviation, CV, count or confidence manually because those outputs are calculated read-only.
             """,
             "tensile", "impact", "stiffness", "samples", "MPa", "validation", "calculation"),
         new(
@@ -119,12 +163,16 @@ internal static class HelpContentCatalog
             "Experimental Testing",
             "Manage material-linked test series, controlled runs and publication readiness.",
             """
-            A series defines the material, experiment and default unit. Runs hold the controlled values and measurement state.
+            Experimental Testing is separate from native measurement entry. A series defines the material, experiment and default unit;
+            Add Series prefers the selected active Material and otherwise uses the first active Material. Runs hold controlled values
+            and five canonical editors: Tensile Upright/Flat, Impact Upright/Flat and Stiffness. Valid edits auto-calculate and auto-save.
+
+            Only one Run can be baseline per Series. Runs default Planned and Active.
             Active only filters series visibility. Include inactive history in comparison affects result comparison scope only when
             inactive completed history exists; it does not change the run grid or reactivate records.
 
-            Website publication is a deliberate series property. A checkbox edit is committed when the grid edit commits, which may
-            occur when focus moves. Review the publication-readiness message before website export.
+            Website publication is a deliberate active-Series property. Clicking it evaluates readiness, defaults incomplete
+            publication confirmation to No and persists the accepted choice immediately. Review the readiness message before export.
             """,
             "experimental", "series", "run", "active only", "inactive history", "website", "baseline"),
         new(
@@ -137,8 +185,9 @@ internal static class HelpContentCatalog
             Category Rankings compare accepted calculated metrics across their displayed scope. Awards & Winners applies the governed
             award rules. Dashboard Insights summarizes broader patterns.
 
-            Filters and comparison scopes can change what is visible without changing stored measurements. Confirm the visible scope
-            before exporting or using a result in a decision.
+            Materials search and filters define the comparison scope inherited by Rankings, Category Rankings, Awards and Insights.
+            Rows without a score for the chosen ranking metric are omitted. Filters never change stored measurements; clear them before
+            interpreting a whole-database result. Experimental results remain separately scoped to the selected Series and Runs.
             """,
             "results", "rankings", "category", "awards", "dashboard", "comparison", "filters"),
         new(
@@ -150,11 +199,17 @@ internal static class HelpContentCatalog
             Reports / PDF Export builds governed report models from canonical summaries. Choose the report, material scope and output
             folder, then preview and visually inspect the HTML/PDF before external use.
 
-            Website Export builds the public package from materials explicitly eligible for public reports. Preview is the normal review
-            path. Public allowlists and route checks remain authoritative. Production and FTPS require explicit confirmation and default
-            to No; never infer a successful publish solely from local generation.
+            Individual report preview/export obeys the selected template and Selected/Visible scope. Public batch actions instead use
+            their named family and opted-in MaterialIDs. Build Public Report Package is the canonical website handoff and automatically
+            rebuilds missing/stale public artifacts. Building reports locally uploads nothing.
 
-            Run Verification Center and require PASS before publishing. Retain publish-plan, hash and transfer evidence where produced.
+            Generate Preview builds index-test.html and automatically ensures the public report package. Main Website DATA uses every
+            active, non-archived MaterialID; Publish public reports controls linked report artifacts, Publish public test details
+            separately controls raw report detail, and Experimental Website selection is separate.
+
+            After visual review, Refresh Verification and require PASS plus READY FOR PUBLISH. Publish Website Test is isolated from
+            Production. Generate Production and live FTPS are separately guarded, default-No actions; Publish Website Production invokes
+            generation first and therefore requires two confirmations. Retain manifests, publish plan, Verification and transfer logs.
             """,
             "report", "PDF", "website", "preview", "public", "Production", "FTPS", "allowlist"),
         new(

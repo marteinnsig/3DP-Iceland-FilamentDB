@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v50.1.0 - Start-to-finish Workflow Guide
+
+The accepted central guide gives a new owner the complete ordered workflow from
+purchase and receiving through Materials, measurements, analysis, reports,
+Website Preview, Verification and guarded publishing. Search/highlight/jump and
+natural wrapping support practical use. Owner acceptance and Full Data
+Verification 370/370 pass. Schema remains v37. This increment is complete;
+the Comprehensive User Help milestone continues at v50.2.
+
 # v50.0.0 - Comprehensive User Help
 
 The platform now has one canonical offline Help surface with search,

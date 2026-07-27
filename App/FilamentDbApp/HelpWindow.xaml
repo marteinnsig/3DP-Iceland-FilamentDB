@@ -65,7 +65,8 @@
                 </DockPanel>
             </Border>
 
-            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer x:Name="ContentScrollViewer" Grid.Column="1" VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
                 <StackPanel Margin="34,28,42,36">
                     <TextBlock x:Name="CategoryText" Foreground="#64748B" FontWeight="SemiBold"
                                automation:AutomationProperties.AutomationId="HelpSectionCategory"/>

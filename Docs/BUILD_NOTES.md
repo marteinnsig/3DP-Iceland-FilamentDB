@@ -1,4 +1,52 @@
-# Current Build Notes - v50.0.0
+# Current Build Notes - v50.1.0
+
+## Start-to-finish Workflow Guide
+
+Three independent read-only code traces mapped Purchasing/Inventory/Materials,
+native and Experimental measurements/analysis, and Reports/Website/Verification
+publishing. They found that the v50.0 overview was directionally safe but
+compressed several distinct mutation and scope boundaries.
+
+The v50.1.0 candidate records the exact ordered actions and corrects misleading
+guidance: Purchase grids auto-save; landed-cost calculation persists; receiving
+does not create Inventory; native measurements calculate and auto-save; main
+Website DATA and public-report permissions are distinct; Production generation
+and live FTPS are separately confirmed.
+
+Owner review found that search filtered topics without locating the match and
+that source-code line breaks caused visually clipped phrases. Search now
+highlights every body match and scrolls the first match into view. Rendering
+collapses only single source line breaks inside a paragraph while preserving
+intentional blank-line paragraph boundaries. Automation requires the normalized
+`scope and output folder` phrase.
+
+The existing smoke scenario now searches for `landed costs` and requires the
+received-spool and `READY FOR PUBLISH` handoffs in the rendered Help body. Full
+Data Verification owns six required action/save/scope markers. No schema or
+canonical calculation contract changes.
+
+An initial disposable run correctly failed 369/370 because the Verification
+marker expected wording different from the canonical second live-FTPS
+confirmation text. The contract was aligned to the rendered guide. Disposable
+smoke `20260727092658-c116167b` then passes Full Data Verification 370/370 with
+exact logical and business-state equality. Owner content/visual acceptance is
+pending.
+
+After the search/highlight/wrapping correction, disposable profile
+`20260727094039-c70f0cd7` passes the central Help workflow, normalized wrapping,
+Full Data Verification 370/370 and exact logical/business-state equality.
+
+Owner follow-up exposed a WPF refresh race when filtering retained the same
+first topic and when Search was cleared. Rendering is now explicit on every
+Search/Clear change. Disposable profile `20260727094810-fa07643d` verifies
+immediate highlighted state, cleared state and normalized wrapping, then passes
+Full Data Verification 370/370 with exact state equality.
+
+Owner accepted the complete ordered workflow, Website scope correction,
+natural wrapping, highlighted search/jump and immediate Search/Clear refresh.
+v50.1.0 is canonical and runtime accepted. Parent v50 remains open at v50.2.
+
+## Prior v50.0.0 Central User Help
 
 ## Central User Help
 

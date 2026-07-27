@@ -1,27 +1,30 @@
-﻿# v34.1 Daily Use Checklist
+# v50.1 Daily Use Checklist
 
-Purpose: use v34.1 as the day-to-day baseline while development is paused.
+Use **Help > Documentation > Start-to-finish workflow** for full prerequisites,
+save boundaries and cross-tab handoffs. This checklist is the compact owner
+sequence.
 
-## Daily workflow
+## Data and testing
 
-1. Open the application.
-2. Import or verify the current dataset.
-3. Add or update material rows as needed.
-4. Enter tensile, impact and stiffness measurements.
-5. Recalculate native results.
-6. Open Verification Center.
-7. Confirm PASS before publishing/exporting.
-8. Export website HTML.
-9. Upload/publish the website file using the normal safe workflow.
-10. Capture any bug, friction point or improvement idea in `BUG_FEEDBACK_LOG.md`.
+1. Create the Purchase Order and every ordered item; review currency/rate.
+2. Run **Calculate Landed Costs** and resolve allocation validation.
+3. On arrival, run **Receive / Reconcile** and correct counts/check state.
+4. Run **Create Materials + Received Spools** for received Filament.
+5. Complete draft Material identity and review Inventory spool snapshots.
+6. Enter native raw measurements; confirm auto-save and Validation.
+7. Use Experimental Series/Runs only for a separate controlled experiment.
+8. Clear unintended Materials filters before whole-database analysis.
 
-## Before recording YouTube content
+## Reports and website
 
-- Confirm the website export reflects the latest dataset.
-- Confirm filters and charts behave as expected for the materials featured in the video.
-- Confirm video/product links for the featured materials.
-- Keep the latest Verification report with the exported website package.
-
-## Release rule during usage mode
-
-v34.1 is a usage baseline. Avoid adding features unless a blocker is discovered.
+1. Save intended public-report and public-test-detail permissions.
+2. Build and visually inspect representative reports.
+3. Run **Build Public Report Package**.
+4. Run **Generate Preview** and inspect `index-test.html`, links and reports.
+5. Refresh Verification Center; require Full Data Verification **PASS** and
+   Website **READY FOR PUBLISH**. Export the report.
+6. If required, publish the isolated Website Test and inspect it.
+7. Generate Production only after review and explicit confirmation.
+8. Publish Website Production only with separate live FTPS authority.
+9. Retain manifest, publish plan, Verification export and completion log.
+10. Inspect the live site independently; stop and retain evidence on failure.

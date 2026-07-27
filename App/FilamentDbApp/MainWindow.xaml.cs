@@ -16974,11 +16974,21 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             HelpContentCatalog.SectionIdForTab("Experimental Testing") == "experimental-testing" &&
             HelpContentCatalog.SectionIdForTab("Website Export") == "reports-website" &&
             typeof(MainWindow).GetMethod("OpenHelp", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
-        checks.Add(new VerificationCheck("v50.0.0 central user-help contract",
-            helpContractReady,
-            helpContractReady
-                ? $"{helpSections.Count} unique offline help topics cover start-to-finish workflow, contextual tabs, publishing and recovery boundaries."
-                : "Central Help topics are missing, duplicated, empty, incorrectly mapped or not reachable through the canonical MainWindow entry point."));
+        var startToFinishGuide = helpSections.SingleOrDefault(section =>
+            string.Equals(section.Id, HelpContentCatalog.StartHereId, StringComparison.Ordinal));
+        var startToFinishContractReady =
+            startToFinishGuide is not null &&
+            startToFinishGuide.Body.Contains("Calculate Landed Costs", StringComparison.Ordinal) &&
+            startToFinishGuide.Body.Contains("Create Materials + Received Spools", StringComparison.Ordinal) &&
+            startToFinishGuide.Body.Contains("auto-saves SQLite", StringComparison.Ordinal) &&
+            startToFinishGuide.Body.Contains("Build Public Report Package", StringComparison.Ordinal) &&
+            startToFinishGuide.Body.Contains("READY FOR PUBLISH", StringComparison.Ordinal) &&
+            startToFinishGuide.Body.Contains("second default-No live FTPS confirmation", StringComparison.Ordinal);
+        checks.Add(new VerificationCheck("v50.1.0 start-to-finish Help workflow contract",
+            helpContractReady && startToFinishContractReady,
+            helpContractReady && startToFinishContractReady
+                ? $"{helpSections.Count} unique offline topics include the ordered purchase, receiving, measurement, report, Preview, Verification and guarded publishing workflow."
+                : "Central Help structure or the required start-to-finish action/save/handoff contract is incomplete."));
         var zeroDataProfileContractReady =
             IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
             IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&

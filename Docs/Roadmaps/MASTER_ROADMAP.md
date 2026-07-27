@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v50.0.0 — Comprehensive User Help**
+Current canonical release: **v50.1.0 — Start-to-finish Workflow Guide**
 
-Last runtime-accepted baseline: **v50.0.0 — Comprehensive User Help**
+Last runtime-accepted baseline: **v50.1.0 — Start-to-finish Workflow Guide**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v50.1 — Start-to-finish Workflow Guide**
+Current roadmap increment: **v50.2 — Per-tab Reference and Contextual Help Links**
 
-Current acceptance note: v50.0.0 Help foundation is runtime accepted with Full Data Verification 370/370; v50 remains active.
+Current acceptance note: v50.1.0 is runtime accepted with Full Data Verification 370/370; parent v50 remains active.
 
 Candidate note: None.
 
@@ -2039,13 +2039,19 @@ to unstarted authoritative planning slots.
   - Debug/Release, documentation and security gates pass; disposable smoke and Full Data Verification pass 370/370 with exact
     business-state recovery. Owner accepted workflow, search, contextual navigation and corrected contents-list wrapping.
 - **v50.1 — Start-to-finish Workflow Guide**
-  - State: Current; research and content mapping before edits.
+  - State: Complete, canonical and runtime accepted as v50.1.0 — Start-to-finish Workflow Guide.
   - Expand the central guide into a complete ordered owner workflow from Purchase Orders and Inventory through Materials,
     measurements, engineering review, reports and Website Preview.
   - State prerequisites, save/validation boundaries and cross-tab handoffs without redefining calculations or stored ownership.
   - Completion condition: owner accepts that a new user can follow the complete workflow without relying on undocumented knowledge.
+  - Code-traced workflow corrects Purchase auto-save, receiving versus Inventory creation, measurement auto-save, comparison scope,
+    public-report versus Website DATA selection, Verification readiness and the two guarded Production confirmations.
+  - Automation and Verification require the canonical landed-cost, received-spool, auto-save, public-package and publish-readiness
+    handoffs. Visual/content acceptance remains manual.
+  - Debug/Release, documentation and security gates pass; disposable smoke and Full Data Verification pass 370/370 with exact
+    state equality. Owner accepted content, natural wrapping, search highlighting/jump and immediate Search/Clear refresh.
 - **v50.2 — Per-tab Reference and Contextual Help Links**
-  - State: Planned after v50.1 acceptance.
+  - State: Current; research and complete tab/action inventory before edits.
   - Add a governed reference for every supported top-level tab and relevant nested workflow, including fields, commands and states.
   - Add contextual Help entry points that open the same central window at stable section IDs; do not create parallel help systems.
   - Completion condition: tab/action inventory maps to Help sections and deterministic navigation checks pass.

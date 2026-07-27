@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v50.1.0 - Start-to-finish Workflow Guide
+
+The central Help workflow now follows thirteen code-traced stages from Purchase
+Order creation through guarded Production. It records exact auto-save,
+receiving, Inventory, measurement, report, Website DATA, Verification and FTPS
+boundaries. Search highlights and jumps to body matches, source-only line breaks
+wrap naturally and Search/Clear refresh immediately. Debug/Release, security,
+documentation and disposable Full Data Verification 370/370 pass with exact
+state equality. Owner runtime/visual acceptance passes. Schema remains v37;
+v50.1.0 is canonical while parent v50 continues at v50.2.
+
 ## v50.0.0 - Comprehensive User Help
 
 One reusable non-modal Help window now owns the complete offline workflow

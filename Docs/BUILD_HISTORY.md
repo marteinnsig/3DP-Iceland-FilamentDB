@@ -2,6 +2,21 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v50.1.0 - Start-to-finish Workflow Guide
+
+Three independent read-only code traces mapped purchasing/receiving,
+measurement/analysis and report/website/publishing ownership. The resulting
+thirteen-stage guide corrects auto-save and mutation boundaries, separates
+Website DATA from public report permissions and records Preview, Verification,
+Production and live FTPS in their guarded order.
+
+Owner review produced two UI corrections: body text now normalizes source-only
+line breaks and search highlights/jumps to matches; explicit Search/Clear
+rendering removes a WPF retained-selection refresh race. Tester coverage proves
+workflow markers, normalized wrapping and immediate highlight state. All gates
+and Full Data Verification 370/370 pass with exact state equality. Owner
+runtime/visual acceptance passes. Schema remains v37; v50.1.0 is canonical.
+
 ## v50.0.0 - Comprehensive User Help
 
 The accepted implementation replaces the obsolete primary raw-document viewer
