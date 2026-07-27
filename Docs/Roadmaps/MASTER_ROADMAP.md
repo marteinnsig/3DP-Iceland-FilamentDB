@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v51.3.0 — Verification Classification**
+Current canonical release: **v51.4.0 — Profile Reconciliation**
 
-Last runtime-accepted baseline: **v51.3.0 — Verification Classification**
+Last runtime-accepted baseline: **v51.4.0 — Profile Reconciliation**
 
-Current application candidate: **None; v51.4 is current**
+Current application candidate: **None; v52.0 research is current**
 
-Current roadmap increment: **v51.4 — Profile Acceptance, Migration and Retirement Reconciliation**
+Current roadmap increment: **v52.0 — Optional OpenAI Assistant Integration Contract**
 
-Current acceptance note: v51.3.0 is owner accepted; Clean passes 281/281 plus 100 N/A and populated passes 381/381.
+Current acceptance note: v51.4.0 and parent v51 are complete, canonical and owner runtime accepted.
 
-Next note: v51.0 is research-first; measure profile cost and boundaries before implementation.
+Next note: v52.0 is research-first; define provider, data, credential, network and failure contracts before implementation.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2164,7 +2164,7 @@ to unstarted authoritative planning slots.
   - Run all release gates and a dummy-proof manual readability/control audit before closing v50 and advancing to v51.
   - Disposable profile `20260727134442-edf82227` passes Verification 378/378 with exact state equality.
 - **v51.0 — Governed Development/Verification and Production/Clean Profiles**
-  - State: Research complete; v51.1 is current.
+  - State: Complete, canonical and owner runtime accepted through v51.4.0 on 2026-07-27.
   - Research only until diagnostics have measured cost.
   - Mandatory crash, recovery, security and support evidence can never be removed.
   - Current runtime has implicit owner/normal and manifest-governed automation/disposable contracts, not four general profiles.
@@ -2204,13 +2204,19 @@ to unstarted authoritative planning slots.
   - Release profiles `20260727145433-df2701f4` and `20260727145601-56734ac4` pass clean/populated matrices with exact state.
   - Owner confirms Owner Production 381/381 and Clean runtime complete without visible errors.
 - **v51.4 — Profile Acceptance, Migration and Retirement Reconciliation**
-  - State: Current authoritative increment.
+  - State: Complete, canonical and owner runtime accepted on 2026-07-27; parent v51 is closed.
   - Reconcile startup, preferences, diagnostics, recovery, updater, credentials, reports, tester and cleanup ownership.
   - Retire superseded identity fields/adapters only after every replacement path is runtime accepted.
+  - Prevent disposable startup and diagnostics from reading owner update-transaction history.
+  - Expose credential, update-transaction, evidence and cleanup ownership through the shared runtime descriptor.
+  - Retire caller-free legacy identity and generic network-block adapters; retain scenario-specific authorization guards.
   - Run Debug/Release, security/static gates, disposable populated/clean scenarios and final owner profile review.
   - Completion condition: all profile paths are unambiguous, isolated and accepted; parent v51 may then close.
+  - Clean profile `20260727150741-e127db3c` passes 282/282 plus 100 N/A and all 17 mandatory-evidence checks.
+  - Release Clean passes 282/282 plus 100 N/A; Smoke, Reports, CRUD, Recovery and Updater pass 382/382 with exact state.
+  - Owner confirms Owner Production, Diagnostics, Verification 382/382 and Clean runtime complete without visible errors.
 - **v52.0 — Optional OpenAI Assistant Integration Contract**
-  - State: Planned; implementation cannot begin before v47 workflow and data-boundary acceptance.
+  - State: Current research-first increment; implementation requires an accepted provider/data/security contract.
   - Keep the accepted local deterministic assistant available as the offline and failure-safe path.
   - Add an explicit optional OpenAI provider behind a replaceable provider interface; do not couple canonical data to one API.
   - Store provider, pinned model and non-secret preferences separately from the API credential.

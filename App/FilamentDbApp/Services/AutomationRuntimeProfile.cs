@@ -29,9 +29,6 @@ public sealed class AutomationRuntimeProfile
 
     public static AutomationRuntimeProfile? Current { get; private set; }
     public static bool IsActive => Current is not null;
-    public static string VisibleIdentity => Current is null
-        ? string.Empty
-        : $"AUTOMATION / DISPOSABLE — {Current.ProfileId}";
 
     public static void Configure(string[] args)
     {
@@ -53,12 +50,6 @@ public sealed class AutomationRuntimeProfile
                       ?? throw new InvalidOperationException("Automation profile JSON is invalid.");
         profile.Validate(manifestPath);
         Current = profile;
-    }
-
-    public static void DemandNetworkAndProductionBlocked(string action)
-    {
-        if (!IsActive) return;
-        throw new InvalidOperationException($"{action} is blocked by the disposable automation safety policy.");
     }
 
     public static void DemandReportGenerationAuthorized()

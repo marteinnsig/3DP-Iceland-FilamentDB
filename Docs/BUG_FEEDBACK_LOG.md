@@ -55,7 +55,7 @@ Date: 2026-07-27
 Area: Runtime profiles / ownership and acceptance isolation
 Type: Workflow friction / Data integrity
 Severity: Important
-Status: Partially solved
+Status: Solved
 What happened: Normal owner runtime was implicit while disposable automation exposed a separate identity and isolated paths. There was
 no common contract describing database/preferences/output ownership or effective Production, FTPS and update capabilities.
 Expected behavior: Show an unambiguous governed runtime identity, preserve owner/disposable isolation and never weaken mandatory crash,
@@ -85,6 +85,13 @@ Release profiles `20260727145433-df2701f4` and `20260727145601-56734ac4` pass Cl
 populated 381/381 with zero N/A respectively; both retain exact business-state equality.
 Owner confirms Owner Production and Clean runtime complete without visible errors; v51.3.0 is accepted and v51.4 owns final
 profile reconciliation.
+The v51.4 candidate closes a disposable read-isolation gap for owner update history, exposes credential/update/evidence/cleanup
+ownership and retires two caller-free adapters. Clean profile `20260727150741-e127db3c` passes 282/282 plus 100 N/A with all
+17 mandatory-evidence checks; Release scenario matrix and owner acceptance remain pending.
+The final Release matrix passes Clean 282/282 plus 100 N/A and populated Smoke, Reports, CRUD, Recovery and Updater 382/382
+with zero N/A and exact state; Updater proves both committed success and injected health-failure rollback.
+Owner confirms Owner Production, Diagnostics, Verification 382/382 and Clean runtime without visible errors. v51.4.0 and
+parent v51 are canonical and closed on 2026-07-27.
 
 Date: 2026-07-27
 Area: Help / Exhaustive control and editable-field coverage

@@ -17,7 +17,11 @@ public sealed record RuntimeProfileDescriptor(
     bool UpdatesAllowed,
     string DatabaseOwnership,
     string PreferencesOwnership,
-    string OutputOwnership)
+    string OutputOwnership,
+    string CredentialOwnership,
+    string UpdateTransactionOwnership,
+    string EvidenceOwnership,
+    string CleanupOwnership)
 {
     public string CapabilitySummary =>
         $"Owner database: {Allowed(OwnerDatabaseAllowed)}; " +
@@ -53,7 +57,11 @@ public static class RuntimeProfileContext
                 UpdatesAllowed: true,
                 DatabaseOwnership: "Configured owner storage folder",
                 PreferencesOwnership: "Owner LocalApplicationData preferences",
-                OutputOwnership: "Owner-selected governed output paths");
+                OutputOwnership: "Owner-selected governed output paths",
+                CredentialOwnership: "Owner Windows Credential Manager",
+                UpdateTransactionOwnership: "Owner LocalApplicationData update transaction history",
+                EvidenceOwnership: "Owner-selected governed diagnostic and release evidence",
+                CleanupOwnership: "Owner retention and explicit governed cleanup");
 
     public static RuntimeProfileDescriptor DescribeDisposableVerification(
         AutomationRuntimeProfile automation) =>
@@ -67,7 +75,11 @@ public static class RuntimeProfileContext
             UpdatesAllowed: false,
             DatabaseOwnership: "Disposable manifest database folder",
             PreferencesOwnership: "Disposable manifest preferences folder",
-            OutputOwnership: "Disposable manifest output folder");
+            OutputOwnership: "Disposable manifest output folder",
+            CredentialOwnership: "Owner credentials inaccessible",
+            UpdateTransactionOwnership: "Disposable runner/profile transaction evidence only",
+            EvidenceOwnership: "Disposable manifest evidence folder",
+            CleanupOwnership: "Runner evidence retained until governed post-workflow cleanup");
 
     public static RuntimeProfileDescriptor DescribeCleanReadiness(
         AutomationRuntimeProfile automation) =>
@@ -81,5 +93,9 @@ public static class RuntimeProfileContext
             UpdatesAllowed: false,
             DatabaseOwnership: "Seedless disposable manifest database folder",
             PreferencesOwnership: "Seedless disposable manifest preferences folder",
-            OutputOwnership: "Seedless disposable manifest output folder");
+            OutputOwnership: "Seedless disposable manifest output folder",
+            CredentialOwnership: "Owner credentials inaccessible",
+            UpdateTransactionOwnership: "No owner history; disposable runner/profile evidence only",
+            EvidenceOwnership: "Seedless disposable manifest evidence folder",
+            CleanupOwnership: "Runner evidence retained until governed post-workflow cleanup");
 }

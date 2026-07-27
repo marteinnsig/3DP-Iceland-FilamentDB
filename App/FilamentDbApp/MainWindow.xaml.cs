@@ -13103,6 +13103,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private static IReadOnlyList<ApplicationUpdateTransactionDiagnostic> GetApplicationUpdateDiagnostics()
     {
+        if (AutomationRuntimeProfile.IsActive)
+            return Array.Empty<ApplicationUpdateTransactionDiagnostic>();
         var root = IOPath.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "3DPIcelandLabs", "Updates", "transactions");
         return ApplicationUpdateTransactionDiagnostics.InspectRoot(root);
     }
@@ -13467,6 +13469,10 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Database path: " + _database.DatabasePath);
         sb.AppendLine("Preferences ownership: " + profile.PreferencesOwnership);
         sb.AppendLine("Output ownership: " + profile.OutputOwnership);
+        sb.AppendLine("Credential ownership: " + profile.CredentialOwnership);
+        sb.AppendLine("Update transaction ownership: " + profile.UpdateTransactionOwnership);
+        sb.AppendLine("Evidence ownership: " + profile.EvidenceOwnership);
+        sb.AppendLine("Cleanup ownership: " + profile.CleanupOwnership);
         sb.AppendLine("Capabilities: " + profile.CapabilitySummary);
         sb.AppendLine("Profile identity does not weaken crash, recovery, security, updater transaction or support evidence.");
     }
@@ -13983,6 +13989,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         "v51.1 governed runtime profile identity and capability contract",
         "v51.2 seedless Clean Readiness profile contract",
         "v51.3 Verification classification and mandatory evidence contract",
+        "v51.4 profile ownership and retirement reconciliation contract",
         "Automated runtime acceptance safety foundation",
         "Disposable backup and recovery acceptance safety foundation",
         "Guarded updater acceptance safety foundation",
@@ -14204,6 +14211,23 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             verificationClassificationReady
                 ? "Runtime/data profiles are distinct; exact-name applicability prevents detail text from granting N/A; path, recovery and updater evidence remain mandatory"
                 : "Verification applicability, mandatory evidence ownership or detail-text isolation is incomplete."));
+        var profileReconciliationReady =
+            typeof(AutomationRuntimeProfile).GetProperty("VisibleIdentity") is null &&
+            typeof(AutomationRuntimeProfile).GetMethod("DemandNetworkAndProductionBlocked") is null &&
+            !string.IsNullOrWhiteSpace(runtimeProfile.CredentialOwnership) &&
+            !string.IsNullOrWhiteSpace(runtimeProfile.UpdateTransactionOwnership) &&
+            !string.IsNullOrWhiteSpace(runtimeProfile.EvidenceOwnership) &&
+            !string.IsNullOrWhiteSpace(runtimeProfile.CleanupOwnership) &&
+            (!AutomationRuntimeProfile.IsActive || GetApplicationUpdateDiagnostics().Count == 0) &&
+            HelpContentCatalog.Sections.Single(
+                section => section.Id == "menu-runtime.controls-fields").Body.Contains(
+                "never read owner credentials or owner update-transaction history",
+                StringComparison.Ordinal);
+        checks.Add(new VerificationCheck("v51.4 profile ownership and retirement reconciliation contract",
+            profileReconciliationReady,
+            profileReconciliationReady
+                ? "Startup, diagnostics, credentials, update history, evidence and cleanup ownership are explicit; caller-free identity/network adapters are retired"
+                : "Profile ownership, disposable owner-history isolation, Help contract or retired adapter cleanup is incomplete."));
         var automationFoundationReady =
             AutomationRuntimeProfile.MarkerFileName == ".3dpiceland-disposable-profile.json" &&
             typeof(AutomationRuntimeProfile).GetMethod(nameof(AutomationRuntimeProfile.Configure)) is not null &&

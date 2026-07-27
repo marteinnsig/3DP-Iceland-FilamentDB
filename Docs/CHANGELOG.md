@@ -2,6 +2,30 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v51.4.0 - Profile Reconciliation
+
+- Prevents disposable/Clean startup and Diagnostics from inspecting owner
+  LocalApplicationData update-transaction history.
+- Extends the runtime descriptor with credential, update-transaction, evidence
+  and cleanup ownership.
+- Retires caller-free `AutomationRuntimeProfile.VisibleIdentity` and the
+  generic `DemandNetworkAndProductionBlocked` adapter after v51.1-v51.3
+  replacement paths received runtime acceptance.
+- Retains manifest validation and scenario-specific report, CRUD, recovery and
+  updater authorization guards.
+- Extends Diagnostics/tester evidence to require inaccessible owner
+  credentials and zero owner update transactions in disposable profiles.
+- Clean Debug profile `20260727150741-e127db3c` passes 282/282 applicable plus
+  100 N/A with zero mandatory N/A and all 17 mandatory-evidence checks.
+- Release Clean `20260727150915-c3619774` passes 282/282 plus 100 N/A.
+- Populated Smoke `20260727150947-13052381`, Reports
+  `20260727151027-2bcf3bb2`, CRUD `20260727151210-ced8e3ea`, Recovery
+  `20260727151328-6e7fd208` and Updater `20260727151426-82bbb19b` pass 382/382
+  with zero N/A and exact state. Updater proves commit and rollback paths.
+- Owner Production, Diagnostics, Verification 382/382 and Clean runtime
+  acceptance pass on 2026-07-27. v51.4.0 and parent v51 are canonical; schema
+  remains v37 and v52.0 research is current.
+
 ## v51.3.0 - Verification Classification
 
 - Separates runtime profile identity/capabilities from the Full Data

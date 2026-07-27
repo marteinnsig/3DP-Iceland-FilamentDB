@@ -97,7 +97,8 @@ public partial class App : Application
         if (sender is MainWindow renderedWindow)
         {
             TryWriteUpdateHealthAcknowledgement(renderedWindow.CurrentDatabaseSchema);
-            if (string.IsNullOrWhiteSpace(_updateTransactionId)) renderedWindow.DetectInterruptedApplicationUpdateAtStartup();
+            if (string.IsNullOrWhiteSpace(_updateTransactionId) && !AutomationRuntimeProfile.IsActive)
+                renderedWindow.DetectInterruptedApplicationUpdateAtStartup();
             if (string.IsNullOrWhiteSpace(_updateTransactionId) && !AutomationRuntimeProfile.IsActive)
                 renderedWindow.BeginAutomaticUpdateCheck();
         }

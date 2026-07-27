@@ -1313,6 +1313,8 @@ internal static class HelpContentCatalog
             manifest root, reports data-dependent checks as Not applicable and keeps release, identity and security failures mandatory.
             Verification always shows runtime identity separately from the data profile. Mandatory checks can never become Not applicable;
             only explicitly classified CanonicalDataDependent checks may do so when no canonical Materials exist.
+            Disposable profiles never read owner credentials or owner update-transaction history. Their database, preferences, output,
+            evidence and cleanup ownership remain manifest/runner-contained until governed post-workflow cleanup.
             Profile identity never grants an action by itself and never weakens crash, recovery, security or support evidence.
 
             File, update and publishing commands

@@ -211,10 +211,15 @@ internal static class Program
                 diagnosticsReport.Contains("Identity: " + expectedIdentity, StringComparison.Ordinal) &&
                 diagnosticsReport.Contains(
                     "Capabilities: Owner database: BLOCKED; Production/FTPS: BLOCKED; updates: BLOCKED",
-                    StringComparison.Ordinal),
+                    StringComparison.Ordinal) &&
+                diagnosticsReport.Contains("Credential ownership: Owner credentials inaccessible", StringComparison.Ordinal) &&
+                diagnosticsReport.Contains("Update transaction ownership: ", StringComparison.Ordinal) &&
+                diagnosticsReport.Contains("Evidence ownership: ", StringComparison.Ordinal) &&
+                diagnosticsReport.Contains("Cleanup ownership: ", StringComparison.Ordinal) &&
+                diagnosticsReport.Contains("Transactions found: 0", StringComparison.Ordinal),
                 "System Diagnostics did not expose runtime identity/capabilities, read-only evidence and the distinct mutating recalculation control.");
             Record("system-diagnostics-read-only-inspection", true,
-                "Verified Disposable profile ownership plus refresh, integrity, recalculation and export boundaries without invoking them");
+                "Verified disposable database/preferences/output/credential/update/evidence/cleanup ownership plus read-only controls");
             CloseWindow(diagnostics, application.Id);
 
             SelectTab(main, "ExperimentalTestingTab", application.Id);

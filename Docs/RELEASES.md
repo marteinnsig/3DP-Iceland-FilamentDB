@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v51.4.0 - Profile Reconciliation
+
+Disposable startup and Diagnostics no longer inspect owner update history.
+Runtime ownership explicitly covers database, preferences, output,
+credentials, update transactions, evidence and cleanup. Two caller-free
+legacy adapters are retired while scenario-specific authorization remains.
+Release Clean passes 282/282 plus 100 N/A; Smoke, Reports, CRUD, Recovery and
+real-helper Updater pass 382/382 with zero N/A and exact state. Owner
+Production, Diagnostics, Verification and Clean acceptance pass on 2026-07-27.
+Parent v51 is complete; schema remains v37.
+
 ## v51.3.0 - Verification Classification
 
 Verification now separates runtime identity/capabilities from the Full Data or

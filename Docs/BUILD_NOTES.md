@@ -1,4 +1,28 @@
-# Current Build Notes - v51.3.0
+# Current Build Notes - v51.4.0
+
+## Profile Reconciliation
+
+Disposable startup and Diagnostics no longer inspect owner update-transaction
+history. Runtime ownership now explicitly covers database, preferences,
+output, credentials, update transactions, evidence and post-workflow cleanup.
+Caller-free legacy identity and generic network-block adapters are retired;
+scenario-specific authorization guards remain supported.
+
+Clean Debug profile `20260727150741-e127db3c` passes 282/282 applicable plus
+100 canonical-data N/A, zero mandatory N/A and all 17 mandatory-evidence
+checks. Diagnostics prove owner credentials inaccessible and zero owner update
+transactions.
+
+The Release matrix passes Clean 282/282 plus 100 N/A and populated Smoke,
+Reports, CRUD, Recovery and real-helper Updater at 382/382 with zero N/A and
+exact business-state equality. Profiles are `20260727150915-c3619774`,
+`20260727150947-13052381`, `20260727151027-2bcf3bb2`,
+`20260727151210-ced8e3ea`, `20260727151328-6e7fd208` and
+`20260727151426-82bbb19b`. Updater proves committed success and injected
+health-failure rollback.
+Owner Production, Diagnostics, Verification 382/382 and Clean runtime
+acceptance pass on 2026-07-27. v51.4.0 and parent v51 are canonical; schema
+remains v37 and v52.0 research is current.
 
 ## Verification Classification
 

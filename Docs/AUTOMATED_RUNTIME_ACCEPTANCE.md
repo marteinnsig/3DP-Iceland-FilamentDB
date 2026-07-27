@@ -1,5 +1,25 @@
 # Automated Runtime Acceptance
 
+## v51.4.0 - Profile Reconciliation candidate
+
+Disposable startup and Diagnostics no longer inspect owner update-transaction
+history. The shared descriptor now owns database, preferences, output,
+credentials, update transactions, evidence and cleanup. Caller-free legacy
+identity and generic network-block adapters are retired; scenario-specific
+report, CRUD, recovery and updater authorization remains.
+
+Clean Debug profile `20260727150741-e127db3c` passes 282/282 applicable with
+100 canonical-data N/A, zero mandatory N/A and all 17 mandatory-evidence
+checks. Diagnostics prove owner credentials inaccessible and zero owner update
+transactions.
+
+The final Release matrix passes with exact business-state equality:
+Clean `20260727150915-c3619774` at 282/282 plus 100 N/A; populated smoke
+`20260727150947-13052381`, Reports `20260727151027-2bcf3bb2`, CRUD
+`20260727151210-ced8e3ea`, Recovery `20260727151328-6e7fd208` and real-helper
+Updater `20260727151426-82bbb19b` each at 382/382 with zero N/A. Updater proves
+both committed success and injected health-failure rollback.
+
 ## v51.3.0 - Verification Classification candidate
 
 Verification now exports every check with `Mandatory` or

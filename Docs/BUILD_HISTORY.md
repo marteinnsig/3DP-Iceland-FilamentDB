@@ -2,6 +2,15 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v51.4.0 - Profile Reconciliation
+
+Final reconciliation closes disposable reads of owner update history, exposes
+all path/credential/evidence/cleanup ownership and retires caller-free
+identity/network adapters. Clean passes 282/282 plus 100 N/A; populated Smoke,
+Reports, CRUD, Recovery and real-helper Updater pass 382/382 with zero N/A,
+exact state and committed/rollback updater evidence. Owner runtime acceptance
+passes on 2026-07-27; parent v51 is complete and schema remains v37.
+
 ## v51.3.0 - Verification Classification
 
 Runtime profile and data profile are now distinct Verification dimensions.

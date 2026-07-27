@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v51.4.0 - Profile Reconciliation
+
+Owner Production, Disposable Verification and seedless Clean Readiness now
+have explicit identity, capabilities, path/credential/evidence ownership and
+honest Verification classification. Full Clean/populated/report/CRUD/recovery/
+updater acceptance and owner review pass. Parent v51 is complete; schema
+remains v37.
+
 # v51.3.0 - Verification Classification
 
 Verification now provides an auditable populated/clean classification matrix.
