@@ -6,7 +6,7 @@ Last runtime-accepted baseline: **v50.3.0 — Safety and Recovery Help**
 
 Current application candidate: **None; v50.4 is planned but not implemented**
 
-Current roadmap increment: **v50.4 — Exhaustive UI Control and Field Help Audit and Final Acceptance**
+Current roadmap increment: **v50.4.1 — Data, Purchasing, Inventory, Cost and Configuration Control Help**
 
 Current acceptance note: v50.3.0 is runtime/safety accepted with Verification 374/374; parent v50 remains active.
 
@@ -2114,7 +2114,7 @@ to unstarted authoritative planning slots.
   - Completion condition: documentation/static/security gates, Full Data Verification and owner safety/recovery acceptance pass.
   - Do not close parent v50 after v50.3; proceed to the mandatory exhaustive v50.4 UI control/field Help audit.
 - **v50.4 — Exhaustive UI Control and Field Help Audit and Final Acceptance**
-  - State: Current authoritative increment; research/implementation not started.
+  - State: Current authoritative increment; audit started.
   - Re-inventory every top-level tab, nested tab, menu, runtime-built window, dialog and supported workflow surface.
   - Inventory every button, menu action, checkbox, radio option, selector, editable field and user-editable grid column/cell type.
   - Give every inventoried control a stable key, UI owner, Help destination/anchor and explicit coverage status.
@@ -2129,6 +2129,27 @@ to unstarted authoritative planning slots.
   - Keep visual wrapping, readability and custom-grid cell usability as explicit manual owner acceptance.
   - Completion condition: zero unexplained supported controls/editable fields, all gates pass and owner accepts the exhaustive audit.
   - Only after v50.4 acceptance may parent v50 close and v51 become current.
+- **v50.4.0 — Authoritative Control/Field Ledger and Drift-gate Contract**
+  - State: Complete research/static foundation; v50.4.1 is current.
+  - Extract XAML controls and grid columns, then reconcile runtime-built controls, owner-drawn grids, handlers and supported dialogs.
+  - Classify every candidate as editable, action, selector/filter, status/evidence, read-only output, layout-only or unsupported/dead.
+  - Record a stable key, exact UI path, owner, Help destination, coverage status and deterministic/manual evidence route.
+  - Define machine-checkable registry and drift rules before adding exhaustive Help content.
+  - Completion condition: the ledger covers every discovered candidate and every gap has one bounded v50.4 delivery owner.
+- **v50.4.1 — Data, Purchasing, Inventory, Cost and Configuration Control Help**
+  - State: Current authoritative subincrement; implementation not started.
+  - Close ledger gaps for Materials, Manufacturers, Purchase Orders, Inventory, Usage, Printers, Quotes, Base Materials and Settings.
+  - Explain every editable field/column, selector, filter and action including units, save timing, validation and history boundaries.
+- **v50.4.2 — Measurements, Experimental Testing and Analysis Control Help**
+  - Close ledger gaps for native/experimental editors, Material Detail, Rankings, Category Rankings, Awards and Insights.
+  - Cover owner-drawn cell editors, raw versus calculated columns, scopes, baselines, status fields and read-only interpretations.
+- **v50.4.3 — Reports, Website, Assistant, Creator and Runtime-window Control Help**
+  - Close ledger gaps for Reports, Website Export, AI Assistant, YouTube Research, menus and supported runtime windows/dialogs.
+  - Keep Preview, Production, FTPS, update, restore, recalculation, deletion and evidence boundaries explicit.
+- **v50.4.4 — Zero-gap Reconciliation, Deterministic Gates and Final Owner Acceptance**
+  - Fail Verification when a declared supported control/field lacks a registry key, Help destination or required coverage metadata.
+  - Extend safe tester lookup/navigation without invoking mutating, Production, FTPS, restore, update or owner-database actions.
+  - Run all release gates and a dummy-proof manual readability/control audit before closing v50 and advancing to v51.
 - **v51.0 — Governed Development/Verification and Production/Clean Profiles**
   - State: Deferred until v50.4 and every earlier recorded v50 increment are complete.
   - Research only until diagnostics have measured cost.

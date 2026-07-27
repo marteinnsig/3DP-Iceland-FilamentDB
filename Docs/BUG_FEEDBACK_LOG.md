@@ -52,6 +52,23 @@ idea. Historical free-form entries remain in their original language and order.
 ## Tracked findings
 
 Date: 2026-07-27
+Area: Help / Exhaustive control and editable-field coverage
+Type: Workflow friction / Documentation
+Severity: Important
+Status: In progress
+What happened: The accepted Help system explains every tab and major workflow, but it does not yet prove that every button, selector,
+editable field and editable grid cell has precise guidance. The initial v50.4 audit found 135 XAML buttons, 31 menu items, 47 combo
+boxes, 34 text boxes, 10 checkboxes, 31 grids and 356 XAML grid-column declarations, plus runtime-built and owner-drawn controls.
+Expected behavior: Maintain a machine-checkable ledger that assigns every supported control/field a stable key, owner, exact Help
+destination, behavior contract and evidence route. Complete with zero unexplained supported controls or editable fields.
+Steps to reproduce: Compare `MainWindow.xaml`, runtime-created controls and custom-grid column builders with the current Help catalog.
+Screenshot / export / report attached: `Docs/HELP_CONTROL_FIELD_LEDGER.md`.
+Resolution: v50.4 is split into v50.4.0-v50.4.4 for ledger/gates, three bounded coverage groups and final zero-gap acceptance.
+Verification evidence: The source-derived registry now tracks 645 exact XAML candidates: 222 in v50.4.1, 267 in v50.4.2 and 156
+in v50.4.3. Six custom registries add 189 stable-key columns and eight runtime surfaces add 42 controls, for 876 candidates total.
+The read-only drift gate passes; v50.4.0 is complete and the bounded v50.4.1 Help implementation is current.
+
+Date: 2026-07-27
 Area: Application menu / Navigation and command discovery
 Type: Workflow friction / UI polish
 Severity: Idea
