@@ -165,10 +165,12 @@
 
     <DockPanel Background="#EEF1F5">
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="Backup and Recovery Center..." Click="ShowRecoveryCenter_Click" />
+            <MenuItem Header="_File" AutomationProperties.AutomationId="FileMenu">
+                <MenuItem Header="Backup and Recovery Center..." Click="ShowRecoveryCenter_Click"
+                          AutomationProperties.AutomationId="OpenRecoveryCenter" />
                 <Separator />
-                <MenuItem Header="Choose Storage Folder..." Click="ChooseStorageFolder_Click" />
+                <MenuItem Header="Choose Storage Folder..." Click="ChooseStorageFolder_Click"
+                          AutomationProperties.AutomationId="ChooseStorageFolder" />
                 <Separator />
                 <MenuItem Header="Exit" Click="Exit_Click" />
             </MenuItem>
@@ -187,15 +189,20 @@
                 <MenuItem Header="Open Website Export" Click="OpenWebsiteExportTab_Click"
                           AutomationProperties.AutomationId="OpenWebsiteExportTab" />
             </MenuItem>
-            <MenuItem Header="_Tools">
+            <MenuItem Header="_Tools" AutomationProperties.AutomationId="ToolsMenu">
                 <MenuItem Header="Validate Materials" Click="ValidateNativeMaterials_Click" />
                 <MenuItem Header="Rebuild Computed Fields" Click="RebuildNativeMaterialDisplayNames_Click" />
                 <MenuItem Header="Materials Rendering Prototype..." Click="ShowMaterialsRenderingPrototype_Click" />
-                <MenuItem Header="Update Readiness..." Click="UpdateReadiness_Click" />
-                <MenuItem Header="Check for Updates..." Click="CheckForUpdates_Click" />
-                <MenuItem Header="Publish Application Release..." Click="PublishApplicationRelease_Click" />
-                <MenuItem Header="Publish Application Update..." Click="PublishApplicationUpdate_Click" />
-                <MenuItem Header="Open Storage Folder" Click="OpenStorageFolder_Click" />
+                <MenuItem Header="Update Readiness..." Click="UpdateReadiness_Click"
+                          AutomationProperties.AutomationId="UpdateReadiness" />
+                <MenuItem Header="Check for Updates..." Click="CheckForUpdates_Click"
+                          AutomationProperties.AutomationId="CheckForUpdates" />
+                <MenuItem Header="Publish Application Release..." Click="PublishApplicationRelease_Click"
+                          AutomationProperties.AutomationId="PublishApplicationRelease" />
+                <MenuItem Header="Publish Application Update..." Click="PublishApplicationUpdate_Click"
+                          AutomationProperties.AutomationId="PublishApplicationUpdate" />
+                <MenuItem Header="Open Storage Folder" Click="OpenStorageFolder_Click"
+                          AutomationProperties.AutomationId="OpenStorageFolder" />
             </MenuItem>
             <MenuItem Header="_Help" AutomationProperties.AutomationId="HelpMenu">
                 <MenuItem Header="Documentation" AutomationProperties.AutomationId="OpenHelp"
@@ -207,7 +214,8 @@
                 <Separator />
                 <MenuItem Header="Verification Center" AutomationProperties.AutomationId="OpenVerificationCenter"
                           Click="VerificationCenter_Click" />
-                <MenuItem Header="System Diagnostics" Click="SystemDiagnostics_Click" />
+                <MenuItem Header="System Diagnostics" Click="SystemDiagnostics_Click"
+                          AutomationProperties.AutomationId="OpenSystemDiagnostics" />
                 <MenuItem Header="About" Click="About_Click" />
             </MenuItem>
         </Menu>

@@ -2,6 +2,25 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v50.3.0 - Safety and Recovery Help
+
+- Adds 18 substantive Help destinations for File/storage, Recovery,
+  Verification, Diagnostics, updates, application/Website publishing safety
+  and symptom-led troubleshooting.
+- Separates read-only refresh/integrity/report actions from mutating
+  recalculation, restore, storage, update and live publishing actions.
+- Documents default-No guarded updates, interrupted recovery, rollback evidence
+  and the rule that SQLite is never automatically restored.
+- Adds stable menu/runtime AutomationIds for read-only support inspection.
+- Smoke opens and inspects Recovery, Diagnostics and Verification without
+  invoking restore, recalculation, update, Production or FTPS.
+- Initial smoke exposed System Diagnostics window ID bound to Verification;
+  the stable ID now belongs to the correct runtime-built window.
+- Profile `20260727120029-14c0556f` passes Full Data Verification 374/374 with
+  exact logical/business-state equality.
+- Owner runtime/safety acceptance passes on 2026-07-27.
+- Schema remains v37; parent v50 continues at mandatory v50.4.
+
 ## v50.2.4 - Contextual Help Coverage
 
 - Adds unique stable AutomationIds to all 22 top-level and 16 nested tabs.

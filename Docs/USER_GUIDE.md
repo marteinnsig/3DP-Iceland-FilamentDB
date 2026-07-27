@@ -1,6 +1,6 @@
 # 3DPIceland Engineering Platform User Guide
 
-Version: v50.2.4 — Contextual Help Coverage
+Version: v50.3.0 — Safety and Recovery Help
 
 The canonical operational guide is built into the application:
 
@@ -22,6 +22,8 @@ controls, exact input scope, local or persisted writes, validation/failure
 behavior, evidence and the boundary before an external handoff.
 v50.2.4 adds stable contextual navigation for all 22 top-level and 16 nested
 tab surfaces.
+v50.3 adds Recovery, Verification, Diagnostics, update/publishing safety and
+symptom-led troubleshooting references.
 
 Important safety boundaries:
 

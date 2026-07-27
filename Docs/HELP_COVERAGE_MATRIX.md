@@ -232,6 +232,36 @@ Required leaf destinations:
 | Changelog | `help.changelog` | Packaged release history viewer | v50.2.3 |
 | About | `help.about` | Version, storage model, license and notices | v50.2.3 |
 
+### v50.3 planned safety and recovery destinations
+
+- `menu.file-recovery`
+- `menu.storage`
+- `menu.updates`
+- `menu.release-publishing`
+- `recovery.overview`
+- `recovery.catalog-and-verification`
+- `recovery.sqlite-backup-and-restore`
+- `recovery.excel-disaster-recovery`
+- `verification.overview`
+- `diagnostics.overview`
+- `updates.guarded-apply-and-recovery`
+- `publishing.application-release-and-update`
+- `publishing.website-safety`
+- `troubleshooting.verification-fail`
+- `troubleshooting.backup-restore-blocked`
+- `troubleshooting.interrupted-update`
+- `troubleshooting.publish-failure`
+- `troubleshooting.support-evidence`
+
+v50.3 automation may open, inspect and close Recovery, Verification and
+Diagnostics in a disposable profile. It must not invoke restore, recalculation,
+update apply/recovery, Production, FTPS or owner-database/storage mutation.
+
+v50.3.0 accepted status: all 18 planned destinations exist. Disposable
+profile `20260727120029-14c0556f` passes read-only Recovery/Diagnostics/
+Verification inspection, Full Verification 374/374 and exact state equality.
+Owner runtime/safety acceptance passes on 2026-07-27.
+
 v50.2.3 accepted status: all 34 overview, leaf and packaged Help destinations
 contain substantive multi-paragraph control, scope, write, failure, evidence
 and handoff guidance. The initial short leaf draft was rejected during owner

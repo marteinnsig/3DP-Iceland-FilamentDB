@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v50.3.0 - Safety and Recovery Help
+
+Troubleshooting, Recovery, Verification, Diagnostics and guarded
+update/publishing safety are now documented with explicit read-only versus
+mutating and default-No boundaries. Owner runtime/safety acceptance and Full
+Data Verification 374/374 pass with exact state equality. Schema remains v37;
+Comprehensive User Help continues at mandatory v50.4 for exhaustive
+control/field coverage and final parent acceptance.
+
 # v50.2.4 - Contextual Help Coverage
 
 Comprehensive per-tab Help coverage is complete. Twenty-two top-level and

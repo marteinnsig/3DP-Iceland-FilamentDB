@@ -4,10 +4,20 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v44.6.2 — Canonical Measurement Date Foundation
+- **Current runtime-accepted release:** v50.3.0 — Safety and Recovery Help
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current candidate:** None — next bounded item is selected from the feedback log
+- **Current candidate:** None — v50.4 exhaustive control/field Help audit is next
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
+
+## Download the Windows application
+
+- [Download the latest Windows installer](https://www.iskort.is/3dp/downloads/3DPIceland-Setup-x64.exe)
+- [Download the latest portable ZIP](https://www.iskort.is/3dp/downloads/3DPIceland-Portable-x64.zip)
+- [Open the downloads page](https://www.iskort.is/3dp/downloads/)
+
+The stable installer and portable links always point to the latest explicitly
+published application release. Application publishing remains a separate,
+guarded, default-No workflow.
 
 ## What this project is
 
@@ -114,13 +124,18 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 43.8.9 is the current canonical security-maintenance release. It preserves the v43.8.8 runtime and deployment contracts while updating the net9 SQLite provider and explicitly selecting a SQLite native bundle newer than the vulnerable 2.1.10/2.1.11 line. Clean-profile update, committed transaction, restored-data operation and Verification Center 296/296 were runtime accepted in a snapshot-isolated VM.
+Version 50.3.0 is the current canonical runtime-accepted release. It adds
+guarded safety, recovery, Verification, Diagnostics, update/publishing and
+troubleshooting Help with Full Data Verification 374/374.
 
-The clean-install profile contains no material dataset and no private FTPS identity. SQLite is never restored automatically by application update recovery.
+The current roadmap increment is v50.4 — Exhaustive UI Control and Field Help
+Audit and Final Acceptance. Parent v50 cannot close until every supported
+control and editable field has explicit Help ownership and accepted coverage.
 
-Website and application publishing remain explicit, credential-scoped and default-No.
-
-The optional **v40.17.5 — Manufacturer Submission Server Handoff** is on the backburner. It can later replace the browser email handoff with a governed server endpoint and native intake queue while preserving the v40.17.4 form contract.
+The clean-install profile contains no material dataset or private FTPS
+identity. SQLite is never restored automatically by application update
+recovery. Website and application publishing remain explicit,
+credential-scoped and default-No.
 
 ## Measurement scope
 

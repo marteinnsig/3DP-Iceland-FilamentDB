@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v50.3.0 - Safety and Recovery Help
+
+Eighteen detailed destinations cover Recovery, Verification, Diagnostics,
+storage, guarded updates, application/Website publishing safety and
+symptom-led troubleshooting. Runtime support windows expose stable read-only
+inspection contracts while restore, recalculation, update and live publishing
+remain blocked in smoke. Debug/Release, security, documentation and disposable
+Full Data Verification 374/374 pass with exact state equality. Owner
+runtime/safety acceptance passes. Schema remains v37; parent v50 continues at
+the mandatory exhaustive v50.4 audit.
+
 ## v50.2.4 - Contextual Help Coverage
 
 All 22 top-level and 16 nested tabs expose unique stable navigation IDs.

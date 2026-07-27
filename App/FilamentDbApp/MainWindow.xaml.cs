@@ -1936,6 +1936,7 @@ public partial class MainWindow : Window
             MinHeight = 560,
             WindowStartupLocation = WindowStartupLocation.CenterOwner
         };
+        AutomationProperties.SetAutomationId(window, "RecoveryCenterWindow");
         var root = new DockPanel { Margin = new Thickness(10) };
         var toolbar = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 8) };
         var status = new TextBlock { Text = "Loading local SQLite backups…", VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(8, 0, 0, 0) };
@@ -1956,6 +1957,10 @@ public partial class MainWindow : Window
             CanUserAddRows = false, CanUserDeleteRows = false, HeadersVisibility = DataGridHeadersVisibility.Column,
             GridLinesVisibility = DataGridGridLinesVisibility.Horizontal
         };
+        AutomationProperties.SetAutomationId(grid, "RecoveryBackupCatalog");
+        AutomationProperties.SetAutomationId(status, "RecoveryStatus");
+        AutomationProperties.SetAutomationId(details, "RecoverySelectedDetails");
+        AutomationProperties.SetAutomationId(glossary, "RecoveryCompatibilitySummary");
         void Column(string header, string property, double width) => grid.Columns.Add(new DataGridTextColumn { Header = header, Binding = new Binding(property), Width = width });
         Column("File", nameof(DatabaseBackupInfo.FileName), 260);
         Column("Type", nameof(DatabaseBackupInfo.BackupKind), 185);
@@ -1969,20 +1974,21 @@ public partial class MainWindow : Window
         Column("Settings", nameof(DatabaseBackupInfo.SettingsRows), 75);
         Column("Compatibility", nameof(DatabaseBackupInfo.CompatibilityStatus), 170);
 
-        Button ActionButton(string text)
+        Button ActionButton(string text, string automationId)
         {
             var button = new Button { Content = text, Padding = new Thickness(10, 5, 10, 5), Margin = new Thickness(0, 0, 8, 0) };
+            AutomationProperties.SetAutomationId(button, automationId);
             toolbar.Children.Add(button);
             return button;
         }
-        var refreshButton = ActionButton(BackupAndRecoveryCenterActions[0]);
-        var verifyButton = ActionButton(BackupAndRecoveryCenterActions[1]);
-        var restoreButton = ActionButton(BackupAndRecoveryCenterActions[2]);
-        var manualBackupButton = ActionButton(BackupAndRecoveryCenterActions[3]);
-        var restoreFileButton = ActionButton(BackupAndRecoveryCenterActions[4]);
-        var exportExcelButton = ActionButton(BackupAndRecoveryCenterActions[5]);
-        var restoreExcelButton = ActionButton(BackupAndRecoveryCenterActions[6]);
-        var openButton = ActionButton(BackupAndRecoveryCenterActions[7]);
+        var refreshButton = ActionButton(BackupAndRecoveryCenterActions[0], "RefreshRecoveryCatalog");
+        var verifyButton = ActionButton(BackupAndRecoveryCenterActions[1], "VerifySelectedRecoveryBackup");
+        var restoreButton = ActionButton(BackupAndRecoveryCenterActions[2], "RestoreSelectedRecoveryBackup");
+        var manualBackupButton = ActionButton(BackupAndRecoveryCenterActions[3], "CreateRecoverySqliteBackup");
+        var restoreFileButton = ActionButton(BackupAndRecoveryCenterActions[4], "RestoreRecoverySqliteFile");
+        var exportExcelButton = ActionButton(BackupAndRecoveryCenterActions[5], "CreateRecoveryExcelBackup");
+        var restoreExcelButton = ActionButton(BackupAndRecoveryCenterActions[6], "RestoreRecoveryExcelBackup");
+        var openButton = ActionButton(BackupAndRecoveryCenterActions[7], "OpenRecoveryStorageFolder");
         toolbar.Children.Add(status);
 
         async Task RefreshAsync()
@@ -13351,6 +13357,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             WindowStartupLocation = WindowStartupLocation.CenterOwner,
             Background = Brushes.White
         };
+        AutomationProperties.SetAutomationId(window, "SystemDiagnosticsWindow");
 
         var root = new DockPanel();
 
@@ -13374,8 +13381,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             FontSize = 13,
             Margin = new Thickness(10)
         };
+        AutomationProperties.SetAutomationId(reportBox, "SystemDiagnosticsReportText");
 
-        Button MakeButton(string text, RoutedEventHandler handler)
+        Button MakeButton(string text, string automationId, RoutedEventHandler handler)
         {
             var button = new Button
             {
@@ -13383,12 +13391,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 Padding = new Thickness(10, 4, 10, 4),
                 Margin = new Thickness(0, 0, 8, 0)
             };
+            AutomationProperties.SetAutomationId(button, automationId);
             button.Click += handler;
             return button;
         }
 
-        toolbar.Children.Add(MakeButton("Refresh", (_, _) => reportBox.Text = BuildSystemDiagnosticsReport()));
-        toolbar.Children.Add(MakeButton("Run Integrity Check", (_, _) =>
+        toolbar.Children.Add(MakeButton("Refresh", "RefreshSystemDiagnostics",
+            (_, _) => reportBox.Text = BuildSystemDiagnosticsReport()));
+        toolbar.Children.Add(MakeButton("Run Integrity Check", "RunSystemIntegrityCheck", (_, _) =>
         {
             try
             {
@@ -13402,7 +13412,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 MessageBox.Show(window, ex.Message, "Integrity check failed", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }));
-        toolbar.Children.Add(MakeButton("Recalculate All Materials", (_, _) =>
+        toolbar.Children.Add(MakeButton("Recalculate All Materials", "RecalculateAllMaterials", (_, _) =>
         {
             ApplyNativeTensileComputedFields(_nativeTensileRows);
             ApplyNativeImpactComputedFields(_nativeImpactRows);
@@ -13410,7 +13420,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             UpdateNativeWorkflowStatus("Recalculated native measurement results", saved: true);
             reportBox.Text = BuildSystemDiagnosticsReport();
         }));
-        toolbar.Children.Add(MakeButton("Export Report", (_, _) => ExportDiagnosticsReport(reportBox.Text, isVerificationReport: false)));
+        toolbar.Children.Add(MakeButton("Export Report", "ExportSystemDiagnostics",
+            (_, _) => ExportDiagnosticsReport(reportBox.Text, isVerificationReport: false)));
 
         DockPanel.SetDock(toolbar, Dock.Top);
         root.Children.Add(toolbar);
@@ -17192,6 +17203,70 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             v5024ContextualHelpReady
                 ? "22 unique top-level and 16 unique nested tab AutomationIds resolve to stable central Help destinations; current-view F1/menu, Tools validation Help and Website menu retirement contracts are present."
                 : $"Contextual Help coverage failed: top-level {v5024TopLevelTabs.Count}/22, nested {v5024NestedTabs.Count}/16, top mappings {v5024TopLevelMappingsReady}, nested mappings {v5024NestedMappingsReady}, menu {v5024MenuHelpReady}."));
+        var v503RequiredHelpIds = new[]
+        {
+            "menu.file-recovery", "menu.storage", "menu.updates", "menu.release-publishing",
+            "recovery.overview", "recovery.catalog-and-verification", "recovery.sqlite-backup-and-restore",
+            "recovery.excel-disaster-recovery", "verification.overview", "diagnostics.overview",
+            "updates.guarded-apply-and-recovery", "publishing.application-release-and-update",
+            "publishing.website-safety", "troubleshooting.verification-fail",
+            "troubleshooting.backup-restore-blocked", "troubleshooting.interrupted-update",
+            "troubleshooting.publish-failure", "troubleshooting.support-evidence"
+        };
+        var v503HelpCoverageReady =
+            v503RequiredHelpIds.Length == 18 &&
+            v503RequiredHelpIds.Distinct(StringComparer.Ordinal).Count() == 18 &&
+            v503RequiredHelpIds.All(requiredId =>
+            {
+                var section = helpSections.SingleOrDefault(item => item.Id == requiredId);
+                return section is not null &&
+                       section.Body.Length >= 300 &&
+                       section.Body.Replace("\r\n", "\n", StringComparison.Ordinal)
+                           .Contains("\n\n", StringComparison.Ordinal);
+            });
+        var v503SafetyMarkersReady =
+            helpSections.Single(section => section.Id == "verification.overview").Body.Contains(
+                "Recalculate Native Results is mutating",
+                StringComparison.Ordinal) &&
+            helpSections.Single(section => section.Id == "diagnostics.overview").Body.Contains(
+                "Recalculate All Materials is mutating",
+                StringComparison.Ordinal) &&
+            helpSections.Single(section => section.Id == "updates.guarded-apply-and-recovery").Body.Contains(
+                "never automatically restore SQLite",
+                StringComparison.Ordinal) &&
+            helpSections.Single(section => section.Id == "menu.release-publishing").Body.Contains(
+                "distinct from Publish Website Production",
+                StringComparison.Ordinal) &&
+            helpSections.Single(section => section.Id == "troubleshooting.support-evidence").Body.Contains(
+                "Never include FTPS passwords",
+                StringComparison.Ordinal);
+        var v503RuntimeEntryPointsReady =
+            BackupAndRecoveryCenterActions.Length == 8 &&
+            typeof(MainWindow).GetMethod(
+                "ShowRecoveryCenter_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                "ShowVerificationCenterWindow",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                "ShowSystemDiagnosticsWindow",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                "StartGuardedApplicationUpdate",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                "StartInterruptedApplicationUpdateRecovery",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        var v503SafetyHelpReady =
+            helpContractReady &&
+            v503HelpCoverageReady &&
+            v503SafetyMarkersReady &&
+            v503RuntimeEntryPointsReady;
+        checks.Add(new VerificationCheck("v50.3 safety, recovery and troubleshooting Help contract",
+            v503SafetyHelpReady,
+            v503SafetyHelpReady
+                ? "18 substantive safety/recovery Help destinations preserve read-only versus mutating, default-No, no-auto-SQLite-restore, application/Website publishing and secret-safe evidence boundaries."
+                : $"v50.3 Help failed: destinations {v503HelpCoverageReady}, safety markers {v503SafetyMarkersReady}, runtime entry points {v503RuntimeEntryPointsReady}."));
         var zeroDataProfileContractReady =
             IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
             IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&

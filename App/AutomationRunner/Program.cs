@@ -154,6 +154,51 @@ internal static class Program
             Record("contextual-help-navigation", true,
                 "Current-view menu resolved representative top-level and nested tabs in the central Help window");
 
+            Expand(FindById(main, "FileMenu"), application.Id);
+            Invoke(FindById(main, "OpenRecoveryCenter"), application.Id);
+            var recoveryCenter = WaitForElement(
+                AutomationElement.RootElement,
+                new AndCondition(
+                    new PropertyCondition(AutomationElement.ProcessIdProperty, application.Id),
+                    new PropertyCondition(AutomationElement.AutomationIdProperty, "RecoveryCenterWindow")),
+                "Recovery Center");
+            AssertNoUnexpectedWindows(application.Id, "MainWindow", "RecoveryCenterWindow");
+            Require(
+                FindById(recoveryCenter, "RecoveryBackupCatalog").Current.ControlType == ControlType.DataGrid &&
+                FindById(recoveryCenter, "RefreshRecoveryCatalog").Current.ControlType == ControlType.Button &&
+                FindById(recoveryCenter, "VerifySelectedRecoveryBackup").Current.ControlType == ControlType.Button &&
+                FindById(recoveryCenter, "RestoreSelectedRecoveryBackup").Current.ControlType == ControlType.Button &&
+                FindById(recoveryCenter, "CreateRecoverySqliteBackup").Current.ControlType == ControlType.Button &&
+                FindById(recoveryCenter, "RestoreRecoveryExcelBackup").Current.ControlType == ControlType.Button,
+                "Recovery Center did not expose the governed catalog/read-only lookup and guarded action boundaries.");
+            Record("recovery-center-read-only-inspection", true,
+                "Opened and inspected catalog, verify, backup and restore controls without invoking a mutating action");
+            CloseWindow(recoveryCenter, application.Id);
+
+            Expand(FindById(main, "HelpMenu"), application.Id);
+            Invoke(FindById(main, "OpenSystemDiagnostics"), application.Id);
+            var diagnostics = WaitForElement(
+                AutomationElement.RootElement,
+                new AndCondition(
+                    new PropertyCondition(AutomationElement.ProcessIdProperty, application.Id),
+                    new PropertyCondition(AutomationElement.AutomationIdProperty, "SystemDiagnosticsWindow")),
+                "System Diagnostics");
+            AssertNoUnexpectedWindows(application.Id, "MainWindow", "SystemDiagnosticsWindow");
+            var diagnosticsReport = FindById(diagnostics, "SystemDiagnosticsReportText")
+                .GetCurrentPropertyValue(ValuePattern.ValueProperty)?.ToString() ?? string.Empty;
+            Require(
+                FindById(diagnostics, "RefreshSystemDiagnostics").Current.ControlType == ControlType.Button &&
+                FindById(diagnostics, "RunSystemIntegrityCheck").Current.ControlType == ControlType.Button &&
+                FindById(diagnostics, "RecalculateAllMaterials").Current.ControlType == ControlType.Button &&
+                FindById(diagnostics, "ExportSystemDiagnostics").Current.ControlType == ControlType.Button &&
+                diagnosticsReport.Contains(
+                    "Diagnostics do not modify application files",
+                    StringComparison.Ordinal),
+                "System Diagnostics did not expose read-only evidence and the distinct mutating recalculation control.");
+            Record("system-diagnostics-read-only-inspection", true,
+                "Opened and inspected refresh, integrity, recalculation and export boundaries without invoking them");
+            CloseWindow(diagnostics, application.Id);
+
             SelectTab(main, "ExperimentalTestingTab", application.Id);
             var experimentalReadiness = FindById(main, "ExperimentalPublicationReadiness").Current.Name;
             Require(
@@ -328,10 +373,31 @@ internal static class Program
                     "YouTube calendar reference",
                     StringComparison.Ordinal),
                 "Central Help did not expose the local-only creator calendar boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("never automatically restore SQLite");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Guarded update apply and recovery reference",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the no-auto-SQLite-restore update boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("Recalculate Native Results is mutating");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Verification Center reference",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the Verification refresh versus recalculation boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("Never include FTPS passwords");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Support evidence collection reference",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the secret-safe support evidence boundary.");
             Record(
                 "central-help",
                 true,
-                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1-v50.2.3 reference searches");
+                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1-v50.3 reference searches");
             CloseWindow(help, application.Id);
 
             Expand(FindById(main, "HelpMenu"), application.Id);
@@ -344,6 +410,11 @@ internal static class Program
                 "Verification Center");
             AssertNoUnexpectedWindows(application.Id, "MainWindow", "VerificationCenterWindow");
             Record("verification-window", true, "Verification Center opened");
+            Require(
+                FindById(verification, "RefreshVerification").Current.ControlType == ControlType.Button &&
+                FindById(verification, "RecalculateNativeResults").Current.ControlType == ControlType.Button &&
+                FindById(verification, "ExportVerificationReport").Current.ControlType == ControlType.Button,
+                "Verification Center did not expose refresh, mutating recalculation and export as distinct controls.");
             Invoke(FindById(verification, "ExportAutomationVerificationEvidence"), application.Id);
             WaitForFile(
                 IOPath.Combine(root, "evidence", "verification.json"),

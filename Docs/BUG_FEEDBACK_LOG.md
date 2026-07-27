@@ -40,16 +40,44 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 20 |
-| In progress | 0 |
+| Open | 21 |
+| In progress | 1 |
 | Partially solved | 2 |
 | Solved | 56 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **82** |
+| **Total tracked findings** | **84** |
 
 ## Tracked findings
+
+Date: 2026-07-27
+Area: Application menu / Navigation and command discovery
+Type: Workflow friction / UI polish
+Severity: Idea
+Status: Open
+What happened: The application menu has not received a complete usefulness review against the current tab structure and workflows.
+Useful navigation shortcuts may be missing, while retained items may now be redundant, stale or lower value.
+Expected behavior: Inventory every menu item and destination, propose high-value commands that select and focus the correct tab, and
+identify possible retirement candidates. Preserve guarded actions and do not remove accepted paths before impact and ownership review.
+Steps to reproduce: Compare the current application menu with all supported top-level and nested tabs and common user workflows.
+Screenshot / export / report attached: Owner workflow idea recorded on 2026-07-27.
+Resolution: Planned as research-first v54.0 — Application Menu and Navigation Review, after the recorded v50-v53 sequence.
+Verification evidence: Not implemented; roadmap scope, safety boundaries and completion condition are recorded.
+
+Date: 2026-07-27
+Area: GitHub README / Release and download discovery
+Type: Workflow friction / Documentation
+Severity: Important
+Status: In progress
+What happened: The repository README still advertises older v44.6.2/v43.8.9 release states and does not provide prominent stable
+installer or portable download links.
+Expected behavior: At each major-version closure, align README release/development text with the canonical Master Roadmap and retain
+stable links for the downloads page, latest Windows installer and portable ZIP. README drift must block major-milestone closure.
+Steps to reproduce: Open the GitHub repository README and compare its release identity with the current canonical roadmap.
+Screenshot / export / report attached: Owner GitHub review on 2026-07-27.
+Resolution: Root README and AGENTS release-governance rule updated in the current documentation workflow; commit/closure pending.
+Verification evidence: Stable governed routes are documented; documentation/diff checks pending in the parent workflow.
 
 Date: 2026-07-27
 Area: Purchase Orders / Landed-cost currency
@@ -653,6 +681,12 @@ v50.2 milestone are canonical and complete; the v50 parent remains In progress a
 Owner review clarified that the accepted tab-level Help is not yet exhaustive at individual button, input and editable-grid-cell
 level. Authoritative v50.4 now requires a complete UI/control/field ledger, exact Help ownership, drift detection and zero unexplained
 supported controls or editable fields. v50.3 remains next; parent v50 cannot close until v50.4 receives final owner acceptance.
+The v50.3.0 candidate adds 18 safety/recovery/troubleshooting references and read-only runtime inspection for Recovery, Diagnostics and
+Verification. Initial smoke found the Diagnostics window ID on Verification; corrected profile `20260727120029-14c0556f` passes
+374/374 and exact logical/business-state equality. Owner safety/recovery acceptance was the remaining gate.
+Owner accepted v50.3.0 safety/recovery Help and runtime inspection on 2026-07-27. Owner also requested future runtime checklists to
+state exact location, action, expected result and forbidden adjacent actions instead of assuming whether a step belongs in Help or the
+actual workflow. This handoff format is now a repository rule. v50.4 becomes authoritative; parent v50 remains In progress.
 What happened: The application has many connected workflows, but no single structured user guide explains what every tab does or how
 data should move through the platform from purchase entry to measurements, reports and website publication.
 Expected behavior: Provide a well-organized user-help system with a start-to-finish workflow, per-tab reference, field-entry guidance,

@@ -1202,6 +1202,238 @@ internal static class HelpContentCatalog
             """,
             "Help menu", "Documentation", "Help for Current View", "F1", "Verification Center", "System Diagnostics"),
         new(
+            "menu.file-recovery", "Safety and support", "File and Recovery menu reference",
+            "Open governed backup/recovery, choose storage deliberately or exit safely.",
+            """
+            Backup and Recovery Center opens the local backup catalog and guarded recovery actions. It does not restore anything merely
+            by opening. Choose Storage Folder is a separate mutating action that moves the canonical SQLite database and changes future
+            storage ownership. Exit closes the application after normal pending-save handling.
+
+            Create and verify a backup before moving storage or restoring data. Never choose the canonical owner database as an
+            automation target. Recovery and storage changes can affect the entire application, so confirm the exact source, destination
+            and retained evidence rather than treating File-menu actions as ordinary navigation.
+            """,
+            "File menu", "Recovery Center", "Choose Storage Folder", "Exit", "canonical SQLite"),
+        new(
+            "menu.storage", "Safety and support", "Storage ownership reference",
+            "Distinguish changing the canonical storage folder from opening it.",
+            """
+            Choose Storage Folder moves the current canonical database into an owner-selected folder and reopens storage from that
+            location. It is not a folder shortcut. Back up first, select a stable local owner-controlled location and verify the
+            resulting database path before continuing work.
+
+            Open Storage Folder only opens the folder containing the active database. It creates the directory if missing but does not
+            move or restore SQLite. Diagnostics reports the active database path and folder; use those values when confirming which
+            profile is actually open.
+            """,
+            "storage", "move database", "Open Storage Folder", "database path", "backup"),
+        new(
+            "menu.updates", "Safety and support", "Application update menu reference",
+            "Inspect signed packages, discover remote updates and apply only through the guarded updater.",
+            """
+            Update Readiness inspects an owner-selected signed ZIP for readable package, manifest, exact inventory, hashes, trusted
+            signature, version policy and SQLite schema compatibility. Inspection is read-only, but a ready result offers a separate
+            default-No guarded Apply confirmation.
+
+            Check for Updates queries the governed HTTPS feed. Download requires confirmation and verifies bytes, hash, signature,
+            version and schema before Apply is offered. Apply creates a verified SQLite backup and last-known-good application snapshot,
+            closes the app and uses the external updater. SQLite is never silently restored.
+            """,
+            "updates", "readiness", "signed package", "Check for Updates", "default-No", "SQLite backup"),
+        new(
+            "menu.release-publishing", "Safety and support", "Application release publishing menu reference",
+            "Publish governed installers or signed updates separately from Website publishing.",
+            """
+            Publish Application Release consumes a verified application-deployment-plan.json and requires default-No confirmation before
+            live FTPS. Versioned installer/portable artifacts activate first; stable download routes activate last. A separate remote
+            application-release backup is retained.
+
+            Publish Application Update consumes a locally verified latest.json and publishes the signed package before activating
+            /updates/latest.json last. Both actions require the governed stored FTPS credential. They do not change Website deployment
+            manifests or SQLite and are distinct from Publish Website Production.
+            """,
+            "release publishing", "application deployment plan", "latest.json", "FTPS", "stable routes last"),
+        new(
+            "recovery.overview", "Safety and support", "Recovery Center reference",
+            "Inspect local backup evidence and choose the correct guarded recovery path.",
+            """
+            Recovery Center loads a read-only SQLite backup catalog with file, type, modified time, schema, integrity, row counts and
+            compatibility. Select a row to read its exact path and compatibility detail. Opening or refreshing the center changes no
+            business data.
+
+            Restore Selected, Restore SQLite Backup and Restore Excel Backup are destructive recovery boundaries. Verify the source,
+            review warnings and accept the default-No confirmation only with explicit restore intent. Successful database restore
+            creates pre/post evidence and restarts the application.
+            """,
+            "Recovery Center", "catalog", "compatibility", "restore", "restart"),
+        new(
+            "recovery.catalog-and-verification", "Safety and support", "Recovery catalog and verification reference",
+            "Interpret backup compatibility and run isolated migration verification.",
+            """
+            Refresh inventories local SQLite backups. Ready means integrity/schema and canonical Material structure are accepted.
+            Ready — empty profile is healthy and explicitly restorable but contains zero Materials. Migration required needs the
+            isolated dry-run; legacy/incomplete, newer/incompatible and corrupt/unreadable remain blocked.
+
+            Verify Selected runs compatibility and supported migration checks without replacing the active database. A PASS makes that
+            exact candidate eligible; it does not prove the backup contains the business data you intend. Confirm Material and
+            measurement counts plus the full path before Restore Selected.
+            """,
+            "backup catalog", "Verify Selected", "empty profile", "migration required", "blocked"),
+        new(
+            "recovery.sqlite-backup-and-restore", "Safety and support", "SQLite backup and restore reference",
+            "Create exact local backups and restore only verified compatible SQLite candidates.",
+            """
+            Create SQLite Backup writes and verifies a manual backup of the active canonical database. Preserve it in the governed
+            backup location before risky owner actions. Restore Selected uses the catalog candidate; Restore SQLite Backup lets the
+            owner select an external SQLite file and then applies the same compatibility guards.
+
+            Restore creates a verified pre-restore recovery backup, replaces the active database, validates the result, records a
+            post-restore evidence backup and restarts. A healthy empty-profile restore explicitly replaces current business data with
+            zero Materials. Cancellation or failed verification leaves restore blocked.
+            """,
+            "SQLite backup", "Restore Selected", "pre-restore", "post-restore", "empty profile"),
+        new(
+            "recovery.excel-disaster-recovery", "Safety and support", "Excel disaster-recovery reference",
+            "Use governed Excel packages only as explicit disaster recovery, never as the live source of truth.",
+            """
+            Create Excel Backup exports the governed recovery workbook/package from canonical SQLite. It is retained recovery evidence,
+            not the database used by normal workflows. Inspect the output and keep it with its release/schema context.
+
+            Restore Excel Backup validates the governed package, requires explicit confirmation, creates recovery evidence, restores
+            canonical application tables and restarts. Do not use an ordinary spreadsheet or legacy working copy as a restore source.
+            SQLite remains the live source of truth before and after a successful governed restore.
+            """,
+            "Excel backup", "disaster recovery", "governed package", "SQLite source of truth", "restart"),
+        new(
+            "verification.overview", "Safety and support", "Verification Center reference",
+            "Interpret PASS/FAIL, recalculate deliberately and retain release evidence.",
+            """
+            Refresh rebuilds the report read-only. Recalculate Native Results is mutating: it recalculates and saves native Tensile,
+            Impact and Stiffness outputs from their source inputs and governed Settings. Use it only when recalculation is intended, not
+            merely to refresh the screen.
+
+            Export Report writes owner-selected TXT evidence. Automation Evidence exists only in a disposable authorized profile.
+            Full Data Verification PASS proves applicable deterministic contracts; READY FOR PUBLISH adds publication readiness.
+            Neither replaces manual HTML/PDF/UI visual acceptance or proves a live transfer.
+            """,
+            "Verification Center", "PASS", "FAIL", "Recalculate Native Results", "READY FOR PUBLISH", "evidence"),
+        new(
+            "diagnostics.overview", "Safety and support", "System Diagnostics reference",
+            "Collect environment, database, update and integrity evidence without confusing refresh with recalculation.",
+            """
+            Refresh rebuilds the read-only diagnostics report. Run Integrity Check executes SQLite integrity_check and reports the
+            result without repairing data. Export Report writes the displayed support evidence to an owner-selected file.
+
+            Recalculate All Materials is mutating: it recalculates and saves native measurement results. Diagnostics also reports the
+            running version, executable/database paths, ECB cache ownership and update transaction evidence. Export diagnostics before
+            changing state when investigating a reproducible failure.
+            """,
+            "System Diagnostics", "integrity check", "Recalculate All Materials", "export", "database path"),
+        new(
+            "updates.guarded-apply-and-recovery", "Safety and support", "Guarded update apply and recovery reference",
+            "Understand snapshots, external apply, health acknowledgement, rollback and interrupted recovery.",
+            """
+            Guarded Apply re-verifies extraction, saves pending Material changes, creates a verified SQLite backup and stages governed
+            application files. The external helper waits for shutdown, snapshots last-known-good files, installs, restarts and requires
+            startup health acknowledgement. Failed launch or health verification rolls application files back.
+
+            Interrupted transaction detection is default-No. Recovery validates durable request/live-directory identity before running
+            the external helper. Transaction state, snapshots and backups remain evidence. SQLite backup is evidence only: update apply,
+            rollback and recovery never automatically restore SQLite.
+            """,
+            "guarded update", "health acknowledgement", "rollback", "interrupted", "never automatically restore SQLite"),
+        new(
+            "publishing.application-release-and-update", "Safety and support", "Application publishing safety reference",
+            "Keep application artifacts, signed update feed and live activation order governed.",
+            """
+            Application Release publishing verifies the deployment plan and exact stable/versioned paths before a default-No live FTPS
+            confirmation. Versioned artifacts transfer first, stable installer/portable routes last, and replaced remote files are
+            retained in an application-release backup.
+
+            Application Update publishing verifies latest.json and its signed package, uploads immutable versioned content first and
+            activates the stable latest feed last. Retain local plan/feed, hashes, signatures and transfer evidence. These workflows are
+            separate from Website Production and cannot be inferred from a successful Website transfer.
+            """,
+            "application publishing", "versioned first", "stable last", "signed update", "transfer evidence"),
+        new(
+            "publishing.website-safety", "Safety and support", "Website publishing safety reference",
+            "Follow Preview, local Production, FTPS Test and guarded live Production as separate stages.",
+            """
+            Generate Preview is local and isolated. Generate Production validates, confirms and backs up local index output but performs
+            no FTPS. Publish Website Test uses the isolated remote test route. Publish Website Production regenerates Production and
+            requires its own second default-No live confirmation.
+
+            Require Verification PASS and READY FOR PUBLISH where applicable, inspect representative HTML/PDF, retain manifests,
+            publish plans and transfer logs, then verify the live HTTPS site independently. Restore Production backup is also live and
+            guarded; it is not SQLite recovery.
+            """,
+            "Website publishing", "Preview", "Production", "FTPS Test", "READY FOR PUBLISH", "live"),
+        new(
+            "troubleshooting.verification-fail", "Troubleshooting", "Troubleshooting Verification FAIL",
+            "Identify the exact failed contract before recalculating or publishing.",
+            """
+            Refresh Verification and locate the first FAIL with its detail; also check profile name and applicable/pass/fail counts.
+            Export Verification and System Diagnostics before changing data. A FAIL may be identity, relationship, schema, calculation,
+            publication or release-contract evidence rather than a stale screen.
+
+            Correct the source at its owning workflow. Use Recalculate only when source inputs or governed Settings require it, because
+            recalculation writes results. Re-run Full Verification and require PASS; do not bypass a failure or describe the build as
+            READY FOR PUBLISH while an applicable check fails.
+            """,
+            "Verification FAIL", "first failed contract", "recalculate", "export evidence", "PASS"),
+        new(
+            "troubleshooting.backup-restore-blocked", "Troubleshooting", "Troubleshooting blocked backup or restore",
+            "Use compatibility evidence to distinguish empty, migratable, incompatible and corrupt candidates.",
+            """
+            Select the candidate and read its full path, schema, integrity, counts, compatibility status and detail. Run Verify Selected
+            for a supported older schema. Ready — empty profile is intentionally empty; newer/incompatible, legacy/incomplete and
+            corrupt/unreadable candidates remain blocked.
+
+            Do not rename/copy a file to bypass classification and never restore the owner database through automation. Preserve the
+            candidate and diagnostics, create a fresh manual backup of the active database, and investigate missing structure or
+            unsupported schema before attempting another guarded restore.
+            """,
+            "restore blocked", "compatibility", "corrupt", "newer schema", "empty profile"),
+        new(
+            "troubleshooting.interrupted-update", "Troubleshooting", "Troubleshooting interrupted application update",
+            "Preserve transaction evidence and use only the guarded recovery action for the recorded phase.",
+            """
+            Startup reports the transaction ID, phase, versions and safe recovery action. Export System Diagnostics and retain the
+            transaction directory, request/state, rollback snapshot and SQLite backup reference. Do not manually copy staged files into
+            the live application.
+
+            Guarded recovery is default-No and validates that the request targets the running installation. It may repair or roll back
+            application files and restart. SQLite is never automatically restored. If durable state/request identity is unreadable or
+            mismatched, recovery remains blocked and evidence should be retained for support.
+            """,
+            "interrupted update", "transaction phase", "guarded recovery", "rollback snapshot", "SQLite"),
+        new(
+            "troubleshooting.publish-failure", "Troubleshooting", "Troubleshooting publishing failure",
+            "Identify which generation, verification, credential or transfer stage failed.",
+            """
+            Separate local report build, Website Preview, local Production, FTPS Test, Website Production, Application Release and
+            Application Update. Read the exact log/manifest/plan and target route for the failed stage. A successful earlier stage does
+            not prove the later live stage completed.
+
+            Preserve local artifacts, hashes, backup path and transfer result. Confirm the governed host/user credential without logging
+            the password. Do not retry live publishing until validation and default-No confirmations describe the intended target.
+            After success, inspect the live HTTPS route independently.
+            """,
+            "publish failure", "stage", "credential", "transfer log", "live site"),
+        new(
+            "troubleshooting.support-evidence", "Troubleshooting", "Support evidence collection reference",
+            "Collect reproducible evidence without exposing secrets or changing the failing state first.",
+            """
+            Record the running version/release code, local time, exact action, expected result and observed message. Export Verification
+            and System Diagnostics, plus the relevant report/export/publish/update/recovery logs, manifests, plans and transaction IDs.
+            Include screenshots when layout or visible state matters.
+
+            Never include FTPS passwords, signing private keys or unrelated private data. Preserve original failure evidence before
+            recalculation, restore, retry or cleanup. State whether the profile is owner, clean/disposable or recovered and identify the
+            exact database path without attaching the canonical owner database unless explicitly governed.
+            """,
+            "support evidence", "version", "diagnostics", "logs", "screenshots", "secrets"),
+        new(
             "verification-recovery",
             "Safety and support",
             "Verification, diagnostics, backup and recovery",

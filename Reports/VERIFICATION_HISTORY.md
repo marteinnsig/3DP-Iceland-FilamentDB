@@ -1,3 +1,16 @@
+# v50.3.0 - Safety and Recovery Help
+
+Date: 2026-07-27
+
+- Eighteen safety/recovery/troubleshooting Help destinations are present.
+- Recovery, Diagnostics and Verification expose stable read-only lookup IDs.
+- Smoke invokes no restore, recalculation, update, Production or FTPS action.
+- Initial smoke found Diagnostics ID on the Verification window; corrected.
+- Profile `20260727120029-14c0556f` passes Full Data Verification 374/374 and
+  exact logical/business-state equality.
+- Owner runtime/safety acceptance passes on 2026-07-27.
+- Schema remains v37; parent v50 continues at mandatory v50.4.
+
 # v50.2.4 - Contextual Help Coverage
 
 Date: 2026-07-27

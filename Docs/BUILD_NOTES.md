@@ -1,4 +1,26 @@
-# Current Build Notes - v50.2.4
+# Current Build Notes - v50.3.0
+
+## Safety and Recovery Help
+
+Eighteen searchable destinations now cover File/Recovery, storage ownership,
+signed update discovery/apply/recovery, application release/update publishing,
+Website safety, Recovery Center, Verification, Diagnostics and five
+symptom-led troubleshooting paths.
+
+The content explicitly separates read-only Refresh, integrity and evidence
+actions from mutating recalculation, restore, storage move, guarded update and
+live FTPS. Application publishing remains distinct from Website publishing;
+SQLite backup is retained update evidence and is never restored automatically.
+
+Runtime-built Recovery and Diagnostics surfaces plus their safety-relevant
+actions have stable AutomationIds. Smoke opens and inspects them without
+invoking any mutating action, then exports Verification evidence.
+
+The first smoke timed out because `SystemDiagnosticsWindow` was accidentally
+assigned to the Verification window initializer. The ID was moved to the
+correct runtime-built Diagnostics window. Profile
+`20260727120029-14c0556f` passes 374/374 and exact state equality. Owner
+runtime/safety acceptance passes on 2026-07-27; parent v50 continues at v50.4.
 
 ## Contextual Help Coverage
 

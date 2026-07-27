@@ -156,3 +156,33 @@
   acceptance work inside the same major milestone.
 - Never renumber completed, canonical or runtime-accepted releases. Roadmap
   renumbering applies only to unstarted planning slots.
+
+## GitHub README release hygiene
+
+- Before closing each major-version milestone, review and update the repository
+  root `README.md` in the same accepted release workflow.
+- Align its current runtime-accepted release and development-focus text with
+  `Docs/Roadmaps/MASTER_ROADMAP.md`; never advertise an unaccepted candidate as
+  canonical.
+- Keep stable public links for the downloads page, latest Windows installer and
+  latest portable ZIP visible near the top of the README.
+- Use the governed stable routes rather than a version-specific artifact URL:
+  `https://www.iskort.is/3dp/downloads/`,
+  `https://www.iskort.is/3dp/downloads/3DPIceland-Setup-x64.exe` and
+  `https://www.iskort.is/3dp/downloads/3DPIceland-Portable-x64.zip`.
+- Verify README links and release identity during major-version documentation
+  closure. README drift blocks closing the parent major milestone.
+
+## Owner runtime test handoff clarity
+
+- Write owner test checklists as exact click-by-click instructions suitable for
+  a user who does not know whether a step belongs in Help, a tab, a menu or a
+  separate runtime window.
+- For every step state: **Where**, **Action**, **Expected result**, and
+  **Do not click** when adjacent destructive or live controls exist.
+- Say explicitly when the user should search inside the Help window versus
+  navigate to and operate the actual application surface.
+- Name the full menu/tab path and the exact visible control label.
+- Keep read-only inspection steps separate from mutating runtime acceptance.
+- Never ask the owner to infer whether Restore, Recalculate, Update, Production,
+  FTPS, Delete or another guarded action is authorized.

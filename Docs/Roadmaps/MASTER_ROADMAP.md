@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v50.2.4 — Contextual Help Coverage**
+Current canonical release: **v50.3.0 — Safety and Recovery Help**
 
-Last runtime-accepted baseline: **v50.2.4 — Contextual Help Coverage**
+Last runtime-accepted baseline: **v50.3.0 — Safety and Recovery Help**
 
-Current application candidate: **None; v50.3 is planned but not implemented**
+Current application candidate: **None; v50.4 is planned but not implemented**
 
-Current roadmap increment: **v50.3 — Troubleshooting, Recovery and Publishing Safety Acceptance**
+Current roadmap increment: **v50.4 — Exhaustive UI Control and Field Help Audit and Final Acceptance**
 
-Current acceptance note: v50.2.4 and parent v50.2 are runtime/UI accepted with Verification 373/373; parent v50 remains active.
+Current acceptance note: v50.3.0 is runtime/safety accepted with Verification 374/374; parent v50 remains active.
 
-Next note: v50.3 safety work is followed by the exhaustive v50.4 control/field Help audit; only v50.4 may close parent v50.
+Next note: v50.4 must prove zero unexplained supported controls/editable fields before parent v50 may close.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -39,6 +39,8 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Planned |
 
 | v53 | Governed Landed-cost Currency | ★★★★☆ | Planned |
+
+| v54 | Application Menu and Navigation Review | ★★★☆☆ | Planned |
 
 ## Reconciliation of the older plans
 
@@ -2095,14 +2097,24 @@ to unstarted authoritative planning slots.
   - Treat navigation coverage as startup/rendering evidence, not a claim that every workflow action was executed.
   - Completion condition: coverage matrix is complete, every link resolves to the intended section and owner accepts full v50.2.
 - **v50.3 — Troubleshooting, Recovery and Publishing Safety Acceptance**
-  - State: Current authoritative increment; research/implementation not started.
+  - State: Complete, canonical and runtime/safety accepted as v50.3.0.
   - Add symptom-led troubleshooting, diagnostics collection, backup/recovery boundaries, Verification interpretation and safe
     Preview/Production/FTPS guidance.
+  - Add stable menu references for File/Recovery, storage, update discovery/apply and application release/update publishing.
+  - Add Recovery Center overview plus catalog/verification, SQLite restore and Excel disaster-recovery references.
+  - Distinguish read-only refresh/integrity/report actions from mutating recalculation in Verification and Diagnostics.
+  - Explain Full Verification PASS, READY FOR PUBLISH, visual acceptance and retained TXT/JSON evidence without conflating them.
+  - Explain signed update readiness/download/apply, interrupted transaction recovery, rollback and the no-auto-SQLite-restore rule.
+  - Keep application release/update FTPS distinct from Website FTPS; document versioned-first and stable-route/feed-last activation.
+  - Add symptom-led paths for Verification FAIL, blocked backup, interrupted update, publish failure and support evidence collection.
+  - Add stable AutomationIds to runtime support windows/actions needed for safe deterministic lookup; do not authorize mutations.
+  - Extend smoke with read-only open/inspect/close checks for Recovery, Verification and Diagnostics plus exact state equality.
+  - Update Verification for required IDs, safety markers, runtime entry points and read-only automation boundaries.
   - Preserve mandatory crash, security, recovery and support evidence plus explicit default-No publishing.
   - Completion condition: documentation/static/security gates, Full Data Verification and owner safety/recovery acceptance pass.
   - Do not close parent v50 after v50.3; proceed to the mandatory exhaustive v50.4 UI control/field Help audit.
 - **v50.4 — Exhaustive UI Control and Field Help Audit and Final Acceptance**
-  - State: Planned after v50.3; mandatory before parent v50 may close.
+  - State: Current authoritative increment; research/implementation not started.
   - Re-inventory every top-level tab, nested tab, menu, runtime-built window, dialog and supported workflow surface.
   - Inventory every button, menu action, checkbox, radio option, selector, editable field and user-editable grid column/cell type.
   - Give every inventoried control a stable key, UI owner, Help destination/anchor and explicit coverage status.
@@ -2160,6 +2172,18 @@ to unstarted authoritative planning slots.
   - Research schema compatibility, migration defaults, import/export, recovery, diagnostics and reporting before implementation.
   - Update deterministic tester and Full Data Verification for new-order defaults, override, restart and historical stability.
   - Completion condition: owner accepts cross-currency calculations, provenance, offline behavior and unchanged historical records.
+
+- **v54.0 — Application Menu and Navigation Review**
+  - State: Planned after the recorded v50-v53 sequence; inventory and owner review before menu changes.
+  - Inventory every application menu item, command target, shortcut, contextual Help link and supported navigation destination.
+  - Identify missing high-value actions, including menu commands that select and focus the correct top-level or nested application tab.
+  - Identify redundant, stale, duplicated or low-value menu items, but do not remove accepted paths until callers, workflows and
+    discoverability impact are mapped and the replacement or retirement is runtime accepted.
+  - Define consistent command naming, enabled/disabled state, keyboard access, current-context behavior and focus restoration.
+  - Keep Production, FTPS, updater, recovery and other guarded actions behind their existing confirmations and safety boundaries.
+  - Assess AutomationIds and extend deterministic tester navigation evidence for every added, redirected or retired menu command.
+  - Completion condition: owner accepts the inventory and bounded change set, then runtime confirms every retained or new command
+    reaches the intended safe destination without unexpected dialogs, state mutation or orphaned actions.
 
 ### Intentionally unscheduled
 
