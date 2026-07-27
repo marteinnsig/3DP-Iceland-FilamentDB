@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v50.2.3 — Output and Tool Reference**
+Current canonical release: **v50.2.4 — Contextual Help Coverage**
 
-Last runtime-accepted baseline: **v50.2.3 — Output and Tool Reference**
+Last runtime-accepted baseline: **v50.2.4 — Contextual Help Coverage**
 
-Current application candidate: **None; v50.2.4 is planned but not implemented**
+Current application candidate: **None; v50.3 is planned but not implemented**
 
-Current roadmap increment: **v50.2.4 — Contextual Help Entry Points and Coverage Acceptance**
+Current roadmap increment: **v50.3 — Troubleshooting, Recovery, Publishing Safety and Final Acceptance**
 
-Current acceptance note: v50.2.3 is runtime/content accepted with Full Data Verification 372/372; parent v50 remains active.
+Current acceptance note: v50.2.4 and parent v50.2 are runtime/UI accepted with Verification 373/373; parent v50 remains active.
 
-Next note: v50.2.4 must complete contextual entry points and coverage acceptance before v50.3 safety/recovery work.
+Next note: v50.3 must complete safety, recovery and final acceptance before the v50 parent milestone can close.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2053,7 +2053,7 @@ to unstarted authoritative planning slots.
   - Debug/Release, documentation and security gates pass; disposable smoke and Full Data Verification pass 370/370 with exact
     state equality. Owner accepted content, natural wrapping, search highlighting/jump and immediate Search/Clear refresh.
 - **v50.2 — Per-tab Reference and Contextual Help Links**
-  - State: Active parent milestone; execute recorded v50.2.0-v50.2.4 increments in order.
+  - State: Complete, canonical and runtime/UI accepted through v50.2.4.
   - Add a governed reference for every supported top-level tab and relevant nested workflow, including fields, commands and states.
   - Add contextual Help entry points that open the same central window at stable section IDs; do not create parallel help systems.
   - Completion condition: tab/action inventory maps to Help sections and deterministic navigation checks pass.
@@ -2080,8 +2080,13 @@ to unstarted authoritative planning slots.
   - Preserve public allowlists, local-versus-upload actions, credential boundaries and advisory/local tool ownership.
   - Completion condition: every output/tool control maps to complete searchable reference coverage and owner acceptance.
 - **v50.2.4 — Contextual Help Entry Points and Coverage Acceptance**
-  - State: Current authoritative increment; research/implementation not started.
+  - State: Complete, canonical and runtime/UI accepted.
   - Add stable contextual Help entry points for every top-level tab and relevant nested workflow using the one central Help window.
+  - Distinguish whole-system Documentation from `Help for Current View (F1)` and keep both in the central Help window.
+  - Add the planned Tools validation and Help-menu references; keep update/release and recovery/safety references owned by v50.3.
+  - Add missing Experimental editor/results overview destinations required by the accepted 16-nested-tab registry.
+  - Add stable AutomationIds to all 22 top-level and 16 nested tabs without changing their visual layout.
+  - Retire the disabled Website Export Preview menu item after confirming that Website Export remains the sole supported workflow.
   - Add deterministic uniqueness, tab/action coverage and navigation checks; keep visual usability acceptance manual.
   - Extend smoke with an all-top-level-tab navigation sweep and exact visited/expected count evidence.
   - Add nested-tab navigation where stable AutomationIds can prove selection without authorizing data mutation.
@@ -2090,7 +2095,7 @@ to unstarted authoritative planning slots.
   - Treat navigation coverage as startup/rendering evidence, not a claim that every workflow action was executed.
   - Completion condition: coverage matrix is complete, every link resolves to the intended section and owner accepts full v50.2.
 - **v50.3 — Troubleshooting, Recovery, Publishing Safety and Final Acceptance**
-  - State: Planned after v50.2 acceptance.
+  - State: Current authoritative increment; research/implementation not started.
   - Add symptom-led troubleshooting, diagnostics collection, backup/recovery boundaries, Verification interpretation and safe
     Preview/Production/FTPS guidance.
   - Preserve mandatory crash, security, recovery and support evidence plus explicit default-No publishing.

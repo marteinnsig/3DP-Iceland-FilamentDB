@@ -81,17 +81,78 @@ internal static class Program
             Record("profile-identity", true, identityName);
             CaptureWindow(main, IOPath.Combine(root, "evidence", "main-window.png"));
 
-            foreach (var tabId in new[]
-                     {
-                         "MaterialsTab", "TensileMeasurementsTab", "ImpactMeasurementsTab",
-                         "StiffnessMeasurementsTab", "BaseMaterialsTab", "SettingsManagerTab",
-                         "PurchaseOrdersTab", "PrintersTab", "PrintJobQuotesTab",
-                         "ExperimentalTestingTab", "AiAssistantTab", "ReportsTab"
-                     })
+            var topLevelTabIds = new[]
+            {
+                "MaterialsTab", "ManufacturersTab", "PurchaseOrdersTab", "PrintersTab",
+                "PrintJobQuotesTab", "InventoryTab", "UsageTab", "ExperimentalTestingTab",
+                "MaterialDetailTab", "TensileMeasurementsTab", "ImpactMeasurementsTab",
+                "StiffnessMeasurementsTab", "WebsiteExportTab", "BaseMaterialsTab",
+                "SettingsManagerTab", "AiAssistantTab", "ReportsTab", "RankingsDashboardTab",
+                "CategoryRankingsTab", "AwardsWinnersTab", "DashboardInsightsTab",
+                "YouTubeResearchTab"
+            };
+            foreach (var tabId in topLevelTabIds)
             {
                 SelectTab(main, tabId, application.Id);
-                Record("navigate-" + tabId, true, "Tab selected by AutomationId");
             }
+            Require(topLevelTabIds.Distinct(StringComparer.Ordinal).Count() == 22,
+                "Top-level tab registry is not exactly 22 unique AutomationIds.");
+            Record("top-level-tab-navigation", true,
+                $"Visited {topLevelTabIds.Length}/22 unique top-level tabs by AutomationId");
+
+            SelectTab(main, "ExperimentalTestingTab", application.Id);
+            var experimentalNestedTabIds = new[]
+            {
+                "ExperimentalTensileTab", "ExperimentalImpactTab", "ExperimentalStiffnessTab",
+                "ExperimentalResultsTab"
+            };
+            foreach (var tabId in experimentalNestedTabIds)
+                SelectTab(main, tabId, application.Id);
+            SelectTab(main, "ExperimentalResultsTab", application.Id);
+            var experimentalResultViewIds = new[]
+            {
+                "ExperimentalResultsDashboardTab", "ExperimentalResultsTableTab",
+                "ExperimentalResultsChartsTab"
+            };
+            foreach (var tabId in experimentalResultViewIds)
+                SelectTab(main, tabId, application.Id);
+
+            SelectTab(main, "MaterialDetailTab", application.Id);
+            var materialDetailNestedTabIds = new[]
+            {
+                "MaterialDetailGeneralTab", "MaterialDetailPrintingProfileTab",
+                "MaterialDetailMechanicalTab", "MaterialDetailChartsTab",
+                "MaterialDetailAnalyticsTab", "MaterialDetailCompareTab",
+                "MaterialDetailVideoPlannerTab", "MaterialDetailRecommendationsTab",
+                "MaterialDetailNotesTab"
+            };
+            foreach (var tabId in materialDetailNestedTabIds)
+                SelectTab(main, tabId, application.Id);
+            var nestedTabIds = experimentalNestedTabIds
+                .Concat(experimentalResultViewIds)
+                .Concat(materialDetailNestedTabIds)
+                .ToArray();
+            Require(nestedTabIds.Length == 16 &&
+                    nestedTabIds.Distinct(StringComparer.Ordinal).Count() == 16,
+                "Nested tab registry is not exactly 16 unique AutomationIds.");
+            Record("nested-tab-navigation", true,
+                $"Visited {nestedTabIds.Length}/16 unique nested tabs by AutomationId");
+
+            InvokeWebsiteMenuNavigation(main, application.Id);
+            Record("website-menu-navigation", true,
+                "Supported Website menu action selected Website Export; disabled dead-end is retired");
+
+            SelectTab(main, "RankingsDashboardTab", application.Id);
+            OpenContextHelpAndRequireTitle(main, application.Id, "Rankings Dashboard reference");
+            SelectTab(main, "ExperimentalTestingTab", application.Id);
+            SelectTab(main, "ExperimentalResultsTab", application.Id);
+            SelectTab(main, "ExperimentalResultsTableTab", application.Id);
+            OpenContextHelpAndRequireTitle(main, application.Id, "Experimental Table reference");
+            SelectTab(main, "MaterialDetailTab", application.Id);
+            SelectTab(main, "MaterialDetailNotesTab", application.Id);
+            OpenContextHelpAndRequireTitle(main, application.Id, "Material Detail — Notes reference");
+            Record("contextual-help-navigation", true,
+                "Current-view menu resolved representative top-level and nested tabs in the central Help window");
 
             SelectTab(main, "ExperimentalTestingTab", application.Id);
             var experimentalReadiness = FindById(main, "ExperimentalPublicationReadiness").Current.Name;
@@ -915,6 +976,42 @@ internal static class Program
         ((SelectionItemPattern)pattern).Select();
         Thread.Sleep(100);
         AssertNoUnexpectedWindows(processId, "MainWindow");
+    }
+
+    private static void InvokeWebsiteMenuNavigation(AutomationElement main, int processId)
+    {
+        Expand(FindById(main, "WebsiteMenu"), processId);
+        Invoke(FindById(main, "OpenWebsiteExportTab"), processId);
+        Thread.Sleep(100);
+        var websiteTab = FindById(main, "WebsiteExportTab");
+        Require(
+            websiteTab.TryGetCurrentPattern(SelectionItemPattern.Pattern, out var selectionPattern) &&
+            ((SelectionItemPattern)selectionPattern).Current.IsSelected,
+            "Website menu action did not select the supported Website Export tab.");
+        AssertNoUnexpectedWindows(processId, "MainWindow");
+    }
+
+    private static void OpenContextHelpAndRequireTitle(
+        AutomationElement main,
+        int processId,
+        string expectedTitle)
+    {
+        Expand(FindById(main, "HelpMenu"), processId);
+        Invoke(FindById(main, "OpenContextHelp"), processId);
+        var help = WaitForElement(
+            AutomationElement.RootElement,
+            new AndCondition(
+                new PropertyCondition(AutomationElement.ProcessIdProperty, processId),
+                new PropertyCondition(AutomationElement.AutomationIdProperty, "HelpWindow")),
+            "contextual Help");
+        AssertNoUnexpectedWindows(processId, "MainWindow", "HelpWindow");
+        Require(
+            string.Equals(
+                FindById(help, "HelpSectionTitle").Current.Name,
+                expectedTitle,
+                StringComparison.Ordinal),
+            $"Contextual Help did not open '{expectedTitle}'.");
+        CloseWindow(help, processId);
     }
 
     private static void Invoke(AutomationElement element, int processId)

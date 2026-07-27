@@ -1,4 +1,27 @@
-# Current Build Notes - v50.2.3
+# Current Build Notes - v50.2.4
+
+## Contextual Help Coverage
+
+All 22 top-level tabs and the 16 nested Experimental/Material Detail tabs now
+have unique AutomationIds. `Help for Current View` and F1 share one resolver:
+ordinary top-level tabs open their overview, Experimental editors/results open
+their exact nested topic, and Material Detail opens its selected nested topic.
+Documentation continues to open the Start-to-finish whole-system overview.
+
+Four planned Experimental destinations complete the nested registry:
+Tensile, Impact, Stiffness and the Results overview. Searchable Tools validation
+and Help-menu references document mutating versus read-only boundaries.
+
+The unsupported disabled Website Export Preview menu item is retired. Its
+replacement only selects the supported Website Export tab and never generates
+or publishes output.
+
+Smoke visits exactly 22/22 top-level and 16/16 nested tabs, asserts no
+unexpected window, exercises representative contextual destinations and
+retains scenario separation from CRUD, Reports, Recovery, Updater, Production
+and FTPS. Profile `20260727113500-3bc427ca` passes Full Data Verification
+373/373 and exact logical/business-state equality. Owner runtime/UI acceptance
+passes on 2026-07-27; parent v50.2 is complete and v50 continues at v50.3.
 
 ## Output and Tool Reference
 

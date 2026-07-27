@@ -1,5 +1,22 @@
 # Automated Runtime Acceptance
 
+## v50.2.4 - Contextual Help coverage accepted
+
+Smoke owns a read-only navigation registry of exactly 22 unique top-level and
+16 unique nested AutomationIds. Every surface is selected without authorizing
+its actions; an unexpected owned-process window fails the run.
+
+Representative central-Help checks cover Rankings Dashboard, Experimental
+Table and Material Detail Notes through Help for Current View. The Website menu
+check proves that the supported action selects Website Export while performing
+no generation or publication.
+
+Profile `20260727113500-3bc427ca` passes the 22/22 and 16/16 sweeps, contextual
+checks, Full Data Verification 373/373 and exact logical/business-state
+equality. Production, FTPS, updates, clipboard writes, CRUD, report generation,
+recovery and owner database selection remain blocked.
+Owner runtime/UI acceptance passes on 2026-07-27.
+
 ## v50.2.3 - Output and tool reference accepted
 
 Full Data Verification requires 34 stable Reports, Website, AI, YouTube and

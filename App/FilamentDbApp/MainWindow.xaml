@@ -183,8 +183,9 @@
                 <MenuItem Header="Clear Search" Click="ClearSearch_Click" />
                 <MenuItem Header="Clear Filters" Click="ClearNativeMaterialFilters_Click" />
             </MenuItem>
-            <MenuItem Header="_Website">
-                <MenuItem Header="Website Export Preview" IsEnabled="False" />
+            <MenuItem Header="_Website" AutomationProperties.AutomationId="WebsiteMenu">
+                <MenuItem Header="Open Website Export" Click="OpenWebsiteExportTab_Click"
+                          AutomationProperties.AutomationId="OpenWebsiteExportTab" />
             </MenuItem>
             <MenuItem Header="_Tools">
                 <MenuItem Header="Validate Materials" Click="ValidateNativeMaterials_Click" />
@@ -198,7 +199,9 @@
             </MenuItem>
             <MenuItem Header="_Help" AutomationProperties.AutomationId="HelpMenu">
                 <MenuItem Header="Documentation" AutomationProperties.AutomationId="OpenHelp"
-                          InputGestureText="F1" Click="Documentation_Click" />
+                          Click="Documentation_Click" />
+                <MenuItem Header="Help for Current View" AutomationProperties.AutomationId="OpenContextHelp"
+                          InputGestureText="F1" Click="ContextHelp_Click" />
                 <MenuItem Header="Export Engineering Whitepaper..." Click="ExportEngineeringWhitepaper_Click" />
                 <MenuItem Header="Changelog" Click="Changelog_Click" />
                 <Separator />
@@ -377,7 +380,7 @@
                     </GroupBox>
                 </Grid>
             </TabItem>
-<TabItem Header="Manufacturers">
+<TabItem Header="Manufacturers" AutomationProperties.AutomationId="ManufacturersTab">
     <Grid Margin="12">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
@@ -645,7 +648,7 @@
         </GroupBox>
     </Grid>
 </TabItem>
-<TabItem Header="Inventory">
+<TabItem Header="Inventory" AutomationProperties.AutomationId="InventoryTab">
     <Grid Margin="12">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="2*"/></Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Margin="0,0,0,10"><TextBlock Text="Inventory Spools" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="Each row represents one spool or a homogeneous group of identical spools. Add Spool uses Materials defaults only for the first spool; Duplicate explicitly copies an existing record. Filters affect the visible workflow only and never delete inventory data." Foreground="#64748B" TextWrapping="Wrap"/></StackPanel>
@@ -870,8 +873,8 @@
             <TextBlock Name="ExperimentalPublicationReadinessText" AutomationProperties.AutomationId="ExperimentalPublicationReadiness"
                        Foreground="#475569" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,5,0,0"/>
         </StackPanel>
-        <TabControl Grid.Row="6" Name="ExperimentalMeasurementEditors" Margin="0" MinHeight="220" SelectionChanged="ExperimentalMeasurementEditors_SelectionChanged">
-            <TabItem Header="Tensile">
+<TabControl Grid.Row="6" Name="ExperimentalMeasurementEditors" Margin="0" MinHeight="220" SelectionChanged="ExperimentalMeasurementEditors_SelectionChanged">
+<TabItem Header="Tensile" AutomationProperties.AutomationId="ExperimentalTensileTab">
                 <Grid Margin="8">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                     <TextBlock Text="Enter measured force in N. Upright and Flat are calculated independently to MPa." Foreground="#64748B" Margin="0,0,0,8"/>
@@ -884,7 +887,7 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Impact">
+<TabItem Header="Impact" AutomationProperties.AutomationId="ExperimentalImpactTab">
                 <Grid Margin="8">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                     <TextBlock Text="Enter the hammer reading in %. Upright and Flat are calculated independently to kJ/m²." Foreground="#64748B" Margin="0,0,0,8"/>
@@ -897,7 +900,7 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Stiffness">
+<TabItem Header="Stiffness" AutomationProperties.AutomationId="ExperimentalStiffnessTab">
                 <Grid Margin="8">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                     <TextBlock Text="Print one stiffness specimen. Enter full Revolutions and remaining Degrees exactly as in the normal Stiffness editor." Foreground="#64748B" Margin="0,0,0,8"/>
@@ -913,7 +916,7 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Results">
+<TabItem Header="Results" AutomationProperties.AutomationId="ExperimentalResultsTab">
                 <Grid Margin="8">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                     <StackPanel Margin="0,0,0,8">
@@ -927,8 +930,8 @@
                         <Border Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,6,0"><StackPanel><TextBlock Text="Best Stiffness" Foreground="#64748B"/><TextBlock Name="ExperimentalAnalyticsBestStiffnessText" Text="—" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
                         <Border Background="#EFF6FF" BorderBrush="#93C5FD" BorderThickness="1" CornerRadius="4" Padding="8"><StackPanel><TextBlock Text="Recommended" Foreground="#475569"/><TextBlock Name="ExperimentalAnalyticsRecommendedText" Text="—" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel></Border>
                     </UniformGrid>
-                    <TabControl Grid.Row="2" Name="ExperimentalResultsViewTabs" SelectionChanged="ExperimentalResultsViewTabs_SelectionChanged">
-                        <TabItem Header="Dashboard">
+<TabControl Grid.Row="2" Name="ExperimentalResultsViewTabs" SelectionChanged="ExperimentalResultsViewTabs_SelectionChanged">
+<TabItem Header="Dashboard" AutomationProperties.AutomationId="ExperimentalResultsDashboardTab">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                 <StackPanel Margin="6">
                                     <Border Background="#0F172A" CornerRadius="8" Padding="16" Margin="0,0,0,10">
@@ -962,7 +965,7 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
-                        <TabItem Header="Table">
+<TabItem Header="Table" AutomationProperties.AutomationId="ExperimentalResultsTableTab">
                             <DataGrid Name="ExperimentalResultsGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" FrozenColumnCount="3">
                                 <DataGrid.RowStyle><Style TargetType="DataGridRow"><Style.Triggers><DataTrigger Binding="{Binding IsBaseline}" Value="True"><Setter Property="Background" Value="#DBEAFE"/><Setter Property="FontWeight" Value="SemiBold"/></DataTrigger></Style.Triggers></Style></DataGrid.RowStyle>
                                 <DataGrid.Columns>
@@ -972,7 +975,7 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                         </TabItem>
-                        <TabItem Header="Charts">
+<TabItem Header="Charts" AutomationProperties.AutomationId="ExperimentalResultsChartsTab">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                 <StackPanel Margin="4">
                                     <TextBlock Text="Experimental charts" FontSize="16" FontWeight="SemiBold"/>
@@ -993,7 +996,7 @@
         </TabControl>
     </Grid>
 </TabItem>
-<TabItem Header="Material Detail">
+<TabItem Header="Material Detail" AutomationProperties.AutomationId="MaterialDetailTab">
                 <Border BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1" Background="White" CornerRadius="5">
                 <DockPanel>
                     <Border DockPanel.Dock="Top" Padding="14" Background="#F8FAFC" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="0,0,0,1">
@@ -1005,8 +1008,8 @@
                         </StackPanel>
                     </Border>
 
-                    <TabControl>
-                        <TabItem Header="General">
+<TabControl x:Name="MaterialDetailTabs" AutomationProperties.AutomationId="MaterialDetailTabs">
+<TabItem Header="General" AutomationProperties.AutomationId="MaterialDetailGeneralTab">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="14">
                                     <TextBlock Text="Material information" FontWeight="SemiBold" FontSize="17" />
@@ -1016,7 +1019,7 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
-                        <TabItem Header="Printing Profile">
+<TabItem Header="Printing Profile" AutomationProperties.AutomationId="MaterialDetailPrintingProfileTab">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="14">
                                     <TextBlock Text="Canonical Base Material Test-Print Profile" FontWeight="SemiBold" FontSize="17" />
@@ -1041,7 +1044,7 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
-                        <TabItem Header="Mechanical">
+<TabItem Header="Mechanical" AutomationProperties.AutomationId="MaterialDetailMechanicalTab">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="14">
                                     <TextBlock Text="Engineering Dashboard" FontWeight="SemiBold" FontSize="17" />
@@ -1164,7 +1167,7 @@
                                 </StackPanel>
                             </ScrollViewer>
                         </TabItem>
-                        <TabItem Header="Charts">
+<TabItem Header="Charts" AutomationProperties.AutomationId="MaterialDetailChartsTab">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="14">
                                     <TextBlock Text="Scoring Engine Foundation" FontSize="20" FontWeight="SemiBold" />
@@ -1227,7 +1230,7 @@
                             </ScrollViewer>
                         </TabItem>
 
-                        <TabItem Header="Analytics">
+<TabItem Header="Analytics" AutomationProperties.AutomationId="MaterialDetailAnalyticsTab">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="14">
                                     <TextBlock Text="Analytics &amp; Radar Framework" FontSize="20" FontWeight="SemiBold" />
@@ -1313,7 +1316,7 @@
                             </ScrollViewer>
                         </TabItem>
 
-                        <TabItem Header="Compare">
+<TabItem Header="Compare" AutomationProperties.AutomationId="MaterialDetailCompareTab">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="14">
                                     <TextBlock Text="Material Comparison Workbench" FontSize="20" FontWeight="SemiBold" />
@@ -1415,7 +1418,7 @@
                             </ScrollViewer>
                         </TabItem>
 
-                        <TabItem Header="Video Planner">
+<TabItem Header="Video Planner" AutomationProperties.AutomationId="MaterialDetailVideoPlannerTab">
                             <Grid Margin="14">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -1638,7 +1641,7 @@
                             </Grid>
                         </TabItem>
 
-                        <TabItem Header="Recommendations">
+<TabItem Header="Recommendations" AutomationProperties.AutomationId="MaterialDetailRecommendationsTab">
                             <Grid Margin="14">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -1934,7 +1937,7 @@
                                 </Border>
                             </Grid>
                         </TabItem>
-                                    <TabItem Header="Notes">
+<TabItem Header="Notes" AutomationProperties.AutomationId="MaterialDetailNotesTab">
                             <Grid Margin="14">
                                 <TextBlock Text="A dedicated Detail Notes workspace is not implemented. Edit governed notes at their owning tabs, including Materials Notes." TextWrapping="Wrap" Foreground="#64748B" />
                             </Grid>
@@ -2571,7 +2574,7 @@
                     </Grid>
                 </Grid>
             </TabItem>
-<TabItem Header="Rankings Dashboard">
+<TabItem Header="Rankings Dashboard" AutomationProperties.AutomationId="RankingsDashboardTab">
                 <Border BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1" Background="White" CornerRadius="5">
                     <DockPanel>
                         <Border DockPanel.Dock="Top" Padding="14" Background="#F8FAFC" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="0,0,0,1">
@@ -2676,7 +2679,7 @@
                     </DockPanel>
                 </Border>
             </TabItem>
-<TabItem Header="Category Rankings">
+<TabItem Header="Category Rankings" AutomationProperties.AutomationId="CategoryRankingsTab">
                 <Border BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1" Background="White" CornerRadius="5">
                     <DockPanel>
                         <Border DockPanel.Dock="Top" Padding="14" Background="#F8FAFC" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="0,0,0,1">
@@ -2789,7 +2792,7 @@
                     </DockPanel>
                 </Border>
             </TabItem>
-<TabItem Header="Awards &amp; Winners">
+<TabItem Header="Awards &amp; Winners" AutomationProperties.AutomationId="AwardsWinnersTab">
                 <Border BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1" Background="White" CornerRadius="5">
                     <DockPanel>
                         <Border DockPanel.Dock="Top" Padding="14" Background="#F8FAFC" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="0,0,0,1">
@@ -2876,7 +2879,7 @@
                     </DockPanel>
                 </Border>
             </TabItem>
-<TabItem Header="Dashboard Insights">
+<TabItem Header="Dashboard Insights" AutomationProperties.AutomationId="DashboardInsightsTab">
     <Grid Margin="14">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -2939,7 +2942,7 @@
         </Border>
     </Grid>
 </TabItem>
-<TabItem Header="YouTube Research">
+<TabItem Header="YouTube Research" AutomationProperties.AutomationId="YouTubeResearchTab">
     <Grid Margin="14">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

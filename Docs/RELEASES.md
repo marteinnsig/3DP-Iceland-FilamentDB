@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v50.2.4 - Contextual Help Coverage
+
+All 22 top-level and 16 nested tabs expose unique stable navigation IDs.
+Documentation opens the whole-system guide, while F1 and Help for Current View
+resolve the selected supported surface in the same central Help window.
+Experimental nested destinations and Tools/Help menu references complete the
+coverage matrix; the disabled Website Preview dead-end is retired. Debug and
+Release, security, documentation and disposable Full Data Verification 373/373
+pass with exact state equality. Owner runtime/UI acceptance passes. Schema
+remains v37; parent v50.2 is complete and v50 continues at v50.3.
+
 ## v50.2.3 - Output and Tool Reference
 
 Thirty-four detailed searchable destinations cover Reports/PDF, Website

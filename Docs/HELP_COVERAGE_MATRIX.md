@@ -1,6 +1,6 @@
 # Help Coverage Matrix
 
-Version: v50.2.0 inventory
+Version: v50.2.4 contextual coverage accepted
 
 Purpose: authoritative inventory for the v50.2 per-tab reference milestone.
 This matrix records every supported UI surface, its owner, required reference
@@ -147,23 +147,23 @@ Required leaf destinations:
 | Stiffness Measurements | `measurements.stiffness` | SQLite raw inputs + `ResultsService` | Revolutions/degrees ranges, computed deflection/modulus, Settings, validation, auto-save and Reset | Tab/host covered; Reset and field surface not covered |
 | Experimental Series | `experimental.series` | SQLite Series graph | Add, Duplicate, Delete, Find, Active only, Clear, Material/experiment/unit/baseline/Website/Active/Notes and readiness | Core IDs good; Clear and nested tabs missing |
 | Experimental Runs | `experimental.runs` | SQLite Runs graph | Add, Duplicate, Delete, lifecycle, measured date, baseline uniqueness, Active/history and persistence | Core action/grid IDs present |
-| Experimental editors | `experimental.measurements` | Run measurement rows + `ResultsService` | Tensile/Impact/Stiffness raw and computed fields, dates, notes, validation and auto-save | Nested tabs/grids lack IDs |
-| Experimental Results Dashboard | `experimental.results.dashboard` | Selected Series comparison | Scope label, baseline/best/recommended cards, readiness and active/history effect | Nested tab lacks ID |
-| Experimental Results Table | `experimental.results.table` | Selected Series comparison | Rank, metrics, delta-to-baseline, CV and baseline highlighting | Nested tab lacks ID |
-| Experimental Results Charts | `experimental.results.charts` | Selected Series comparison | Metric charts, baseline-normalized chart and baseline prerequisite | Nested tab lacks ID |
-| Material Detail General | `material-detail.general` | Selected Material + `MaterialDetailService` | Identity and dynamically grouped read-only fields | Parent/nested tab lacks ID |
-| Material Detail Printing Profile | `material-detail.printing-profile` | Base Material Catalog | Controlled test/G-code baseline, Not recorded meaning and non-manufacturer boundary | Nested tab lacks ID |
-| Material Detail Mechanical | `material-detail.mechanical` | Canonical calculated results | Test/publication status, tensile/impact/stiffness, reliability and expanded data | Nested tab lacks ID |
-| Material Detail Charts | `material-detail.charts` | Canonical normalized metrics | Five-axis profile, score meaning and scientific-rating limitation | Nested tab lacks ID |
-| Material Detail Analytics | `material-detail.analytics` | Visible canonical results | Chart mode, multi-select results, radar selection and Clear | Controls lack IDs |
-| Material Detail Compare | `material-detail.compare` | Selected comparison Materials | A-D selectors, Use Selected, winners and deltas | Controls lack IDs |
-| Material Detail Video Planner | `material-detail.video-planner` | Local creator-planning records | Filters, Refresh, ideas lifecycle, dashboard, Clear, prompt copy and read-only candidates | Controls lack IDs |
-| Material Detail Recommendations | `material-detail.recommendations` | Recommendation services | Filters, Refresh, details/evidence, alternatives, cautions, prompt and Video Planner handoff | Almost all controls lack IDs |
-| Material Detail Notes | `material-detail.notes` | Currently unavailable placeholder | State exact current availability; never claim the whole app is read-only | Existing text is stale and incorrect |
-| Rankings Dashboard | `analysis.rankings` | Current visible Materials projection | Metrics, filters, Top 10/25/50/100/All, Reset, Refresh, CSV and missing-score omission | Entire top tab/actions lack IDs |
-| Category Rankings | `analysis.category-rankings` | Current visible grouped projection | View mode, filters, rows/group 5/10/50/100/All, Reset, Refresh and CSV | Entire top tab/actions lack IDs |
-| Awards & Winners | `analysis.awards` | Current visible award projection | Award set, filters, Reset, Refresh, CSV, winner/runner-up and reasoning | Entire top tab/actions lack IDs |
-| Dashboard Insights | `analysis.dashboard-insights` | Current database projection | Counts, highest metrics, narrative insights and refresh ownership | Top tab lacks ID |
+| Experimental editors | `experimental.measurements` | Run measurement rows + `ResultsService` | Tensile/Impact/Stiffness raw and computed fields, dates, notes, validation and auto-save | All four nested tabs have IDs; grids remain outside v50.2.4 navigation |
+| Experimental Results Dashboard | `experimental.results.dashboard` | Selected Series comparison | Scope label, baseline/best/recommended cards, readiness and active/history effect | Nested tab ID covered |
+| Experimental Results Table | `experimental.results.table` | Selected Series comparison | Rank, metrics, delta-to-baseline, CV and baseline highlighting | Nested tab ID covered |
+| Experimental Results Charts | `experimental.results.charts` | Selected Series comparison | Metric charts, baseline-normalized chart and baseline prerequisite | Nested tab ID covered |
+| Material Detail General | `material-detail.general` | Selected Material + `MaterialDetailService` | Identity and dynamically grouped read-only fields | Parent/nested tab IDs covered |
+| Material Detail Printing Profile | `material-detail.printing-profile` | Base Material Catalog | Controlled test/G-code baseline, Not recorded meaning and non-manufacturer boundary | Nested tab ID covered |
+| Material Detail Mechanical | `material-detail.mechanical` | Canonical calculated results | Test/publication status, tensile/impact/stiffness, reliability and expanded data | Nested tab ID covered |
+| Material Detail Charts | `material-detail.charts` | Canonical normalized metrics | Five-axis profile, score meaning and scientific-rating limitation | Nested tab ID covered |
+| Material Detail Analytics | `material-detail.analytics` | Visible canonical results | Chart mode, multi-select results, radar selection and Clear | Nested tab ID covered; action controls remain outside navigation sweep |
+| Material Detail Compare | `material-detail.compare` | Selected comparison Materials | A-D selectors, Use Selected, winners and deltas | Nested tab ID covered; action controls remain outside navigation sweep |
+| Material Detail Video Planner | `material-detail.video-planner` | Local creator-planning records | Filters, Refresh, ideas lifecycle, dashboard, Clear, prompt copy and read-only candidates | Nested tab ID covered; action controls retain separate contracts |
+| Material Detail Recommendations | `material-detail.recommendations` | Recommendation services | Filters, Refresh, details/evidence, alternatives, cautions, prompt and Video Planner handoff | Nested tab ID covered; actions retain separate contracts |
+| Material Detail Notes | `material-detail.notes` | Currently unavailable placeholder | State exact current availability; never claim the whole app is read-only | Parent/nested tab IDs and corrected guidance covered |
+| Rankings Dashboard | `analysis.rankings` | Current visible Materials projection | Metrics, filters, Top 10/25/50/100/All, Reset, Refresh, CSV and missing-score omission | Top-tab ID covered; action controls remain outside navigation sweep |
+| Category Rankings | `analysis.category-rankings` | Current visible grouped projection | View mode, filters, rows/group 5/10/50/100/All, Reset, Refresh and CSV | Top-tab ID covered; action controls remain outside navigation sweep |
+| Awards & Winners | `analysis.awards` | Current visible award projection | Award set, filters, Reset, Refresh, CSV, winner/runner-up and reasoning | Top-tab ID covered; action controls remain outside navigation sweep |
+| Dashboard Insights | `analysis.dashboard-insights` | Current database projection | Counts, highest metrics, narrative insights and refresh ownership | Top-tab ID covered |
 
 Important scope contract:
 
@@ -222,9 +222,9 @@ Required leaf destinations:
 |---|---|---|---|
 | File menu / Storage | `menu.file-recovery`, `menu.storage` | Recovery Center, Choose Storage Folder, Exit and storage mutation boundary | v50.3 |
 | Materials menu | `menu.materials` | Lifecycle commands plus Clear Search/Filters; same owners as Materials tab | v50.2.1 |
-| Tools validation | `menu.tools-validation` | Validate Materials, Rebuild Computed Fields and rendering prototype | v50.2.4 |
+| Tools validation | `menu.tools-validation` | Validate Materials, Rebuild Computed Fields and rendering prototype | v50.2.4 candidate implemented |
 | Tools updates/releases | `menu.updates`, `menu.release-publishing` | Update readiness/check/apply and application release/update publishing, distinct from Website FTPS | v50.3 |
-| Help menu | `menu.help` | Documentation/F1, whitepaper, Changelog, Verification, Diagnostics and About | v50.2.4 |
+| Help menu | `menu.help` | Documentation/F1, whitepaper, Changelog, Verification, Diagnostics and About | v50.2.4 candidate implemented |
 | Recovery Center | `recovery.overview` | Catalog, verify, guarded restore, SQLite/Excel backup/restore and storage | v50.3 |
 | Verification Center | `verification.overview` | Refresh, mutating Recalculate, export, PASS/FAIL and READY FOR PUBLISH | v50.3 |
 | System Diagnostics | `diagnostics.overview` | Refresh, integrity, mutating recalculation, export and evidence sections | v50.3 |
@@ -238,6 +238,21 @@ and handoff guidance. The initial short leaf draft was rejected during owner
 review. Profile `20260727111924-0056eda1` passes the refreshed deterministic
 gates and owner runtime/content acceptance passes on 2026-07-27.
 
+## v50.2.4 contextual entry points and coverage accepted
+
+- All 22 top-level and 16 nested tabs have unique stable AutomationIds.
+- F1 and Help for Current View share one nested-aware central Help resolver.
+- Documentation remains the whole-system Start-to-finish entry point.
+- Experimental Tensile/Impact/Stiffness editors and Results overview now have
+  their planned stable nested destinations.
+- Tools validation and Help-menu references are searchable.
+- The disabled Website Export Preview dead-end is retired; Open Website Export
+  selects the supported tab without generating or publishing.
+- Disposable profile `20260727113500-3bc427ca` visits 22/22 and 16/16 surfaces,
+  passes representative contextual links and Full Verification 373/373 with
+  exact logical/business-state equality. Owner runtime/UI acceptance passes on
+  2026-07-27; parent v50.2 is complete.
+
 ## Confirmed stale or misleading UI/documentation
 
 | Location | Finding | Planned owner |
@@ -249,7 +264,7 @@ gates and owner runtime/content acceptance passes on 2026-07-27.
 | Reports preview placeholder | Says Import data | v50.2.3 |
 | Settings header | Describes only USD exchange-rate settings despite multi-currency purchasing references | v50.2.1 |
 | Printer delete dialog | Says quote snapshots will be introduced in the future although they already exist | v50.2.1 |
-| Website menu | Disabled Website Export Preview item has no supported action | v50.2.4 retirement review |
+| Website menu | Disabled Website Export Preview retired; supported Open Website Export navigation added | v50.2.4 accepted |
 | Regression checklist | Remains v33.5 with obsolete REPORT-500 assumptions | v50.3 |
 
 ## Save-mode contract

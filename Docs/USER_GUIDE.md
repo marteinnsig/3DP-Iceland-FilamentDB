@@ -1,12 +1,12 @@
 # 3DPIceland Engineering Platform User Guide
 
-Version: v50.2.3 candidate — Output and Tool Reference
+Version: v50.2.4 — Contextual Help Coverage
 
 The canonical operational guide is built into the application:
 
-1. Open **Help > Documentation** for the central Help window.
-2. Press **F1** from a top-level tab to open the same window at the relevant
-   topic.
+1. Open **Help > Documentation** for the whole-system Start-to-finish overview.
+2. Press **F1** or choose **Help > Help for Current View** to open the same
+   window at the selected top-level or supported nested topic.
 3. Use the search field for workflows such as purchase, measurements, reports,
    publish, verification or recovery.
 
@@ -20,6 +20,8 @@ v50.2.3 adds Reports, Website Export, AI Assistant, YouTube Research and
 packaged Help/support references. Each reference explains the visible
 controls, exact input scope, local or persisted writes, validation/failure
 behavior, evidence and the boundary before an external handoff.
+v50.2.4 adds stable contextual navigation for all 22 top-level and 16 nested
+tab surfaces.
 
 Important safety boundaries:
 

@@ -644,6 +644,12 @@ Disposable profile `20260727111924-0056eda1` then passes the detailed Help contr
 logical/business-state equality. Owner runtime/content acceptance was the remaining gate.
 Owner accepted the complete v50.2.3 output/tool Help content on 2026-07-27. v50.2.3 is canonical; the parent Help milestone remains
 In progress at v50.2.4 for contextual entry points and full coverage acceptance.
+The v50.2.4 candidate implements the expanded authoritative roadmap scope: 22 top-level and 16 nested stable tab IDs, nested-aware F1
+and Help for Current View, four missing Experimental destinations, Tools/Help menu references and retirement of the disabled Website
+Preview dead-end. Profile `20260727113500-3bc427ca` passes 373/373 and exact logical/business-state equality; owner acceptance was the
+remaining gate.
+Owner accepted v50.2.4 contextual navigation, nested Help behavior and Website menu replacement on 2026-07-27. v50.2.4 and the parent
+v50.2 milestone are canonical and complete; the v50 parent remains In progress at authoritative increment v50.3.
 What happened: The application has many connected workflows, but no single structured user guide explains what every tab does or how
 data should move through the platform from purchase entry to measurements, reports and website publication.
 Expected behavior: Provide a well-organized user-help system with a start-to-finish workflow, per-tab reference, field-entry guidance,

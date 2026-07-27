@@ -456,6 +456,57 @@ internal static class HelpContentCatalog
             auto-save the graph and refresh Results. Invalid or missing coverage remains incomplete regardless of Run status.
             """, "experimental measurement", "tensile", "impact", "stiffness", "auto-save"),
         new(
+            "experimental.measurements.tensile", "Experimental testing", "Experimental Tensile editor reference",
+            "Run-scoped Upright/Flat force samples and calculated tensile outputs.",
+            """
+            This editor belongs to the selected Experimental Run. Enter up to ten Upright and ten Flat force samples in N, plus the
+            measured date and Notes. Material/Run identity, Average MPa, standard deviation, CV, count, confidence and Validation are
+            calculated or read-only.
+
+            Valid committed source samples auto-save the Series graph and refresh Results through the same governed ResultsService
+            formulas used by native measurements. Invalid or incomplete values remain visible as validation/readiness gaps. Editing
+            this Run never changes native Material tensile rows.
+            """,
+            "experimental tensile", "upright", "flat", "force", "MPa", "auto-save"),
+        new(
+            "experimental.measurements.impact", "Experimental testing", "Experimental Impact editor reference",
+            "Run-scoped Upright/Flat percentage samples and calculated impact outputs.",
+            """
+            This editor belongs to the selected Experimental Run. Enter up to ten Upright and ten Flat needle-percentage samples, plus
+            the measured date and Notes. Material/Run identity, Average kJ/mÂ², standard deviation, CV, count, confidence and Validation
+            are calculated or read-only.
+
+            Valid commits auto-save the Series graph and refresh Results through governed impact Settings and ResultsService. Values
+            outside the accepted percentage range remain errors and incomplete coverage cannot be repaired by changing Run status.
+            Experimental inputs do not overwrite native Material impact measurements.
+            """,
+            "experimental impact", "percentage", "kJ/mÂ²", "validation", "auto-save"),
+        new(
+            "experimental.measurements.stiffness", "Experimental testing", "Experimental Stiffness editor reference",
+            "Run-scoped revolutions/degrees inputs and calculated stiffness outputs.",
+            """
+            This editor belongs to the selected Experimental Run. Enter Revolutions and Degrees as the paired source observation, plus
+            measured date and Notes. Material/Run identity, Deflection mm, Modulus MPa and Validation are calculated or read-only.
+
+            A valid commit auto-saves the Series graph and refreshes Results through governed stiffness Settings and ResultsService.
+            Correct Revolutions or Degrees rather than calculated output. Experimental values remain separate from the selected
+            Material's native Stiffness Measurements rows.
+            """,
+            "experimental stiffness", "revolutions", "degrees", "deflection", "modulus", "auto-save"),
+        new(
+            "experimental.results", "Experimental testing", "Experimental Results reference",
+            "Choose Dashboard, Table or Charts for the selected-Series comparison.",
+            """
+            Results is scoped to the selected Experimental Series and the current active/history comparison choice. Dashboard summarizes
+            readiness, baseline, best metrics and recommendation. Table exposes comparable Run rows, rank, deltas and variation. Charts
+            plot metrics and baseline-normalized values.
+
+            All three views are read-only projections of saved Run inputs and canonical calculations. If the Series, eligible Runs or
+            unique Baseline is missing, Results reports the limitation instead of creating values. Correct ownership in Series, Runs or
+            the measurement editors, then return to the appropriate Results view.
+            """,
+            "experimental results", "dashboard", "table", "charts", "selected Series", "read-only"),
+        new(
             "experimental.results.dashboard", "Experimental testing", "Experimental Dashboard reference",
             "Selected-Series completeness, baseline, best results, recommendation and history scope.",
             """
@@ -1126,6 +1177,31 @@ internal static class HelpContentCatalog
             """,
             "about", "version", "SQLite", "license", "third-party notices"),
         new(
+            "menu.tools-validation", "Menus and support", "Tools validation reference",
+            "Validate Materials, rebuild computed display fields and inspect the rendering prototype.",
+            """
+            Validate Materials checks the current Material records and reports missing or invalid governed identity without silently
+            repairing rows. Rebuild Computed Fields is different: after confirmation it recalculates persisted computed Material display
+            fields from their canonical inputs. Create a backup and review the validation result before using that mutating command.
+
+            Materials Rendering Prototype opens the supported diagnostic/prototype view for rendering inspection; it is not another
+            Materials editor and does not replace the accepted owner-drawn grid. Update, release-publishing and storage commands in the
+            Tools menu have separate safety ownership and are documented in v50.3.
+            """,
+            "Tools", "Validate Materials", "Rebuild Computed Fields", "rendering prototype", "mutating"),
+        new(
+            "menu.help", "Menus and support", "Help menu reference",
+            "Choose whole-system, contextual, evidence and packaged support destinations.",
+            """
+            Documentation opens the Start-to-finish whole-system overview. Help for Current View, also available with F1, opens the same
+            central Help window at the selected top-level or supported nested tab. Search remains available from either entry point.
+
+            Export Engineering Whitepaper writes the governed methodology PDF to an owner-selected path. Changelog and About are
+            read-only packaged information. Verification Center and System Diagnostics are evidence/support surfaces with their own
+            refresh, export and mutating recalculation boundaries, documented with recovery and publishing safety in v50.3.
+            """,
+            "Help menu", "Documentation", "Help for Current View", "F1", "Verification Center", "System Diagnostics"),
+        new(
             "verification-recovery",
             "Safety and support",
             "Verification, diagnostics, backup and recovery",
@@ -1169,5 +1245,35 @@ internal static class HelpContentCatalog
         "AI Assistant" => "ai.overview",
         "YouTube Research" => "youtube.overview",
         _ => StartHereId
+    };
+
+    internal static string SectionIdForExperimentalTab(string? editorHeader, string? resultsHeader = null) =>
+        editorHeader switch
+        {
+            "Tensile" => "experimental.measurements.tensile",
+            "Impact" => "experimental.measurements.impact",
+            "Stiffness" => "experimental.measurements.stiffness",
+            "Results" => resultsHeader switch
+            {
+                "Dashboard" => "experimental.results.dashboard",
+                "Table" => "experimental.results.table",
+                "Charts" => "experimental.results.charts",
+                _ => "experimental.results"
+            },
+            _ => "experimental.series"
+        };
+
+    internal static string SectionIdForMaterialDetailTab(string? nestedHeader) => nestedHeader switch
+    {
+        "General" => "material-detail.general",
+        "Printing Profile" => "material-detail.printing-profile",
+        "Mechanical" => "material-detail.mechanical",
+        "Charts" => "material-detail.charts",
+        "Analytics" => "material-detail.analytics",
+        "Compare" => "material-detail.compare",
+        "Video Planner" => "material-detail.video-planner",
+        "Recommendations" => "material-detail.recommendations",
+        "Notes" => "material-detail.notes",
+        _ => "material-detail.general"
     };
 }

@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v50.2.4 - Contextual Help Coverage
+
+Comprehensive per-tab Help coverage is complete. Twenty-two top-level and
+sixteen nested surfaces have deterministic navigation, and contextual F1/menu
+entry uses the one accepted Help window. Owner runtime/UI acceptance and Full
+Data Verification 373/373 pass with exact state equality. Schema remains v37;
+the v50.2 parent milestone is complete and Comprehensive User Help continues
+at v50.3 for safety, recovery and final acceptance.
+
 # v50.2.3 - Output and Tool Reference
 
 The central Help system now contains detailed reference coverage for

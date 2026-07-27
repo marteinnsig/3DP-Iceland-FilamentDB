@@ -1,3 +1,19 @@
+# v50.2.4 - Contextual Help Coverage
+
+Date: 2026-07-27
+
+- All 22 top-level and 16 nested tabs expose unique stable AutomationIds.
+- F1 and Help for Current View resolve through one central nested-aware Help
+  path; Documentation remains the whole-system overview.
+- Four planned Experimental nested destinations plus Tools validation and
+  Help-menu references complete the v50.2.4 catalog scope.
+- Disabled Website Export Preview is retired in favor of supported tab-only
+  navigation.
+- Smoke profile `20260727113500-3bc427ca` visits 22/22 and 16/16 surfaces,
+  passes representative contextual links and Full Data Verification 373/373.
+- Logical and business-state hashes match exactly.
+- Owner runtime/UI acceptance passes on 2026-07-27; parent v50.2 is complete.
+
 # v50.2.3 - Output and Tool Reference
 
 Date: 2026-07-27

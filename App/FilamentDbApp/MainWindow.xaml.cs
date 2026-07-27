@@ -17133,6 +17133,65 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             helpContractReady && v5023ReferenceContractReady
                 ? "34 substantive multi-paragraph Reports, Website, AI, YouTube and packaged Help destinations preserve control, write and safety boundaries."
                 : $"A required output/tool Help contract failed ({v5023FailureDetail})."));
+        var v5024TopLevelTabs = WorkspaceTabs.Items.OfType<TabItem>().ToList();
+        var v5024TopLevelIds = v5024TopLevelTabs
+            .Select(AutomationProperties.GetAutomationId)
+            .ToList();
+        var v5024TopLevelMappingsReady =
+            v5024TopLevelTabs.Count == 22 &&
+            v5024TopLevelIds.All(id => !string.IsNullOrWhiteSpace(id)) &&
+            v5024TopLevelIds.Distinct(StringComparer.Ordinal).Count() == 22 &&
+            v5024TopLevelTabs.All(tab =>
+            {
+                var sectionId = HelpContentCatalog.SectionIdForTab(tab.Header?.ToString());
+                return helpSections.Count(section => section.Id == sectionId) == 1;
+            });
+        var v5024NestedTabs = ExperimentalMeasurementEditors.Items.OfType<TabItem>()
+            .Concat(ExperimentalResultsViewTabs.Items.OfType<TabItem>())
+            .Concat(MaterialDetailTabs.Items.OfType<TabItem>())
+            .ToList();
+        var v5024NestedIds = v5024NestedTabs
+            .Select(AutomationProperties.GetAutomationId)
+            .ToList();
+        var v5024NestedSectionIds = ExperimentalMeasurementEditors.Items.OfType<TabItem>()
+            .Select(tab => HelpContentCatalog.SectionIdForExperimentalTab(tab.Header?.ToString()))
+            .Concat(ExperimentalResultsViewTabs.Items.OfType<TabItem>().Select(tab =>
+                HelpContentCatalog.SectionIdForExperimentalTab("Results", tab.Header?.ToString())))
+            .Concat(MaterialDetailTabs.Items.OfType<TabItem>().Select(tab =>
+                HelpContentCatalog.SectionIdForMaterialDetailTab(tab.Header?.ToString())))
+            .ToList();
+        var v5024NestedMappingsReady =
+            v5024NestedTabs.Count == 16 &&
+            v5024NestedIds.All(id => !string.IsNullOrWhiteSpace(id)) &&
+            v5024NestedIds.Distinct(StringComparer.Ordinal).Count() == 16 &&
+            v5024NestedSectionIds.Count == 16 &&
+            v5024NestedSectionIds.All(sectionId =>
+                helpSections.Count(section => section.Id == sectionId) == 1);
+        var v5024MenuHelpReady =
+            helpSections.Count(section => section.Id == "menu.tools-validation") == 1 &&
+            helpSections.Count(section => section.Id == "menu.help") == 1 &&
+            helpSections.Single(section => section.Id == "menu.tools-validation").Body.Contains(
+                "mutating command",
+                StringComparison.Ordinal) &&
+            helpSections.Single(section => section.Id == "menu.help").Body.Contains(
+                "Help for Current View",
+                StringComparison.Ordinal) &&
+            typeof(MainWindow).GetMethod(
+                "ContextHelp_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                "OpenWebsiteExportTab_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        var v5024ContextualHelpReady =
+            helpContractReady &&
+            v5024TopLevelMappingsReady &&
+            v5024NestedMappingsReady &&
+            v5024MenuHelpReady;
+        checks.Add(new VerificationCheck("v50.2.4 contextual Help entry-point and coverage contract",
+            v5024ContextualHelpReady,
+            v5024ContextualHelpReady
+                ? "22 unique top-level and 16 unique nested tab AutomationIds resolve to stable central Help destinations; current-view F1/menu, Tools validation Help and Website menu retirement contracts are present."
+                : $"Contextual Help coverage failed: top-level {v5024TopLevelTabs.Count}/22, nested {v5024NestedTabs.Count}/16, top mappings {v5024TopLevelMappingsReady}, nested mappings {v5024NestedMappingsReady}, menu {v5024MenuHelpReady}."));
         var zeroDataProfileContractReady =
             IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
             IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&
@@ -18758,10 +18817,35 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         OpenHelp(HelpContentCatalog.StartHereId);
     }
 
+    private void ContextHelp_Click(object sender, RoutedEventArgs e)
+    {
+        OpenHelpForCurrentContext();
+    }
+
+    private void OpenWebsiteExportTab_Click(object sender, RoutedEventArgs e)
+    {
+        var websiteTab = WorkspaceTabs.Items.OfType<TabItem>().FirstOrDefault(tab =>
+            string.Equals(tab.Header?.ToString(), "Website Export", StringComparison.Ordinal));
+        if (websiteTab is not null)
+        {
+            WorkspaceTabs.SelectedItem = websiteTab;
+            websiteTab.BringIntoView();
+        }
+    }
+
     private void OpenHelpForCurrentContext()
     {
         var tabHeader = (WorkspaceTabs.SelectedItem as TabItem)?.Header?.ToString();
-        OpenHelp(HelpContentCatalog.SectionIdForTab(tabHeader));
+        var sectionId = tabHeader switch
+        {
+            "Experimental Testing" => HelpContentCatalog.SectionIdForExperimentalTab(
+                (ExperimentalMeasurementEditors.SelectedItem as TabItem)?.Header?.ToString(),
+                (ExperimentalResultsViewTabs.SelectedItem as TabItem)?.Header?.ToString()),
+            "Material Detail" => HelpContentCatalog.SectionIdForMaterialDetailTab(
+                (MaterialDetailTabs.SelectedItem as TabItem)?.Header?.ToString()),
+            _ => HelpContentCatalog.SectionIdForTab(tabHeader)
+        };
+        OpenHelp(sectionId);
     }
 
     private void OpenHelp(string sectionId)

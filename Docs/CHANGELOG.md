@@ -2,6 +2,23 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v50.2.4 - Contextual Help Coverage
+
+- Adds unique stable AutomationIds to all 22 top-level and 16 nested tabs.
+- Makes F1 and the new Help for Current View menu action resolve the selected
+  Experimental or Material Detail nested view in the one central Help window.
+- Keeps Documentation as the whole-system Start-to-finish entry point.
+- Adds the four planned Experimental editor/results destinations plus Tools
+  validation and Help-menu references.
+- Replaces the disabled Website Export Preview dead-end with read-only
+  navigation to the supported Website Export tab.
+- Extends smoke with exact 22/22 top-level and 16/16 nested navigation evidence,
+  representative contextual-link checks and unexpected-dialog/state guards.
+- Disposable profile `20260727113500-3bc427ca` passes Full Data Verification
+  373/373 with exact logical/business-state equality.
+- Owner runtime/UI acceptance passes on 2026-07-27; parent v50.2 is complete.
+- Schema remains v37; parent v50 continues at v50.3.
+
 ## v50.2.3 - Output and Tool Reference
 
 - Adds 34 stable searchable destinations for Reports/PDF, Website Export,

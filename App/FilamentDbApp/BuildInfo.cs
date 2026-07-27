@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "OUTPUT-TOOL-REFERENCE";
-    public const string ReleaseTitle = "Output and Tool Reference";
+    public const string ReleaseCode = "CONTEXTUAL-HELP-COVERAGE";
+    public const string ReleaseTitle = "Contextual Help Coverage";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 37;
 
