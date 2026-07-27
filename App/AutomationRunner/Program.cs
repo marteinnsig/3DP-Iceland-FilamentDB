@@ -550,16 +550,36 @@ internal static class Program
                 "VerificationCenterWindow");
             var verificationEvidence = JsonDocument.Parse(
                 IOFile.ReadAllText(IOPath.Combine(root, "evidence", "verification.json")));
+            var verificationText = IOFile.ReadAllText(IOPath.Combine(root, "evidence", "verification.txt"));
+            Require(
+                verificationText.Contains("Runtime profile: " + expectedIdentity, StringComparison.Ordinal) &&
+                verificationText.Contains("Data profile: ", StringComparison.Ordinal) &&
+                verificationText.Contains("Classification: mandatory ", StringComparison.Ordinal),
+                "Verification summary does not explicitly separate runtime identity, data profile and classification.");
             Require(
                 verificationEvidence.RootElement.TryGetProperty("Passed", out var passedElement) &&
                 passedElement.GetBoolean(),
                 "Exported Verification reported FAIL.");
+            var verificationRoot = verificationEvidence.RootElement;
+            Require(
+                verificationRoot.GetProperty("MandatoryNotApplicableCount").GetInt32() == 0 &&
+                verificationRoot.GetProperty("MandatoryEvidenceFailedCount").GetInt32() == 0,
+                "Verification converted mandatory evidence to N/A or reported a mandatory evidence failure.");
+            var classifiedChecks = verificationRoot.GetProperty("checks").EnumerateArray().ToList();
+            Require(
+                classifiedChecks.Count > 0 &&
+                classifiedChecks.All(check =>
+                    check.GetProperty("status").GetString() != "NotApplicable" ||
+                    check.GetProperty("applicability").GetString() == "CanonicalDataDependent"),
+                "Verification evidence contains an N/A check outside CanonicalDataDependent classification.");
             if (cleanReadiness)
             {
-                var rootElement = verificationEvidence.RootElement;
+                var rootElement = verificationRoot;
                 Require(
                     rootElement.GetProperty("profile").GetString() == "Application Readiness" &&
                     rootElement.GetProperty("NotApplicableCount").GetInt32() > 0 &&
+                    rootElement.GetProperty("CanonicalDataNotApplicableCount").GetInt32() ==
+                    rootElement.GetProperty("NotApplicableCount").GetInt32() &&
                     rootElement.GetProperty("runtimeProfileKind").GetString() == "CleanReadiness",
                     "Clean Readiness evidence did not report Application Readiness, explicit N/A checks and CleanReadiness identity.");
                 Require(CountRows(databasePath, "NativeMaterialManagerRows") == 0,
@@ -570,6 +590,13 @@ internal static class Program
                 Record("clean-zero-data-classification", true,
                     $"{rootElement.GetProperty("PassedCount").GetInt32()} PASS; " +
                     $"{rootElement.GetProperty("NotApplicableCount").GetInt32()} N/A; 0 Materials");
+            }
+            else
+            {
+                Require(
+                    verificationRoot.GetProperty("profile").GetString() == "Full Data Verification" &&
+                    verificationRoot.GetProperty("NotApplicableCount").GetInt32() == 0,
+                    "Populated Verification did not retain Full Data Verification with zero N/A checks.");
             }
             CaptureWindow(verification, IOPath.Combine(root, "evidence", "verification-center.png"));
             Record("verification-export", true, "TXT/JSON evidence exported");

@@ -13254,6 +13254,19 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             verification.PassedCount,
             verification.FailedCount,
             verification.NotApplicableCount,
+            verification.MandatoryCount,
+            verification.MandatoryEvidenceCount,
+            verification.MandatoryEvidenceFailedCount,
+            verification.MandatoryNotApplicableCount,
+            verification.CanonicalDataNotApplicableCount,
+            checks = verification.Checks.Select(check => new
+            {
+                check.Name,
+                status = check.Status.ToString(),
+                applicability = check.Applicability.ToString(),
+                check.MandatoryEvidence,
+                check.Detail
+            }),
             databasePath = _database.DatabasePath,
             databaseHashOwner = "AutomationRunner before/after controlled runtime",
             generatedAtUtc = DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture)
@@ -13635,22 +13648,41 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         NotApplicable
     }
 
+    private enum VerificationApplicability
+    {
+        Mandatory,
+        CanonicalDataDependent
+    }
+
     private sealed class VerificationProfileResult
     {
+        public required RuntimeProfileDescriptor RuntimeProfile { get; init; }
         public required string ProfileName { get; init; }
         public required string ProfileReason { get; init; }
         public required IReadOnlyList<VerificationProfileCheck> Checks { get; init; }
         public int PassedCount => Checks.Count(check => check.Status == VerificationCheckStatus.Pass);
         public int FailedCount => Checks.Count(check => check.Status == VerificationCheckStatus.Fail);
         public int NotApplicableCount => Checks.Count(check => check.Status == VerificationCheckStatus.NotApplicable);
+        public int MandatoryCount => Checks.Count(check => check.Applicability == VerificationApplicability.Mandatory);
+        public int MandatoryEvidenceCount => Checks.Count(check => check.MandatoryEvidence);
+        public int MandatoryEvidenceFailedCount => Checks.Count(check =>
+            check.MandatoryEvidence && check.Status == VerificationCheckStatus.Fail);
+        public int MandatoryNotApplicableCount => Checks.Count(check =>
+            check.Applicability == VerificationApplicability.Mandatory &&
+            check.Status == VerificationCheckStatus.NotApplicable);
+        public int CanonicalDataNotApplicableCount => Checks.Count(check =>
+            check.Applicability == VerificationApplicability.CanonicalDataDependent &&
+            check.Status == VerificationCheckStatus.NotApplicable);
         public int ApplicableCount => PassedCount + FailedCount;
-        public bool Passed => FailedCount == 0;
+        public bool Passed => FailedCount == 0 && MandatoryNotApplicableCount == 0;
     }
 
     private sealed record VerificationProfileCheck(
         string Name,
         VerificationCheckStatus Status,
-        string Detail);
+        string Detail,
+        VerificationApplicability Applicability,
+        bool MandatoryEvidence);
 
     private sealed class NativeTensileVerificationResult
     {
@@ -13777,9 +13809,16 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
         sb.AppendLine("Verification Summary");
         sb.AppendLine("--------------------");
-        sb.AppendLine("Profile: " + profile.ProfileName);
+        sb.AppendLine("Runtime profile: " + profile.RuntimeProfile.VisibleIdentity);
+        sb.AppendLine("Runtime kind: " + profile.RuntimeProfile.Kind);
+        sb.AppendLine("Runtime capabilities: " + profile.RuntimeProfile.CapabilitySummary);
+        sb.AppendLine("Data profile: " + profile.ProfileName);
         sb.AppendLine("Profile reason: " + profile.ProfileReason);
         sb.AppendLine($"Counts: applicable {profile.ApplicableCount}; pass {profile.PassedCount}; fail {profile.FailedCount}; not applicable {profile.NotApplicableCount}; total {profile.Checks.Count}");
+        sb.AppendLine(
+            $"Classification: mandatory {profile.MandatoryCount}; mandatory evidence {profile.MandatoryEvidenceCount}; " +
+            $"mandatory evidence fail {profile.MandatoryEvidenceFailedCount}; mandatory N/A {profile.MandatoryNotApplicableCount}; " +
+            $"canonical-data N/A {profile.CanonicalDataNotApplicableCount}");
         sb.AppendLine();
         foreach (var check in profile.Checks)
         {
@@ -13789,7 +13828,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 VerificationCheckStatus.Fail => "FAIL",
                 _ => "NOT APPLICABLE"
             };
-            sb.AppendLine(status.PadRight(16) + check.Name.PadRight(44) + check.Detail);
+            sb.AppendLine(
+                status.PadRight(16) +
+                check.Applicability.ToString().PadRight(24) +
+                check.Name.PadRight(44) +
+                check.Detail);
         }
         sb.AppendLine();
         sb.AppendLine(profile.ProfileName + ": " + (profile.Passed ? "PASS" : "FAIL"));
@@ -13803,6 +13846,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
     private VerificationProfileResult BuildVerificationProfile()
     {
         var checks = BuildVerificationChecks();
+        var runtimeProfile = RuntimeProfileContext.Current;
         var hasCanonicalMaterials = _nativeMaterialRows.Any(row => !row.IsArchived);
         var profileName = hasCanonicalMaterials ? "Full Data Verification" : "Application Readiness";
         var profileReason = hasCanonicalMaterials
@@ -13810,74 +13854,162 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             : "No canonical Materials are present; data-dependent calculation, website, report and recovery checks are not applicable";
         var profiledChecks = checks.Select(check =>
         {
+            var applicability = IsKnownZeroDataDependency(check)
+                ? VerificationApplicability.CanonicalDataDependent
+                : VerificationApplicability.Mandatory;
+            var mandatoryEvidence = IsMandatoryEvidenceCheck(check.Name);
             if (check.Passed)
-                return new VerificationProfileCheck(check.Name, VerificationCheckStatus.Pass, check.Detail);
-            if (!hasCanonicalMaterials && IsKnownZeroDataDependency(check))
+                return new VerificationProfileCheck(
+                    check.Name,
+                    VerificationCheckStatus.Pass,
+                    check.Detail,
+                    applicability,
+                    mandatoryEvidence);
+            if (!hasCanonicalMaterials && applicability == VerificationApplicability.CanonicalDataDependent)
                 return new VerificationProfileCheck(
                     check.Name,
                     VerificationCheckStatus.NotApplicable,
-                    "No canonical data — " + check.Detail);
-            return new VerificationProfileCheck(check.Name, VerificationCheckStatus.Fail, check.Detail);
+                    "No canonical data — " + check.Detail,
+                    applicability,
+                    mandatoryEvidence);
+            return new VerificationProfileCheck(
+                check.Name,
+                VerificationCheckStatus.Fail,
+                check.Detail,
+                applicability,
+                mandatoryEvidence);
         }).ToList();
         return new VerificationProfileResult
         {
+            RuntimeProfile = runtimeProfile,
             ProfileName = profileName,
             ProfileReason = profileReason,
             Checks = profiledChecks
         };
     }
 
-    private static bool IsKnownZeroDataDependency(VerificationCheck check)
+    private static readonly HashSet<string> CanonicalDataDependentCheckNames = new(StringComparer.Ordinal)
     {
-        var detailMarkers = new[]
-        {
-            "Native material-dependent intelligence did not complete",
-            "0 native materials",
-            "0 / 0 rows have MaterialID",
-            "0 summaries from 0 materials",
-            "0 complete, 0 partial, 0 empty",
-            "0 / 0 active materials complete",
-            "Add Experiment lacks a valid default material or experiment definition",
-            "Material Summary Engine verification has not passed",
-            "No active SQLite website template",
-            "No active website template exists",
-            "No restore-ready SQLite backup with canonical Materials"
-        };
-        if (detailMarkers.Any(marker => check.Detail.Contains(marker, StringComparison.OrdinalIgnoreCase)))
-            return true;
+        "Recommendation startup pricing hydration",
+        "Native material source loaded",
+        "MaterialID coverage",
+        "Material summaries built",
+        "Complete engineering summaries",
+        "Pricing completeness",
+        "Experimental add workflow safety",
+        "Website pipeline source",
+        "Website chart generator",
+        "Website payload coverage",
+        "Website radar generator",
+        "Website radar payload coverage",
+        "Website HTML renderer",
+        "Website renderer payload",
+        "Website verification suite",
+        "Native website template database",
+        "Website master template identity",
+        "Website publish readiness",
+        "Manufacturer engineering intelligence",
+        "Website Preview/Production renderer parity",
+        "Website portal release contract",
+        "Website export package contract",
+        "Reporting pipeline source",
+        "Reporting summary coverage",
+        "Report generator",
+        "Report payload coverage",
+        "Report model validation",
+        "PDF renderer",
+        "PDF payload validation",
+        "PDF render readiness",
+        "Certificate generator",
+        "Certificate payload validation",
+        "Certificate issue readiness",
+        "Report template service",
+        "Report template payload validation",
+        "Report template render readiness",
+        "Report export UI",
+        "Report export UI payload",
+        "Report export UI readiness",
+        "Material engineering report",
+        "Material engineering payload",
+        "Material engineering render readiness",
+        "Material engineering intelligence handoff",
+        "Branded PDF renderer",
+        "Report logo asset",
+        "Application icon asset",
+        "Unified report renderer",
+        "Canonical HTML layout",
+        "HTML/PDF shared assets",
+        "HTML-to-PDF package readiness",
+        "Report asset pipeline",
+        "Report asset coverage",
+        "Report asset manifest readiness",
+        "Report package folder standard",
+        "Report package metadata",
+        "Report package naming",
+        "Report chart renderer",
+        "Engineering chart payload",
+        "Report chart asset validation",
+        "Interactive report readiness",
+        "Engineering intelligence layer",
+        "Recommendation engine",
+        "Ranking and percentile engine",
+        "AI engineering review",
+        "Better alternatives engine",
+        "Review decision guidance",
+        "Reporting platform readiness",
+        "Long-term stability baseline",
+        "Website production workflow preserved",
+        "v40 local integration release gate",
+        "v42.9 Public Website Report Portal release gate",
+        "v42.9.1 Automatic Website Report Prerequisites release gate",
+        "v43.1 Local SQLite Backup and Restore release gate",
+        "v43.2 Excel Disaster Recovery release gate",
+        "v43.3 Recovery Compatibility Center release gate",
+        "v43.3.1 Backup and Recovery Center UI release gate",
+        "v44.5.1 Active SQLite preservation release gate",
+        "v44.5.3 Canonical storage terminology release gate",
+        "v44.5.5 Retired legacy write entry points release gate",
+        "v44.5.6 Retired workbook metadata readers release gate",
+        "v44.5.7 Legacy workbook schema retirement release gate",
+        "v44.5.8 Retired transition UI residue release gate",
+        "v44.5.9 Supported migration naming release gate",
+        "v44.6.0 Recovery Center clarity release gate",
+        "v44.7.8 Backup Filename Compatibility release gate",
+        "v44.7.12 Clean baseline retirement release gate"
+    };
 
-        if (check.Name is "Manufacturer engineering intelligence" or
-            "Website portal release contract" or
-            "Website export package contract" or
-            "Long-term stability baseline" or
-            "Website production workflow preserved" or
-            "v40 local integration release gate" or
-            "v42.9 Public Website Report Portal release gate" or
-            "v42.9.1 Automatic Website Report Prerequisites release gate" or
-            "v43.1 Local SQLite Backup and Restore release gate" or
-            "v43.2 Excel Disaster Recovery release gate" or
-            "v43.3 Recovery Compatibility Center release gate" or
-            "v43.3.1 Backup and Recovery Center UI release gate" or
-            "v44.5.1 Active SQLite preservation release gate" or
-            "v44.5.3 Canonical storage terminology release gate" or
-            "v44.5.5 Retired legacy write entry points release gate" or
-            "v44.5.6 Retired workbook metadata readers release gate" or
-            "v44.5.7 Legacy workbook schema retirement release gate" or
-            "v44.5.8 Retired transition UI residue release gate" or
-            "v44.5.9 Supported migration naming release gate" or
-            "v44.6.0 Recovery Center clarity release gate" or
-            "v44.7.8 Backup Filename Compatibility release gate" or
-            "v44.7.12 Clean baseline retirement release gate")
-            return true;
+    private static readonly HashSet<string> MandatoryEvidenceCheckNames = new(StringComparer.Ordinal)
+    {
+        "v51.1 governed runtime profile identity and capability contract",
+        "v51.2 seedless Clean Readiness profile contract",
+        "v51.3 Verification classification and mandatory evidence contract",
+        "Automated runtime acceptance safety foundation",
+        "Disposable backup and recovery acceptance safety foundation",
+        "Guarded updater acceptance safety foundation",
+        "Database path diagnostics",
+        "Executable path diagnostics",
+        "Storage folder diagnostics",
+        "Release identity alignment",
+        "v43.5.0 Transactional Updater Engine release gate",
+        "v43.6.0 Update and Deployment Diagnostics release gate",
+        "v43.7.0 Installer and Portable Deployment release gate",
+        "v44.1 Verification profiles and diagnostic honesty release gate",
+        "v44.3 Backup and recovery evidence clarity release gate",
+        "v50.3 safety, recovery and troubleshooting Help contract"
+    };
 
-        return check.Name.StartsWith("v41.1 ", StringComparison.Ordinal) ||
-               check.Name.StartsWith("v41.2 ", StringComparison.Ordinal) ||
-               check.Name.StartsWith("v41.3 ", StringComparison.Ordinal) ||
-               check.Name.StartsWith("v41.4 ", StringComparison.Ordinal) ||
-               check.Name.StartsWith("v41.5 ", StringComparison.Ordinal) ||
-               check.Name.StartsWith("v41.6 ", StringComparison.Ordinal) ||
-               check.Name.StartsWith("v41.7.", StringComparison.Ordinal);
-    }
+    private static bool IsKnownZeroDataDependency(VerificationCheck check) =>
+        CanonicalDataDependentCheckNames.Contains(check.Name) ||
+        check.Name.StartsWith("v41.1 ", StringComparison.Ordinal) ||
+        check.Name.StartsWith("v41.2 ", StringComparison.Ordinal) ||
+        check.Name.StartsWith("v41.3 ", StringComparison.Ordinal) ||
+        check.Name.StartsWith("v41.4 ", StringComparison.Ordinal) ||
+        check.Name.StartsWith("v41.5 ", StringComparison.Ordinal) ||
+        check.Name.StartsWith("v41.6 ", StringComparison.Ordinal) ||
+        check.Name.StartsWith("v41.7.", StringComparison.Ordinal);
+
+    private static bool IsMandatoryEvidenceCheck(string checkName) =>
+        MandatoryEvidenceCheckNames.Contains(checkName);
 
     private string GetExecutablePathForDiagnostics()
     {
@@ -14054,6 +14186,24 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             cleanReadinessContractReady
                 ? "Clean Readiness is manifest-contained, seedless and blocks owner database, Production/FTPS and updates"
                 : "Clean Readiness purpose, identity, isolation, capability or Help contract is incomplete."));
+        var verificationClassificationReady =
+            IsKnownZeroDataDependency(new VerificationCheck(
+                "Native material source loaded",
+                false,
+                "Deliberately unrelated detail")) &&
+            !IsKnownZeroDataDependency(new VerificationCheck(
+                "Release identity alignment",
+                false,
+                "Material Summary Engine verification has not passed")) &&
+            IsMandatoryEvidenceCheck("Database path diagnostics") &&
+            IsMandatoryEvidenceCheck("Guarded updater acceptance safety foundation") &&
+            IsMandatoryEvidenceCheck("Disposable backup and recovery acceptance safety foundation") &&
+            !IsMandatoryEvidenceCheck("Website pipeline source");
+        checks.Add(new VerificationCheck("v51.3 Verification classification and mandatory evidence contract",
+            verificationClassificationReady,
+            verificationClassificationReady
+                ? "Runtime/data profiles are distinct; exact-name applicability prevents detail text from granting N/A; path, recovery and updater evidence remain mandatory"
+                : "Verification applicability, mandatory evidence ownership or detail-text isolation is incomplete."));
         var automationFoundationReady =
             AutomationRuntimeProfile.MarkerFileName == ".3dpiceland-disposable-profile.json" &&
             typeof(AutomationRuntimeProfile).GetMethod(nameof(AutomationRuntimeProfile.Configure)) is not null &&

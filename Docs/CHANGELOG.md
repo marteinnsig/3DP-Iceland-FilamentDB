@@ -2,6 +2,26 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v51.3.0 - Verification Classification
+
+- Separates runtime profile identity/capabilities from the Full Data
+  Verification or Application Readiness data profile in Verification output.
+- Classifies every check as Mandatory or CanonicalDataDependent and exports
+  the complete matrix in automation JSON.
+- Flags 16 runtime, path, recovery, updater, deployment and diagnostic/support
+  checks as mandatory evidence in every profile.
+- Removes free-form detail text as an N/A authority; only governed check
+  names/families can become N/A without canonical Materials.
+- Extends the tester to reject mandatory N/A, mandatory-evidence failures,
+  unclassified N/A and populated runs containing any N/A.
+- Clean Debug profile `20260727145307-ec78b262` passes 281/281 applicable,
+  100 CanonicalDataDependent N/A and zero mandatory N/A/failures.
+- Clean Release profile `20260727145433-df2701f4` repeats 281/281 plus 100
+  classified N/A; populated Release `20260727145601-56734ac4` passes 381/381
+  with zero N/A. Both retain exact business-state equality.
+- Owner Production and Clean runtime acceptance pass without visible errors on
+  2026-07-27. v51.3.0 is canonical; schema remains v37 and v51.4 is current.
+
 ## v51.2.0 - Clean Readiness Profile
 
 - Adds the explicit `clean-readiness` manifest purpose and visible

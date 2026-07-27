@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v51.2.0 — Clean Readiness Profile**
+Current canonical release: **v51.3.0 — Verification Classification**
 
-Last runtime-accepted baseline: **v51.2.0 — Clean Readiness Profile**
+Last runtime-accepted baseline: **v51.3.0 — Verification Classification**
 
-Current application candidate: **None; v51.3 is current**
+Current application candidate: **None; v51.4 is current**
 
-Current roadmap increment: **v51.3 — Verification Classification and Mandatory Evidence Contract**
+Current roadmap increment: **v51.4 — Profile Acceptance, Migration and Retirement Reconciliation**
 
-Current acceptance note: v51.2.0 is owner accepted; Release clean passes 280/280 plus 100 N/A and populated passes 380/380.
+Current acceptance note: v51.3.0 is owner accepted; Clean passes 281/281 plus 100 N/A and populated passes 381/381.
 
 Next note: v51.0 is research-first; measure profile cost and boundaries before implementation.
 
@@ -2192,13 +2192,19 @@ to unstarted authoritative planning slots.
   - Popup-race fix passes two consecutive Clean runs and populated profile `20260727144213-6e88b752` with exact state.
   - Owner rerun passes without unexpected dialogs or PowerShell errors.
 - **v51.3 — Verification Classification and Mandatory Evidence Contract**
-  - State: Current authoritative increment.
+  - State: Complete, canonical and owner runtime accepted on 2026-07-27.
   - Make profile identity explicit in Verification while retaining Full Data Verification for canonical populated data.
   - Keep crash, recovery, security, updater transaction, path ownership and support evidence mandatory in every profile.
   - Prevent a profile from converting unexpected readiness or release failures into Not applicable.
+  - Separate runtime profile identity from the Full Data/Application Readiness data profile in UI and evidence.
+  - Classify each result as Mandatory or CanonicalDataDependent; free-form detail text alone must never grant N/A.
+  - Require Clean evidence to contain zero mandatory N/A and populated evidence to contain zero N/A of any class.
   - Completion condition: deterministic populated/clean matrices prove honest PASS/FAIL/Not applicable classification.
+  - Clean profile `20260727145307-ec78b262` passes 281/281, 100 canonical-data N/A and all 16 mandatory-evidence checks.
+  - Release profiles `20260727145433-df2701f4` and `20260727145601-56734ac4` pass clean/populated matrices with exact state.
+  - Owner confirms Owner Production 381/381 and Clean runtime complete without visible errors.
 - **v51.4 — Profile Acceptance, Migration and Retirement Reconciliation**
-  - State: Planned after v51.3 acceptance.
+  - State: Current authoritative increment.
   - Reconcile startup, preferences, diagnostics, recovery, updater, credentials, reports, tester and cleanup ownership.
   - Retire superseded identity fields/adapters only after every replacement path is runtime accepted.
   - Run Debug/Release, security/static gates, disposable populated/clean scenarios and final owner profile review.

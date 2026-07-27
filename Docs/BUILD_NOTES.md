@@ -1,4 +1,23 @@
-# Current Build Notes - v51.2.0
+# Current Build Notes - v51.3.0
+
+## Verification Classification
+
+Verification explicitly separates runtime profile identity/capabilities from
+the Full Data Verification or Application Readiness data profile. Every check
+is exported with Mandatory or CanonicalDataDependent applicability; designated
+runtime, path, recovery, updater, deployment and diagnostic/support checks
+also carry a mandatory-evidence flag.
+
+N/A now requires an explicitly governed check name/family. Free-form failure
+detail text alone cannot convert a mandatory failure to N/A. Clean Debug
+profile `20260727145307-ec78b262` passes 281/281 applicable with 100
+CanonicalDataDependent N/A, zero mandatory N/A and all 16 mandatory-evidence
+checks passing. Release and owner acceptance remain pending; schema stays v37.
+Clean Release profile `20260727145433-df2701f4` repeats 281/281 plus 100
+classified N/A with exact state. Populated Release profile
+`20260727145601-56734ac4` passes 381/381 with zero N/A and exact state.
+Owner Production and Clean runtime acceptance pass on 2026-07-27; schema
+remains v37 and v51.4 is current.
 
 ## Clean Readiness Profile
 

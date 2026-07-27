@@ -2,6 +2,15 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v51.3.0 - Verification Classification
+
+Runtime profile and data profile are now distinct Verification dimensions.
+Every check carries explicit applicability and the automation evidence exports
+the complete matrix. Free-form detail text cannot grant N/A; mandatory
+evidence remains applicable in every profile. Clean Release passes 281/281
+plus 100 canonical-data N/A, while populated Release passes 381/381 with zero
+N/A and exact state. Owner runtime acceptance passes on 2026-07-27.
+
 ## v51.2.0 - Clean Readiness Profile
 
 Clean Readiness adds a seedless, manifest-contained schema-v37 first-run

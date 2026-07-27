@@ -1311,6 +1311,8 @@ internal static class HelpContentCatalog
             manifest-contained database, preferences and output roots; owner database, Production/FTPS and general updates are blocked.
             CLEAN / READINESS is a seedless disposable first-run contract. It creates a new empty SQLite database only inside its
             manifest root, reports data-dependent checks as Not applicable and keeps release, identity and security failures mandatory.
+            Verification always shows runtime identity separately from the data profile. Mandatory checks can never become Not applicable;
+            only explicitly classified CanonicalDataDependent checks may do so when no canonical Materials exist.
             Profile identity never grants an action by itself and never weakens crash, recovery, security or support evidence.
 
             File, update and publishing commands

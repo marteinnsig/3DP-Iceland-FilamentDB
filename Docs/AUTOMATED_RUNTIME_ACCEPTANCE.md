@@ -1,5 +1,21 @@
 # Automated Runtime Acceptance
 
+## v51.3.0 - Verification Classification candidate
+
+Verification now exports every check with `Mandatory` or
+`CanonicalDataDependent` applicability plus a dedicated mandatory-evidence
+flag. Runtime identity/capabilities and the Full Data/Application Readiness
+data profile are separate fields. Free-form detail text cannot grant N/A.
+
+Clean Debug profile `20260727145307-ec78b262` passes 281/281 applicable with
+100 CanonicalDataDependent N/A, zero mandatory N/A and zero failures across 16
+mandatory-evidence checks. The total matrix is 381 checks.
+
+Clean Release profile `20260727145433-df2701f4` repeats 281/281 plus 100
+classified N/A with exact state. Populated Release profile
+`20260727145601-56734ac4` passes all 381 checks with zero N/A and exact
+business-state recovery.
+
 ## v51.2.0 - Clean Readiness candidate
 
 The `clean` scenario creates a manifest-contained profile without accepting or

@@ -1,6 +1,16 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v51.3.0 - Verification Classification
+
+Verification now separates runtime identity/capabilities from the Full Data or
+Application Readiness data profile. All 381 checks export Mandatory or
+CanonicalDataDependent applicability; 16 runtime, path, recovery, updater,
+deployment and diagnostic/support checks are mandatory evidence. Clean Release
+passes 281/281 plus 100 classified N/A with zero mandatory N/A; populated
+Release passes 381/381 with zero N/A. Both retain exact state. Owner Production
+and Clean runtime acceptance pass on 2026-07-27; v51.4 is current.
+
 ## v51.2.0 - Clean Readiness Profile
 
 The manifest-governed `CLEAN / READINESS` profile creates schema v37 from no

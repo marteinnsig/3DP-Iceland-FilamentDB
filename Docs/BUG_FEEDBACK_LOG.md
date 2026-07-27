@@ -78,6 +78,13 @@ owned window for at most one second; identified or persistent dialogs remain blo
 `20260727144106-e4feeaf6` and `20260727144139-15e29155` and populated profile `20260727144213-6e88b752` all pass.
 Owner rerun completes without an unexpected dialog or PowerShell error; v51.2.0 is accepted and v51.3-v51.4 retain ownership
 of the remaining classification and final reconciliation work.
+The v51.3 candidate now exports explicit Mandatory/CanonicalDataDependent classification, keeps 16 evidence checks mandatory
+and prevents free-form detail text from granting N/A. Clean profile `20260727145307-ec78b262` passes 281/281 applicable,
+100 canonical-data N/A, zero mandatory N/A and zero mandatory-evidence failures; Release and owner acceptance remain pending.
+Release profiles `20260727145433-df2701f4` and `20260727145601-56734ac4` pass Clean 281/281 plus 100 classified N/A and
+populated 381/381 with zero N/A respectively; both retain exact business-state equality.
+Owner confirms Owner Production and Clean runtime complete without visible errors; v51.3.0 is accepted and v51.4 owns final
+profile reconciliation.
 
 Date: 2026-07-27
 Area: Help / Exhaustive control and editable-field coverage

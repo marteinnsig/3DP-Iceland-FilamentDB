@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v51.3.0 - Verification Classification
+
+Verification now provides an auditable populated/clean classification matrix.
+Mandatory runtime, path, recovery, updater, deployment and support evidence
+cannot become N/A, while explicitly governed canonical-data checks remain
+honest in a seedless profile. Clean/populated Release and owner runtime
+acceptance pass; schema remains v37.
+
 # v51.2.0 - Clean Readiness Profile
 
 The governed runtime-profile milestone now includes a seedless Clean Readiness
