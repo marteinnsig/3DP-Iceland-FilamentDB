@@ -6,7 +6,7 @@ Last runtime-accepted baseline: **v50.1.0 — Start-to-finish Workflow Guide**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v50.2 — Per-tab Reference and Contextual Help Links**
+Current roadmap increment: **v50.2.0 — Complete Tab, Action and State Inventory**
 
 Current acceptance note: v50.1.0 is runtime accepted with Full Data Verification 370/370; parent v50 remains active.
 
@@ -2051,10 +2051,35 @@ to unstarted authoritative planning slots.
   - Debug/Release, documentation and security gates pass; disposable smoke and Full Data Verification pass 370/370 with exact
     state equality. Owner accepted content, natural wrapping, search highlighting/jump and immediate Search/Clear refresh.
 - **v50.2 — Per-tab Reference and Contextual Help Links**
-  - State: Current; research and complete tab/action inventory before edits.
+  - State: Active parent milestone; execute recorded v50.2.0-v50.2.4 increments in order.
   - Add a governed reference for every supported top-level tab and relevant nested workflow, including fields, commands and states.
   - Add contextual Help entry points that open the same central window at stable section IDs; do not create parallel help systems.
   - Completion condition: tab/action inventory maps to Help sections and deterministic navigation checks pass.
+- **v50.2.0 — Complete Tab, Action and State Inventory**
+  - State: Current; read-only research before Help or UI edits.
+  - Inventory every top-level/nested tab, visible command, editable/read-only field group, status, filter, save boundary and handoff.
+  - Build an authoritative coverage matrix with stable proposed Help section IDs and identify stale or contradictory UI guidance.
+  - Completion condition: every supported UI surface has one documented owner and a planned Help destination; no implementation yet.
+- **v50.2.1 — Materials, Purchasing, Inventory, Cost and Configuration Reference**
+  - State: Planned after v50.2.0 findings.
+  - Cover Materials, Manufacturers, Purchase Orders, Inventory, Usage, Printers, Quotes, Base Materials and Settings Manager.
+  - Document every command/state, prospective versus immutable values, validation and cross-tab ownership without changing behavior.
+  - Completion condition: coverage matrix entries for these surfaces map to complete searchable Help sections and owner acceptance.
+- **v50.2.2 — Measurements, Experimental Testing and Engineering Analysis Reference**
+  - State: Planned after v50.2.1 acceptance.
+  - Cover native measurement tabs, Experimental Series/Runs/editors/results and all Material Detail/analysis/ranking surfaces.
+  - Document raw/computed fields, auto-save, ranges, filters, comparison scope, readiness and historical-data boundaries.
+  - Completion condition: every testing/analysis control and nested tab has searchable reference coverage and owner acceptance.
+- **v50.2.3 — Reports, Website, Assistant and Creator-tool Reference**
+  - State: Planned after v50.2.2 acceptance.
+  - Cover Reports/PDF, Website Export, AI Assistant, YouTube Research and remaining creator/output commands, states and handoffs.
+  - Preserve public allowlists, local-versus-upload actions, credential boundaries and advisory/local tool ownership.
+  - Completion condition: every output/tool control maps to complete searchable reference coverage and owner acceptance.
+- **v50.2.4 — Contextual Help Entry Points and Coverage Acceptance**
+  - State: Planned after all reference content is accepted.
+  - Add stable contextual Help entry points for every top-level tab and relevant nested workflow using the one central Help window.
+  - Add deterministic uniqueness, tab/action coverage and navigation checks; keep visual usability acceptance manual.
+  - Completion condition: coverage matrix is complete, every link resolves to the intended section and owner accepts full v50.2.
 - **v50.3 — Troubleshooting, Recovery, Publishing Safety and Final Acceptance**
   - State: Planned after v50.2 acceptance.
   - Add symptom-led troubleshooting, diagnostics collection, backup/recovery boundaries, Verification interpretation and safe

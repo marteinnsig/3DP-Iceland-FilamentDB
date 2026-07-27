@@ -569,6 +569,8 @@ A follow-up found that WPF did not always raise `SelectionChanged` when filterin
 stale until a manual topic switch. Search and Clear now render the selected first result directly, independent of that event.
 Owner accepted the complete v50.1 workflow, natural wrapping, search highlight/jump and immediate Search/Clear refresh on 2026-07-27.
 The parent item remains In progress for recorded v50.2 per-tab reference/context links and v50.3 safety/final acceptance.
+Before v50.2 implementation, the exhaustive work is recorded as v50.2.0 inventory, v50.2.1 materials/purchasing/configuration,
+v50.2.2 testing/analysis, v50.2.3 outputs/tools and v50.2.4 contextual-link/coverage acceptance.
 What happened: The application has many connected workflows, but no single structured user guide explains what every tab does or how
 data should move through the platform from purchase entry to measurements, reports and website publication.
 Expected behavior: Provide a well-organized user-help system with a start-to-finish workflow, per-tab reference, field-entry guidance,
