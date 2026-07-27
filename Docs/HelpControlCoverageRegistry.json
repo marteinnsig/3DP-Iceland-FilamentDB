@@ -19,7 +19,8 @@
     "NestedTab": 16
   },
   "CoveredOwnerIncrements": [
-    "v50.4.1"
+    "v50.4.1",
+    "v50.4.2"
   ],
   "CustomColumnRegistries": [
     {
@@ -37,8 +38,8 @@
       "KeyContract": "PrototypeColumnKey",
       "Columns": 45,
       "OwnerIncrement": "v50.4.2",
-      "HelpDestination": "measurements.tensile",
-      "Status": "planned"
+      "HelpDestination": "measurements.controls-fields",
+      "Status": "covered"
     },
     {
       "Key": "measurements.fast-impact",
@@ -46,8 +47,8 @@
       "KeyContract": "PrototypeColumnKey",
       "Columns": 45,
       "OwnerIncrement": "v50.4.2",
-      "HelpDestination": "measurements.impact",
-      "Status": "planned"
+      "HelpDestination": "measurements.controls-fields",
+      "Status": "covered"
     },
     {
       "Key": "measurements.fast-stiffness",
@@ -55,8 +56,8 @@
       "KeyContract": "PrototypeColumnKey",
       "Columns": 18,
       "OwnerIncrement": "v50.4.2",
-      "HelpDestination": "measurements.stiffness",
-      "Status": "planned"
+      "HelpDestination": "measurements.controls-fields",
+      "Status": "covered"
     },
     {
       "Key": "settings.fast-grid",

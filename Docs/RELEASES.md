@@ -1,6 +1,15 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v50.4.2 - Engineering Control and Field Help
+
+Four detailed searchable topics cover native Measurements, Experimental
+Testing, interactive Material Detail and global Analysis. The ledger marks 267
+XAML candidates and 108 custom measurement columns covered. Debug/Release,
+vulnerability, documentation and disposable Full Data Verification 376/376
+pass with exact state equality. Owner runtime/readability acceptance passes.
+Schema remains v37; parent v50 continues at v50.4.3.
+
 ## v50.4.1 - Data and Configuration Control Help
 
 Nine detailed searchable topics cover every registered control/field group in

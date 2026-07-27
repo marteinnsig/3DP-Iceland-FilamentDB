@@ -342,7 +342,7 @@ internal static class Program
             Require(
                 string.Equals(
                     FindById(help, "HelpSectionTitle").Current.Name,
-                    "Rankings Dashboard reference",
+                    "Rankings, Category Rankings, Awards and Insights controls and fields",
                     StringComparison.Ordinal),
                 "Central Help did not expose the Rankings Top 25 default-scope reference.");
             ((ValuePattern)helpValuePattern).SetValue("application is not read-only");
@@ -415,10 +415,38 @@ internal static class Program
                     "Settings Manager controls and fields",
                     StringComparison.Ordinal),
                 "Central Help did not expose the Settings column/save-boundary reference.");
+            ((ValuePattern)helpValuePattern).SetValue("Revolutions accepts 0 through 10");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Native Measurements controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the native measurement control/field reference.");
+            ((ValuePattern)helpValuePattern).SetValue("Results always remain selected-Series scoped");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Experimental Testing controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the Experimental read-only Results boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("ChatGPT Prompt box is read-only local text");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Material Detail interactive controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the Material Detail interactive control/field reference.");
+            ((ValuePattern)helpValuePattern).SetValue("users cannot type or appoint a winner");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Rankings, Category Rankings, Awards and Insights controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the global Analysis read-only boundary.");
             Record(
                 "central-help",
                 true,
-                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1-v50.4.1 reference searches");
+                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1-v50.4.2 reference searches");
             CloseWindow(help, application.Id);
 
             Expand(FindById(main, "HelpMenu"), application.Id);

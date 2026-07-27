@@ -2,13 +2,13 @@
 
 Current canonical release: **v50.3.0 — Safety and Recovery Help**
 
-Last runtime-accepted baseline: **v50.4.1 — Data and Configuration Control Help**
+Last runtime-accepted baseline: **v50.4.2 — Engineering Control and Field Help**
 
-Current application candidate: **None; v50.4.2 is current**
+Current application candidate: **None; v50.4.3 is current**
 
-Current roadmap increment: **v50.4.2 — Measurements, Experimental Testing and Analysis Control Help**
+Current roadmap increment: **v50.4.3 — Reports, Website, Assistant, Creator and Runtime-window Control Help**
 
-Current acceptance note: v50.4.1 is runtime/readability accepted with Verification 375/375; parent v50 remains active.
+Current acceptance note: v50.4.2 is runtime/readability accepted with Verification 376/376; parent v50 remains active.
 
 Next note: v50.4 must prove zero unexplained supported controls/editable fields before parent v50 may close.
 
@@ -2143,10 +2143,13 @@ to unstarted authoritative planning slots.
   - Nine searchable control/field topics cover 222 XAML candidates, 81 custom columns and the Bulk Update runtime dialog.
   - Verification passes 375/375 in disposable profile `20260727125607-36733e81` with exact logical/business-state equality.
 - **v50.4.2 — Measurements, Experimental Testing and Analysis Control Help**
-  - State: Current authoritative subincrement; implementation not started.
+  - State: Complete, canonical and owner runtime/readability accepted on 2026-07-27.
   - Close ledger gaps for native/experimental editors, Material Detail, Rankings, Category Rankings, Awards and Insights.
   - Cover owner-drawn cell editors, raw versus calculated columns, scopes, baselines, status fields and read-only interpretations.
+  - Four searchable topics cover 267 XAML candidates plus 108 custom native measurement columns.
+  - Verification passes 376/376 in disposable profile `20260727131457-dee03dd4` with exact logical/business-state equality.
 - **v50.4.3 — Reports, Website, Assistant, Creator and Runtime-window Control Help**
+  - State: Current authoritative subincrement; implementation not started.
   - Close ledger gaps for Reports, Website Export, AI Assistant, YouTube Research, menus and supported runtime windows/dialogs.
   - Keep Preview, Production, FTPS, update, restore, recalculation, deletion and evidence boundaries explicit.
 - **v50.4.4 — Zero-gap Reconciliation, Deterministic Gates and Final Owner Acceptance**

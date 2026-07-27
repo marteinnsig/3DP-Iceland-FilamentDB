@@ -2,6 +2,28 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v50.4.2 - Engineering Control and Field Help
+
+- Adds four detailed searchable control/field topics for native Measurements,
+  Experimental Testing, interactive Material Detail and global Analysis.
+- Covers 267 registered XAML candidates plus 108 owner-drawn native
+  measurement columns.
+- Explains raw versus calculated values, units/ranges, auto-save, selected-
+  Series scope, baseline/history rules and read-only Results projections.
+- Documents Analytics/Compare selection, editable local Video Planner fields,
+  Recommendation handoff and read-only recommendation evidence.
+- Documents Rankings, Category Rankings, Awards and Insights filters, defaults,
+  CSV export and read-only output columns.
+- Adds deterministic Verification depth/marker checks and four safe tester
+  searches.
+- Initial smoke exposed one superseded Rankings destination and one
+  source-wrapping-sensitive Experimental marker; both are corrected.
+- Debug/Release app and tester builds pass with zero warnings/errors.
+- Disposable profile `20260727131457-dee03dd4` passes Full Data Verification
+  376/376 with exact logical/business-state equality.
+- Owner runtime/readability acceptance passes on 2026-07-27.
+- v50.4.2 is canonical; schema remains v37 and parent v50 continues at v50.4.3.
+
 ## v50.4.1 - Data and Configuration Control Help
 
 - Adds nine detailed searchable control/field topics for Materials,

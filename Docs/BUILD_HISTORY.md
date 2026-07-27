@@ -2,6 +2,20 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v50.4.2 - Engineering Control and Field Help
+
+The v50.4 ledger routes native Measurements, Experimental Testing, interactive
+Material Detail and global Analysis into four detailed control/field topics.
+The content reconciles 267 XAML candidates and 108 custom measurement columns
+with actual grid-level read-only state, source ranges, save behavior, scope,
+local planner persistence and downstream interpretation.
+
+Verification requires all four substantive topics and representative ownership
+markers. Smoke proves unique read-only searches without invoking mutations.
+Profile `20260727131457-dee03dd4` passes 376/376 with exact logical and
+business-state equality. Owner runtime/readability acceptance passes on
+2026-07-27; v50.4.2 is canonical and v50.4.3 is current.
+
 ## v50.4.1 - Data and Configuration Control Help
 
 The v50.4.0 ledger drove nine new searchable control/field references across

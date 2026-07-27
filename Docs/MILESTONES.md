@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v50.4.2 - Engineering Control and Field Help
+
+The exhaustive Help audit now has accepted control/field coverage for native
+Measurements, Experimental Testing, interactive Material Detail and global
+Analysis. Owner runtime review and Full Data Verification 376/376 pass with
+exact state equality. Schema remains v37; Comprehensive User Help continues
+at v50.4.3.
+
 # v50.4.1 - Data and Configuration Control Help
 
 The exhaustive Help audit now has accepted control/field coverage for the nine

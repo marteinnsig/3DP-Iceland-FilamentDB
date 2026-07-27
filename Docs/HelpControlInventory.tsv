@@ -69,143 +69,143 @@ xaml.application-shell.button.automationrecoverybackup	Application shell	Button	
 xaml.application-shell.button.automationrecoveryexportexcel	Application shell	Button	AutomationRecoveryExportExcel	action	v50.4.3	start.workflow	planned
 xaml.application-shell.button.automationrecoverymutate	Application shell	Button	AutomationRecoveryMutate	action	v50.4.3	start.workflow	planned
 xaml.application-shell.button.automationrecoveryrestoreexcel	Application shell	Button	AutomationRecoveryRestoreExcel	action	v50.4.3	start.workflow	planned
-xaml.awards-winners.button.exportawardscsv-click	Awards & Winners	Button	ExportAwardsCsv_Click	action	v50.4.2	analysis.awards	planned
-xaml.awards-winners.button.refreshawards-click	Awards & Winners	Button	RefreshAwards_Click	action	v50.4.2	analysis.awards	planned
-xaml.awards-winners.button.resetawardsfilters-click	Awards & Winners	Button	ResetAwardsFilters_Click	action	v50.4.2	analysis.awards	planned
-xaml.awards-winners.combobox.awardsbasematerialfilter	Awards & Winners	ComboBox	AwardsBaseMaterialFilter	choice	v50.4.2	analysis.awards	planned
-xaml.awards-winners.combobox.awardsmanufacturerfilter	Awards & Winners	ComboBox	AwardsManufacturerFilter	choice	v50.4.2	analysis.awards	planned
-xaml.awards-winners.combobox.awardsreinforcementfilter	Awards & Winners	ComboBox	AwardsReinforcementFilter	choice	v50.4.2	analysis.awards	planned
-xaml.awards-winners.combobox.awardssetfilter	Awards & Winners	ComboBox	AwardsSetFilter	choice	v50.4.2	analysis.awards	planned
-xaml.awards-winners.datagrid.awardsgrid	Awards & Winners	DataGrid	AwardsGrid	read-only-grid	v50.4.2	analysis.awards	planned
-xaml.awards-winners.datagridtextcolumn.award	Awards & Winners	DataGridTextColumn	Award	editable-column-candidate	v50.4.2	analysis.awards	planned
-xaml.awards-winners.datagridtextcolumn.manufacturer	Awards & Winners	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.2	analysis.awards	planned
-xaml.awards-winners.datagridtextcolumn.reinforcement	Awards & Winners	DataGridTextColumn	Reinforcement	editable-column-candidate	v50.4.2	analysis.awards	planned
-xaml.awards-winners.datagridtextcolumn.runner-up	Awards & Winners	DataGridTextColumn	Runner Up	editable-column-candidate	v50.4.2	analysis.awards	planned
-xaml.awards-winners.datagridtextcolumn.score	Awards & Winners	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	analysis.awards	planned
-xaml.awards-winners.datagridtextcolumn.status	Awards & Winners	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	analysis.awards	planned
-xaml.awards-winners.datagridtextcolumn.type	Awards & Winners	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	analysis.awards	planned
-xaml.awards-winners.datagridtextcolumn.use-case	Awards & Winners	DataGridTextColumn	Use Case	editable-column-candidate	v50.4.2	analysis.awards	planned
-xaml.awards-winners.datagridtextcolumn.why	Awards & Winners	DataGridTextColumn	Why	editable-column-candidate	v50.4.2	analysis.awards	planned
-xaml.awards-winners.datagridtextcolumn.winner	Awards & Winners	DataGridTextColumn	Winner	editable-column-candidate	v50.4.2	analysis.awards	planned
+xaml.awards-winners.button.exportawardscsv-click	Awards & Winners	Button	ExportAwardsCsv_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.button.refreshawards-click	Awards & Winners	Button	RefreshAwards_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.button.resetawardsfilters-click	Awards & Winners	Button	ResetAwardsFilters_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.combobox.awardsbasematerialfilter	Awards & Winners	ComboBox	AwardsBaseMaterialFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.combobox.awardsmanufacturerfilter	Awards & Winners	ComboBox	AwardsManufacturerFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.combobox.awardsreinforcementfilter	Awards & Winners	ComboBox	AwardsReinforcementFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.combobox.awardssetfilter	Awards & Winners	ComboBox	AwardsSetFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.datagrid.awardsgrid	Awards & Winners	DataGrid	AwardsGrid	read-only-grid	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.datagridtextcolumn.award	Awards & Winners	DataGridTextColumn	Award	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.datagridtextcolumn.manufacturer	Awards & Winners	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.datagridtextcolumn.reinforcement	Awards & Winners	DataGridTextColumn	Reinforcement	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.datagridtextcolumn.runner-up	Awards & Winners	DataGridTextColumn	Runner Up	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.datagridtextcolumn.score	Awards & Winners	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.datagridtextcolumn.status	Awards & Winners	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.datagridtextcolumn.type	Awards & Winners	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.datagridtextcolumn.use-case	Awards & Winners	DataGridTextColumn	Use Case	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.datagridtextcolumn.why	Awards & Winners	DataGridTextColumn	Why	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.datagridtextcolumn.winner	Awards & Winners	DataGridTextColumn	Winner	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.base-materials.button.addbasematerial	Base Materials	Button	AddBaseMaterial	action	v50.4.1	base-materials.controls-fields	covered
 xaml.base-materials.button.bindexactbasematerialnames	Base Materials	Button	BindExactBaseMaterialNames	action	v50.4.1	base-materials.controls-fields	covered
 xaml.base-materials.button.deletebasematerial	Base Materials	Button	DeleteBaseMaterial	action	v50.4.1	base-materials.controls-fields	covered
 xaml.base-materials.button.duplicatebasematerial	Base Materials	Button	DuplicateBaseMaterial	action	v50.4.1	base-materials.controls-fields	covered
 xaml.base-materials.button.resetbasematerialcolumnsbutton	Base Materials	Button	ResetBaseMaterialColumnsButton	action	v50.4.1	base-materials.controls-fields	covered
-xaml.category-rankings.button.exportcategoryrankingscsv-click	Category Rankings	Button	ExportCategoryRankingsCsv_Click	action	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.button.refreshcategoryrankings-click	Category Rankings	Button	RefreshCategoryRankings_Click	action	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.button.resetcategoryrankingfilters-click	Category Rankings	Button	ResetCategoryRankingFilters_Click	action	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.combobox.categoryrankingbasematerialfilter	Category Rankings	ComboBox	CategoryRankingBaseMaterialFilter	choice	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.combobox.categoryrankinggroupfilter	Category Rankings	ComboBox	CategoryRankingGroupFilter	choice	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.combobox.categoryrankinglimitfilter	Category Rankings	ComboBox	CategoryRankingLimitFilter	choice	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.combobox.categoryrankingmanufacturerfilter	Category Rankings	ComboBox	CategoryRankingManufacturerFilter	choice	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.combobox.categoryrankingmetricfilter	Category Rankings	ComboBox	CategoryRankingMetricFilter	choice	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.combobox.categoryrankingreinforcementfilter	Category Rankings	ComboBox	CategoryRankingReinforcementFilter	choice	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagrid.categoryrankingsgrid	Category Rankings	DataGrid	CategoryRankingsGrid	read-only-grid	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagridtextcolumn.anonymous	Category Rankings	DataGridTextColumn	#	editable-column-candidate	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagridtextcolumn.best-axis	Category Rankings	DataGridTextColumn	Best Axis	editable-column-candidate	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagridtextcolumn.category	Category Rankings	DataGridTextColumn	Category	editable-column-candidate	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagridtextcolumn.category-score	Category Rankings	DataGridTextColumn	Category Score	editable-column-candidate	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagridtextcolumn.group	Category Rankings	DataGridTextColumn	Group	editable-column-candidate	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagridtextcolumn.manufacturer	Category Rankings	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagridtextcolumn.material	Category Rankings	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagridtextcolumn.overall	Category Rankings	DataGridTextColumn	Overall	editable-column-candidate	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagridtextcolumn.reinforcement	Category Rankings	DataGridTextColumn	Reinforcement	editable-column-candidate	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagridtextcolumn.status	Category Rankings	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	analysis.category-rankings	planned
-xaml.category-rankings.datagridtextcolumn.type	Category Rankings	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	analysis.category-rankings	planned
-xaml.experimental-testing.button.clearexperimentalfilters-click	Experimental Testing	Button	ClearExperimentalFilters_Click	action	v50.4.2	experimental.series	planned
-xaml.experimental-testing.button.experimentaladdrun	Experimental Testing	Button	ExperimentalAddRun	action	v50.4.2	experimental.series	planned
-xaml.experimental-testing.button.experimentaladdseries	Experimental Testing	Button	ExperimentalAddSeries	action	v50.4.2	experimental.series	planned
-xaml.experimental-testing.button.experimentaldeleterun	Experimental Testing	Button	ExperimentalDeleteRun	action	v50.4.2	experimental.series	planned
-xaml.experimental-testing.button.experimentaldeleteseries	Experimental Testing	Button	ExperimentalDeleteSeries	action	v50.4.2	experimental.series	planned
-xaml.experimental-testing.button.experimentalduplicaterun	Experimental Testing	Button	ExperimentalDuplicateRun	action	v50.4.2	experimental.series	planned
-xaml.experimental-testing.button.experimentalduplicateseries	Experimental Testing	Button	ExperimentalDuplicateSeries	action	v50.4.2	experimental.series	planned
-xaml.experimental-testing.checkbox.experimentalactiveonly	Experimental Testing	CheckBox	ExperimentalActiveOnly	choice	v50.4.2	experimental.series	planned
-xaml.experimental-testing.checkbox.experimentalincludeinactivehistory	Experimental Testing	CheckBox	ExperimentalIncludeInactiveHistory	choice	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagrid.experimentalrunsgrid	Experimental Testing	DataGrid	ExperimentalRunsGrid	grid-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagrid.experimentalseriesgrid	Experimental Testing	DataGrid	ExperimentalSeriesGrid	grid-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridcheckboxcolumn.active	Experimental Testing	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridcheckboxcolumn.active-2	Experimental Testing	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridcheckboxcolumn.baseline	Experimental Testing	DataGridCheckBoxColumn	Baseline	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridcheckboxcolumn.website	Experimental Testing	DataGridCheckBoxColumn	Website	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridcomboboxcolumn.baseline-material	Experimental Testing	DataGridComboBoxColumn	Baseline Material	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridcomboboxcolumn.experiment	Experimental Testing	DataGridComboBoxColumn	Experiment	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridcomboboxcolumn.material	Experimental Testing	DataGridComboBoxColumn	Material	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridcomboboxcolumn.status	Experimental Testing	DataGridComboBoxColumn	Status	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridtextcolumn.default-unit	Experimental Testing	DataGridTextColumn	Default Unit	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridtextcolumn.measured-date	Experimental Testing	DataGridTextColumn	Measured date	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridtextcolumn.run-id	Experimental Testing	DataGridTextColumn	Run ID	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridtextcolumn.run-notes	Experimental Testing	DataGridTextColumn	Run Notes	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridtextcolumn.series-id	Experimental Testing	DataGridTextColumn	Series ID	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridtextcolumn.series-notes	Experimental Testing	DataGridTextColumn	Series Notes	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridtextcolumn.unit	Experimental Testing	DataGridTextColumn	Unit	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridtextcolumn.updated-utc	Experimental Testing	DataGridTextColumn	Updated UTC	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing.datagridtextcolumn.value	Experimental Testing	DataGridTextColumn	Value	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing.textbox.experimentalsearch	Experimental Testing	TextBox	ExperimentalSearch	input-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagrid.experimentalimpactgrid	Experimental Testing > Impact	DataGrid	ExperimentalImpactGrid	grid-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.1	Experimental Testing > Impact	DataGridTextColumn	% 1	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.10	Experimental Testing > Impact	DataGridTextColumn	% 10	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.2	Experimental Testing > Impact	DataGridTextColumn	% 2	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.3	Experimental Testing > Impact	DataGridTextColumn	% 3	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.4	Experimental Testing > Impact	DataGridTextColumn	% 4	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.5	Experimental Testing > Impact	DataGridTextColumn	% 5	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.6	Experimental Testing > Impact	DataGridTextColumn	% 6	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.7	Experimental Testing > Impact	DataGridTextColumn	% 7	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.8	Experimental Testing > Impact	DataGridTextColumn	% 8	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.9	Experimental Testing > Impact	DataGridTextColumn	% 9	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.average-kj-m	Experimental Testing > Impact	DataGridTextColumn	Average kJ/m²	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.confidence	Experimental Testing > Impact	DataGridTextColumn	Confidence	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.count	Experimental Testing > Impact	DataGridTextColumn	Count	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.cv	Experimental Testing > Impact	DataGridTextColumn	CV %	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.notes	Experimental Testing > Impact	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.orientation	Experimental Testing > Impact	DataGridTextColumn	Orientation	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-impact.datagridtextcolumn.std-dev	Experimental Testing > Impact	DataGridTextColumn	Std Dev	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagrid.experimentalresultsgrid	Experimental Testing > Results > Table	DataGrid	ExperimentalResultsGrid	read-only-grid	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.baseline	Experimental Testing > Results > Table	DataGridTextColumn	Baseline	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.baseline-2	Experimental Testing > Results > Table	DataGridTextColumn	Δ Baseline	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.baseline-3	Experimental Testing > Results > Table	DataGridTextColumn	Δ Baseline	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.baseline-4	Experimental Testing > Results > Table	DataGridTextColumn	Δ Baseline	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.baseline-5	Experimental Testing > Results > Table	DataGridTextColumn	Δ Baseline	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.baseline-6	Experimental Testing > Results > Table	DataGridTextColumn	Δ Baseline	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.cv	Experimental Testing > Results > Table	DataGridTextColumn	CV	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.cv-2	Experimental Testing > Results > Table	DataGridTextColumn	CV	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.cv-3	Experimental Testing > Results > Table	DataGridTextColumn	CV	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.cv-4	Experimental Testing > Results > Table	DataGridTextColumn	CV	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.impact-flat-kj-m	Experimental Testing > Results > Table	DataGridTextColumn	Impact Flat kJ/m²	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.impact-upright-kj-m	Experimental Testing > Results > Table	DataGridTextColumn	Impact Upright kJ/m²	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.overall	Experimental Testing > Results > Table	DataGridTextColumn	Overall	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.rank	Experimental Testing > Results > Table	DataGridTextColumn	Rank	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.run	Experimental Testing > Results > Table	DataGridTextColumn	Run	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.status	Experimental Testing > Results > Table	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.stiffness-mpa	Experimental Testing > Results > Table	DataGridTextColumn	Stiffness MPa	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.tensile-flat-mpa	Experimental Testing > Results > Table	DataGridTextColumn	Tensile Flat MPa	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-results-table.datagridtextcolumn.tensile-upright-mpa	Experimental Testing > Results > Table	DataGridTextColumn	Tensile Upright MPa	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-stiffness.datagrid.experimentalstiffnessgrid	Experimental Testing > Stiffness	DataGrid	ExperimentalStiffnessGrid	grid-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-stiffness.datagridtextcolumn.confidence	Experimental Testing > Stiffness	DataGridTextColumn	Confidence	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-stiffness.datagridtextcolumn.count	Experimental Testing > Stiffness	DataGridTextColumn	Count	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-stiffness.datagridtextcolumn.degrees	Experimental Testing > Stiffness	DataGridTextColumn	Degrees	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-stiffness.datagridtextcolumn.notes	Experimental Testing > Stiffness	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-stiffness.datagridtextcolumn.result-mpa	Experimental Testing > Stiffness	DataGridTextColumn	Result MPa	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-stiffness.datagridtextcolumn.revolutions	Experimental Testing > Stiffness	DataGridTextColumn	Revolutions	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagrid.experimentaltensilegrid	Experimental Testing > Tensile	DataGrid	ExperimentalTensileGrid	grid-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.average-mpa	Experimental Testing > Tensile	DataGridTextColumn	Average MPa	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.confidence	Experimental Testing > Tensile	DataGridTextColumn	Confidence	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.count	Experimental Testing > Tensile	DataGridTextColumn	Count	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.cv	Experimental Testing > Tensile	DataGridTextColumn	CV %	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.n-1	Experimental Testing > Tensile	DataGridTextColumn	N 1	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.n-10	Experimental Testing > Tensile	DataGridTextColumn	N 10	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.n-2	Experimental Testing > Tensile	DataGridTextColumn	N 2	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.n-3	Experimental Testing > Tensile	DataGridTextColumn	N 3	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.n-4	Experimental Testing > Tensile	DataGridTextColumn	N 4	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.n-5	Experimental Testing > Tensile	DataGridTextColumn	N 5	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.n-6	Experimental Testing > Tensile	DataGridTextColumn	N 6	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.n-7	Experimental Testing > Tensile	DataGridTextColumn	N 7	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.n-8	Experimental Testing > Tensile	DataGridTextColumn	N 8	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.n-9	Experimental Testing > Tensile	DataGridTextColumn	N 9	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.notes	Experimental Testing > Tensile	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.orientation	Experimental Testing > Tensile	DataGridTextColumn	Orientation	read-only-column	v50.4.2	experimental.series	planned
-xaml.experimental-testing-tensile.datagridtextcolumn.std-dev	Experimental Testing > Tensile	DataGridTextColumn	Std Dev	read-only-column	v50.4.2	experimental.series	planned
-xaml.impact-measurements.button.resetfastimpactcolumns-click	Impact Measurements	Button	ResetFastImpactColumns_Click	action	v50.4.2	measurements.impact	planned
+xaml.category-rankings.button.exportcategoryrankingscsv-click	Category Rankings	Button	ExportCategoryRankingsCsv_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.button.refreshcategoryrankings-click	Category Rankings	Button	RefreshCategoryRankings_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.button.resetcategoryrankingfilters-click	Category Rankings	Button	ResetCategoryRankingFilters_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.combobox.categoryrankingbasematerialfilter	Category Rankings	ComboBox	CategoryRankingBaseMaterialFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.combobox.categoryrankinggroupfilter	Category Rankings	ComboBox	CategoryRankingGroupFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.combobox.categoryrankinglimitfilter	Category Rankings	ComboBox	CategoryRankingLimitFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.combobox.categoryrankingmanufacturerfilter	Category Rankings	ComboBox	CategoryRankingManufacturerFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.combobox.categoryrankingmetricfilter	Category Rankings	ComboBox	CategoryRankingMetricFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.combobox.categoryrankingreinforcementfilter	Category Rankings	ComboBox	CategoryRankingReinforcementFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagrid.categoryrankingsgrid	Category Rankings	DataGrid	CategoryRankingsGrid	read-only-grid	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagridtextcolumn.anonymous	Category Rankings	DataGridTextColumn	#	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagridtextcolumn.best-axis	Category Rankings	DataGridTextColumn	Best Axis	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagridtextcolumn.category	Category Rankings	DataGridTextColumn	Category	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagridtextcolumn.category-score	Category Rankings	DataGridTextColumn	Category Score	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagridtextcolumn.group	Category Rankings	DataGridTextColumn	Group	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagridtextcolumn.manufacturer	Category Rankings	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagridtextcolumn.material	Category Rankings	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagridtextcolumn.overall	Category Rankings	DataGridTextColumn	Overall	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagridtextcolumn.reinforcement	Category Rankings	DataGridTextColumn	Reinforcement	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagridtextcolumn.status	Category Rankings	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.datagridtextcolumn.type	Category Rankings	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.experimental-testing.button.clearexperimentalfilters-click	Experimental Testing	Button	ClearExperimentalFilters_Click	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentaladdrun	Experimental Testing	Button	ExperimentalAddRun	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentaladdseries	Experimental Testing	Button	ExperimentalAddSeries	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentaldeleterun	Experimental Testing	Button	ExperimentalDeleteRun	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentaldeleteseries	Experimental Testing	Button	ExperimentalDeleteSeries	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentalduplicaterun	Experimental Testing	Button	ExperimentalDuplicateRun	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentalduplicateseries	Experimental Testing	Button	ExperimentalDuplicateSeries	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.checkbox.experimentalactiveonly	Experimental Testing	CheckBox	ExperimentalActiveOnly	choice	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.checkbox.experimentalincludeinactivehistory	Experimental Testing	CheckBox	ExperimentalIncludeInactiveHistory	choice	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagrid.experimentalrunsgrid	Experimental Testing	DataGrid	ExperimentalRunsGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagrid.experimentalseriesgrid	Experimental Testing	DataGrid	ExperimentalSeriesGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcheckboxcolumn.active	Experimental Testing	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcheckboxcolumn.active-2	Experimental Testing	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcheckboxcolumn.baseline	Experimental Testing	DataGridCheckBoxColumn	Baseline	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcheckboxcolumn.website	Experimental Testing	DataGridCheckBoxColumn	Website	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcomboboxcolumn.baseline-material	Experimental Testing	DataGridComboBoxColumn	Baseline Material	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcomboboxcolumn.experiment	Experimental Testing	DataGridComboBoxColumn	Experiment	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcomboboxcolumn.material	Experimental Testing	DataGridComboBoxColumn	Material	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcomboboxcolumn.status	Experimental Testing	DataGridComboBoxColumn	Status	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.default-unit	Experimental Testing	DataGridTextColumn	Default Unit	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.measured-date	Experimental Testing	DataGridTextColumn	Measured date	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.run-id	Experimental Testing	DataGridTextColumn	Run ID	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.run-notes	Experimental Testing	DataGridTextColumn	Run Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.series-id	Experimental Testing	DataGridTextColumn	Series ID	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.series-notes	Experimental Testing	DataGridTextColumn	Series Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.unit	Experimental Testing	DataGridTextColumn	Unit	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.updated-utc	Experimental Testing	DataGridTextColumn	Updated UTC	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.value	Experimental Testing	DataGridTextColumn	Value	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.textbox.experimentalsearch	Experimental Testing	TextBox	ExperimentalSearch	input-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagrid.experimentalimpactgrid	Experimental Testing > Impact	DataGrid	ExperimentalImpactGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.1	Experimental Testing > Impact	DataGridTextColumn	% 1	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.10	Experimental Testing > Impact	DataGridTextColumn	% 10	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.2	Experimental Testing > Impact	DataGridTextColumn	% 2	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.3	Experimental Testing > Impact	DataGridTextColumn	% 3	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.4	Experimental Testing > Impact	DataGridTextColumn	% 4	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.5	Experimental Testing > Impact	DataGridTextColumn	% 5	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.6	Experimental Testing > Impact	DataGridTextColumn	% 6	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.7	Experimental Testing > Impact	DataGridTextColumn	% 7	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.8	Experimental Testing > Impact	DataGridTextColumn	% 8	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.9	Experimental Testing > Impact	DataGridTextColumn	% 9	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.average-kj-m	Experimental Testing > Impact	DataGridTextColumn	Average kJ/m²	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.confidence	Experimental Testing > Impact	DataGridTextColumn	Confidence	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.count	Experimental Testing > Impact	DataGridTextColumn	Count	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.cv	Experimental Testing > Impact	DataGridTextColumn	CV %	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.notes	Experimental Testing > Impact	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.orientation	Experimental Testing > Impact	DataGridTextColumn	Orientation	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-impact.datagridtextcolumn.std-dev	Experimental Testing > Impact	DataGridTextColumn	Std Dev	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagrid.experimentalresultsgrid	Experimental Testing > Results > Table	DataGrid	ExperimentalResultsGrid	read-only-grid	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.baseline	Experimental Testing > Results > Table	DataGridTextColumn	Baseline	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.baseline-2	Experimental Testing > Results > Table	DataGridTextColumn	Δ Baseline	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.baseline-3	Experimental Testing > Results > Table	DataGridTextColumn	Δ Baseline	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.baseline-4	Experimental Testing > Results > Table	DataGridTextColumn	Δ Baseline	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.baseline-5	Experimental Testing > Results > Table	DataGridTextColumn	Δ Baseline	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.baseline-6	Experimental Testing > Results > Table	DataGridTextColumn	Δ Baseline	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.cv	Experimental Testing > Results > Table	DataGridTextColumn	CV	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.cv-2	Experimental Testing > Results > Table	DataGridTextColumn	CV	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.cv-3	Experimental Testing > Results > Table	DataGridTextColumn	CV	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.cv-4	Experimental Testing > Results > Table	DataGridTextColumn	CV	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.impact-flat-kj-m	Experimental Testing > Results > Table	DataGridTextColumn	Impact Flat kJ/m²	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.impact-upright-kj-m	Experimental Testing > Results > Table	DataGridTextColumn	Impact Upright kJ/m²	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.overall	Experimental Testing > Results > Table	DataGridTextColumn	Overall	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.rank	Experimental Testing > Results > Table	DataGridTextColumn	Rank	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.run	Experimental Testing > Results > Table	DataGridTextColumn	Run	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.status	Experimental Testing > Results > Table	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.stiffness-mpa	Experimental Testing > Results > Table	DataGridTextColumn	Stiffness MPa	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.tensile-flat-mpa	Experimental Testing > Results > Table	DataGridTextColumn	Tensile Flat MPa	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-results-table.datagridtextcolumn.tensile-upright-mpa	Experimental Testing > Results > Table	DataGridTextColumn	Tensile Upright MPa	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-stiffness.datagrid.experimentalstiffnessgrid	Experimental Testing > Stiffness	DataGrid	ExperimentalStiffnessGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-stiffness.datagridtextcolumn.confidence	Experimental Testing > Stiffness	DataGridTextColumn	Confidence	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-stiffness.datagridtextcolumn.count	Experimental Testing > Stiffness	DataGridTextColumn	Count	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-stiffness.datagridtextcolumn.degrees	Experimental Testing > Stiffness	DataGridTextColumn	Degrees	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-stiffness.datagridtextcolumn.notes	Experimental Testing > Stiffness	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-stiffness.datagridtextcolumn.result-mpa	Experimental Testing > Stiffness	DataGridTextColumn	Result MPa	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-stiffness.datagridtextcolumn.revolutions	Experimental Testing > Stiffness	DataGridTextColumn	Revolutions	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagrid.experimentaltensilegrid	Experimental Testing > Tensile	DataGrid	ExperimentalTensileGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.average-mpa	Experimental Testing > Tensile	DataGridTextColumn	Average MPa	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.confidence	Experimental Testing > Tensile	DataGridTextColumn	Confidence	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.count	Experimental Testing > Tensile	DataGridTextColumn	Count	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.cv	Experimental Testing > Tensile	DataGridTextColumn	CV %	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.n-1	Experimental Testing > Tensile	DataGridTextColumn	N 1	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.n-10	Experimental Testing > Tensile	DataGridTextColumn	N 10	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.n-2	Experimental Testing > Tensile	DataGridTextColumn	N 2	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.n-3	Experimental Testing > Tensile	DataGridTextColumn	N 3	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.n-4	Experimental Testing > Tensile	DataGridTextColumn	N 4	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.n-5	Experimental Testing > Tensile	DataGridTextColumn	N 5	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.n-6	Experimental Testing > Tensile	DataGridTextColumn	N 6	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.n-7	Experimental Testing > Tensile	DataGridTextColumn	N 7	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.n-8	Experimental Testing > Tensile	DataGridTextColumn	N 8	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.n-9	Experimental Testing > Tensile	DataGridTextColumn	N 9	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.notes	Experimental Testing > Tensile	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.orientation	Experimental Testing > Tensile	DataGridTextColumn	Orientation	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing-tensile.datagridtextcolumn.std-dev	Experimental Testing > Tensile	DataGridTextColumn	Std Dev	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.impact-measurements.button.resetfastimpactcolumns-click	Impact Measurements	Button	ResetFastImpactColumns_Click	action	v50.4.2	measurements.controls-fields	covered
 xaml.inventory.button.addinventoryspool-click	Inventory	Button	AddInventorySpool_Click	action	v50.4.1	inventory.controls-fields	covered
 xaml.inventory.button.clearinventoryfilters-click	Inventory	Button	ClearInventoryFilters_Click	action	v50.4.1	inventory.controls-fields	covered
 xaml.inventory.button.deleteinventoryspool-click	Inventory	Button	DeleteInventorySpool_Click	action	v50.4.1	inventory.controls-fields	covered
@@ -266,116 +266,116 @@ xaml.manufacturers.datagridtextcolumn.typical-applications	Manufacturers	DataGri
 xaml.manufacturers.datagridtextcolumn.weaknesses	Manufacturers	DataGridTextColumn	Weaknesses	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
 xaml.manufacturers.datagridtextcolumn.website	Manufacturers	DataGridTextColumn	Website	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
 xaml.manufacturers.textbox.manufacturersearchbox	Manufacturers	TextBox	ManufacturerSearchBox	input-candidate	v50.4.1	manufacturers.controls-fields	covered
-xaml.material-detail-analytics.button.clearanalyticsselection-click	Material Detail > Analytics	Button	ClearAnalyticsSelection_Click	action	v50.4.2	material-detail.general	planned
-xaml.material-detail-analytics.combobox.analyticschartmode	Material Detail > Analytics	ComboBox	AnalyticsChartMode	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-analytics.datagrid.analyticsresultslist	Material Detail > Analytics	DataGrid	AnalyticsResultsList	read-only-grid	v50.4.2	material-detail.general	planned
-xaml.material-detail-analytics.datagridtemplatecolumn.radar	Material Detail > Analytics	DataGridTemplateColumn	Radar	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-analytics.datagridtextcolumn.consistency	Material Detail > Analytics	DataGridTextColumn	Consistency	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-analytics.datagridtextcolumn.count	Material Detail > Analytics	DataGridTextColumn	Count	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-analytics.datagridtextcolumn.group	Material Detail > Analytics	DataGridTextColumn	Group	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-analytics.datagridtextcolumn.impact	Material Detail > Analytics	DataGridTextColumn	Impact	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-analytics.datagridtextcolumn.layer-adhesion	Material Detail > Analytics	DataGridTextColumn	Layer Adhesion	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-analytics.datagridtextcolumn.overall-profile	Material Detail > Analytics	DataGridTextColumn	Overall Profile	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-analytics.datagridtextcolumn.stiffness	Material Detail > Analytics	DataGridTextColumn	Stiffness	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-analytics.datagridtextcolumn.tensile	Material Detail > Analytics	DataGridTextColumn	Tensile	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.button.useselectedforcomparison-click	Material Detail > Compare	Button	UseSelectedForComparison_Click	action	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.combobox.comparemateriala	Material Detail > Compare	ComboBox	CompareMaterialA	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.combobox.comparematerialb	Material Detail > Compare	ComboBox	CompareMaterialB	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.combobox.comparematerialc	Material Detail > Compare	ComboBox	CompareMaterialC	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.combobox.comparemateriald	Material Detail > Compare	ComboBox	CompareMaterialD	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagrid.comparisonmetricslist	Material Detail > Compare	DataGrid	ComparisonMetricsList	read-only-grid	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagrid.comparisonscoreslist	Material Detail > Compare	DataGrid	ComparisonScoresList	read-only-grid	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtemplatecolumn.comparisonmetriccolumna	Material Detail > Compare	DataGridTemplateColumn	ComparisonMetricColumnA	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtemplatecolumn.comparisonmetriccolumnb	Material Detail > Compare	DataGridTemplateColumn	ComparisonMetricColumnB	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtemplatecolumn.comparisonmetriccolumnc	Material Detail > Compare	DataGridTemplateColumn	ComparisonMetricColumnC	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtemplatecolumn.comparisonmetriccolumnd	Material Detail > Compare	DataGridTemplateColumn	ComparisonMetricColumnD	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtemplatecolumn.comparisonscorecolumna	Material Detail > Compare	DataGridTemplateColumn	ComparisonScoreColumnA	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtemplatecolumn.comparisonscorecolumnb	Material Detail > Compare	DataGridTemplateColumn	ComparisonScoreColumnB	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtemplatecolumn.comparisonscorecolumnc	Material Detail > Compare	DataGridTemplateColumn	ComparisonScoreColumnC	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtemplatecolumn.comparisonscorecolumnd	Material Detail > Compare	DataGridTemplateColumn	ComparisonScoreColumnD	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtextcolumn.best	Material Detail > Compare	DataGridTextColumn	Best	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtextcolumn.best-2	Material Detail > Compare	DataGridTextColumn	Best	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtextcolumn.metric	Material Detail > Compare	DataGridTextColumn	Metric	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-compare.datagridtextcolumn.score	Material Detail > Compare	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.button.refreshrecommendations-click	Material Detail > Recommendations	Button	RefreshRecommendations_Click	action	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.button.sendrecommendationtovideoplannerbutton	Material Detail > Recommendations	Button	SendRecommendationToVideoPlannerButton	action	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.combobox.recommendationbasematerialfilter	Material Detail > Recommendations	ComboBox	RecommendationBaseMaterialFilter	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.combobox.recommendationcategoryfilter	Material Detail > Recommendations	ComboBox	RecommendationCategoryFilter	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.combobox.recommendationusecasefilter	Material Detail > Recommendations	ComboBox	RecommendationUseCaseFilter	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagrid.applicationrecommendationlist	Material Detail > Recommendations	DataGrid	ApplicationRecommendationList	read-only-grid	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagrid.performancerecommendationlist	Material Detail > Recommendations	DataGrid	PerformanceRecommendationList	read-only-grid	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagrid.recommendationalternativelist	Material Detail > Recommendations	DataGrid	RecommendationAlternativeList	read-only-grid	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.best-use	Material Detail > Recommendations	DataGridTextColumn	Best use	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.gain	Material Detail > Recommendations	DataGridTextColumn	Gain	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.material	Material Detail > Recommendations	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.material-2	Material Detail > Recommendations	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.material-3	Material Detail > Recommendations	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.msrp	Material Detail > Recommendations	DataGridTextColumn	MSRP	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.place	Material Detail > Recommendations	DataGridTextColumn	Place	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.place-2	Material Detail > Recommendations	DataGridTextColumn	Place	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.recommendation	Material Detail > Recommendations	DataGridTextColumn	Recommendation	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.score	Material Detail > Recommendations	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.score-2	Material Detail > Recommendations	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.score-3	Material Detail > Recommendations	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.suggested-title	Material Detail > Recommendations	DataGridTextColumn	Suggested title	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.suggested-title-2	Material Detail > Recommendations	DataGridTextColumn	Suggested title	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.talking-points	Material Detail > Recommendations	DataGridTextColumn	Talking points	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.talking-points-2	Material Detail > Recommendations	DataGridTextColumn	Talking points	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.thumbnail-hook	Material Detail > Recommendations	DataGridTextColumn	Thumbnail hook	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.thumbnail-hook-2	Material Detail > Recommendations	DataGridTextColumn	Thumbnail hook	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.trade-off	Material Detail > Recommendations	DataGridTextColumn	Trade-off	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.trade-offs	Material Detail > Recommendations	DataGridTextColumn	Trade-offs	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.type	Material Detail > Recommendations	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.use-case	Material Detail > Recommendations	DataGridTextColumn	Use case	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.value-index	Material Detail > Recommendations	DataGridTextColumn	Value index	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.why-consider-it	Material Detail > Recommendations	DataGridTextColumn	Why consider it	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.datagridtextcolumn.why-it-won	Material Detail > Recommendations	DataGridTextColumn	Why it won	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-recommendations.textbox.recommendationchatgptprompt	Material Detail > Recommendations	TextBox	RecommendationChatGptPrompt	read-only	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.button.clearrecommendationvideoideas-click	Material Detail > Video Planner	Button	ClearRecommendationVideoIdeas_Click	action	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.button.copyrecommendationvideoideaprompt-click	Material Detail > Video Planner	Button	CopyRecommendationVideoIdeaPrompt_Click	action	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.button.refreshvideoplanner-click	Material Detail > Video Planner	Button	RefreshVideoPlanner_Click	action	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.checkbox.videonoyoutubeonlycheck	Material Detail > Video Planner	CheckBox	VideoNoYoutubeOnlyCheck	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.checkbox.videoreadyonlycheck	Material Detail > Video Planner	CheckBox	VideoReadyOnlyCheck	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.combobox.videobasematerialfilter	Material Detail > Video Planner	ComboBox	VideoBaseMaterialFilter	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.combobox.videocategoryfilter	Material Detail > Video Planner	ComboBox	VideoCategoryFilter	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.combobox.videomanufacturerfilter	Material Detail > Video Planner	ComboBox	VideoManufacturerFilter	choice	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagrid.recommendationvideoidealist	Material Detail > Video Planner	DataGrid	RecommendationVideoIdeaList	grid-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagrid.videocomparisonideaslist	Material Detail > Video Planner	DataGrid	VideoComparisonIdeasList	read-only-grid	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagrid.videoplannerlist	Material Detail > Video Planner	DataGrid	VideoPlannerList	read-only-grid	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridcomboboxcolumn.effort	Material Detail > Video Planner	DataGridComboBoxColumn	Effort	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridcomboboxcolumn.score	Material Detail > Video Planner	DataGridComboBoxColumn	Score	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridcomboboxcolumn.series	Material Detail > Video Planner	DataGridComboBoxColumn	Series	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridcomboboxcolumn.status	Material Detail > Video Planner	DataGridComboBoxColumn	Status	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.comparison	Material Detail > Video Planner	DataGridTextColumn	Comparison	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.comparison-idea	Material Detail > Video Planner	DataGridTextColumn	Comparison idea	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.data-reason	Material Detail > Video Planner	DataGridTextColumn	Data reason	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.episode-order	Material Detail > Video Planner	DataGridTextColumn	Episode order	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.group	Material Detail > Video Planner	DataGridTextColumn	Group	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.hook	Material Detail > Video Planner	DataGridTextColumn	Hook	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.hook-angle	Material Detail > Video Planner	DataGridTextColumn	Hook / angle	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.hook-title-angle	Material Detail > Video Planner	DataGridTextColumn	Hook / title angle	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.material	Material Detail > Video Planner	DataGridTextColumn	Material	read-only-column	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.material-2	Material Detail > Video Planner	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.materials	Material Detail > Video Planner	DataGridTextColumn	Materials	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.notes	Material Detail > Video Planner	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.publish-date	Material Detail > Video Planner	DataGridTextColumn	Publish date	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.reason	Material Detail > Video Planner	DataGridTextColumn	Reason	read-only-column	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.reason-2	Material Detail > Video Planner	DataGridTextColumn	Reason	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.score	Material Detail > Video Planner	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.score-2	Material Detail > Video Planner	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.source	Material Detail > Video Planner	DataGridTextColumn	Source	read-only-column	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.standout-data	Material Detail > Video Planner	DataGridTextColumn	Standout data	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.status	Material Detail > Video Planner	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.suggested-title	Material Detail > Video Planner	DataGridTextColumn	Suggested title	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.suggested-title-2	Material Detail > Video Planner	DataGridTextColumn	Suggested title	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.suggested-title-3	Material Detail > Video Planner	DataGridTextColumn	Suggested title	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.suggestion	Material Detail > Video Planner	DataGridTextColumn	Suggestion	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.talking-points	Material Detail > Video Planner	DataGridTextColumn	Talking points	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.talking-points-2	Material Detail > Video Planner	DataGridTextColumn	Talking points	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.talking-points-3	Material Detail > Video Planner	DataGridTextColumn	Talking points	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.target-week	Material Detail > Video Planner	DataGridTextColumn	Target week	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.type	Material Detail > Video Planner	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.material-detail-video-planner.datagridtextcolumn.winner	Material Detail > Video Planner	DataGridTextColumn	Winner	editable-column-candidate	v50.4.2	material-detail.general	planned
+xaml.material-detail-analytics.button.clearanalyticsselection-click	Material Detail > Analytics	Button	ClearAnalyticsSelection_Click	action	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.combobox.analyticschartmode	Material Detail > Analytics	ComboBox	AnalyticsChartMode	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagrid.analyticsresultslist	Material Detail > Analytics	DataGrid	AnalyticsResultsList	read-only-grid	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtemplatecolumn.radar	Material Detail > Analytics	DataGridTemplateColumn	Radar	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtextcolumn.consistency	Material Detail > Analytics	DataGridTextColumn	Consistency	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtextcolumn.count	Material Detail > Analytics	DataGridTextColumn	Count	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtextcolumn.group	Material Detail > Analytics	DataGridTextColumn	Group	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtextcolumn.impact	Material Detail > Analytics	DataGridTextColumn	Impact	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtextcolumn.layer-adhesion	Material Detail > Analytics	DataGridTextColumn	Layer Adhesion	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtextcolumn.overall-profile	Material Detail > Analytics	DataGridTextColumn	Overall Profile	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtextcolumn.stiffness	Material Detail > Analytics	DataGridTextColumn	Stiffness	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtextcolumn.tensile	Material Detail > Analytics	DataGridTextColumn	Tensile	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.button.useselectedforcomparison-click	Material Detail > Compare	Button	UseSelectedForComparison_Click	action	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.combobox.comparemateriala	Material Detail > Compare	ComboBox	CompareMaterialA	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.combobox.comparematerialb	Material Detail > Compare	ComboBox	CompareMaterialB	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.combobox.comparematerialc	Material Detail > Compare	ComboBox	CompareMaterialC	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.combobox.comparemateriald	Material Detail > Compare	ComboBox	CompareMaterialD	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagrid.comparisonmetricslist	Material Detail > Compare	DataGrid	ComparisonMetricsList	read-only-grid	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagrid.comparisonscoreslist	Material Detail > Compare	DataGrid	ComparisonScoresList	read-only-grid	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtemplatecolumn.comparisonmetriccolumna	Material Detail > Compare	DataGridTemplateColumn	ComparisonMetricColumnA	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtemplatecolumn.comparisonmetriccolumnb	Material Detail > Compare	DataGridTemplateColumn	ComparisonMetricColumnB	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtemplatecolumn.comparisonmetriccolumnc	Material Detail > Compare	DataGridTemplateColumn	ComparisonMetricColumnC	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtemplatecolumn.comparisonmetriccolumnd	Material Detail > Compare	DataGridTemplateColumn	ComparisonMetricColumnD	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtemplatecolumn.comparisonscorecolumna	Material Detail > Compare	DataGridTemplateColumn	ComparisonScoreColumnA	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtemplatecolumn.comparisonscorecolumnb	Material Detail > Compare	DataGridTemplateColumn	ComparisonScoreColumnB	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtemplatecolumn.comparisonscorecolumnc	Material Detail > Compare	DataGridTemplateColumn	ComparisonScoreColumnC	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtemplatecolumn.comparisonscorecolumnd	Material Detail > Compare	DataGridTemplateColumn	ComparisonScoreColumnD	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtextcolumn.best	Material Detail > Compare	DataGridTextColumn	Best	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtextcolumn.best-2	Material Detail > Compare	DataGridTextColumn	Best	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtextcolumn.metric	Material Detail > Compare	DataGridTextColumn	Metric	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-compare.datagridtextcolumn.score	Material Detail > Compare	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.button.refreshrecommendations-click	Material Detail > Recommendations	Button	RefreshRecommendations_Click	action	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.button.sendrecommendationtovideoplannerbutton	Material Detail > Recommendations	Button	SendRecommendationToVideoPlannerButton	action	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.combobox.recommendationbasematerialfilter	Material Detail > Recommendations	ComboBox	RecommendationBaseMaterialFilter	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.combobox.recommendationcategoryfilter	Material Detail > Recommendations	ComboBox	RecommendationCategoryFilter	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.combobox.recommendationusecasefilter	Material Detail > Recommendations	ComboBox	RecommendationUseCaseFilter	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagrid.applicationrecommendationlist	Material Detail > Recommendations	DataGrid	ApplicationRecommendationList	read-only-grid	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagrid.performancerecommendationlist	Material Detail > Recommendations	DataGrid	PerformanceRecommendationList	read-only-grid	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagrid.recommendationalternativelist	Material Detail > Recommendations	DataGrid	RecommendationAlternativeList	read-only-grid	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.best-use	Material Detail > Recommendations	DataGridTextColumn	Best use	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.gain	Material Detail > Recommendations	DataGridTextColumn	Gain	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.material	Material Detail > Recommendations	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.material-2	Material Detail > Recommendations	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.material-3	Material Detail > Recommendations	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.msrp	Material Detail > Recommendations	DataGridTextColumn	MSRP	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.place	Material Detail > Recommendations	DataGridTextColumn	Place	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.place-2	Material Detail > Recommendations	DataGridTextColumn	Place	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.recommendation	Material Detail > Recommendations	DataGridTextColumn	Recommendation	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.score	Material Detail > Recommendations	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.score-2	Material Detail > Recommendations	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.score-3	Material Detail > Recommendations	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.suggested-title	Material Detail > Recommendations	DataGridTextColumn	Suggested title	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.suggested-title-2	Material Detail > Recommendations	DataGridTextColumn	Suggested title	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.talking-points	Material Detail > Recommendations	DataGridTextColumn	Talking points	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.talking-points-2	Material Detail > Recommendations	DataGridTextColumn	Talking points	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.thumbnail-hook	Material Detail > Recommendations	DataGridTextColumn	Thumbnail hook	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.thumbnail-hook-2	Material Detail > Recommendations	DataGridTextColumn	Thumbnail hook	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.trade-off	Material Detail > Recommendations	DataGridTextColumn	Trade-off	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.trade-offs	Material Detail > Recommendations	DataGridTextColumn	Trade-offs	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.type	Material Detail > Recommendations	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.use-case	Material Detail > Recommendations	DataGridTextColumn	Use case	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.value-index	Material Detail > Recommendations	DataGridTextColumn	Value index	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.why-consider-it	Material Detail > Recommendations	DataGridTextColumn	Why consider it	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.datagridtextcolumn.why-it-won	Material Detail > Recommendations	DataGridTextColumn	Why it won	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.textbox.recommendationchatgptprompt	Material Detail > Recommendations	TextBox	RecommendationChatGptPrompt	read-only	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.button.clearrecommendationvideoideas-click	Material Detail > Video Planner	Button	ClearRecommendationVideoIdeas_Click	action	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.button.copyrecommendationvideoideaprompt-click	Material Detail > Video Planner	Button	CopyRecommendationVideoIdeaPrompt_Click	action	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.button.refreshvideoplanner-click	Material Detail > Video Planner	Button	RefreshVideoPlanner_Click	action	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.checkbox.videonoyoutubeonlycheck	Material Detail > Video Planner	CheckBox	VideoNoYoutubeOnlyCheck	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.checkbox.videoreadyonlycheck	Material Detail > Video Planner	CheckBox	VideoReadyOnlyCheck	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.combobox.videobasematerialfilter	Material Detail > Video Planner	ComboBox	VideoBaseMaterialFilter	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.combobox.videocategoryfilter	Material Detail > Video Planner	ComboBox	VideoCategoryFilter	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.combobox.videomanufacturerfilter	Material Detail > Video Planner	ComboBox	VideoManufacturerFilter	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagrid.recommendationvideoidealist	Material Detail > Video Planner	DataGrid	RecommendationVideoIdeaList	grid-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagrid.videocomparisonideaslist	Material Detail > Video Planner	DataGrid	VideoComparisonIdeasList	read-only-grid	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagrid.videoplannerlist	Material Detail > Video Planner	DataGrid	VideoPlannerList	read-only-grid	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridcomboboxcolumn.effort	Material Detail > Video Planner	DataGridComboBoxColumn	Effort	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridcomboboxcolumn.score	Material Detail > Video Planner	DataGridComboBoxColumn	Score	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridcomboboxcolumn.series	Material Detail > Video Planner	DataGridComboBoxColumn	Series	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridcomboboxcolumn.status	Material Detail > Video Planner	DataGridComboBoxColumn	Status	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.comparison	Material Detail > Video Planner	DataGridTextColumn	Comparison	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.comparison-idea	Material Detail > Video Planner	DataGridTextColumn	Comparison idea	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.data-reason	Material Detail > Video Planner	DataGridTextColumn	Data reason	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.episode-order	Material Detail > Video Planner	DataGridTextColumn	Episode order	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.group	Material Detail > Video Planner	DataGridTextColumn	Group	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.hook	Material Detail > Video Planner	DataGridTextColumn	Hook	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.hook-angle	Material Detail > Video Planner	DataGridTextColumn	Hook / angle	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.hook-title-angle	Material Detail > Video Planner	DataGridTextColumn	Hook / title angle	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.material	Material Detail > Video Planner	DataGridTextColumn	Material	read-only-column	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.material-2	Material Detail > Video Planner	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.materials	Material Detail > Video Planner	DataGridTextColumn	Materials	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.notes	Material Detail > Video Planner	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.publish-date	Material Detail > Video Planner	DataGridTextColumn	Publish date	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.reason	Material Detail > Video Planner	DataGridTextColumn	Reason	read-only-column	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.reason-2	Material Detail > Video Planner	DataGridTextColumn	Reason	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.score	Material Detail > Video Planner	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.score-2	Material Detail > Video Planner	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.source	Material Detail > Video Planner	DataGridTextColumn	Source	read-only-column	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.standout-data	Material Detail > Video Planner	DataGridTextColumn	Standout data	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.status	Material Detail > Video Planner	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.suggested-title	Material Detail > Video Planner	DataGridTextColumn	Suggested title	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.suggested-title-2	Material Detail > Video Planner	DataGridTextColumn	Suggested title	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.suggested-title-3	Material Detail > Video Planner	DataGridTextColumn	Suggested title	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.suggestion	Material Detail > Video Planner	DataGridTextColumn	Suggestion	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.talking-points	Material Detail > Video Planner	DataGridTextColumn	Talking points	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.talking-points-2	Material Detail > Video Planner	DataGridTextColumn	Talking points	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.talking-points-3	Material Detail > Video Planner	DataGridTextColumn	Talking points	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.target-week	Material Detail > Video Planner	DataGridTextColumn	Target week	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.type	Material Detail > Video Planner	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.datagridtextcolumn.winner	Material Detail > Video Planner	DataGridTextColumn	Winner	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.materials.button.addnativematerial-click	Materials	Button	AddNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
 xaml.materials.button.archivenativematerial-click	Materials	Button	ArchiveNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
 xaml.materials.button.clearnativematerialfilters-click	Materials	Button	ClearNativeMaterialFilters_Click	action	v50.4.1	materials.controls-fields	covered
@@ -497,29 +497,29 @@ xaml.purchase-orders.datagridtextcolumn.supplier-vat	Purchase Orders	DataGridTex
 xaml.purchase-orders.datagridtextcolumn.tax-allocated	Purchase Orders	DataGridTextColumn	Tax allocated	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.datagridtextcolumn.unit-price	Purchase Orders	DataGridTextColumn	Unit price	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.datagridtextcolumn.unit-weight-g	Purchase Orders	DataGridTextColumn	Unit weight g	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
-xaml.rankings-dashboard.button.exportrankingscsv-click	Rankings Dashboard	Button	ExportRankingsCsv_Click	action	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.button.refreshrankings-click	Rankings Dashboard	Button	RefreshRankings_Click	action	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.button.resetrankingfilters-click	Rankings Dashboard	Button	ResetRankingFilters_Click	action	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.combobox.rankingbasematerialfilter	Rankings Dashboard	ComboBox	RankingBaseMaterialFilter	choice	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.combobox.rankinglimitfilter	Rankings Dashboard	ComboBox	RankingLimitFilter	choice	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.combobox.rankingmanufacturerfilter	Rankings Dashboard	ComboBox	RankingManufacturerFilter	choice	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.combobox.rankingmetricfilter	Rankings Dashboard	ComboBox	RankingMetricFilter	choice	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.combobox.rankingreinforcementfilter	Rankings Dashboard	ComboBox	RankingReinforcementFilter	choice	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagrid.rankingsgrid	Rankings Dashboard	DataGrid	RankingsGrid	read-only-grid	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.anonymous	Rankings Dashboard	DataGridTextColumn	#	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.best-axis	Rankings Dashboard	DataGridTextColumn	Best Axis	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.consistency	Rankings Dashboard	DataGridTextColumn	Consistency	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.impact	Rankings Dashboard	DataGridTextColumn	Impact	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.layer-adhesion	Rankings Dashboard	DataGridTextColumn	Layer Adhesion	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.manufacturer	Rankings Dashboard	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.material	Rankings Dashboard	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.overall	Rankings Dashboard	DataGridTextColumn	Overall	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.rank-score	Rankings Dashboard	DataGridTextColumn	Rank Score	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.reinforcement	Rankings Dashboard	DataGridTextColumn	Reinforcement	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.status	Rankings Dashboard	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.stiffness	Rankings Dashboard	DataGridTextColumn	Stiffness	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.tensile	Rankings Dashboard	DataGridTextColumn	Tensile	editable-column-candidate	v50.4.2	analysis.rankings	planned
-xaml.rankings-dashboard.datagridtextcolumn.type	Rankings Dashboard	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	analysis.rankings	planned
+xaml.rankings-dashboard.button.exportrankingscsv-click	Rankings Dashboard	Button	ExportRankingsCsv_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.button.refreshrankings-click	Rankings Dashboard	Button	RefreshRankings_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.button.resetrankingfilters-click	Rankings Dashboard	Button	ResetRankingFilters_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.combobox.rankingbasematerialfilter	Rankings Dashboard	ComboBox	RankingBaseMaterialFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.combobox.rankinglimitfilter	Rankings Dashboard	ComboBox	RankingLimitFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.combobox.rankingmanufacturerfilter	Rankings Dashboard	ComboBox	RankingManufacturerFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.combobox.rankingmetricfilter	Rankings Dashboard	ComboBox	RankingMetricFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.combobox.rankingreinforcementfilter	Rankings Dashboard	ComboBox	RankingReinforcementFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagrid.rankingsgrid	Rankings Dashboard	DataGrid	RankingsGrid	read-only-grid	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.anonymous	Rankings Dashboard	DataGridTextColumn	#	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.best-axis	Rankings Dashboard	DataGridTextColumn	Best Axis	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.consistency	Rankings Dashboard	DataGridTextColumn	Consistency	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.impact	Rankings Dashboard	DataGridTextColumn	Impact	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.layer-adhesion	Rankings Dashboard	DataGridTextColumn	Layer Adhesion	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.manufacturer	Rankings Dashboard	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.material	Rankings Dashboard	DataGridTextColumn	Material	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.overall	Rankings Dashboard	DataGridTextColumn	Overall	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.rank-score	Rankings Dashboard	DataGridTextColumn	Rank Score	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.reinforcement	Rankings Dashboard	DataGridTextColumn	Reinforcement	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.status	Rankings Dashboard	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.stiffness	Rankings Dashboard	DataGridTextColumn	Stiffness	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.tensile	Rankings Dashboard	DataGridTextColumn	Tensile	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.type	Rankings Dashboard	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.reports-pdf-export.button.buildpubliccomparisonreportpreviewbutton	Reports / PDF Export	Button	BuildPublicComparisonReportPreviewButton	action	v50.4.3	reports.overview	planned
 xaml.reports-pdf-export.button.buildpublicmanufacturerreportpreviewbutton	Reports / PDF Export	Button	BuildPublicManufacturerReportPreviewButton	action	v50.4.3	reports.overview	planned
 xaml.reports-pdf-export.button.buildpublicmaterialreportpreviewbutton	Reports / PDF Export	Button	BuildPublicMaterialReportPreviewButton	action	v50.4.3	reports.overview	planned
@@ -540,8 +540,8 @@ xaml.settings-manager.button.reloadsavedsettingsbutton	Settings Manager	Button	R
 xaml.settings-manager.button.resetsettingscolumnsbutton	Settings Manager	Button	ResetSettingsColumnsButton	action	v50.4.1	settings.controls-fields	covered
 xaml.settings-manager.button.restorebuiltinsettingsbutton	Settings Manager	Button	RestoreBuiltInSettingsButton	action	v50.4.1	settings.controls-fields	covered
 xaml.settings-manager.button.savenativesettings-click	Settings Manager	Button	SaveNativeSettings_Click	action	v50.4.1	settings.controls-fields	covered
-xaml.stiffness-measurements.button.resetfaststiffnesscolumns-click	Stiffness Measurements	Button	ResetFastStiffnessColumns_Click	action	v50.4.2	measurements.stiffness	planned
-xaml.tensile-measurements.button.resetfasttensilecolumns-click	Tensile Measurements	Button	ResetFastTensileColumns_Click	action	v50.4.2	measurements.tensile	planned
+xaml.stiffness-measurements.button.resetfaststiffnesscolumns-click	Stiffness Measurements	Button	ResetFastStiffnessColumns_Click	action	v50.4.2	measurements.controls-fields	covered
+xaml.tensile-measurements.button.resetfasttensilecolumns-click	Tensile Measurements	Button	ResetFastTensileColumns_Click	action	v50.4.2	measurements.controls-fields	covered
 xaml.usage.button.beginusagecorrection	Usage	Button	BeginUsageCorrection	action	v50.4.1	usage.controls-fields	covered
 xaml.usage.button.cancelusagecorrectionbutton	Usage	Button	CancelUsageCorrectionButton	action	v50.4.1	usage.controls-fields	covered
 xaml.usage.button.saveusageevent	Usage	Button	SaveUsageEvent	action	v50.4.1	usage.controls-fields	covered

@@ -704,6 +704,159 @@ internal static class HelpContentCatalog
             """,
             "results", "rankings", "category", "awards", "dashboard", "comparison", "filters"),
         new(
+            "measurements.controls-fields",
+            "Testing and engineering",
+            "Native Measurements controls and fields",
+            "Every Tensile, Impact and Stiffness custom-grid input, calculated column and layout action.",
+            """
+            Shared scope and save behavior
+            All three native grids show the MaterialIDs currently visible through Materials search and filters. Identity columns
+            Material ID, Manufacturer, Product Line, Marketing Name, Base Material, Category, Variant / Finish, Reinforcement and Color
+            are read-only here. A valid committed source edit recalculates through ResultsService, updates test status and auto-saves
+            SQLite. The first source measurement assigns today only when Measured date is blank. Test Notes and Measured date are
+            editable. Reset Columns confirms before restoring only that grid's local width/order; it changes no measurements.
+
+            Tensile columns
+            Upright 1-10 and Flat 1-10 are force samples in N. Each accepts blank or a number from 0 through less than 505. Test Notes
+            and Measured date are editable. MPa Upright/Flat, standard deviation, CV percent, sample counts, confidence and Validation
+            are calculated/read-only. Upright represents the layer-load orientation and Flat represents the separately governed flat
+            orientation; never type calculated MPa into a source-force cell.
+
+            Impact columns
+            Upright percent 1-10 and Flat percent 1-10 are needle/pendulum percentage inputs from 0 through 100. Test Notes and Measured
+            date are editable. kJ/m² Upright/Flat, standard deviation, CV percent, sample counts, confidence and Validation are
+            calculated/read-only using governed impact Settings. Correct source percentages or Settings at their owner, not the energy
+            result.
+
+            Stiffness columns
+            Revolutions accepts 0 through 10 and Degrees accepts 0 through 359; together they form one source observation. Test Notes
+            and Measured date are editable. Deflection mm, Modulus MPa and Validation are calculated/read-only. A blank/incomplete pair
+            remains incomplete rather than inventing a result.
+
+            Validation and historical boundary
+            Invalid text/ranges are rejected and the prior accepted value remains. Validation names the source issue. Editing native
+            measurements refreshes current canonical results and downstream read-only views; it does not rewrite Experimental Runs,
+            saved reports, purchases, Inventory, Usage or saved Quotes.
+            """,
+            "native measurement fields", "upright 1", "flat 10", "force samples", "impact percentage",
+            "revolutions", "degrees", "measured date", "reset columns", "calculated read-only"),
+        new(
+            "experimental.controls-fields",
+            "Experimental testing",
+            "Experimental Testing controls and fields",
+            "Every Series, Run, measurement-editor and Results-table control with lifecycle, units and comparison scope.",
+            """
+            Series actions and filters
+            Find searches Series identity/content. Active only defaults on and filters the Series grid without changing Active state.
+            Clear Filters clears Find and restores normal visibility. Add Series creates a new identity and prefers the selected active
+            Material. Duplicate Series creates a new graph identity and resets Website publication. Delete Series is permanent,
+            confirmation-guarded and removes its child Runs/measurements.
+
+            Series columns
+            Series ID and Updated UTC are read-only. Material selects canonical MaterialID. Experiment and Default Unit define the
+            controlled variable. Baseline Material is optional comparison context. Website is an explicit publication choice: enabling
+            it checks readiness and defaults incomplete confirmation to No; disabling hides without deleting history. Active controls
+            normal scope. Series Notes is editable. Valid commits auto-save.
+
+            Run actions and columns
+            Add Run creates an Active, Planned, non-baseline row. Duplicate Run creates a clean Planned, non-baseline identity and
+            clears Measured date. Delete Run is permanent/default-No for that Run graph. Run ID is read-only. Value and Unit describe
+            the controlled setting. Status is the governed lifecycle; Measured date records completion evidence. Baseline is unique:
+            selecting one Run clears another baseline in the same Series. Active preserves/hides history. Run Notes is editable.
+
+            Include inactive history
+            Include inactive history in comparison changes only eligible Results scope. It neither changes the Run grid nor reactivates
+            or publishes anything. Inactive incomplete Runs may still be ineligible. Results always remain selected-Series scoped.
+
+            Run measurement editors
+            Tensile N 1-10 and Impact percent 1-10 are editable source samples for Upright and Flat rows. Orientation is read-only.
+            Stiffness Revolutions and Degrees are the editable paired source. Notes is editable. Average MPa/kJ/m², Result MPa,
+            deviation, CV, Count, Confidence and validation are calculated/read-only. Valid commits auto-save the Series graph and
+            refresh Results without changing native Material measurement rows.
+
+            Results views
+            Dashboard cards, Table and Charts are fully read-only. Table columns Run, Status, controlled value/unit, Tensile/Impact/
+            Stiffness metrics, Overall, delta to Baseline, CV, Rank and Baseline describe calculated comparison output. XAML
+            column-level metadata does not make this read-only grid editable. Missing baseline or coverage remains visibly unavailable.
+            """,
+            "experimental controls", "series fields", "run fields", "include inactive history", "baseline unique",
+            "experimental n 1", "experimental percent", "results table", "delta to baseline", "read-only results"),
+        new(
+            "material-detail.controls-fields",
+            "Material detail",
+            "Material Detail interactive controls and fields",
+            "Analytics, Compare, Video Planner and Recommendation controls, grids, local persistence and read-only output.",
+            """
+            Read-only Material Detail views
+            General, Printing Profile, Mechanical and Charts follow the selected MaterialID and are read-only projections. Edit their
+            source at Materials, Base Materials or native Measurements. Notes remains unavailable as its existing topic states.
+
+            Analytics
+            Chart Mode chooses the visible-scope grouping. Select one row or Ctrl-click multiple Analytics Results rows to control the
+            radar overlay. Clear radar selection clears local selection only. Group, Count, Tensile, Impact, Stiffness, Consistency,
+            Layer Adhesion, Overall Profile and Radar are read-only calculated display columns.
+
+            Compare
+            Material A-D selectors choose up to four canonical Materials. Use Selected copies the current Materials selection into the
+            intended comparison slot; it changes no source record. Metric/Score rows and the A-D value columns, winners and deltas are
+            read-only. Missing incomparable results remain blank/unavailable.
+
+            Video Planner filters and generated lists
+            Manufacturer, Base Material and Category selectors combine with No YouTube video and Mechanical data only. Refresh rebuilds
+            candidates from the current canonical scope; Clear Ideas removes the current local editable idea set only after its normal
+            confirmation. Candidate/comparison lists are read-only: Material(s), Source, Reason, scores, standout data, suggested
+            title/hook, talking points, winner and comparison text explain why an idea was proposed.
+
+            Editable Video Planner idea fields
+            In the editable recommendation idea list, Suggested title, Hook / angle, Talking points, Series, Episode order, Target week,
+            Publish date, Status, Effort and Notes are local creator-planning values. Material and Reason remain read-only identity/
+            evidence. Valid committed edits persist through the local Video Planner owner; they never alter engineering measurements.
+            Copy Prompt copies the displayed local prompt to the Windows clipboard and makes no network request.
+
+            Recommendations
+            Use case, Category and Base Material selectors define the recommendation projection. Refresh recalculates read-only
+            Performance, Application and Alternative lists from canonical results. Their Material, place, score, use case, why,
+            trade-off, gain, MSRP/value and suggested creator-text columns are read-only even where XAML column metadata inherits.
+            The ChatGPT Prompt box is read-only local text. Send to Video Planner creates/updates only the local planning handoff after
+            explicit action; it never saves a recommendation as engineering truth.
+            """,
+            "material detail controls", "analytics chart mode", "clear radar selection", "compare material a",
+            "video planner fields", "target week", "publish date", "copy prompt", "recommendation filters"),
+        new(
+            "analysis.controls-fields",
+            "Analysis and decisions",
+            "Rankings, Category Rankings, Awards and Insights controls and fields",
+            "Every global analysis filter, row-limit, refresh/export action and read-only output column.",
+            """
+            Shared scope and actions
+            Materials search/filters provide the upstream visible MaterialID scope. Each analysis surface adds its own selectors.
+            Refresh rebuilds the read-only projection from canonical results; it saves no measurements. Reset Filters restores that
+            surface's defaults. Export CSV writes the currently displayed governed rows to a chosen local file and changes no data.
+
+            Rankings Dashboard
+            Metric selects the rank basis. Manufacturer, Base Material and Reinforcement narrow scope. Rows defaults to Top 25 and also
+            offers Top 10, 50, 100 and All. The read-only grid shows rank number, Material, Manufacturer, Type, Reinforcement, Tensile,
+            Impact, Stiffness, Consistency, Layer Adhesion, Overall, Rank Score, Best Axis and Status. Rows missing the selected metric
+            are omitted rather than assigned invented scores.
+
+            Category Rankings
+            Group chooses category grouping and Metric chooses score basis. Manufacturer, Base Material and Reinforcement narrow scope.
+            Rows per group defaults to 10 and offers 5, 50, 100 and All. The read-only grid shows group/category, within-group rank,
+            Material, Manufacturer, Type, Reinforcement, Overall, Category Score, Best Axis and Status.
+
+            Awards and Winners
+            Award Set selects the governed award family. Manufacturer, Base Material and Reinforcement narrow scope. The read-only grid
+            shows Award, Type, Use Case, Winner, Runner Up, Manufacturer, Reinforcement, Score, Why and Status. Refresh applies existing
+            award rules; users cannot type or appoint a winner in this grid.
+
+            Dashboard Insights
+            Insights has no editable field. It summarizes current database/visible-scope counts, highest metrics and narrative findings.
+            Refresh ownership follows the surrounding canonical projection. Insight text is interpretation, not a measurement or saved
+            approval, and never changes source rows.
+            """,
+            "rankings controls", "top 25", "rank score", "category rows per group", "award set",
+            "runner up", "export csv", "dashboard insights", "read-only analysis"),
+        new(
             "measurements.tensile", "Testing and engineering", "Tensile Measurements reference",
             "Upright/Flat force samples, calculated MPa, validation, date ownership and auto-save.",
             """

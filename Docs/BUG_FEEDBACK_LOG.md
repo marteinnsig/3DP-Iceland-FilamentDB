@@ -68,7 +68,9 @@ Verification evidence: The source-derived registry now tracks 645 exact XAML can
 in v50.4.3. Six custom registries add 189 stable-key columns and eight runtime surfaces add 42 controls, for 876 candidates total.
 The read-only drift gate passes; v50.4.0 is complete. The v50.4.1 candidate adds nine detailed topics, and disposable profile
 `20260727125607-36733e81` passes Verification 375/375 with exact state equality. Owner runtime/readability acceptance passes;
-v50.4.2 is current while the parent exhaustive finding remains in progress.
+v50.4.2 now adds four detailed engineering/analysis topics. Disposable profile `20260727131457-dee03dd4` passes Verification
+376/376 with exact state equality. Owner v50.4.2 runtime/readability acceptance passes; v50.4.3 is current while the parent
+exhaustive finding remains in progress.
 
 Date: 2026-07-27
 Area: Application menu / Navigation and command discovery

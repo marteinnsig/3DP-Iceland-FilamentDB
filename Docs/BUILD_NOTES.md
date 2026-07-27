@@ -1,4 +1,21 @@
-# Current Build Notes - v50.4.1
+# Current Build Notes - v50.4.2
+
+## Engineering Control and Field Help
+
+Four new detailed Help topics cover native Measurements, Experimental Testing,
+interactive Material Detail and Rankings/Category/Awards/Insights. They name
+the individual controls and column groups and explain ranges, units,
+editability, validation, persistence, baseline/history scope and read-only
+projection behavior.
+
+The registry routes 267 XAML candidates and 108 custom native measurement
+columns to these leaf topics. Verification and smoke enforce topic depth,
+ownership markers and unique Help search routing.
+
+Debug/Release app and tester builds pass with zero warnings/errors. Disposable
+profile `20260727131457-dee03dd4` passes Full Data Verification 376/376 with
+exact logical/business-state equality. Owner runtime/readability acceptance
+passes on 2026-07-27; schema remains v37 and v50.4.3 is current.
 
 ## Data and Configuration Control Help
 
