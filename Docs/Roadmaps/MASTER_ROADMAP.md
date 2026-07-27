@@ -2,15 +2,15 @@
 
 Current canonical release: **v52.2.0 — Read-only OpenAI Responses Pilot**
 
-Last runtime-accepted baseline: **v52.2.0 — Read-only OpenAI Responses Pilot**
+Last runtime-accepted baseline: **v52.3.2 — OpenAI Operational Evidence and Failure Harness**
 
-Current application release: **v52.2.0 — Read-only OpenAI Responses Pilot**
+Current canonical application release: **v52.3.2 — OpenAI Operational Evidence and Failure Harness**
 
-Current roadmap increment: **v52.3 — Governed Acceptance and Operational Evidence**
+Current roadmap increment: **v52.3.3 — Bounded Owner Live Evaluation, Model Decision and Closure**
 
-Current acceptance note: v52.2.0 is complete, canonical and owner runtime accepted.
+Current acceptance note: v52.3.2 is complete, canonical and owner runtime accepted.
 
-Next note: v52.3 evaluates representative quality, latency, cost and operational evidence.
+Next note: v52.3.3 owns the bounded quality, latency, usage, cost and model decision.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2248,10 +2248,31 @@ to unstarted authoritative planning slots.
   - Clean Readiness `20260727162422-0de18a69` passes 284/284 plus 100 N/A with exact state equality.
   - Owner accepted preview, consent, live advisory output, cancellation boundary and Full Data Verification.
 - **v52.3 — Governed Acceptance and Operational Evidence**
-  - State: Current planned increment; research representative scenarios before implementation.
+  - State: Research complete; delivery is governed by v52.3.1-v52.3.3 before parent closure.
   - Evaluate quality, latency and cost with approved representative scenarios before pinning the accepted model.
   - Extend deterministic automation for payload allowlists, response validation, fallback, cancellation and secret non-persistence.
   - Require Debug/Release, security/static gates, Full Data Verification and owner runtime acceptance before closure.
+- **v52.3.1 — Acceptance Matrix and Evidence Contract**
+  - State: Research contract owner accepted on 2026-07-27; no runtime code changed in this increment.
+  - Define five bounded live scenarios: small grounded set, comparison, sparse metadata, forty-row maximum and one repeat.
+  - Score grounding, no-invention, relevance, uncertainty honesty, usefulness and clarity from zero to two.
+  - Require at least 10/12 per scenario, full grounding/no-invention scores and zero hard failures.
+  - Hard-fail unknown IDs, invented unavailable facts, private-field exposure, canonical mutation or unsafe publish/edit advice.
+  - Retain only approved UTC/model/schema/hash/count/request-ID/latency/token/outcome/rubric evidence; never secrets or headers.
+  - Keep exact payload and advisory bodies out of automatic evidence; explicit local session saving remains separately governed.
+  - Treat cost as unavailable until a dated official price source or project Usage/Costs evidence supports it.
+- **v52.3.2 — Deterministic Failure Harness and Operational Evidence**
+  - State: Complete, canonical and owner runtime accepted on 2026-07-27.
+  - Owner live call, safe evidence, Save Session and Full Verification 385/385 pass.
+  - Add elapsed time, requested model, prompt/schema version, request hash, material count and token totals to the result summary.
+  - Capture safe provider processing/request metadata where returned; never retain Authorization or raw response bodies.
+  - Deterministically test completed, refusal, incomplete, malformed/no-output, unknown-ID, cancellation and safe API errors.
+  - Prove automation cannot issue a live request, read owner credentials, retain raw payloads or change canonical business state.
+- **v52.3.3 — Bounded Owner Live Evaluation, Model Decision and Closure**
+  - Run at most five owner-approved live calls against reviewed non-sensitive material scope.
+  - Record observed quality, latency and usage; reconcile project cost through current official Usage/Costs evidence.
+  - Pin the model only if all hard gates, quality thresholds, cost review, failure fallback and owner acceptance pass.
+  - Otherwise keep the model provisional or close the pilot with a documented defer/stop decision.
 
 - **v53.0 — Governed Landed-cost Currency**
   - State: Planned after the recorded v50-v52 sequence; research before schema or UI changes.

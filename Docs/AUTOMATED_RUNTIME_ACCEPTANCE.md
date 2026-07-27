@@ -1,5 +1,36 @@
 # Automated Runtime Acceptance
 
+## v52.3.2 - OpenAI Operational Evidence and Failure Harness accepted
+
+- Automation invokes Preview OpenAI Payload but never Generate or Copy
+  Operational Evidence.
+- Save Session is invoked only against the preview and must show the bounded
+  rejection; no AI session file may be created.
+- Full Verification uses only scripted `HttpMessageHandler` responses and no
+  real credential, network socket or provider endpoint.
+- Evidence requires safe success/error/timeout classification, parser failure
+  rejection, the forty-row limit and secret/raw-payload exclusion.
+- Exact business-state equality and existing Production/FTPS/update locks
+  remain mandatory.
+- Release smoke `20260727165007-99840438` passes 385/385 with exact logical and
+  business-state equality.
+- Clean Readiness `20260727165051-713aecf4` passes 285/285 applicable plus
+  100 N/A, controlled restart and exact state equality.
+- Post-correction smoke `20260727170133-15d13fb7` passes 385/385 and proves the
+  exact evidence-ID schema enum with unchanged business state.
+- Reasoning-budget and safe-diagnostic correction smoke
+  `20260727170841-4473c154` passes 385/385 with exact state.
+- Canonical Release rerun `20260727171213-558ca0ca` passes 385/385 with exact
+  state after the owner application lock was released.
+- Post-owner Verification-state correction smoke `20260727172300-de072a18`
+  passes 385/385 with exact business-state equality.
+- Canonical Release confirmation `20260727172502-e8736f1b` repeats 385/385
+  with exact state.
+- Owner live generation, secret-safe evidence, validated advisory Save Session
+  and Full Data Verification 385/385 pass on 2026-07-27.
+- Owner live-result, evidence-copy and Full Data Verification acceptance remain
+  pending.
+
 ## v52.2.0 - Read-only OpenAI Responses Pilot accepted
 
 - Populated disposable scenarios invoke Preview OpenAI Payload only.

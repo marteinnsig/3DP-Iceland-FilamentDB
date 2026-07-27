@@ -43,11 +43,59 @@ public sealed record OpenAiPilotResult(
     int InputTokens,
     int OutputTokens);
 
+public enum OpenAiPilotOutcome
+{
+    Completed,
+    Cancelled,
+    TimedOut,
+    ApiError,
+    ValidationError,
+    TransportError
+}
+
+public sealed record OpenAiPilotOperationalEvidence(
+    DateTimeOffset StartedAtUtc,
+    DateTimeOffset CompletedAtUtc,
+    long ElapsedMilliseconds,
+    OpenAiPilotOutcome Outcome,
+    string RequestedModel,
+    string PayloadSchema,
+    string PromptVersion,
+    string RequestSha256,
+    int MaterialCount,
+    int InputTokens,
+    int OutputTokens,
+    string ClientRequestId,
+    string ServerRequestId,
+    string ErrorCategory,
+    string CostStatus)
+{
+    public int TotalTokens => InputTokens + OutputTokens;
+}
+
+public sealed record OpenAiPilotExecution(
+    OpenAiPilotResult Result,
+    OpenAiPilotOperationalEvidence Evidence);
+
+public sealed class OpenAiPilotExecutionException : InvalidOperationException
+{
+    public OpenAiPilotExecutionException(
+        string message,
+        OpenAiPilotOperationalEvidence evidence,
+        Exception? innerException = null)
+        : base(message, innerException)
+    {
+        Evidence = evidence;
+    }
+
+    public OpenAiPilotOperationalEvidence Evidence { get; }
+}
+
 public sealed class OpenAiAssistantPilotService
 {
     public const string Endpoint = "https://api.openai.com/v1/responses";
     public const string PayloadSchema = "3dpiceland.openai-material-pilot.v1";
-    public const string PromptVersion = "v52.2-material-advisory-v1";
+    public const string PromptVersion = "v52.3-material-advisory-v2";
     public const int MaximumMaterials = 40;
     public const int MaximumPlanningNoteCharacters = 2000;
 
@@ -57,13 +105,29 @@ public sealed class OpenAiAssistantPilotService
         WriteIndented = true
     };
 
-    private static readonly HttpClient Client = new(new HttpClientHandler
+    private static readonly HttpClient SharedClient = new(new HttpClientHandler
     {
         AutomaticDecompression = DecompressionMethods.All
     })
     {
         Timeout = Timeout.InfiniteTimeSpan
     };
+    private readonly HttpClient _client;
+    private readonly TimeProvider _timeProvider;
+    private readonly TimeSpan _requestTimeout;
+    private readonly Func<string> _clientRequestIdFactory;
+
+    public OpenAiAssistantPilotService(
+        HttpClient? client = null,
+        TimeProvider? timeProvider = null,
+        TimeSpan? requestTimeout = null,
+        Func<string>? clientRequestIdFactory = null)
+    {
+        _client = client ?? SharedClient;
+        _timeProvider = timeProvider ?? TimeProvider.System;
+        _requestTimeout = requestTimeout ?? TimeSpan.FromSeconds(60);
+        _clientRequestIdFactory = clientRequestIdFactory ?? (() => Guid.NewGuid().ToString("D"));
+    }
 
     public OpenAiPilotPreview BuildPreview(string model, OpenAiPilotInput input)
     {
@@ -90,12 +154,19 @@ public sealed class OpenAiAssistantPilotService
             materials = normalizedMaterials
         };
         var governedInputJson = JsonSerializer.Serialize(governedInput, JsonOptions);
+        var ids = normalizedMaterials
+            .Select(material => material.MaterialID)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         var request = new
         {
             model = normalizedModel,
             store = false,
-            max_output_tokens = 1800,
+            max_output_tokens = 4000,
+            reasoning = new
+            {
+                effort = "low"
+            },
             tools = Array.Empty<object>(),
             instructions =
                 "You are a read-only engineering and content-planning assistant for 3DPIceland. " +
@@ -109,20 +180,17 @@ public sealed class OpenAiAssistantPilotService
                     type = "json_schema",
                     name = "material_advisory",
                     strict = true,
-                    schema = BuildResponseSchema()
+                    schema = BuildResponseSchema(ids)
                 }
             }
         };
 
         var requestJson = JsonSerializer.Serialize(request, JsonOptions);
         var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(requestJson)));
-        var ids = normalizedMaterials
-            .Select(material => material.MaterialID)
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         return new OpenAiPilotPreview(normalizedModel, requestJson, hash, ids);
     }
 
-    public async Task<OpenAiPilotResult> GenerateAsync(
+    public async Task<OpenAiPilotExecution> GenerateAsync(
         OpenAiPilotPreview preview,
         string apiKey,
         CancellationToken cancellationToken)
@@ -132,33 +200,128 @@ public sealed class OpenAiAssistantPilotService
             throw new InvalidOperationException("No OpenAI API credential is available.");
         }
 
-        var clientRequestId = Guid.NewGuid().ToString("D");
+        var clientRequestId = _clientRequestIdFactory();
+        var startedAtUtc = _timeProvider.GetUtcNow();
+        var startedTimestamp = _timeProvider.GetTimestamp();
+        var serverRequestId = string.Empty;
         using var request = new HttpRequestMessage(HttpMethod.Post, Endpoint);
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey.Trim());
         request.Headers.Add("X-Client-Request-Id", clientRequestId);
         request.Content = new StringContent(preview.RequestBodyJson, Encoding.UTF8, "application/json");
 
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        timeout.CancelAfter(TimeSpan.FromSeconds(60));
-        using var response = await Client.SendAsync(
-            request,
-            HttpCompletionOption.ResponseHeadersRead,
-            timeout.Token);
-        var responseJson = await response.Content.ReadAsStringAsync(timeout.Token);
-        var serverRequestId = response.Headers.TryGetValues("x-request-id", out var values)
-            ? values.FirstOrDefault() ?? string.Empty
-            : string.Empty;
-
-        if (!response.IsSuccessStatusCode)
+        timeout.CancelAfter(_requestTimeout);
+        try
         {
-            throw BuildSafeApiException(response.StatusCode, responseJson, clientRequestId, serverRequestId);
-        }
+            using var response = await _client.SendAsync(
+                request,
+                HttpCompletionOption.ResponseHeadersRead,
+                timeout.Token);
+            var responseJson = await response.Content.ReadAsStringAsync(timeout.Token);
+            serverRequestId = response.Headers.TryGetValues("x-request-id", out var values)
+                ? values.FirstOrDefault() ?? string.Empty
+                : string.Empty;
 
-        return ParseAndValidateResponse(
-            responseJson,
-            preview.AllowedMaterialIds,
-            clientRequestId,
-            serverRequestId);
+            if (!response.IsSuccessStatusCode)
+            {
+                var safeApiError = BuildSafeApiException(
+                    response.StatusCode,
+                    responseJson,
+                    clientRequestId,
+                    serverRequestId);
+                throw new OpenAiPilotExecutionException(
+                    safeApiError.Message,
+                    BuildEvidence(
+                        preview,
+                        startedAtUtc,
+                        startedTimestamp,
+                        OpenAiPilotOutcome.ApiError,
+                        clientRequestId,
+                        serverRequestId,
+                        "HTTP " + (int)response.StatusCode),
+                    safeApiError);
+            }
+
+            OpenAiPilotResult result;
+            try
+            {
+                result = ParseAndValidateResponse(
+                    responseJson,
+                    preview.AllowedMaterialIds,
+                    clientRequestId,
+                    serverRequestId);
+            }
+            catch (Exception ex) when (ex is JsonException or InvalidOperationException or KeyNotFoundException)
+            {
+                var usage = ReadUsage(responseJson);
+                throw new OpenAiPilotExecutionException(
+                    $"OpenAI returned output that failed the governed validation contract. " +
+                    $"Client request ID: {clientRequestId}; server request ID: {serverRequestId}.",
+                    BuildEvidence(
+                        preview,
+                        startedAtUtc,
+                        startedTimestamp,
+                        OpenAiPilotOutcome.ValidationError,
+                        clientRequestId,
+                        serverRequestId,
+                        ClassifyValidationFailure(responseJson, ex),
+                        usage.InputTokens,
+                        usage.OutputTokens),
+                    ex);
+            }
+
+            var evidence = BuildEvidence(
+                preview,
+                startedAtUtc,
+                startedTimestamp,
+                OpenAiPilotOutcome.Completed,
+                clientRequestId,
+                serverRequestId,
+                string.Empty,
+                result.InputTokens,
+                result.OutputTokens);
+            return new OpenAiPilotExecution(result, evidence);
+        }
+        catch (OpenAiPilotExecutionException)
+        {
+            throw;
+        }
+        catch (OperationCanceledException ex)
+        {
+            var outcome = cancellationToken.IsCancellationRequested
+                ? OpenAiPilotOutcome.Cancelled
+                : OpenAiPilotOutcome.TimedOut;
+            var category = outcome == OpenAiPilotOutcome.Cancelled
+                ? "Caller cancellation"
+                : "60-second timeout";
+            throw new OpenAiPilotExecutionException(
+                outcome == OpenAiPilotOutcome.Cancelled
+                    ? "OpenAI request was cancelled. Canonical data is unchanged."
+                    : "OpenAI request timed out. Canonical data is unchanged.",
+                BuildEvidence(
+                    preview,
+                    startedAtUtc,
+                    startedTimestamp,
+                    outcome,
+                    clientRequestId,
+                    serverRequestId,
+                    category),
+                ex);
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new OpenAiPilotExecutionException(
+                $"OpenAI could not be reached. Canonical data is unchanged. Client request ID: {clientRequestId}.",
+                BuildEvidence(
+                    preview,
+                    startedAtUtc,
+                    startedTimestamp,
+                    OpenAiPilotOutcome.TransportError,
+                    clientRequestId,
+                    serverRequestId,
+                    "HTTP transport"),
+                ex);
+        }
     }
 
     public OpenAiPilotResult ParseAndValidateResponse(
@@ -172,10 +335,8 @@ public sealed class OpenAiAssistantPilotService
         var status = ReadString(root, "status");
         if (!string.Equals(status, "completed", StringComparison.Ordinal))
         {
-            var detail = root.TryGetProperty("incomplete_details", out var incomplete)
-                ? incomplete.ToString()
-                : "No incomplete detail was returned.";
-            throw new InvalidOperationException($"OpenAI response was not completed. Status: {status}; detail: {detail}");
+            throw new InvalidOperationException(
+                $"OpenAI response was not completed. Status: {Limit(status, 80)}.");
         }
 
         string? structuredText = null;
@@ -195,8 +356,7 @@ public sealed class OpenAiAssistantPilotService
                     var type = ReadString(part, "type");
                     if (string.Equals(type, "refusal", StringComparison.Ordinal))
                     {
-                        throw new InvalidOperationException(
-                            "OpenAI declined this request: " + ReadString(part, "refusal"));
+                        throw new InvalidOperationException("OpenAI declined this request.");
                     }
                     if (string.Equals(type, "output_text", StringComparison.Ordinal))
                     {
@@ -252,7 +412,7 @@ public sealed class OpenAiAssistantPilotService
             ReadInt(usage, "output_tokens"));
     }
 
-    private static object BuildResponseSchema() => new
+    private static object BuildResponseSchema(IReadOnlySet<string> allowedMaterialIds) => new
     {
         type = "object",
         additionalProperties = false,
@@ -273,7 +433,13 @@ public sealed class OpenAiAssistantPilotService
                         evidenceMaterialIds = new
                         {
                             type = "array",
-                            items = new { type = "string" }
+                            items = new
+                            {
+                                type = "string",
+                                @enum = allowedMaterialIds
+                                    .OrderBy(id => id, StringComparer.OrdinalIgnoreCase)
+                                    .ToArray()
+                            }
                         }
                     },
                     required = new[] { "title", "details", "evidenceMaterialIds" }
@@ -330,29 +496,118 @@ public sealed class OpenAiAssistantPilotService
                 .ToList()
             : Array.Empty<string>();
 
+    private static (int InputTokens, int OutputTokens) ReadUsage(string responseJson)
+    {
+        try
+        {
+            using var response = JsonDocument.Parse(responseJson);
+            if (!response.RootElement.TryGetProperty("usage", out var usage))
+            {
+                return (0, 0);
+            }
+
+            return (ReadInt(usage, "input_tokens"), ReadInt(usage, "output_tokens"));
+        }
+        catch (JsonException)
+        {
+            return (0, 0);
+        }
+    }
+
+    private static string ClassifyValidationFailure(string responseJson, Exception exception)
+    {
+        try
+        {
+            using var response = JsonDocument.Parse(responseJson);
+            var root = response.RootElement;
+            var status = ReadString(root, "status");
+            if (string.Equals(status, "incomplete", StringComparison.Ordinal))
+            {
+                var reason = root.TryGetProperty("incomplete_details", out var details)
+                    ? ReadString(details, "reason")
+                    : string.Empty;
+                return string.Equals(reason, "max_output_tokens", StringComparison.Ordinal)
+                    ? "Incomplete — max output tokens"
+                    : string.Equals(reason, "content_filter", StringComparison.Ordinal)
+                        ? "Incomplete — content filter"
+                        : "Incomplete response";
+            }
+        }
+        catch (JsonException)
+        {
+            return "Malformed response envelope";
+        }
+
+        if (exception is JsonException)
+        {
+            return "Malformed structured output";
+        }
+
+        if (exception is KeyNotFoundException)
+        {
+            return "Missing required structured field";
+        }
+
+        return exception.Message.Contains("unknown MaterialID", StringComparison.Ordinal)
+            ? "Unknown evidence MaterialID"
+            : exception.Message.Contains("declined", StringComparison.OrdinalIgnoreCase)
+                ? "Provider refusal"
+                : exception.Message.Contains("no structured advisory", StringComparison.OrdinalIgnoreCase)
+                    ? "Missing structured output"
+                    : "Structured response validation";
+    }
+
+    private OpenAiPilotOperationalEvidence BuildEvidence(
+        OpenAiPilotPreview preview,
+        DateTimeOffset startedAtUtc,
+        long startedTimestamp,
+        OpenAiPilotOutcome outcome,
+        string clientRequestId,
+        string serverRequestId,
+        string errorCategory,
+        int inputTokens = 0,
+        int outputTokens = 0) =>
+        new(
+            startedAtUtc,
+            _timeProvider.GetUtcNow(),
+            Math.Max(
+                0,
+                (long)Math.Round(
+                    _timeProvider.GetElapsedTime(startedTimestamp).TotalMilliseconds,
+                    MidpointRounding.AwayFromZero)),
+            outcome,
+            preview.Model,
+            PayloadSchema,
+            PromptVersion,
+            preview.RequestSha256,
+            preview.AllowedMaterialIds.Count,
+            inputTokens,
+            outputTokens,
+            clientRequestId,
+            serverRequestId,
+            errorCategory,
+            "Unavailable — no governed dated pricing snapshot");
+
     private static Exception BuildSafeApiException(
         HttpStatusCode statusCode,
         string responseJson,
         string clientRequestId,
         string serverRequestId)
     {
-        var message = string.Empty;
-        try
+        _ = responseJson;
+        var safeMessage = statusCode switch
         {
-            using var document = JsonDocument.Parse(responseJson);
-            if (document.RootElement.TryGetProperty("error", out var error))
-            {
-                message = ReadString(error, "message");
-            }
-        }
-        catch (JsonException)
-        {
-            // Never include an unparsed response body in diagnostics.
-        }
-
-        var safeMessage = string.IsNullOrWhiteSpace(message)
-            ? "The API returned an error without a safe readable message."
-            : Limit(message, 500);
+            HttpStatusCode.Unauthorized =>
+                "The configured credential was not accepted. Review the OpenAI project key.",
+            HttpStatusCode.Forbidden =>
+                "The configured project credential does not have permission for this request.",
+            (HttpStatusCode)429 =>
+                "The OpenAI project rate limit was reached. No automatic retry was attempted.",
+            HttpStatusCode.BadRequest =>
+                "The governed request was rejected as invalid. Review the model and request contract.",
+            _ =>
+                "The API returned an error. No raw provider response was retained or displayed."
+        };
         return new InvalidOperationException(
             $"OpenAI request failed ({(int)statusCode} {statusCode}). {safeMessage} " +
             $"Client request ID: {clientRequestId}; server request ID: {serverRequestId}.");

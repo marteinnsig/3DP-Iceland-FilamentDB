@@ -1266,18 +1266,23 @@ internal static class HelpContentCatalog
             Data and network boundary
             Existing Generate actions remain local/deterministic. Preview OpenAI Payload builds and displays the exact request body
             without network use. Generate with OpenAI requires OpenAI provider/credential readiness, then opens a second full-payload
-            review with an unchecked one-time consent. Cancel stops an active request. Only MaterialID, manufacturer, product line,
-            marketing name, base material, category, variant/finish, reinforcement, selected template and the visible planning note are
-            sent. Purchasing, Inventory, Usage, Quotes, costs, URLs, paths, credentials, internal notes and raw measurements are excluded.
+            review with an unchecked one-time consent. Cancel stops an active request. Copy Operational Evidence becomes available only
+            after a live attempt and copies UTC timing, outcome, model/schema/hash, counts, tokens and request IDs. It never includes the
+            credential, Authorization header, raw payload, raw response, planning note, material names or MaterialIDs. Only MaterialID,
+            manufacturer, product line, marketing name, base material, category, variant/finish, reinforcement, selected template and
+            the visible planning note are sent. Purchasing, Inventory, Usage, Quotes, costs, URLs, paths, credentials, internal notes and
+            raw measurements are excluded.
 
             The request uses Responses API, store=false, no tools/files/web search and strict structured output. Unknown evidence
             MaterialIDs are rejected. Output stays advisory and is not saved unless Save Session is clicked explicitly. Provider
             retention terms may still apply even with store=false. No Assistant action may silently edit Materials, measurements,
-            purchasing, Inventory, Usage, saved Quotes, reports or Website Production.
+            purchasing, Inventory, Usage, saved Quotes, reports or Website Production. Save Session rejects an exact outbound payload
+            preview instead of persisting the raw request locally; generate and review an advisory result before saving a session.
             """,
             "assistant controls", "prompt editor", "generate full brief", "save session", "delete session",
             "collection title", "apply status", "mark published", "coverage identity", "local deterministic",
-            "Preview OpenAI Payload", "Generate with OpenAI", "Cancel OpenAI Request", "store false"),
+            "Preview OpenAI Payload", "Generate with OpenAI", "Cancel OpenAI Request", "Copy Operational Evidence",
+            "store false"),
         new(
             "youtube.controls-fields",
             "Configuration and creator tools",
@@ -1594,7 +1599,8 @@ internal static class HelpContentCatalog
             Generated output is advisory/read-only. Existing Generate actions stay local. Preview OpenAI Payload performs no network
             request and shows the exact JSON body, allowlisted IDs and SHA-256. Generate with OpenAI requires an additional unchecked
             one-time consent, store=false, no tools/files/web search and strict structured output. It never saves output automatically.
-            Assistant output never replaces measurements or Verification.
+            Secret-safe operational evidence remains in memory until explicitly copied. Exact payload previews cannot be saved as
+            sessions. Assistant output never replaces measurements or Verification.
             """, "AI Assistant", "visible scope", "sessions", "collections", "output"),
         new(
             "ai.visible-scope", "AI Assistant", "AI visible scope reference",

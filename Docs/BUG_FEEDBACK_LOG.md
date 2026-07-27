@@ -44,6 +44,10 @@ Resolution: v52.0 research was owner accepted. v52.1 adds provider/model prefere
 local-only diagnostics and a deterministic fake provider. An owner-reported Settings overlap was corrected by assigning the
 provider panel its own Auto-sized Grid row and retaining the settings table in the sole expanding row. Live generation remains
 excluded until v52.2. The v52.2 candidate adds exact preview, one-time consent, bounded cancellation and strict advisory output.
+v52.3 research defines v52.3.1 acceptance/evidence, v52.3.2 deterministic failure/operational evidence and v52.3.3 bounded
+owner evaluation/model decision. It identifies accidental raw preview persistence through Save Session as a boundary to govern.
+The v52.3.2 candidate blocks that preview persistence, adds in-memory secret-safe operational evidence and deterministic
+no-network success, failure, validation, timeout and evidence-allowlist coverage. Live Generate remains automation-blocked.
 Verification evidence: v52.2 Release smoke `20260727162340-f07d3caa` passes 384/384 and Clean
 `20260727162422-0de18a69` passes 284/284 plus 100 N/A. Both retain exact business-state equality. Owner preview, consent,
 live advisory output, cancellation boundary and Full Data Verification acceptance pass on 2026-07-27. v52.3 retains
@@ -1536,3 +1540,30 @@ deletion, corrected comma-decimal pricing and the final customer PDF with the
 Labs logo and no internal MaterialID, Printer identity or methodology text.
 Full Data Verification passes 363/363. The increment is complete, canonical
 and runtime accepted.
+# 2026-07-27 - v52.3.2 live response validation lacked safe failure detail
+
+- **Observed:** After owner consent, the first live Responses result reached the
+  safe validation-failure dialog instead of a usable advisory.
+- **Finding:** The first hypothesis was an unconstrained evidence ID. Adding an
+  exact enum did not resolve the live failure, proving that hypothesis was not
+  sufficient. The retained evidence safely reported only generic validation
+  and zero usage, which prevented definitive offline diagnosis.
+- **Correction:** Exact evidence-ID enum remains as defense in depth. The
+  request now sets low reasoning effort and a 4,000-token output budget.
+  Validation evidence safely classifies incomplete/token-limit, refusal,
+  missing/malformed output and captures returned usage without raw content.
+- **Status:** Solved and owner runtime accepted. Debug and isolated Release builds pass with zero warnings/errors;
+  smoke `20260727170841-4473c154` passes 385/385 with exact state. Owner live
+  rerun was pending. Canonical Release smoke `20260727171213-558ca0ca`
+  repeats 385/385 with exact state after the locked owner app was closed.
+  Owner live rerun then completes successfully: 40 governed Materials,
+  3,246 input and 1,655 output tokens in 34.7 seconds. Copied evidence exposes
+  no credential, material identity, planning note or raw provider content.
+  Save Session succeeds, but owner Verification reports 384/385 because its
+  deterministic contract required Copy Operational Evidence to remain disabled
+  even after live evidence existed. The assertion now requires button state to
+  match in-memory evidence presence; automation still proves the disabled
+  no-live state. Isolated smoke `20260727172300-de072a18` passes 385/385 with
+  exact business-state equality. Canonical Release smoke
+  `20260727172502-e8736f1b` repeats 385/385 with exact state.
+  Final owner Full Data Verification passes 385/385.

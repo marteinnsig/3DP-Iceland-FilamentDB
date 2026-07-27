@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v52.3.2 - OpenAI Operational Evidence and Failure Harness
+
+Accepted operational evidence and deterministic failure coverage preserve the
+accepted read-only pilot while closing raw-preview session persistence. Live
+generation, secret-safe evidence, validated Save Session and Verification
+385/385 pass. Schema stays v37; v52.3.2 is canonical.
+
 # v52.2.0 - Read-only OpenAI Responses Pilot
 
 Accepted exact-preview and consent-gated Responses integration preserves the

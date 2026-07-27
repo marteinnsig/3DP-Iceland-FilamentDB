@@ -1,6 +1,6 @@
 # Help Coverage Matrix
 
-Version: v52.2 contextual coverage maintained
+Version: v52.3.2 contextual coverage maintained
 
 Purpose: authoritative inventory for the v50.2 per-tab reference milestone.
 This matrix records every supported UI surface, its owner, required reference
@@ -12,7 +12,7 @@ merely because a coarse overview mentions the tab.
 - 22 top-level tabs.
 - 16 nested tabs.
 - 38 total tab surfaces.
-- 142 declared WPF buttons.
+- 143 declared WPF buttons.
 - 30 menu items.
 - 100 existing WPF AutomationIds.
 - 136 click handlers across the MainWindow implementation.

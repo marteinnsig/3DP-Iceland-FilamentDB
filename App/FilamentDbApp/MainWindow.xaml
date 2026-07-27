@@ -2369,7 +2369,12 @@
                             <TextBlock Text="Research sessions" VerticalAlignment="Center" Margin="0,0,8,8"/>
                             <ComboBox Name="AiSavedSessionsCombo" Width="240" Height="28" Margin="0,0,16,8"/>
 
-                            <Button Content="Save Session" Click="SaveAiSession_Click" Padding="12,6" Margin="0,0,8,8"/>
+                            <Button Name="SaveAiSessionButton"
+                                    Content="Save Session"
+                                    AutomationProperties.AutomationId="SaveAiSession"
+                                    Click="SaveAiSession_Click"
+                                    Padding="12,6"
+                                    Margin="0,0,8,8"/>
                             <Button Content="Load Session" Click="LoadAiSession_Click" Padding="12,6" Margin="0,0,8,8"/>
                             <Button Content="Delete Session" Click="DeleteAiSession_Click" Padding="12,6" Margin="0,0,8,8"/>
                             <Button Content="Refresh Sessions" Click="RefreshAiSessions_Click" Padding="12,6" Margin="0,0,8,8"/>
@@ -2423,6 +2428,13 @@
                                         Content="Generate with OpenAI..."
                                         AutomationProperties.AutomationId="GenerateWithOpenAi"
                                         Click="GenerateWithOpenAi_Click"
+                                        Padding="12,6"
+                                        Margin="0,0,8,8"/>
+                                <Button Name="CopyOpenAiOperationalEvidenceButton"
+                                        Content="Copy Operational Evidence"
+                                        AutomationProperties.AutomationId="CopyOpenAiOperationalEvidence"
+                                        Click="CopyOpenAiOperationalEvidence_Click"
+                                        IsEnabled="False"
                                         Padding="12,6"
                                         Margin="0,0,8,8"/>
                                 <Button Name="CancelOpenAiRequestButton"

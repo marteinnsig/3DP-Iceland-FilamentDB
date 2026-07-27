@@ -1,4 +1,50 @@
-# Current Build Notes - v52.2.0
+# Current Build Notes - v52.3.2
+
+## OpenAI Operational Evidence and Failure Harness
+
+The accepted release records only in-memory operational metadata for each approved
+live OpenAI attempt: UTC timing, outcome, requested model, prompt/schema
+version, exact request SHA-256, material count, token usage and request IDs.
+It never includes the credential, Authorization header, raw request/response,
+planning note, material names or MaterialIDs.
+
+Copy Operational Evidence is disabled until a live attempt and is always an
+explicit owner clipboard action. Cost remains unavailable until a dated
+official pricing snapshot or project Usage/Costs evidence is reviewed.
+
+Save Session now rejects exact outbound payload previews instead of retaining
+the raw request in local session JSON. Validated advisory output remains
+explicitly saveable. Deterministic scripted HTTP tests cover success, safe 401,
+timeout, refusal, incomplete/malformed/no-output validation and unknown IDs
+without a socket, real credential or live request.
+
+The first owner live attempt safely failed validation. An exact evidence-ID
+schema enum did not resolve the second live attempt, so that initial diagnosis
+was incomplete. Official GPT-5.6 guidance confirms omitted effort defaults to
+medium and lower effort reduces reasoning tokens and latency. The request now
+uses low effort and a 4,000-token budget. Safe evidence classifies token-limit
+and other validation reasons and captures returned usage without raw content.
+Isolated Release smoke `20260727170841-4473c154` passes 385/385 with exact
+business state. Canonical Release smoke `20260727171213-558ca0ca` repeats
+385/385 with exact state. The owner live rerun completes successfully for the
+40-material maximum in 34.7 seconds with 3,246 input and 1,655 output tokens.
+Copied operational evidence remains secret-safe. Owner Save Session and Full
+Data Verification 385/385 pass.
+
+Owner Save Session succeeds. The first owner Verification run reports 384/385
+because the deterministic gate incorrectly required Copy Operational Evidence
+to remain disabled after a successful live call. The gate now requires the
+button state to match whether safe operational evidence exists in memory.
+Isolated smoke `20260727172300-de072a18` passes 385/385 with exact state.
+Canonical Release smoke `20260727172502-e8736f1b` repeats 385/385 with exact
+business-state equality.
+
+Release smoke `20260727165007-99840438` passes 385/385 with exact logical and
+business-state equality. Clean Readiness `20260727165051-713aecf4` passes
+285/285 applicable plus 100 N/A, controlled restart and exact state equality.
+Debug/Release app and tester builds, Help/release/static gates and the read-only
+NuGet vulnerability scan pass. Schema remains v37. v52.3.2 is canonical and
+owner runtime accepted on 2026-07-27.
 
 ## Read-only OpenAI Responses Pilot
 

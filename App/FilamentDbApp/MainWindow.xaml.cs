@@ -16,6 +16,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -84,6 +85,8 @@ public partial class MainWindow : Window
     private readonly WorkflowPreferencesService _workflowPreferencesService = new();
     private readonly OpenAiAssistantPilotService _openAiAssistantPilotService = new();
     private CancellationTokenSource? _openAiPilotCancellation;
+    private OpenAiPilotOperationalEvidence? _lastOpenAiOperationalEvidence;
+    private AiAssistantOutputKind _aiAssistantOutputKind = AiAssistantOutputKind.LocalAdvisory;
     private readonly InventoryEngineService _inventoryEngineService = new();
     private readonly EngineeringContextService _engineeringContextService = new();
     private readonly PricingProvenanceService _pricingProvenanceService = new();
@@ -14465,6 +14468,20 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 .GetProperty("materials")
                 .EnumerateArray()
                 .First();
+            var evidenceIdSchemaEnum = pilotRequestDocument.RootElement
+                .GetProperty("text")
+                .GetProperty("format")
+                .GetProperty("schema")
+                .GetProperty("properties")
+                .GetProperty("findings")
+                .GetProperty("items")
+                .GetProperty("properties")
+                .GetProperty("evidenceMaterialIds")
+                .GetProperty("items")
+                .GetProperty("enum")
+                .EnumerateArray()
+                .Select(item => item.GetString() ?? string.Empty)
+                .ToList();
             var unknownEvidenceRejected = false;
             try
             {
@@ -14491,7 +14508,13 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 AutomationProperties.GetAutomationId(openAiStatus) == "OpenAiPilotStatus" &&
                 pilotPreview.RequestBodyJson.Contains("\"store\": false", StringComparison.Ordinal) &&
                 pilotPreview.RequestBodyJson.Contains("\"tools\": []", StringComparison.Ordinal) &&
+                pilotRequestDocument.RootElement.GetProperty("max_output_tokens").GetInt32() == 4000 &&
+                pilotRequestDocument.RootElement
+                    .GetProperty("reasoning")
+                    .GetProperty("effort")
+                    .GetString() == "low" &&
                 pilotMaterial.GetProperty("materialID").GetString() == "MAT-ALLOW-1" &&
+                evidenceIdSchemaEnum.SequenceEqual(new[] { "MAT-ALLOW-1" }, StringComparer.Ordinal) &&
                 !pilotMaterial.TryGetProperty("purchaseId", out _) &&
                 !pilotMaterial.TryGetProperty("inventoryId", out _) &&
                 !pilotMaterial.TryGetProperty("notes", out _) &&
@@ -14508,6 +14531,248 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             openAiPilotContractReady
                 ? "Exact store=false/no-tools payload preview, allowlisted material fields, cancellation and unknown-MaterialID rejection pass"
                 : "OpenAI preview, allowlist, structured response validation or cancellation contract failed"));
+        var openAiOperationalEvidenceReady = false;
+        try
+        {
+            var pilotService = new OpenAiAssistantPilotService();
+            var boundaryMaterials = Enumerable.Range(1, 41)
+                .Select(index => new OpenAiPilotMaterial(
+                    $"MAT-BOUNDARY-{index:00}",
+                    "Maker",
+                    "Line",
+                    "Name",
+                    "PLA",
+                    "Standard",
+                    string.Empty,
+                    string.Empty))
+                .Append(new OpenAiPilotMaterial(
+                    "mat-boundary-01",
+                    "Duplicate",
+                    "Duplicate",
+                    "Duplicate",
+                    "PLA",
+                    "Standard",
+                    string.Empty,
+                    string.Empty))
+                .ToList();
+            var boundaryPreview = pilotService.BuildPreview(
+                OpenAiAssistantProviderFoundation.DefaultModel,
+                new OpenAiPilotInput(
+                    "Boundary",
+                    new string('x', OpenAiAssistantPilotService.MaximumPlanningNoteCharacters + 1),
+                    boundaryMaterials));
+
+            const string deterministicAdvisory =
+                """{"summary":"Safe","findings":[{"title":"Grounded","details":"Known","evidenceMaterialIds":["MAT-BOUNDARY-01"]}],"uncertainties":[],"suggestedNextActions":["Review"]}""";
+            var deterministicResponse = JsonSerializer.Serialize(new
+            {
+                status = "completed",
+                output = new[]
+                {
+                    new
+                    {
+                        type = "message",
+                        content = new[] { new { type = "output_text", text = deterministicAdvisory } }
+                    }
+                },
+                usage = new { input_tokens = 21, output_tokens = 13 }
+            });
+            string capturedBody = string.Empty;
+            string capturedAuthorization = string.Empty;
+            var successHandler = new ScriptedOpenAiHandler(async (request, _) =>
+            {
+                capturedBody = await request.Content!.ReadAsStringAsync();
+                capturedAuthorization = request.Headers.Authorization?.ToString() ?? string.Empty;
+                var response = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(deterministicResponse, Encoding.UTF8, "application/json")
+                };
+                response.Headers.Add("x-request-id", "srv-verification-ok");
+                return response;
+            });
+            var successService = new OpenAiAssistantPilotService(
+                new HttpClient(successHandler) { Timeout = Timeout.InfiniteTimeSpan },
+                requestTimeout: TimeSpan.FromSeconds(2),
+                clientRequestIdFactory: () => "client-verification-ok");
+            var successExecution = Task.Run(() => successService.GenerateAsync(
+                    boundaryPreview,
+                    "SECRET-VERIFICATION-KEY",
+                    CancellationToken.None))
+                .GetAwaiter()
+                .GetResult();
+            var evidenceJson = JsonSerializer.Serialize(successExecution.Evidence);
+
+            var apiErrorSafe = false;
+            var apiErrorHandler = new ScriptedOpenAiHandler((_, _) =>
+            {
+                var response = new HttpResponseMessage(HttpStatusCode.Unauthorized)
+                {
+                    Content = new StringContent(
+                        """{"error":{"message":"SECRET-PROVIDER-BODY"},"debug":"SECRET-RAW-SIBLING"}""",
+                        Encoding.UTF8,
+                        "application/json")
+                };
+                response.Headers.Add("x-request-id", "srv-verification-401");
+                return Task.FromResult(response);
+            });
+            try
+            {
+                var apiErrorService = new OpenAiAssistantPilotService(
+                    new HttpClient(apiErrorHandler) { Timeout = Timeout.InfiniteTimeSpan },
+                    clientRequestIdFactory: () => "client-verification-401");
+                Task.Run(() => apiErrorService.GenerateAsync(
+                        boundaryPreview,
+                        "SECRET-VERIFICATION-KEY",
+                        CancellationToken.None))
+                    .GetAwaiter()
+                    .GetResult();
+            }
+            catch (OpenAiPilotExecutionException ex)
+            {
+                apiErrorSafe =
+                    ex.Evidence.Outcome == OpenAiPilotOutcome.ApiError &&
+                    ex.Evidence.ServerRequestId == "srv-verification-401" &&
+                    !ex.Message.Contains("SECRET-", StringComparison.Ordinal) &&
+                    !JsonSerializer.Serialize(ex.Evidence).Contains("SECRET-", StringComparison.Ordinal);
+            }
+
+            var timeoutClassified = false;
+            var timeoutHandler = new ScriptedOpenAiHandler(async (_, token) =>
+            {
+                await Task.Delay(Timeout.Infinite, token);
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            });
+            try
+            {
+                var timeoutService = new OpenAiAssistantPilotService(
+                    new HttpClient(timeoutHandler) { Timeout = Timeout.InfiniteTimeSpan },
+                    requestTimeout: TimeSpan.FromMilliseconds(1),
+                    clientRequestIdFactory: () => "client-verification-timeout");
+                Task.Run(() => timeoutService.GenerateAsync(
+                        boundaryPreview,
+                        "SECRET-VERIFICATION-KEY",
+                        CancellationToken.None))
+                    .GetAwaiter()
+                    .GetResult();
+            }
+            catch (OpenAiPilotExecutionException ex)
+            {
+                timeoutClassified = ex.Evidence.Outcome == OpenAiPilotOutcome.TimedOut;
+            }
+
+            var incompleteClassified = false;
+            var incompleteHandler = new ScriptedOpenAiHandler((_, _) =>
+                Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(
+                        """{"status":"incomplete","incomplete_details":{"reason":"max_output_tokens"},"output":[],"usage":{"input_tokens":1200,"output_tokens":4000}}""",
+                        Encoding.UTF8,
+                        "application/json")
+                }));
+            try
+            {
+                var incompleteService = new OpenAiAssistantPilotService(
+                    new HttpClient(incompleteHandler) { Timeout = Timeout.InfiniteTimeSpan },
+                    clientRequestIdFactory: () => "client-verification-incomplete");
+                Task.Run(() => incompleteService.GenerateAsync(
+                        boundaryPreview,
+                        "SECRET-VERIFICATION-KEY",
+                        CancellationToken.None))
+                    .GetAwaiter()
+                    .GetResult();
+            }
+            catch (OpenAiPilotExecutionException ex)
+            {
+                incompleteClassified =
+                    ex.Evidence.Outcome == OpenAiPilotOutcome.ValidationError &&
+                    ex.Evidence.ErrorCategory == "Incomplete — max output tokens" &&
+                    ex.Evidence.InputTokens == 1200 &&
+                    ex.Evidence.OutputTokens == 4000;
+            }
+
+            bool Rejects(string json)
+            {
+                try
+                {
+                    pilotService.ParseAndValidateResponse(
+                        json,
+                        boundaryPreview.AllowedMaterialIds,
+                        "client-parse",
+                        "server-parse");
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    return ex is JsonException or InvalidOperationException or KeyNotFoundException;
+                }
+            }
+
+            var refusalRejected = Rejects(
+                """{"status":"completed","output":[{"type":"message","content":[{"type":"refusal","refusal":"No"}]}]}""");
+            var incompleteRejected = Rejects("""{"status":"incomplete","incomplete_details":{"reason":"limit"}}""");
+            var malformedRejected = Rejects("{not-json");
+            var noOutputRejected = Rejects("""{"status":"completed","output":[]}""");
+            var malformedStructuredRejected = Rejects(
+                """{"status":"completed","output":[{"type":"message","content":[{"type":"output_text","text":"{bad"}]}]}""");
+
+            var previewSaveBlocked =
+                !CanPersistAiAssistantSession(
+                    AiAssistantOutputKind.OpenAiPayloadPreview,
+                    BuildOpenAiPreviewDisplay(boundaryPreview),
+                    out _) &&
+                !CanPersistAiAssistantSession(
+                    AiAssistantOutputKind.LocalAdvisory,
+                    BuildOpenAiPreviewDisplay(boundaryPreview),
+                    out _) &&
+                CanPersistAiAssistantSession(
+                    AiAssistantOutputKind.OpenAiAdvisory,
+                    BuildOpenAiResultDisplay(successExecution.Result, successExecution.Evidence),
+                    out _);
+
+            openAiOperationalEvidenceReady =
+                boundaryPreview.AllowedMaterialIds.Count == OpenAiAssistantPilotService.MaximumMaterials &&
+                capturedBody == boundaryPreview.RequestBodyJson &&
+                capturedAuthorization == "Bearer SECRET-VERIFICATION-KEY" &&
+                successExecution.Evidence.Outcome == OpenAiPilotOutcome.Completed &&
+                successExecution.Evidence.InputTokens == 21 &&
+                successExecution.Evidence.OutputTokens == 13 &&
+                successExecution.Evidence.TotalTokens == 34 &&
+                successExecution.Evidence.ClientRequestId == "client-verification-ok" &&
+                successExecution.Evidence.ServerRequestId == "srv-verification-ok" &&
+                successExecution.Evidence.ElapsedMilliseconds >= 0 &&
+                successExecution.Evidence.CostStatus.Contains("Unavailable", StringComparison.Ordinal) &&
+                !evidenceJson.Contains("SECRET-", StringComparison.Ordinal) &&
+                !evidenceJson.Contains("Authorization", StringComparison.OrdinalIgnoreCase) &&
+                !evidenceJson.Contains("materials", StringComparison.OrdinalIgnoreCase) &&
+                !evidenceJson.Contains("planningNote", StringComparison.OrdinalIgnoreCase) &&
+                apiErrorSafe &&
+                timeoutClassified &&
+                incompleteClassified &&
+                refusalRejected &&
+                incompleteRejected &&
+                malformedRejected &&
+                noOutputRejected &&
+                malformedStructuredRejected &&
+                previewSaveBlocked &&
+                IsOperationalEvidenceButtonStateValid(false, hasEvidence: false) &&
+                IsOperationalEvidenceButtonStateValid(true, hasEvidence: true) &&
+                !IsOperationalEvidenceButtonStateValid(false, hasEvidence: true) &&
+                FindName("CopyOpenAiOperationalEvidenceButton") is Button copyEvidence &&
+                AutomationProperties.GetAutomationId(copyEvidence) == "CopyOpenAiOperationalEvidence" &&
+                IsOperationalEvidenceButtonStateValid(
+                    copyEvidence.IsEnabled,
+                    _lastOpenAiOperationalEvidence is not null);
+        }
+        catch
+        {
+            openAiOperationalEvidenceReady = false;
+        }
+        checks.Add(new VerificationCheck(
+            "OpenAI deterministic transport and operational evidence contract",
+            openAiOperationalEvidenceReady,
+            openAiOperationalEvidenceReady
+                ? "Scripted no-network success, safe API error, timeout, parser failures, 40-row limit, evidence allowlist and preview-save block pass"
+                : "OpenAI scripted transport, safe failure classification, evidence allowlist or preview persistence boundary failed"));
         var cancelledCollectionProbe = BuildAiMaterialCollectionCancelledOutput(
             new AiMaterialCollection
             {
@@ -21250,6 +21515,24 @@ private void UpdateDashboardInsights()
 }
 
 
+    private enum AiAssistantOutputKind
+    {
+        LocalAdvisory,
+        OpenAiPayloadPreview,
+        OpenAiAdvisory,
+        OperationalEvidence
+    }
+
+    private sealed class ScriptedOpenAiHandler(
+        Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> send)
+        : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken) =>
+            send(request, cancellationToken);
+    }
+
     private sealed class AiAssistantSavedSession
     {
         public string Id { get; set; } = Guid.NewGuid().ToString("N");
@@ -21518,7 +21801,9 @@ private void UpdateDashboardInsights()
         try
         {
             var preview = BuildOpenAiPilotPreview();
-            SetAiAssistantOutput(BuildOpenAiPreviewDisplay(preview));
+            SetAiAssistantOutput(
+                BuildOpenAiPreviewDisplay(preview),
+                AiAssistantOutputKind.OpenAiPayloadPreview);
             SetOpenAiPilotStatus(
                 $"OpenAI pilot: exact payload prepared for {preview.AllowedMaterialIds.Count:N0} MaterialID(s); " +
                 $"SHA-256 {preview.RequestSha256[..12]}…; no network used.");
@@ -21576,7 +21861,9 @@ private void UpdateDashboardInsights()
             }
 
             var preview = BuildOpenAiPilotPreview();
-            SetAiAssistantOutput(BuildOpenAiPreviewDisplay(preview));
+            SetAiAssistantOutput(
+                BuildOpenAiPreviewDisplay(preview),
+                AiAssistantOutputKind.OpenAiPayloadPreview);
             if (!ShowOpenAiPayloadConsent(preview))
             {
                 SetOpenAiPilotStatus("OpenAI pilot: send cancelled before network use.");
@@ -21590,18 +21877,31 @@ private void UpdateDashboardInsights()
             }
             SetOpenAiPilotStatus("OpenAI pilot: one approved request is in progress…");
 
-            var result = await _openAiAssistantPilotService.GenerateAsync(
+            var execution = await _openAiAssistantPilotService.GenerateAsync(
                 preview,
                 credential,
                 _openAiPilotCancellation.Token);
-            SetAiAssistantOutput(BuildOpenAiResultDisplay(result));
+            SetLastOpenAiOperationalEvidence(execution.Evidence);
+            SetAiAssistantOutput(
+                BuildOpenAiResultDisplay(execution.Result, execution.Evidence),
+                AiAssistantOutputKind.OpenAiAdvisory);
             SetOpenAiPilotStatus(
-                $"OpenAI pilot: completed; {result.InputTokens:N0} input and {result.OutputTokens:N0} output token(s); " +
+                $"OpenAI pilot: completed in {execution.Evidence.ElapsedMilliseconds:N0} ms; " +
+                $"{execution.Result.InputTokens:N0} input and {execution.Result.OutputTokens:N0} output token(s); " +
                 "advisory output is not saved automatically.");
         }
-        catch (OperationCanceledException)
+        catch (OpenAiPilotExecutionException ex)
         {
-            SetOpenAiPilotStatus("OpenAI pilot: request cancelled or timed out; canonical data is unchanged.");
+            SetLastOpenAiOperationalEvidence(ex.Evidence);
+            SetOpenAiPilotStatus(
+                $"OpenAI pilot: {ex.Evidence.Outcome}; operational evidence is available; canonical data is unchanged.");
+            MessageBox.Show(
+                ex.Message,
+                "OpenAI Pilot",
+                MessageBoxButton.OK,
+                ex.Evidence.Outcome is OpenAiPilotOutcome.Cancelled or OpenAiPilotOutcome.TimedOut
+                    ? MessageBoxImage.Information
+                    : MessageBoxImage.Warning);
         }
         catch (Exception ex)
         {
@@ -21626,6 +21926,31 @@ private void UpdateDashboardInsights()
     private void CancelOpenAiRequest_Click(object sender, RoutedEventArgs e)
     {
         _openAiPilotCancellation?.Cancel();
+    }
+
+    private void CopyOpenAiOperationalEvidence_Click(object sender, RoutedEventArgs e)
+    {
+        if (IsAutomationActionBlocked("OpenAI operational evidence clipboard export")) return;
+        if (_lastOpenAiOperationalEvidence is null)
+        {
+            MessageBox.Show(
+                "No completed or failed live OpenAI attempt has operational evidence in memory.",
+                "OpenAI Operational Evidence",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        Clipboard.SetText(JsonSerializer.Serialize(
+            _lastOpenAiOperationalEvidence,
+            new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true,
+                Converters = { new JsonStringEnumConverter() }
+            }));
+        SetOpenAiPilotStatus(
+            "OpenAI pilot: secret-safe operational evidence copied; raw payload, response and credential were excluded.");
     }
 
     private OpenAiPilotPreview BuildOpenAiPilotPreview()
@@ -21743,16 +22068,25 @@ private void UpdateDashboardInsights()
         return dialog.ShowDialog() == true;
     }
 
-    private static string BuildOpenAiResultDisplay(OpenAiPilotResult result)
+    private static string BuildOpenAiResultDisplay(
+        OpenAiPilotResult result,
+        OpenAiPilotOperationalEvidence evidence)
     {
         var lines = new List<string>
         {
             "OPENAI READ-ONLY ADVISORY",
             "==========================",
             "This output is advisory and has not changed or saved canonical data.",
+            $"Started UTC: {evidence.StartedAtUtc:O}",
+            $"Model: {evidence.RequestedModel}",
+            $"Prompt/schema: {evidence.PromptVersion} / {evidence.PayloadSchema}",
+            $"Request SHA-256: {evidence.RequestSha256}",
+            $"Allowlisted material count: {evidence.MaterialCount:N0}",
+            $"Elapsed: {evidence.ElapsedMilliseconds:N0} ms",
             $"Client request ID: {result.ClientRequestId}",
             $"Server request ID: {result.ServerRequestId}",
-            $"Tokens: {result.InputTokens:N0} input / {result.OutputTokens:N0} output",
+            $"Tokens: {result.InputTokens:N0} input / {result.OutputTokens:N0} output / {evidence.TotalTokens:N0} total",
+            $"Cost: {evidence.CostStatus}",
             "",
             "SUMMARY",
             "-------",
@@ -21790,6 +22124,18 @@ private void UpdateDashboardInsights()
             status.Text = text;
         }
     }
+
+    private void SetLastOpenAiOperationalEvidence(OpenAiPilotOperationalEvidence evidence)
+    {
+        _lastOpenAiOperationalEvidence = evidence;
+        if (FindName("CopyOpenAiOperationalEvidenceButton") is Button copyButton)
+        {
+            copyButton.IsEnabled = true;
+        }
+    }
+
+    private static bool IsOperationalEvidenceButtonStateValid(bool enabled, bool hasEvidence) =>
+        enabled == hasEvidence;
 
     private void GenerateAiFromTemplate_Click(object sender, RoutedEventArgs e)
     {
@@ -21833,6 +22179,17 @@ private void UpdateDashboardInsights()
     {
         try
         {
+            var currentOutput = GetTextBoxText("AiAssistantOutputBox");
+            if (!CanPersistAiAssistantSession(_aiAssistantOutputKind, currentOutput, out var reason))
+            {
+                MessageBox.Show(
+                    reason,
+                    "AI Assistant Session",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
             var sessions = LoadAiSavedSessions().ToList();
             var title = GetTextBoxText("AiSessionTitleBox").Trim();
             if (string.IsNullOrWhiteSpace(title))
@@ -21855,7 +22212,7 @@ private void UpdateDashboardInsights()
             existing.Title = title;
             existing.TemplateName = GetSelectedAiTemplateName();
             existing.PromptText = GetTextBoxText("AiPromptEditorBox");
-            existing.OutputText = GetTextBoxText("AiAssistantOutputBox");
+            existing.OutputText = currentOutput;
             existing.VisibleMaterialCount = GetCanonicalVisibleMaterialRows().Count;
             existing.DatabaseContext = BuildAiSessionContext();
             existing.UpdatedAt = DateTime.Now;
@@ -21961,14 +22318,45 @@ private void UpdateDashboardInsights()
         return $"Saved: {DateTime.Now:yyyy-MM-dd HH:mm}; Visible materials: {visibleCount}; Template: {GetSelectedAiTemplateName()}";
     }
 
-    private void SetAiAssistantOutput(string text)
+    private void SetAiAssistantOutput(
+        string text,
+        AiAssistantOutputKind kind = AiAssistantOutputKind.LocalAdvisory)
     {
+        _aiAssistantOutputKind = kind;
         if (FindName("AiAssistantOutputBox") is TextBox output)
         {
             output.Text = text ?? "";
             output.ScrollToHome();
             output.CaretIndex = 0;
         }
+    }
+
+    private static bool CanPersistAiAssistantSession(
+        AiAssistantOutputKind kind,
+        string output,
+        out string reason)
+    {
+        var hasExactPreviewFingerprint =
+            output.Contains("OPENAI EXACT OUTBOUND PAYLOAD PREVIEW", StringComparison.Ordinal) &&
+            output.Contains(
+                "\"schema\": \"3dpiceland.openai-material-pilot.v1\"",
+                StringComparison.Ordinal);
+        var hasRequestBodyFingerprint =
+            output.Contains(OpenAiAssistantPilotService.Endpoint, StringComparison.Ordinal) &&
+            output.Contains("\"store\": false", StringComparison.Ordinal) &&
+            output.Contains("\"input\":", StringComparison.Ordinal);
+        if (kind == AiAssistantOutputKind.OpenAiPayloadPreview ||
+            hasExactPreviewFingerprint ||
+            hasRequestBodyFingerprint)
+        {
+            reason =
+                "The exact outbound OpenAI payload preview cannot be saved as an AI session. " +
+                "Generate and review an advisory result, or keep only the displayed SHA-256 as evidence.";
+            return false;
+        }
+
+        reason = string.Empty;
+        return true;
     }
 
     private void SetAiPromptTemplateText(string templateName)

@@ -2,6 +2,35 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v52.3.2 - OpenAI Operational Evidence and Failure Harness
+
+- Constrains structured `evidenceMaterialIds` to an exact enum of outbound
+  MaterialIDs while retaining parser-side unknown-ID rejection.
+- Corrects insufficient reasoning/output budgeting for the 40-material GPT-5.6
+  request with explicit low effort and a 4,000-token output budget.
+- Safely classifies incomplete/token-limit and other validation failures and
+  captures returned usage without retaining raw provider content.
+- Owner live retest completes the 40-material request in 34.7 seconds with
+  secret-safe token, timing, request-ID and completed-outcome evidence.
+- Corrects the state-sensitive Verification assertion: Copy Operational
+  Evidence is disabled without a live attempt and enabled when safe evidence
+  exists in memory.
+- Adds secret-safe in-memory evidence for outcome, UTC timing, model,
+  prompt/schema versions, request hash, material count, tokens and request IDs.
+- Adds explicit Copy Operational Evidence; it remains disabled before a live
+  attempt and excludes raw payload/response, secrets and material identity.
+- Keeps cost unavailable until dated official pricing or Usage/Costs evidence
+  is reviewed.
+- Blocks Save Session when the current output is an exact outbound payload
+  preview, including defense-in-depth raw-request fingerprints.
+- Distinguishes completed, cancelled, timed-out, API, validation and transport
+  outcomes without exposing raw provider bodies.
+- Adds scripted no-network success, safe error, timeout and parser-failure
+  Verification plus runtime preview-persistence automation.
+- Owner live generation, secret-safe evidence, validated advisory Save Session
+  and Full Data Verification 385/385 pass on 2026-07-27.
+- Schema remains v37; v52.3.2 is canonical and runtime accepted.
+
 ## v52.2.0 - Read-only OpenAI Responses Pilot
 
 - Adds an exact no-network outbound payload preview with SHA-256 evidence.

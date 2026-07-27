@@ -1,6 +1,13 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v52.3.2 - OpenAI Operational Evidence and Failure Harness
+
+Canonical release: secret-safe in-memory operational evidence, explicit clipboard
+copy, raw-preview session blocking and deterministic no-network failure
+coverage are accepted. Owner live generation, evidence copy, validated advisory
+Save Session and Full Verification 385/385 pass. Schema remains v37.
+
 ## v52.2.0 - Read-only OpenAI Responses Pilot
 
 Canonical release: exact outbound preview, one-time consent, `store=false`,

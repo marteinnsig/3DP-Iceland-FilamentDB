@@ -2,6 +2,34 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v52.3.2 - OpenAI Operational Evidence and Failure Harness
+
+The candidate adds a narrow injectable HTTP/time/request-ID seam used only by
+deterministic Verification. Production retains the same Responses endpoint,
+credential owner, payload, consent and 60-second bound. Scripted handlers never
+open a socket and prove completed, safe-error, timeout and invalid-response
+behavior.
+
+The first owner live attempt reached the intended safe validation failure.
+Adding an exact evidence-ID enum did not resolve a second attempt, disproving
+that as a sufficient diagnosis. The next correction sets explicit low
+reasoning effort and a 4,000-token budget, then retains safe incomplete reason
+and usage evidence. Raw provider content remains excluded. Owner retest is
+required. Isolated Release smoke `20260727170841-4473c154` passes 385/385 with
+exact business-state equality.
+
+After canonical Release deployment, the owner live rerun completes successfully
+for 40 governed Materials in 34.7 seconds using 3,246 input and 1,655 output
+tokens. Operational evidence reports `Completed`, both request IDs and no error
+category while excluding secrets, material identity and raw provider content.
+
+Operational evidence is in-memory and allowlisted. Exact payload previews
+cannot be saved as advisory sessions. Automation still cannot generate, read
+owner credentials or copy evidence. Release smoke `20260727165007-99840438`
+passes 385/385; Clean `20260727165051-713aecf4` passes 285/285 plus 100 N/A.
+Both retain exact logical and business-state equality. Schema remains v37;
+owner runtime acceptance passes on 2026-07-27. v52.3.2 is canonical.
+
 ## v52.2.0 - Read-only OpenAI Responses Pilot
 
 The v52.1 provider foundation is extended with an exact request builder and

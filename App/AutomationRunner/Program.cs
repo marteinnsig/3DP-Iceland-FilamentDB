@@ -333,7 +333,38 @@ internal static class Program
                 Require(
                     !FindById(main, "CancelOpenAiRequest").Current.IsEnabled,
                     "OpenAI cancel control was enabled without an active live request.");
+                Require(
+                    !FindById(main, "CopyOpenAiOperationalEvidence").Current.IsEnabled,
+                    "OpenAI operational evidence was enabled without a live request attempt.");
+                Invoke(FindById(main, "SaveAiSession"), application.Id);
+                var previewSaveDialog = WaitForElement(
+                    AutomationElement.RootElement,
+                    new AndCondition(
+                        new PropertyCondition(AutomationElement.ProcessIdProperty, application.Id),
+                        new PropertyCondition(AutomationElement.NameProperty, "AI Assistant Session")),
+                    "OpenAI preview session-save guard");
+                var previewSaveText = previewSaveDialog.FindFirst(
+                    TreeScope.Descendants,
+                    new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Text));
+                Require(
+                    previewSaveText is not null &&
+                    previewSaveText.Current.Name.Contains(
+                        "exact outbound OpenAI payload preview cannot be saved",
+                        StringComparison.Ordinal),
+                    "OpenAI preview session-save guard did not explain the raw-payload persistence boundary.");
+                var previewSaveOk = previewSaveDialog.FindFirst(
+                    TreeScope.Descendants,
+                    new AndCondition(
+                        new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button),
+                        new PropertyCondition(AutomationElement.NameProperty, "OK")));
+                Require(previewSaveOk is not null, "OpenAI preview session-save guard has no OK action.");
+                Invoke(previewSaveOk, application.Id);
+                AssertNoUnexpectedWindows(application.Id, "MainWindow");
                 Record("openai-pilot-payload-isolation", true, openAiStatus);
+                Record(
+                    "openai-pilot-preview-persistence-guard",
+                    true,
+                    "Exact payload preview was rejected by Save Session; operational evidence remained unavailable without live network");
             }
             var collectionAction = FindById(main, "AiCollectionActionState").Current.Name;
             Require(

@@ -1,3 +1,33 @@
+# v52.3.2 - OpenAI Operational Evidence and Failure Harness
+
+Date: 2026-07-27
+
+- Adds a deterministic scripted transport and safe-failure Verification gate.
+- Proves success usage/request IDs, safe 401 handling, timeout classification,
+  refusal/incomplete/malformed/no-output rejection and forty-row governance.
+- Proves operational evidence excludes secrets, raw payload/response, planning
+  notes and material identity.
+- Proves exact payload preview output cannot be saved as an AI session.
+- Release smoke `20260727165007-99840438` passes 385/385 with exact logical and
+  business-state equality.
+- Clean Readiness `20260727165051-713aecf4` passes 285/285 applicable plus
+  100 N/A, controlled restart and exact state equality.
+- Post-correction smoke `20260727170133-15d13fb7` passes 385/385 and exact
+  business-state equality.
+- Reasoning-budget and safe-diagnostic correction smoke
+  `20260727170841-4473c154` passes 385/385 with exact state.
+- Canonical Release rerun `20260727171213-558ca0ca` passes 385/385 with exact
+  state.
+- Owner live request completes at the 40-material maximum with secret-safe
+  timing, token and request-ID evidence.
+- State-sensitive Copy Operational Evidence correction smoke
+  `20260727172300-de072a18` passes 385/385 with exact state.
+- Canonical Release confirmation `20260727172502-e8736f1b` repeats 385/385
+  with exact state.
+- Owner validated-advisory Save Session and final Full Data Verification
+  385/385 pass on 2026-07-27.
+- Schema remains v37; v52.3.2 is canonical and runtime accepted.
+
 # v52.2.0 - Read-only OpenAI Responses Pilot
 
 Date: 2026-07-27
