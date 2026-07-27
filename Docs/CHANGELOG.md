@@ -2,6 +2,28 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v50.0.0 - Comprehensive User Help
+
+- Replaces the obsolete modal raw-document viewer as the primary Documentation
+  entry with one reusable non-modal central Help window.
+- Adds offline full-text topic search and contextual F1 navigation based on the
+  active top-level tab.
+- Documents the complete purchase, inventory, material, measurement, analysis,
+  report, website publishing, Verification and recovery workflow.
+- Preserves immutable history explicitly: ECB refresh can prefill only new
+  unsaved purchases and never recalculates saved purchases, inventory lots,
+  material costs or quotes.
+- Keeps Production/FTPS default-No and recovery/owner-database boundaries
+  explicit.
+- Adds deterministic UI Automation and Full Data Verification contracts for
+  Help opening, search, unique content and contextual mappings.
+- Corrects owner-runtime contents-list clipping by stretching each topic to the
+  visible column, disabling horizontal scrolling and wrapping all topic text.
+- Debug/Release, documentation audit, read-only NuGet vulnerability scan,
+  disposable smoke and Full Data Verification 370/370 pass.
+- Schema remains v37. Owner runtime and final visual acceptance pass;
+  v50.0.0 is canonical.
+
 ## v49.0.0 - Experimental Workflow Integrity
 
 - Aligns signed-package generation, independent verification and application

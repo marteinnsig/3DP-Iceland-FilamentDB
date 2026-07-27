@@ -197,7 +197,8 @@
                 <MenuItem Header="Open Storage Folder" Click="OpenStorageFolder_Click" />
             </MenuItem>
             <MenuItem Header="_Help" AutomationProperties.AutomationId="HelpMenu">
-                <MenuItem Header="Documentation" Click="Documentation_Click" />
+                <MenuItem Header="Documentation" AutomationProperties.AutomationId="OpenHelp"
+                          InputGestureText="F1" Click="Documentation_Click" />
                 <MenuItem Header="Export Engineering Whitepaper..." Click="ExportEngineeringWhitepaper_Click" />
                 <MenuItem Header="Changelog" Click="Changelog_Click" />
                 <Separator />

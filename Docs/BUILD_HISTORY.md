@@ -2,6 +2,22 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v50.0.0 - Comprehensive User Help
+
+The accepted implementation replaces the obsolete primary raw-document viewer
+with one reusable non-modal Help window. A compiled offline catalog provides
+ten unique workflow topics, full-text search and stable section IDs shared by
+Help > Documentation and contextual F1 navigation.
+
+The guide covers purchasing through recovery and explicitly preserves ECB
+reference-only prefill, immutable saved purchase/inventory/quote history,
+canonical calculations, public allowlists and default-No Production/FTPS.
+The smoke runner verifies open, contextual selection and search without owner
+data or network authority. Debug/Release, documentation and vulnerability
+gates pass; disposable Full Data Verification passes 370/370 with exact
+business-state recovery. Owner accepted workflow and final wrapping correction.
+Schema remains v37; v50.0.0 is canonical and runtime accepted.
+
 ## v49.0.0 - Experimental Workflow Integrity
 
 Candidate v49.0.0 aligns desktop Experimental conclusions with the active Runs

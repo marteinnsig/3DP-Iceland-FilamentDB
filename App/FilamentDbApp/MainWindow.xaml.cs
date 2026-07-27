@@ -34,6 +34,7 @@ namespace FilamentDbApp;
 
 public partial class MainWindow : Window
 {
+    private HelpWindow? _helpWindow;
     internal int CurrentDatabaseSchema => _database.CurrentSchemaVersion;
     private bool _databaseRestoreShutdown;
     private static readonly string[] BackupAndRecoveryCenterActions =
@@ -16960,6 +16961,24 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             applicationReleaseCompatibilityReady
                 ? $"Signed updates support the governed schema-v{BuildInfo.MinimumUpdateDatabaseSchema} public baseline through current schema v{BuildInfo.CurrentDatabaseSchema}."
                 : "BuildInfo update compatibility does not match the current SQLite schema or governed public baseline."));
+        var helpSections = HelpContentCatalog.Sections;
+        var helpContractReady =
+            helpSections.Count >= 10 &&
+            helpSections.All(section =>
+                !string.IsNullOrWhiteSpace(section.Id) &&
+                !string.IsNullOrWhiteSpace(section.Title) &&
+                !string.IsNullOrWhiteSpace(section.Summary) &&
+                !string.IsNullOrWhiteSpace(section.Body)) &&
+            helpSections.Select(section => section.Id).Distinct(StringComparer.Ordinal).Count() == helpSections.Count &&
+            HelpContentCatalog.SectionIdForTab("Purchase Orders") == "purchasing-inventory" &&
+            HelpContentCatalog.SectionIdForTab("Experimental Testing") == "experimental-testing" &&
+            HelpContentCatalog.SectionIdForTab("Website Export") == "reports-website" &&
+            typeof(MainWindow).GetMethod("OpenHelp", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck("v50.0.0 central user-help contract",
+            helpContractReady,
+            helpContractReady
+                ? $"{helpSections.Count} unique offline help topics cover start-to-finish workflow, contextual tabs, publishing and recovery boundaries."
+                : "Central Help topics are missing, duplicated, empty, incorrectly mapped or not reachable through the canonical MainWindow entry point."));
         var zeroDataProfileContractReady =
             IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
             IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&
@@ -18582,7 +18601,30 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private void Documentation_Click(object sender, RoutedEventArgs e)
     {
-        ShowHelpDocument("USER_GUIDE.md", "3DPIceland Engineering Platform - Documentation");
+        OpenHelpForCurrentContext();
+    }
+
+    private void OpenHelpForCurrentContext()
+    {
+        var tabHeader = (WorkspaceTabs.SelectedItem as TabItem)?.Header?.ToString();
+        OpenHelp(HelpContentCatalog.SectionIdForTab(tabHeader));
+    }
+
+    private void OpenHelp(string sectionId)
+    {
+        if (_helpWindow is null)
+        {
+            _helpWindow = new HelpWindow { Owner = this };
+            _helpWindow.Closed += (_, _) => _helpWindow = null;
+            _helpWindow.Show();
+        }
+        else if (_helpWindow.WindowState == WindowState.Minimized)
+        {
+            _helpWindow.WindowState = WindowState.Normal;
+        }
+
+        _helpWindow.ShowSection(sectionId);
+        _helpWindow.Activate();
     }
 
     private void Changelog_Click(object sender, RoutedEventArgs e)
@@ -23201,6 +23243,13 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
     {
+        if (e.Key == Key.F1)
+        {
+            e.Handled = true;
+            OpenHelpForCurrentContext();
+            return;
+        }
+
         if ((Keyboard.Modifiers & ModifierKeys.Control) != 0 && e.Key == Key.F)
         {
             if (FindName("NativeMaterialSearchBox") is TextBox searchBox)

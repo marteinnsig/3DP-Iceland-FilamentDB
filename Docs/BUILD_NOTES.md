@@ -1,6 +1,35 @@
-# Current Build Notes - v49.0.0
+# Current Build Notes - v50.0.0
 
-## Application Release Packaging and Publish Readiness
+## Central User Help
+
+The v50.0.0 candidate introduces one canonical, reusable Help window. Help >
+Documentation and F1 open the same non-modal surface; F1 selects the topic for
+the active top-level tab. Topic search is local and offline, and the help
+catalog is compiled into the application so the installer/update governed-file
+allowlist does not expand.
+
+The catalog covers the end-to-end owner workflow and top-level tab families.
+It preserves canonical data and safety boundaries, including immutable saved
+purchase/inventory/quote values, ECB reference-only prefill for new unsaved
+purchases, explicit public selection, Production/FTPS default-No, Verification
+and guarded recovery.
+
+The existing smoke scenario now opens Help, verifies a selected topic and
+searches for recovery. Full Data Verification checks unique non-empty topic
+IDs, representative contextual mappings and the canonical MainWindow entry.
+Disposable smoke passes with exact baseline/final business-state recovery and
+Full Data Verification 370/370. Debug and Release build with zero warnings,
+the documentation audit passes and the read-only NuGet vulnerability scan
+reports no vulnerable packages. Visual readability and workflow wording
+require owner runtime acceptance. Schema remains v37.
+
+Owner runtime accepted menu and F1 navigation, search, topic content and
+single-window reuse. A first visual review found horizontal clipping in the
+contents list; the accepted correction stretches items, disables horizontal
+scrolling and wraps category, title and summary text. The final visual retest
+passes. v50.0.0 is canonical and runtime accepted.
+
+## Prior v49.0.0 Application Release Packaging and Publish Readiness
 
 The v49.0.0 runtime remains unchanged and schema remains v37. Release packaging
 now reads the governed compatibility range from `BuildInfo`: the public

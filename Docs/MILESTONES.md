@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v50.0.0 - Comprehensive User Help
+
+The platform now has one canonical offline Help surface with search,
+start-to-finish workflow guidance and contextual F1 navigation across every
+top-level tab family. It preserves immutable purchase, inventory and quote
+history, public publishing guards and recovery ownership. Owner runtime and
+visual acceptance plus Full Data Verification 370/370 pass. Schema remains
+v37; v50.0.0 is complete and canonical.
+
 # v49.0.0 - Experimental Workflow Integrity
 
 The candidate strengthens the accepted canonical Series/Run workflow without

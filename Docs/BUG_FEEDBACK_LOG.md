@@ -551,13 +551,17 @@ Date: 2026-07-24
 Area: Application-wide user help and workflow guidance
 Type: Workflow friction / UI polish
 Severity: Idea
-Status: Open
-Resolution: Planned as the dedicated v50.0 user-help milestone. Cover every supported tab and the complete owner workflow
+Status: Solved
+Resolution: Solved in v50.0.0 with one reusable non-modal Help window, offline search, F1 contextual navigation
+and stable section IDs. It covers every supported top-level tab family and the complete owner workflow
 from Purchasing, Materials and Inventory through measurement entry, validation, analysis, reports, website Preview and guarded
 Production publishing. Research current UI ownership and accepted behavior before writing; do not let help text redefine calculations,
 data ownership, public allowlists, FTPS confirmation or recovery boundaries.
-Verification evidence: Requires a complete tab/action inventory, owner review, in-app navigation testing, documentation link validation
-and visual/runtime acceptance.
+Verification evidence: Static inventory and implementation complete. Deterministic smoke covers open/search/navigation and passes
+with exact business-state recovery. Full Data Verification 370/370 owns catalog uniqueness/content/mapping; owner visual/runtime
+acceptance confirmed the workflow on 2026-07-27. Owner screenshot identified horizontal clipping in the contents list; the candidate
+now stretches item content, disables horizontal scrolling and wraps category, title and summary text. Owner accepted the final visual
+retest on 2026-07-27; v50.0.0 is canonical and runtime accepted.
 What happened: The application has many connected workflows, but no single structured user guide explains what every tab does or how
 data should move through the platform from purchase entry to measurements, reports and website publication.
 Expected behavior: Provide a well-organized user-help system with a start-to-finish workflow, per-tab reference, field-entry guidance,

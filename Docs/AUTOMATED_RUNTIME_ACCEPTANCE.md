@@ -1,5 +1,18 @@
 # Automated Runtime Acceptance
 
+## v50.0.0 - Central user Help accepted
+
+The existing smoke scenario opens the single canonical Help window from the
+Help menu, requires a non-empty contextual topic, searches for `recovery` and
+requires at least one result. Automation IDs cover the window, search, topic
+list, selected content, result status and Close action. Production, FTPS,
+updates, owner database selection and unexpected dialogs remain blocked.
+
+Disposable acceptance passes `central-help`, exact baseline/final logical and
+business-state hashes, and Full Data Verification 370/370. Visual layout,
+readability and workflow wording received explicit owner-runtime acceptance
+after the contents-list wrapping correction.
+
 ## v49.0.0 - Experimental workflow integrity
 
 - Smoke navigation now selects the Experimental Testing tab by stable

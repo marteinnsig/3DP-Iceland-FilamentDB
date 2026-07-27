@@ -153,6 +153,35 @@ internal static class Program
             Record("ai-coverage-identity", true, coverageIdentity);
 
             Expand(FindById(main, "HelpMenu"), application.Id);
+            Invoke(FindById(main, "OpenHelp"), application.Id);
+            var help = WaitForElement(
+                AutomationElement.RootElement,
+                new AndCondition(
+                    new PropertyCondition(AutomationElement.ProcessIdProperty, application.Id),
+                    new PropertyCondition(AutomationElement.AutomationIdProperty, "HelpWindow")),
+                "Help");
+            AssertNoUnexpectedWindows(application.Id, "MainWindow", "HelpWindow");
+            var helpTitle = FindById(help, "HelpSectionTitle").Current.Name;
+            Require(
+                !string.IsNullOrWhiteSpace(helpTitle),
+                "Central Help opened without a selected contextual topic.");
+            var helpSearch = FindById(help, "HelpSearch");
+            Require(
+                helpSearch.TryGetCurrentPattern(ValuePattern.Pattern, out var helpValuePattern),
+                "Central Help search does not expose the UI Automation value contract.");
+            ((ValuePattern)helpValuePattern).SetValue("recovery");
+            var helpStatus = WaitForElement(
+                help,
+                new PropertyCondition(AutomationElement.AutomationIdProperty, "HelpResultStatus"),
+                "Help search status");
+            Require(
+                helpStatus.Current.Name.Contains("topic", StringComparison.OrdinalIgnoreCase) &&
+                !helpStatus.Current.Name.StartsWith("0 ", StringComparison.Ordinal),
+                "Central Help search did not return a deterministic recovery topic.");
+            Record("central-help", true, $"Opened contextual topic '{helpTitle}' and searched recovery");
+            CloseWindow(help, application.Id);
+
+            Expand(FindById(main, "HelpMenu"), application.Id);
             Invoke(FindById(main, "OpenVerificationCenter"), application.Id);
             var verification = WaitForElement(
                 AutomationElement.RootElement,

@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v49.0.0 — Experimental Workflow Integrity**
+Current canonical release: **v50.0.0 — Comprehensive User Help**
 
-Last runtime-accepted baseline: **v49.0.0 — Experimental Workflow Integrity**
+Last runtime-accepted baseline: **v50.0.0 — Comprehensive User Help**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v50.0 — Comprehensive User Help and Workflow Guide**
+Current roadmap increment: **v51.0 — Governed Development/Verification and Production/Clean Profiles**
 
-Current acceptance note: v49.0.0 is runtime accepted with Full Data Verification 368/368.
+Current acceptance note: v50.0.0 is runtime accepted with Full Data Verification 370/370.
 
 Candidate note: None.
 
@@ -2027,8 +2027,8 @@ to unstarted authoritative planning slots.
   - Do not duplicate Materials or create dynamic schema columns.
   - Completion condition met: governed gates and runtime acceptance pass with schema v37.
 - **v50.0 — Comprehensive User Help and Workflow Guide**
-  - State: Planned dedicated milestone.
-  - Feedback disposition: Open.
+  - State: Complete, canonical and runtime accepted as v50.0.0 — Comprehensive User Help.
+  - Feedback disposition: Solved.
   - Treat this as a full information-architecture and user-documentation project, not incidental tooltip work.
   - Inventory every supported tab, command, prerequisite, validation state and cross-tab handoff before writing guidance.
   - Document the complete workflow from Purchasing, Inventory and Materials through measurement entry and engineering review.
@@ -2036,6 +2036,12 @@ to unstarted authoritative planning slots.
   - Provide a start-to-finish guide, per-tab reference, contextual in-app entry points and troubleshooting/recovery boundaries.
   - Preserve canonical calculations, SQLite ownership, public allowlists, default-No publishing and guarded recovery behavior.
   - Entry condition: approved help structure and verified mapping to current runtime behavior.
+  - Approved architecture: one reusable non-modal Help window, local search and stable section IDs shared by Help > Documentation,
+    F1 contextual navigation and future in-workflow entry points.
+  - v50.0.0 candidate covers the complete owner workflow, all top-level tab families, immutable pricing/rate history, guarded
+    Production/FTPS, Verification and recovery boundaries. Deterministic tester and Verification contracts are included.
+  - Debug/Release, documentation and security gates pass; disposable smoke and Full Data Verification pass 370/370 with exact
+    business-state recovery. Owner accepted workflow, search, contextual navigation and corrected contents-list wrapping.
 - **v51.0 — Governed Development/Verification and Production/Clean Profiles**
   - State: Research only until diagnostics have measured cost.
   - Mandatory crash, recovery, security and support evidence can never be removed.

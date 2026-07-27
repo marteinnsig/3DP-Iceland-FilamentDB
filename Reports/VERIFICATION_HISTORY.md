@@ -1,3 +1,20 @@
+# v50.0.0 - Comprehensive User Help
+
+Date: 2026-07-27
+
+- One reusable non-modal Help window owns offline content, search and F1
+  contextual navigation across all top-level tab families.
+- Debug and Release solution builds pass with zero warnings and zero errors.
+- Canonical release-documentation audit and roadmap line-length gate pass.
+- Read-only NuGet vulnerability scan reports no vulnerable packages.
+- Disposable smoke `20260727090306-8a8e6a21` passes the new `central-help`
+  contract and Full Data Verification 370/370.
+- Baseline/final logical and business-state hashes are exactly equal.
+- Production, FTPS, updates and owner database selection remain blocked.
+- Owner accepted workflow, search, contextual navigation and the final
+  contents-list wrapping correction.
+- Schema remains v37; v50.0.0 is canonical and runtime accepted.
+
 # v49.0.0 - Application Release Packaging Candidate
 
 Date: 2026-07-26

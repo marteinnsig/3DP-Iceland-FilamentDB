@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "EXPERIMENTAL-WORKFLOW-INTEGRITY";
-    public const string ReleaseTitle = "Experimental Workflow Integrity";
+    public const string ReleaseCode = "CENTRAL-USER-HELP";
+    public const string ReleaseTitle = "Comprehensive User Help";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 37;
 

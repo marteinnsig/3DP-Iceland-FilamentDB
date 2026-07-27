@@ -1,6 +1,16 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v50.0.0 - Comprehensive User Help
+
+One reusable non-modal Help window now owns the complete offline workflow
+guide, topic search and contextual F1 navigation. Ten governed topics cover
+all top-level tab families, immutable exchange-rate/pricing history, reports,
+public publishing, Verification and recovery boundaries. UI Automation and
+Full Data Verification 370/370 pass with exact business-state recovery.
+Owner runtime and corrected wrapping acceptance pass. Schema remains v37;
+v50.0.0 is canonical.
+
 ## v49.0.0 - Experimental Workflow Integrity
 
 Active Runs now define the default Experimental comparison and website parity;
