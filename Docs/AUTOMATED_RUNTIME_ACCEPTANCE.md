@@ -1,5 +1,22 @@
 # Automated Runtime Acceptance
 
+## v52.2.0 - Read-only OpenAI Responses Pilot accepted
+
+- Populated disposable scenarios invoke Preview OpenAI Payload only.
+- Preview evidence requires `store=false`, no tools, an allowlisted MaterialID
+  payload, forbidden-field absence and `no network used`.
+- Clean Readiness records the zero-data boundary without building a payload.
+- Generate with OpenAI remains blocked by automation safety policy.
+- Verification uses deterministic structured response probes and requires
+  unknown evidence MaterialIDs to be rejected.
+- Real credentials, API traffic and consent dialogs remain manual owner-only
+  acceptance.
+- Release smoke `20260727162340-f07d3caa` passes 384/384 with exact logical
+  business-state equality.
+- Clean Readiness `20260727162422-0de18a69` passes 284/284 applicable plus
+  100 N/A with exact state equality.
+- Owner live workflow and Full Data Verification acceptance pass on 2026-07-27.
+
 ## v52.1.0 - Optional AI Provider Foundation accepted
 
 - Standard disposable scenarios resolve the deterministic fake provider,

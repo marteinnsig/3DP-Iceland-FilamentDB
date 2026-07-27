@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v52.2.0 - Read-only OpenAI Responses Pilot
+
+Accepted exact-preview and consent-gated Responses integration preserves the
+local assistant, uses an explicit material allowlist and rejects unknown
+evidence IDs. No canonical data mutation or automatic session save is allowed.
+Release smoke passes 384/384 and Clean passes 284/284 plus 100 N/A with exact
+state. Schema stays v37; owner runtime/live acceptance passes on 2026-07-27.
+
 # v52.1.0 - Optional AI Provider Foundation
 
 The accepted research contract now has a bounded provider, preference,

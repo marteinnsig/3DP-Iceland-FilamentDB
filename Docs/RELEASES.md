@@ -1,6 +1,14 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v52.2.0 - Read-only OpenAI Responses Pilot
+
+Canonical release: exact outbound preview, one-time consent, `store=false`,
+no-tools Responses requests, strict structured advisory output, cancellation
+and evidence-ID validation are accepted. Automation remains no-network.
+Release smoke passes 384/384 and Clean passes 284/284 plus 100 N/A with exact
+state. Owner runtime/live acceptance passes on 2026-07-27; schema remains v37.
+
 ## v52.1.0 - Optional AI Provider Foundation
 
 Canonical foundation: the accepted local assistant remains default,

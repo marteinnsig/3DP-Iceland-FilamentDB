@@ -1,6 +1,7 @@
 Key	Surface	Type	Identity	Classification	OwnerIncrement	HelpDestination	Status
 xaml.ai-assistant.button.applycollectionstatus-click	AI Assistant	Button	ApplyCollectionStatus_Click	action	v50.4.3	ai.controls-fields	covered
 xaml.ai-assistant.button.bindexactaicoverageidentity	AI Assistant	Button	BindExactAiCoverageIdentity	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.cancelopenairequest	AI Assistant	Button	CancelOpenAiRequest	action	v52.2	ai.controls-fields	covered
 xaml.ai-assistant.button.clearcollectioncoverage-click	AI Assistant	Button	ClearCollectionCoverage_Click	action	v50.4.3	ai.controls-fields	covered
 xaml.ai-assistant.button.deleteaimaterialcollection-click	AI Assistant	Button	DeleteAiMaterialCollection_Click	action	v50.4.3	ai.controls-fields	covered
 xaml.ai-assistant.button.deleteaisession-click	AI Assistant	Button	DeleteAiSession_Click	action	v50.4.3	ai.controls-fields	covered
@@ -13,10 +14,12 @@ xaml.ai-assistant.button.generateairecommendedcomparisons-click	AI Assistant	But
 xaml.ai-assistant.button.generateairecommendednextvideo-click	AI Assistant	Button	GenerateAiRecommendedNextVideo_Click	action	v50.4.3	ai.controls-fields	covered
 xaml.ai-assistant.button.generatecollectiondashboard-click	AI Assistant	Button	GenerateCollectionDashboard_Click	action	v50.4.3	ai.controls-fields	covered
 xaml.ai-assistant.button.generatevideopipelinedashboard-click	AI Assistant	Button	GenerateVideoPipelineDashboard_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.generatewithopenai	AI Assistant	Button	GenerateWithOpenAi	action	v52.2	ai.controls-fields	covered
 xaml.ai-assistant.button.loadaimaterialcollectionbrief-click	AI Assistant	Button	LoadAiMaterialCollectionBrief_Click	action	v50.4.3	ai.controls-fields	covered
 xaml.ai-assistant.button.loadaisession-click	AI Assistant	Button	LoadAiSession_Click	action	v50.4.3	ai.controls-fields	covered
 xaml.ai-assistant.button.markcollectionpublished-click	AI Assistant	Button	MarkCollectionPublished_Click	action	v50.4.3	ai.controls-fields	covered
 xaml.ai-assistant.button.previewaimaterialcollection	AI Assistant	Button	PreviewAiMaterialCollection	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.previewopenaipayload	AI Assistant	Button	PreviewOpenAiPayload	action	v52.2	ai.controls-fields	covered
 xaml.ai-assistant.button.refreshaiassistantscope	AI Assistant	Button	RefreshAiAssistantScope	action	v50.4.3	ai.controls-fields	covered
 xaml.ai-assistant.button.refreshaisessions-click	AI Assistant	Button	RefreshAiSessions_Click	action	v50.4.3	ai.controls-fields	covered
 xaml.ai-assistant.button.saveaimaterialcollection	AI Assistant	Button	SaveAiMaterialCollection	action	v50.4.3	ai.controls-fields	covered

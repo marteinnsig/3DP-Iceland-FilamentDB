@@ -278,6 +278,63 @@ internal static class Program
                       assistantOutput.Contains("Visible materials used:", StringComparison.Ordinal),
                 "AI Assistant local full brief did not retain visible-scope evidence.");
             Record("ai-assistant-local-scope", true, assistantScope + " " + assistantMaterialIds);
+            if (cleanReadiness)
+            {
+                Record("openai-pilot-zero-data-boundary", true,
+                    "Payload preview was not invoked because zero visible Materials cannot produce an outbound request");
+            }
+            else
+            {
+                Invoke(FindById(main, "PreviewOpenAiPayload"), application.Id);
+                var openAiPreview = FindById(main, "AiAssistantOutput")
+                    .GetCurrentPropertyValue(ValuePattern.ValueProperty)?.ToString() ?? string.Empty;
+                var openAiStatus = FindById(main, "OpenAiPilotStatus").Current.Name;
+                var requestStart = openAiPreview.IndexOf("{\r\n  \"model\"", StringComparison.Ordinal);
+                if (requestStart < 0)
+                {
+                    requestStart = openAiPreview.IndexOf("{\n  \"model\"", StringComparison.Ordinal);
+                }
+                Require(requestStart >= 0, "OpenAI preview did not expose its exact JSON request body.");
+                using var requestDocument = JsonDocument.Parse(openAiPreview[requestStart..]);
+                var requestRoot = requestDocument.RootElement;
+                var previewHasStoreFalse =
+                    requestRoot.TryGetProperty("store", out var store) &&
+                    store.ValueKind == JsonValueKind.False;
+                var previewHasNoTools =
+                    requestRoot.TryGetProperty("tools", out var tools) &&
+                    tools.ValueKind == JsonValueKind.Array &&
+                    tools.GetArrayLength() == 0;
+                var inputJson = requestRoot.GetProperty("input").GetString() ?? string.Empty;
+                using var inputDocument = JsonDocument.Parse(inputJson);
+                var inputRoot = inputDocument.RootElement;
+                var firstMaterial = inputRoot.GetProperty("materials").EnumerateArray().First();
+                var previewHasMaterialId =
+                    firstMaterial.TryGetProperty("materialID", out var materialId) &&
+                    !string.IsNullOrWhiteSpace(materialId.GetString());
+                var previewHasForbiddenFields = new[]
+                    {
+                        "purchaseId", "inventoryId", "landedCostAmount", "notes",
+                        "supplierUrl", "storageLocation", "purchasePriceAmount"
+                    }
+                    .Any(name => firstMaterial.TryGetProperty(name, out _));
+                var previewUsedNoNetwork =
+                    openAiStatus.Contains("no network used", StringComparison.OrdinalIgnoreCase);
+                Require(
+                    openAiPreview.Contains("OPENAI EXACT OUTBOUND PAYLOAD PREVIEW", StringComparison.Ordinal) &&
+                    previewHasStoreFalse &&
+                    previewHasNoTools &&
+                    previewHasMaterialId &&
+                    !previewHasForbiddenFields &&
+                    previewUsedNoNetwork,
+                    "OpenAI pilot preview did not retain its exact allowlist and no-network boundary. " +
+                    $"length={openAiPreview.Length}; storeFalse={previewHasStoreFalse}; noTools={previewHasNoTools}; " +
+                    $"materialId={previewHasMaterialId}; forbidden={previewHasForbiddenFields}; " +
+                    $"noNetwork={previewUsedNoNetwork}; status={openAiStatus}");
+                Require(
+                    !FindById(main, "CancelOpenAiRequest").Current.IsEnabled,
+                    "OpenAI cancel control was enabled without an active live request.");
+                Record("openai-pilot-payload-isolation", true, openAiStatus);
+            }
             var collectionAction = FindById(main, "AiCollectionActionState").Current.Name;
             Require(
                 collectionAction.StartsWith("Action: Create a new collection", StringComparison.Ordinal),
@@ -512,7 +569,8 @@ internal static class Program
                     "Website Export controls and fields",
                     StringComparison.Ordinal),
                 "Central Help did not expose the four separate Website action contracts.");
-            ((ValuePattern)helpValuePattern).SetValue("send no payload to OpenAI");
+            ((ValuePattern)helpValuePattern).SetValue(
+                "Preview OpenAI Payload builds and displays the exact request body");
             Require(
                 string.Equals(
                     FindById(help, "HelpSectionTitle").Current.Name,

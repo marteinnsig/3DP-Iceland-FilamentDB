@@ -98,6 +98,9 @@ function Get-TopSurface([string]$SurfacePath) {
 }
 
 function Get-OwnerIncrement([string]$SurfacePath, [string]$Identity) {
+    if ($Identity -match "OpenAi|OpenAI") {
+        return "v52.2"
+    }
     if ($Identity -match "AiProvider") {
         return "v52.1"
     }

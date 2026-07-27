@@ -43,11 +43,11 @@ Status: Partially solved
 Resolution: v52.0 research was owner accepted. v52.1 adds provider/model preferences, Windows Credential Manager ownership,
 local-only diagnostics and a deterministic fake provider. An owner-reported Settings overlap was corrected by assigning the
 provider panel its own Auto-sized Grid row and retaining the settings table in the sole expanding row. Live generation remains
-excluded until v52.2.
-Verification evidence: Debug/Release and documentation/security gates pass. Release smoke passes 383/383; Clean passes
-283/283 plus 100 N/A. Post-correction Release smoke profile `20260727154904-5ef08d0a` passes 383/383 with deterministic
-fake-provider isolation and exact business-state equality. Owner visual/runtime acceptance and Full Data Verification pass on
-2026-07-27; v52.2 retains the live Responses pilot.
+excluded until v52.2. The v52.2 candidate adds exact preview, one-time consent, bounded cancellation and strict advisory output.
+Verification evidence: v52.2 Release smoke `20260727162340-f07d3caa` passes 384/384 and Clean
+`20260727162422-0de18a69` passes 284/284 plus 100 N/A. Both retain exact business-state equality. Owner preview, consent,
+live advisory output, cancellation boundary and Full Data Verification acceptance pass on 2026-07-27. v52.3 retains
+representative quality, latency, cost and operational-evidence evaluation.
 
 ## Status review — 2026-07-25
 

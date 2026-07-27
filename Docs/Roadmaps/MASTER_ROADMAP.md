@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v52.1.0 — Optional AI Provider Foundation**
+Current canonical release: **v52.2.0 — Read-only OpenAI Responses Pilot**
 
-Last runtime-accepted baseline: **v52.1.0 — Optional AI Provider Foundation**
+Last runtime-accepted baseline: **v52.2.0 — Read-only OpenAI Responses Pilot**
 
-Current application release: **v52.1.0 — Optional AI Provider Foundation**
+Current application release: **v52.2.0 — Read-only OpenAI Responses Pilot**
 
-Current roadmap increment: **v52.2 — Read-only OpenAI Responses Pilot**
+Current roadmap increment: **v52.3 — Governed Acceptance and Operational Evidence**
 
-Current acceptance note: v52.1.0 is complete, canonical and owner runtime accepted.
+Current acceptance note: v52.2.0 is complete, canonical and owner runtime accepted.
 
-Next note: v52.2 owns payload preview, consent and the first bounded read-only Responses API call.
+Next note: v52.3 evaluates representative quality, latency, cost and operational evidence.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -36,7 +36,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v49 | Experimental Workflow Extension | ★★★★☆ | Complete — canonical v49.0.0 runtime accepted |
 | v50 | Comprehensive User Help | ★★★★★ | Complete — canonical v50.4.4 runtime accepted |
 | v51 | Governed Runtime Profiles | ★★★☆☆ | Complete — canonical v51.4.0 runtime accepted |
-| v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Current — v52.2 |
+| v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Current — v52.2 accepted; v52.3 next |
 
 | v53 | Governed Landed-cost Currency | ★★★★☆ | Planned |
 
@@ -2240,11 +2240,15 @@ to unstarted authoritative planning slots.
   - Add the provider abstraction, pinned configuration, connection diagnostics and safe local fallback.
   - Prove that credentials cannot enter SQLite, import/export, backup/recovery, diagnostics or retained tester evidence.
 - **v52.2 — Read-only OpenAI Responses Pilot**
-  - State: Current authoritative increment; acquire the owner API key only when the bounded live test is ready.
+  - State: Complete, canonical and owner runtime accepted as v52.2.0 on 2026-07-27.
   - Add explicit `Generate with OpenAI`, exact outbound preview, cancellation and bounded error handling.
   - Use structured output for summary, findings, evidence MaterialIDs, uncertainties and suggested next actions.
   - Reject unknown evidence IDs and retain all generated content as advisory until the user explicitly saves an assistant session.
+  - Release smoke `20260727162340-f07d3caa` passes 384/384 with exact business-state equality.
+  - Clean Readiness `20260727162422-0de18a69` passes 284/284 plus 100 N/A with exact state equality.
+  - Owner accepted preview, consent, live advisory output, cancellation boundary and Full Data Verification.
 - **v52.3 — Governed Acceptance and Operational Evidence**
+  - State: Current planned increment; research representative scenarios before implementation.
   - Evaluate quality, latency and cost with approved representative scenarios before pinning the accepted model.
   - Extend deterministic automation for payload allowlists, response validation, fallback, cancellation and secret non-persistence.
   - Require Debug/Release, security/static gates, Full Data Verification and owner runtime acceptance before closure.

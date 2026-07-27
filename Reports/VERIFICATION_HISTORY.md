@@ -1,3 +1,20 @@
+# v52.2.0 - Read-only OpenAI Responses Pilot
+
+Date: 2026-07-27
+
+- Exact request preview is deterministic and performs no network request.
+- Payload uses `store=false`, no tools/files/web search and an eight-field
+  material allowlist capped at forty canonical visible MaterialIDs.
+- Strict response parsing rejects unknown evidence IDs.
+- Disposable automation may preview but cannot read credentials or generate.
+- Release smoke `20260727162340-f07d3caa` passes 384/384 with exact
+  business-state equality.
+- Clean Readiness `20260727162422-0de18a69` passes 284/284 applicable plus
+  100 N/A with exact state equality.
+- Owner preview, consent, live advisory output and Full Data Verification
+  acceptance pass on 2026-07-27.
+- Schema remains v37.
+
 # v52.1.0 - Optional AI Provider Foundation
 
 Date: 2026-07-27

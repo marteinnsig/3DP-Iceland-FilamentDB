@@ -2,6 +2,21 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v52.2.0 - Read-only OpenAI Responses Pilot
+
+The v52.1 provider foundation is extended with an exact request builder and
+full-payload consent dialog. The pilot uses canonical visible MaterialIDs,
+eight allowlisted material fields, `store=false`, no tools/files/web search
+and strict structured advisory output. Cancellation, bounded timeout, safe
+request IDs and unknown-evidence rejection preserve failure honesty.
+
+No output is saved automatically and no canonical data can be mutated by the
+provider. Automation owns only deterministic no-network preview and parser
+validation; the real request remains a manual owner action. Release smoke
+`20260727162340-f07d3caa` passes 384/384 and Clean
+`20260727162422-0de18a69` passes 284/284 plus 100 N/A, both with exact state.
+Owner runtime/live acceptance passes on 2026-07-27; schema remains v37.
+
 ## v52.1.0 - Optional AI Provider Foundation
 
 The v52.0 research decision was accepted before code changes. The v52.1

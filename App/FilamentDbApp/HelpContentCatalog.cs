@@ -654,7 +654,7 @@ internal static class HelpContentCatalog
             Provider selects Local deterministic or the optional OpenAI foundation. Pinned model is a non-secret preference outside
             SQLite. Save / Replace Credential writes the masked API key only to Windows Credential Manager; Delete Credential is
             default-No. Test Provider Foundation checks configuration and credential presence locally. It sends no network request or
-            material payload. Live OpenAI generation is not enabled by this foundation.
+            material payload. The separate AI Assistant pilot requires exact payload preview and one-time consent before a live request.
             """,
             "settings fields", "section", "parameter", "value", "unit", "used by", "reload saved settings",
             "restore built-in defaults", "measurement constants", "currency fallback", "deployment", "credential manager"),
@@ -1141,8 +1141,8 @@ internal static class HelpContentCatalog
             Settings Manager owns governed application defaults and calculation inputs. Changes apply prospectively; they must not
             rewrite saved purchase, inventory or quote snapshots.
 
-            AI Assistant is a local scoped analysis surface unless a separately governed external integration is enabled in a future
-            release. Review its visible MaterialID scope before using generated briefs or collections.
+            AI Assistant keeps its local deterministic workflow and adds an optional guarded OpenAI pilot. Review the visible MaterialID
+            scope and exact outbound payload before any external request.
 
             YouTube Research and video-planning tools support creator workflow. They do not alter engineering measurements or replace
             Verification.
@@ -1264,13 +1264,20 @@ internal static class HelpContentCatalog
             planning summaries. Their counts/status never change Material lifecycle, tests, reports or website publication flags.
 
             Data and network boundary
-            All generated text is advisory. Current Generate actions remain local/deterministic and send no payload to OpenAI or another
-            external provider. Settings may hold an optional provider foundation, but its local test sends no data and enables no live
-            generation. Sessions/collections are separate from canonical engineering SQLite ownership. No Assistant action may
-            silently edit Materials, measurements, purchasing, Inventory, Usage, saved Quotes, reports or Website Production.
+            Existing Generate actions remain local/deterministic. Preview OpenAI Payload builds and displays the exact request body
+            without network use. Generate with OpenAI requires OpenAI provider/credential readiness, then opens a second full-payload
+            review with an unchecked one-time consent. Cancel stops an active request. Only MaterialID, manufacturer, product line,
+            marketing name, base material, category, variant/finish, reinforcement, selected template and the visible planning note are
+            sent. Purchasing, Inventory, Usage, Quotes, costs, URLs, paths, credentials, internal notes and raw measurements are excluded.
+
+            The request uses Responses API, store=false, no tools/files/web search and strict structured output. Unknown evidence
+            MaterialIDs are rejected. Output stays advisory and is not saved unless Save Session is clicked explicitly. Provider
+            retention terms may still apply even with store=false. No Assistant action may silently edit Materials, measurements,
+            purchasing, Inventory, Usage, saved Quotes, reports or Website Production.
             """,
             "assistant controls", "prompt editor", "generate full brief", "save session", "delete session",
-            "collection title", "apply status", "mark published", "coverage identity", "local deterministic"),
+            "collection title", "apply status", "mark published", "coverage identity", "local deterministic",
+            "Preview OpenAI Payload", "Generate with OpenAI", "Cancel OpenAI Request", "store false"),
         new(
             "youtube.controls-fields",
             "Configuration and creator tools",
@@ -1579,13 +1586,14 @@ internal static class HelpContentCatalog
             "logs", "manifest", "publish plan", "transfer results", "passwords", "evidence"),
         new(
             "ai.overview", "Assistant", "AI Assistant reference",
-            "Local deterministic analysis, planning sessions, collections and read-only output.",
+            "Local deterministic analysis plus an optional exact-preview, consent-gated OpenAI advisory pilot.",
             """
             AI Assistant works from the current visible MaterialID scope and local deterministic services. Review the exact scope preview
             before generating briefs. Sessions and collections are owner-managed local planning records, separate from engineering data.
 
-            Generated output is advisory/read-only. Preview actions write nothing; explicit collection/session actions own their local
-            persistence. The optional Settings provider foundation does not change these local Generate actions or send data.
+            Generated output is advisory/read-only. Existing Generate actions stay local. Preview OpenAI Payload performs no network
+            request and shows the exact JSON body, allowlisted IDs and SHA-256. Generate with OpenAI requires an additional unchecked
+            one-time consent, store=false, no tools/files/web search and strict structured output. It never saves output automatically.
             Assistant output never replaces measurements or Verification.
             """, "AI Assistant", "visible scope", "sessions", "collections", "output"),
         new(
@@ -1600,8 +1608,8 @@ internal static class HelpContentCatalog
             analyze a bounded family/manufacturer subset. Empty, duplicate or legacy identity warnings should be resolved or explicitly
             understood before trusting coverage conclusions.
 
-            Refresh Visible Scope is read-only. It does not save a collection, change lifecycle status or contact an external AI
-            service.
+            Refresh Visible Scope is read-only. It does not save a collection, change lifecycle status or contact an external service.
+            The same canonical IDs feed the OpenAI pilot, capped at forty unique IDs; review the exact payload before sending.
             """,
             "visible scope", "Refresh Visible Scope", "MaterialID", "filters", "read-only"),
         new(
@@ -1609,9 +1617,12 @@ internal static class HelpContentCatalog
             "Generate deterministic local briefs from templates or named analysis actions.",
             """
             Template chooses Video Ideas, Comparison Planning, Thumbnail Hooks, Full Assistant Brief or Playlist Suggestions. Planning
-            note is included as owner-authored context; it is not interpreted by an external model. Generate From Template uses the
-            selected template, while the named buttons generate Video Ideas, Comparisons, Recommended Next Video, Recommended
-            Comparisons, Hidden Gems or the complete Full Assistant Brief.
+            note is included as owner-authored context in local briefs. Generate From Template uses the selected template, while the
+            named buttons generate Video Ideas, Comparisons, Recommended Next Video, Recommended Comparisons, Hidden Gems or the
+            complete Full Assistant Brief. These existing actions remain local.
+
+            The optional OpenAI pilot includes the selected template and planning note in its exact preview. Treat the note as outbound
+            data: remove private information before approving the request.
 
             Every action consumes the reviewed visible MaterialID scope and canonical local summaries. Results are deterministic
             advisory text in the read-only output box. Check cited materials, missing evidence and scope before reusing a recommendation.
@@ -1677,9 +1688,9 @@ internal static class HelpContentCatalog
             a read-only text surface. A new action replaces the visible output, so save a session or copy intentionally when the current
             planning result must be retained.
 
-            Output is rule-based local analysis, not a response from an external AI service. Recommendations depend on the visible or
-            selected collection scope and available canonical summaries; missing measurements must remain visible as missing rather
-            than being invented.
+            Output may be a local rule-based result, an exact OpenAI request preview or a validated OpenAI advisory. The heading and
+            request IDs identify external advisory output. Recommendations depend on the visible scope; unknown evidence MaterialIDs
+            invalidate an OpenAI response instead of being displayed as trusted evidence.
 
             Any copy/manual handoff leaves the governed application context. Review material identity, claims, dates and intended
             audience first. Reading or copying output does not publish, edit SQLite engineering data or certify the recommendation.

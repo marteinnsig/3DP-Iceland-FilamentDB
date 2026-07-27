@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v52.1 provider-foundation reconciliation
+Version: v52.2 OpenAI pilot reconciliation
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted
@@ -41,7 +41,7 @@ Source snapshot: `master` commit `a662677` on 2026-07-27.
 |---|---:|---|
 | Top-level tabs | 22 | Preserve accepted overview and contextual mappings |
 | Nested tabs | 16 | Preserve accepted nested-aware mappings |
-| XAML buttons | 139 | Map visible action, handler, owner and Help subsection |
+| XAML buttons | 142 | Map visible action, handler, owner and Help subsection |
 | XAML menu items | 31 | Separate headings/separators from invoked commands |
 | XAML text boxes | 35 | Determine editable, read-only, multiline and generated output |
 | XAML password boxes | 2 | Record secret ownership and non-persistence boundary |
@@ -72,15 +72,21 @@ Current exact inventory:
 | v50.4.2 | 267 |
 | v50.4.3 | 156 |
 | v52.1 | 7 |
-| **Total** | **652** |
+| v52.2 | 3 |
+| **Total** | **655** |
 
 v52.1 adds seven Settings candidates for provider/model preference, protected
 credential ownership and local-only foundation diagnostics. All route to
 `settings.controls-fields`; none enables a live OpenAI request.
 
+v52.2 adds three AI Assistant pilot actions for exact payload preview,
+consent-gated generation and active-request cancellation. They route to
+`ai.controls-fields`; automation covers preview only and never performs live
+network I/O.
+
 | Initial source classification | Candidates |
 |---|---:|
-| Actions | 166 |
+| Actions | 169 |
 | Choices | 57 |
 | Input candidates | 31 |
 | Grid candidates | 11 |

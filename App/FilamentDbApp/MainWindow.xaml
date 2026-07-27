@@ -2309,6 +2309,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
@@ -2318,12 +2319,12 @@
                                 <TextBlock Text="AI Assistant" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A"
                                            Margin="0,0,14,0"/>
                                 <Border Background="#DBEAFE" CornerRadius="10" Padding="9,3" VerticalAlignment="Center">
-                                    <TextBlock Text="LOCAL RULE-BASED • NO EXTERNAL AI"
+                                    <TextBlock Text="LOCAL DEFAULT • OPTIONAL GUARDED OPENAI"
                                                FontWeight="SemiBold"
                                                Foreground="#1D4ED8"/>
                                 </Border>
                             </WrapPanel>
-                            <TextBlock Text="Creates deterministic planning briefs from canonical Materials data. It does not contact an AI service and never changes Materials, measurements, reports or website data."
+                            <TextBlock Text="Local actions remain deterministic and offline. The optional OpenAI pilot sends only an exact reviewed material allowlist and never changes canonical data."
                                        Foreground="#475569"
                                        TextWrapping="Wrap"
                                        Margin="0,6,0,0"/>
@@ -2404,9 +2405,48 @@
                         </WrapPanel>
                     </StackPanel>
 
-                    <Border Grid.Row="2" Margin="0,10,0,10" Padding="10" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="4">
+                    <Border Grid.Row="2" Margin="0,10,0,0" Padding="10" Background="#EFF6FF"
+                            BorderBrush="#93C5FD" BorderThickness="1" CornerRadius="4">
                         <StackPanel>
-                            <TextBlock Text="2. Save or reuse an exact MaterialID collection" FontWeight="SemiBold"
+                            <TextBlock Text="2. Optional OpenAI read-only pilot" FontWeight="SemiBold"
+                                       Foreground="#1E3A8A" Margin="0,0,0,4"/>
+                            <TextBlock Text="Preview shows the exact request body. Generate requires a second explicit consent and sends no purchasing, inventory, cost, quote, path, credential, URL, note or raw measurement fields."
+                                       Foreground="#475569" TextWrapping="Wrap" Margin="0,0,0,8"/>
+                            <WrapPanel>
+                                <Button Name="PreviewOpenAiPayloadButton"
+                                        Content="Preview OpenAI Payload"
+                                        AutomationProperties.AutomationId="PreviewOpenAiPayload"
+                                        Click="PreviewOpenAiPayload_Click"
+                                        Padding="12,6"
+                                        Margin="0,0,8,8"/>
+                                <Button Name="GenerateWithOpenAiButton"
+                                        Content="Generate with OpenAI..."
+                                        AutomationProperties.AutomationId="GenerateWithOpenAi"
+                                        Click="GenerateWithOpenAi_Click"
+                                        Padding="12,6"
+                                        Margin="0,0,8,8"/>
+                                <Button Name="CancelOpenAiRequestButton"
+                                        Content="Cancel OpenAI Request"
+                                        AutomationProperties.AutomationId="CancelOpenAiRequest"
+                                        Click="CancelOpenAiRequest_Click"
+                                        IsEnabled="False"
+                                        Padding="12,6"
+                                        Margin="0,0,12,8"/>
+                                <TextBlock Name="OpenAiPilotStatusText"
+                                           AutomationProperties.AutomationId="OpenAiPilotStatus"
+                                           Text="OpenAI pilot: no payload prepared; no network used."
+                                           Foreground="#1D4ED8"
+                                           FontWeight="SemiBold"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,0,8"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Row="3" Margin="0,10,0,10" Padding="10" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="4">
+                        <StackPanel>
+                            <TextBlock Text="3. Save or reuse an exact MaterialID collection" FontWeight="SemiBold"
                                        Foreground="#0F172A" Margin="0,0,0,4"/>
                             <TextBlock Text="Collections are local snapshots of canonical MaterialIDs. Pipeline status is local workflow metadata and does not change Materials data."
                                        Foreground="#64748B" TextWrapping="Wrap" Margin="0,0,0,8"/>
@@ -2489,7 +2529,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Row="3" BorderBrush="#CBD5E1" BorderThickness="1" Background="#F8FAFC">
+                    <Border Grid.Row="4" BorderBrush="#CBD5E1" BorderThickness="1" Background="#F8FAFC">
                         <TextBox Name="AiAssistantOutputBox"
                                  AutomationProperties.AutomationId="AiAssistantOutput"
                                  Text="Local rule-based AI Assistant is ready. Review the visible MaterialID scope, then select a planning action."

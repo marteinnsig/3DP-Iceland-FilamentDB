@@ -82,6 +82,8 @@ public partial class MainWindow : Window
     private Microsoft.Web.WebView2.Wpf.WebView2? _publicReportBatchWebView;
     private Window? _publicReportBatchHostWindow;
     private readonly WorkflowPreferencesService _workflowPreferencesService = new();
+    private readonly OpenAiAssistantPilotService _openAiAssistantPilotService = new();
+    private CancellationTokenSource? _openAiPilotCancellation;
     private readonly InventoryEngineService _inventoryEngineService = new();
     private readonly EngineeringContextService _engineeringContextService = new();
     private readonly PricingProvenanceService _pricingProvenanceService = new();
@@ -14415,6 +14417,97 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                     ? "Disposable runtime resolves the deterministic fake provider, uses no network and cannot access owner credentials"
                     : "Provider/model preferences remain non-secret; the masked credential field is empty and Windows Credential Manager owns the API key"
                 : "Provider controls, fake-provider isolation, masked credential ownership or no-network diagnostic contract failed"));
+        var openAiPilotContractReady = false;
+        try
+        {
+            var pilotService = new OpenAiAssistantPilotService();
+            var pilotPreview = pilotService.BuildPreview(
+                OpenAiAssistantProviderFoundation.DefaultModel,
+                new OpenAiPilotInput(
+                    "Verification probe",
+                    "Advisory only",
+                    new[]
+                    {
+                        new OpenAiPilotMaterial(
+                            "MAT-ALLOW-1",
+                            "Probe Maker",
+                            "Probe Line",
+                            "Probe Name",
+                            "PETG",
+                            "Engineering",
+                            "Matte",
+                            "CF")
+                    }));
+            const string advisoryJson =
+                """{"summary":"Probe summary","findings":[{"title":"Probe","details":"Validated","evidenceMaterialIds":["MAT-ALLOW-1"]}],"uncertainties":[],"suggestedNextActions":["Review"]}""";
+            var responseJson = JsonSerializer.Serialize(new
+            {
+                status = "completed",
+                output = new[]
+                {
+                    new
+                    {
+                        type = "message",
+                        content = new[] { new { type = "output_text", text = advisoryJson } }
+                    }
+                },
+                usage = new { input_tokens = 12, output_tokens = 8 }
+            });
+            var parsed = pilotService.ParseAndValidateResponse(
+                responseJson,
+                pilotPreview.AllowedMaterialIds,
+                "verification-client-request",
+                "verification-server-request");
+            using var pilotRequestDocument = JsonDocument.Parse(pilotPreview.RequestBodyJson);
+            var pilotInputJson = pilotRequestDocument.RootElement.GetProperty("input").GetString() ?? string.Empty;
+            using var pilotInputDocument = JsonDocument.Parse(pilotInputJson);
+            var pilotMaterial = pilotInputDocument.RootElement
+                .GetProperty("materials")
+                .EnumerateArray()
+                .First();
+            var unknownEvidenceRejected = false;
+            try
+            {
+                pilotService.ParseAndValidateResponse(
+                    responseJson.Replace("MAT-ALLOW-1", "MAT-UNKNOWN", StringComparison.Ordinal),
+                    pilotPreview.AllowedMaterialIds,
+                    "verification-client-request",
+                    "verification-server-request");
+            }
+            catch (InvalidOperationException ex)
+            {
+                unknownEvidenceRejected = ex.Message.Contains("unknown MaterialID", StringComparison.Ordinal);
+            }
+
+            openAiPilotContractReady =
+                FindName("PreviewOpenAiPayloadButton") is Button previewOpenAi &&
+                AutomationProperties.GetAutomationId(previewOpenAi) == "PreviewOpenAiPayload" &&
+                FindName("GenerateWithOpenAiButton") is Button generateOpenAi &&
+                AutomationProperties.GetAutomationId(generateOpenAi) == "GenerateWithOpenAi" &&
+                FindName("CancelOpenAiRequestButton") is Button cancelOpenAi &&
+                AutomationProperties.GetAutomationId(cancelOpenAi) == "CancelOpenAiRequest" &&
+                !cancelOpenAi.IsEnabled &&
+                FindName("OpenAiPilotStatusText") is TextBlock openAiStatus &&
+                AutomationProperties.GetAutomationId(openAiStatus) == "OpenAiPilotStatus" &&
+                pilotPreview.RequestBodyJson.Contains("\"store\": false", StringComparison.Ordinal) &&
+                pilotPreview.RequestBodyJson.Contains("\"tools\": []", StringComparison.Ordinal) &&
+                pilotMaterial.GetProperty("materialID").GetString() == "MAT-ALLOW-1" &&
+                !pilotMaterial.TryGetProperty("purchaseId", out _) &&
+                !pilotMaterial.TryGetProperty("inventoryId", out _) &&
+                !pilotMaterial.TryGetProperty("notes", out _) &&
+                parsed.Findings.Count == 1 &&
+                parsed.InputTokens == 12 &&
+                parsed.OutputTokens == 8 &&
+                unknownEvidenceRejected;
+        }
+        catch
+        {
+            openAiPilotContractReady = false;
+        }
+        checks.Add(new VerificationCheck("OpenAI read-only pilot contract", openAiPilotContractReady,
+            openAiPilotContractReady
+                ? "Exact store=false/no-tools payload preview, allowlisted material fields, cancellation and unknown-MaterialID rejection pass"
+                : "OpenAI preview, allowlist, structured response validation or cancellation contract failed"));
         var cancelledCollectionProbe = BuildAiMaterialCollectionCancelledOutput(
             new AiMaterialCollection
             {
@@ -17683,7 +17776,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         {
             ["reports.controls-fields"] = "None of these actions perform FTPS",
             ["website.controls-fields"] = "four separate contracts",
-            ["ai.controls-fields"] = "send no payload to OpenAI",
+            ["ai.controls-fields"] = "Preview OpenAI Payload builds and displays the exact request body",
             ["youtube.controls-fields"] = "do not open a browser",
             ["menu-runtime.controls-fields"] = "Eight hidden CRUD/recovery buttons"
         };
@@ -21418,6 +21511,284 @@ private void UpdateDashboardInsights()
     private void AiPromptTemplateCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         SetAiPromptTemplateText(GetSelectedAiTemplateName());
+    }
+
+    private void PreviewOpenAiPayload_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var preview = BuildOpenAiPilotPreview();
+            SetAiAssistantOutput(BuildOpenAiPreviewDisplay(preview));
+            SetOpenAiPilotStatus(
+                $"OpenAI pilot: exact payload prepared for {preview.AllowedMaterialIds.Count:N0} MaterialID(s); " +
+                $"SHA-256 {preview.RequestSha256[..12]}…; no network used.");
+        }
+        catch (Exception ex)
+        {
+            SetOpenAiPilotStatus("OpenAI pilot: payload preview unavailable; no network used.");
+            MessageBox.Show(
+                ex.Message,
+                "OpenAI Payload Preview",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+        }
+    }
+
+    private async void GenerateWithOpenAi_Click(object sender, RoutedEventArgs e)
+    {
+        if (IsAutomationActionBlocked("Live OpenAI generation")) return;
+        if (_openAiPilotCancellation is not null)
+        {
+            MessageBox.Show(
+                "An OpenAI request is already in progress.",
+                "OpenAI Pilot",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        try
+        {
+            var configuration = GetAiProviderConfigurationFromControls();
+            if (!string.Equals(
+                    configuration.ProviderId,
+                    OpenAiAssistantProviderFoundation.Id,
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show(
+                    "Select OpenAI (optional) in Settings Manager and save the provider settings first.",
+                    "OpenAI Pilot",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            var credential = WindowsCredentialService.ReadSecret(
+                OpenAiAssistantProviderFoundation.CredentialTarget);
+            if (string.IsNullOrWhiteSpace(credential))
+            {
+                MessageBox.Show(
+                    "No OpenAI API credential is stored in Windows Credential Manager.",
+                    "OpenAI Pilot",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            var preview = BuildOpenAiPilotPreview();
+            SetAiAssistantOutput(BuildOpenAiPreviewDisplay(preview));
+            if (!ShowOpenAiPayloadConsent(preview))
+            {
+                SetOpenAiPilotStatus("OpenAI pilot: send cancelled before network use.");
+                return;
+            }
+
+            _openAiPilotCancellation = new CancellationTokenSource();
+            if (FindName("CancelOpenAiRequestButton") is Button cancelButton)
+            {
+                cancelButton.IsEnabled = true;
+            }
+            SetOpenAiPilotStatus("OpenAI pilot: one approved request is in progress…");
+
+            var result = await _openAiAssistantPilotService.GenerateAsync(
+                preview,
+                credential,
+                _openAiPilotCancellation.Token);
+            SetAiAssistantOutput(BuildOpenAiResultDisplay(result));
+            SetOpenAiPilotStatus(
+                $"OpenAI pilot: completed; {result.InputTokens:N0} input and {result.OutputTokens:N0} output token(s); " +
+                "advisory output is not saved automatically.");
+        }
+        catch (OperationCanceledException)
+        {
+            SetOpenAiPilotStatus("OpenAI pilot: request cancelled or timed out; canonical data is unchanged.");
+        }
+        catch (Exception ex)
+        {
+            SetOpenAiPilotStatus("OpenAI pilot: request failed; canonical data is unchanged.");
+            MessageBox.Show(
+                ex.Message,
+                "OpenAI Pilot",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+        finally
+        {
+            _openAiPilotCancellation?.Dispose();
+            _openAiPilotCancellation = null;
+            if (FindName("CancelOpenAiRequestButton") is Button cancelButton)
+            {
+                cancelButton.IsEnabled = false;
+            }
+        }
+    }
+
+    private void CancelOpenAiRequest_Click(object sender, RoutedEventArgs e)
+    {
+        _openAiPilotCancellation?.Cancel();
+    }
+
+    private OpenAiPilotPreview BuildOpenAiPilotPreview()
+    {
+        var rows = GetCanonicalVisibleMaterialRows();
+        string Value(DataRow row, params string[] names) =>
+            DataTableHelpers.FirstValue(row, names)?.ToString()?.Trim() ?? string.Empty;
+
+        var materials = rows
+            .Select(row => new OpenAiPilotMaterial(
+                BuildAiMaterialKey(row),
+                Value(row, "Manufacturer", "Brand"),
+                Value(row, "Product Line"),
+                Value(row, "Marketing Name"),
+                Value(row, "Base Material", "Type", "Material Type"),
+                Value(row, "Material Category", "Category"),
+                Value(row, "Variant / Finish", "Variant Finish"),
+                Value(row, "Reinforcement", "Reinforment")))
+            .ToList();
+        var configuration = _workflowPreferencesService.GetAiAssistantProviderConfiguration();
+        return _openAiAssistantPilotService.BuildPreview(
+            configuration.Model,
+            new OpenAiPilotInput(
+                GetSelectedAiTemplateName(),
+                GetTextBoxText("AiPromptEditorBox"),
+                materials));
+    }
+
+    private static string BuildOpenAiPreviewDisplay(OpenAiPilotPreview preview) =>
+        "OPENAI EXACT OUTBOUND PAYLOAD PREVIEW\r\n" +
+        "=====================================\r\n" +
+        $"Endpoint: {OpenAiAssistantPilotService.Endpoint}\r\n" +
+        $"Model: {preview.Model}\r\n" +
+        "Store response: false\r\n" +
+        "Tools/files/web search: none\r\n" +
+        $"Allowlisted MaterialIDs: {preview.AllowedMaterialIds.Count:N0}\r\n" +
+        $"Request SHA-256: {preview.RequestSha256}\r\n" +
+        "Network used by this preview: no\r\n\r\n" +
+        "The API provider may retain request data for abuse monitoring under the account's applicable data-retention terms.\r\n" +
+        "Review every field below. Generate requires a separate one-time consent.\r\n\r\n" +
+        preview.RequestBodyJson;
+
+    private bool ShowOpenAiPayloadConsent(OpenAiPilotPreview preview)
+    {
+        var dialog = new Window
+        {
+            Title = "Review Exact OpenAI Payload — No data sent yet",
+            Owner = this,
+            Width = 980,
+            Height = 760,
+            MinWidth = 760,
+            MinHeight = 560,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            ShowInTaskbar = false
+        };
+        var layout = new Grid { Margin = new Thickness(14) };
+        layout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        layout.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+        layout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+        layout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+        var heading = new TextBlock
+        {
+            Text =
+                $"Review the exact POST body below. SHA-256: {preview.RequestSha256}\r\n" +
+                "store=false; no tools/files/web search. Provider retention terms may still apply.",
+            TextWrapping = TextWrapping.Wrap,
+            FontWeight = FontWeights.SemiBold,
+            Foreground = new SolidColorBrush(Color.FromRgb(30, 58, 138)),
+            Margin = new Thickness(0, 0, 0, 10)
+        };
+        Grid.SetRow(heading, 0);
+        layout.Children.Add(heading);
+
+        var payload = new TextBox
+        {
+            Text = preview.RequestBodyJson,
+            IsReadOnly = true,
+            AcceptsReturn = true,
+            TextWrapping = TextWrapping.NoWrap,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+            FontFamily = new FontFamily("Consolas"),
+            FontSize = 12,
+            Padding = new Thickness(10)
+        };
+        Grid.SetRow(payload, 1);
+        layout.Children.Add(payload);
+
+        var approval = new CheckBox
+        {
+            Content = "I approve sending exactly this payload once to the configured OpenAI Responses API.",
+            Margin = new Thickness(0, 12, 0, 10),
+            FontWeight = FontWeights.SemiBold
+        };
+        Grid.SetRow(approval, 2);
+        layout.Children.Add(approval);
+
+        var buttons = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            HorizontalAlignment = HorizontalAlignment.Right
+        };
+        var cancel = new Button { Content = "Cancel — Send Nothing", MinWidth = 170, Margin = new Thickness(0, 0, 8, 0) };
+        var send = new Button { Content = "Send This Payload Once", MinWidth = 170, IsEnabled = false };
+        approval.Checked += (_, _) => send.IsEnabled = true;
+        approval.Unchecked += (_, _) => send.IsEnabled = false;
+        cancel.Click += (_, _) => dialog.DialogResult = false;
+        send.Click += (_, _) => dialog.DialogResult = true;
+        buttons.Children.Add(cancel);
+        buttons.Children.Add(send);
+        Grid.SetRow(buttons, 3);
+        layout.Children.Add(buttons);
+        dialog.Content = layout;
+        return dialog.ShowDialog() == true;
+    }
+
+    private static string BuildOpenAiResultDisplay(OpenAiPilotResult result)
+    {
+        var lines = new List<string>
+        {
+            "OPENAI READ-ONLY ADVISORY",
+            "==========================",
+            "This output is advisory and has not changed or saved canonical data.",
+            $"Client request ID: {result.ClientRequestId}",
+            $"Server request ID: {result.ServerRequestId}",
+            $"Tokens: {result.InputTokens:N0} input / {result.OutputTokens:N0} output",
+            "",
+            "SUMMARY",
+            "-------",
+            result.Summary
+        };
+        lines.Add("");
+        lines.Add("FINDINGS");
+        lines.Add("--------");
+        foreach (var finding in result.Findings)
+        {
+            lines.Add($"- {finding.Title}");
+            lines.Add("  " + finding.Details);
+            lines.Add("  Evidence MaterialID(s): " +
+                      (finding.EvidenceMaterialIds.Count == 0
+                          ? "none"
+                          : string.Join(", ", finding.EvidenceMaterialIds)));
+        }
+        lines.Add("");
+        lines.Add("UNCERTAINTIES");
+        lines.Add("-------------");
+        lines.AddRange(result.Uncertainties.Select(value => "- " + value));
+        lines.Add("");
+        lines.Add("SUGGESTED NEXT ACTIONS");
+        lines.Add("----------------------");
+        lines.AddRange(result.SuggestedNextActions.Select(value => "- " + value));
+        lines.Add("");
+        lines.Add("Use Save Session only after reviewing this advisory output.");
+        return string.Join("\r\n", lines);
+    }
+
+    private void SetOpenAiPilotStatus(string text)
+    {
+        if (FindName("OpenAiPilotStatusText") is TextBlock status)
+        {
+            status.Text = text;
+        }
     }
 
     private void GenerateAiFromTemplate_Click(object sender, RoutedEventArgs e)

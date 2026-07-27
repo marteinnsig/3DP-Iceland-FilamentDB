@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "AI-PROVIDER-FOUNDATION";
-    public const string ReleaseTitle = "Optional AI Provider Foundation";
+    public const string ReleaseCode = "OPENAI-RESPONSES-PILOT";
+    public const string ReleaseTitle = "Read-only OpenAI Responses Pilot";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 37;
 

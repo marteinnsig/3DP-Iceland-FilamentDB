@@ -1,4 +1,28 @@
-# Current Build Notes - v52.1.0
+# Current Build Notes - v52.2.0
+
+## Read-only OpenAI Responses Pilot
+
+The optional OpenAI path now builds an exact allowlisted Responses API request
+from at most forty canonical visible MaterialIDs. It includes only identity and
+catalog fields plus the selected template and owner-authored planning note.
+Purchasing, Inventory, Usage, Quotes, costs, URLs, paths, credentials, internal
+notes and raw measurement rows are excluded.
+
+Preview OpenAI Payload performs no network request and displays the exact JSON,
+SHA-256, endpoint, model and retention warning. Generate with OpenAI opens a
+second full-payload review with unchecked one-time consent. Requests use
+`store=false`, no tools/files/web search, strict Structured Outputs, a unique
+client request ID, a 60-second bound and explicit cancellation.
+
+Responses remain advisory and are not saved automatically. Unknown evidence
+MaterialIDs invalidate the whole response. Disposable automation invokes only
+the no-network preview and never reads an owner credential or performs a live
+request. Schema remains v37.
+
+Release smoke `20260727162340-f07d3caa` passes 384/384. Clean Readiness
+`20260727162422-0de18a69` passes 284/284 applicable plus 100 N/A. Both retain
+exact business-state equality. Owner preview, consent, bounded live advisory
+output and Full Data Verification acceptance pass on 2026-07-27.
 
 ## Optional AI Provider Foundation
 

@@ -2,6 +2,26 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v52.2.0 - Read-only OpenAI Responses Pilot
+
+- Adds an exact no-network outbound payload preview with SHA-256 evidence.
+- Limits outbound material data to eight catalog/identity fields and forty
+  canonical visible MaterialIDs.
+- Excludes purchasing, Inventory, Usage, Quotes, costs, URLs, paths,
+  credentials, internal notes and raw measurements.
+- Requires a second full-payload review and unchecked one-time consent.
+- Uses Responses API with `store=false`, no tools/files/web search and strict
+  Structured Outputs.
+- Adds a unique client request ID, 60-second bound and explicit cancellation.
+- Rejects responses that cite any unknown evidence MaterialID.
+- Keeps output advisory and unsaved until Save Session is explicitly invoked.
+- Extends deterministic preview, Verification, Help and secret/data-boundary
+  coverage without allowing automation to issue a live request.
+- Release smoke passes 384/384; Clean passes 284/284 plus 100 N/A. Both retain
+  exact business-state equality.
+- Schema remains v37; owner runtime and bounded live acceptance pass on
+  2026-07-27.
+
 ## v52.1.0 - Optional AI Provider Foundation
 
 - Records the owner-accepted v52.0 provider, payload, retention and failure
