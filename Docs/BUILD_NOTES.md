@@ -1,4 +1,52 @@
-# Current Build Notes - v50.1.0
+# Current Build Notes - v50.2.1
+
+## Data, Cost and Configuration Reference
+
+The authoritative v50.2.0 coverage matrix identifies nine data, purchasing,
+cost and configuration surfaces for this increment. Each now has one stable
+searchable Help section that records purpose, commands, fields, filters,
+validation, save behavior, destructive boundaries and downstream ownership.
+
+Materials and catalog references distinguish identity relationships, archive
+history, exact-name binding, auto-save and publication choices. Purchasing,
+Inventory and Usage references distinguish landed-cost persistence, receiving,
+spool creation, calculated refresh, explicit event commits and append-only
+corrections. Printer, Quote and Settings references distinguish prospective
+inputs from saved quote history and protected purchasing evidence. Quotes can
+be explicitly deleted and are not described as immutable.
+
+Full Data Verification requires all nine stable IDs, representative contract
+phrases and exact top-level tab mappings. The existing safe smoke scenario adds
+read-only searches for the Materials save boundary and Printer-to-quote
+immutability handoff. No schema, data, calculation or Production/FTPS behavior
+changes. Debug compile succeeds with zero warnings; remaining gates and owner
+runtime/visual acceptance were pending at implementation time.
+
+The first disposable run `20260727100746-ddc0c805` correctly failed 369/370
+because a Verification marker crossed an intentional source line break; Help
+search/navigation itself passed and no data contract failed. Markers now bind
+to stable content tokens rather than source formatting. Disposable smoke
+`20260727101000-dddd3159` passes the expanded Help contract, Full Data
+Verification 370/370 and exact logical/business-state equality.
+
+Owner review then removed the misleading `immutable` Quote label. The current
+reference describes read-only saved history, no automatic recalculation and
+supported explicit deletion. Correction profile
+`20260727101828-1f53f4e1` passes 370/370 with exact state equality.
+
+Owner follow-up found that `lifecycle` matched visible topic summaries while
+the renderer highlighted body text only. Category, title, summary and body now
+share one case-insensitive highlighter. Hidden keyword-only matches were
+removed so every returned result has a visible match. Start-to-finish step 6
+now says `retained purchase evidence`, not `immutable purchase snapshot`.
+Profile `20260727102551-3b35ebbc` passes body/summary highlighting, Full Data
+Verification 370/370 and exact state equality.
+
+Owner runtime/visual acceptance passes all nine references, corrected Quote and
+purchase wording, wrapping and highlight behavior in both headers and body.
+v50.2.1 is canonical; parent v50 continues at v50.2.2.
+
+## Prior v50.1.0 Start-to-finish Workflow Guide
 
 ## Start-to-finish Workflow Guide
 

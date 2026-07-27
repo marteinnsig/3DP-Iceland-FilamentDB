@@ -90,7 +90,7 @@ Nested tabs (16):
 | Inventory | `inventory.overview` | SQLite Inventory + `InventoryEngineService` | Spool fields, filters, summaries, Add, Duplicate, Delete, Refresh, validation, auto-save and Usage handoff | Entire tab currently lacks IDs |
 | Usage | `usage.overview` | Immutable Usage ledger + atomic Inventory transaction | Event inputs, Record, Correct, Cancel, fixed units, spool decrement, totals, ledger and append-only history | Good core IDs; several inputs, Cancel and totals missing |
 | Printers | `printers.overview` | SQLite Printers + `PrinterRateService` | Rate fields, Add, Duplicate, Archive/Restore, Delete, Save, auto-save and quote handoff | Strong ID coverage |
-| Print Job Quotes | `print-job-quotes.overview` | SQLite immutable quote snapshots | Customer/currency, Material evidence, Printer/time/labor inputs, calculation, Save, history, PDF, Delete and immutability | Key paths covered; most numeric inputs/evidence/status missing |
+| Print Job Quotes | `print-job-quotes.overview` | SQLite saved quote snapshots | Customer/currency, Material evidence, Printer/time/labor inputs, calculation, Save, history, PDF and explicit Delete | Key paths covered; most numeric inputs/evidence/status missing |
 | Base Materials | `base-materials.overview` | SQLite Base Material Catalog | Profile fields, Add, Duplicate, Delete, Reset Columns, exact-name binding, rename propagation and relationship blocks | Tab/key actions covered; grid, Reset and status missing |
 | Settings Manager | `settings.overview` | SQLite General/Deployment settings | Sections/fields, prospective boundary, Save, Reload, Restore Defaults, Reset Columns and separate Base Material ownership | Tab only; commands/grid/status missing |
 
@@ -250,7 +250,8 @@ Required leaf destinations:
 | Immediate command persistence | Most Add, Duplicate, Archive/Restore and governed binding actions |
 | Explicit save/record | Settings Save, Save Quote, Record Usage, report/export/build actions |
 | Immutable append-only history | Accepted Usage ledger and corrections |
-| Immutable saved snapshot | Print Job Quotes and received purchase/inventory provenance |
+| Saved calculation snapshot with explicit deletion | Print Job Quotes |
+| Immutable purchase/inventory provenance | Received purchase and Inventory history |
 | Read-only interpretation | Material Detail result surfaces, Rankings, Category Rankings, Awards and Dashboard Insights |
 | Evidence only | Materials Manual Backup, Verification/Diagnostics exports and generated logs/manifests |
 

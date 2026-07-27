@@ -573,6 +573,19 @@ Before v50.2 implementation, the exhaustive work is recorded as v50.2.0 inventor
 v50.2.2 testing/analysis, v50.2.3 outputs/tools and v50.2.4 contextual-link/coverage acceptance.
 v50.2.0 inventory is complete in `Docs/HELP_COVERAGE_MATRIX.md`: 22 top-level tabs, 16 nested tabs and all identified menu/runtime
 surfaces have owners, stable Help destinations, save-mode contracts, Automation gaps and repair increments. v50.2.1 is current.
+The v50.2.1 candidate implements nine stable searchable references for Materials, Manufacturers, Purchase Orders, Inventory, Usage,
+Printers, Print Job Quotes, Base Materials and Settings Manager. It documents commands, fields, filters, validation, persistence,
+destructive boundaries and handoffs while preserving prospective inputs and governed saved history. Owner acceptance is pending.
+Disposable smoke `20260727101000-dddd3159` passes the expanded Help searches, Full Data Verification 370/370 and exact
+logical/business-state equality. Production, FTPS, updates and owner database selection remained blocked.
+Owner review corrected Quote terminology: saved rows are read-only in this view and do not auto-recalculate, but explicit deletion is
+supported, so current Help no longer labels quote history immutable. Historical release records remain unchanged.
+Correction profile `20260727101828-1f53f4e1` passes revised Help search, Full Data Verification 370/370 and exact state equality.
+Owner follow-up found that summary/category/title and hidden-keyword matches could filter topics while only body text was highlighted.
+The renderer now highlights every visible searchable field and excludes hidden keyword-only hits. Start-to-finish step 6 uses
+`retained purchase evidence` instead of `immutable purchase snapshot`. Profile `20260727102551-3b35ebbc` passes 370/370.
+Owner accepted all v50.2.1 reference content, terminology, wrapping and header/body highlighting on 2026-07-27. v50.2.1 is canonical;
+the parent item remains In progress for recorded v50.2.2-v50.2.4 and v50.3 work.
 What happened: The application has many connected workflows, but no single structured user guide explains what every tab does or how
 data should move through the platform from purchase entry to measurements, reports and website publication.
 Expected behavior: Provide a well-organized user-help system with a start-to-finish workflow, per-tab reference, field-entry guidance,

@@ -104,7 +104,7 @@ public partial class MainWindow
     {
         if (PrinterGrid.SelectedItem is not PrinterProfileRecord row) return;
         var answer = MessageBox.Show(this,
-            $"Delete printer '{row.Name}'?\n\nSaved quote references will block deletion once quote snapshots are introduced.",
+            $"Delete printer '{row.Name}'?\n\nExisting saved quote references block deletion so their printer snapshots remain traceable.",
             "Delete Printer?", MessageBoxButton.YesNo, MessageBoxImage.Warning,
             MessageBoxResult.No);
         if (answer != MessageBoxResult.Yes) return;

@@ -1,3 +1,25 @@
+# v50.2.1 - Data, Cost and Configuration Reference
+
+Date: 2026-07-27
+
+- Nine stable searchable Help sections cover the v50.2.1 matrix scope.
+- Full Data Verification requires representative content and exact tab mappings.
+- Smoke adds read-only Materials and Printer/quote reference searches.
+- Initial profile `20260727100746-ddc0c805` passed Help but failed 369/370
+  because a marker crossed a source-only line break; no data contract failed.
+- Profile `20260727101000-dddd3159` passes Full Data Verification 370/370 and
+  exact logical/business-state equality.
+- Owner review corrected current Quote Help from `immutable` terminology to
+  saved read-only history with supported explicit deletion.
+- Correction profile `20260727101828-1f53f4e1` passes the revised Help search,
+  Full Data Verification 370/370 and exact logical/business-state equality.
+- Highlight profile `20260727102551-3b35ebbc` proves visible category, title,
+  summary and body matching, including `lifecycle` in summary, and passes Full
+  Data Verification 370/370 with exact state equality.
+- Debug/Release builds, documentation audit, roadmap and vulnerability gates
+  pass. Owner accepted reference content, corrected terminology and header/body
+  highlighting. Schema remains v37; v50.2.1 is canonical.
+
 # v50.1.0 - Start-to-finish Workflow Guide
 
 Date: 2026-07-27

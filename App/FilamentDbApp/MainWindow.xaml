@@ -2201,7 +2201,7 @@
                                    FontWeight="SemiBold"
                                    Foreground="#0F172A"
                                    Margin="0,0,0,4"/>
-                        <TextBlock Text="Maintain measurement, calculation, deployment and USD exchange-rate settings. Material pricing is normalized to USD automatically."
+                        <TextBlock Text="Maintain governed measurement, calculation, multi-currency purchasing and deployment settings. Changes apply prospectively; saved purchase, Inventory and quote snapshots stay unchanged."
                                    Foreground="#64748B"
                                    TextWrapping="Wrap"/>
                     </StackPanel>

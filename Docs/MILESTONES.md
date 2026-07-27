@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v50.2.1 - Data, Cost and Configuration Reference
+
+The accepted Help system now has exhaustive searchable references for nine
+Materials, purchasing, Inventory, cost and configuration surfaces. It explains
+commands, fields, persistence and lifecycle boundaries, and highlights every
+visible category, title, summary or body match. Owner runtime/visual acceptance
+and Full Data Verification 370/370 pass with exact state equality. Schema
+remains v37; the Comprehensive User Help milestone continues at v50.2.2.
+
 # v50.1.0 - Start-to-finish Workflow Guide
 
 The accepted central guide gives a new owner the complete ordered workflow from

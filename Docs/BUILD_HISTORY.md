@@ -2,6 +2,23 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v50.2.1 - Data, Cost and Configuration Reference
+
+The v50.2.0 matrix drove nine bounded Help references for the complete
+Materials/purchasing/Inventory/cost/configuration scope. Each records commands,
+editable/read-only fields, filters, validation, persistence, lifecycle and
+cross-tab ownership without changing schema or business behavior.
+
+Owner review corrected Quote and purchase terminology and exposed a search
+renderer gap: summary/header matches filtered correctly but only body text was
+highlighted. One shared visible-text highlighter now covers category, title,
+summary and body, and hidden keyword-only matches are excluded. The smoke
+scenario proves body and summary highlighting plus reference searches.
+Debug/Release, vulnerability, documentation and roadmap gates pass. Disposable
+profile `20260727102551-3b35ebbc` passes Full Data Verification 370/370 with
+exact state equality. Owner runtime/visual acceptance passes; schema remains
+v37 and v50.2.1 is canonical.
+
 ## v50.1.0 - Start-to-finish Workflow Guide
 
 Three independent read-only code traces mapped purchasing/receiving,

@@ -1,6 +1,18 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v50.2.1 - Data, Cost and Configuration Reference
+
+Nine stable searchable Help references now cover Materials, Manufacturers,
+Purchase Orders, Inventory, Usage, Printers, Print Job Quotes, Base Materials
+and Settings Manager. They document commands, fields, validation, save modes,
+destructive boundaries and handoffs. Quotes are saved read-only history with
+explicit deletion, while retained purchase evidence is described without the
+misleading immutable label. Search highlights visible category, title, summary
+and body matches. Debug/Release, security, documentation and disposable Full
+Data Verification 370/370 pass with exact state equality. Owner runtime/visual
+acceptance passes. Schema remains v37; parent v50 continues at v50.2.2.
+
 ## v50.1.0 - Start-to-finish Workflow Guide
 
 The central Help workflow now follows thirteen code-traced stages from Purchase

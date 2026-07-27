@@ -1,5 +1,36 @@
 # Automated Runtime Acceptance
 
+## v50.2.1 - Data, cost and configuration reference accepted
+
+Full Data Verification requires unique, non-empty Help content plus nine stable
+section IDs, representative persistence/relationship/immutability markers and
+exact top-level tab mappings for the v50.2.1 scope.
+
+The existing smoke scenario remains read-only for Help. In addition to the
+accepted workflow search/highlight/wrapping contract, it searches for the
+Materials Manual Backup/save boundary and the Printer/saved-quote boundary and
+requires the intended reference topic and body text. Production, FTPS, updates
+and owner database selection remain blocked. Disposable evidence is pending.
+
+Owner review removed the misleading `immutable` label from current Quote Help.
+The smoke contract now requires the supported saved-quote lifecycle wording:
+later inputs do not auto-update a saved row and explicit history deletion exists.
+Correction profile `20260727101828-1f53f4e1` passes the revised search, Full
+Data Verification 370/370 and exact logical/business-state equality.
+
+The smoke scenario now searches `lifecycle` and requires the visible summary
+to expose `Highlighted search: lifecycle` through UI Automation. Profile
+`20260727102551-3b35ebbc` passes body and summary highlighting, Full Data
+Verification 370/370 and exact logical/business-state equality.
+Owner runtime and visual acceptance pass.
+
+Initial profile `20260727100746-ddc0c805` passed the Help searches but failed
+369/370 because one Verification phrase crossed a source-only line break. The
+marker was narrowed to semantic content and no runtime/data behavior changed.
+Profile `20260727101000-dddd3159` passes the expanded `central-help` contract,
+Full Data Verification 370/370 and exact logical/business-state equality.
+Owner runtime and visual acceptance remain pending.
+
 ## v50.1.0 - Start-to-finish Help accepted
 
 The smoke scenario searches central Help for `landed costs`, requires a

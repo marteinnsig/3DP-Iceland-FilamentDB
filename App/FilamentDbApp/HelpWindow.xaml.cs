@@ -39,8 +39,7 @@ public partial class HelpWindow : Window
                 Contains(section.Title, query) ||
                 Contains(section.Category, query) ||
                 Contains(section.Summary, query) ||
-                Contains(section.Body, query) ||
-                section.Keywords.Any(keyword => Contains(keyword, query))).ToArray();
+                Contains(section.Body, query)).ToArray();
 
         SectionList.ItemsSource = _visibleSections;
         ResultStatusText.Text = string.IsNullOrWhiteSpace(query)
@@ -73,68 +72,76 @@ public partial class HelpWindow : Window
 
     private void Render(HelpSection section)
     {
-        CategoryText.Text = section.Category.ToUpperInvariant();
-        TitleText.Text = section.Title;
-        SummaryText.Text = section.Summary;
-        RenderBody(section.Body, SearchBox.Text.Trim());
+        var query = SearchBox.Text.Trim();
+        ContentScrollViewer.ScrollToTop();
+        var categoryMatch = RenderHighlightedText(CategoryText, section.Category.ToUpperInvariant(), query);
+        var titleMatch = RenderHighlightedText(TitleText, section.Title, query);
+        var summaryMatch = RenderHighlightedText(SummaryText, section.Summary, query);
+        var bodyMatch = RenderBody(section.Body, query);
+        var firstVisibleMatch = categoryMatch ?? titleMatch ?? summaryMatch ?? bodyMatch;
+        if (firstVisibleMatch is not null)
+        {
+            Dispatcher.BeginInvoke(
+                () => firstVisibleMatch.BringIntoView(),
+                DispatcherPriority.Loaded);
+        }
     }
 
     private static bool Contains(string value, string query) =>
         value.Contains(query, StringComparison.OrdinalIgnoreCase);
 
-    private void RenderBody(string body, string query)
+    private Run? RenderBody(string body, string query)
     {
         var normalized = NormalizeBodyText(body);
-        BodyText.Inlines.Clear();
-        System.Windows.Automation.AutomationProperties.SetHelpText(
-            BodyText,
-            string.IsNullOrWhiteSpace(query) ? "No highlighted search" : $"Highlighted search: {query}");
+        return RenderHighlightedText(BodyText, normalized, query);
+    }
 
+    private static Run? RenderHighlightedText(TextBlock target, string text, string query)
+    {
+        target.Inlines.Clear();
         if (string.IsNullOrWhiteSpace(query))
         {
-            BodyText.Inlines.Add(new Run(normalized));
-            ContentScrollViewer.ScrollToTop();
-            return;
+            target.Inlines.Add(new Run(text));
+            System.Windows.Automation.AutomationProperties.SetHelpText(target, "No highlighted search");
+            return null;
         }
 
         Run? firstMatch = null;
         var current = 0;
-        while (current < normalized.Length)
+        while (current < text.Length)
         {
-            var match = normalized.IndexOf(query, current, StringComparison.OrdinalIgnoreCase);
+            var match = text.IndexOf(query, current, StringComparison.OrdinalIgnoreCase);
             if (match < 0)
             {
-                BodyText.Inlines.Add(new Run(normalized[current..]));
+                target.Inlines.Add(new Run(text[current..]));
                 break;
             }
 
             if (match > current)
             {
-                BodyText.Inlines.Add(new Run(normalized[current..match]));
+                target.Inlines.Add(new Run(text[current..match]));
             }
 
-            var highlighted = new Run(normalized.Substring(match, query.Length))
+            var highlighted = new Run(text.Substring(match, query.Length))
             {
                 Background = new SolidColorBrush(Color.FromRgb(254, 240, 138)),
                 Foreground = new SolidColorBrush(Color.FromRgb(113, 63, 18)),
                 FontWeight = FontWeights.SemiBold
             };
-            BodyText.Inlines.Add(highlighted);
+            target.Inlines.Add(highlighted);
             firstMatch ??= highlighted;
             current = match + query.Length;
         }
 
-        if (normalized.Length == 0)
+        if (text.Length == 0)
         {
-            BodyText.Inlines.Add(new Run(string.Empty));
+            target.Inlines.Add(new Run(string.Empty));
         }
 
-        if (firstMatch is not null)
-        {
-            Dispatcher.BeginInvoke(
-                () => firstMatch.BringIntoView(),
-                DispatcherPriority.Loaded);
-        }
+        System.Windows.Automation.AutomationProperties.SetHelpText(
+            target,
+            firstMatch is null ? "No highlighted search" : $"Highlighted search: {query}");
+        return firstMatch;
     }
 
     private static string NormalizeBodyText(string body)

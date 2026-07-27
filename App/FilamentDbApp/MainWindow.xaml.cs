@@ -16962,6 +16962,30 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? $"Signed updates support the governed schema-v{BuildInfo.MinimumUpdateDatabaseSchema} public baseline through current schema v{BuildInfo.CurrentDatabaseSchema}."
                 : "BuildInfo update compatibility does not match the current SQLite schema or governed public baseline."));
         var helpSections = HelpContentCatalog.Sections;
+        var v5021RequiredHelpSections = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["materials.overview"] = "Manual Backup creates evidence",
+            ["manufacturers.overview"] = "ManufacturerID",
+            ["purchase-orders.overview"] = "repeat-safe",
+            ["inventory.overview"] = "recalculates summaries",
+            ["usage.overview"] = "reversal and replacement",
+            ["printers.overview"] = "saved quote references",
+            ["print-job-quotes.overview"] = "read-only in this view",
+            ["base-materials.overview"] = "BaseMaterialID",
+            ["settings.overview"] = "Changes apply prospectively"
+        };
+        var v5021TabMappings = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["Materials"] = "materials.overview",
+            ["Manufacturers"] = "manufacturers.overview",
+            ["Purchase Orders"] = "purchase-orders.overview",
+            ["Inventory"] = "inventory.overview",
+            ["Usage"] = "usage.overview",
+            ["Printers"] = "printers.overview",
+            ["Print Job Quotes"] = "print-job-quotes.overview",
+            ["Base Materials"] = "base-materials.overview",
+            ["Settings Manager"] = "settings.overview"
+        };
         var helpContractReady =
             helpSections.Count >= 10 &&
             helpSections.All(section =>
@@ -16970,10 +16994,19 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 !string.IsNullOrWhiteSpace(section.Summary) &&
                 !string.IsNullOrWhiteSpace(section.Body)) &&
             helpSections.Select(section => section.Id).Distinct(StringComparer.Ordinal).Count() == helpSections.Count &&
-            HelpContentCatalog.SectionIdForTab("Purchase Orders") == "purchasing-inventory" &&
             HelpContentCatalog.SectionIdForTab("Experimental Testing") == "experimental-testing" &&
             HelpContentCatalog.SectionIdForTab("Website Export") == "reports-website" &&
             typeof(MainWindow).GetMethod("OpenHelp", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        var v5021ReferenceContractReady =
+            v5021RequiredHelpSections.All(required =>
+                helpSections.Any(section =>
+                    string.Equals(section.Id, required.Key, StringComparison.Ordinal) &&
+                    section.Body.Contains(required.Value, StringComparison.Ordinal))) &&
+            v5021TabMappings.All(mapping =>
+                string.Equals(
+                    HelpContentCatalog.SectionIdForTab(mapping.Key),
+                    mapping.Value,
+                    StringComparison.Ordinal));
         var startToFinishGuide = helpSections.SingleOrDefault(section =>
             string.Equals(section.Id, HelpContentCatalog.StartHereId, StringComparison.Ordinal));
         var startToFinishContractReady =
@@ -16984,11 +17017,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             startToFinishGuide.Body.Contains("Build Public Report Package", StringComparison.Ordinal) &&
             startToFinishGuide.Body.Contains("READY FOR PUBLISH", StringComparison.Ordinal) &&
             startToFinishGuide.Body.Contains("second default-No live FTPS confirmation", StringComparison.Ordinal);
-        checks.Add(new VerificationCheck("v50.1.0 start-to-finish Help workflow contract",
-            helpContractReady && startToFinishContractReady,
-            helpContractReady && startToFinishContractReady
-                ? $"{helpSections.Count} unique offline topics include the ordered purchase, receiving, measurement, report, Preview, Verification and guarded publishing workflow."
-                : "Central Help structure or the required start-to-finish action/save/handoff contract is incomplete."));
+        checks.Add(new VerificationCheck("v50.2.1 data, cost and configuration Help reference contract",
+            helpContractReady && startToFinishContractReady && v5021ReferenceContractReady,
+            helpContractReady && startToFinishContractReady && v5021ReferenceContractReady
+                ? $"{helpSections.Count} unique offline topics retain the accepted workflow and cover nine mapped data, cost and configuration surfaces."
+                : "Central Help structure, accepted workflow, required reference text or tab-to-section mapping is incomplete."));
         var zeroDataProfileContractReady =
             IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
             IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&

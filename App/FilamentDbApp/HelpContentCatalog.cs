@@ -47,7 +47,7 @@ internal static class HelpContentCatalog
             printing/profile/link data and save before testing. MaterialID is the stable downstream join key.
 
             6. Review Inventory and optionally record Usage
-            Confirm spool MaterialID, quantity, weight, remaining weight, storage and immutable purchase snapshot in Inventory.
+            Confirm spool MaterialID, quantity, weight, remaining weight, storage and retained purchase evidence in Inventory.
             Inventory owns the Materials quantity projection. Usage is optional private evidence: select the active MaterialID and,
             optionally, a matching spool; record fixed grams, minutes and counts. Corrections append reversal/replacement events.
 
@@ -92,53 +92,248 @@ internal static class HelpContentCatalog
             "workflow", "landed costs", "receive reconcile", "inventory", "material", "measurements", "verification",
             "ready for publish", "production", "FTPS"),
         new(
-            "purchasing-inventory",
-            "Purchasing and cost",
-            "Purchase Orders, Inventory and Usage",
-            "Create purchase snapshots, receive lots and record append-only usage.",
-            """
-            Purchase Orders own supplier transactions and their currency snapshot. New Order and later grid edits auto-save. ECB data
-            is an optional reference prefill only for a session-new order; review rate/provenance before Calculate Landed Costs or
-            receiving. Calculate Landed Costs validates and persists allocations and updates current linked-Material pricing evidence.
-
-            Receive / Reconcile records counts and check status. Create Materials + Received Spools is the separate Inventory mutation:
-            only Filament lines create/reuse draft Materials and one spool per received unit. Other categories remain PO-only. A newer
-            exchange rate never rewrites the saved PO rate or created Inventory, Usage or quote history.
-
-            Usage records consumption as ledger events. Corrections add governed correcting events instead of silently changing
-            history. Confirm MaterialID, optional matching spool, fixed grams/minutes/count fields and provenance before recording.
-            """,
-            "purchase order", "supplier", "ECB", "exchange rate", "inventory", "receive", "usage", "correction"),
-        new(
-            "materials-catalogs",
+            "materials.overview",
             "Materials and catalogs",
-            "Materials, Manufacturers and Base Materials",
-            "Maintain stable material identity and governed reusable catalog values.",
+            "Materials reference",
+            "Canonical MaterialID records, fields, filters, lifecycle, validation and publication boundaries.",
             """
-            Materials is the primary material list. MaterialID is the stable join key used by measurements and downstream outputs.
-            Archive when history must be retained; delete only when the UI explicitly permits it and no supported relationship blocks it.
+            Purpose and ownership
+            Materials is the canonical SQLite source for MaterialID identity. Measurements, Inventory, Material Detail, analysis,
+            reports and website output join through MaterialID. Archived rows retain history but leave active output scope.
 
-            Manufacturers and Base Materials govern reusable values. Prefer exact binding to an existing catalog entry over creating
-            spelling variants. Unmapped legacy values remain visible until deliberately resolved.
+            Commands and persistence
+            Add creates a backup, generates a MaterialID and starts a default draft row. Duplicate copies product/pricing/profile facts
+            but clears review URL and resets test, video and archive state. Archive and Unarchive are reversible and auto-save after a
+            backup. Delete is permanent, automation-blocked, default-No and removes associated measurement references after backup.
+            Reset Columns changes only local layout. Manual Backup creates evidence; it is not a Save button. Normal grid edits auto-save.
 
-            Material Detail contains the selected material's general information, printing profile, mechanical results, charts,
-            analytics, comparisons, video planning, recommendations and notes.
+            Search and filters
+            Search plus Manufacturer, Material type, Category, Reinforcement and Test status control the visible workflow. Clear Filters
+            restores full active scope. Filters also affect native measurement visibility and global analysis/report Visible scope; they
+            never delete records.
+
+            Fields and states
+            Edit governed identity/catalog values, public choices, purchase/spool facts, MSRP/landed evidence, media, notes and archive
+            state. MaterialID, derived category/test/video flags, normalized USD/per-kg values, sort/source priority, Website Display
+            Name, Material Key and Validation are read-only/computed. Required identity includes MaterialID, Manufacturer, Product Line,
+            Base Material and Website Display Name.
+
+            Publication boundaries
+            Publish public reports controls linked public report artifacts. Publish public test details separately permits raw test
+            detail in eligible reports. Main Website DATA uses every active non-archived MaterialID. Save the intended choices before
+            building reports or Preview.
             """,
-            "MaterialID", "manufacturer", "base material", "archive", "material detail", "printing profile"),
+            "materialid", "manual backup", "add material", "duplicate", "archive", "unarchive", "delete material",
+            "reset columns", "search", "filters", "auto-save", "validation", "public reports", "public test details"),
         new(
-            "printers-quotes",
-            "Costing and quoting",
-            "Printers and Print Job Quotes",
-            "Maintain governed machine rates and immutable customer quote snapshots.",
+            "manufacturers.overview",
+            "Materials and catalogs",
+            "Manufacturers reference",
+            "Governed manufacturer records, exact binding, rename propagation and relationship-safe lifecycle.",
             """
-            Printers stores the governed time and energy inputs used when a new quote is calculated. Review currency, hourly cost,
-            power and related settings before quoting.
+            Commands and filters
+            Add and Duplicate create unique draft records and save immediately. Search narrows the grid; Show archived includes inactive
+            records. Archive / Restore changes activity without deleting history. Delete requires confirmation and backup and is blocked
+            while canonical Materials reference the ManufacturerID.
 
-            Print Job Quotes calculates an unsaved draft from the selected material, printer and job inputs. Saving creates an immutable
-            pricing snapshot. Later changes to Settings, printer rates, material prices or exchange-rate references must not recalculate
-            an already saved quote. Customer PDF output is produced from the saved snapshot.
+            Fields and auto-save
+            Name, Display Name, Country, Founded, Website, Logo URL, Description, Engineering Focus, Material Categories, Strengths,
+            Weaknesses, Sustainability, Typical Applications, Headquarters, Notes, Sort and Active are editable. Property changes
+            auto-save. A committed canonical rename propagates display-name snapshots to linked Materials; draft-name edits do not
+            prematurely propagate.
+
+            Bind Exact Material Names
+            This command previews only unique exact legacy-name matches and requires explicit confirmation before creating
+            ManufacturerID relationships. Near matches and ambiguous names remain unbound for owner review.
             """,
-            "printer", "hourly rate", "energy", "quote", "snapshot", "customer PDF"),
+            "manufacturer", "add", "duplicate", "bind exact", "archive", "restore", "delete", "show archived",
+            "rename", "auto-save", "relationship"),
+        new(
+            "purchase-orders.overview",
+            "Purchasing and cost",
+            "Purchase Orders reference",
+            "Order headers, items, exchange-rate provenance, landed costs, receiving and Inventory handoff.",
+            """
+            Order commands and save mode
+            New Order immediately persists a Draft. Delete Order requires confirmation and retains already-created Inventory spools.
+            Add Ordered Item immediately adds a default Filament line; Delete Item removes the selected line but not independent spools.
+            Header and line grid edits auto-save after commit.
+
+            Order header fields
+            PO ID is read-only. Edit Supplier, Order number/date, Workflow stage, Received date, Currency, Exchange rate, Tax treatment,
+            supplier totals/shipping/allocation/VAT/invoice, import VAT, customs, clearance, other fees and Notes. Rate source/date,
+            Cost status and Document are read-only. Stages are Draft, Ordered, Awaiting import charges, Awaiting delivery, Receiving,
+            Verified, Inventory created and Complete.
+
+            Ordered-item fields
+            Line ID is read-only. Edit description, Category, SKU, Expected/Received quantity, Check state, optional Material link,
+            storage, unit price, discount, unit weight, allocation toggle/manual shipping and Notes. Net/allocated/landed values and
+            Allocation status are calculated. Categories are Filament, Printer, Equipment, Spare Parts, Consumables and Other.
+
+            ECB and landed costs
+            Refresh ECB Reference is optional and offline-safe. Only orders created in the current session may receive reference prefill;
+            saved rates/provenance never refresh. Stale cache is labeled and governed Settings remain fallback. Calculate Landed Costs
+            commits edits, validates and saves allocations and synchronizes current linked-Material pricing evidence. Resolve the Cost
+            Allocation Validation message before receiving.
+
+            Receiving and downstream creation
+            Receive / Reconcile records counts, Check state, stage and received date; it does not create Inventory. Create Material from
+            Selected Item requires a described Filament line and creates/links a draft requiring later identity review. Create Materials
+            + Received Spools processes only positively received Filament lines, creates/reuses Materials and adds one Unopened spool per
+            unit; it is repeat-safe. Other categories remain PO-only. Attach Document is optional and copies the file into governed
+            storage.
+            """,
+            "new order", "delete order", "add ordered item", "delete item", "currency", "ECB", "landed costs",
+            "receive reconcile", "create materials received spools", "attachment", "auto-save", "workflow stage"),
+        new(
+            "inventory.overview",
+            "Purchasing and cost",
+            "Inventory reference",
+            "Editable spool records, filters, calculated summaries, validation and Usage handoff.",
+            """
+            Record model and commands
+            One row is one spool or homogeneous group. Add Spool uses Material defaults only for the first spool. Duplicate explicitly
+            copies the selected inventory record. Delete requires confirmation and removes the spool, not its Material. Refresh
+            Inventory commits edits, recalculates summaries and synchronizes the Materials quantity projection.
+
+            Filters and summaries
+            Search covers material, spool ID, supplier, storage, batch and order. Show Empty defaults on; Only Opened, Low Stock under
+            20 percent and Show Archived Materials narrow scope. Clear Filters restores the normal view. Summary cards show total,
+            unopened/opened/empty, remaining, estimated value, average cost/kg and review count.
+
+            Editable and calculated fields
+            Spool ID is read-only. Edit Material, Status, Qty, Spool g, Remaining g/spool, Storage, Batch, Price/spool, Currency,
+            Supplier, Purchase date, Order and Notes. Status is Unopened, Opened or Empty and controls row color. The calculated grid
+            shows remaining percent, estimated value, cost/kg and Validation/Review.
+
+            Save, validation and handoff
+            Add, Duplicate and committed cell edits persist. Validation reviews quantity, weights, remaining range, storage and cost
+            evidence; OK means no issues. Purchase receiving can create spool rows. Usage can select a same-MaterialID spool and
+            atomically reduce remaining weight.
+            """,
+            "inventory", "add spool", "duplicate", "delete", "refresh inventory", "show empty", "only opened",
+            "low stock", "archived", "remaining", "estimated value", "validation", "usage"),
+        new(
+            "usage.overview",
+            "Purchasing and cost",
+            "Usage reference",
+            "Explicit immutable usage events, Inventory-linked consumption, totals and append-only corrections.",
+            """
+            Record Usage
+            Select an active MaterialID and optionally a matching Inventory spool. Enter event Type, Occurred UTC, fixed Filament g,
+            Provenance, Print minutes, Hands-on minutes, Produced/Accepted/Rejected counts, Source and Note. Inputs do not auto-save;
+            Record Usage validates and commits one explicit event.
+
+            Inventory and validation
+            A linked spool must belong to the same MaterialID and have sufficient remaining weight. Recording occurs in the same SQLite
+            transaction as the spool decrement. MaterialID, occurrence, amounts, counts and provenance are validated.
+
+            Ledger and totals
+            Effective events, ledger rows, net filament, print/hands-on time, part counts and evidence coverage are read-only summaries.
+            The ledger retains timestamp, MaterialID, Type, Entry kind, spool, quantities, durations, counts, source, note and Event ID.
+
+            Corrections
+            Correct Selected prepares a replacement but never edits the accepted row. Commit appends an exact reversal and replacement
+            transaction; MaterialID cannot change and a reversal cannot be reversed again. Cancel Correction abandons the draft only.
+            """,
+            "usage", "record usage", "correct selected", "cancel correction", "filament grams", "provenance",
+            "inventory spool", "ledger", "immutable", "reversal", "replacement"),
+        new(
+            "printers.overview",
+            "Costing and quoting",
+            "Printers reference",
+            "Governed machine-cost fields, validation, lifecycle and prospective quote-rate handoff.",
+            """
+            Commands and save behavior
+            Add Printer, Duplicate and Archive / Restore persist immediately. Cell edits save after commit; Save performs explicit
+            validation/persistence. Delete is default-No and can be blocked by saved quote references, restoring the row on failure.
+
+            Fields and validation
+            Printer ID is read-only. Edit Name, Manufacturer, Model, Currency, Purchase cost, Upfront cost, Annual maintenance,
+            estimated Life years, Uptime percent, Power watts, Buffer override, Active and Notes. Name and governed rate inputs must be
+            valid; Uptime is 0 through 100. The status text reports the resulting hourly-rate readiness.
+
+            Quote handoff
+            Active Printer plus prospective Settings inputs produces hourly cost evidence for a new quote draft. Later Printer/Settings
+            changes do not automatically update an existing saved quote. Obsolete or test quotes can be explicitly deleted from history.
+            """,
+            "printer", "add printer", "duplicate", "archive restore", "delete", "save", "currency", "uptime",
+            "power", "buffer", "hourly rate", "quote"),
+        new(
+            "print-job-quotes.overview",
+            "Costing and quoting",
+            "Print Job Quotes reference",
+            "Prospective calculation inputs, saved quote history, customer PDF and permanent deletion.",
+            """
+            Customer and material inputs
+            Enter Customer, Description, Prepared by and Quote currency. Choose a canonical Material or enable explicit manual cost/kg
+            with its currency. Enter grams per part and quantity. The evidence text explains the selected pricing provenance.
+
+            Printer, time and price inputs
+            Choose an active Printer and enter Print hours, print/post-processing labor, consulting, design/change time, additional ISK
+            charges and target margin. The calculation summary updates prospectively while editing; draft inputs are not history.
+
+            Saved quote history
+            Save Quote validates the complete draft and writes calculation, Material, Printer, rates, Settings and evidence snapshots.
+            Later Settings, Material, Inventory, Printer or exchange-rate changes do not automatically recalculate a saved row. History
+            is read-only in this view and shows quote number, UTC creation, customer, Material/Printer snapshots, final price and currency.
+
+            PDF and deletion
+            Export Selected PDF requires a saved history selection and renders the customer-safe saved snapshot. Delete Selected is a
+            permanent default-No removal of the quote and its snapshot; it is not archive.
+            """,
+            "quote", "customer", "prepared by", "currency", "manual cost", "material", "printer", "labor",
+            "margin", "save quote", "history", "PDF", "saved snapshot", "delete"),
+        new(
+            "base-materials.overview",
+            "Materials and catalogs",
+            "Base Materials reference",
+            "Canonical material families, controlled test-print profiles, exact binding and relationship-safe deletion.",
+            """
+            Fields
+            Edit Base Material, Category, Sort Order; minimum/recommended/maximum nozzle, bed, speed and cooling values; cooling
+            guidance; drying temperature/hours; enclosure; printer/G-code and slicer references; Profile ID and Profile kind.
+
+            Commands and persistence
+            Add Base Material and Duplicate persist immediately. Grid value edits auto-save; names must be non-empty and unique.
+            Canonical rename propagates snapshots to linked Materials. Reset Columns requires confirmation and changes layout only.
+
+            Binding and deletion
+            Bind Exact Material Names previews unique exact unlinked names and requires explicit confirmation before adding
+            BaseMaterialID relationships. Delete is automation-blocked and refused while any Material references the ID; an unreferenced
+            deletion is immediate, so verify the selected row first.
+
+            Downstream meaning
+            Profiles are controlled 3DPIceland test-print baselines consumed by Material Detail and testing workflow, not manufacturer
+            recommendations.
+            """,
+            "base material", "add", "duplicate", "delete", "reset columns", "bind exact", "nozzle", "bed",
+            "speed", "cooling", "drying", "profile", "relationship"),
+        new(
+            "settings.overview",
+            "Configuration",
+            "Settings Manager reference",
+            "Governed measurement, calculation, currency, purchasing and deployment settings with prospective ownership.",
+            """
+            Grid and sections
+            Section, Parameter, Unit, Used By and Notes are read-only; Value is editable. Sections include measurement/calculation
+            constants, multi-currency purchasing reference values and Deployment/FTPS settings. Base Material Catalog has separate
+            ownership even though it participates in the save workflow.
+
+            Commands
+            Save Settings writes General and Deployment settings and preserves the separately governed Base Material Catalog. Reload
+            Saved Settings is default-No and discards unsaved General/Deployment edits without changing Base Materials. Restore
+            Built-in Defaults is default-No and replaces/saves General rows only; Deployment and Base Materials remain. Reset Columns
+            changes layout only.
+
+            Prospective boundary
+            Settings feed ResultsService calculations, offline purchasing currency fallback, Printer rates, quote drafts and guarded
+            deployment. Changes apply prospectively and may refresh current calculated views/drafts. They never rewrite saved Purchase
+            Order rates, received Inventory provenance, Usage history or saved quote snapshots. ECB remains an optional reference for
+            session-new Purchase Orders, not the Settings owner.
+            """,
+            "settings", "value", "measurement", "calculation", "currency", "purchasing", "deployment", "FTPS",
+            "save settings", "reload", "restore defaults", "reset columns", "prospective"),
         new(
             "measurements",
             "Testing and engineering",
@@ -249,14 +444,21 @@ internal static class HelpContentCatalog
 
     internal static string SectionIdForTab(string? tabHeader) => tabHeader switch
     {
-        "Purchase Orders" or "Inventory" or "Usage" => "purchasing-inventory",
-        "Materials" or "Manufacturers" or "Base Materials" or "Material Detail" => "materials-catalogs",
-        "Printers" or "Print Job Quotes" => "printers-quotes",
+        "Materials" => "materials.overview",
+        "Manufacturers" => "manufacturers.overview",
+        "Purchase Orders" => "purchase-orders.overview",
+        "Inventory" => "inventory.overview",
+        "Usage" => "usage.overview",
+        "Printers" => "printers.overview",
+        "Print Job Quotes" => "print-job-quotes.overview",
+        "Base Materials" => "base-materials.overview",
+        "Settings Manager" => "settings.overview",
+        "Material Detail" => "materials.overview",
         "Tensile Measurements" or "Impact Measurements" or "Stiffness Measurements" => "measurements",
         "Experimental Testing" => "experimental-testing",
         "Rankings Dashboard" or "Category Rankings" or "Awards & Winners" or "Dashboard Insights" => "analysis",
         "Reports / PDF Export" or "Website Export" => "reports-website",
-        "Settings Manager" or "AI Assistant" or "YouTube Research" => "settings-tools",
+        "AI Assistant" or "YouTube Research" => "settings-tools",
         _ => StartHereId
     };
 }

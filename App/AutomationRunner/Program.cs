@@ -201,7 +201,37 @@ internal static class Program
             Require(
                 normalizedHelpBody.Contains("scope and output folder", StringComparison.Ordinal),
                 "Central Help retained source-only line breaks instead of wrapping text to the visible width.");
-            Record("central-help", true, $"Opened contextual topic '{helpTitle}', verified workflow search and normalized wrapping");
+            ((ValuePattern)helpValuePattern).SetValue("manual backup creates evidence");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Materials reference",
+                    StringComparison.Ordinal) &&
+                FindById(help, "HelpSectionBody").Current.Name.Contains(
+                    "it is not a Save button",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the Materials command/save-boundary reference.");
+            ((ValuePattern)helpValuePattern).SetValue("saved quote references");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Printers reference",
+                    StringComparison.Ordinal) &&
+                FindById(help, "HelpSectionBody").Current.Name.Contains(
+                    "can be explicitly deleted from history",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the Printer validation and saved-quote lifecycle reference.");
+            ((ValuePattern)helpValuePattern).SetValue("lifecycle");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionSummary").Current.HelpText,
+                    "Highlighted search: lifecycle",
+                    StringComparison.Ordinal),
+                "Central Help did not highlight a search match found in topic summary metadata.");
+            Record(
+                "central-help",
+                true,
+                $"Opened contextual topic '{helpTitle}', verified body/summary highlighting, wrapping and v50.2.1 reference searches");
             CloseWindow(help, application.Id);
 
             Expand(FindById(main, "HelpMenu"), application.Id);

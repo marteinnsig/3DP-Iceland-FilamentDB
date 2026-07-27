@@ -1,6 +1,6 @@
 # 3DPIceland Engineering Platform User Guide
 
-Version: v50.1.0 — Start-to-finish Workflow Guide
+Version: v50.2.1 — Data, Cost and Configuration Reference
 
 The canonical operational guide is built into the application:
 
@@ -11,14 +11,17 @@ The canonical operational guide is built into the application:
    publish, verification or recovery.
 
 The Help window is local and works offline. It covers the complete workflow
-from Purchase Orders and Inventory through Materials, measurements, analysis,
-reports, Website Preview, guarded Production publishing and recovery.
+and now includes exhaustive references for Materials, Manufacturers, Purchase
+Orders, Inventory, Usage, Printers, Print Job Quotes, Base Materials and
+Settings Manager. Remaining per-tab reference coverage is delivered through
+the recorded v50.2.2-v50.2.4 increments.
 
 Important safety boundaries:
 
 - ECB rates are optional references for new unsaved purchase data only.
-- Saved purchases, inventory lots, material costs and quotes are immutable
-  historical snapshots and are never recalculated from a later rate.
+- Saved purchases, inventory lots and material costs retain their historical
+  rate evidence. Saved quotes are not automatically recalculated from a later
+  rate and can be explicitly deleted from quote history.
 - Production and FTPS require explicit authority and default to No.
 - Run Verification Center and require PASS before release or publishing.
 - Automation must use disposable profiles and must never mutate the canonical

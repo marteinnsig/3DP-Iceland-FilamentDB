@@ -2,6 +2,38 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v50.2.1 - Data, Cost and Configuration Reference
+
+- Replaces three coarse Help topics with nine stable searchable references for
+  Materials, Manufacturers, Purchase Orders, Inventory, Usage, Printers, Print
+  Job Quotes, Base Materials and Settings Manager.
+- Documents every visible command, editable/read-only field group, filter,
+  validation state, persistence boundary and cross-tab handoff in this scope.
+- Makes auto-save, explicit Save, calculated persistence and non-mutating
+  layout/backup actions distinct.
+- Preserves the governed prospective boundary: ECB and Settings may inform new
+  work, but existing saved evidence is not automatically recalculated.
+- Describes Quotes as saved read-only history with explicit deletion, not as
+  immutable history.
+- Corrects stale Settings and Printer lifecycle guidance without changing their
+  runtime behavior.
+- Adds exact tab-to-section mappings, required content markers and deterministic
+  Help searches to Full Data Verification and the disposable smoke scenario.
+- Disposable smoke `20260727101000-dddd3159` passes Full Data Verification
+  370/370 with exact logical/business-state equality.
+- Quote-terminology correction smoke `20260727101828-1f53f4e1` also passes
+  370/370 with exact logical/business-state equality.
+- Extends highlighting from body-only text to visible category, title and
+  summary text; hidden keyword-only hits no longer produce unhighlightable
+  results.
+- Corrects Start-to-finish step 6 from `immutable purchase snapshot` to
+  `retained purchase evidence`.
+- Highlight correction smoke `20260727102551-3b35ebbc` passes 370/370 with
+  exact logical/business-state equality.
+- Schema remains v37. Owner accepted all nine references, corrected Quote and
+  purchase terminology, wrapping, and search highlighting in headers and body.
+  v50.2.1 is canonical; parent v50 continues at v50.2.2.
+
 ## v50.1.0 - Start-to-finish Workflow Guide
 
 - Expands central Help into a thirteen-stage owner workflow from Purchase Order
