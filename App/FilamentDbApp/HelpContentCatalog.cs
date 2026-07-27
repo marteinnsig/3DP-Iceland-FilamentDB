@@ -1305,6 +1305,12 @@ internal static class HelpContentCatalog
             or publishes. Validate Materials is read-only validation; Rebuild Computed Fields is mutating. The rendering prototype is a
             snapshot-only diagnostic surface.
 
+            Runtime profile identity
+            The main header always names the active ownership contract. OWNER / PRODUCTION uses the configured owner database and
+            owner preferences and retains separately guarded Production/FTPS/update capabilities. VERIFICATION / DISPOSABLE uses
+            manifest-contained database, preferences and output roots; owner database, Production/FTPS and general updates are blocked.
+            Profile identity never grants an action by itself and never weakens crash, recovery, security or support evidence.
+
             File, update and publishing commands
             Backup and Recovery Center opens the runtime recovery window. Choose Storage Folder is a guarded storage mutation; Open
             Storage Folder is read-only navigation. Update Readiness and Check for Updates are read-only discovery until a separately

@@ -1,4 +1,24 @@
-# Current Build Notes - v50.4.4
+# Current Build Notes - v51.1.0
+
+## Runtime Profile Foundation
+
+The main shell now always identifies the active ownership contract. Normal
+runtime shows `OWNER / PRODUCTION`; disposable tester runtime shows
+`VERIFICATION / DISPOSABLE — {ProfileId}`. System Diagnostics and Verification
+report the same profile kind, ID, database/preferences/output ownership and
+effective owner-database, Production/FTPS and update capabilities.
+
+The existing automation manifest, containment, executable-hash and scenario
+authorization implementation remains the safety owner. The new descriptor does
+not grant actions or skip crash, recovery, security, updater transaction or
+support evidence. Help and zero-gap inventory are aligned.
+
+Debug/Release app and tester builds pass with zero warnings/errors. Disposable
+profile `20260727141117-d8438ac6` passes Full Data Verification 379/379 with
+exact logical/business-state equality. Owner Verification and Diagnostics
+confirm `OWNER / PRODUCTION`, the canonical database path and governed
+capabilities. Owner runtime acceptance passes on 2026-07-27; schema remains
+v37 and v51.2 is current.
 
 ## Help Zero-gap Final Acceptance
 

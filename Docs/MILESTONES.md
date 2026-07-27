@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v51.1.0 - Runtime Profile Foundation
+
+Owner Production and Disposable Verification now expose one consistent runtime
+identity, path-ownership and capability contract across the shell,
+Verification, Diagnostics, Help and tester evidence. Owner and disposable Full
+Data Verification pass 379/379; disposable state recovery is exact. Schema
+remains v37 and Governed Runtime Profiles continues at v51.2.
+
 # v50.4.4 - Help Zero-gap Final Acceptance
 
 The central offline Help system now covers every registered supported control

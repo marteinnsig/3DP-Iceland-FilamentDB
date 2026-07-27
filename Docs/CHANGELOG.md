@@ -2,6 +2,28 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v51.1.0 - Runtime Profile Foundation
+
+- Records v51.0 research and the authoritative v51.1-v51.4 delivery sequence
+  before implementation.
+- Defines one runtime descriptor for implicit Owner Production and the existing
+  manifest-governed Disposable Verification runtime.
+- Shows `OWNER / PRODUCTION` or `VERIFICATION / DISPOSABLE` in the main header
+  with effective owner-database, Production/FTPS and update capabilities.
+- Adds profile kind, ID, actual database path, preferences/output ownership and
+  capability evidence to Verification, System Diagnostics and tester JSON.
+- Preserves the existing automation marker name, path containment, executable
+  SHA-256, scenario authorizations and hard Production/FTPS/update locks.
+- Updates Help and its zero-gap inventory for the renamed runtime identity
+  field; deterministic smoke verifies the Help boundary and diagnostics.
+- Debug/Release app and tester builds pass with zero warnings/errors.
+- Disposable profile `20260727141117-d8438ac6` passes Full Data Verification
+  379/379 with exact logical/business-state equality.
+- Owner Verification and Diagnostics confirm `OWNER / PRODUCTION`, the canonical
+  database path and allowed governed capabilities.
+- Owner runtime acceptance and Full Data Verification 379/379 pass on
+  2026-07-27; schema remains v37 and v51.2 is current.
+
 ## v50.4.4 - Help Zero-gap Final Acceptance
 
 - Replaces the long flat Help contents list with an expandable category/topic

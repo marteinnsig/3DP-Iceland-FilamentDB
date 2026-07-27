@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v51.1.0 - Runtime Profile Foundation
+
+The main shell, Verification and System Diagnostics share one governed runtime
+descriptor for Owner Production and manifest-contained Disposable Verification.
+Existing automation containment, executable-hash, scenario authorization and
+hard owner-database/Production/FTPS/update locks remain intact. Debug/Release,
+security, documentation and disposable Full Data Verification 379/379 pass
+with exact state equality. Owner evidence confirms `OWNER / PRODUCTION`, the
+canonical database path and governed capabilities with Verification 379/379.
+Schema remains v37; v51 continues at v51.2.
+
 ## v50.4.4 - Help Zero-gap Final Acceptance
 
 The final Help navigation uses an expandable category/topic tree while search,

@@ -2,6 +2,22 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v51.1.0 - Runtime Profile Foundation
+
+Research found only two current runtime contracts: implicit owner/normal and
+manifest-governed automation/disposable. Release measurement reached first
+usable Materials at 8.66 seconds; Native Materials initialization dominated at
+3.43 seconds, so profiles govern isolation/capabilities rather than skipping
+mandatory evidence for speed.
+
+The candidate formalizes Owner Production and Disposable Verification identity
+without changing their data paths or safety authority. Verification,
+Diagnostics, Help and tester evidence consume the same descriptor. Profile
+`20260727141117-d8438ac6` passes 379/379 with exact logical and business-state
+equality. Owner Verification and Diagnostics confirm `OWNER / PRODUCTION`, the
+canonical database path and governed capabilities. Owner runtime acceptance
+passes on 2026-07-27; v51.1.0 is canonical and v51.2 is current.
+
 ## v50.4.4 - Help Zero-gap Final Acceptance
 
 The v50.4 closure candidate replaces the flat contents list with a conventional

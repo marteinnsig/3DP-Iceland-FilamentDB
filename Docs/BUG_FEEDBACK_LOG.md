@@ -42,14 +42,33 @@ idea. Historical free-form entries remain in their original language and order.
 |---|---:|
 | Open | 21 |
 | In progress | 0 |
-| Partially solved | 2 |
+| Partially solved | 3 |
 | Solved | 57 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **84** |
+| **Total tracked findings** | **85** |
 
 ## Tracked findings
+
+Date: 2026-07-27
+Area: Runtime profiles / ownership and acceptance isolation
+Type: Workflow friction / Data integrity
+Severity: Important
+Status: Partially solved
+What happened: Normal owner runtime was implicit while disposable automation exposed a separate identity and isolated paths. There was
+no common contract describing database/preferences/output ownership or effective Production, FTPS and update capabilities.
+Expected behavior: Show an unambiguous governed runtime identity, preserve owner/disposable isolation and never weaken mandatory crash,
+recovery, security, updater transaction, Verification or support evidence.
+Steps to reproduce: Compare normal startup with a manifest-governed disposable tester startup and inspect System Diagnostics.
+Screenshot / export / report attached: v51.0 research and disposable profile `20260727141117-d8438ac6`.
+Resolution: v51 is split into v51.0 research plus v51.1-v51.4 identity, Clean Readiness, classification and final reconciliation.
+v51.1.0 implements the shared Owner Production/Disposable Verification descriptor and visible diagnostics. Owner acceptance passes;
+Clean Readiness, classification and final reconciliation remain owned by v51.2-v51.4.
+Verification evidence: Disposable smoke passes Full Data Verification 379/379 with exact state equality and hard
+owner-database/Production/FTPS/update blocks. Owner evidence
+`3DPIceland_FilamentDB_Verification_20260727_141617.txt` passes 379/379; Diagnostics
+`3DPIceland_FilamentDB_System_Diagnostics_20260727_141552.txt` confirms the canonical database path and governed capabilities.
 
 Date: 2026-07-27
 Area: Help / Exhaustive control and editable-field coverage

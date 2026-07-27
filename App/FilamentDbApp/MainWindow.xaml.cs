@@ -158,7 +158,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         RunStartupPhase("MainWindow.InitializeComponent", InitializeComponent);
-        ApplyAutomationRuntimeProfile();
+        ApplyRuntimeProfile();
         RunStartupPhase("Workspace tab ordering", ApplyWorkspaceTabPriorityOrder);
         RunStartupPhase("Website template manager", RefreshWebsiteTemplateManager);
         _nativeMaterialSearchDebounceTimer.Tick += NativeMaterialSearchDebounceTimer_Tick;
@@ -195,13 +195,16 @@ public partial class MainWindow : Window
         App.StartupPerformance.Mark("MainWindow constructor completed");
     }
 
-    private void ApplyAutomationRuntimeProfile()
+    private void ApplyRuntimeProfile()
     {
+        var runtimeProfile = RuntimeProfileContext.Current;
+        RuntimeProfileIdentityText.Text = runtimeProfile.VisibleIdentity;
+        RuntimeProfileIdentityText.Foreground = runtimeProfile.IsDisposable
+            ? new SolidColorBrush(Color.FromRgb(251, 191, 36))
+            : new SolidColorBrush(Color.FromRgb(134, 239, 172));
+        AutomationProperties.SetHelpText(RuntimeProfileIdentityText, runtimeProfile.CapabilitySummary);
         if (!AutomationRuntimeProfile.IsActive) return;
-        AutomationProfileIdentityText.Text = AutomationRuntimeProfile.VisibleIdentity;
-        AutomationProfileIdentityText.Visibility = Visibility.Visible;
-        Title += " — " + AutomationRuntimeProfile.VisibleIdentity;
-        AutomationProperties.SetAutomationId(AutomationProfileIdentityText, "AutomationProfileIdentity");
+        Title += " — " + runtimeProfile.VisibleIdentity;
         ReportOutputFolderBox.Text = AutomationRuntimeProfile.Current!.OutputFolder;
         ReportOutputFolderBox.IsReadOnly = true;
         AutomationCrudPanel.Visibility = AutomationRuntimeProfile.Current.MaterialCrudAuthorized
@@ -13236,6 +13239,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         {
             schema = "3dpiceland-automation-verification-v1",
             profileId = profile.ProfileId,
+            runtimeProfileKind = RuntimeProfileContext.Current.Kind.ToString(),
+            runtimeProfileIdentity = RuntimeProfileContext.Current.VisibleIdentity,
+            runtimeCapabilities = RuntimeProfileContext.Current.CapabilitySummary,
             releaseVersion = BuildInfo.Version,
             releaseCode = BuildInfo.ReleaseCode,
             releaseTitle = BuildInfo.ReleaseTitle,
@@ -13277,6 +13283,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Calculation Engine: Services/Calculations");
         sb.AppendLine("Source of truth: SQLite and MaterialID-based native rows");
         sb.AppendLine("Validation source: Excel workbook imports/exports only");
+        sb.AppendLine();
+        AppendRuntimeProfileDiagnostics(sb);
         sb.AppendLine();
         sb.AppendLine(BuildVerificationSummaryReport());
         sb.AppendLine();
@@ -13430,6 +13438,23 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         window.ShowDialog();
     }
 
+    private void AppendRuntimeProfileDiagnostics(StringBuilder sb)
+    {
+        var profile = RuntimeProfileContext.Current;
+        sb.AppendLine("Runtime Profile");
+        sb.AppendLine("---------------");
+        sb.AppendLine("Identity: " + profile.VisibleIdentity);
+        sb.AppendLine("Kind: " + profile.Kind);
+        sb.AppendLine("Profile ID: " + profile.ProfileId);
+        sb.AppendLine("Disposable: " + profile.IsDisposable);
+        sb.AppendLine("Database ownership: " + profile.DatabaseOwnership);
+        sb.AppendLine("Database path: " + _database.DatabasePath);
+        sb.AppendLine("Preferences ownership: " + profile.PreferencesOwnership);
+        sb.AppendLine("Output ownership: " + profile.OutputOwnership);
+        sb.AppendLine("Capabilities: " + profile.CapabilitySummary);
+        sb.AppendLine("Profile identity does not weaken crash, recovery, security, updater transaction or support evidence.");
+    }
+
     private string BuildSystemDiagnosticsReport()
     {
         var sb = new StringBuilder();
@@ -13445,6 +13470,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Windows/OS: " + Environment.OSVersion);
         sb.AppendLine("Process working set: " + FormatByteSize(Environment.WorkingSet));
         sb.AppendLine("64-bit process: " + Environment.Is64BitProcess);
+        sb.AppendLine();
+
+        AppendRuntimeProfileDiagnostics(sb);
         sb.AppendLine();
 
         sb.AppendLine("ECB Exchange-rate Reference (read-only)");
@@ -13961,6 +13989,33 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
     private List<VerificationCheck> BuildVerificationChecks()
     {
         var checks = new List<VerificationCheck>();
+        var runtimeProfile = RuntimeProfileContext.Current;
+        var ownerProfileContract = RuntimeProfileContext.DescribeOwnerProduction();
+        var runtimeProfileFoundationReady =
+            ownerProfileContract.Kind == RuntimeProfileKind.OwnerProduction &&
+            ownerProfileContract.ProfileId == "owner-production" &&
+            !ownerProfileContract.IsDisposable &&
+            ownerProfileContract.OwnerDatabaseAllowed &&
+            ownerProfileContract.ProductionAndFtpsAllowed &&
+            ownerProfileContract.UpdatesAllowed &&
+            FindName("RuntimeProfileIdentityText") is TextBlock runtimeIdentity &&
+            AutomationProperties.GetAutomationId(runtimeIdentity) == "RuntimeProfileIdentity" &&
+            string.Equals(runtimeIdentity.Text, runtimeProfile.VisibleIdentity, StringComparison.Ordinal) &&
+            HelpContentCatalog.Sections.Single(
+                section => section.Id == "menu-runtime.controls-fields").Body.Contains(
+                "OWNER / PRODUCTION uses",
+                StringComparison.Ordinal) &&
+            (!AutomationRuntimeProfile.IsActive ||
+             (runtimeProfile.Kind == RuntimeProfileKind.DisposableVerification &&
+              runtimeProfile.IsDisposable &&
+              !runtimeProfile.OwnerDatabaseAllowed &&
+              !runtimeProfile.ProductionAndFtpsAllowed &&
+              !runtimeProfile.UpdatesAllowed));
+        checks.Add(new VerificationCheck("v51.1 governed runtime profile identity and capability contract",
+            runtimeProfileFoundationReady,
+            runtimeProfileFoundationReady
+                ? $"{runtimeProfile.VisibleIdentity}; {runtimeProfile.CapabilitySummary}; database ownership: {runtimeProfile.DatabaseOwnership}"
+                : "Owner/Disposable runtime identity, visible AutomationId or effective capability contract is incomplete."));
         var automationFoundationReady =
             AutomationRuntimeProfile.MarkerFileName == ".3dpiceland-disposable-profile.json" &&
             typeof(AutomationRuntimeProfile).GetMethod(nameof(AutomationRuntimeProfile.Configure)) is not null &&

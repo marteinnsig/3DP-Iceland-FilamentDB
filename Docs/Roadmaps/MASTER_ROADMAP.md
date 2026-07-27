@@ -2,13 +2,13 @@
 
 Current canonical release: **v50.4.4 — Help Zero-gap Final Acceptance**
 
-Last runtime-accepted baseline: **v50.4.4 — Help Zero-gap Final Acceptance**
+Last runtime-accepted baseline: **v51.1.0 — Runtime Profile Foundation**
 
-Current application candidate: **None; v51.0 research is current**
+Current application candidate: **None; v51.2 is current**
 
-Current roadmap increment: **v51.0 — Governed Development/Verification and Production/Clean Profiles**
+Current roadmap increment: **v51.2 — Clean Readiness Profile and Zero-data Diagnostics**
 
-Current acceptance note: v50.4.4 and parent v50 are runtime/UI accepted with Verification 378/378.
+Current acceptance note: v51.1.0 is runtime accepted with owner and disposable Verification 379/379.
 
 Next note: v51.0 is research-first; measure profile cost and boundaries before implementation.
 
@@ -2164,9 +2164,41 @@ to unstarted authoritative planning slots.
   - Run all release gates and a dummy-proof manual readability/control audit before closing v50 and advancing to v51.
   - Disposable profile `20260727134442-edf82227` passes Verification 378/378 with exact state equality.
 - **v51.0 — Governed Development/Verification and Production/Clean Profiles**
-  - State: Current authoritative research increment; implementation has not started.
+  - State: Research complete; v51.1 is current.
   - Research only until diagnostics have measured cost.
   - Mandatory crash, recovery, security and support evidence can never be removed.
+  - Current runtime has implicit owner/normal and manifest-governed automation/disposable contracts, not four general profiles.
+  - Release measurement with 201 active Materials reached first usable view at 8.66 s and deferred completion at 9.59 s.
+  - MainWindow construction took 4.69 s; Native Materials initialization dominated at 3.43 s.
+  - Profiles therefore govern identity, isolation and capabilities; they must not hide modules or skip mandatory evidence for speed.
+  - Completion condition: owner accepts the three-contract model and the bounded v51.1-v51.4 sequence before implementation.
+- **v51.1 — Runtime Identity, Manifest and Capability Foundation**
+  - State: Complete, canonical and owner runtime accepted on 2026-07-27.
+  - Define one runtime descriptor for Owner Production and Disposable Verification while preserving existing automation hard locks.
+  - Show unambiguous profile identity in the main shell and System Diagnostics.
+  - Report database/preferences/output ownership and effective Production, FTPS and update capabilities without exposing secrets.
+  - Preserve the accepted owner database path, automation marker validation, executable hash and scenario authorization.
+  - Completion condition: deterministic identity/capability gates, Full Data Verification and owner runtime acceptance pass.
+  - Disposable profile `20260727141117-d8438ac6` passes Verification 379/379 with exact state equality.
+  - Owner Verification and Diagnostics confirm OWNER / PRODUCTION, the canonical database path and governed capabilities.
+- **v51.2 — Clean Readiness Profile and Zero-data Diagnostics**
+  - State: Current authoritative increment.
+  - Add a manifest-governed isolated empty/seedless profile for first-run, readiness, compatibility and zero-data testing.
+  - Keep owner database, preferences, credentials, Production, FTPS and general updates inaccessible.
+  - Distinguish legitimate zero-data Not applicable checks from release/identity/security failures that must remain FAIL.
+  - Completion condition: clean-start and restart evidence pass without owner-state access or persistent automation residue.
+- **v51.3 — Verification Classification and Mandatory Evidence Contract**
+  - State: Planned after v51.2 acceptance.
+  - Make profile identity explicit in Verification while retaining Full Data Verification for canonical populated data.
+  - Keep crash, recovery, security, updater transaction, path ownership and support evidence mandatory in every profile.
+  - Prevent a profile from converting unexpected readiness or release failures into Not applicable.
+  - Completion condition: deterministic populated/clean matrices prove honest PASS/FAIL/Not applicable classification.
+- **v51.4 — Profile Acceptance, Migration and Retirement Reconciliation**
+  - State: Planned after v51.3 acceptance.
+  - Reconcile startup, preferences, diagnostics, recovery, updater, credentials, reports, tester and cleanup ownership.
+  - Retire superseded identity fields/adapters only after every replacement path is runtime accepted.
+  - Run Debug/Release, security/static gates, disposable populated/clean scenarios and final owner profile review.
+  - Completion condition: all profile paths are unambiguous, isolated and accepted; parent v51 may then close.
 - **v52.0 — Optional OpenAI Assistant Integration Contract**
   - State: Planned; implementation cannot begin before v47 workflow and data-boundary acceptance.
   - Keep the accepted local deterministic assistant available as the offline and failure-safe path.

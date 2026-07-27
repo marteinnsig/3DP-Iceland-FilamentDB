@@ -74,10 +74,15 @@ internal static class Program
                 excludeVolatileTimestamps: true);
             Record("database-runtime-baseline", true, databaseHashBefore);
 
-            var identity = FindById(main, "AutomationProfileIdentity");
+            var identity = FindById(main, "RuntimeProfileIdentity");
             var identityName = identity.Current.Name;
-            Require(identityName.Contains("AUTOMATION / DISPOSABLE", StringComparison.Ordinal),
-                "Disposable profile identity is not visible.");
+            Require(identityName.Contains("VERIFICATION / DISPOSABLE", StringComparison.Ordinal),
+                "Disposable Verification runtime profile identity is not visible.");
+            Require(
+                identity.Current.HelpText.Contains("Owner database: BLOCKED", StringComparison.Ordinal) &&
+                identity.Current.HelpText.Contains("Production/FTPS: BLOCKED", StringComparison.Ordinal) &&
+                identity.Current.HelpText.Contains("updates: BLOCKED", StringComparison.Ordinal),
+                "Disposable runtime profile capability summary is incomplete.");
             Record("profile-identity", true, identityName);
             CaptureWindow(main, IOPath.Combine(root, "evidence", "main-window.png"));
 
@@ -193,10 +198,14 @@ internal static class Program
                 FindById(diagnostics, "ExportSystemDiagnostics").Current.ControlType == ControlType.Button &&
                 diagnosticsReport.Contains(
                     "Diagnostics do not modify application files",
+                    StringComparison.Ordinal) &&
+                diagnosticsReport.Contains("Identity: VERIFICATION / DISPOSABLE", StringComparison.Ordinal) &&
+                diagnosticsReport.Contains(
+                    "Capabilities: Owner database: BLOCKED; Production/FTPS: BLOCKED; updates: BLOCKED",
                     StringComparison.Ordinal),
-                "System Diagnostics did not expose read-only evidence and the distinct mutating recalculation control.");
+                "System Diagnostics did not expose runtime identity/capabilities, read-only evidence and the distinct mutating recalculation control.");
             Record("system-diagnostics-read-only-inspection", true,
-                "Opened and inspected refresh, integrity, recalculation and export boundaries without invoking them");
+                "Verified Disposable profile ownership plus refresh, integrity, recalculation and export boundaries without invoking them");
             CloseWindow(diagnostics, application.Id);
 
             SelectTab(main, "ExperimentalTestingTab", application.Id);
@@ -486,10 +495,17 @@ internal static class Program
                     "Application menu and runtime-window controls and fields",
                     StringComparison.Ordinal),
                 "Central Help did not expose the automation-only shell boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("OWNER / PRODUCTION uses");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Application menu and runtime-window controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the v51.1 owner/disposable runtime identity boundary.");
             Record(
                 "central-help",
                 true,
-                $"Opened hierarchical overview '{helpTitle}', verified highlighting plus v50.2.1-v50.4.4 reference searches");
+                $"Opened hierarchical overview '{helpTitle}', verified highlighting plus v50.2.1-v51.1 reference searches");
             CloseWindow(help, application.Id);
 
             Expand(FindById(main, "HelpMenu"), application.Id);

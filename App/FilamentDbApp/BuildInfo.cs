@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "HELP-ZERO-GAP-FINAL";
-    public const string ReleaseTitle = "Help Zero-gap Final Acceptance";
+    public const string ReleaseCode = "RUNTIME-PROFILE-FOUNDATION";
+    public const string ReleaseTitle = "Runtime Profile Foundation";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 37;
 
