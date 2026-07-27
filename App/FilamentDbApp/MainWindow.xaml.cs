@@ -14848,7 +14848,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             header.StartsWith("Cooling ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Drying ", StringComparison.OrdinalIgnoreCase) ||
             header.StartsWith("Profile ", StringComparison.OrdinalIgnoreCase));
-        var printingSettingsReady = _database.CurrentSchemaVersion == 37 &&
+        var printingSettingsReady = _database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
                                     persistedBaseMaterials.Count == _nativeBaseMaterialRows.Count &&
                                     persistedBaseMaterials.Select(x => x.BaseMaterial).OrderBy(x => x).SequenceEqual(
                                         _nativeBaseMaterialRows.Select(x => x.BaseMaterial).OrderBy(x => x), StringComparer.OrdinalIgnoreCase) &&
@@ -16676,7 +16676,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                                            !string.IsNullOrWhiteSpace(deploymentSettings.FtpsUserName) &&
                                            deploymentSettings.FtpsPort is >= 1 and <= 65535;
         checks.Add(new VerificationCheck("SQLite-governed explicit FTPS publishing contract",
-            _database.CurrentSchemaVersion == 37 &&
+            _database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
             (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
             FtpsWebsitePublisherService.MainRemotePath == "/index.html" &&
             FtpsWebsitePublisherService.ManufacturerRemotePath == "/manufacturers/index.html" &&
@@ -17138,7 +17138,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             printingSettingsReady && printingSettingsRemainInternal && incrementalFtpsPublishingReady && releaseIdentityReady
                 ? "Canonical baseline profile identity, cooling/drying units, slicer identity, provenance, source and checked-date contracts passed; public allowlists unchanged"
                 : "Printing-profile governance, provenance, internal-only boundary, prior publishing gate or release identity did not pass"));
-        var deploymentSettingsReady = _database.CurrentSchemaVersion == 37 &&
+        var deploymentSettingsReady = _database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
                                       (deploymentEndpointUnconfigured || deploymentEndpointConfigured) &&
                                       typeof(WindowsCredentialService).GetMethod("ReadPassword", new[] { typeof(string), typeof(string) }) is not null;
         checks.Add(new VerificationCheck("v42.15 Deployment Settings Governance release gate", deploymentSettingsReady && incrementalFtpsPublishingReady && releaseIdentityReady,
@@ -17158,7 +17158,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 : "Native measurement marker, SQLite/UI count parity or release identity failed"));
         var canonicalGeneralSettings = _database.LoadNativeSettingsRows();
         var expectedGeneralSettings = _nativeSettingsRows.Count(row => !string.Equals(row.Section, "Deployment", StringComparison.OrdinalIgnoreCase));
-        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == 37 &&
+        var canonicalWorkingStoresReady = _database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
                                           _database.LoadNativeMaterialManagerRows().Count == _nativeMaterialRows.Count &&
                                           canonicalGeneralSettings.Count == expectedGeneralSettings &&
                                           canonicalGeneralSettings.Select(row => (row.Section, row.Parameter, row.Unit, row.UsedBy)).Distinct().Count() == canonicalGeneralSettings.Count;
@@ -17167,7 +17167,10 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? $"SQLite owns {_nativeMaterialRows.Count} Materials rows and {canonicalGeneralSettings.Count} general Settings rows; legacy JSON is snapshot-only"
                 : "Materials/Settings SQLite parity, settings key uniqueness, schema or release identity failed"));
         var latestLocalBackup = _database.GetLocalBackupCatalog()
-            .FirstOrDefault(item => item.CanRestore && item.IsIntegrityValid && item.SchemaVersion is > 0 and <= 37 && item.Materials > 0);
+            .FirstOrDefault(item =>
+                item.CanRestore && item.IsIntegrityValid &&
+                item.SchemaVersion is > 0 and <= BuildInfo.CurrentDatabaseSchema &&
+                item.Materials > 0);
         var latestLocalBackupValid = false;
         var latestLocalBackupDetail = "No restore-ready SQLite backup with canonical Materials is available";
         if (latestLocalBackup is not null)
@@ -17175,7 +17178,10 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             try
             {
                 var inspection = _database.InspectDatabaseBackup(latestLocalBackup.FilePath);
-                latestLocalBackupValid = inspection.IsIntegrityValid && inspection.SchemaVersion is > 0 and <= 37 && inspection.Materials > 0;
+                latestLocalBackupValid =
+                    inspection.IsIntegrityValid &&
+                    inspection.SchemaVersion is > 0 and <= BuildInfo.CurrentDatabaseSchema &&
+                    inspection.Materials > 0;
                 latestLocalBackupDetail = $"{IOPath.GetFileName(latestLocalBackup.FilePath)}: integrity {inspection.IntegrityResult}, schema v{inspection.SchemaVersion}, materials {inspection.Materials:N0}";
             }
             catch (Exception ex) { latestLocalBackupDetail = IOPath.GetFileName(latestLocalBackup.FilePath) + ": " + ex.Message; }
@@ -17192,7 +17198,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var excelRecoverySnapshot = _database.CreateExcelRecoverySnapshot();
         var excelRecoveryRows = excelRecoverySnapshot.Tables.Sum(table => table.Rows.Count);
         var excelRecoveryReady = excelRecoverySnapshot.FormatVersion == ExcelRecoverySnapshot.CurrentFormatVersion &&
-                                 excelRecoverySnapshot.SourceSchemaVersion == 37 &&
+                                 excelRecoverySnapshot.SourceSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
                                  excelRecoverySnapshot.Tables.Count == 24 &&
                                  excelRecoverySnapshot.Tables.All(table => !string.IsNullOrWhiteSpace(table.TableName) && table.Columns.Count > 0 && table.Rows.All(row => row.Count == table.Columns.Count) && ExcelDisasterRecoveryService.ComputeTableHash(table).Length == 64) &&
                                  excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMaterialManagerRows").Rows.Count == _nativeMaterialRows.Count &&
@@ -17218,7 +17224,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             row.Section == "Pricing" && row.Parameter == parameter &&
             row.UsedBy == "Print Job Pricing"));
         var printerFoundationReady =
-            _database.CurrentSchemaVersion == 37 &&
+            _database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
             printerRecoveryTable is not null &&
             printerRecoveryTable.Columns.Contains("PrinterId") &&
             printerRecoveryTable.Columns.Contains("UptimePercent") &&
@@ -17252,7 +17258,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var quoteRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "PrintJobQuotes");
         var immutableQuoteWorkflowReady =
-            _database.CurrentSchemaVersion == 37 &&
+            _database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
             quoteRecoveryTable is not null &&
             quoteRecoveryTable.Columns.Contains("SnapshotJson") &&
             quoteRecoveryTable.Columns.Contains("MaterialCostProvenance") &&
@@ -17292,7 +17298,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var purchaseRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "PurchaseOrders");
         var officialReferenceReady =
-            _database.CurrentSchemaVersion == 37 &&
+            _database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
             purchaseRecoveryTable is not null &&
             purchaseRecoveryTable.Columns.Contains("ExchangeRateSource") &&
             purchaseRecoveryTable.Columns.Contains("ExchangeRateObservationDate") &&
@@ -17312,6 +17318,38 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             officialReferenceReady && excelRecoveryReady && releaseIdentityReady
                 ? "Schema v37; deterministic ECB EUR cross-rate parser; Purchase Order provenance recovery; loaded orders are excluded from reference refresh"
                 : "ECB parser, new-order-only ownership, Purchase Order provenance recovery, UI diagnostics or release identity failed"));
+        var inventoryRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
+            table => table.TableName == "InventorySpoolItems");
+        var landedCostMigration = _database.RunLandedCostCurrencyMigrationContractVerification();
+        var landedCostCurrencySchemaReady =
+            _database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
+            purchaseRecoveryTable is not null &&
+            inventoryRecoveryTable is not null &&
+            new[]
+            {
+                "LandedCostCurrency", "LandedCostConversionRate", "LandedCostRateSource",
+                "LandedCostRateObservationDate", "LandedCostRateFetchedAtUtc",
+                "LandedCostCalculatedAtUtc", "LandedCostCalculationVersion"
+            }.All(column =>
+                purchaseRecoveryTable.Columns.Contains(column) &&
+                inventoryRecoveryTable.Columns.Contains(column)) &&
+            _database.LoadPurchaseOrders().All(order =>
+                !string.IsNullOrWhiteSpace(order.LandedCostCurrency) &&
+                order.LandedCostConversionRate == "1" &&
+                !string.IsNullOrWhiteSpace(order.LandedCostRateSource) &&
+                !string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion)) &&
+            _database.LoadInventorySpoolItems().All(item =>
+                !string.IsNullOrWhiteSpace(item.LandedCostCurrency) &&
+                item.LandedCostConversionRate == "1" &&
+                !string.IsNullOrWhiteSpace(item.LandedCostRateSource) &&
+                !string.IsNullOrWhiteSpace(item.LandedCostCalculationVersion)) &&
+            landedCostMigration.Passed;
+        checks.Add(new VerificationCheck(
+            "v53.0.1 Governed Landed-cost Currency additive schema release gate",
+            landedCostCurrencySchemaReady && excelRecoveryReady && releaseIdentityReady,
+            landedCostCurrencySchemaReady && excelRecoveryReady && releaseIdentityReady
+                ? landedCostMigration.Detail
+                : "Schema-v38 columns, Excel recovery ownership, legacy 1:1 metadata or exact-value migration failed"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {
@@ -17345,7 +17383,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var usageRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "UsageEvents");
         var usagePersistenceReady =
-            _database.CurrentSchemaVersion == 37 &&
+            _database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
             usageRecoveryTable is not null &&
             usageRecoveryTable.Columns.Contains("UsageEventId") &&
             usageRecoveryTable.Columns.Contains("MaterialId") &&
@@ -17490,7 +17528,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Original-workbook sheet metadata is absent from Material Detail, Tools and diagnostics while supported-schema inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
                 : "A workbook metadata reader/UI surface remains or a required compatibility/recovery boundary failed"));
         var legacyWorkbookSchemaRetiredReady =
-            _database.CurrentSchemaVersion == 37 &&
+            _database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
             _database.LegacyWorkbookTablesAreRetired() &&
             typeof(LocalDatabase).GetMethod("GetTestSummaryMetrics") is null &&
             typeof(MainWindow).GetMethod("GetCanonicalTestSummaryMetrics", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
@@ -17556,14 +17594,21 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var recoveryCompatibilityReady = compatibilityCatalog.Count > 0 &&
                                          compatibilityCatalog.Any(item => item.CompatibilityStatus == "Ready" && item.CanRestore) &&
                                          compatibilityCatalog.Where(item => item.SchemaVersion is > 0 and < 27).All(item => item.CompatibilityStatus == "Legacy / incomplete" && !item.CanRestore) &&
-                                         compatibilityCatalog.Where(item => item.SchemaVersion is >= 27 and <= 35).All(item => item.CompatibilityStatus == "Migration required" && !item.CanRestore) &&
-                                         compatibilityCatalog.Where(item => item.SchemaVersion > 37).All(item => item.CompatibilityStatus == "Newer / incompatible" && !item.CanRestore) &&
+                                         compatibilityCatalog.Where(item =>
+                                             item.SchemaVersion is >= 27 &&
+                                             item.SchemaVersion < BuildInfo.CurrentDatabaseSchema).All(item =>
+                                             item.CompatibilityStatus == "Migration required" &&
+                                             !item.CanRestore) &&
+                                         compatibilityCatalog.Where(item =>
+                                             item.SchemaVersion > BuildInfo.CurrentDatabaseSchema).All(item =>
+                                             item.CompatibilityStatus == "Newer / incompatible" &&
+                                             !item.CanRestore) &&
                                          typeof(LocalDatabase).GetMethod("GetLocalBackupCatalog") is not null &&
                                          typeof(LocalDatabase).GetMethod("VerifyBackupCompatibility") is not null &&
                                          typeof(MainWindow).GetMethod("ShowRecoveryCenter_Click", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck("v43.3 Recovery Compatibility Center release gate", recoveryCompatibilityReady && localRestoreContractReady && excelRecoveryReady && releaseIdentityReady,
             recoveryCompatibilityReady && localRestoreContractReady && excelRecoveryReady && releaseIdentityReady
-                ? $"{compatibilityCatalog.Count} local SQLite backups classified; schema 27-33 require isolated dry-run, schema 34 ready, legacy/newer/corrupt blocked; verify-only and guarded restore UI available"
+                ? $"{compatibilityCatalog.Count} local SQLite backups classified; older supported schemas require isolated dry-run, current schema ready, legacy/newer/corrupt blocked; verify-only and guarded restore UI available"
                 : "Recovery catalog, compatibility classification, migration dry-run contract, guarded restore UI or release identity failed"));
         var backupRecoveryUiReady = BackupAndRecoveryCenterActions.SequenceEqual(new[]
         {
@@ -18257,7 +18302,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         measurementDateEditProbe.MeasuredDateText = "";
         var clearedDateAccepted = measurementDateEditProbe.MeasuredDate is null && measurementDateEditProbe.MeasuredDateText == "";
         var measurementDateReady =
-            _database.CurrentSchemaVersion == 37 &&
+            _database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
             nativeMetadataTable.Columns.Contains("MeasuredDate", StringComparer.OrdinalIgnoreCase) &&
             experimentalRunsTable.Columns.Contains("MeasuredDate", StringComparer.OrdinalIgnoreCase) &&
             typeof(ExperimentalRunRecord).GetProperty(nameof(ExperimentalRunRecord.MeasuredDate)) is not null &&
@@ -28116,7 +28161,7 @@ private List<string> GetVisibleAiMaterialLabels()
     private void DuplicateInventorySpool_Click(object sender, RoutedEventArgs e)
     {
         if (FindName("InventorySpoolGrid") is not DataGrid grid || grid.SelectedItem is not InventorySpoolRecord x) return;
-        var copy = new InventorySpoolRecord { InventoryItemId = "INV-" + Guid.NewGuid().ToString("N")[..8].ToUpperInvariant(), MaterialId=x.MaterialId, Status=x.Status, Quantity=x.Quantity, SpoolWeightG=x.SpoolWeightG, RemainingWeightG=x.RemainingWeightG, StorageLocation=x.StorageLocation, BatchNumber=x.BatchNumber, PurchaseId=x.PurchaseId, PurchaseOrderLineId=x.PurchaseOrderLineId, PurchasedFrom=x.PurchasedFrom, PurchaseDate=x.PurchaseDate, OrderNumber=x.OrderNumber, PurchasePriceAmount=x.PurchasePriceAmount, PurchaseCurrency=x.PurchaseCurrency, ShippingAmount=x.ShippingAmount, VatAmount=x.VatAmount, CustomsAmount=x.CustomsAmount, OtherFeesAmount=x.OtherFeesAmount, LandedCostAmount=x.LandedCostAmount, Notes=x.Notes };
+        var copy = new InventorySpoolRecord { InventoryItemId = "INV-" + Guid.NewGuid().ToString("N")[..8].ToUpperInvariant(), MaterialId=x.MaterialId, Status=x.Status, Quantity=x.Quantity, SpoolWeightG=x.SpoolWeightG, RemainingWeightG=x.RemainingWeightG, StorageLocation=x.StorageLocation, BatchNumber=x.BatchNumber, PurchaseId=x.PurchaseId, PurchaseOrderLineId=x.PurchaseOrderLineId, PurchasedFrom=x.PurchasedFrom, PurchaseDate=x.PurchaseDate, OrderNumber=x.OrderNumber, PurchasePriceAmount=x.PurchasePriceAmount, PurchaseCurrency=x.PurchaseCurrency, ShippingAmount=x.ShippingAmount, VatAmount=x.VatAmount, CustomsAmount=x.CustomsAmount, OtherFeesAmount=x.OtherFeesAmount, LandedCostAmount=x.LandedCostAmount, LandedCostCurrency=x.LandedCostCurrency, LandedCostConversionRate=x.LandedCostConversionRate, LandedCostRateSource=x.LandedCostRateSource, LandedCostRateObservationDate=x.LandedCostRateObservationDate, LandedCostRateFetchedAtUtc=x.LandedCostRateFetchedAtUtc, LandedCostCalculatedAtUtc=x.LandedCostCalculatedAtUtc, LandedCostCalculationVersion=x.LandedCostCalculationVersion, Notes=x.Notes };
         _inventorySpoolRows.Add(copy);
         SelectInventoryRowForEditing(copy, "Status");
     }

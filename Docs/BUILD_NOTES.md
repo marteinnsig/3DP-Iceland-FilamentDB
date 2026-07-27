@@ -1,4 +1,48 @@
-# Current Build Notes - v52.3.3
+# Current Build Notes - v53.0.1
+
+## Governed Landed-cost Currency Contract and Additive Schema
+
+The accepted v53 research keeps Purchase Order unit prices and every header
+charge in the invoice currency. A separate landed-cost currency will own the
+derived landed results. Its persisted rate direction is explicit:
+`1 invoice-currency unit = X landed-cost-currency units`.
+
+v53.0.1 is intentionally schema-first. Schema v38 adds Purchase Order and
+Inventory snapshot metadata for landed currency, rate, observation date,
+fetch time, provenance, calculation time and calculation version. Existing
+rows receive their existing currency plus a 1:1 legacy marker without changing
+any stored monetary value. Settings defaults, ECB/manual prefill, UI override
+and cross-currency calculation remain owned by v53.0.2-v53.0.3.
+
+Debug and Release builds pass with zero warnings/errors. Release documentation,
+Help coverage and roadmap line-length gates pass. The read-only NuGet
+vulnerability scan finds no vulnerable direct or transitive package.
+Disposable Release smoke `20260727190229-ad32a552` passes Full Data
+Verification 386/386 with exact database and business-state hash equality.
+Its isolated schema-v37 fixture migrates to v38 while retaining every probe
+monetary string exactly and adding only the explicit 1:1 legacy metadata.
+
+The first smoke attempt timed out while opening Verification because the new
+temporary migration probe did not clear pooled SQLite handles before cleanup.
+After adding the established pool cleanup, Verification opened. The next run
+exposed old recovery checks hard-coded to schema v37; those now use the central
+current-schema contract, and the final smoke passes. AutomationRunner itself
+does not change because v53.0.1 adds no user workflow; Full Verification owns
+the deterministic schema, recovery and migration contract.
+
+Owner startup, restart, Purchase Orders inspection and Full Verification pass
+on 2026-07-27. The owner database contained two empty test orders and no order
+items, so visual acceptance did not independently cover populated historical
+amounts. The isolated exact-value fixture remains the authoritative populated
+monetary migration evidence.
+
+The prior canonical seed is retained as
+`C:\Seed-Database\filamentdb-schema37-migration.sqlite`, schema v37, SHA-256
+`43503623D8D19A1F38B1505F456BDAA34E9B33AFF4609AD2F79CC2321B7150AE`.
+The canonical seed is now schema v38, integrity `ok`, 201 Materials and SHA-256
+`7DC91C93456F612B93B0E9A15D353ABABF2C93323E7E30F78C5B10620C6FB16F`.
+Canonical-seed Release smoke `20260727192919-e558dc25` repeats 386/386 with
+exact database and business-state hash equality.
 
 ## Bounded Owner Live Evaluation and v52 Closure
 

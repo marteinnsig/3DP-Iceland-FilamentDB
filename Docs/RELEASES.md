@@ -1,6 +1,19 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v53.0.1 - Governed Landed-cost Currency Contract and Additive Schema
+
+Schema v38 adds separate Purchase Order and Inventory landed-result currency,
+rate, provenance and calculation metadata without changing invoice inputs or
+historical monetary values. Legacy rows receive same-currency 1:1 metadata.
+Disposable Release smoke `20260727190229-ad32a552` passes 386/386 with exact
+database and business-state equality. Owner runtime acceptance passes on
+2026-07-27; its two test orders contained no items, so the deterministic
+exact-value fixture owns populated monetary migration coverage. Canonical seed
+is schema v38 and the prior schema-v37 seed is retained for migration testing.
+Canonical-seed Release smoke `20260727192919-e558dc25` repeats 386/386 with
+exact database and business-state equality.
+
 ## v52.3.3 - Bounded Owner Live Evaluation and Closure
 
 Governance closure: five bounded live scenarios produced four PASS results and

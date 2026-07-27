@@ -11,6 +11,13 @@ public sealed class PurchaseOrderRecord
     public string ExchangeRateSource { get; set; } = string.Empty;
     public string ExchangeRateObservationDate { get; set; } = string.Empty;
     public string ExchangeRateFetchedAtUtc { get; set; } = string.Empty;
+    public string LandedCostCurrency { get; set; } = "ISK";
+    public string LandedCostConversionRate { get; set; } = "1";
+    public string LandedCostRateSource { get; set; } = string.Empty;
+    public string LandedCostRateObservationDate { get; set; } = string.Empty;
+    public string LandedCostRateFetchedAtUtc { get; set; } = string.Empty;
+    public string LandedCostCalculatedAtUtc { get; set; } = string.Empty;
+    public string LandedCostCalculationVersion { get; set; } = string.Empty;
     public string TaxTreatment { get; set; } = "VAT included in invoice";
     public string ShippingMethod { get; set; } = string.Empty;
     public string TrackingNumber { get; set; } = string.Empty;

@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v52.3.3 — Bounded Owner Live Evaluation and Closure**
+Current canonical release: **v53.0.1 — Contract and Additive Schema**
 
-Last runtime-accepted baseline: **v52.3.2 — OpenAI Operational Evidence and Failure Harness**
+Last runtime-accepted baseline: **v53.0.1 — Contract and Additive Schema**
 
-Current canonical application release: **v52.3.2 — OpenAI Operational Evidence and Failure Harness**
+Current canonical application release: **v53.0.1 — Contract and Additive Schema**
 
-Current roadmap increment: **v53.0 — Governed Landed-cost Currency**
+Current roadmap increment: **v53.0.2 — Settings Default and Draft Override**
 
-Current acceptance note: v52 is complete; app v52.3.2 remains the runtime-accepted binary.
+Current acceptance note: v53.0.1 is runtime accepted with schema v38 and exact-value migration evidence.
 
-Next note: v53.0 begins with research before schema or UI changes.
+Next note: v53.0.2 owns the Settings default, new-order-only prefill and reviewed Draft override.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2277,7 +2277,7 @@ to unstarted authoritative planning slots.
   - Otherwise keep the model provisional or close the pilot with a documented defer/stop decision.
 
 - **v53.0 — Governed Landed-cost Currency**
-  - State: Planned after the recorded v50-v52 sequence; research before schema or UI changes.
+  - State: In progress; research accepted and authoritative subincrements recorded before implementation.
   - Add a governed `Default Landed Cost Currency` choice in Settings, separate from Purchase Order invoice currency.
   - Prefill the landed-cost currency only for a new Purchase Order and allow a reviewed per-order override before calculation.
   - Preserve original invoice values/currency while displaying and snapshotting landed-cost results in the selected currency.
@@ -2287,6 +2287,29 @@ to unstarted authoritative planning slots.
   - Research schema compatibility, migration defaults, import/export, recovery, diagnostics and reporting before implementation.
   - Update deterministic tester and Full Data Verification for new-order defaults, override, restart and historical stability.
   - Completion condition: owner accepts cross-currency calculations, provenance, offline behavior and unchanged historical records.
+- **v53.0.1 — Contract and Additive Schema**
+  - State: Complete; owner runtime acceptance and Full Data Verification 386/386 pass on 2026-07-27.
+  - Keep unit price and every Purchase Order charge in invoice currency; mixed charge currencies are outside v53.
+  - Define the conversion direction as `1 invoice-currency unit = X landed-cost-currency units`.
+  - Add schema v38 Purchase Order and Inventory landed-currency snapshot fields without changing existing monetary values.
+  - Backfill legacy records with their existing currency, a 1:1 rate and explicit legacy provenance.
+  - Prove migration and Excel recovery retain exact legacy business values; do not add the Settings or calculation workflow yet.
+  - Completion condition: schema/recovery gates pass and owner accepts unchanged historical values plus explicit legacy metadata.
+- **v53.0.2 — Settings Default and Draft Override**
+  - State: Current after v53.0.1 runtime acceptance.
+  - Add the governed Settings default, new-order-only prefill and reviewed Draft override.
+  - Snapshot manual or optional ECB reference provenance without requiring network access or changing saved orders.
+  - Completion condition: owner accepts default, override, offline and restart behavior for new Purchase Orders.
+- **v53.0.3 — Cross-currency Calculation and Downstream Snapshots**
+  - State: Planned after v53.0.2 runtime acceptance.
+  - Convert accepted landed results while preserving invoice inputs, then snapshot Inventory and Material handoff evidence.
+  - Update governed purchasing reports to use landed-currency provenance and preserve saved Usage and Quote history.
+  - Completion condition: owner accepts cross-currency results and unchanged historical/downstream records.
+- **v53.0.4 — Diagnostics, Help and Deterministic Acceptance**
+  - State: Planned after v53.0.3 runtime acceptance.
+  - Add safe diagnostics, field/workflow Help and the required AutomationIds.
+  - Extend disposable automation for defaults, override, restart, migration, recovery and historical stability.
+  - Completion condition: all relevant gates and Full Data Verification pass, then owner accepts the completed v53 workflow.
 
 - **v54.0 — Application Menu and Navigation Review**
   - State: Planned after the recorded v50-v53 sequence; inventory and owner review before menu changes.

@@ -2,6 +2,39 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v53.0.1 - Governed Landed-cost Currency Contract and Additive Schema
+
+The accepted research contract preserves Purchase Order invoice currency and
+every invoice monetary input. Schema v38 adds separate landed-result currency,
+conversion-rate direction, source/date/fetch provenance and calculation
+metadata to Purchase Orders and Inventory. Legacy rows receive their existing
+currency, rate 1, `Legacy transaction-currency landed cost` and `legacy-v1`;
+no monetary value is rewritten.
+
+Full Verification now builds an isolated schema-v37 fixture, migrates it to
+v38 and compares all probe monetary strings exactly. Excel recovery includes
+all new columns. AutomationRunner is unchanged because no user workflow exists
+yet; the current smoke safely owns schema migration, recovery and exact-state
+evidence.
+
+An initial Verification-window timeout identified a pooled SQLite temp-fixture
+cleanup omission. After the established pool clear was added, stale recovery
+checks fixed at schema v37 surfaced and were replaced by the central current
+schema contract. Debug and Release builds pass with zero warnings/errors.
+Documentation and Help audits pass, the NuGet scan is clean, and disposable
+Release smoke `20260727190229-ad32a552` passes 386/386 with exact database and
+business-state hashes. Owner runtime acceptance remains pending.
+
+Owner runtime acceptance subsequently passes. The owner database had two empty
+test orders and no order items, so the isolated populated exact-value fixture
+remains the authoritative monetary migration proof. Canonical seed v38 is
+promoted with SHA-256
+`7DC91C93456F612B93B0E9A15D353ABABF2C93323E7E30F78C5B10620C6FB16F`;
+schema v37 is retained with SHA-256
+`43503623D8D19A1F38B1505F456BDAA34E9B33AFF4609AD2F79CC2321B7150AE`.
+Canonical-seed Release smoke `20260727192919-e558dc25` repeats 386/386 with
+exact database and business-state equality.
+
 ## v52.3.3 - Bounded Owner Live Evaluation and Closure
 
 The owner completed the maximum five approved live calls. Forty-row, small

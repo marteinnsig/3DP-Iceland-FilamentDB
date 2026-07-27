@@ -9,10 +9,10 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "OPENAI-OPERATIONAL-EVIDENCE";
-    public const string ReleaseTitle = "OpenAI Operational Evidence and Failure Harness";
+    public const string ReleaseCode = "LANDED-COST-CURRENCY-SCHEMA";
+    public const string ReleaseTitle = "Governed Landed-cost Currency Contract and Additive Schema";
     public const int MinimumUpdateDatabaseSchema = 29;
-    public const int CurrentDatabaseSchema = 37;
+    public const int CurrentDatabaseSchema = 38;
 
     public static string Version
     {

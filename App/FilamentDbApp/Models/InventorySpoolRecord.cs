@@ -28,5 +28,12 @@ public sealed class InventorySpoolRecord
     public string CustomsAmount { get; set; } = string.Empty;
     public string OtherFeesAmount { get; set; } = string.Empty;
     public string LandedCostAmount { get; set; } = string.Empty;
+    public string LandedCostCurrency { get; set; } = "ISK";
+    public string LandedCostConversionRate { get; set; } = "1";
+    public string LandedCostRateSource { get; set; } = string.Empty;
+    public string LandedCostRateObservationDate { get; set; } = string.Empty;
+    public string LandedCostRateFetchedAtUtc { get; set; } = string.Empty;
+    public string LandedCostCalculatedAtUtc { get; set; } = string.Empty;
+    public string LandedCostCalculationVersion { get; set; } = string.Empty;
     public string Notes { get; set; } = string.Empty;
 }

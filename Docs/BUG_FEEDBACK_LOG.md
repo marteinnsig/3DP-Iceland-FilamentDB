@@ -176,7 +176,7 @@ Date: 2026-07-27
 Area: Purchase Orders / Landed-cost currency
 Type: Workflow improvement / Data integrity
 Severity: Important
-Status: Open
+Status: In progress — v53.0.1 complete; v53.0.2 current
 What happened: Purchase Orders calculate landed cost in the transaction currency, but an owner may need governed landed-cost results
 in a different operational currency such as ISK while retaining the original invoice currency and values.
 Expected behavior: Add a Settings-owned Default Landed Cost Currency for new Purchase Orders plus a reviewed per-order override.
@@ -184,9 +184,12 @@ Snapshot the accepted conversion rate, date, source and provenance; never recalc
 evidence, Usage history or saved Quotes. Preserve manual/offline operation and keep ECB optional.
 Steps to reproduce: Create a Purchase Order with an EUR or USD invoice while operational landed-cost review is required in ISK.
 Screenshot / export / report attached: Owner workflow idea recorded on 2026-07-27.
-Resolution: Planned as research-first v53.0 — Governed Landed-cost Currency. Schema compatibility, migration, import/export, recovery,
-diagnostics, reporting and deterministic acceptance must be mapped before implementation.
-Verification evidence: Not implemented; roadmap scope and completion condition are recorded.
+Resolution: Research accepted. Invoice inputs remain in invoice currency; landed results use a separate snapshotted currency and an
+explicit `1 invoice-currency unit = X landed-cost-currency units` rate. v53.0.1-v53.0.4 are authoritative in the Master Roadmap.
+Verification evidence: Disposable Release profile `20260727190229-ad32a552` passes 386/386 with exact database and business-state
+hash equality. The v37 fixture migrates to v38 with exact monetary values and explicit 1:1 legacy metadata.
+Owner acceptance: PASS on 2026-07-27. The owner profile contained two empty test orders and no populated historical order lines, so
+visual monetary migration coverage was limited; the deterministic exact-value fixture owns populated monetary migration evidence.
 
 Date: 2026-07-27
 Area: Automated acceptance / Application-wide navigation

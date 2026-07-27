@@ -1,5 +1,23 @@
 # Automated Runtime Acceptance
 
+## v53.0.1 - Governed Landed-cost Currency schema accepted
+
+- Full Verification owns the new deterministic contract because this increment
+  adds no user-facing workflow or safe UI action for AutomationRunner.
+- An isolated schema-v37 fixture migrates to v38 and proves exact preservation
+  of Purchase Order and Inventory monetary strings.
+- Purchase Order and Inventory Excel recovery tables include all landed-cost
+  currency, rate, provenance and calculation metadata columns.
+- Legacy records receive only explicit same-currency, 1:1 provenance metadata.
+- Release smoke `20260727190229-ad32a552` passes 386/386 with exact database and
+  business-state hash equality.
+- Production, FTPS, owner database and live network actions remain blocked.
+- Owner runtime acceptance passes; the deterministic fixture owns populated
+  monetary coverage because the two owner test orders contained no items.
+- Canonical seed is schema v38; schema v37 is retained as the migration fixture.
+- Canonical-seed Release smoke `20260727192919-e558dc25` repeats 386/386 with
+  exact database and business-state equality.
+
 ## v52.3.3 - Bounded Owner Live Evaluation and Closure accepted
 
 - Automation remains no-network and never invokes Generate.

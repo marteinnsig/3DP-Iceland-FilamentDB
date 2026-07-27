@@ -1361,7 +1361,10 @@ CREATE TABLE IF NOT EXISTS InventorySpoolItems (
     Status TEXT, Quantity TEXT, SpoolWeightG TEXT, RemainingWeightG TEXT,
     StorageLocation TEXT, BatchNumber TEXT, PurchaseId TEXT, PurchaseOrderLineId TEXT, PurchasedFrom TEXT,
     PurchaseDate TEXT, OrderNumber TEXT, PurchasePriceAmount TEXT, PurchaseCurrency TEXT,
-    ShippingAmount TEXT, VatAmount TEXT, CustomsAmount TEXT, OtherFeesAmount TEXT, LandedCostAmount TEXT, Notes TEXT, UpdatedAtUtc TEXT NOT NULL,
+    ShippingAmount TEXT, VatAmount TEXT, CustomsAmount TEXT, OtherFeesAmount TEXT, LandedCostAmount TEXT,
+    LandedCostCurrency TEXT, LandedCostConversionRate TEXT, LandedCostRateSource TEXT,
+    LandedCostRateObservationDate TEXT, LandedCostRateFetchedAtUtc TEXT, LandedCostCalculatedAtUtc TEXT,
+    LandedCostCalculationVersion TEXT, Notes TEXT, UpdatedAtUtc TEXT NOT NULL,
     FOREIGN KEY (MaterialId) REFERENCES NativeMaterialManagerRows(MaterialId) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS IX_InventorySpoolItems_MaterialId ON InventorySpoolItems(MaterialId);
@@ -1452,6 +1455,9 @@ CREATE INDEX IF NOT EXISTS IX_PrintJobQuotes_CreatedAtUtc
 CREATE TABLE IF NOT EXISTS PurchaseOrders (
     PurchaseOrderId TEXT PRIMARY KEY, Supplier TEXT, OrderNumber TEXT, PurchaseDate TEXT, Currency TEXT, ExchangeRate TEXT,
     ExchangeRateSource TEXT, ExchangeRateObservationDate TEXT, ExchangeRateFetchedAtUtc TEXT,
+    LandedCostCurrency TEXT, LandedCostConversionRate TEXT, LandedCostRateSource TEXT,
+    LandedCostRateObservationDate TEXT, LandedCostRateFetchedAtUtc TEXT, LandedCostCalculatedAtUtc TEXT,
+    LandedCostCalculationVersion TEXT,
     TaxTreatment TEXT, ShippingMethod TEXT, TrackingNumber TEXT, SupplierItemsTotal TEXT, SupplierShipping TEXT, SupplierTax TEXT,
     SupplierInvoiceTotal TEXT, ImportVat TEXT, CustomsDuty TEXT, ClearanceFee TEXT, OtherFees TEXT, ShippingAllocationMethod TEXT, TaxAllocationMethod TEXT, CustomsAllocationMethod TEXT, FeeAllocationMethod TEXT, CostStatus TEXT, LifecycleStatus TEXT, ReceivedDate TEXT, InvoiceFile TEXT, Notes TEXT, UpdatedAtUtc TEXT NOT NULL
 );
@@ -1614,6 +1620,13 @@ DROP TABLE IF EXISTS MaterialsImport;";
         EnsureColumn(connection, "PurchaseOrders", "ExchangeRateSource", "TEXT");
         EnsureColumn(connection, "PurchaseOrders", "ExchangeRateObservationDate", "TEXT");
         EnsureColumn(connection, "PurchaseOrders", "ExchangeRateFetchedAtUtc", "TEXT");
+        EnsureColumn(connection, "PurchaseOrders", "LandedCostCurrency", "TEXT");
+        EnsureColumn(connection, "PurchaseOrders", "LandedCostConversionRate", "TEXT");
+        EnsureColumn(connection, "PurchaseOrders", "LandedCostRateSource", "TEXT");
+        EnsureColumn(connection, "PurchaseOrders", "LandedCostRateObservationDate", "TEXT");
+        EnsureColumn(connection, "PurchaseOrders", "LandedCostRateFetchedAtUtc", "TEXT");
+        EnsureColumn(connection, "PurchaseOrders", "LandedCostCalculatedAtUtc", "TEXT");
+        EnsureColumn(connection, "PurchaseOrders", "LandedCostCalculationVersion", "TEXT");
         EnsureColumn(connection, "PurchaseOrderLines", "ReceivedQuantity", "TEXT");
         EnsureColumn(connection, "PurchaseOrderLines", "ReceivingStatus", "TEXT");
         EnsureColumn(connection, "PurchaseOrderLines", "StorageLocation", "TEXT");
@@ -1639,6 +1652,13 @@ DROP TABLE IF EXISTS MaterialsImport;";
         EnsureColumn(connection, "InventorySpoolItems", "CustomsAmount", "TEXT");
         EnsureColumn(connection, "InventorySpoolItems", "OtherFeesAmount", "TEXT");
         EnsureColumn(connection, "InventorySpoolItems", "LandedCostAmount", "TEXT");
+        EnsureColumn(connection, "InventorySpoolItems", "LandedCostCurrency", "TEXT");
+        EnsureColumn(connection, "InventorySpoolItems", "LandedCostConversionRate", "TEXT");
+        EnsureColumn(connection, "InventorySpoolItems", "LandedCostRateSource", "TEXT");
+        EnsureColumn(connection, "InventorySpoolItems", "LandedCostRateObservationDate", "TEXT");
+        EnsureColumn(connection, "InventorySpoolItems", "LandedCostRateFetchedAtUtc", "TEXT");
+        EnsureColumn(connection, "InventorySpoolItems", "LandedCostCalculatedAtUtc", "TEXT");
+        EnsureColumn(connection, "InventorySpoolItems", "LandedCostCalculationVersion", "TEXT");
 
         EnsureColumn(connection, "NativeMaterialManagerRows", "ManufacturerSku", "TEXT");
         EnsureColumn(connection, "NativeMaterialManagerRows", "InventoryId", "TEXT");
@@ -1774,7 +1794,137 @@ DROP TABLE IF EXISTS MaterialsImport;";
             manufacturerRelationship.ExecuteNonQuery();
         }
         EnsureColumn(connection, "InventorySpoolItems", "PurchaseOrderLineId", "TEXT");
+        BackfillLegacyLandedCostCurrencyMetadata(connection);
         RetireLegacyWorkbookTablesIfCanonicalReady(connection);
+    }
+
+    private static void BackfillLegacyLandedCostCurrencyMetadata(SqliteConnection connection)
+    {
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            UPDATE PurchaseOrders
+            SET LandedCostCurrency =
+                    COALESCE(NULLIF(TRIM(LandedCostCurrency), ''), NULLIF(TRIM(Currency), ''), 'ISK'),
+                LandedCostConversionRate =
+                    COALESCE(NULLIF(TRIM(LandedCostConversionRate), ''), '1'),
+                LandedCostRateSource =
+                    COALESCE(NULLIF(TRIM(LandedCostRateSource), ''), 'Legacy transaction-currency landed cost'),
+                LandedCostCalculationVersion =
+                    COALESCE(NULLIF(TRIM(LandedCostCalculationVersion), ''), 'legacy-v1')
+            WHERE NULLIF(TRIM(LandedCostCurrency), '') IS NULL
+               OR NULLIF(TRIM(LandedCostConversionRate), '') IS NULL
+               OR NULLIF(TRIM(LandedCostRateSource), '') IS NULL
+               OR NULLIF(TRIM(LandedCostCalculationVersion), '') IS NULL;
+
+            UPDATE InventorySpoolItems
+            SET LandedCostCurrency =
+                    COALESCE(NULLIF(TRIM(LandedCostCurrency), ''), NULLIF(TRIM(PurchaseCurrency), ''), 'ISK'),
+                LandedCostConversionRate =
+                    COALESCE(NULLIF(TRIM(LandedCostConversionRate), ''), '1'),
+                LandedCostRateSource =
+                    COALESCE(NULLIF(TRIM(LandedCostRateSource), ''), 'Legacy transaction-currency landed cost'),
+                LandedCostCalculationVersion =
+                    COALESCE(NULLIF(TRIM(LandedCostCalculationVersion), ''), 'legacy-v1')
+            WHERE NULLIF(TRIM(LandedCostCurrency), '') IS NULL
+               OR NULLIF(TRIM(LandedCostConversionRate), '') IS NULL
+               OR NULLIF(TRIM(LandedCostRateSource), '') IS NULL
+               OR NULLIF(TRIM(LandedCostCalculationVersion), '') IS NULL;
+            """;
+        command.ExecuteNonQuery();
+    }
+
+    public LandedCostCurrencyMigrationContractVerification RunLandedCostCurrencyMigrationContractVerification()
+    {
+        var root = IOPath.Combine(
+            IOPath.GetTempPath(),
+            "3DPIceland-LandedCostMigration-" + Guid.NewGuid().ToString("N"));
+        var databasePath = IOPath.Combine(root, "filamentdb.sqlite");
+        IODirectory.CreateDirectory(root);
+        try
+        {
+            _ = new LocalDatabase(databasePath);
+            using (var fixture = new SqliteConnection($"Data Source={databasePath}"))
+            {
+                fixture.Open();
+                using var command = fixture.CreateCommand();
+                command.CommandText = """
+                    PRAGMA foreign_keys=OFF;
+                    INSERT OR REPLACE INTO AppMeta(Key, Value) VALUES ('SchemaVersion', '37');
+                    INSERT INTO PurchaseOrders
+                        (PurchaseOrderId, Currency, ExchangeRate, SupplierItemsTotal, SupplierShipping, SupplierTax,
+                         SupplierInvoiceTotal, ImportVat, CustomsDuty, ClearanceFee, OtherFees, CostStatus,
+                         LifecycleStatus, UpdatedAtUtc)
+                    VALUES
+                        ('VERIFY-LEGACY-PO', 'EUR', '150.25', '100.00', '20.00', '24.00', '144.00',
+                         '12.00', '3.00', '4.00', '5.00', 'Calculated', 'Draft', '2026-07-27T00:00:00Z');
+                    INSERT INTO InventorySpoolItems
+                        (InventoryItemId, MaterialId, PurchasePriceAmount, PurchaseCurrency, ShippingAmount,
+                         VatAmount, CustomsAmount, OtherFeesAmount, LandedCostAmount, UpdatedAtUtc)
+                    VALUES
+                        ('VERIFY-LEGACY-INV', 'VERIFY-MATERIAL', '100.00', 'USD', '20.00',
+                         '24.00', '3.00', '5.00', '152.00', '2026-07-27T00:00:00Z');
+                    """;
+                command.ExecuteNonQuery();
+            }
+
+            _ = new LocalDatabase(databasePath);
+            using var migrated = new SqliteConnection($"Data Source={databasePath}");
+            migrated.Open();
+            static string Scalar(SqliteConnection connection, string sql)
+            {
+                using var command = connection.CreateCommand();
+                command.CommandText = sql;
+                return command.ExecuteScalar()?.ToString() ?? string.Empty;
+            }
+
+            var schema = Scalar(migrated, "SELECT Value FROM AppMeta WHERE Key='SchemaVersion';");
+            var purchaseValues = Scalar(
+                migrated,
+                """
+                SELECT SupplierItemsTotal || '|' || SupplierShipping || '|' || SupplierTax || '|' ||
+                       SupplierInvoiceTotal || '|' || ImportVat || '|' || CustomsDuty || '|' ||
+                       ClearanceFee || '|' || OtherFees
+                FROM PurchaseOrders WHERE PurchaseOrderId='VERIFY-LEGACY-PO';
+                """);
+            var inventoryValues = Scalar(
+                migrated,
+                """
+                SELECT PurchasePriceAmount || '|' || ShippingAmount || '|' || VatAmount || '|' ||
+                       CustomsAmount || '|' || OtherFeesAmount || '|' || LandedCostAmount
+                FROM InventorySpoolItems WHERE InventoryItemId='VERIFY-LEGACY-INV';
+                """);
+            var purchaseMetadata = Scalar(
+                migrated,
+                """
+                SELECT LandedCostCurrency || '|' || LandedCostConversionRate || '|' ||
+                       LandedCostRateSource || '|' || LandedCostCalculationVersion
+                FROM PurchaseOrders WHERE PurchaseOrderId='VERIFY-LEGACY-PO';
+                """);
+            var inventoryMetadata = Scalar(
+                migrated,
+                """
+                SELECT LandedCostCurrency || '|' || LandedCostConversionRate || '|' ||
+                       LandedCostRateSource || '|' || LandedCostCalculationVersion
+                FROM InventorySpoolItems WHERE InventoryItemId='VERIFY-LEGACY-INV';
+                """);
+            var passed =
+                schema == SchemaVersion.ToString(CultureInfo.InvariantCulture) &&
+                purchaseValues == "100.00|20.00|24.00|144.00|12.00|3.00|4.00|5.00" &&
+                inventoryValues == "100.00|20.00|24.00|3.00|5.00|152.00" &&
+                purchaseMetadata == "EUR|1|Legacy transaction-currency landed cost|legacy-v1" &&
+                inventoryMetadata == "USD|1|Legacy transaction-currency landed cost|legacy-v1";
+            return new LandedCostCurrencyMigrationContractVerification(
+                passed,
+                passed
+                    ? "Schema v37 fixture migrated to v38 with exact monetary values and explicit 1:1 legacy metadata."
+                    : "Schema version, exact monetary values or legacy landed-cost metadata did not reconcile.");
+        }
+        finally
+        {
+            SqliteConnection.ClearAllPools();
+            if (IODirectory.Exists(root))
+                IODirectory.Delete(root, recursive: true);
+        }
     }
 
     private static void RetireLegacyWorkbookTablesIfCanonicalReady(SqliteConnection connection)
@@ -2590,7 +2740,16 @@ ORDER BY
         connection.Open();
         Initialize();
         using var command = connection.CreateCommand();
-        command.CommandText = @"SELECT InventoryItemId, MaterialId, Status, Quantity, SpoolWeightG, RemainingWeightG, StorageLocation, BatchNumber, PurchaseId, PurchaseOrderLineId, PurchasedFrom, PurchaseDate, OrderNumber, PurchasePriceAmount, PurchaseCurrency, ShippingAmount, VatAmount, CustomsAmount, OtherFeesAmount, LandedCostAmount, Notes FROM InventorySpoolItems ORDER BY MaterialId, InventoryItemId;";
+        command.CommandText = """
+            SELECT InventoryItemId, MaterialId, Status, Quantity, SpoolWeightG, RemainingWeightG, StorageLocation,
+                   BatchNumber, PurchaseId, PurchaseOrderLineId, PurchasedFrom, PurchaseDate, OrderNumber,
+                   PurchasePriceAmount, PurchaseCurrency, ShippingAmount, VatAmount, CustomsAmount, OtherFeesAmount,
+                   LandedCostAmount, LandedCostCurrency, LandedCostConversionRate, LandedCostRateSource,
+                   LandedCostRateObservationDate, LandedCostRateFetchedAtUtc, LandedCostCalculatedAtUtc,
+                   LandedCostCalculationVersion, Notes
+            FROM InventorySpoolItems
+            ORDER BY MaterialId, InventoryItemId;
+            """;
         var rows = new List<InventorySpoolRecord>();
         using var reader = command.ExecuteReader();
         while (reader.Read()) rows.Add(new InventorySpoolRecord
@@ -2598,7 +2757,8 @@ ORDER BY
             InventoryItemId = ReadString(reader, "InventoryItemId"), MaterialId = ReadString(reader, "MaterialId"), Status = ReadString(reader, "Status"), Quantity = ReadString(reader, "Quantity"),
             SpoolWeightG = ReadString(reader, "SpoolWeightG"), RemainingWeightG = ReadString(reader, "RemainingWeightG"), StorageLocation = ReadString(reader, "StorageLocation"), BatchNumber = ReadString(reader, "BatchNumber"),
             PurchaseId = ReadString(reader, "PurchaseId"), PurchaseOrderLineId = ReadString(reader, "PurchaseOrderLineId"), PurchasedFrom = ReadString(reader, "PurchasedFrom"), PurchaseDate = ReadString(reader, "PurchaseDate"), OrderNumber = ReadString(reader, "OrderNumber"),
-            PurchasePriceAmount = ReadString(reader, "PurchasePriceAmount"), PurchaseCurrency = ReadString(reader, "PurchaseCurrency"), ShippingAmount = ReadString(reader, "ShippingAmount"), VatAmount = ReadString(reader, "VatAmount"), CustomsAmount = ReadString(reader, "CustomsAmount"), OtherFeesAmount = ReadString(reader, "OtherFeesAmount"), LandedCostAmount = ReadString(reader, "LandedCostAmount"), Notes = ReadString(reader, "Notes")
+            PurchasePriceAmount = ReadString(reader, "PurchasePriceAmount"), PurchaseCurrency = ReadString(reader, "PurchaseCurrency"), ShippingAmount = ReadString(reader, "ShippingAmount"), VatAmount = ReadString(reader, "VatAmount"), CustomsAmount = ReadString(reader, "CustomsAmount"), OtherFeesAmount = ReadString(reader, "OtherFeesAmount"), LandedCostAmount = ReadString(reader, "LandedCostAmount"),
+            LandedCostCurrency = ReadString(reader, "LandedCostCurrency"), LandedCostConversionRate = ReadString(reader, "LandedCostConversionRate"), LandedCostRateSource = ReadString(reader, "LandedCostRateSource"), LandedCostRateObservationDate = ReadString(reader, "LandedCostRateObservationDate"), LandedCostRateFetchedAtUtc = ReadString(reader, "LandedCostRateFetchedAtUtc"), LandedCostCalculatedAtUtc = ReadString(reader, "LandedCostCalculatedAtUtc"), LandedCostCalculationVersion = ReadString(reader, "LandedCostCalculationVersion"), Notes = ReadString(reader, "Notes")
         });
         return rows;
     }
@@ -2610,10 +2770,22 @@ ORDER BY
         using var transaction = connection.BeginTransaction();
         using (var clear = connection.CreateCommand()) { clear.Transaction = transaction; clear.CommandText = "DELETE FROM InventorySpoolItems;"; clear.ExecuteNonQuery(); }
         using var insert = connection.CreateCommand(); insert.Transaction = transaction;
-        insert.CommandText = @"INSERT INTO InventorySpoolItems (InventoryItemId,MaterialId,Status,Quantity,SpoolWeightG,RemainingWeightG,StorageLocation,BatchNumber,PurchaseId,PurchaseOrderLineId,PurchasedFrom,PurchaseDate,OrderNumber,PurchasePriceAmount,PurchaseCurrency,ShippingAmount,VatAmount,CustomsAmount,OtherFeesAmount,LandedCostAmount,Notes,UpdatedAtUtc) VALUES ($id,$material,$status,$qty,$weight,$remaining,$storage,$batch,$purchase,$line,$supplier,$date,$order,$price,$currency,$shipping,$vat,$customs,$fees,$landed,$notes,$updated);";
+        insert.CommandText = """
+            INSERT INTO InventorySpoolItems
+                (InventoryItemId,MaterialId,Status,Quantity,SpoolWeightG,RemainingWeightG,StorageLocation,BatchNumber,
+                 PurchaseId,PurchaseOrderLineId,PurchasedFrom,PurchaseDate,OrderNumber,PurchasePriceAmount,
+                 PurchaseCurrency,ShippingAmount,VatAmount,CustomsAmount,OtherFeesAmount,LandedCostAmount,
+                 LandedCostCurrency,LandedCostConversionRate,LandedCostRateSource,LandedCostRateObservationDate,
+                 LandedCostRateFetchedAtUtc,LandedCostCalculatedAtUtc,LandedCostCalculationVersion,Notes,UpdatedAtUtc)
+            VALUES
+                ($id,$material,$status,$qty,$weight,$remaining,$storage,$batch,$purchase,$line,$supplier,$date,$order,
+                 $price,$currency,$shipping,$vat,$customs,$fees,$landed,$landedCurrency,$landedRate,$landedSource,
+                 $landedDate,$landedFetched,$landedCalculated,$landedVersion,$notes,$updated);
+            """;
         foreach (var x in items)
         {
-            insert.Parameters.Clear(); insert.Parameters.AddWithValue("$id", x.InventoryItemId); insert.Parameters.AddWithValue("$material", x.MaterialId); insert.Parameters.AddWithValue("$status", x.Status); insert.Parameters.AddWithValue("$qty", x.Quantity); insert.Parameters.AddWithValue("$weight", x.SpoolWeightG); insert.Parameters.AddWithValue("$remaining", x.RemainingWeightG); insert.Parameters.AddWithValue("$storage", x.StorageLocation); insert.Parameters.AddWithValue("$batch", x.BatchNumber); insert.Parameters.AddWithValue("$purchase", x.PurchaseId); insert.Parameters.AddWithValue("$line", x.PurchaseOrderLineId); insert.Parameters.AddWithValue("$supplier", x.PurchasedFrom); insert.Parameters.AddWithValue("$date", x.PurchaseDate); insert.Parameters.AddWithValue("$order", x.OrderNumber); insert.Parameters.AddWithValue("$price", x.PurchasePriceAmount); insert.Parameters.AddWithValue("$currency", x.PurchaseCurrency); insert.Parameters.AddWithValue("$shipping", x.ShippingAmount); insert.Parameters.AddWithValue("$vat", x.VatAmount); insert.Parameters.AddWithValue("$customs", x.CustomsAmount); insert.Parameters.AddWithValue("$fees", x.OtherFeesAmount); insert.Parameters.AddWithValue("$landed", x.LandedCostAmount); insert.Parameters.AddWithValue("$notes", x.Notes); insert.Parameters.AddWithValue("$updated", DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture)); insert.ExecuteNonQuery();
+            insert.Parameters.Clear(); insert.Parameters.AddWithValue("$id", x.InventoryItemId); insert.Parameters.AddWithValue("$material", x.MaterialId); insert.Parameters.AddWithValue("$status", x.Status); insert.Parameters.AddWithValue("$qty", x.Quantity); insert.Parameters.AddWithValue("$weight", x.SpoolWeightG); insert.Parameters.AddWithValue("$remaining", x.RemainingWeightG); insert.Parameters.AddWithValue("$storage", x.StorageLocation); insert.Parameters.AddWithValue("$batch", x.BatchNumber); insert.Parameters.AddWithValue("$purchase", x.PurchaseId); insert.Parameters.AddWithValue("$line", x.PurchaseOrderLineId); insert.Parameters.AddWithValue("$supplier", x.PurchasedFrom); insert.Parameters.AddWithValue("$date", x.PurchaseDate); insert.Parameters.AddWithValue("$order", x.OrderNumber); insert.Parameters.AddWithValue("$price", x.PurchasePriceAmount); insert.Parameters.AddWithValue("$currency", x.PurchaseCurrency); insert.Parameters.AddWithValue("$shipping", x.ShippingAmount); insert.Parameters.AddWithValue("$vat", x.VatAmount); insert.Parameters.AddWithValue("$customs", x.CustomsAmount); insert.Parameters.AddWithValue("$fees", x.OtherFeesAmount); insert.Parameters.AddWithValue("$landed", x.LandedCostAmount);
+            insert.Parameters.AddWithValue("$landedCurrency", string.IsNullOrWhiteSpace(x.LandedCostCurrency) ? x.PurchaseCurrency : x.LandedCostCurrency); insert.Parameters.AddWithValue("$landedRate", string.IsNullOrWhiteSpace(x.LandedCostConversionRate) ? "1" : x.LandedCostConversionRate); insert.Parameters.AddWithValue("$landedSource", string.IsNullOrWhiteSpace(x.LandedCostRateSource) ? "Legacy transaction-currency landed cost" : x.LandedCostRateSource); insert.Parameters.AddWithValue("$landedDate", x.LandedCostRateObservationDate); insert.Parameters.AddWithValue("$landedFetched", x.LandedCostRateFetchedAtUtc); insert.Parameters.AddWithValue("$landedCalculated", x.LandedCostCalculatedAtUtc); insert.Parameters.AddWithValue("$landedVersion", string.IsNullOrWhiteSpace(x.LandedCostCalculationVersion) ? "legacy-v1" : x.LandedCostCalculationVersion); insert.Parameters.AddWithValue("$notes", x.Notes); insert.Parameters.AddWithValue("$updated", DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture)); insert.ExecuteNonQuery();
         }
         transaction.Commit();
     }
@@ -2623,7 +2795,7 @@ ORDER BY
         using var connection = new SqliteConnection(ConnectionString); connection.Open(); Initialize();
         using var command = connection.CreateCommand(); command.CommandText = "SELECT * FROM PurchaseOrders ORDER BY PurchaseDate DESC, PurchaseOrderId DESC";
         var rows = new List<PurchaseOrderRecord>(); using var reader = command.ExecuteReader();
-        while (reader.Read()) rows.Add(new PurchaseOrderRecord { PurchaseOrderId=ReadString(reader,"PurchaseOrderId"), Supplier=ReadString(reader,"Supplier"), OrderNumber=ReadString(reader,"OrderNumber"), PurchaseDate=ReadString(reader,"PurchaseDate"), Currency=ReadString(reader,"Currency"), ExchangeRate=ReadString(reader,"ExchangeRate"), ExchangeRateSource=ReadString(reader,"ExchangeRateSource"), ExchangeRateObservationDate=ReadString(reader,"ExchangeRateObservationDate"), ExchangeRateFetchedAtUtc=ReadString(reader,"ExchangeRateFetchedAtUtc"), TaxTreatment=ReadString(reader,"TaxTreatment"), ShippingMethod=ReadString(reader,"ShippingMethod"), TrackingNumber=ReadString(reader,"TrackingNumber"), SupplierItemsTotal=ReadString(reader,"SupplierItemsTotal"), SupplierShipping=ReadString(reader,"SupplierShipping"), SupplierTax=ReadString(reader,"SupplierTax"), SupplierInvoiceTotal=ReadString(reader,"SupplierInvoiceTotal"), ImportVat=ReadString(reader,"ImportVat"), CustomsDuty=ReadString(reader,"CustomsDuty"), ClearanceFee=ReadString(reader,"ClearanceFee"), OtherFees=ReadString(reader,"OtherFees"), ShippingAllocationMethod=ReadString(reader,"ShippingAllocationMethod"), TaxAllocationMethod=ReadString(reader,"TaxAllocationMethod"), CustomsAllocationMethod=ReadString(reader,"CustomsAllocationMethod"), FeeAllocationMethod=ReadString(reader,"FeeAllocationMethod"), CostStatus=ReadString(reader,"CostStatus"), LifecycleStatus=ReadString(reader,"LifecycleStatus"), ReceivedDate=ReadString(reader,"ReceivedDate"), InvoiceFile=ReadString(reader,"InvoiceFile"), Notes=ReadString(reader,"Notes") });
+        while (reader.Read()) rows.Add(new PurchaseOrderRecord { PurchaseOrderId=ReadString(reader,"PurchaseOrderId"), Supplier=ReadString(reader,"Supplier"), OrderNumber=ReadString(reader,"OrderNumber"), PurchaseDate=ReadString(reader,"PurchaseDate"), Currency=ReadString(reader,"Currency"), ExchangeRate=ReadString(reader,"ExchangeRate"), ExchangeRateSource=ReadString(reader,"ExchangeRateSource"), ExchangeRateObservationDate=ReadString(reader,"ExchangeRateObservationDate"), ExchangeRateFetchedAtUtc=ReadString(reader,"ExchangeRateFetchedAtUtc"), LandedCostCurrency=ReadString(reader,"LandedCostCurrency"), LandedCostConversionRate=ReadString(reader,"LandedCostConversionRate"), LandedCostRateSource=ReadString(reader,"LandedCostRateSource"), LandedCostRateObservationDate=ReadString(reader,"LandedCostRateObservationDate"), LandedCostRateFetchedAtUtc=ReadString(reader,"LandedCostRateFetchedAtUtc"), LandedCostCalculatedAtUtc=ReadString(reader,"LandedCostCalculatedAtUtc"), LandedCostCalculationVersion=ReadString(reader,"LandedCostCalculationVersion"), TaxTreatment=ReadString(reader,"TaxTreatment"), ShippingMethod=ReadString(reader,"ShippingMethod"), TrackingNumber=ReadString(reader,"TrackingNumber"), SupplierItemsTotal=ReadString(reader,"SupplierItemsTotal"), SupplierShipping=ReadString(reader,"SupplierShipping"), SupplierTax=ReadString(reader,"SupplierTax"), SupplierInvoiceTotal=ReadString(reader,"SupplierInvoiceTotal"), ImportVat=ReadString(reader,"ImportVat"), CustomsDuty=ReadString(reader,"CustomsDuty"), ClearanceFee=ReadString(reader,"ClearanceFee"), OtherFees=ReadString(reader,"OtherFees"), ShippingAllocationMethod=ReadString(reader,"ShippingAllocationMethod"), TaxAllocationMethod=ReadString(reader,"TaxAllocationMethod"), CustomsAllocationMethod=ReadString(reader,"CustomsAllocationMethod"), FeeAllocationMethod=ReadString(reader,"FeeAllocationMethod"), CostStatus=ReadString(reader,"CostStatus"), LifecycleStatus=ReadString(reader,"LifecycleStatus"), ReceivedDate=ReadString(reader,"ReceivedDate"), InvoiceFile=ReadString(reader,"InvoiceFile"), Notes=ReadString(reader,"Notes") });
         return rows;
     }
 
@@ -2640,8 +2812,8 @@ ORDER BY
     {
         using var connection=new SqliteConnection(ConnectionString); connection.Open(); using var tx=connection.BeginTransaction();
         using(var clear=connection.CreateCommand()){clear.Transaction=tx; clear.CommandText="DELETE FROM PurchaseOrderLines; DELETE FROM PurchaseOrders;"; clear.ExecuteNonQuery();}
-        using var io=connection.CreateCommand(); io.Transaction=tx; io.CommandText=@"INSERT INTO PurchaseOrders (PurchaseOrderId,Supplier,OrderNumber,PurchaseDate,Currency,ExchangeRate,ExchangeRateSource,ExchangeRateObservationDate,ExchangeRateFetchedAtUtc,TaxTreatment,ShippingMethod,TrackingNumber,SupplierItemsTotal,SupplierShipping,SupplierTax,SupplierInvoiceTotal,ImportVat,CustomsDuty,ClearanceFee,OtherFees,ShippingAllocationMethod,TaxAllocationMethod,CustomsAllocationMethod,FeeAllocationMethod,CostStatus,LifecycleStatus,ReceivedDate,InvoiceFile,Notes,UpdatedAtUtc) VALUES ($id,$supplier,$number,$date,$currency,$rate,$rateSource,$rateDate,$rateFetched,$tax,$shipmethod,$tracking,$items,$shipping,$suppliertax,$total,$importvat,$customs,$clearance,$other,$shipalloc,$taxalloc,$customsalloc,$feealloc,$status,$lifecycle,$receiveddate,$invoice,$notes,$updated)";
-        foreach(var x in orders){io.Parameters.Clear(); io.Parameters.AddWithValue("$id",x.PurchaseOrderId);io.Parameters.AddWithValue("$supplier",x.Supplier);io.Parameters.AddWithValue("$number",x.OrderNumber);io.Parameters.AddWithValue("$date",x.PurchaseDate);io.Parameters.AddWithValue("$currency",x.Currency);io.Parameters.AddWithValue("$rate",x.ExchangeRate);io.Parameters.AddWithValue("$rateSource",x.ExchangeRateSource);io.Parameters.AddWithValue("$rateDate",x.ExchangeRateObservationDate);io.Parameters.AddWithValue("$rateFetched",x.ExchangeRateFetchedAtUtc);io.Parameters.AddWithValue("$tax",x.TaxTreatment);io.Parameters.AddWithValue("$shipmethod",x.ShippingMethod);io.Parameters.AddWithValue("$tracking",x.TrackingNumber);io.Parameters.AddWithValue("$items",x.SupplierItemsTotal);io.Parameters.AddWithValue("$shipping",x.SupplierShipping);io.Parameters.AddWithValue("$suppliertax",x.SupplierTax);io.Parameters.AddWithValue("$total",x.SupplierInvoiceTotal);io.Parameters.AddWithValue("$importvat",x.ImportVat);io.Parameters.AddWithValue("$customs",x.CustomsDuty);io.Parameters.AddWithValue("$clearance",x.ClearanceFee);io.Parameters.AddWithValue("$other",x.OtherFees);io.Parameters.AddWithValue("$shipalloc",x.ShippingAllocationMethod);io.Parameters.AddWithValue("$taxalloc",x.TaxAllocationMethod);io.Parameters.AddWithValue("$customsalloc",x.CustomsAllocationMethod);io.Parameters.AddWithValue("$feealloc",x.FeeAllocationMethod);io.Parameters.AddWithValue("$status",x.CostStatus);io.Parameters.AddWithValue("$lifecycle",x.LifecycleStatus);io.Parameters.AddWithValue("$receiveddate",x.ReceivedDate);io.Parameters.AddWithValue("$invoice",x.InvoiceFile);io.Parameters.AddWithValue("$notes",x.Notes);io.Parameters.AddWithValue("$updated",DateTime.UtcNow.ToString("O",CultureInfo.InvariantCulture));io.ExecuteNonQuery();}
+        using var io=connection.CreateCommand(); io.Transaction=tx; io.CommandText=@"INSERT INTO PurchaseOrders (PurchaseOrderId,Supplier,OrderNumber,PurchaseDate,Currency,ExchangeRate,ExchangeRateSource,ExchangeRateObservationDate,ExchangeRateFetchedAtUtc,LandedCostCurrency,LandedCostConversionRate,LandedCostRateSource,LandedCostRateObservationDate,LandedCostRateFetchedAtUtc,LandedCostCalculatedAtUtc,LandedCostCalculationVersion,TaxTreatment,ShippingMethod,TrackingNumber,SupplierItemsTotal,SupplierShipping,SupplierTax,SupplierInvoiceTotal,ImportVat,CustomsDuty,ClearanceFee,OtherFees,ShippingAllocationMethod,TaxAllocationMethod,CustomsAllocationMethod,FeeAllocationMethod,CostStatus,LifecycleStatus,ReceivedDate,InvoiceFile,Notes,UpdatedAtUtc) VALUES ($id,$supplier,$number,$date,$currency,$rate,$rateSource,$rateDate,$rateFetched,$landedCurrency,$landedRate,$landedSource,$landedDate,$landedFetched,$landedCalculated,$landedVersion,$tax,$shipmethod,$tracking,$items,$shipping,$suppliertax,$total,$importvat,$customs,$clearance,$other,$shipalloc,$taxalloc,$customsalloc,$feealloc,$status,$lifecycle,$receiveddate,$invoice,$notes,$updated)";
+        foreach(var x in orders){io.Parameters.Clear(); io.Parameters.AddWithValue("$id",x.PurchaseOrderId);io.Parameters.AddWithValue("$supplier",x.Supplier);io.Parameters.AddWithValue("$number",x.OrderNumber);io.Parameters.AddWithValue("$date",x.PurchaseDate);io.Parameters.AddWithValue("$currency",x.Currency);io.Parameters.AddWithValue("$rate",x.ExchangeRate);io.Parameters.AddWithValue("$rateSource",x.ExchangeRateSource);io.Parameters.AddWithValue("$rateDate",x.ExchangeRateObservationDate);io.Parameters.AddWithValue("$rateFetched",x.ExchangeRateFetchedAtUtc);io.Parameters.AddWithValue("$landedCurrency",string.IsNullOrWhiteSpace(x.LandedCostCurrency)?x.Currency:x.LandedCostCurrency);io.Parameters.AddWithValue("$landedRate",string.IsNullOrWhiteSpace(x.LandedCostConversionRate)?"1":x.LandedCostConversionRate);io.Parameters.AddWithValue("$landedSource",string.IsNullOrWhiteSpace(x.LandedCostRateSource)?"Legacy transaction-currency landed cost":x.LandedCostRateSource);io.Parameters.AddWithValue("$landedDate",x.LandedCostRateObservationDate);io.Parameters.AddWithValue("$landedFetched",x.LandedCostRateFetchedAtUtc);io.Parameters.AddWithValue("$landedCalculated",x.LandedCostCalculatedAtUtc);io.Parameters.AddWithValue("$landedVersion",string.IsNullOrWhiteSpace(x.LandedCostCalculationVersion)?"legacy-v1":x.LandedCostCalculationVersion);io.Parameters.AddWithValue("$tax",x.TaxTreatment);io.Parameters.AddWithValue("$shipmethod",x.ShippingMethod);io.Parameters.AddWithValue("$tracking",x.TrackingNumber);io.Parameters.AddWithValue("$items",x.SupplierItemsTotal);io.Parameters.AddWithValue("$shipping",x.SupplierShipping);io.Parameters.AddWithValue("$suppliertax",x.SupplierTax);io.Parameters.AddWithValue("$total",x.SupplierInvoiceTotal);io.Parameters.AddWithValue("$importvat",x.ImportVat);io.Parameters.AddWithValue("$customs",x.CustomsDuty);io.Parameters.AddWithValue("$clearance",x.ClearanceFee);io.Parameters.AddWithValue("$other",x.OtherFees);io.Parameters.AddWithValue("$shipalloc",x.ShippingAllocationMethod);io.Parameters.AddWithValue("$taxalloc",x.TaxAllocationMethod);io.Parameters.AddWithValue("$customsalloc",x.CustomsAllocationMethod);io.Parameters.AddWithValue("$feealloc",x.FeeAllocationMethod);io.Parameters.AddWithValue("$status",x.CostStatus);io.Parameters.AddWithValue("$lifecycle",x.LifecycleStatus);io.Parameters.AddWithValue("$receiveddate",x.ReceivedDate);io.Parameters.AddWithValue("$invoice",x.InvoiceFile);io.Parameters.AddWithValue("$notes",x.Notes);io.Parameters.AddWithValue("$updated",DateTime.UtcNow.ToString("O",CultureInfo.InvariantCulture));io.ExecuteNonQuery();}
         using var il=connection.CreateCommand(); il.Transaction=tx; il.CommandText=@"INSERT INTO PurchaseOrderLines (PurchaseOrderLineId,PurchaseOrderId,MaterialId,InventoryCategory,Description,Sku,Quantity,ReceivedQuantity,ReceivingStatus,StorageLocation,UnitPrice,DiscountAmount,UnitWeightG,IncludeInCostAllocation,ManualShippingAllocation,ManualTaxAllocation,ManualCustomsAllocation,ManualFeesAllocation,NetLineCost,AllocatedShipping,AllocatedTax,AllocatedCustoms,AllocatedFees,LandedLineCost,LandedUnitCost,LandedCostPerKg,AllocationStatus,Notes,UpdatedAtUtc) VALUES ($id,$order,$material,$category,$description,$sku,$qty,$receivedqty,$receivingstatus,$storage,$price,$discount,$weight,$include,$manualshipping,$manualtax,$manualcustoms,$manualfees,$netline,$allocatedshipping,$allocatedtax,$allocatedcustoms,$allocatedfees,$landedline,$landedunit,$landedkg,$allocationstatus,$notes,$updated)";
         foreach(var x in lines.Where(x=>orders.Any(o=>o.PurchaseOrderId==x.PurchaseOrderId))){il.Parameters.Clear();il.Parameters.AddWithValue("$id",x.PurchaseOrderLineId);il.Parameters.AddWithValue("$order",x.PurchaseOrderId);il.Parameters.AddWithValue("$material",string.IsNullOrWhiteSpace(x.MaterialId)?DBNull.Value:x.MaterialId);il.Parameters.AddWithValue("$category",string.IsNullOrWhiteSpace(x.InventoryCategory)?"Filament":x.InventoryCategory);il.Parameters.AddWithValue("$description",x.Description);il.Parameters.AddWithValue("$sku",x.Sku);il.Parameters.AddWithValue("$qty",x.Quantity);il.Parameters.AddWithValue("$receivedqty",x.ReceivedQuantity);il.Parameters.AddWithValue("$receivingstatus",x.ReceivingStatus);il.Parameters.AddWithValue("$storage",x.StorageLocation);il.Parameters.AddWithValue("$price",x.UnitPrice);il.Parameters.AddWithValue("$discount",x.DiscountAmount);il.Parameters.AddWithValue("$weight",x.UnitWeightG);il.Parameters.AddWithValue("$include",x.IncludeInCostAllocation?1:0);il.Parameters.AddWithValue("$manualshipping",x.ManualShippingAllocation);il.Parameters.AddWithValue("$manualtax",x.ManualTaxAllocation);il.Parameters.AddWithValue("$manualcustoms",x.ManualCustomsAllocation);il.Parameters.AddWithValue("$manualfees",x.ManualFeesAllocation);il.Parameters.AddWithValue("$netline",x.NetLineCost);il.Parameters.AddWithValue("$allocatedshipping",x.AllocatedShipping);il.Parameters.AddWithValue("$allocatedtax",x.AllocatedTax);il.Parameters.AddWithValue("$allocatedcustoms",x.AllocatedCustoms);il.Parameters.AddWithValue("$allocatedfees",x.AllocatedFees);il.Parameters.AddWithValue("$landedline",x.LandedLineCost);il.Parameters.AddWithValue("$landedunit",x.LandedUnitCost);il.Parameters.AddWithValue("$landedkg",x.LandedCostPerKg);il.Parameters.AddWithValue("$allocationstatus",x.AllocationStatus);il.Parameters.AddWithValue("$notes",x.Notes);il.Parameters.AddWithValue("$updated",DateTime.UtcNow.ToString("O",CultureInfo.InvariantCulture));il.ExecuteNonQuery();}
         tx.Commit();
@@ -3500,3 +3672,5 @@ RETURNING UpdatedAtUtc;";
 
     private static string Quote(string identifier) => "\"" + identifier.Replace("\"", "\"\"") + "\"";
 }
+
+public sealed record LandedCostCurrencyMigrationContractVerification(bool Passed, string Detail);

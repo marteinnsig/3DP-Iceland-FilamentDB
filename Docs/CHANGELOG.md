@@ -2,6 +2,31 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v53.0.1 - Governed Landed-cost Currency Contract and Additive Schema
+
+- Defines invoice values and charges as invoice-currency inputs and a separate
+  landed-result currency with an explicit conversion direction.
+- Adds schema v38 Purchase Order and Inventory landed-currency, rate,
+  provenance and calculation snapshot fields.
+- Backfills legacy rows with their existing currency, a 1:1 rate and explicit
+  legacy provenance without changing any stored monetary value.
+- Extends Full Verification with isolated v37-to-v38 exact-value migration and
+  Excel recovery column ownership.
+- Replaces stale current-schema verification literals with the central
+  `BuildInfo.CurrentDatabaseSchema` contract.
+- Debug/Release, documentation, Help coverage and NuGet vulnerability gates
+  pass.
+- Disposable Release smoke `20260727190229-ad32a552` passes 386/386 with exact
+  database and business-state equality.
+- Candidate awaits owner runtime acceptance; Settings and calculation workflow
+  remain in v53.0.2-v53.0.3.
+- Owner runtime acceptance passes. Its two test orders had no items; populated
+  monetary migration remains covered by the deterministic exact-value fixture.
+- Promotes the validated schema-v38 canonical seed and retains the prior
+  schema-v37 seed as an explicit migration fixture.
+- Canonical-seed Release smoke `20260727192919-e558dc25` repeats 386/386 with
+  exact database and business-state equality.
+
 ## v52.3.3 - Bounded Owner Live Evaluation and Closure
 
 - Completes the five-call owner evaluation with four PASS and one strict

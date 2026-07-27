@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v53.0.1 - Governed Landed-cost Currency Contract and Additive Schema
+
+Schema v38 establishes separate, provenance-bearing landed-result currency
+ownership for Purchase Orders and Inventory while preserving every invoice
+input and historical monetary value. Exact-value v37-to-v38 migration,
+recovery, 386/386 Verification and owner runtime acceptance pass. The validated
+schema-v38 seed becomes canonical and schema v37 remains a migration fixture.
+
 # v52.3.3 - Bounded Owner Live Evaluation and Closure
 
 Five owner calls, strict rubric review and current project Usage evidence
