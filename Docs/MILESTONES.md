@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v53.0.4.1 - Landed-cost Acceptance Contract and Automation Surface
+
+Accepted exact disposable authorization, secret-safe evidence and stable
+Purchase Order automation discovery establish the guarded boundary for the
+remaining v53 lifecycle tests. Verification 389/389, exact-state smoke and
+owner diagnostics review pass; schema remains v38.
+
 # v53.0.3 - Cross-currency Landed-cost Calculation
 
 Accepted calculation and downstream snapshots preserve invoice evidence while

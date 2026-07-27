@@ -47,6 +47,24 @@ Verification evidence: Debug/Release pass with 0 warnings/errors. Disposable Rel
 the app does not crash and Full Data Verification passes.
 
 Date: 2026-07-27
+Area: v53.0.4 deterministic landed-cost acceptance
+Type: Workflow improvement / Data integrity
+Severity: Important
+What happened: v53.0.3 deterministic Verification covers formulas and snapshots, but AutomationRunner smoke only inspects the
+read-only Purchase Orders surface and does not execute the complete disposable default/override/restart/downstream lifecycle.
+Expected behavior: Add bounded, exact-ID automation with safe evidence, restart checkpoints, migration/recovery comparison and exact
+final state recovery while keeping smoke, owner data, Production, FTPS, updater and live ECB access isolated.
+Steps to reproduce: Compare the v53.0.4 roadmap completion condition with current smoke/recovery scenario ownership.
+Screenshot / export / report attached: None.
+Status: Partially solved
+Resolution: Recorded v53.0.4.1-v53.0.4.4 before code changes. v53.0.4.1 candidate adds exact default-off authorization,
+Clean Readiness exclusion, secret-safe evidence shape, required real-control AutomationIds and read-only smoke discovery.
+Verification evidence: Debug/Release app and runner builds pass with 0 warnings/errors; documentation/static and NuGet gates pass.
+Disposable Release smoke `20260727215805-25c18520` passes 389/389 with exact database and business-state equality. Owner runtime
+accepted the unchanged Purchase Orders surface and secret-safe diagnostics report
+`3DPIceland_FilamentDB_System_Diagnostics_20260727_220416.txt`. The parent item continues at v53.0.4.2.
+
+Date: 2026-07-27
 Area: Purchase Orders exchange-rate refresh
 Type: Workflow friction
 Severity: Minor

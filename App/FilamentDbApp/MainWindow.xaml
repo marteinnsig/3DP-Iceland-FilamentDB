@@ -436,14 +436,32 @@
             <Button x:Name="NewPurchaseOrderButton" Click="AddPurchaseOrder_Click"
                     Style="{StaticResource IconActionButton}" Margin="0,0,8,8"
                     AutomationProperties.AutomationId="NewPurchaseOrderButton"><TextBlock Text="New Order"/></Button>
-            <Button Click="DeletePurchaseOrder_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Delete Order"/></Button>
-            <Button Click="AddPurchaseOrderLine_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Add Ordered Item"/></Button>
-            <Button Click="DeletePurchaseOrderLine_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Delete Item"/></Button>
-            <Button Click="CreateMaterialFromPurchaseLine_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Create Material from Selected Item"/></Button>
+            <Button x:Name="DeletePurchaseOrderButton" Click="DeletePurchaseOrder_Click"
+                    Style="{StaticResource IconActionButton}" Margin="0,0,8,8"
+                    AutomationProperties.AutomationId="DeletePurchaseOrderButton"><TextBlock Text="Delete Order"/></Button>
+            <Button x:Name="AddPurchaseOrderLineButton" Click="AddPurchaseOrderLine_Click"
+                    Style="{StaticResource IconActionButton}" Margin="0,0,8,8"
+                    AutomationProperties.AutomationId="AddPurchaseOrderLineButton"><TextBlock Text="Add Ordered Item"/></Button>
+            <Button x:Name="DeletePurchaseOrderLineButton" Click="DeletePurchaseOrderLine_Click"
+                    Style="{StaticResource IconActionButton}" Margin="0,0,8,8"
+                    AutomationProperties.AutomationId="DeletePurchaseOrderLineButton"><TextBlock Text="Delete Item"/></Button>
+            <Button x:Name="CreateMaterialFromPurchaseLineButton" Click="CreateMaterialFromPurchaseLine_Click"
+                    Style="{StaticResource IconActionButton}" Margin="0,0,8,8"
+                    AutomationProperties.AutomationId="CreateMaterialFromPurchaseLineButton">
+                <TextBlock Text="Create Material from Selected Item"/>
+            </Button>
             <Button Click="BrowsePurchaseInvoice_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Attach Document (optional)"/></Button>
-            <Button Click="ReceivePurchaseOrder_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Receive / Reconcile"/></Button>
-            <Button Click="CreateInventoryFromPurchaseOrder_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Create Materials + Received Spools"/></Button>
-            <Button Click="CalculatePurchaseCosts_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Calculate Landed Costs"/></Button>
+            <Button x:Name="ReceivePurchaseOrderButton" Click="ReceivePurchaseOrder_Click"
+                    Style="{StaticResource IconActionButton}" Margin="0,0,8,8"
+                    AutomationProperties.AutomationId="ReceivePurchaseOrderButton"><TextBlock Text="Receive / Reconcile"/></Button>
+            <Button x:Name="CreateInventoryFromPurchaseOrderButton" Click="CreateInventoryFromPurchaseOrder_Click"
+                    Style="{StaticResource IconActionButton}" Margin="0,0,8,8"
+                    AutomationProperties.AutomationId="CreateInventoryFromPurchaseOrderButton">
+                <TextBlock Text="Create Materials + Received Spools"/>
+            </Button>
+            <Button x:Name="CalculatePurchaseCostsButton" Click="CalculatePurchaseCosts_Click"
+                    Style="{StaticResource IconActionButton}" Margin="0,0,8,8"
+                    AutomationProperties.AutomationId="CalculatePurchaseCostsButton"><TextBlock Text="Calculate Landed Costs"/></Button>
             <Button x:Name="RefreshEcbExchangeRates" Click="RefreshEcbExchangeRates_Click"
                     Style="{StaticResource IconActionButton}" Margin="0,0,8,8"
                     AutomationProperties.AutomationId="RefreshEcbExchangeRates"><TextBlock Text="Refresh ECB Reference"/></Button>
@@ -519,10 +537,14 @@
         <Border Grid.Row="4" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="5" Padding="8" Margin="0,0,0,8">
             <StackPanel>
                 <TextBlock Text="Cost Allocation Validation" FontWeight="SemiBold"/>
-                <TextBlock Name="PurchaseCostValidationText" Margin="0,3,0,0" Foreground="#64748B" TextWrapping="Wrap" Text="Cost allocation validation will appear here after calculation."/>
+                <TextBlock Name="PurchaseCostValidationText"
+                           AutomationProperties.AutomationId="PurchaseCostValidation"
+                           Margin="0,3,0,0" Foreground="#64748B" TextWrapping="Wrap"
+                           Text="Cost allocation validation will appear here after calculation."/>
             </StackPanel>
         </Border>
         <DataGrid Grid.Row="5" Name="PurchaseOrderLinesGrid" Style="{StaticResource HighPerformanceDataGrid}"
+                  AutomationProperties.AutomationId="PurchaseOrderLinesGrid"
                   AutoGenerateColumns="False"
                   BeginningEdit="PurchaseOrderGrid_BeginningEdit"
                   CellEditEnding="PurchaseOrderGrid_CellEditEnding">

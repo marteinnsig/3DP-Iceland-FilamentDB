@@ -1,3 +1,17 @@
+# v53.0.4.1 - Landed-cost Acceptance Contract and Automation Surface
+
+Date: 2026-07-27
+
+- Debug/Release application and AutomationRunner builds pass with zero warnings/errors.
+- Documentation/static gates and the NuGet vulnerability scan pass.
+- Disposable Release smoke `20260727215805-25c18520` passes 389/389.
+- The v53.0.4.1 exact authorization and control-surface gate passes.
+- Database and normalized business-state hashes match exactly before/after.
+- Owner runtime accepts Purchase Orders and diagnostics evidence
+  `3DPIceland_FilamentDB_System_Diagnostics_20260727_220416.txt`.
+- Production, FTPS, updater, live ECB and owner-data mutation were excluded.
+- Schema remains v38; v53.0.4.2 is the next authoritative increment.
+
 # v52.3.3 - Bounded Owner Live Evaluation and Closure
 
 Date: 2026-07-27

@@ -13562,6 +13562,12 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                       "only landed line/unit/kg results use the snapshotted landed currency.");
         sb.AppendLine("Ownership: reference data may prefill only a newly created uncalculated Draft. " +
                       "Saved purchases, inventory, Materials and quotes are never refreshed or recalculated.");
+        sb.AppendLine("Disposable landed-cost workflow authorization: " +
+                      (AutomationRuntimeProfile.Current?.LandedCostWorkflowAuthorized == true
+                          ? "Exact disposable PO/Material/Inventory identities only"
+                          : "Not authorized"));
+        sb.AppendLine("Automation evidence boundary: currencies, rate provenance, calculation version, " +
+                      "restart checkpoints and state hashes only; supplier, notes, credentials and owner paths excluded.");
         sb.AppendLine();
 
         var updateDiagnostics = GetApplicationUpdateDiagnostics();
@@ -17544,6 +17550,48 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                   $"reportTextUsd={landedInventoryReportProbe.Text.Contains("- USD:", StringComparison.Ordinal)}; " +
                   $"reportHtmlUsd={landedInventoryReportProbe.Html.Contains(">USD<", StringComparison.Ordinal)}; " +
                   $"failureValid={nonDestructiveFailure.IsValid}; preserved={nonDestructiveFailureLine.LandedLineCost}"));
+        var landedCostAuthorizationProbe = new AutomationRuntimeProfile
+        {
+            LandedCostWorkflowAuthorized = true,
+            LandedCostPurchaseOrderId = "AUT-PO-CONTRACT",
+            LandedCostMaterialId = "AUT-MAT-CONTRACT",
+            LandedCostInventoryItemId = "AUT-INV-CONTRACT"
+        };
+        var invalidLandedCostAuthorizationProbe = new AutomationRuntimeProfile
+        {
+            LandedCostWorkflowAuthorized = true,
+            LandedCostPurchaseOrderId = "AUT-DUPLICATE",
+            LandedCostMaterialId = "AUT-DUPLICATE",
+            LandedCostInventoryItemId = "AUT-INV-CONTRACT"
+        };
+        var landedCostAcceptanceContractReady =
+            landedCostAuthorizationProbe.HasValidLandedCostWorkflowAuthorization() &&
+            landedCostAuthorizationProbe.MatchesLandedCostWorkflowAuthorization(
+                "AUT-PO-CONTRACT",
+                "AUT-MAT-CONTRACT",
+                "AUT-INV-CONTRACT") &&
+            !landedCostAuthorizationProbe.MatchesLandedCostWorkflowAuthorization(
+                "AUT-PO-WRONG",
+                "AUT-MAT-CONTRACT",
+                "AUT-INV-CONTRACT") &&
+            !invalidLandedCostAuthorizationProbe.HasValidLandedCostWorkflowAuthorization() &&
+            AutomationRuntimeProfile.IsSafeAutomationIdentifier("AUT-PO_123") &&
+            !AutomationRuntimeProfile.IsSafeAutomationIdentifier("AUT PO 123") &&
+            FindName("DeletePurchaseOrderButton") is Button &&
+            FindName("AddPurchaseOrderLineButton") is Button &&
+            FindName("DeletePurchaseOrderLineButton") is Button &&
+            FindName("CreateMaterialFromPurchaseLineButton") is Button &&
+            FindName("ReceivePurchaseOrderButton") is Button &&
+            FindName("CreateInventoryFromPurchaseOrderButton") is Button &&
+            FindName("CalculatePurchaseCostsButton") is Button &&
+            FindName("PurchaseOrderLinesGrid") is DataGrid &&
+            FindName("PurchaseCostValidationText") is TextBlock;
+        checks.Add(new VerificationCheck(
+            "v53.0.4.1 Landed-cost acceptance authorization and control surface gate",
+            landedCostAcceptanceContractReady && releaseIdentityReady,
+            landedCostAcceptanceContractReady && releaseIdentityReady
+                ? "Exact safe PO/Material/Inventory authorization matches only the approved triplet; invalid/duplicate IDs fail; required real controls are discoverable"
+                : "Exact authorization, identifier rejection, required AutomationId control surface or release identity failed"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {

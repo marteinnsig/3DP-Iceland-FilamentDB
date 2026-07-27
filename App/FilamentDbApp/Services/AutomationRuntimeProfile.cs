@@ -24,6 +24,10 @@ public sealed class AutomationRuntimeProfile
     public bool ReportGenerationAuthorized { get; init; }
     public bool MaterialCrudAuthorized { get; init; }
     public string MaterialCrudId { get; init; } = string.Empty;
+    public bool LandedCostWorkflowAuthorized { get; init; }
+    public string LandedCostPurchaseOrderId { get; init; } = string.Empty;
+    public string LandedCostMaterialId { get; init; } = string.Empty;
+    public string LandedCostInventoryItemId { get; init; } = string.Empty;
     public bool RecoveryAuthorized { get; init; }
     public bool UpdaterAuthorized { get; init; }
 
@@ -76,6 +80,42 @@ public sealed class AutomationRuntimeProfile
                 "Backup and recovery automation requires explicit disposable scenario authorization.");
     }
 
+    public static void DemandLandedCostWorkflowAuthorized(
+        string purchaseOrderId,
+        string materialId,
+        string inventoryItemId)
+    {
+        if (Current?.MatchesLandedCostWorkflowAuthorization(
+                purchaseOrderId,
+                materialId,
+                inventoryItemId) != true)
+            throw new InvalidOperationException(
+                "Landed-cost automation requires explicit authorization for the exact disposable identities.");
+    }
+
+    internal static bool IsSafeAutomationIdentifier(string? value) =>
+        !string.IsNullOrWhiteSpace(value) &&
+        value.All(ch => char.IsLetterOrDigit(ch) || ch is '-' or '_');
+
+    internal bool HasValidLandedCostWorkflowAuthorization() =>
+        !LandedCostWorkflowAuthorized ||
+        (IsSafeAutomationIdentifier(LandedCostPurchaseOrderId) &&
+         IsSafeAutomationIdentifier(LandedCostMaterialId) &&
+         IsSafeAutomationIdentifier(LandedCostInventoryItemId) &&
+         !string.Equals(LandedCostPurchaseOrderId, LandedCostMaterialId, StringComparison.Ordinal) &&
+         !string.Equals(LandedCostPurchaseOrderId, LandedCostInventoryItemId, StringComparison.Ordinal) &&
+         !string.Equals(LandedCostMaterialId, LandedCostInventoryItemId, StringComparison.Ordinal));
+
+    internal bool MatchesLandedCostWorkflowAuthorization(
+        string purchaseOrderId,
+        string materialId,
+        string inventoryItemId) =>
+        LandedCostWorkflowAuthorized &&
+        HasValidLandedCostWorkflowAuthorization() &&
+        string.Equals(LandedCostPurchaseOrderId, purchaseOrderId, StringComparison.Ordinal) &&
+        string.Equals(LandedCostMaterialId, materialId, StringComparison.Ordinal) &&
+        string.Equals(LandedCostInventoryItemId, inventoryItemId, StringComparison.Ordinal);
+
     private void Validate(string manifestPath)
     {
         if (string.IsNullOrWhiteSpace(ProfileId) ||
@@ -86,12 +126,16 @@ public sealed class AutomationRuntimeProfile
         if (Purpose is not (VerificationPurpose or CleanReadinessPurpose))
             throw new InvalidOperationException("Automation profile purpose must be verification or clean-readiness.");
         if (Purpose == CleanReadinessPurpose &&
-            (ReportGenerationAuthorized || MaterialCrudAuthorized || RecoveryAuthorized || UpdaterAuthorized))
+            (ReportGenerationAuthorized || MaterialCrudAuthorized || LandedCostWorkflowAuthorized ||
+             RecoveryAuthorized || UpdaterAuthorized))
             throw new InvalidOperationException("Clean Readiness profiles cannot authorize mutating automation scenarios.");
         if (MaterialCrudAuthorized &&
             (string.IsNullOrWhiteSpace(MaterialCrudId) ||
              !MaterialCrudId.All(ch => char.IsLetterOrDigit(ch) || ch is '-' or '_')))
             throw new InvalidOperationException("Authorized automation MaterialID must be a non-empty safe identifier.");
+        if (!HasValidLandedCostWorkflowAuthorization())
+            throw new InvalidOperationException(
+                "Landed-cost automation requires three distinct non-empty safe disposable identities.");
 
         var allowedRoot = IOPath.GetFullPath(IOPath.Combine(IOPath.GetTempPath(), "3DPIceland-Automation"))
             .TrimEnd(IOPath.DirectorySeparatorChar) + IOPath.DirectorySeparatorChar;

@@ -2,6 +2,23 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v53.0.4.1 - Landed-cost Acceptance Contract and Automation Surface
+
+- Adds default-off, exact-triplet disposable landed-cost authorization.
+- Rejects unsafe, missing or duplicate PO/Material/Inventory identities.
+- Keeps Clean Readiness and every existing scenario unauthorized.
+- Defines secret-safe landed-cost evidence fields without supplier, notes,
+  credentials, payloads or owner paths.
+- Adds stable AutomationIds for the real Purchase Order lifecycle controls,
+  lines grid and validation result.
+- Extends read-only smoke discovery without invoking Purchase Order mutation.
+- Adds aggregate diagnostics and a deterministic authorization/control gate.
+- Debug/Release, documentation/static and NuGet gates pass. Disposable Release
+  smoke `20260727215805-25c18520` passes 389/389 with exact state equality.
+- Owner runtime accepts the unchanged Purchase Orders surface and secret-safe
+  diagnostics on 2026-07-27. v53.0.4.1 is canonical.
+- No schema change; the mutating lifecycle remains owned by v53.0.4.2.
+
 ## v53.0.3 - Cross-currency Landed-cost Calculation
 
 - Keeps invoice inputs and allocated components in invoice currency.

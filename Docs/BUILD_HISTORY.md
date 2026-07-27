@@ -2,6 +2,18 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v53.0.4.1 - Landed-cost Acceptance Contract and Automation Surface
+
+The candidate establishes the safety boundary required before lifecycle
+automation: exact disposable PO/Material/Inventory identities, default-off
+authorization, Clean Readiness exclusion, secret-safe evidence fields and
+discoverable real Purchase Order controls. Existing scenarios remain
+unauthorized and smoke stays read-only. Debug/Release, documentation/static
+and NuGet gates pass. Disposable Release smoke
+`20260727215805-25c18520` passes 389/389 with exact database and business-state
+equality. Owner runtime accepts the unchanged Purchase Orders surface and safe
+diagnostics on 2026-07-27. v53.0.4.1 is canonical; schema stays v38.
+
 ## v53.0.3 - Cross-currency Landed-cost Calculation
 
 The accepted v53.0.3 contract allocates invoice values first and converts only

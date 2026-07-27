@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v53.0.2 — Settings Default and Draft Override**
+Current canonical release: **v53.0.4.1 — Acceptance Contract and Automation Surface**
 
-Last runtime-accepted baseline: **v53.0.3 — Cross-currency Calculation and Downstream Snapshots**
+Last runtime-accepted baseline: **v53.0.4.1 — Acceptance Contract and Automation Surface**
 
-Current canonical application release: **v53.0.3 — Cross-currency Calculation and Downstream Snapshots**
+Current canonical application release: **v53.0.4.1 — Acceptance Contract and Automation Surface**
 
-Current roadmap increment: **v53.0.4 — Diagnostics, Help and Deterministic Acceptance**
+Current roadmap increment: **v53.0.4.2 — Disposable Landed-cost Lifecycle**
 
-Current acceptance note: v53.0.3 is runtime accepted with Full Data Verification 388/388.
+Current acceptance note: v53.0.4.1 is runtime accepted with Full Data Verification 389/389.
 
-Next note: v53.0.4 owns broader diagnostics, Help and deterministic workflow acceptance.
+Next note: v53.0.4.2 adds the exact disposable default/override/restart/calculation/downstream lifecycle.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -38,7 +38,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v51 | Governed Runtime Profiles | ★★★☆☆ | Complete — canonical v51.4.0 runtime accepted |
 | v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Complete — Provisional model; runtime v52.3.2 |
 
-| v53 | Governed Landed-cost Currency | ★★★★☆ | Planned |
+| v53 | Governed Landed-cost Currency | ★★★★☆ | In progress — current v53.0.4.2 |
 
 | v54 | Materials Scope and Collection Workflow | ★★★★☆ | Planned |
 | v55 | Operational Safety and Disposable Hygiene | ★★★★☆ | Planned |
@@ -2311,10 +2311,31 @@ to unstarted authoritative planning slots.
   - Update governed purchasing reports to use landed-currency provenance and preserve saved Usage and Quote history.
   - Completion condition: owner accepts cross-currency results and unchanged historical/downstream records.
 - **v53.0.4 — Diagnostics, Help and Deterministic Acceptance**
-  - State: Current authoritative increment after v53.0.3 runtime acceptance.
+  - State: In progress; authoritative subincrements recorded before implementation.
   - Add safe diagnostics, field/workflow Help and the required AutomationIds.
   - Extend disposable automation for defaults, override, restart, migration, recovery and historical stability.
   - Completion condition: all relevant gates and Full Data Verification pass, then owner accepts the completed v53 workflow.
+- **v53.0.4.1 — Acceptance Contract and Automation Surface**
+  - State: Complete, canonical and runtime accepted.
+  - Add exact landed-cost automation authorization, disposable IDs, required real-control AutomationIds and secret-safe evidence shape.
+  - Keep smoke read-only; block owner data, Production, FTPS, updater and live ECB network access.
+  - Evidence: Release smoke `20260727215805-25c18520` passes 389/389 with exact database and business-state equality.
+  - Owner accepted the unchanged Purchase Orders surface and safe diagnostics on 2026-07-27.
+- **v53.0.4.2 — Disposable Landed-cost Lifecycle**
+  - State: Current; begin only after recording the accepted v53.0.4.1 evidence.
+  - Add a dedicated scenario for default, Draft override, cancellation, restart, calculation lock and downstream snapshot creation.
+  - Use exact disposable records, production helpers, full cleanup and final logical/business-state hash equality.
+  - Completion condition: lifecycle and restart checkpoints pass without owner-data or external-action access.
+- **v53.0.4.3 — Migration, Recovery and Historical Stability**
+  - State: Planned after v53.0.4.2.
+  - Add read-only schema-v37 startup migration coverage and exact v53 field comparison across governed Excel recovery.
+  - Prove existing Purchase Orders, Inventory, Materials, Usage and Quotes remain unchanged outside exact disposable records.
+  - Completion condition: migration/recovery evidence and all preservation/hash gates pass.
+- **v53.0.4.4 — Diagnostics, Help and Final Acceptance**
+  - State: Planned after v53.0.4.3.
+  - Reconcile safe aggregate diagnostics, v53 field/workflow Help, acceptance documentation and tester evidence.
+  - Run Debug/Release, static/security/documentation, all disposable scenarios and Full Data Verification.
+  - Completion condition: owner accepts the complete v53 workflow and all gates pass; v53.0.5 remains mandatory before parent closure.
 - **v53.0.5 — Post-v50 Help Reconciliation**
   - State: Planned after v53.0.4; mandatory before parent v53 may close or v54 may start.
   - Audit every user-visible change delivered after v50 Help acceptance through completed v51, v52 and the final v53 workflow.

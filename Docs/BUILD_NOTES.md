@@ -1,4 +1,27 @@
-# Current Build Notes - v53.0.3
+# Current Build Notes - v53.0.4.1
+
+## Landed-cost Acceptance Contract and Automation Surface
+
+v53.0.4.1 adds a default-off disposable authorization bound to three exact,
+safe and distinct PurchaseOrderID, MaterialID and InventoryItemID values. Clean
+Readiness rejects that capability and every existing scenario keeps it false.
+The runner manifest and safety evidence expose the authorization state without
+enabling a mutating landed-cost scenario yet.
+
+The evidence contract allows only exact disposable IDs, currencies, rates,
+provenance dates, calculation version, restart checkpoints and state hashes.
+Supplier, notes, credentials, payloads and owner paths are excluded. Purchase
+Order lifecycle controls, lines grid and validation status now have stable
+AutomationIds; read-only smoke discovers them without invoking mutation.
+Diagnostics reports only aggregate authorization/evidence boundaries. Current
+Help behavior is unchanged; registry ownership advances to v53.0.4.1.
+Debug/Release app and runner builds pass with zero warnings/errors.
+Documentation/static gates pass and the read-only NuGet scan reports no
+vulnerable packages. Disposable Release smoke
+`20260727215805-25c18520` passes 389/389, including the new authorization and
+control-surface gate, with exact database and business-state equality. Owner
+runtime accepted the unchanged Purchase Orders surface and diagnostics evidence
+on 2026-07-27. v53.0.4.1 is canonical; v53.0.4.2 is current.
 
 ## Cross-currency Landed-cost Calculation
 

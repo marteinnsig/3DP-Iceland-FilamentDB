@@ -1,6 +1,16 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v53.0.4.1 - Landed-cost Acceptance Contract and Automation Surface
+
+Default-off exact disposable PO/Material/Inventory authorization, secret-safe
+evidence and stable Purchase Order AutomationIds establish the safety boundary
+for later lifecycle automation. Existing smoke stays read-only and all current
+scenarios remain unauthorized. Debug/Release and static/security gates pass.
+Disposable smoke `20260727215805-25c18520` passes Verification 389/389 with
+exact database and business-state equality. Owner runtime accepts the unchanged
+Purchase Orders surface and safe diagnostics; schema remains v38.
+
 ## v53.0.3 - Cross-currency Landed-cost Calculation
 
 Purchase Order allocations remain in invoice currency while only final landed

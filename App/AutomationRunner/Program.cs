@@ -248,6 +248,14 @@ internal static class Program
             Require(
                 FindById(main, "NewPurchaseOrderButton").Current.ControlType == ControlType.Button &&
                 FindById(main, "PurchaseOrdersGrid").Current.ControlType == ControlType.DataGrid &&
+                FindById(main, "DeletePurchaseOrderButton").Current.ControlType == ControlType.Button &&
+                FindById(main, "AddPurchaseOrderLineButton").Current.ControlType == ControlType.Button &&
+                FindById(main, "DeletePurchaseOrderLineButton").Current.ControlType == ControlType.Button &&
+                FindById(main, "CreateMaterialFromPurchaseLineButton").Current.ControlType == ControlType.Button &&
+                FindById(main, "ReceivePurchaseOrderButton").Current.ControlType == ControlType.Button &&
+                FindById(main, "CreateInventoryFromPurchaseOrderButton").Current.ControlType == ControlType.Button &&
+                FindById(main, "CalculatePurchaseCostsButton").Current.ControlType == ControlType.Button &&
+                FindById(main, "PurchaseOrderLinesGrid").Current.ControlType == ControlType.DataGrid &&
                 FindById(main, "LandedCostCurrencySelector").Current.ControlType == ControlType.ComboBox &&
                 FindById(main, "ApplyLandedCostCurrencyOverride").Current.ControlType == ControlType.Button,
                 "Purchase Orders did not expose the governed landed-cost Draft controls.");
@@ -258,7 +266,8 @@ internal static class Program
                 landedCostStatus.Contains("Snapshot is locked", StringComparison.Ordinal),
                 "Purchase Orders did not expose an honest landed-cost Draft status.");
             Require(
-                FindById(main, "LandedCostConversionRate").Current.ControlType == ControlType.Text,
+                FindById(main, "LandedCostConversionRate").Current.ControlType == ControlType.Text &&
+                FindById(main, "PurchaseCostValidation").Current.ControlType == ControlType.Text,
                 "Purchase Orders did not expose the landed-cost conversion-rate evidence.");
             Record("landed-cost-draft-ui-contract", true, landedCostStatus);
 
@@ -901,6 +910,9 @@ internal static class Program
         IODirectory.CreateDirectory(allowedRoot);
         var profileId = DateTime.UtcNow.ToString("yyyyMMddHHmmss") + "-" + Guid.NewGuid().ToString("N")[..8];
         materialCrudId = "AUT" + profileId[^8..];
+        var landedCostPurchaseOrderId = "AUT-PO-" + profileId[^8..];
+        var landedCostMaterialId = "AUT-MAT-" + profileId[^8..];
+        var landedCostInventoryItemId = "AUT-INV-" + profileId[^8..];
         var root = IOPath.Combine(allowedRoot, profileId);
         var databaseFolder = IOPath.Combine(root, "database");
         var preferencesFolder = IOPath.Combine(root, "preferences");
@@ -934,6 +946,10 @@ internal static class Program
             reportGenerationAuthorized,
             materialCrudAuthorized,
             materialCrudId,
+            landedCostWorkflowAuthorized = false,
+            landedCostPurchaseOrderId,
+            landedCostMaterialId,
+            landedCostInventoryItemId,
             recoveryAuthorized,
             updaterAuthorized
         };
@@ -1947,6 +1963,7 @@ internal static class Program
                 inputConfinedToOwnedProcess = true,
                 reportGenerationAuthorized = string.Equals(CurrentScenario, "reports", StringComparison.Ordinal)
                 ,materialCrudAuthorized = string.Equals(CurrentScenario, "crud", StringComparison.Ordinal)
+                ,landedCostWorkflowAuthorized = false
                 ,recoveryAuthorized = string.Equals(CurrentScenario, "recovery", StringComparison.Ordinal)
                 ,updaterAuthorized = string.Equals(CurrentScenario, "updater", StringComparison.Ordinal)
             },
@@ -1972,6 +1989,29 @@ internal static class Program
 
     private sealed record StepResult(string Name, string Status, string Detail, DateTimeOffset AtUtc);
     private sealed record ArtifactEvidence(string RelativePath, long Bytes, string Sha256);
+    private sealed record LandedCostAutomationEvidence(
+        string Schema,
+        string ProfileId,
+        string PurchaseOrderId,
+        string MaterialId,
+        string InventoryItemId,
+        string InvoiceCurrency,
+        string LandedCurrency,
+        string ConversionRate,
+        string RateSource,
+        string ObservationDate,
+        string FetchedAtUtc,
+        string CalculatedAtUtc,
+        string CalculationVersion,
+        IReadOnlyList<string> RestartCheckpoints,
+        string PurchaseOrderStateSha256,
+        string InventoryStateSha256,
+        string MaterialStateSha256,
+        string UsageStateSha256,
+        string QuoteStateSha256,
+        string BaselineBusinessStateSha256,
+        string FinalBusinessStateSha256,
+        bool CleanupMatchedBaseline);
 
     private sealed record RunnerOptions(
         string ApplicationPath,

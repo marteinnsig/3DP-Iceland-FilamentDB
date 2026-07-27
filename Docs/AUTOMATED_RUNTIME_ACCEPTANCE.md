@@ -1,5 +1,23 @@
 # Automated Runtime Acceptance
 
+## v53.0.4.1 - Landed-cost acceptance contract accepted
+
+- `LandedCostWorkflowAuthorized` is default-off and requires exact safe,
+  distinct PurchaseOrderID, MaterialID and InventoryItemID values.
+- Clean Readiness cannot authorize the capability; current scenarios emit
+  `landedCostWorkflowAuthorized: false`.
+- The retained evidence shape contains only bounded IDs, currencies, rates,
+  provenance, calculation version, restart checkpoints and state hashes.
+- Read-only smoke discovers every required real Purchase Order lifecycle
+  control, lines grid and validation status without invoking them.
+- Full Verification owns safe/unsafe/exact-triplet matching and visible-control
+  presence. The mutating lifecycle remains v53.0.4.2.
+- Disposable Release smoke `20260727215805-25c18520` passes 389/389, including
+  the v53.0.4.1 gate, with exact database and business-state equality.
+- Debug/Release, documentation/static and NuGet vulnerability gates pass.
+  Owner runtime accepts the unchanged Purchase Orders surface and diagnostics
+  evidence on 2026-07-27.
+
 ## v53.0.3 - Cross-currency calculation accepted
 
 - Full Verification covers invoice allocation, final-output conversion,
