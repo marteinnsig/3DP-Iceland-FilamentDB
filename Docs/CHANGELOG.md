@@ -2,6 +2,24 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v53.0.4.3 - Migration, Recovery and Historical Stability
+
+- Adds a read-only schema-v37 startup-migration AutomationRunner scenario.
+- Requires schema v38 and exact equality for every shared historical column.
+- SHA-256 guards the preserved source fixture against mutation.
+- Extends governed Excel recovery with an exact disposable calculated v53
+  Purchase Order, Material and Inventory lifecycle.
+- Mutates only authorized recovery records, then requires exact whole-table
+  restoration for Purchase Orders, lines, Inventory, Materials, Usage and
+  Quotes.
+- Requires exact cleanup, restart absence and baseline business-state equality.
+- Migration `20260727224150-47f14b19` and recovery
+  `20260727224236-eaa2bdb1` pass Verification 391/391.
+- Final smoke `20260727224717-d81709b9` passes 391/391 with exact state.
+- Owner accepts 200 intentional Materials, unchanged Purchase Orders/Inventory,
+  zero automation residue and Full Data Verification 391/391.
+- Schema remains v38; v53.0.4.3 is canonical.
+
 ## v53.0.4.2 - Disposable Landed-cost Lifecycle
 
 - Adds a dedicated, default-off `landed-cost` AutomationRunner scenario.

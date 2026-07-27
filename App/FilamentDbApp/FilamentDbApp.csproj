@@ -8,10 +8,10 @@
     <ApplicationIcon>Assets\3dp-iceland-labs-icon.ico</ApplicationIcon>
     <AssemblyName>3DPIcelandFilamentDB</AssemblyName>
     <RootNamespace>FilamentDbApp</RootNamespace>
-    <Version>53.0.4.2</Version>
-    <AssemblyVersion>53.0.4.2</AssemblyVersion>
-    <FileVersion>53.0.4.2</FileVersion>
-    <InformationalVersion>53.0.4.2-DISPOSABLE-LANDED-COST-LIFECYCLE</InformationalVersion>
+    <Version>53.0.4.3</Version>
+    <AssemblyVersion>53.0.4.3</AssemblyVersion>
+    <FileVersion>53.0.4.3</FileVersion>
+    <InformationalVersion>53.0.4.3-LANDED-COST-MIGRATION-RECOVERY</InformationalVersion>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Copyright>Copyright © 2026 Marteinn Sigurðsson / 3DPIceland Labs</Copyright>
   </PropertyGroup>

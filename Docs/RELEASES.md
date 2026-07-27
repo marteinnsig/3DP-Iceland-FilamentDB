@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v53.0.4.3 - Migration, Recovery and Historical Stability
+
+Read-only schema-v37 startup migration preserves every shared legacy field and
+SHA-256 guards the source fixture. Governed Excel recovery restores exact v53
+Purchase Order/Inventory provenance and whole historical Purchase Order, line,
+Inventory, Material, Usage and Quote table state before exact cleanup.
+Migration `20260727224150-47f14b19`, recovery
+`20260727224236-eaa2bdb1` and smoke `20260727224717-d81709b9` pass 391/391 and
+exact normalized state equality. Owner runtime accepts unchanged canonical
+data and zero automation residue; schema remains v38.
+
 ## v53.0.4.2 - Disposable Landed-cost Lifecycle
 
 An exact-ID, default-off disposable scenario proves governed default,

@@ -69,6 +69,12 @@ xaml.application-shell.button.automationcrudcreate	Application shell	Button	Auto
 xaml.application-shell.button.automationcruddelete	Application shell	Button	AutomationCrudDelete	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationcrudedit	Application shell	Button	AutomationCrudEdit	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationcrudverifyabsent	Application shell	Button	AutomationCrudVerifyAbsent	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostcalculate	Application shell	Button	AutomationLandedCostCalculate	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostcleanup	Application shell	Button	AutomationLandedCostCleanup	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostdownstream	Application shell	Button	AutomationLandedCostDownstream	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostoverride	Application shell	Button	AutomationLandedCostOverride	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostprepare	Application shell	Button	AutomationLandedCostPrepare	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostverifyabsent	Application shell	Button	AutomationLandedCostVerifyAbsent	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationrecoverybackup	Application shell	Button	AutomationRecoveryBackup	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationrecoveryexportexcel	Application shell	Button	AutomationRecoveryExportExcel	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationrecoverymutate	Application shell	Button	AutomationRecoveryMutate	action	v50.4.3	menu-runtime.controls-fields	covered
@@ -442,16 +448,16 @@ xaml.print-job-quotes.textbox.quotepreparedbybox	Print Job Quotes	TextBox	QuoteP
 xaml.print-job-quotes.textbox.quoteprinthoursbox	Print Job Quotes	TextBox	QuotePrintHoursBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
 xaml.print-job-quotes.textbox.quoteprintlaborminutesbox	Print Job Quotes	TextBox	QuotePrintLaborMinutesBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
 xaml.print-job-quotes.textbox.quotequantitybox	Print Job Quotes	TextBox	QuoteQuantityBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
-xaml.purchase-orders.button.addpurchaseorderline-click	Purchase Orders	Button	AddPurchaseOrderLine_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.addpurchaseorderlinebutton	Purchase Orders	Button	AddPurchaseOrderLineButton	action	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.button.applylandedcostcurrencyoverride	Purchase Orders	Button	ApplyLandedCostCurrencyOverride	action	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.button.browsepurchaseinvoice-click	Purchase Orders	Button	BrowsePurchaseInvoice_Click	action	v50.4.1	purchase-orders.controls-fields	covered
-xaml.purchase-orders.button.calculatepurchasecosts-click	Purchase Orders	Button	CalculatePurchaseCosts_Click	action	v50.4.1	purchase-orders.controls-fields	covered
-xaml.purchase-orders.button.createinventoryfrompurchaseorder-click	Purchase Orders	Button	CreateInventoryFromPurchaseOrder_Click	action	v50.4.1	purchase-orders.controls-fields	covered
-xaml.purchase-orders.button.creatematerialfrompurchaseline-click	Purchase Orders	Button	CreateMaterialFromPurchaseLine_Click	action	v50.4.1	purchase-orders.controls-fields	covered
-xaml.purchase-orders.button.deletepurchaseorder-click	Purchase Orders	Button	DeletePurchaseOrder_Click	action	v50.4.1	purchase-orders.controls-fields	covered
-xaml.purchase-orders.button.deletepurchaseorderline-click	Purchase Orders	Button	DeletePurchaseOrderLine_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.calculatepurchasecostsbutton	Purchase Orders	Button	CalculatePurchaseCostsButton	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.createinventoryfrompurchaseorderbutton	Purchase Orders	Button	CreateInventoryFromPurchaseOrderButton	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.creatematerialfrompurchaselinebutton	Purchase Orders	Button	CreateMaterialFromPurchaseLineButton	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.deletepurchaseorderbutton	Purchase Orders	Button	DeletePurchaseOrderButton	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.deletepurchaseorderlinebutton	Purchase Orders	Button	DeletePurchaseOrderLineButton	action	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.button.newpurchaseorderbutton	Purchase Orders	Button	NewPurchaseOrderButton	action	v50.4.1	purchase-orders.controls-fields	covered
-xaml.purchase-orders.button.receivepurchaseorder-click	Purchase Orders	Button	ReceivePurchaseOrder_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.receivepurchaseorderbutton	Purchase Orders	Button	ReceivePurchaseOrderButton	action	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.button.refreshecbexchangerates	Purchase Orders	Button	RefreshEcbExchangeRates	action	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.combobox.landedcostcurrencyselector	Purchase Orders	ComboBox	LandedCostCurrencySelector	choice	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.datagrid.purchaseorderlinesgrid	Purchase Orders	DataGrid	PurchaseOrderLinesGrid	grid-candidate	v50.4.1	purchase-orders.controls-fields	covered

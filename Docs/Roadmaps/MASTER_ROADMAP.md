@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v53.0.4.2 — Disposable Landed-cost Lifecycle**
+Current canonical release: **v53.0.4.3 — Migration, Recovery and Historical Stability**
 
-Last runtime-accepted baseline: **v53.0.4.2 — Disposable Landed-cost Lifecycle**
+Last runtime-accepted baseline: **v53.0.4.3 — Migration, Recovery and Historical Stability**
 
-Current canonical application release: **v53.0.4.2 — Disposable Landed-cost Lifecycle**
+Current canonical application release: **v53.0.4.3 — Migration, Recovery and Historical Stability**
 
-Current roadmap increment: **v53.0.4.3 — Migration, Recovery and Historical Stability**
+Current roadmap increment: **v53.0.4.4 — Diagnostics, Help and Final Acceptance**
 
-Current acceptance note: v53.0.4.2 is runtime accepted with Full Data Verification 390/390.
+Current acceptance note: v53.0.4.3 is runtime accepted with Full Data Verification 391/391.
 
-Next note: v53.0.4.3 adds schema-v37 migration, recovery and historical-stability evidence.
+Next note: v53.0.4.4 reconciles diagnostics, Help and final v53.0.4 acceptance.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2328,12 +2328,14 @@ to unstarted authoritative planning slots.
   - Evidence: Release profile `20260727222431-7383588f` passes 390/390 and exact normalized business-state equality.
   - Owner accepted 200 intentional Materials, zero automation residue and Full Data Verification PASS on 2026-07-27.
 - **v53.0.4.3 — Migration, Recovery and Historical Stability**
-  - State: Current after v53.0.4.2 runtime acceptance.
+  - State: Complete, canonical and runtime accepted.
   - Add read-only schema-v37 startup migration coverage and exact v53 field comparison across governed Excel recovery.
   - Prove existing Purchase Orders, Inventory, Materials, Usage and Quotes remain unchanged outside exact disposable records.
   - Completion condition: migration/recovery evidence and all preservation/hash gates pass.
+  - Evidence: migration `20260727224150-47f14b19` and recovery `20260727224236-eaa2bdb1` pass 391/391 and exact state gates.
+  - Owner accepted 200 intentional Materials, unchanged Purchase Orders/Inventory and Full Data Verification 391/391.
 - **v53.0.4.4 — Diagnostics, Help and Final Acceptance**
-  - State: Planned after v53.0.4.3.
+  - State: Current after v53.0.4.3 runtime acceptance.
   - Reconcile safe aggregate diagnostics, v53 field/workflow Help, acceptance documentation and tester evidence.
   - Run Debug/Release, static/security/documentation, all disposable scenarios and Full Data Verification.
   - Completion condition: owner accepts the complete v53 workflow and all gates pass; v53.0.5 remains mandatory before parent closure.

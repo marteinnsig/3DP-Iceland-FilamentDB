@@ -56,7 +56,7 @@ Expected behavior: Add bounded, exact-ID automation with safe evidence, restart 
 final state recovery while keeping smoke, owner data, Production, FTPS, updater and live ECB access isolated.
 Steps to reproduce: Compare the v53.0.4 roadmap completion condition with current smoke/recovery scenario ownership.
 Screenshot / export / report attached: None.
-Status: Partially solved
+Status: Solved
 Resolution: Recorded v53.0.4.1-v53.0.4.4 before code changes. v53.0.4.1 candidate adds exact default-off authorization,
 Clean Readiness exclusion, secret-safe evidence shape, required real-control AutomationIds and read-only smoke discovery.
 Verification evidence: Debug/Release app and runner builds pass with 0 warnings/errors; documentation/static and NuGet gates pass.
@@ -67,7 +67,13 @@ restart, calculation, downstream and cleanup checkpoints. Initial final-state fa
 and historical Material derived-field refresh; exact-row persistence and baseline restoration corrected both. Release profile
 `20260727222431-7383588f` passes 390/390 with exact normalized state. Owner runtime acceptance passes with the intentional
 200-Material owner dataset, all identities beginning `MAT`, zero automation
-residue and Full Data Verification PASS. The parent item continues at v53.0.4.3.
+residue and Full Data Verification PASS. v53.0.4.3 adds a read-only schema-v37
+startup migration scenario and extends governed Excel recovery with exact
+authorized v53 PO/Inventory mutation and whole-table preservation hashes.
+Migration `20260727224150-47f14b19` and recovery
+`20260727224236-eaa2bdb1` pass 391/391, source/final state and cleanup gates.
+Owner runtime accepts 200 intentional Materials, unchanged Purchase
+Orders/Inventory, zero automation residue and Full Data Verification 391/391.
 
 Date: 2026-07-27
 Area: Purchase Orders exchange-rate refresh

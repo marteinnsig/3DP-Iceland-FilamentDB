@@ -51,7 +51,8 @@ internal static class Program
                 cleanReadiness,
                 string.Equals(options.Scenario, "reports", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "crud", StringComparison.Ordinal),
-                string.Equals(options.Scenario, "landed-cost", StringComparison.Ordinal),
+                string.Equals(options.Scenario, "landed-cost", StringComparison.Ordinal) ||
+                string.Equals(options.Scenario, "recovery", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "recovery", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "updater", StringComparison.Ordinal),
                 out var markerPath,
@@ -911,6 +912,17 @@ internal static class Program
             }
             else if (string.Equals(options.Scenario, "recovery", StringComparison.Ordinal))
             {
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostPrepare", "DEFAULTED");
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostOverride", "OVERRIDDEN");
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostCalculate", "CALCULATED");
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostDownstream", "DOWNSTREAM");
                 RunRecoveryAction(main, application.Id, "AutomationRecoveryBackup", "BACKUPS-VERIFIED");
                 var backupArtifacts = ValidateRecoveryBackupArtifacts(root, databasePath);
                 Record("recovery-backup-catalog", true, $"{backupArtifacts} verified .bak/.sqlite artifacts");
@@ -920,17 +932,42 @@ internal static class Program
                     "Governed Excel recovery package is missing.");
                 Record("recovery-excel-package", true,
                     $"{new FileInfo(workbook).Length} bytes; sha256={Sha256(workbook)}");
+                var v53RecoveryHashes = RecoveryHistoricalHashes(databasePath);
                 RunRecoveryAction(main, application.Id, "AutomationRecoveryMutate", "MUTATED");
                 RecordDatabaseEvidence(root, databasePath, "recovery-after-mutation");
+                var mutatedRecoveryHashes = RecoveryHistoricalHashes(databasePath);
+                Require(
+                    mutatedRecoveryHashes.PurchaseOrders != v53RecoveryHashes.PurchaseOrders &&
+                    mutatedRecoveryHashes.Inventory != v53RecoveryHashes.Inventory,
+                    "Recovery mutation did not change both exact v53 Purchase Order and Inventory fields.");
                 RunRecoveryAction(main, application.Id, "AutomationRecoveryRestoreExcel", "EXCEL-RESTORED");
                 RecordDatabaseEvidence(root, databasePath, "recovery-after-excel-restore");
+                var restoredRecoveryHashes = RecoveryHistoricalHashes(databasePath);
+                Require(
+                    restoredRecoveryHashes == v53RecoveryHashes,
+                    "Excel recovery did not restore exact v53 and historical table state.");
                 var restoreArtifacts = ValidateRecoveryBackupArtifacts(root, databasePath);
                 Require(restoreArtifacts >= backupArtifacts + 2,
                     "Excel restore did not add both pre/post SQLite evidence backups.");
-                Record("recovery-pre-post-evidence", true, $"{restoreArtifacts} verified backup artifacts");
+                Record("recovery-v53-field-equality", true,
+                    "Purchase Orders, Inventory, Materials, Usage and Quotes restored exactly");
+                Record("recovery-pre-post-evidence", true,
+                    $"{restoreArtifacts} verified backup artifacts");
                 (application, main) = RestartApplication(application, executable, markerPath);
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostCleanup", "CLEANED");
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostVerifyAbsent", "ABSENT");
                 CaptureWindow(main, IOPath.Combine(root, "evidence", "recovery-complete.png"));
-                Record("recovery-restart", true, "Restored disposable profile restarted under the same manifest");
+                Record("recovery-restart", true,
+                    "Restored disposable profile restarted, cleaned exact v53 records and verified absence");
+            }
+            else if (string.Equals(options.Scenario, "migration", StringComparison.Ordinal))
+            {
+                ValidateSchema37StartupMigration(seedDatabase, databasePath);
+                Record("schema37-startup-migration", true,
+                    "v37 fixture migrated to v38; all shared historical columns matched exactly");
             }
             CloseWindow(main, application.Id);
             if (!application.WaitForExit(15000))
@@ -960,6 +997,10 @@ internal static class Program
             Require(
                 string.Equals(databaseBusinessHashBefore, databaseBusinessHashAfter, StringComparison.OrdinalIgnoreCase),
                 "Disposable canonical business state did not return to its baseline after the scenario.");
+            Require(
+                cleanReadiness ||
+                string.Equals(Sha256(seedDatabase), seedDatabaseHash, StringComparison.OrdinalIgnoreCase),
+                "Explicit source seed changed during disposable automation.");
             if (landedCostCapture is not null)
             {
                 var evidence = new LandedCostAutomationEvidence(
@@ -2152,6 +2193,137 @@ internal static class Program
     private static string HashTable(string databasePath, string tableName) =>
         HashRows(databasePath, tableName, null, null);
 
+    private static RecoveryTableHashes RecoveryHistoricalHashes(string databasePath) =>
+        new(
+            HashTable(databasePath, "PurchaseOrders"),
+            HashTable(databasePath, "PurchaseOrderLines"),
+            HashTable(databasePath, "InventorySpoolItems"),
+            HashTable(databasePath, "NativeMaterialManagerRows"),
+            HashTable(databasePath, "UsageEvents"),
+            HashTable(databasePath, "PrintJobQuotes"));
+
+    private static void ValidateSchema37StartupMigration(
+        string sourcePath,
+        string migratedPath)
+    {
+        Require(ReadSchemaVersion(sourcePath) == 37,
+            "Migration source fixture is not schema v37.");
+        Require(ReadSchemaVersion(migratedPath) == 38,
+            "Disposable startup did not migrate the fixture to schema v38.");
+        foreach (var table in new[]
+                 {
+                     "PurchaseOrders",
+                     "PurchaseOrderLines",
+                     "InventorySpoolItems",
+                     "NativeMaterialManagerRows",
+                     "UsageEvents",
+                     "PrintJobQuotes"
+                 })
+        {
+            var sourceColumns = ReadTableColumns(sourcePath, table);
+            var migratedColumns = ReadTableColumns(migratedPath, table);
+            var sharedColumns = sourceColumns
+                .Where(column => migratedColumns.Contains(column, StringComparer.Ordinal))
+                .ToArray();
+            Require(sharedColumns.Length == sourceColumns.Count,
+                $"{table} lost a schema-v37 column during startup migration.");
+            Require(
+                HashSelectedColumns(sourcePath, table, sharedColumns) ==
+                HashSelectedColumns(migratedPath, table, sharedColumns),
+                $"{table} shared schema-v37 values changed during startup migration.");
+        }
+
+        var purchaseColumns = ReadTableColumns(migratedPath, "PurchaseOrders");
+        var inventoryColumns = ReadTableColumns(migratedPath, "InventorySpoolItems");
+        foreach (var column in LandedCostMigrationColumns)
+        {
+            Require(purchaseColumns.Contains(column, StringComparer.Ordinal),
+                $"PurchaseOrders.{column} was not added by the v38 migration.");
+            Require(inventoryColumns.Contains(column, StringComparer.Ordinal),
+                $"InventorySpoolItems.{column} was not added by the v38 migration.");
+        }
+
+        using var connection = new SqliteConnection(
+            $"Data Source={migratedPath};Mode=ReadOnly;Pooling=False");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT COUNT(*)
+            FROM InventorySpoolItems
+            WHERE LandedCostCurrency = PurchaseCurrency
+              AND LandedCostConversionRate = '1'
+              AND LandedCostRateSource = 'Legacy transaction-currency landed cost'
+              AND LandedCostCalculationVersion = 'legacy-v1';
+            """;
+        var compatibleRows = Convert.ToInt32(
+            command.ExecuteScalar(), CultureInfo.InvariantCulture);
+        using var countCommand = connection.CreateCommand();
+        countCommand.CommandText = "SELECT COUNT(*) FROM InventorySpoolItems;";
+        var totalRows = Convert.ToInt32(
+            countCommand.ExecuteScalar(), CultureInfo.InvariantCulture);
+        Require(compatibleRows == totalRows,
+            "Schema-v37 Inventory landed-cost compatibility backfill is incomplete.");
+        Record("schema37-shared-column-stability", true,
+            "Purchase Orders, lines, Inventory, Materials, Usage and Quotes match the v37 source");
+        Record("schema38-landed-cost-backfill", true,
+            $"{compatibleRows}/{totalRows} legacy Inventory row(s) received compatibility provenance");
+    }
+
+    private static int ReadSchemaVersion(string databasePath)
+    {
+        using var connection = new SqliteConnection(
+            $"Data Source={databasePath};Mode=ReadOnly;Pooling=False");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText =
+            "SELECT Value FROM AppMeta WHERE Key = 'SchemaVersion' LIMIT 1;";
+        return int.Parse(
+            Convert.ToString(command.ExecuteScalar(), CultureInfo.InvariantCulture)
+            ?? throw new InvalidOperationException("SchemaVersion is missing."),
+            CultureInfo.InvariantCulture);
+    }
+
+    private static List<string> ReadTableColumns(
+        string databasePath,
+        string tableName)
+    {
+        using var connection = new SqliteConnection(
+            $"Data Source={databasePath};Mode=ReadOnly;Pooling=False");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = $"PRAGMA table_info({QuoteIdentifier(tableName)});";
+        using var reader = command.ExecuteReader();
+        var columns = new List<string>();
+        while (reader.Read())
+            columns.Add(reader.GetString(1));
+        Require(columns.Count > 0, $"{tableName} is missing.");
+        return columns;
+    }
+
+    private static string HashSelectedColumns(
+        string databasePath,
+        string tableName,
+        IReadOnlyCollection<string> columns)
+    {
+        using var connection = new SqliteConnection(
+            $"Data Source={databasePath};Mode=ReadOnly;Pooling=False");
+        connection.Open();
+        var columnList = string.Join(", ", columns.Select(QuoteIdentifier));
+        using var command = connection.CreateCommand();
+        command.CommandText =
+            $"SELECT {columnList} FROM {QuoteIdentifier(tableName)} ORDER BY {columnList};";
+        using var stream = new MemoryStream();
+        using var writer = new BinaryWriter(stream, Encoding.UTF8, leaveOpen: true);
+        using var rows = command.ExecuteReader();
+        while (rows.Read())
+        {
+            for (var index = 0; index < rows.FieldCount; index++)
+                WriteCanonicalValue(writer, rows.GetValue(index));
+        }
+        writer.Flush();
+        return Convert.ToHexString(SHA256.HashData(stream.ToArray()));
+    }
+
     private static string HashRows(
         string databasePath,
         string tableName,
@@ -2230,7 +2402,9 @@ internal static class Program
                 inputConfinedToOwnedProcess = true,
                 reportGenerationAuthorized = string.Equals(CurrentScenario, "reports", StringComparison.Ordinal)
                 ,materialCrudAuthorized = string.Equals(CurrentScenario, "crud", StringComparison.Ordinal)
-                ,landedCostWorkflowAuthorized = string.Equals(CurrentScenario, "landed-cost", StringComparison.Ordinal)
+                ,landedCostWorkflowAuthorized =
+                    string.Equals(CurrentScenario, "landed-cost", StringComparison.Ordinal) ||
+                    string.Equals(CurrentScenario, "recovery", StringComparison.Ordinal)
                 ,recoveryAuthorized = string.Equals(CurrentScenario, "recovery", StringComparison.Ordinal)
                 ,updaterAuthorized = string.Equals(CurrentScenario, "updater", StringComparison.Ordinal)
             },
@@ -2297,6 +2471,23 @@ internal static class Program
         string BaselineBusinessStateSha256,
         string FinalBusinessStateSha256,
         bool CleanupMatchedBaseline);
+    private sealed record RecoveryTableHashes(
+        string PurchaseOrders,
+        string PurchaseOrderLines,
+        string Inventory,
+        string Materials,
+        string Usage,
+        string Quotes);
+    private static readonly string[] LandedCostMigrationColumns =
+    [
+        "LandedCostCurrency",
+        "LandedCostConversionRate",
+        "LandedCostRateSource",
+        "LandedCostRateObservationDate",
+        "LandedCostRateFetchedAtUtc",
+        "LandedCostCalculatedAtUtc",
+        "LandedCostCalculationVersion"
+    ];
 
     private sealed record RunnerOptions(
         string ApplicationPath,
@@ -2317,9 +2508,9 @@ internal static class Program
             var scenario = scenarioIndex >= 0 && scenarioIndex + 1 < args.Length
                 ? args[scenarioIndex + 1].Trim().ToLowerInvariant()
                 : "smoke";
-            if (scenario is not ("smoke" or "reports" or "crud" or "landed-cost" or "recovery" or "updater" or "clean"))
+            if (scenario is not ("smoke" or "reports" or "crud" or "landed-cost" or "migration" or "recovery" or "updater" or "clean"))
                 throw new ArgumentException(
-                    "--scenario must be smoke, reports, crud, landed-cost, recovery, updater or clean.");
+                    "--scenario must be smoke, reports, crud, landed-cost, migration, recovery, updater or clean.");
             var updater = scenario == "updater" ? Required("--updater") : string.Empty;
             var seed = scenario == "clean" ? Optional("--seed-database") : Required("--seed-database");
             return new RunnerOptions(Required("--app"), seed, scenario, updater);

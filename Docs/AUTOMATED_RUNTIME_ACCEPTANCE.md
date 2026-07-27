@@ -1,5 +1,29 @@
 # Automated Runtime Acceptance
 
+## v53.0.4.3 - Migration and recovery accepted
+
+- `--scenario migration` opens only a disposable copy of the preserved
+  schema-v37 fixture and requires startup migration to schema v38.
+- Every shared legacy column in Purchase Orders, lines, Inventory, Materials,
+  Usage and Quotes must match the source fixture exactly.
+- The source fixture SHA-256 must remain unchanged.
+- `--scenario recovery` also authorizes the exact landed-cost triplet and
+  creates a calculated PO/Material/Inventory snapshot before Excel export.
+- Mutation is confined to the exact authorized PO/Inventory provenance and the
+  existing disposable Material recovery probe.
+- Excel restore requires whole-table equality for Purchase Orders, lines,
+  Inventory, Materials, Usage and Quotes.
+- Cleanup requires exact record absence and baseline normalized state.
+- Migration profile `20260727224150-47f14b19` passes 391/391 and migration,
+  shared-column, backfill, source-hash and final-state gates.
+- Recovery profile `20260727224236-eaa2bdb1` passes 391/391 and exact v53,
+  historical-table, backup-evidence, cleanup and final-state gates.
+- Final read-only smoke `20260727224717-d81709b9` passes 391/391 with exact
+  normalized business-state equality and no mutating authorization.
+- Owner database, Production, FTPS, updater and live ECB remain blocked.
+- Owner runtime accepts unchanged canonical Purchase Orders/Inventory, 200
+  intentional Materials, zero automation residue and Verification 391/391.
+
 ## v53.0.4.2 - Disposable landed-cost lifecycle candidate
 
 - Scenario: `--scenario landed-cost`.

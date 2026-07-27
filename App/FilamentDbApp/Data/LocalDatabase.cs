@@ -2905,6 +2905,67 @@ ORDER BY
                 "Authorized landed-cost Inventory cleanup did not affect exactly one row.");
     }
 
+    public void MutateLandedCostRecoveryFieldsForAuthorizedAutomation(
+        string purchaseOrderId,
+        string materialId,
+        string inventoryItemId)
+    {
+        AutomationRuntimeProfile.DemandLandedCostWorkflowAuthorized(
+            purchaseOrderId,
+            materialId,
+            inventoryItemId);
+        AutomationRuntimeProfile.DemandRecoveryAuthorized();
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var transaction = connection.BeginTransaction();
+
+        using (var purchase = connection.CreateCommand())
+        {
+            purchase.Transaction = transaction;
+            purchase.CommandText = """
+                UPDATE PurchaseOrders
+                SET LandedCostCurrency = 'CHF',
+                    LandedCostConversionRate = '999',
+                    LandedCostRateSource = 'AUTOMATION-RECOVERY-MUTATED',
+                    LandedCostRateObservationDate = '1900-01-01',
+                    LandedCostRateFetchedAtUtc = '1900-01-01T00:00:00.0000000+00:00',
+                    LandedCostCalculatedAtUtc = '1900-01-01T00:00:00.0000000+00:00',
+                    LandedCostCalculationVersion = 'AUTOMATION-MUTATED'
+                WHERE PurchaseOrderId = $purchase;
+                """;
+            purchase.Parameters.AddWithValue("$purchase", purchaseOrderId);
+            if (purchase.ExecuteNonQuery() != 1)
+                throw new InvalidOperationException(
+                    "Authorized recovery mutation did not affect exactly one Purchase Order.");
+        }
+
+        using (var inventory = connection.CreateCommand())
+        {
+            inventory.Transaction = transaction;
+            inventory.CommandText = """
+                UPDATE InventorySpoolItems
+                SET LandedCostCurrency = 'CHF',
+                    LandedCostConversionRate = '999',
+                    LandedCostRateSource = 'AUTOMATION-RECOVERY-MUTATED',
+                    LandedCostRateObservationDate = '1900-01-01',
+                    LandedCostRateFetchedAtUtc = '1900-01-01T00:00:00.0000000+00:00',
+                    LandedCostCalculatedAtUtc = '1900-01-01T00:00:00.0000000+00:00',
+                    LandedCostCalculationVersion = 'AUTOMATION-MUTATED'
+                WHERE InventoryItemId = $inventory
+                  AND MaterialId = $material
+                  AND PurchaseId = $purchase;
+                """;
+            inventory.Parameters.AddWithValue("$inventory", inventoryItemId);
+            inventory.Parameters.AddWithValue("$material", materialId);
+            inventory.Parameters.AddWithValue("$purchase", purchaseOrderId);
+            if (inventory.ExecuteNonQuery() != 1)
+                throw new InvalidOperationException(
+                    "Authorized recovery mutation did not affect exactly one Inventory row.");
+        }
+
+        transaction.Commit();
+    }
+
     public void RestoreNativeMaterialSortOrdersForAuthorizedLandedCostAutomation(
         string purchaseOrderId,
         string materialId,

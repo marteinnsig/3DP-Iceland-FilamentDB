@@ -744,6 +744,14 @@ public partial class MainWindow : Window
         ApplyNativeMaterialComputedFields(row, _nativeMaterialRows.IndexOf(row));
         if (!SaveNativeMaterialsSilent())
             throw new InvalidOperationException("Disposable recovery mutation did not save.");
+        if (AutomationRuntimeProfile.Current?.LandedCostWorkflowAuthorized == true)
+        {
+            var ids = GetAuthorizedLandedCostIdentities();
+            _database.MutateLandedCostRecoveryFieldsForAuthorizedAutomation(
+                ids.PurchaseOrderId,
+                ids.MaterialId,
+                ids.InventoryItemId);
+        }
         SetAutomationRecoveryStatus("MUTATED");
     }
 
@@ -17860,6 +17868,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             landedCostLifecycleSurfaceReady && releaseIdentityReady
                 ? "Six exact-ID lifecycle checkpoints and the hidden authorized status surface are present"
                 : "Authorized lifecycle handler, status surface or release identity is missing"));
+        var landedCostMigrationRecoveryReady =
+            BuildInfo.Version == "53.0.4.3" &&
+            BuildInfo.ReleaseCode == "LANDED-COST-MIGRATION-RECOVERY" &&
+            GetType().GetMethod(
+                nameof(AutomationRecoveryMutate_Click),
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(LocalDatabase).GetMethod(
+                nameof(LocalDatabase.MutateLandedCostRecoveryFieldsForAuthorizedAutomation)) is not null &&
+            _database.RunLandedCostCurrencyMigrationContractVerification().Passed;
+        checks.Add(new VerificationCheck(
+            "v53.0.4.3 Migration, recovery and historical stability gate",
+            landedCostMigrationRecoveryReady && releaseIdentityReady,
+            landedCostMigrationRecoveryReady && releaseIdentityReady
+                ? "Schema-v38 landed-cost migration and exact authorized Excel-recovery mutation contracts are present"
+                : "Migration, exact recovery authorization or release identity failed"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {

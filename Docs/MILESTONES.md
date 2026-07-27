@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v53.0.4.3 - Migration, Recovery and Historical Stability
+
+Accepted schema-v37 migration and governed Excel recovery prove exact v53
+landed-cost provenance plus preservation of Purchase Orders, Inventory,
+Materials, Usage and Quotes. Verification 391/391, exact-state automation and
+owner canonical-data review pass; schema remains v38.
+
 # v53.0.4.2 - Disposable Landed-cost Lifecycle
 
 Accepted exact-ID automation proves the complete landed-cost Draft lifecycle,

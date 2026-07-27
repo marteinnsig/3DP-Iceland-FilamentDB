@@ -2,6 +2,22 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v53.0.4.3 - Migration, Recovery and Historical Stability
+
+The candidate adds a read-only schema-v37 startup-migration scenario and
+extends governed Excel recovery with the exact authorized v53 landed-cost
+lifecycle. Migration compares all shared legacy columns after schema v38
+startup and SHA-256 guards the source fixture. Recovery exports a calculated
+PO/Material/Inventory snapshot, mutates only authorized disposable fields,
+restores the workbook and compares whole Purchase Order, line, Inventory,
+Material, Usage and Quote tables before exact cleanup.
+
+Migration profile `20260727224150-47f14b19` and recovery profile
+`20260727224236-eaa2bdb1` pass 391/391 and exact normalized business-state
+equality. Final smoke `20260727224717-d81709b9` passes 391/391. Owner runtime
+accepts 200 intentional Materials, unchanged Purchase Orders/Inventory, zero
+automation residue and Full Data Verification 391/391. v53.0.4.3 is canonical.
+
 ## v53.0.4.2 - Disposable Landed-cost Lifecycle
 
 The candidate enables the exact authorization established in v53.0.4.1 only

@@ -1,4 +1,29 @@
-# Current Build Notes - v53.0.4.2
+# Current Build Notes - v53.0.4.3
+
+## Landed-cost Migration, Recovery and Historical Stability
+
+v53.0.4.3 adds a read-only `migration` AutomationRunner scenario. It copies the
+preserved schema-v37 fixture into a disposable profile, starts the application,
+requires migration to schema v38 and compares every shared v37 column in
+Purchase Orders, lines, Inventory, Materials, Usage and Quotes. The source
+fixture is SHA-256 guarded and is never opened for write.
+
+The existing governed Excel `recovery` scenario now creates the exact
+authorized v53 Purchase Order, Material and Inventory lifecycle before export.
+It mutates only that PO/Inventory landed-cost provenance plus the existing
+disposable Material mutation, restores the governed workbook and requires
+whole-table equality for Purchase Orders, lines, Inventory, Materials, Usage
+and Quotes. Exact cleanup and restart absence must return the normalized
+business-state hash to baseline.
+
+Disposable Release migration profile `20260727224150-47f14b19` and recovery
+profile `20260727224236-eaa2bdb1` pass Full Data Verification 391/391. Migration
+preserves all shared v37 fields; recovery restores exact v53 and historical
+table state; both finish with baseline-equal normalized business state. Schema
+stays v38. Final read-only smoke `20260727224717-d81709b9` also passes 391/391
+with exact state equality. Owner runtime accepts the intentional 200-Material
+dataset, unchanged Purchase Orders/Inventory, zero automation residue and Full
+Data Verification 391/391. v53.0.4.3 is canonical; v53.0.4.4 is current.
 
 ## Disposable Landed-cost Lifecycle
 
