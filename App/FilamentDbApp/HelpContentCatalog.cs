@@ -253,8 +253,8 @@ internal static class HelpContentCatalog
             Refresh ECB Reference is optional and offline-safe. New Order also refreshes a missing or more-than-24-hour-old cache,
             at most once daily; failed network access retains valid cache/manual fallback. Settings `Default Landed Cost Currency` is
             copied only into a newly created Draft; changing Settings never changes an existing order. Select an uncalculated Draft
-            to review or override
-            its landed-cost currency. Apply requires default-No confirmation and snapshots the target currency, conversion rate,
+            to review or override its landed-cost currency. Apply requires default-No confirmation and snapshots the target currency,
+            conversion rate,
             source and date. `Manual Governed Settings` means owner-entered offline rates, not downloaded ECB data. The displayed
             direction is `1 invoice currency = rate landed-cost currency`; ECB cross-rates use both
             currencies from one catalog, otherwise both positive manual `ISK per 1` Settings legs are required. Same currency is the
@@ -306,6 +306,8 @@ internal static class HelpContentCatalog
             positive cross-rate and provenance before calculation. Same currency alone uses 1:1. Landed result columns show the
             selected landed currency while net/allocation columns remain invoice currency. A legacy, calculated or non-Draft
             snapshot stays locked across restart.
+            A successful calculation also stores calculation UTC and calculation version as read-only provenance. These fields prove
+            which calculation contract produced the saved result; they are not refreshed by later Settings or ECB changes.
             Tax treatment is the governed tax mode. Items total, Shipping, Supplier VAT, Invoice total, Import VAT, Customs, Clearance
             and Other fees are non-negative header amounts in the order currency unless the visible label states otherwise. Notes is
             editable. Cost status and Document are read-only readiness/evidence summaries.
@@ -2042,8 +2044,11 @@ internal static class HelpContentCatalog
             result without repairing data. Export Report writes the displayed support evidence to an owner-selected file.
 
             Recalculate All Materials is mutating: it recalculates and saves native measurement results. Diagnostics also reports the
-            running version, executable/database paths, ECB cache ownership and update transaction evidence. Export diagnostics before
-            changing state when investigating a reproducible failure.
+            running version, executable/database paths, ECB cache ownership and update transaction evidence. Its landed-cost section
+            reports only aggregate current, legacy, other-versioned and uncalculated or unversioned counts for Purchase Orders and
+            Inventory. It does not expose order, supplier, Material or credential values. Migration and governed Excel recovery are
+            separate verified workflows; opening or refreshing Diagnostics never runs either one. Export diagnostics before changing
+            state when investigating a reproducible failure.
             """,
             "System Diagnostics", "integrity check", "Recalculate All Materials", "export", "database path"),
         new(

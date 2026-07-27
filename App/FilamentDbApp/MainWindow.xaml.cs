@@ -526,6 +526,8 @@ public partial class MainWindow : Window
         _persistedManufacturerNames.Remove(canonicalManufacturer.ManufacturerId);
         _manufacturerRenameDraftIds.Remove(canonicalManufacturer.ManufacturerId);
         RefreshFastManufacturerChoices();
+        _database.RestoreInventoryOptionalProvenanceForAuthorizedCrudAutomation(
+            row.MaterialID);
     }
 
     private void RenameBaseMaterialForAuthorizedAutomation(
@@ -13792,17 +13794,65 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                           : configuredLandedCostCurrency));
         sb.AppendLine("Effective landed-cost default: " + GetDefaultLandedCostCurrency());
         var diagnosticPurchaseOrders = _database.LoadPurchaseOrders();
-        sb.AppendLine("Purchase Order snapshots: " +
-                      diagnosticPurchaseOrders.Count(order =>
-                          !string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion)) +
-                      " calculated/legacy; " +
-                      diagnosticPurchaseOrders.Count(order =>
-                          string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion)) +
-                      " uncalculated.");
+        var diagnosticInventory = _database.LoadInventorySpoolItems();
+        var currentPurchaseSnapshots = diagnosticPurchaseOrders.Count(order =>
+            string.Equals(
+                order.LandedCostCalculationVersion,
+                LandedCostCalculationVersion,
+                StringComparison.Ordinal));
+        var legacyPurchaseSnapshots = diagnosticPurchaseOrders.Count(order =>
+            string.Equals(
+                order.LandedCostCalculationVersion,
+                "legacy-v1",
+                StringComparison.Ordinal));
+        var otherPurchaseSnapshots = diagnosticPurchaseOrders.Count(order =>
+            !string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion) &&
+            !string.Equals(
+                order.LandedCostCalculationVersion,
+                LandedCostCalculationVersion,
+                StringComparison.Ordinal) &&
+            !string.Equals(
+                order.LandedCostCalculationVersion,
+                "legacy-v1",
+                StringComparison.Ordinal));
+        var uncalculatedPurchaseSnapshots = diagnosticPurchaseOrders.Count(order =>
+            string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion));
+        var currentInventorySnapshots = diagnosticInventory.Count(item =>
+            string.Equals(
+                item.LandedCostCalculationVersion,
+                LandedCostCalculationVersion,
+                StringComparison.Ordinal));
+        var legacyInventorySnapshots = diagnosticInventory.Count(item =>
+            string.Equals(
+                item.LandedCostCalculationVersion,
+                "legacy-v1",
+                StringComparison.Ordinal));
+        var otherInventorySnapshots = diagnosticInventory.Count(item =>
+            !string.IsNullOrWhiteSpace(item.LandedCostCalculationVersion) &&
+            !string.Equals(
+                item.LandedCostCalculationVersion,
+                LandedCostCalculationVersion,
+                StringComparison.Ordinal) &&
+            !string.Equals(
+                item.LandedCostCalculationVersion,
+                "legacy-v1",
+                StringComparison.Ordinal));
+        var unversionedInventorySnapshots = diagnosticInventory.Count(item =>
+            string.IsNullOrWhiteSpace(item.LandedCostCalculationVersion));
+        sb.AppendLine(
+            $"Purchase Order landed-cost snapshots: current {currentPurchaseSnapshots}; " +
+            $"legacy {legacyPurchaseSnapshots}; other versioned {otherPurchaseSnapshots}; " +
+            $"uncalculated {uncalculatedPurchaseSnapshots}.");
+        sb.AppendLine(
+            $"Inventory landed-cost snapshots: current {currentInventorySnapshots}; " +
+            $"legacy {legacyInventorySnapshots}; other versioned {otherInventorySnapshots}; " +
+            $"unversioned {unversionedInventorySnapshots}.");
         sb.AppendLine("Calculation contract: invoice inputs/allocations stay in invoice currency; " +
                       "only landed line/unit/kg results use the snapshotted landed currency.");
         sb.AppendLine("Ownership: reference data may prefill only a newly created uncalculated Draft. " +
                       "Saved purchases, inventory, Materials and quotes are never refreshed or recalculated.");
+        sb.AppendLine("Migration/recovery contract: schema-v37 startup migration and governed Excel restore " +
+                      "are verified separately; opening or refreshing Diagnostics never executes either workflow.");
         sb.AppendLine("Disposable landed-cost workflow authorization: " +
                       (AutomationRuntimeProfile.Current?.LandedCostWorkflowAuthorized == true
                           ? "Exact disposable PO/Material/Inventory identities only"
@@ -17869,8 +17919,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Six exact-ID lifecycle checkpoints and the hidden authorized status surface are present"
                 : "Authorized lifecycle handler, status surface or release identity is missing"));
         var landedCostMigrationRecoveryReady =
-            BuildInfo.Version == "53.0.4.3" &&
-            BuildInfo.ReleaseCode == "LANDED-COST-MIGRATION-RECOVERY" &&
             GetType().GetMethod(
                 nameof(AutomationRecoveryMutate_Click),
                 System.Reflection.BindingFlags.Instance |
@@ -17884,6 +17932,35 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             landedCostMigrationRecoveryReady && releaseIdentityReady
                 ? "Schema-v38 landed-cost migration and exact authorized Excel-recovery mutation contracts are present"
                 : "Migration, exact recovery authorization or release identity failed"));
+        var v53044DiagnosticsReport = BuildSystemDiagnosticsReport();
+        var v53044PurchaseHelp = HelpContentCatalog.Sections.Single(section =>
+            section.Id == "purchase-orders.controls-fields");
+        var v53044DiagnosticsHelp = HelpContentCatalog.Sections.Single(section =>
+            section.Id == "diagnostics.overview");
+        var v53044ReconciliationReady =
+            BuildInfo.Version == "53.0.4.4" &&
+            BuildInfo.ReleaseCode == "LANDED-COST-DIAGNOSTICS-HELP" &&
+            v53044DiagnosticsReport.Contains(
+                "Purchase Order landed-cost snapshots: current ",
+                StringComparison.Ordinal) &&
+            v53044DiagnosticsReport.Contains(
+                "Inventory landed-cost snapshots: current ",
+                StringComparison.Ordinal) &&
+            v53044DiagnosticsReport.Contains(
+                "opening or refreshing Diagnostics never executes either workflow",
+                StringComparison.Ordinal) &&
+            v53044PurchaseHelp.Body.Contains(
+                "calculation UTC and calculation version",
+                StringComparison.Ordinal) &&
+            v53044DiagnosticsHelp.Body.Contains(
+                "aggregate current, legacy, other-versioned and uncalculated or unversioned counts",
+                StringComparison.Ordinal);
+        checks.Add(new VerificationCheck(
+            "v53.0.4.4 Diagnostics and Help reconciliation gate",
+            v53044ReconciliationReady && releaseIdentityReady,
+            v53044ReconciliationReady && releaseIdentityReady
+                ? "Secret-safe landed-cost snapshot aggregates, migration/recovery boundaries and matching Help markers are present"
+                : "v53 diagnostics aggregates, Help markers or release identity are incomplete"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {

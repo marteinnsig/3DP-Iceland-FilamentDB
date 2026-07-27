@@ -1,4 +1,39 @@
-# Current Build Notes - v53.0.4.3
+# Current Build Notes - v53.0.4.4
+
+## Diagnostics, Help and Final Acceptance
+
+v53.0.4.4 reconciles the completed v53 landed-cost workflow with secret-safe
+System Diagnostics and current in-application Help. Diagnostics now separates
+current `landed-currency-v2`, legacy `legacy-v1`, other-versioned and
+uncalculated/unversioned Purchase Order and Inventory snapshot counts. It
+exports no order, supplier, Material, credential or raw provenance values.
+
+Purchase Orders Help now explicitly owns calculation UTC/version provenance.
+System Diagnostics Help explains the aggregate counts and that opening or
+refreshing Diagnostics never executes schema migration or governed Excel
+recovery. Smoke and Full Data Verification require those exact read-only
+markers. No SQLite schema or visible control changes; schema remains v38.
+
+Debug/Release app, AutomationRunner and updater builds pass with zero warnings
+or errors. Final smoke `20260727232314-5c3961bc` passes 392/392 with exact
+business-state equality. Landed-cost `20260727230608-4b755706`, migration
+`20260727230757-30f56347`, recovery `20260727230846-e78c5a9c`, Clean
+`20260727231038-b0a96336`, Reports `20260727231114-c2f912da`, corrected CRUD
+`20260727231704-d31b92bc` and corrected updater
+`20260727232117-b8100815` also pass their exact state/evidence gates.
+
+The first smoke exposed a v53.0.4.3 gate pinned to an obsolete exact release
+identity. The first CRUD run exposed optional Inventory provenance `NULL`
+normalization; exact authorized cleanup now restores those three fields only
+after baseline identity equality. The first updater run exposed three-part
+version truncation; synthetic updater fixtures now preserve four-part versions.
+Failed profiles remain retained through owner review. Static/security evidence
+passes. Owner diagnostics evidence
+`3DPIceland_FilamentDB_System_Diagnostics_20260727_232837.txt` confirms v53.0.4.4,
+schema v38, 200 canonical Materials, two uncalculated Purchase Orders, two
+legacy Inventory snapshots and no disposable authorization. Help/readability
+and Full Data Verification 392/392 are accepted. v53.0.4.4 is canonical;
+mandatory v53.0.5 is current.
 
 ## Landed-cost Migration, Recovery and Historical Stability
 

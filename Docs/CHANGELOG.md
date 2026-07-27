@@ -2,6 +2,27 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v53.0.4.4 - Diagnostics, Help and Final Acceptance
+
+- Separates current, legacy, other-versioned and uncalculated/unversioned
+  landed-cost snapshot counts in System Diagnostics.
+- Keeps diagnostic evidence aggregate-only; no order, supplier, Material,
+  credential or raw provenance values are added.
+- States that Diagnostics never executes schema migration or Excel recovery.
+- Adds calculation UTC/version provenance and diagnostic aggregate ownership
+  to current in-application Help.
+- Extends smoke and Full Data Verification with exact read-only markers.
+- Keeps historical Verification gates valid after later release increments.
+- Restores three optional Inventory provenance fields from the exact retained
+  baseline after authorized CRUD cleanup, preventing `NULL`/empty drift.
+- Preserves four-part versions in disposable guarded-updater fixtures.
+- No schema or visible-control change; schema remains v38.
+- Final smoke passes 392/392; landed-cost, migration, recovery, Clean, Reports,
+  corrected CRUD and corrected updater disposable scenarios pass.
+- Static/security gates pass. Owner accepts aggregate Diagnostics, Help
+  search/readability, unchanged canonical data and Verification 392/392.
+- v53.0.4.4 is canonical; mandatory v53.0.5 remains before parent closure.
+
 ## v53.0.4.3 - Migration, Recovery and Historical Stability
 
 - Adds a read-only schema-v37 startup-migration AutomationRunner scenario.

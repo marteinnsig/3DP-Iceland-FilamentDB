@@ -2,6 +2,21 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v53.0.4.4 - Diagnostics, Help and Final Acceptance
+
+The candidate adds secret-safe aggregate landed-cost snapshot counts to System
+Diagnostics and reconciles Purchase Orders/System Diagnostics Help with
+calculation version/time, historical ownership and migration/recovery
+boundaries. Smoke and Full Verification require the new read-only markers.
+The full disposable sweep exposed and corrected a historical gate pinned to
+v53.0.4.3, CRUD `NULL`/empty Inventory provenance drift and synthetic updater
+three-part version truncation. Final smoke `20260727232314-5c3961bc` passes
+392/392; all seven additional disposable scenarios and static/security gates
+pass. Owner diagnostics confirms 200 canonical Materials, two uncalculated
+Purchase Orders, two legacy Inventory snapshots and no disposable
+authorization. Help/readability and Verification 392/392 are accepted.
+v53.0.4.4 is canonical; schema remains v38.
+
 ## v53.0.4.3 - Migration, Recovery and Historical Stability
 
 The candidate adds a read-only schema-v37 startup-migration scenario and

@@ -1,3 +1,18 @@
+# v53.0.4.4 - Diagnostics, Help and Final Acceptance
+
+Date: 2026-07-27
+
+- Debug/Release application, AutomationRunner and updater builds pass with zero warnings/errors.
+- Final read-only smoke `20260727232314-5c3961bc` passes 392/392.
+- Landed-cost, migration, recovery, Clean, Reports, corrected CRUD and corrected updater scenarios pass.
+- Every applicable scenario returns exact normalized business state or its governed clean baseline.
+- Diagnostics contains only aggregate landed-cost snapshot counts and never executes migration/recovery.
+- Production, FTPS, owner database and live ECB remain blocked.
+- Owner diagnostics confirms 200 Materials, two uncalculated Purchase Orders,
+  two legacy Inventory snapshots and no disposable authorization.
+- Owner accepts Help/readability and Full Data Verification 392/392.
+- Schema remains v38; v53.0.4.4 is canonical and v53.0.5 is current.
+
 # v53.0.4.2 - Disposable Landed-cost Lifecycle
 
 Date: 2026-07-27
@@ -10,7 +25,7 @@ Date: 2026-07-27
 - Database and normalized business-state hashes match exactly before/after.
 - Owner runtime confirms 200 intentional `MAT` identities, zero automation residue and Full Data Verification PASS.
 - Production, FTPS, updater, live ECB and owner-data mutation were excluded.
-- Schema remains v38; v53.0.4.3 is the next authoritative increment.
+- Schema remains v38; v53.0.4.3 is canonical and v53.0.4.4 is the current authoritative increment.
 
 # v53.0.4.1 - Landed-cost Acceptance Contract and Automation Surface
 

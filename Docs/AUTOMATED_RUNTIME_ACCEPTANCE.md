@@ -1,5 +1,24 @@
 # Automated Runtime Acceptance
 
+## v53.0.4.4 - Diagnostics and Help accepted
+
+- Existing smoke opens System Diagnostics read-only.
+- It now requires aggregate Purchase Order and Inventory landed-cost snapshot
+  counts plus the explicit migration/recovery non-execution boundary.
+- Full Verification requires matching Purchase Orders and Diagnostics Help
+  markers and aligned v53.0.4.4 release identity.
+- No new scenario or authorization is added; Production, FTPS, owner database,
+  updater mutation and live ECB remain blocked.
+- Final smoke `20260727232314-5c3961bc` passes 392/392 with exact state.
+- Landed-cost `20260727230608-4b755706`, migration
+  `20260727230757-30f56347`, recovery `20260727230846-e78c5a9c`, Clean
+  `20260727231038-b0a96336`, Reports `20260727231114-c2f912da`, corrected CRUD
+  `20260727231704-d31b92bc` and corrected updater
+  `20260727232117-b8100815` pass.
+- Failed smoke, CRUD and updater profiles remain retained through owner review.
+- Owner runtime accepts aggregate Diagnostics, current Help, unchanged
+  canonical data and Full Data Verification 392/392.
+
 ## v53.0.4.3 - Migration and recovery accepted
 
 - `--scenario migration` opens only a disposable copy of the preserved

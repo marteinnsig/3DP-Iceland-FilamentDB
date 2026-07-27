@@ -222,7 +222,16 @@ internal static class Program
                 diagnosticsReport.Contains("Update transaction ownership: ", StringComparison.Ordinal) &&
                 diagnosticsReport.Contains("Evidence ownership: ", StringComparison.Ordinal) &&
                 diagnosticsReport.Contains("Cleanup ownership: ", StringComparison.Ordinal) &&
-                diagnosticsReport.Contains("Transactions found: 0", StringComparison.Ordinal),
+                diagnosticsReport.Contains("Transactions found: 0", StringComparison.Ordinal) &&
+                diagnosticsReport.Contains(
+                    "Purchase Order landed-cost snapshots: current ",
+                    StringComparison.Ordinal) &&
+                diagnosticsReport.Contains(
+                    "Inventory landed-cost snapshots: current ",
+                    StringComparison.Ordinal) &&
+                diagnosticsReport.Contains(
+                    "opening or refreshing Diagnostics never executes either workflow",
+                    StringComparison.Ordinal),
                 "System Diagnostics did not expose runtime identity/capabilities, read-only evidence and the distinct mutating recalculation control.");
             Record("system-diagnostics-read-only-inspection", true,
                 "Verified disposable database/preferences/output/credential/update/evidence/cleanup ownership plus read-only controls");
@@ -1171,16 +1180,39 @@ internal static class Program
         Require(
             Version.TryParse(candidateFileVersionText, out var candidateFileVersion),
             "Candidate Windows file version is unavailable.");
-        var candidateReleaseVersion = candidateFileVersion!.ToString(3);
-        var previousReleaseVersion = candidateFileVersion.Build > 0
-            ? new Version(candidateFileVersion.Major, candidateFileVersion.Minor, candidateFileVersion.Build - 1).ToString(3)
-            : candidateFileVersion.Minor > 0
-                ? new Version(candidateFileVersion.Major, candidateFileVersion.Minor - 1, 0).ToString(3)
-                : new Version(candidateFileVersion.Major - 1, 0, 0).ToString(3);
-        var nextReleaseVersion = new Version(
-            candidateFileVersion.Major,
-            candidateFileVersion.Minor,
-            candidateFileVersion.Build + 1).ToString(3);
+        var candidateReleaseVersion = candidateFileVersion!.Revision >= 0
+            ? candidateFileVersion.ToString(4)
+            : candidateFileVersion.ToString(3);
+        var previousReleaseVersion = candidateFileVersion.Revision > 0
+            ? new Version(
+                candidateFileVersion.Major,
+                candidateFileVersion.Minor,
+                candidateFileVersion.Build,
+                candidateFileVersion.Revision - 1).ToString(4)
+            : candidateFileVersion.Build > 0
+                ? new Version(
+                    candidateFileVersion.Major,
+                    candidateFileVersion.Minor,
+                    candidateFileVersion.Build - 1).ToString(3)
+                : candidateFileVersion.Minor > 0
+                    ? new Version(
+                        candidateFileVersion.Major,
+                        candidateFileVersion.Minor - 1,
+                        0).ToString(3)
+                    : new Version(
+                        candidateFileVersion.Major - 1,
+                        0,
+                        0).ToString(3);
+        var nextReleaseVersion = candidateFileVersion.Revision >= 0
+            ? new Version(
+                candidateFileVersion.Major,
+                candidateFileVersion.Minor,
+                candidateFileVersion.Build,
+                candidateFileVersion.Revision + 1).ToString(4)
+            : new Version(
+                candidateFileVersion.Major,
+                candidateFileVersion.Minor,
+                candidateFileVersion.Build + 1).ToString(3);
         var governedFiles = IODirectory.EnumerateFiles(
                 portableDirectory,
                 "*",

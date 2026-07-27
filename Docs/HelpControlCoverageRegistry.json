@@ -1,6 +1,6 @@
 {
   "Schema": "3dpiceland.help-control-coverage.v1",
-  "Release": "v53.0.4.3",
+  "Release": "v53.0.4.4",
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
   "XamlCounts": {
     "Button": 150,
@@ -29,7 +29,8 @@
     "v53.0.3",
     "v53.0.4.1",
     "v53.0.4.2",
-    "v53.0.4.3"
+    "v53.0.4.3",
+    "v53.0.4.4"
   ],
   "CustomColumnRegistries": [
     {

@@ -1,6 +1,15 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v53.0.4.4 - Diagnostics, Help and Final Acceptance
+
+Secret-safe Diagnostics separates current, legacy, other-versioned and
+uncalculated/unversioned landed-cost snapshot counts without exposing business
+identities. Purchase Orders and Diagnostics Help own calculation provenance and
+migration/recovery boundaries. Final smoke passes 392/392; all additional
+disposable scenarios and exact-state gates pass. Owner accepts aggregate
+Diagnostics, Help/readability and unchanged canonical data; schema remains v38.
+
 ## v53.0.4.3 - Migration, Recovery and Historical Stability
 
 Read-only schema-v37 startup migration preserves every shared legacy field and

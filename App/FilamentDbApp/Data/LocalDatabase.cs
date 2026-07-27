@@ -3029,6 +3029,77 @@ ORDER BY
         transaction.Commit();
     }
 
+    public void RestoreInventoryOptionalProvenanceForAuthorizedCrudAutomation(
+        string materialId)
+    {
+        AutomationRuntimeProfile.DemandMaterialCrudAuthorized(materialId);
+        var profile = AutomationRuntimeProfile.Current
+                      ?? throw new InvalidOperationException(
+                          "Disposable CRUD profile is unavailable.");
+        var baselinePath = IOPath.GetFullPath(
+            IOPath.Combine(profile.EvidenceFolder, "database-before.sqlite"));
+        if (!IOFile.Exists(baselinePath))
+            throw new InvalidOperationException(
+                "Disposable CRUD baseline evidence is unavailable.");
+
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using (var attach = connection.CreateCommand())
+        {
+            attach.CommandText = "ATTACH DATABASE $baseline AS automation_baseline;";
+            attach.Parameters.AddWithValue("$baseline", baselinePath);
+            attach.ExecuteNonQuery();
+        }
+        using var transaction = connection.BeginTransaction();
+        using (var validate = connection.CreateCommand())
+        {
+            validate.Transaction = transaction;
+            validate.CommandText = """
+                SELECT
+                    (SELECT COUNT(*) FROM InventorySpoolItems),
+                    (SELECT COUNT(*) FROM automation_baseline.InventorySpoolItems),
+                    (SELECT COUNT(*)
+                     FROM InventorySpoolItems AS live
+                     LEFT JOIN automation_baseline.InventorySpoolItems AS baseline
+                       ON baseline.InventoryItemId = live.InventoryItemId
+                     WHERE baseline.InventoryItemId IS NULL),
+                    (SELECT COUNT(*)
+                     FROM automation_baseline.InventorySpoolItems AS baseline
+                     LEFT JOIN InventorySpoolItems AS live
+                       ON live.InventoryItemId = baseline.InventoryItemId
+                     WHERE live.InventoryItemId IS NULL);
+                """;
+            using var reader = validate.ExecuteReader();
+            if (!reader.Read() ||
+                reader.GetInt64(0) != reader.GetInt64(1) ||
+                reader.GetInt64(2) != 0 ||
+                reader.GetInt64(3) != 0)
+                throw new InvalidOperationException(
+                    "Disposable CRUD Inventory identities did not return exactly to baseline.");
+        }
+        using (var restore = connection.CreateCommand())
+        {
+            restore.Transaction = transaction;
+            restore.CommandText = """
+                UPDATE InventorySpoolItems
+                SET LandedCostRateObservationDate =
+                        (SELECT baseline.LandedCostRateObservationDate
+                         FROM automation_baseline.InventorySpoolItems AS baseline
+                         WHERE baseline.InventoryItemId = InventorySpoolItems.InventoryItemId),
+                    LandedCostRateFetchedAtUtc =
+                        (SELECT baseline.LandedCostRateFetchedAtUtc
+                         FROM automation_baseline.InventorySpoolItems AS baseline
+                         WHERE baseline.InventoryItemId = InventorySpoolItems.InventoryItemId),
+                    LandedCostCalculatedAtUtc =
+                        (SELECT baseline.LandedCostCalculatedAtUtc
+                         FROM automation_baseline.InventorySpoolItems AS baseline
+                         WHERE baseline.InventoryItemId = InventorySpoolItems.InventoryItemId);
+                """;
+            restore.ExecuteNonQuery();
+        }
+        transaction.Commit();
+    }
+
     public List<PurchaseOrderRecord> LoadPurchaseOrders()
     {
         using var connection = new SqliteConnection(ConnectionString); connection.Open(); Initialize();

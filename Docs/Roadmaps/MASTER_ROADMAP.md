@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v53.0.4.3 — Migration, Recovery and Historical Stability**
+Current canonical release: **v53.0.4.4 — Diagnostics, Help and Final Acceptance**
 
-Last runtime-accepted baseline: **v53.0.4.3 — Migration, Recovery and Historical Stability**
+Last runtime-accepted baseline: **v53.0.4.4 — Diagnostics, Help and Final Acceptance**
 
-Current canonical application release: **v53.0.4.3 — Migration, Recovery and Historical Stability**
+Current canonical application release: **v53.0.4.4 — Diagnostics, Help and Final Acceptance**
 
-Current roadmap increment: **v53.0.4.4 — Diagnostics, Help and Final Acceptance**
+Current roadmap increment: **v53.0.5 — Post-v50 Help Reconciliation**
 
-Current acceptance note: v53.0.4.3 is runtime accepted with Full Data Verification 391/391.
+Current acceptance note: v53.0.4.4 is runtime accepted with Full Data Verification 392/392.
 
-Next note: v53.0.4.4 reconciles diagnostics, Help and final v53.0.4 acceptance.
+Next note: v53.0.5 performs the mandatory post-v50 Help reconciliation before parent v53 closure.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -38,7 +38,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v51 | Governed Runtime Profiles | ★★★☆☆ | Complete — canonical v51.4.0 runtime accepted |
 | v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Complete — Provisional model; runtime v52.3.2 |
 
-| v53 | Governed Landed-cost Currency | ★★★★☆ | In progress — current v53.0.4.3 |
+| v53 | Governed Landed-cost Currency | ★★★★☆ | In progress — current v53.0.5 |
 
 | v54 | Materials Scope and Collection Workflow | ★★★★☆ | Planned |
 | v55 | Operational Safety and Disposable Hygiene | ★★★★☆ | Planned |
@@ -2335,12 +2335,14 @@ to unstarted authoritative planning slots.
   - Evidence: migration `20260727224150-47f14b19` and recovery `20260727224236-eaa2bdb1` pass 391/391 and exact state gates.
   - Owner accepted 200 intentional Materials, unchanged Purchase Orders/Inventory and Full Data Verification 391/391.
 - **v53.0.4.4 — Diagnostics, Help and Final Acceptance**
-  - State: Current after v53.0.4.3 runtime acceptance.
+  - State: Complete, canonical and runtime accepted.
   - Reconcile safe aggregate diagnostics, v53 field/workflow Help, acceptance documentation and tester evidence.
   - Run Debug/Release, static/security/documentation, all disposable scenarios and Full Data Verification.
   - Completion condition: owner accepts the complete v53 workflow and all gates pass; v53.0.5 remains mandatory before parent closure.
+  - Evidence: final smoke `20260727232314-5c3961bc` passes 392/392; all seven additional disposable scenarios pass.
+  - Owner accepted aggregate Diagnostics, Help search/readability, unchanged canonical data and Full Data Verification 392/392.
 - **v53.0.5 — Post-v50 Help Reconciliation**
-  - State: Planned after v53.0.4; mandatory before parent v53 may close or v54 may start.
+  - State: Current after v53.0.4.4; mandatory before parent v53 may close or v54 may start.
   - Audit every user-visible change delivered after v50 Help acceptance through completed v51, v52 and the final v53 workflow.
   - Reconcile tabs, controls, fields, menus, runtime windows, labels, validation, save timing, defaults and safety boundaries.
   - Update current Help, stable destinations, coverage registry/ledger and deterministic gates for every confirmed drift or gap.

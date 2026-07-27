@@ -31,6 +31,44 @@ Verification evidence:
 ```
 
 Date: 2026-07-27
+Area: AutomationRunner / Historical Verification and cleanup
+Type: Bug
+Severity: Important
+What happened: The first v53.0.4.4 smoke failed because the accepted
+v53.0.4.3 migration/recovery gate required the obsolete exact release version.
+The first CRUD sweep also found one legacy Inventory row changing optional
+landed-cost timestamps from SQL NULL to empty strings during broad persistence.
+Expected behavior: Historical gates survive later versions and exact cleanup
+returns every historical business value, including NULL/empty distinctions.
+Steps to reproduce: Run v53.0.4.4 smoke and CRUD against the canonical seed.
+Screenshot / export / report attached: Failed disposable profiles
+`20260727230318-c0e9fb84` and `20260727231303-3e2eebb9`.
+Status: Solved
+Resolution: The historical gate now checks its retained contract while the
+current gate owns exact release identity. Authorized CRUD cleanup validates
+baseline Inventory identities and restores only three optional provenance
+fields from the retained disposable baseline.
+Verification evidence: Corrected CRUD `20260727231704-d31b92bc` and final smoke
+`20260727232314-5c3961bc` pass exact state; smoke passes 392/392.
+
+Date: 2026-07-27
+Area: AutomationRunner / Guarded updater version fixture
+Type: Bug
+Severity: Important
+What happened: The disposable updater fixture truncated v53.0.4.4 to v53.0.4,
+so the helper correctly rejected the otherwise healthy acknowledgement.
+Expected behavior: Synthetic previous/candidate/next versions preserve the
+application's governed three- or four-part release identity.
+Steps to reproduce: Run the updater scenario with a four-part FileVersion.
+Screenshot / export / report attached: Failed disposable profile
+`20260727231856-b4616b17`.
+Status: Solved
+Resolution: The runner now preserves four-part versions and increments the
+revision component for synthetic adjacent releases.
+Verification evidence: Corrected updater profile `20260727232117-b8100815`
+commits 486 governed files and proves negative-health rollback.
+
+Date: 2026-07-27
 Area: Purchase Orders landed-cost snapshot lock
 Type: Bug
 Severity: Blocker
@@ -162,7 +200,7 @@ Date: 2026-07-27
 Area: In-application Help / Post-v50 maintenance
 Type: Workflow friction / Documentation
 Severity: Important
-Status: Open
+Status: In progress — v53.0.5 current
 What happened: The exhaustive v50 Help system is accepted, but later user-visible v51-v53 changes need one explicit reconciliation
 pass, and repository governance did not yet require Help maintenance in every future increment.
 Expected behavior: Keep Help, stable destinations, coverage registry/ledger and deterministic gates synchronized whenever supported
@@ -272,7 +310,7 @@ Date: 2026-07-27
 Area: Purchase Orders / Landed-cost currency
 Type: Workflow improvement / Data integrity
 Severity: Important
-Status: In progress — v53.0.1-v53.0.2 complete; v53.0.3 current
+Status: Solved
 What happened: Purchase Orders calculate landed cost in the transaction currency, but an owner may need governed landed-cost results
 in a different operational currency such as ISK while retaining the original invoice currency and values.
 Expected behavior: Add a Settings-owned Default Landed Cost Currency for new Purchase Orders plus a reviewed per-order override.
@@ -294,7 +332,11 @@ with a narrow repair for affected uncalculated Drafts. Replacement smoke `202607
 owner runtime re-acceptance confirms dropdown, override, restart persistence and Full Data Verification PASS.
 v53.0.3 candidate now converts only final landed outputs, stamps one calculation snapshot, separates downstream invoice/landed
 evidence and updates saved-snapshot reports. Disposable smoke `20260727213614-403d89af` passes 388/388 with exact state after
-the calculated-input, debugger-safe Verification and daily ECB/EUR fixes; owner runtime acceptance remains pending.
+the calculated-input, debugger-safe Verification and daily ECB/EUR fixes; owner runtime acceptance passes. v53.0.4.1-v53.0.4.3
+then add exact authorization, lifecycle, migration and recovery evidence through 391/391. v53.0.4.4 reconciles secret-safe
+Diagnostics, current Help and final acceptance. Final smoke and all disposable scenarios pass; owner diagnostics confirms 200
+Materials, two uncalculated Purchase Orders, two legacy Inventory snapshots and no disposable authorization. Full Data Verification
+392/392 and Help/readability are accepted. Mandatory v53.0.5 remains a separate parent-closure Help audit.
 
 Date: 2026-07-27
 Area: Automated acceptance / Application-wide navigation

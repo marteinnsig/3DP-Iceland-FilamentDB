@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v53.0.4.4 - Diagnostics, Help and Final Acceptance
+
+Accepted aggregate-only landed-cost Diagnostics, matching Help and complete
+disposable regression evidence close v53.0.4 without exposing business
+identities or running migration/recovery from Diagnostics. Verification
+392/392 and owner canonical-data review pass; schema remains v38.
+
 # v53.0.4.3 - Migration, Recovery and Historical Stability
 
 Accepted schema-v37 migration and governed Excel recovery prove exact v53
