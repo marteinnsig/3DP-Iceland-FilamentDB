@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v50.3.0 — Safety and Recovery Help**
+Current canonical release: **v50.4.4 — Help Zero-gap Final Acceptance**
 
-Last runtime-accepted baseline: **v50.4.3 — Output and Runtime Control Help**
+Last runtime-accepted baseline: **v50.4.4 — Help Zero-gap Final Acceptance**
 
-Current application candidate: **None; v50.4.4 is current**
+Current application candidate: **None; v51.0 research is current**
 
-Current roadmap increment: **v50.4.4 — Zero-gap Reconciliation, Deterministic Gates and Final Owner Acceptance**
+Current roadmap increment: **v51.0 — Governed Development/Verification and Production/Clean Profiles**
 
-Current acceptance note: v50.4.3 is runtime/readability accepted with Verification 377/377; parent v50 remains active.
+Current acceptance note: v50.4.4 and parent v50 are runtime/UI accepted with Verification 378/378.
 
-Next note: v50.4 must prove zero unexplained supported controls/editable fields before parent v50 may close.
+Next note: v51.0 is research-first; measure profile cost and boundaries before implementation.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -34,8 +34,8 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v47 | AI Assistant Workflow | ★★★★☆ | Complete — canonical v47.0.3 runtime accepted |
 | v48 | Pricing and Usage Analytics | ★★★★☆ | Complete — canonical v48.2.0 runtime accepted |
 | v49 | Experimental Workflow Extension | ★★★★☆ | Complete — canonical v49.0.0 runtime accepted |
-| v50 | Comprehensive User Help | ★★★★★ | Current |
-| v51 | Governed Runtime Profiles | ★★★☆☆ | Research only |
+| v50 | Comprehensive User Help | ★★★★★ | Complete — canonical v50.4.4 runtime accepted |
+| v51 | Governed Runtime Profiles | ★★★☆☆ | Current — research only |
 | v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Planned |
 
 | v53 | Governed Landed-cost Currency | ★★★★☆ | Planned |
@@ -2114,7 +2114,7 @@ to unstarted authoritative planning slots.
   - Completion condition: documentation/static/security gates, Full Data Verification and owner safety/recovery acceptance pass.
   - Do not close parent v50 after v50.3; proceed to the mandatory exhaustive v50.4 UI control/field Help audit.
 - **v50.4 — Exhaustive UI Control and Field Help Audit and Final Acceptance**
-  - State: Current authoritative increment; audit started.
+  - State: Complete, canonical and final owner runtime/UI accepted as v50.4.4.
   - Re-inventory every top-level tab, nested tab, menu, runtime-built window, dialog and supported workflow surface.
   - Inventory every button, menu action, checkbox, radio option, selector, editable field and user-editable grid column/cell type.
   - Give every inventoried control a stable key, UI owner, Help destination/anchor and explicit coverage status.
@@ -2130,7 +2130,7 @@ to unstarted authoritative planning slots.
   - Completion condition: zero unexplained supported controls/editable fields, all gates pass and owner accepts the exhaustive audit.
   - Only after v50.4 acceptance may parent v50 close and v51 become current.
 - **v50.4.0 — Authoritative Control/Field Ledger and Drift-gate Contract**
-  - State: Complete research/static foundation; v50.4.1 is current.
+  - State: Complete research/static foundation.
   - Extract XAML controls and grid columns, then reconcile runtime-built controls, owner-drawn grids, handlers and supported dialogs.
   - Classify every candidate as editable, action, selector/filter, status/evidence, read-only output, layout-only or unsupported/dead.
   - Record a stable key, exact UI path, owner, Help destination, coverage status and deterministic/manual evidence route.
@@ -2155,12 +2155,16 @@ to unstarted authoritative planning slots.
   - Five searchable topics cover 156 XAML candidates and the eight declared runtime-window surfaces.
   - Verification passes 377/377 in disposable profile `20260727132731-ea4e1d20` with exact state equality.
 - **v50.4.4 — Zero-gap Reconciliation, Deterministic Gates and Final Owner Acceptance**
-  - State: Current authoritative subincrement.
+  - State: Complete, canonical and final owner runtime/UI accepted on 2026-07-27.
+  - Replace the long flat Help contents list with a conventional expandable category/topic tree.
+  - Preserve whole-catalog search, first-match selection/highlighting and contextual Help/F1 routing into the exact topic.
+  - Keep category navigation readable at narrow widths and expose stable automation identity for deterministic tree acceptance.
   - Fail Verification when a declared supported control/field lacks a registry key, Help destination or required coverage metadata.
   - Extend safe tester lookup/navigation without invoking mutating, Production, FTPS, restore, update or owner-database actions.
   - Run all release gates and a dummy-proof manual readability/control audit before closing v50 and advancing to v51.
+  - Disposable profile `20260727134442-edf82227` passes Verification 378/378 with exact state equality.
 - **v51.0 — Governed Development/Verification and Production/Clean Profiles**
-  - State: Deferred until v50.4 and every earlier recorded v50 increment are complete.
+  - State: Current authoritative research increment; implementation has not started.
   - Research only until diagnostics have measured cost.
   - Mandatory crash, recovery, security and support evidence can never be removed.
 - **v52.0 — Optional OpenAI Assistant Integration Contract**

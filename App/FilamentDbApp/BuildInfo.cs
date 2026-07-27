@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "OUTPUT-RUNTIME-CONTROL-HELP";
-    public const string ReleaseTitle = "Output and Runtime Control Help";
+    public const string ReleaseCode = "HELP-ZERO-GAP-FINAL";
+    public const string ReleaseTitle = "Help Zero-gap Final Acceptance";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 37;
 

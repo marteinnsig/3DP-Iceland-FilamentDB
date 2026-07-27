@@ -39,29 +39,39 @@
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Top" Text="CONTENTS" FontWeight="SemiBold" Foreground="#64748B"
                                Margin="18,18,18,10"/>
-                    <ListBox x:Name="SectionList" Margin="10,0,10,12" BorderThickness="0"
-                             HorizontalContentAlignment="Stretch"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                             SelectionChanged="SectionList_SelectionChanged"
-                             automation:AutomationProperties.AutomationId="HelpSections">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
+                    <TreeView x:Name="SectionTree" Margin="10,0,10,12" BorderThickness="0"
+                              HorizontalContentAlignment="Stretch"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              SelectedItemChanged="SectionTree_SelectedItemChanged"
+                              automation:AutomationProperties.AutomationId="HelpSections"
+                              automation:AutomationProperties.Name="Help contents tree">
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="TreeViewItem">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                                <Setter Property="AutomationProperties.AutomationId" Value="{Binding AutomationId}"/>
+                                <Setter Property="AutomationProperties.Name" Value="{Binding Header}"/>
                             </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Margin="8,7">
-                                    <TextBlock Text="{Binding Category}" Foreground="#64748B" FontSize="11"
+                        </TreeView.ItemContainerStyle>
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                <StackPanel Margin="4,5">
+                                    <TextBlock x:Name="NodeHeader" Text="{Binding Header}" FontWeight="SemiBold"
                                                TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap"/>
-                                    <TextBlock Text="{Binding Summary}" Foreground="#475569" FontSize="12"
-                                               TextWrapping="Wrap" Margin="0,3,0,0"/>
+                                    <TextBlock x:Name="NodeSummary" Text="{Binding Summary}" Foreground="#475569"
+                                               FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0"/>
                                 </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                                <HierarchicalDataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding IsCategory}" Value="True">
+                                        <Setter TargetName="NodeHeader" Property="Foreground" Value="#475569"/>
+                                        <Setter TargetName="NodeHeader" Property="FontSize" Value="12"/>
+                                        <Setter TargetName="NodeSummary" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </HierarchicalDataTemplate.Triggers>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
                 </DockPanel>
             </Border>
 

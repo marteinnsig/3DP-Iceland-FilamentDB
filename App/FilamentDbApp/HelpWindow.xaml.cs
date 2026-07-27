@@ -1,8 +1,10 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System.Text.RegularExpressions;
 using System.Windows.Threading;
 
 namespace FilamentDbApp;
@@ -10,6 +12,7 @@ namespace FilamentDbApp;
 public partial class HelpWindow : Window
 {
     private IReadOnlyList<HelpSection> _visibleSections = HelpContentCatalog.Sections;
+    private IReadOnlyList<HelpNavigationNode> _navigationRoots = [];
 
     public HelpWindow()
     {
@@ -23,8 +26,7 @@ public partial class HelpWindow : Window
         ApplyFilter();
         var section = _visibleSections.FirstOrDefault(item =>
             string.Equals(item.Id, sectionId, StringComparison.Ordinal)) ?? _visibleSections[0];
-        SectionList.SelectedItem = section;
-        SectionList.ScrollIntoView(section);
+        SelectNavigationSection(section);
         Render(section);
     }
 
@@ -43,16 +45,16 @@ public partial class HelpWindow : Window
                 .OrderBy(section => SearchMatchRank(section, query))
                 .ToArray();
 
-        SectionList.ItemsSource = _visibleSections;
+        _navigationRoots = BuildNavigationTree(_visibleSections, !string.IsNullOrWhiteSpace(query));
+        SectionTree.ItemsSource = _navigationRoots;
         ResultStatusText.Text = string.IsNullOrWhiteSpace(query)
-            ? $"{_visibleSections.Count} help topics · Press F1 from the main window for contextual help"
-            : $"{_visibleSections.Count} topic(s) match “{query}” · first match highlighted";
+            ? $"{_visibleSections.Count} help topics in {_navigationRoots.Count} categories · expand a category or press F1"
+            : $"{_visibleSections.Count} topic(s) match “{query}” · matching categories expanded";
 
         if (_visibleSections.Count > 0)
         {
             var firstSection = _visibleSections[0];
-            SectionList.SelectedItem = firstSection;
-            SectionList.ScrollIntoView(firstSection);
+            SelectNavigationSection(firstSection);
             Render(firstSection);
         }
         else
@@ -64,12 +66,80 @@ public partial class HelpWindow : Window
         }
     }
 
-    private void SectionList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void SectionTree_SelectedItemChanged(
+        object sender,
+        RoutedPropertyChangedEventArgs<object> e)
     {
-        if (SectionList.SelectedItem is HelpSection section)
+        if (e.NewValue is HelpNavigationNode { Section: { } section })
         {
             Render(section);
         }
+    }
+
+    private static IReadOnlyList<HelpNavigationNode> BuildNavigationTree(
+        IReadOnlyList<HelpSection> sections,
+        bool expandAll)
+    {
+        return sections
+            .GroupBy(section => section.Category, StringComparer.Ordinal)
+            .Select(group =>
+            {
+                var children = group
+                    .Select(HelpNavigationNode.ForSection)
+                    .ToArray();
+                return HelpNavigationNode.ForCategory(group.Key, children, expandAll);
+            })
+            .ToArray();
+    }
+
+    private void SelectNavigationSection(HelpSection section)
+    {
+        foreach (var root in _navigationRoots)
+        {
+            var node = root.Children.FirstOrDefault(candidate =>
+                string.Equals(candidate.Section?.Id, section.Id, StringComparison.Ordinal));
+            if (node is null)
+            {
+                continue;
+            }
+
+            root.IsExpanded = true;
+            node.IsSelected = true;
+            Dispatcher.BeginInvoke(
+                () =>
+                {
+                    if (FindContainer(SectionTree, node) is TreeViewItem container)
+                    {
+                        container.BringIntoView();
+                    }
+                },
+                DispatcherPriority.Loaded);
+            return;
+        }
+    }
+
+    private static TreeViewItem? FindContainer(ItemsControl parent, object item)
+    {
+        if (parent.ItemContainerGenerator.ContainerFromItem(item) is TreeViewItem direct)
+        {
+            return direct;
+        }
+
+        foreach (var parentItem in parent.Items)
+        {
+            if (parent.ItemContainerGenerator.ContainerFromItem(parentItem) is not TreeViewItem child)
+            {
+                continue;
+            }
+
+            var nested = FindContainer(child, item);
+            if (nested is not null)
+            {
+                return nested;
+            }
+        }
+
+        return null;
     }
 
     private void Render(HelpSection section)
@@ -166,4 +236,82 @@ public partial class HelpWindow : Window
     }
 
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
+}
+
+internal sealed class HelpNavigationNode : INotifyPropertyChanged
+{
+    private bool _isExpanded;
+    private bool _isSelected;
+
+    private HelpNavigationNode(
+        string header,
+        string summary,
+        string automationId,
+        HelpSection? section,
+        IReadOnlyList<HelpNavigationNode> children,
+        bool isExpanded)
+    {
+        Header = header;
+        Summary = summary;
+        AutomationId = automationId;
+        Section = section;
+        Children = children;
+        _isExpanded = isExpanded;
+    }
+
+    public string Header { get; }
+    public string Summary { get; }
+    public string AutomationId { get; }
+    public HelpSection? Section { get; }
+    public IReadOnlyList<HelpNavigationNode> Children { get; }
+    public bool IsCategory => Section is null;
+
+    public bool IsExpanded
+    {
+        get => _isExpanded;
+        set => SetField(ref _isExpanded, value);
+    }
+
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetField(ref _isSelected, value);
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public static HelpNavigationNode ForCategory(
+        string category,
+        IReadOnlyList<HelpNavigationNode> children,
+        bool isExpanded) =>
+        new(
+            category,
+            string.Empty,
+            "HelpCategory-" + ToAutomationKey(category),
+            null,
+            children,
+            isExpanded);
+
+    public static HelpNavigationNode ForSection(HelpSection section) =>
+        new(
+            section.Title,
+            section.Summary,
+            "HelpTopic-" + section.Id,
+            section,
+            [],
+            false);
+
+    private static string ToAutomationKey(string value) =>
+        Regex.Replace(value.Trim(), @"[^A-Za-z0-9]+", "-").Trim('-');
+
+    private void SetField(ref bool field, bool value, [CallerMemberName] string? propertyName = null)
+    {
+        if (field == value)
+        {
+            return;
+        }
+
+        field = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 }

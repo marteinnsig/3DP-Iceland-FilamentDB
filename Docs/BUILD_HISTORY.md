@@ -2,6 +2,19 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v50.4.4 - Help Zero-gap Final Acceptance
+
+The v50.4 closure candidate replaces the flat contents list with a conventional
+expandable category/topic Help tree. Search rebuilds an expanded result tree;
+whole-system and contextual entry points still select and render exact catalog
+topics through the accepted highlight pipeline.
+
+The source-derived inventory has zero planned rows. Runtime automation proves
+the Tree/TreeItem hierarchy plus all earlier search contracts. Profile
+`20260727134442-edf82227` passes 378/378 with exact logical and business-state
+equality. Final owner runtime/UI acceptance passes on 2026-07-27; v50.4.4 and
+parent v50 are canonical and v51.0 research is current.
+
 ## v50.4.3 - Output and Runtime Control Help
 
 The final bounded content group in the v50.4 ledger adds exact control/field

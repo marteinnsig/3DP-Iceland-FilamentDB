@@ -17381,6 +17381,20 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             v5043HelpCoverageReady
                 ? "Five substantive destinations cover Reports, Website, AI, YouTube, menus and runtime windows with local/external, read-only/mutating, credential, confirmation and automation-only boundaries."
                 : "A v50.4.3 control/field Help destination, depth requirement or representative safety marker is missing."));
+        var v5044HelpTreeReady =
+            typeof(HelpNavigationNode).GetProperty(nameof(HelpNavigationNode.Children)) is not null &&
+            typeof(HelpNavigationNode).GetProperty(nameof(HelpNavigationNode.IsExpanded)) is not null &&
+            typeof(HelpNavigationNode).GetProperty(nameof(HelpNavigationNode.IsSelected)) is not null &&
+            typeof(HelpWindow).GetField(
+                "SectionTree",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic |
+                System.Reflection.BindingFlags.Public) is not null;
+        checks.Add(new VerificationCheck("v50.4.4 hierarchical Help navigation contract",
+            v5044HelpTreeReady,
+            v5044HelpTreeReady
+                ? "Central Help exposes a stable category/topic TreeView model with expandable and selected-node state."
+                : "Central Help is missing its category/topic TreeView, node hierarchy or expansion/selection contract."));
         var zeroDataProfileContractReady =
             IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
             IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&

@@ -2,6 +2,25 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v50.4.4 - Help Zero-gap Final Acceptance
+
+- Replaces the long flat Help contents list with an expandable category/topic
+  tree while retaining the accepted two-pane Help presentation.
+- Whole-catalog search shows only matching categories, expands them and selects
+  the highest-ranked topic; title/summary/body highlighting and jump behavior
+  remain unchanged.
+- Contextual Help/F1 clears search, expands the owning category and selects the
+  exact requested topic.
+- Adds stable category/topic AutomationIds and deterministic Tree/TreeItem
+  runtime acceptance without invoking mutating actions.
+- The authoritative inventory has 0 planned rows across 645 XAML candidates,
+  six custom registries and eight runtime surfaces.
+- Debug/Release app and tester builds pass with zero warnings/errors.
+- Disposable profile `20260727134442-edf82227` passes Full Data Verification
+  378/378 with exact logical/business-state equality.
+- Final owner tree/readability and zero-gap acceptance passes on 2026-07-27.
+- v50.4.4 and parent v50 are canonical; schema remains v37 and v51.0 research is current.
+
 ## v50.4.3 - Output and Runtime Control Help
 
 - Adds five detailed searchable control/field topics for Reports, Website

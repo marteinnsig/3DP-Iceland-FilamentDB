@@ -271,6 +271,14 @@ internal static class Program
             Require(
                 string.Equals(helpTitle, "Start-to-finish workflow", StringComparison.Ordinal),
                 "Help > Documentation did not open the canonical whole-system overview.");
+            var helpContents = FindById(help, "HelpSections");
+            Require(
+                helpContents.Current.ControlType == ControlType.Tree,
+                "Central Help contents did not expose the hierarchical tree contract.");
+            Require(
+                FindById(helpContents, "HelpCategory-Start-here").Current.ControlType == ControlType.TreeItem &&
+                FindById(helpContents, "HelpTopic-start-here").Current.ControlType == ControlType.TreeItem,
+                "Central Help did not expose the Start here category and selected topic tree nodes.");
             var helpSearch = FindById(help, "HelpSearch");
             Require(
                 helpSearch.TryGetCurrentPattern(ValuePattern.Pattern, out var helpValuePattern),
@@ -481,7 +489,7 @@ internal static class Program
             Record(
                 "central-help",
                 true,
-                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1-v50.4.3 reference searches");
+                $"Opened hierarchical overview '{helpTitle}', verified highlighting plus v50.2.1-v50.4.4 reference searches");
             CloseWindow(help, application.Id);
 
             Expand(FindById(main, "HelpMenu"), application.Id);

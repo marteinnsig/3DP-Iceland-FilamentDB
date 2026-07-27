@@ -1,6 +1,16 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v50.4.4 - Help Zero-gap Final Acceptance
+
+The final Help navigation uses an expandable category/topic tree while search,
+highlighting and contextual F1 retain their accepted exact-topic behavior.
+The authoritative inventory has zero planned rows across 645 XAML candidates,
+six custom registries and eight runtime surfaces. Debug/Release, vulnerability,
+documentation and disposable Full Data Verification 378/378 pass with exact
+state equality. Final owner runtime/UI acceptance passes. Schema remains v37;
+v50 is complete and v51.0 research is current.
+
 ## v50.4.3 - Output and Runtime Control Help
 
 Five detailed searchable topics cover Reports, Website Export, AI Assistant,

@@ -41,9 +41,9 @@ idea. Historical free-form entries remain in their original language and order.
 | Status | Items |
 |---|---:|
 | Open | 21 |
-| In progress | 1 |
+| In progress | 0 |
 | Partially solved | 2 |
-| Solved | 56 |
+| Solved | 57 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
@@ -55,7 +55,7 @@ Date: 2026-07-27
 Area: Help / Exhaustive control and editable-field coverage
 Type: Workflow friction / Documentation
 Severity: Important
-Status: In progress
+Status: Solved
 What happened: The accepted Help system explains every tab and major workflow, but it does not yet prove that every button, selector,
 editable field and editable grid cell has precise guidance. The initial v50.4 audit found 135 XAML buttons, 31 menu items, 47 combo
 boxes, 34 text boxes, 10 checkboxes, 31 grids and 356 XAML grid-column declarations, plus runtime-built and owner-drawn controls.
@@ -71,8 +71,9 @@ The read-only drift gate passes; v50.4.0 is complete. The v50.4.1 candidate adds
 v50.4.2 now adds four detailed engineering/analysis topics. Disposable profile `20260727131457-dee03dd4` passes Verification
 376/376 with exact state equality. Owner v50.4.2 runtime/readability acceptance passes. The v50.4.3 candidate adds five output,
 creator and runtime control topics; disposable profile `20260727132731-ea4e1d20` passes Verification 377/377 with exact state
-equality. Owner v50.4.3 runtime/readability acceptance passes; v50.4.4 zero-gap reconciliation is current while the parent
-exhaustive finding remains in progress.
+equality. Owner v50.4.3 runtime/readability acceptance passes. The v50.4.4 candidate replaces the flat Help contents list with an
+expandable category/topic tree; inventory has zero planned rows and disposable profile `20260727134442-edf82227` passes
+Verification 378/378 with exact state equality. Final owner runtime/UI acceptance passes; v50.4.4 and parent v50 are complete.
 
 Date: 2026-07-27
 Area: Application menu / Navigation and command discovery

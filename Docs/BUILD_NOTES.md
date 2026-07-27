@@ -1,4 +1,20 @@
-# Current Build Notes - v50.4.3
+# Current Build Notes - v50.4.4
+
+## Help Zero-gap Final Acceptance
+
+The left Help navigation is now an expandable category/topic tree. Ordinary
+navigation shows all categories, opens the selected topic's category and keeps
+the remaining hierarchy compact. Search shows matching categories only,
+expands them and selects the highest-ranked result without changing accepted
+highlight and jump behavior.
+
+Stable category/topic AutomationIds let smoke prove the hierarchical UI without
+authorizing data mutation. The source-derived inventory contains zero planned
+rows. Debug/Release app and tester builds pass with zero warnings/errors.
+Disposable profile `20260727134442-edf82227` passes Full Data Verification
+378/378 with exact logical/business-state equality. Final owner runtime/UI
+acceptance passes on 2026-07-27; v50.4.4 and parent v50 are canonical, schema
+remains v37 and v51.0 research is current.
 
 ## Output and Runtime Control Help
 

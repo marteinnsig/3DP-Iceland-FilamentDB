@@ -3,6 +3,16 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v50.4.4 - Help Zero-gap Final Acceptance
+
+The central offline Help system now covers every registered supported control
+and editable field with zero planned ledger gaps. Searchable workflow,
+per-tab, troubleshooting, recovery and publishing guidance culminates in an
+expandable category/topic navigation tree with exact contextual F1 routing.
+Owner runtime/UI acceptance and Full Data Verification 378/378 pass with exact
+state equality. Schema remains v37; v50 is complete and v51.0 research is
+current.
+
 # v50.4.3 - Output and Runtime Control Help
 
 The exhaustive Help audit now has accepted control/field coverage for Reports,
