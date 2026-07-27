@@ -1,3 +1,22 @@
+# v52.1.0 - Optional AI Provider Foundation
+
+Date: 2026-07-27
+
+- Release smoke profile `20260727153808-6a1788dc` passes 383/383.
+- Seedless Clean profile `20260727153913-5a0120d2` passes 283/283 applicable
+  plus 100 canonical-data N/A and a controlled restart.
+- Both resolve the deterministic fake provider, report `network used: no` and
+  retain inaccessible owner credentials.
+- Smoke retains exact logical and business-state equality and creates no AI
+  session or collection residue.
+- Debug/Release, Help/release audits and NuGet vulnerability scan pass.
+- An owner-reported Settings Grid overlap was corrected before acceptance.
+- Post-correction Release smoke `20260727154904-5ef08d0a` passes 383/383 with
+  exact business-state equality.
+- Owner layout, provider persistence, diagnostics and Full Data Verification
+  acceptance pass on 2026-07-27.
+- Schema remains v37.
+
 # v50.3.0 - Safety and Recovery Help
 
 Date: 2026-07-27

@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v50.4.0 audit in progress
+Version: v52.1 provider-foundation reconciliation
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted
@@ -41,11 +41,11 @@ Source snapshot: `master` commit `a662677` on 2026-07-27.
 |---|---:|---|
 | Top-level tabs | 22 | Preserve accepted overview and contextual mappings |
 | Nested tabs | 16 | Preserve accepted nested-aware mappings |
-| XAML buttons | 135 | Map visible action, handler, owner and Help subsection |
+| XAML buttons | 139 | Map visible action, handler, owner and Help subsection |
 | XAML menu items | 31 | Separate headings/separators from invoked commands |
-| XAML text boxes | 34 | Determine editable, read-only, multiline and generated output |
-| XAML password boxes | 1 | Record secret ownership and non-persistence boundary |
-| XAML combo boxes | 47 | Record source, allowed choice, default and save timing |
+| XAML text boxes | 35 | Determine editable, read-only, multiline and generated output |
+| XAML password boxes | 2 | Record secret ownership and non-persistence boundary |
+| XAML combo boxes | 48 | Record source, allowed choice, default and save timing |
 | XAML checkboxes | 10 | Record true/false effect, persistence and dependent states |
 | XAML data grids | 31 | Reconcile grid-level read-only state and runtime columns |
 | XAML grid-column declarations | 356 | Resolve binding, grid owner and actual editability |
@@ -71,7 +71,12 @@ Current exact inventory:
 | v50.4.1 | 222 |
 | v50.4.2 | 267 |
 | v50.4.3 | 156 |
-| **Total** | **645** |
+| v52.1 | 7 |
+| **Total** | **652** |
+
+v52.1 adds seven Settings candidates for provider/model preference, protected
+credential ownership and local-only foundation diagnostics. All route to
+`settings.controls-fields`; none enables a live OpenAI request.
 
 | Initial source classification | Candidates |
 |---|---:|

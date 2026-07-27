@@ -2,6 +2,23 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v52.1.0 - Optional AI Provider Foundation
+
+The v52.0 research decision was accepted before code changes. The v52.1
+candidate adds the provider/credential boundary without enabling live OpenAI
+generation. Provider and explicit model preferences are non-secret local UI
+preferences; Windows Credential Manager alone owns the API credential.
+
+Local deterministic behavior remains the default. Disposable automation
+resolves a fake no-network provider and cannot inspect or mutate owner
+credentials. Diagnostics and Verification report only safe configuration
+state. Release smoke profile `20260727153808-6a1788dc` passes 383/383 with
+exact business state; Clean `20260727153913-5a0120d2` passes 283/283 plus
+100 N/A and restart. Builds, documentation/security gates and the vulnerability
+scan pass. An owner-reported Settings Grid overlap was corrected; post-fix
+Release smoke `20260727154904-5ef08d0a` passes 383/383 with exact business
+state. Owner runtime acceptance passes on 2026-07-27; schema remains v37.
+
 ## v51.4.0 - Profile Reconciliation
 
 Final reconciliation closes disposable reads of owner update history, exposes

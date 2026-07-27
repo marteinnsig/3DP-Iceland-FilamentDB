@@ -246,6 +246,20 @@ internal static class Program
                 "Purchase Orders did not retain the offline-safe ECB reference status.");
             Record("ecb-reference-offline-boundary", true, ecbStatus);
 
+            SelectTab(main, "SettingsManagerTab", application.Id);
+            Invoke(FindById(main, "TestAiProviderFoundation"), application.Id);
+            var aiProviderStatus = FindById(main, "AiProviderStatus").Current.Name;
+            Require(
+                aiProviderStatus.Contains("deterministic fake provider", StringComparison.OrdinalIgnoreCase) &&
+                aiProviderStatus.Contains("network used: no", StringComparison.OrdinalIgnoreCase),
+                "Disposable Settings did not resolve the deterministic no-network AI provider.");
+            var aiProviderApiKey = FindById(main, "AiProviderApiKey");
+            Require(
+                aiProviderApiKey.Current.ControlType == ControlType.Edit &&
+                (bool)aiProviderApiKey.GetCurrentPropertyValue(AutomationElement.IsPasswordProperty),
+                "Disposable AI provider credential field was not exposed as a protected password control.");
+            Record("ai-provider-foundation-isolation", true, aiProviderStatus);
+
             SelectTab(main, "AiAssistantTab", application.Id);
             Invoke(FindById(main, "RefreshAiAssistantScope"), application.Id);
             var assistantScope = FindById(main, "AiAssistantScopeSummary").Current.Name;
@@ -498,7 +512,7 @@ internal static class Program
                     "Website Export controls and fields",
                     StringComparison.Ordinal),
                 "Central Help did not expose the four separate Website action contracts.");
-            ((ValuePattern)helpValuePattern).SetValue("sends no payload to OpenAI");
+            ((ValuePattern)helpValuePattern).SetValue("send no payload to OpenAI");
             Require(
                 string.Equals(
                     FindById(help, "HelpSectionTitle").Current.Name,

@@ -2155,6 +2155,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
@@ -2203,6 +2204,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
@@ -2224,7 +2226,75 @@
                         <Button Name="RestoreBuiltInSettingsButton" Click="ResetNativeSettings_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" ToolTip="Replace General Settings with built-in defaults. Deployment Settings and Base Material Catalog are unchanged."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE777;"/><TextBlock Text="Restore Built-in Defaults"/></StackPanel></Button>
                     </WrapPanel>
 
-                    <Grid Grid.Row="2">
+                    <GroupBox Grid.Row="2"
+                              Header="Optional AI Assistant Provider — credential remains in Windows Credential Manager"
+                              Margin="0,0,0,10">
+                        <Grid Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <WrapPanel Grid.Row="0">
+                                <TextBlock Text="Provider" VerticalAlignment="Center" Margin="0,0,8,8"/>
+                                <ComboBox Name="AiProviderCombo"
+                                          AutomationProperties.AutomationId="AiProvider"
+                                          Width="190"
+                                          Height="28"
+                                          SelectionChanged="AiProviderCombo_SelectionChanged"
+                                          Margin="0,0,16,8">
+                                    <ComboBoxItem Content="Local deterministic" Tag="local"/>
+                                    <ComboBoxItem Content="OpenAI (optional)" Tag="openai"/>
+                                </ComboBox>
+                                <TextBlock Text="Pinned model" VerticalAlignment="Center" Margin="0,0,8,8"/>
+                                <TextBox Name="AiProviderModelBox"
+                                         AutomationProperties.AutomationId="AiProviderModel"
+                                         Width="190"
+                                         Height="28"
+                                         Margin="0,0,16,8"
+                                         ToolTip="Non-secret model preference. Runtime acceptance is completed in v52.3."/>
+                                <Button Content="Save Provider Settings"
+                                        AutomationProperties.AutomationId="SaveAiProviderSettings"
+                                        Click="SaveAiProviderSettings_Click"
+                                        Padding="12,6"
+                                        Margin="0,0,8,8"/>
+                            </WrapPanel>
+                            <WrapPanel Grid.Row="1">
+                                <TextBlock Text="OpenAI API key" VerticalAlignment="Center" Margin="0,0,8,8"/>
+                                <PasswordBox Name="AiProviderApiKeyBox"
+                                             AutomationProperties.AutomationId="AiProviderApiKey"
+                                             Width="300"
+                                             Height="28"
+                                             Margin="0,0,8,8"
+                                             ToolTip="Enter only when saving or replacing the credential. The value is never loaded back into this box."/>
+                                <Button Content="Save / Replace Credential"
+                                        AutomationProperties.AutomationId="SaveAiProviderCredential"
+                                        Click="SaveAiProviderCredential_Click"
+                                        Padding="12,6"
+                                        Margin="0,0,8,8"/>
+                                <Button Content="Delete Credential..."
+                                        AutomationProperties.AutomationId="DeleteAiProviderCredential"
+                                        Click="DeleteAiProviderCredential_Click"
+                                        Padding="12,6"
+                                        Margin="0,0,8,8"/>
+                                <Button Content="Test Provider Foundation"
+                                        AutomationProperties.AutomationId="TestAiProviderFoundation"
+                                        Click="TestAiProviderFoundation_Click"
+                                        Padding="12,6"
+                                        Margin="0,0,8,8"
+                                        ToolTip="Checks local configuration and credential presence only. It sends no network request."/>
+                            </WrapPanel>
+                            <TextBlock Grid.Row="2"
+                                       Name="AiProviderStatusText"
+                                       AutomationProperties.AutomationId="AiProviderStatus"
+                                       Text="AI provider foundation: loading..."
+                                       Foreground="#475569"
+                                       TextWrapping="Wrap"
+                                       Margin="0,2,0,2"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <Grid Grid.Row="3">
                         <GroupBox Header="Measurement / Calculation Settings - only Value is editable">
                             <Grid>
                                 <ContentControl Name="FastNativeSettingsViewHost" Margin="8"/>

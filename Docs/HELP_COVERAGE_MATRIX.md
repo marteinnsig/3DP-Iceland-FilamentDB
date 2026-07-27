@@ -12,7 +12,7 @@ merely because a coarse overview mentions the tab.
 - 22 top-level tabs.
 - 16 nested tabs.
 - 38 total tab surfaces.
-- 135 declared WPF buttons.
+- 139 declared WPF buttons.
 - 30 menu items.
 - 100 existing WPF AutomationIds.
 - 136 click handlers across the MainWindow implementation.

@@ -2,6 +2,31 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v52.1.0 - Optional AI Provider Foundation
+
+- Records the owner-accepted v52.0 provider, payload, retention and failure
+  contract before implementation.
+- Adds replaceable local, OpenAI-foundation and deterministic fake providers.
+- Keeps local deterministic behavior as the default and offline-safe path.
+- Stores provider and explicit model preferences outside SQLite.
+- Adds masked Save/Replace/Delete controls whose secret owner is Windows
+  Credential Manager.
+- Adds a local-only provider foundation test; it performs no network request
+  and sends no application data.
+- Forces disposable automation to the fake provider with owner credentials
+  inaccessible.
+- Extends Diagnostics, Verification and deterministic tester evidence without
+  recording credential values, Authorization headers or outbound payloads.
+- Release smoke passes 383/383 with exact business state; Clean passes 283/283
+  applicable plus 100 N/A and a controlled restart.
+- Debug/Release, Help/release audits and the read-only NuGet vulnerability
+  scan pass.
+- Corrects an owner-reported Settings Grid overlap by giving the optional
+  provider panel its own Auto-sized row.
+- Post-correction Release smoke passes 383/383 with exact business-state
+  equality.
+- Schema remains v37; owner runtime acceptance passes on 2026-07-27.
+
 ## v51.4.0 - Profile Reconciliation
 
 - Prevents disposable/Clean startup and Diagnostics from inspecting owner

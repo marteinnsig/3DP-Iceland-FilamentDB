@@ -30,6 +30,25 @@ Resolution:
 Verification evidence:
 ```
 
+Date: 2026-07-27
+Area: Optional OpenAI Assistant integration
+Type: Workflow improvement
+Severity: Important
+What happened: v52 needed a provider, payload, credential, retention and failure contract before external AI could be enabled.
+Expected behavior: Local deterministic behavior remains available; secrets and canonical data stay governed and no data leaves
+the computer without an exact preview and explicit action.
+Steps to reproduce: Open Settings Manager and inspect Optional AI Assistant Provider.
+Screenshot / export / report attached: None.
+Status: Partially solved
+Resolution: v52.0 research was owner accepted. v52.1 adds provider/model preferences, Windows Credential Manager ownership,
+local-only diagnostics and a deterministic fake provider. An owner-reported Settings overlap was corrected by assigning the
+provider panel its own Auto-sized Grid row and retaining the settings table in the sole expanding row. Live generation remains
+excluded until v52.2.
+Verification evidence: Debug/Release and documentation/security gates pass. Release smoke passes 383/383; Clean passes
+283/283 plus 100 N/A. Post-correction Release smoke profile `20260727154904-5ef08d0a` passes 383/383 with deterministic
+fake-provider isolation and exact business-state equality. Owner visual/runtime acceptance and Full Data Verification pass on
+2026-07-27; v52.2 retains the live Responses pilot.
+
 ## Status review — 2026-07-25
 
 This review preserves every original description and adds lifecycle metadata.

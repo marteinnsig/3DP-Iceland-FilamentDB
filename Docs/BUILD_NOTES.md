@@ -1,4 +1,36 @@
-# Current Build Notes - v51.4.0
+# Current Build Notes - v52.1.0
+
+## Optional AI Provider Foundation
+
+The accepted v52.0 research contract keeps the deterministic local assistant
+as the default/offline path and allows a separate optional OpenAI provider.
+Settings now owns non-secret provider and explicit model preferences outside
+SQLite. The API credential is write-only from the UI and remains in Windows
+Credential Manager; it is never loaded back into the masked field.
+
+`Test Provider Foundation` checks configuration and credential presence only.
+It performs no network request and sends no application data. Disposable
+automation always resolves a deterministic fake provider, cannot read or
+change owner credentials and records the no-network status as evidence.
+Diagnostics expose only provider, model, readiness and credential-presence
+state, never the secret, Authorization header or outbound payload.
+
+Release smoke profile `20260727153808-6a1788dc` passes 383/383 with exact
+business state. Seedless Clean profile `20260727153913-5a0120d2` passes
+283/283 applicable plus 100 canonical-data N/A and a controlled restart.
+Both prove deterministic fake-provider identity, no network and inaccessible
+owner credentials. Debug/Release app and tester builds, Help/release audits
+and the read-only NuGet vulnerability scan pass.
+
+An owner-reported Settings Grid overlap was corrected before acceptance.
+Post-correction Release smoke `20260727154904-5ef08d0a` passes 383/383 with
+exact business-state equality. Owner layout, provider persistence, local and
+missing-credential states, Diagnostics and Full Data Verification pass on
+2026-07-27.
+
+v52.2 will separately own exact outbound preview, consent and the first
+read-only Responses API call. Schema remains v37. v52.1.0 is canonical and
+owner runtime accepted.
 
 ## Profile Reconciliation
 

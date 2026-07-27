@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v52.1.0 - Optional AI Provider Foundation
+
+The accepted research contract now has a bounded provider, preference,
+credential, diagnostic and deterministic-test foundation. Live outbound
+preview and Responses API generation remain owned by v52.2. Schema stays v37;
+owner layout, persistence, diagnostics and Verification acceptance passes on
+2026-07-27.
+
 # v51.4.0 - Profile Reconciliation
 
 Owner Production, Disposable Verification and seedless Clean Readiness now

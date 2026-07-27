@@ -174,6 +174,7 @@ public partial class MainWindow : Window
         RunStartupPhase("Analytics controls", InitializeAnalyticsControls);
         RunStartupPhase("Saved video ideas", LoadSavedVideoIdeas);
         RunStartupPhase("AI Assistant workspace", InitializeAiAssistantWorkspace);
+        RunStartupPhase("AI provider foundation", InitializeAiProviderFoundation);
         RunStartupPhase("Native settings initialization", InitializeNativeSettingsManager);
         RunStartupPhase("Printer workspace initialization", InitializePrinterManager);
         RunStartupPhase("Native Materials initialization", InitializeNativeMaterialManager);
@@ -13497,6 +13498,31 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         AppendRuntimeProfileDiagnostics(sb);
         sb.AppendLine();
 
+        var aiProviderConfiguration = _workflowPreferencesService.GetAiAssistantProviderConfiguration();
+        var aiProvider = AiAssistantProviderRegistry.Resolve(
+            aiProviderConfiguration.ProviderId,
+            AutomationRuntimeProfile.IsActive);
+        var aiCredentialConfigured = !AutomationRuntimeProfile.IsActive &&
+                                     !string.IsNullOrWhiteSpace(
+                                         WindowsCredentialService.ReadSecret(
+                                             OpenAiAssistantProviderFoundation.CredentialTarget));
+        var aiProviderDiagnostic = aiProvider.Inspect(aiProviderConfiguration, aiCredentialConfigured);
+        sb.AppendLine("Optional AI Assistant Provider");
+        sb.AppendLine("------------------------------");
+        sb.AppendLine("Provider: " + aiProviderDiagnostic.ProviderId);
+        sb.AppendLine("Model preference: " +
+                      (string.IsNullOrWhiteSpace(aiProviderDiagnostic.Model)
+                          ? "N/A"
+                          : aiProviderDiagnostic.Model));
+        sb.AppendLine("Credential configured: " +
+                      (AutomationRuntimeProfile.IsActive
+                          ? "Owner credential inaccessible"
+                          : aiCredentialConfigured ? "Yes (Windows Credential Manager)" : "No"));
+        sb.AppendLine("Foundation ready: " + aiProviderDiagnostic.IsReady);
+        sb.AppendLine("Network used by diagnostic: " + aiProviderDiagnostic.UsedNetwork);
+        sb.AppendLine("Credential value, Authorization header and outbound payload are never included in Diagnostics.");
+        sb.AppendLine();
+
         sb.AppendLine("ECB Exchange-rate Reference (read-only)");
         sb.AppendLine("---------------------------------------");
         sb.AppendLine("Provider: " + EcbExchangeRateReferenceService.ProviderName);
@@ -14356,6 +14382,39 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             aiAssistantScopeReady
                 ? $"{canonicalVisibleRows.Count} canonical visible row(s), read-only collection preview and explicit Create/Update state are exposed"
                 : "Local-only scope, collection preview, Create/Update state or stable AutomationId contract is incomplete"));
+        var aiProviderConfiguration = _workflowPreferencesService.GetAiAssistantProviderConfiguration();
+        var aiProvider = AiAssistantProviderRegistry.Resolve(
+            aiProviderConfiguration.ProviderId,
+            AutomationRuntimeProfile.IsActive);
+        var aiProviderDiagnostic = aiProvider.Inspect(aiProviderConfiguration, credentialConfigured: false);
+        var aiProviderFoundationReady =
+            FindName("AiProviderCombo") is ComboBox aiProviderCombo &&
+            AutomationProperties.GetAutomationId(aiProviderCombo) == "AiProvider" &&
+            FindName("AiProviderModelBox") is TextBox aiProviderModel &&
+            AutomationProperties.GetAutomationId(aiProviderModel) == "AiProviderModel" &&
+            FindName("AiProviderApiKeyBox") is PasswordBox aiProviderApiKey &&
+            AutomationProperties.GetAutomationId(aiProviderApiKey) == "AiProviderApiKey" &&
+            string.IsNullOrEmpty(aiProviderApiKey.Password) &&
+            FindName("AiProviderStatusText") is TextBlock aiProviderStatus &&
+            AutomationProperties.GetAutomationId(aiProviderStatus) == "AiProviderStatus" &&
+            aiProviderStatus.Text.Contains("network used: no", StringComparison.OrdinalIgnoreCase) &&
+            typeof(WindowsCredentialService).GetMethod(
+                nameof(WindowsCredentialService.SaveSecret),
+                new[] { typeof(string), typeof(string), typeof(string) }) is not null &&
+            typeof(WindowsCredentialService).GetMethod(
+                nameof(WindowsCredentialService.DeleteSecret),
+                new[] { typeof(string) }) is not null &&
+            (!AutomationRuntimeProfile.IsActive ||
+             aiProvider is FakeAiAssistantProvider &&
+             !aiProvider.UsesExternalNetwork &&
+             aiProviderDiagnostic.IsReady &&
+             !aiProviderDiagnostic.UsedNetwork);
+        checks.Add(new VerificationCheck("Optional AI provider foundation", aiProviderFoundationReady,
+            aiProviderFoundationReady
+                ? AutomationRuntimeProfile.IsActive
+                    ? "Disposable runtime resolves the deterministic fake provider, uses no network and cannot access owner credentials"
+                    : "Provider/model preferences remain non-secret; the masked credential field is empty and Windows Credential Manager owns the API key"
+                : "Provider controls, fake-provider isolation, masked credential ownership or no-network diagnostic contract failed"));
         var cancelledCollectionProbe = BuildAiMaterialCollectionCancelledOutput(
             new AiMaterialCollection
             {
@@ -17624,7 +17683,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         {
             ["reports.controls-fields"] = "None of these actions perform FTPS",
             ["website.controls-fields"] = "four separate contracts",
-            ["ai.controls-fields"] = "sends no payload to OpenAI",
+            ["ai.controls-fields"] = "send no payload to OpenAI",
             ["youtube.controls-fields"] = "do not open a browser",
             ["menu-runtime.controls-fields"] = "Eight hidden CRUD/recovery buttons"
         };
@@ -21109,6 +21168,158 @@ private void UpdateDashboardInsights()
         public int VisibleMaterialCount { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+    }
+
+    private void InitializeAiProviderFoundation()
+    {
+        var configuration = _workflowPreferencesService.GetAiAssistantProviderConfiguration();
+        SelectAiProvider(configuration.ProviderId);
+        if (FindName("AiProviderModelBox") is TextBox modelBox)
+        {
+            modelBox.Text = configuration.Model;
+        }
+
+        RefreshAiProviderFoundationStatus();
+    }
+
+    private void AiProviderCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (FindName("AiProviderModelBox") is TextBox modelBox &&
+            string.IsNullOrWhiteSpace(modelBox.Text))
+        {
+            modelBox.Text = OpenAiAssistantProviderFoundation.DefaultModel;
+        }
+
+        RefreshAiProviderFoundationStatus();
+    }
+
+    private void SaveAiProviderSettings_Click(object sender, RoutedEventArgs e)
+    {
+        var configuration = GetAiProviderConfigurationFromControls();
+        _workflowPreferencesService.SetAiAssistantProviderConfiguration(configuration);
+        RefreshAiProviderFoundationStatus("Provider preference saved outside SQLite.");
+    }
+
+    private void SaveAiProviderCredential_Click(object sender, RoutedEventArgs e)
+    {
+        if (IsAutomationActionBlocked("AI provider credential write")) return;
+        if (FindName("AiProviderApiKeyBox") is not PasswordBox keyBox) return;
+
+        var secret = keyBox.Password?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(secret))
+        {
+            MessageBox.Show(
+                "Enter the OpenAI API key first. The key is stored only in Windows Credential Manager.",
+                "OpenAI Credential",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        try
+        {
+            WindowsCredentialService.SaveSecret(
+                OpenAiAssistantProviderFoundation.CredentialTarget,
+                "OpenAI API",
+                secret);
+            keyBox.Clear();
+            RefreshAiProviderFoundationStatus("Credential saved or replaced in Windows Credential Manager.");
+        }
+        catch (Exception ex)
+        {
+            keyBox.Clear();
+            MessageBox.Show(
+                $"Windows could not save the OpenAI credential.\n\n{ex.Message}",
+                "OpenAI Credential",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+    }
+
+    private void DeleteAiProviderCredential_Click(object sender, RoutedEventArgs e)
+    {
+        if (IsAutomationActionBlocked("AI provider credential deletion")) return;
+
+        var result = MessageBox.Show(
+            "Delete the OpenAI API credential from Windows Credential Manager?\n\n" +
+            "Provider and model preferences remain unchanged. No SQLite data is changed.",
+            "Delete OpenAI Credential",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question,
+            MessageBoxResult.No);
+        if (result != MessageBoxResult.Yes) return;
+
+        try
+        {
+            var deleted = WindowsCredentialService.DeleteSecret(
+                OpenAiAssistantProviderFoundation.CredentialTarget);
+            RefreshAiProviderFoundationStatus(
+                deleted
+                    ? "Credential deleted from Windows Credential Manager."
+                    : "No OpenAI credential was stored.");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"Windows could not delete the OpenAI credential.\n\n{ex.Message}",
+                "OpenAI Credential",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+    }
+
+    private void TestAiProviderFoundation_Click(object sender, RoutedEventArgs e)
+    {
+        RefreshAiProviderFoundationStatus("Foundation test completed. No network request or data transfer occurred.");
+    }
+
+    private void RefreshAiProviderFoundationStatus(string? prefix = null)
+    {
+        if (FindName("AiProviderStatusText") is not TextBlock statusText) return;
+
+        var configuration = GetAiProviderConfigurationFromControls();
+        var provider = AiAssistantProviderRegistry.Resolve(
+            configuration.ProviderId,
+            AutomationRuntimeProfile.IsActive);
+        var credentialConfigured = !AutomationRuntimeProfile.IsActive &&
+                                   !string.IsNullOrWhiteSpace(
+                                       WindowsCredentialService.ReadSecret(
+                                           OpenAiAssistantProviderFoundation.CredentialTarget));
+        var diagnostic = provider.Inspect(configuration, credentialConfigured);
+
+        statusText.Text =
+            (string.IsNullOrWhiteSpace(prefix) ? string.Empty : prefix.Trim() + " ") +
+            diagnostic.Message +
+            $" Provider: {diagnostic.ProviderId}; model: " +
+            $"{(string.IsNullOrWhiteSpace(diagnostic.Model) ? "N/A" : diagnostic.Model)}; " +
+            $"network used: {(diagnostic.UsedNetwork ? "yes" : "no")}.";
+        statusText.Foreground = diagnostic.IsReady
+            ? new SolidColorBrush(Color.FromRgb(22, 101, 52))
+            : new SolidColorBrush(Color.FromRgb(154, 52, 18));
+        AutomationProperties.SetName(statusText, statusText.Text);
+    }
+
+    private AiAssistantProviderConfiguration GetAiProviderConfigurationFromControls()
+    {
+        var providerId =
+            (FindName("AiProviderCombo") as ComboBox)?.SelectedItem is ComboBoxItem selected
+                ? selected.Tag?.ToString()
+                : LocalAiAssistantProvider.Id;
+        var model = (FindName("AiProviderModelBox") as TextBox)?.Text;
+        return new(
+            AiAssistantProviderRegistry.NormalizeProviderId(providerId),
+            OpenAiAssistantProviderFoundation.NormalizeModel(model));
+    }
+
+    private void SelectAiProvider(string providerId)
+    {
+        if (FindName("AiProviderCombo") is not ComboBox combo) return;
+        var normalized = AiAssistantProviderRegistry.NormalizeProviderId(providerId);
+        combo.SelectedItem = combo.Items
+            .OfType<ComboBoxItem>()
+            .FirstOrDefault(item =>
+                string.Equals(item.Tag?.ToString(), normalized, StringComparison.OrdinalIgnoreCase))
+            ?? combo.Items.OfType<ComboBoxItem>().FirstOrDefault();
     }
 
 

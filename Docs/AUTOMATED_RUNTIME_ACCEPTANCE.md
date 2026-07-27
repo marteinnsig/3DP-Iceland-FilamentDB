@@ -1,5 +1,25 @@
 # Automated Runtime Acceptance
 
+## v52.1.0 - Optional AI Provider Foundation accepted
+
+- Standard disposable scenarios resolve the deterministic fake provider,
+  regardless of owner provider preferences.
+- The tester invokes only `Test Provider Foundation`, which is a local
+  configuration check and never a live OpenAI request.
+- The protected API-key control must expose password semantics while owner
+  credentials remain inaccessible.
+- Evidence requires fake-provider identity and `network used: no`.
+- No scenario saves/deletes credentials or sends a material payload.
+- Full Data Verification adds the provider foundation and isolation contract.
+- Release smoke profile `20260727153808-6a1788dc` passes 383/383 with exact
+  business state and no AI session/collection residue.
+- Clean profile `20260727153913-5a0120d2` passes 283/283 applicable plus
+  100 N/A, zero Materials and a controlled restart.
+- After the Settings Grid correction, Release smoke
+  `20260727154904-5ef08d0a` passes 383/383 with exact business-state equality.
+- Owner visual, provider-state, Diagnostics and Verification acceptance passes
+  on 2026-07-27.
+
 ## v51.4.0 - Profile Reconciliation candidate
 
 Disposable startup and Diagnostics no longer inspect owner update-transaction

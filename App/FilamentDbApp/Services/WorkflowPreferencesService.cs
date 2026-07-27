@@ -89,6 +89,20 @@ public sealed class WorkflowPreferencesService
         _preferences.LastSelectedMaterialId = materialId?.Trim() ?? string.Empty;
     }
 
+    public AiAssistantProviderConfiguration GetAiAssistantProviderConfiguration() =>
+        new(
+            AiAssistantProviderRegistry.NormalizeProviderId(_preferences.AiAssistantProviderId),
+            OpenAiAssistantProviderFoundation.NormalizeModel(_preferences.AiAssistantModel));
+
+    public void SetAiAssistantProviderConfiguration(AiAssistantProviderConfiguration configuration)
+    {
+        _preferences.AiAssistantProviderId =
+            AiAssistantProviderRegistry.NormalizeProviderId(configuration.ProviderId);
+        _preferences.AiAssistantModel =
+            OpenAiAssistantProviderFoundation.NormalizeModel(configuration.Model);
+        Save();
+    }
+
     public IReadOnlyList<WorkflowColumnLayout> GetFastMaterialsGridLayout() =>
         GetFastGridLayout("Materials");
 
@@ -381,6 +395,8 @@ public sealed class WorkflowPreferencesService
         public WindowPreference? Window { get; set; }
         public string WebsiteExportFolder { get; set; } = string.Empty;
         public string LastSelectedMaterialId { get; set; } = string.Empty;
+        public string AiAssistantProviderId { get; set; } = LocalAiAssistantProvider.Id;
+        public string AiAssistantModel { get; set; } = OpenAiAssistantProviderFoundation.DefaultModel;
         public List<WorkflowColumnLayout> FastMaterialsGridLayout { get; set; } = new();
         public Dictionary<string, List<WorkflowColumnLayout>> FastGridLayouts { get; set; } = new(StringComparer.Ordinal);
         public Dictionary<string, List<double>> GridColumnWidths { get; set; } = new(StringComparer.Ordinal);

@@ -1,6 +1,16 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v52.1.0 - Optional AI Provider Foundation
+
+Canonical foundation: the accepted local assistant remains default,
+provider/model preferences stay outside SQLite and Windows Credential Manager
+owns the optional OpenAI secret. The foundation test is local-only and sends
+no data. Disposable automation uses a deterministic fake provider. No live
+OpenAI generation is enabled; schema remains v37. Release smoke passes 383/383;
+Clean passes 283/283 plus 100 N/A. Owner runtime acceptance passes on
+2026-07-27 after correction of the Settings Grid overlap.
+
 ## v51.4.0 - Profile Reconciliation
 
 Disposable startup and Diagnostics no longer inspect owner update history.

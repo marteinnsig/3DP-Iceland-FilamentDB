@@ -649,6 +649,12 @@ internal static class HelpContentCatalog
             Deployment rows govern local output/publishing configuration. Password secrets are never stored in the Settings grid or
             SQLite; FTPS credentials use Windows Credential Manager. Save Settings does not publish, upload, generate Production or
             apply application updates. Those remain separately confirmed actions.
+
+            Optional AI provider foundation
+            Provider selects Local deterministic or the optional OpenAI foundation. Pinned model is a non-secret preference outside
+            SQLite. Save / Replace Credential writes the masked API key only to Windows Credential Manager; Delete Credential is
+            default-No. Test Provider Foundation checks configuration and credential presence locally. It sends no network request or
+            material payload. Live OpenAI generation is not enabled by this foundation.
             """,
             "settings fields", "section", "parameter", "value", "unit", "used by", "reload saved settings",
             "restore built-in defaults", "measurement constants", "currency fallback", "deployment", "credential manager"),
@@ -1258,8 +1264,9 @@ internal static class HelpContentCatalog
             planning summaries. Their counts/status never change Material lifecycle, tests, reports or website publication flags.
 
             Data and network boundary
-            All generated text is advisory. The current implementation is local/deterministic and sends no payload to OpenAI or another
-            external provider. Sessions/collections are separate from canonical engineering SQLite ownership. No Assistant action may
+            All generated text is advisory. Current Generate actions remain local/deterministic and send no payload to OpenAI or another
+            external provider. Settings may hold an optional provider foundation, but its local test sends no data and enables no live
+            generation. Sessions/collections are separate from canonical engineering SQLite ownership. No Assistant action may
             silently edit Materials, measurements, purchasing, Inventory, Usage, saved Quotes, reports or Website Production.
             """,
             "assistant controls", "prompt editor", "generate full brief", "save session", "delete session",
@@ -1578,7 +1585,8 @@ internal static class HelpContentCatalog
             before generating briefs. Sessions and collections are owner-managed local planning records, separate from engineering data.
 
             Generated output is advisory/read-only. Preview actions write nothing; explicit collection/session actions own their local
-            persistence. No external AI service is implied, and Assistant output never replaces measurements or Verification.
+            persistence. The optional Settings provider foundation does not change these local Generate actions or send data.
+            Assistant output never replaces measurements or Verification.
             """, "AI Assistant", "visible scope", "sessions", "collections", "output"),
         new(
             "ai.visible-scope", "AI Assistant", "AI visible scope reference",

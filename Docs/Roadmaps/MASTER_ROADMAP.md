@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v51.4.0 — Profile Reconciliation**
+Current canonical release: **v52.1.0 — Optional AI Provider Foundation**
 
-Last runtime-accepted baseline: **v51.4.0 — Profile Reconciliation**
+Last runtime-accepted baseline: **v52.1.0 — Optional AI Provider Foundation**
 
-Current application candidate: **None; v52.0 research is current**
+Current application release: **v52.1.0 — Optional AI Provider Foundation**
 
-Current roadmap increment: **v52.0 — Optional OpenAI Assistant Integration Contract**
+Current roadmap increment: **v52.2 — Read-only OpenAI Responses Pilot**
 
-Current acceptance note: v51.4.0 and parent v51 are complete, canonical and owner runtime accepted.
+Current acceptance note: v52.1.0 is complete, canonical and owner runtime accepted.
 
-Next note: v52.0 is research-first; define provider, data, credential, network and failure contracts before implementation.
+Next note: v52.2 owns payload preview, consent and the first bounded read-only Responses API call.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -35,8 +35,8 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v48 | Pricing and Usage Analytics | ★★★★☆ | Complete — canonical v48.2.0 runtime accepted |
 | v49 | Experimental Workflow Extension | ★★★★☆ | Complete — canonical v49.0.0 runtime accepted |
 | v50 | Comprehensive User Help | ★★★★★ | Complete — canonical v50.4.4 runtime accepted |
-| v51 | Governed Runtime Profiles | ★★★☆☆ | Current — research only |
-| v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Planned |
+| v51 | Governed Runtime Profiles | ★★★☆☆ | Complete — canonical v51.4.0 runtime accepted |
+| v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Current — v52.2 |
 
 | v53 | Governed Landed-cost Currency | ★★★★☆ | Planned |
 
@@ -2216,7 +2216,7 @@ to unstarted authoritative planning slots.
   - Release Clean passes 282/282 plus 100 N/A; Smoke, Reports, CRUD, Recovery and Updater pass 382/382 with exact state.
   - Owner confirms Owner Production, Diagnostics, Verification 382/382 and Clean runtime complete without visible errors.
 - **v52.0 — Optional OpenAI Assistant Integration Contract**
-  - State: Current research-first increment; implementation requires an accepted provider/data/security contract.
+  - State: Research complete; owner accepted the provider/data/security contract on 2026-07-27.
   - Keep the accepted local deterministic assistant available as the offline and failure-safe path.
   - Add an explicit optional OpenAI provider behind a replaceable provider interface; do not couple canonical data to one API.
   - Store provider, pinned model and non-secret preferences separately from the API credential.
@@ -2230,11 +2230,17 @@ to unstarted authoritative planning slots.
   - Standard automation uses a deterministic fake provider and no network or real credential.
   - Live API acceptance is manual, opt-in and limited to an approved synthetic or disposable payload.
   - Completion condition: owner accepts security and payload preview, local fallback, structured evidence and Verification PASS.
+  - Decision: implementation may proceed through the Responses API only, stateless with `store: false` and no tools/files.
+  - Retention finding: `store: false` disables Responses application-state storage but does not itself grant Zero Data Retention.
+  - Default abuse-monitoring retention may be up to 30 days; payload preview and consent must state that boundary honestly.
+  - Initial outbound data is an explicit material allowlist; purchasing, Inventory, Usage, Quotes, paths and secrets are excluded.
 - **v52.1 — Credential and Provider Foundation**
+  - State: Complete, canonical and owner runtime accepted in v52.1.0.
   - Add masked Save/Replace/Delete/Test controls in Settings while Windows Credential Manager remains the secret owner.
   - Add the provider abstraction, pinned configuration, connection diagnostics and safe local fallback.
   - Prove that credentials cannot enter SQLite, import/export, backup/recovery, diagnostics or retained tester evidence.
 - **v52.2 — Read-only OpenAI Responses Pilot**
+  - State: Current authoritative increment; acquire the owner API key only when the bounded live test is ready.
   - Add explicit `Generate with OpenAI`, exact outbound preview, cancellation and bounded error handling.
   - Use structured output for summary, findings, evidence MaterialIDs, uncertainties and suggested next actions.
   - Reject unknown evidence IDs and retain all generated content as advisory until the user explicitly saves an assistant session.

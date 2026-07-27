@@ -97,7 +97,10 @@ function Get-TopSurface([string]$SurfacePath) {
     return $SurfacePath
 }
 
-function Get-OwnerIncrement([string]$SurfacePath) {
+function Get-OwnerIncrement([string]$SurfacePath, [string]$Identity) {
+    if ($Identity -match "AiProvider") {
+        return "v52.1"
+    }
     $topSurface = Get-TopSurface $SurfacePath
     if (@(
             "Materials", "Manufacturers", "Purchase Orders", "Inventory",
@@ -231,7 +234,7 @@ function New-InventoryRows {
             } else {
                 "$baseKey-$($keyCounts[$baseKey])"
             }
-            $ownerIncrement = Get-OwnerIncrement $surface
+            $ownerIncrement = Get-OwnerIncrement $surface $identity
             $rows.Add([pscustomobject]@{
                 Key = $key
                 Surface = $surface
