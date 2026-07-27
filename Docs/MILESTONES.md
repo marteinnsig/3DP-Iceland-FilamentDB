@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v50.4.1 - Data and Configuration Control Help
+
+The exhaustive Help audit now has accepted control/field coverage for the nine
+data, purchasing, Inventory, cost and configuration surfaces. Owner runtime
+review and Full Data Verification 375/375 pass with exact state equality.
+Schema remains v37; Comprehensive User Help continues at v50.4.2.
+
 # v50.3.0 - Safety and Recovery Help
 
 Troubleshooting, Recovery, Verification, Diagnostics and guarded

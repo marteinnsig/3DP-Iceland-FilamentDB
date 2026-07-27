@@ -2,6 +2,20 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v50.4.1 - Data and Configuration Control Help
+
+The v50.4.0 ledger drove nine new searchable control/field references across
+the complete data, purchasing, Inventory, cost and configuration scope.
+Content names exact controls and columns and records units, choices,
+editability, validation, persistence, destructive actions and historical-data
+rules without changing schema or business behavior.
+
+Verification now requires all nine substantive topics and representative
+safety markers. Smoke proves unique Materials, Purchase Orders and Settings
+search routing. Profile `20260727125607-36733e81` passes 375/375 with exact
+logical and business-state equality. Owner runtime/readability acceptance
+passes on 2026-07-27; v50.4.1 is canonical and v50.4.2 is current.
+
 ## v50.2.2 - Testing and Analysis Reference
 
 The accepted increment implements the 22 testing/analysis destinations recorded

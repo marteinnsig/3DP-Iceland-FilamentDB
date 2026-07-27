@@ -120,15 +120,15 @@ function Get-OwnerIncrement([string]$SurfacePath) {
 function Get-HelpDestination([string]$SurfacePath) {
     $topSurface = Get-TopSurface $SurfacePath
     $destinations = @{
-        "Materials" = "materials.overview"
-        "Manufacturers" = "manufacturers.overview"
-        "Purchase Orders" = "purchase-orders.overview"
-        "Inventory" = "inventory.overview"
-        "Usage" = "usage.overview"
-        "Printers" = "printers.overview"
-        "Print Job Quotes" = "print-job-quotes.overview"
-        "Base Materials" = "base-materials.overview"
-        "Settings Manager" = "settings.overview"
+        "Materials" = "materials.controls-fields"
+        "Manufacturers" = "manufacturers.controls-fields"
+        "Purchase Orders" = "purchase-orders.controls-fields"
+        "Inventory" = "inventory.controls-fields"
+        "Usage" = "usage.controls-fields"
+        "Printers" = "printers.controls-fields"
+        "Print Job Quotes" = "print-job-quotes.controls-fields"
+        "Base Materials" = "base-materials.controls-fields"
+        "Settings Manager" = "settings.controls-fields"
         "Experimental Testing" = "experimental.series"
         "Material Detail" = "material-detail.general"
         "Tensile Measurements" = "measurements.tensile"
@@ -213,6 +213,10 @@ function New-InventoryRows {
         "DataGridComboBoxColumn",
         "DataGridTemplateColumn"
     )
+    $coveredOwnerIncrements = @(
+        $registry.CoveredOwnerIncrements |
+            ForEach-Object { [string]$_ }
+    )
     foreach ($typeName in $inventoryTypes) {
         foreach ($element in @($xaml.SelectNodes("//w:$typeName", $namespaces))) {
             $surface = Get-SurfacePath $element
@@ -227,15 +231,20 @@ function New-InventoryRows {
             } else {
                 "$baseKey-$($keyCounts[$baseKey])"
             }
+            $ownerIncrement = Get-OwnerIncrement $surface
             $rows.Add([pscustomobject]@{
                 Key = $key
                 Surface = $surface
                 Type = $typeName
                 Identity = $identity
                 Classification = Get-ControlClassification $typeName $element
-                OwnerIncrement = Get-OwnerIncrement $surface
+                OwnerIncrement = $ownerIncrement
                 HelpDestination = Get-HelpDestination $surface
-                Status = "planned"
+                Status = if ($coveredOwnerIncrements -contains $ownerIncrement) {
+                    "covered"
+                } else {
+                    "planned"
+                }
             })
         }
     }

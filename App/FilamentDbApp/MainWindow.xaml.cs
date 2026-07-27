@@ -17267,6 +17267,50 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             v503SafetyHelpReady
                 ? "18 substantive safety/recovery Help destinations preserve read-only versus mutating, default-No, no-auto-SQLite-restore, application/Website publishing and secret-safe evidence boundaries."
                 : $"v50.3 Help failed: destinations {v503HelpCoverageReady}, safety markers {v503SafetyMarkersReady}, runtime entry points {v503RuntimeEntryPointsReady}."));
+        var v5041RequiredHelpIds = new[]
+        {
+            "materials.controls-fields",
+            "manufacturers.controls-fields",
+            "purchase-orders.controls-fields",
+            "inventory.controls-fields",
+            "usage.controls-fields",
+            "printers.controls-fields",
+            "print-job-quotes.controls-fields",
+            "base-materials.controls-fields",
+            "settings.controls-fields"
+        };
+        var v5041RequiredMarkers = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["materials.controls-fields"] = "Current filtered rows",
+            ["manufacturers.controls-fields"] = "Founded expects a sensible year",
+            ["purchase-orders.controls-fields"] = "never automatically repriced",
+            ["inventory.controls-fields"] = "same-MaterialID spool",
+            ["usage.controls-fields"] = "Seconds in the ledger",
+            ["printers.controls-fields"] = "Existing saved quotes retain",
+            ["print-job-quotes.controls-fields"] = "there is no archive",
+            ["base-materials.controls-fields"] = "minimum must not exceed",
+            ["settings.controls-fields"] = "Windows Credential Manager"
+        };
+        var v5041HelpCoverageReady =
+            v5041RequiredHelpIds.Length == 9 &&
+            v5041RequiredHelpIds.Distinct(StringComparer.Ordinal).Count() == 9 &&
+            v5041RequiredHelpIds.All(requiredId =>
+            {
+                var section = helpSections.SingleOrDefault(item => item.Id == requiredId);
+                return section is not null &&
+                       section.Body.Length >= 900 &&
+                       section.Body.Replace("\r\n", "\n", StringComparison.Ordinal)
+                           .Contains("\n\n", StringComparison.Ordinal);
+            }) &&
+            v5041RequiredMarkers.All(marker =>
+                helpSections.Single(section => section.Id == marker.Key).Body.Contains(
+                    marker.Value,
+                    StringComparison.Ordinal));
+        checks.Add(new VerificationCheck("v50.4.1 data and configuration control/field Help contract",
+            v5041HelpCoverageReady,
+            v5041HelpCoverageReady
+                ? "Nine substantive control/field destinations cover Materials, Manufacturers, Purchase Orders, Inventory, Usage, Printers, Quotes, Base Materials and Settings with units, validation, save timing and historical boundaries."
+                : "A v50.4.1 control/field Help destination, depth requirement or representative safety marker is missing."));
         var zeroDataProfileContractReady =
             IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
             IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&

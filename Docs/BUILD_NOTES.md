@@ -1,4 +1,21 @@
-# Current Build Notes - v50.3.0
+# Current Build Notes - v50.4.1
+
+## Data and Configuration Control Help
+
+Nine new detailed Help topics cover every registered control/field group in
+Materials, Manufacturers, Purchase Orders, Inventory, Usage, Printers, Print
+Job Quotes, Base Materials and Settings. They distinguish editable inputs from
+read-only/calculated output and explain units, selectors, validation, save
+timing, destructive actions and historical-data boundaries.
+
+The Help registry routes 222 XAML candidates plus 81 custom-grid columns and
+the Bulk Update runtime dialog to these leaf topics. Verification and smoke
+enforce topic depth, safety markers and representative unique search routing.
+
+Debug/Release app and tester builds pass with zero warnings/errors. Disposable
+profile `20260727125607-36733e81` passes Full Data Verification 375/375 with
+exact logical/business-state equality. Owner runtime/readability acceptance
+passes on 2026-07-27; schema remains v37 and v50.4.2 is current.
 
 ## Safety and Recovery Help
 

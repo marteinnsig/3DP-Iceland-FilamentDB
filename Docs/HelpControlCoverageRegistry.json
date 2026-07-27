@@ -18,6 +18,9 @@
     "TopLevelTab": 22,
     "NestedTab": 16
   },
+  "CoveredOwnerIncrements": [
+    "v50.4.1"
+  ],
   "CustomColumnRegistries": [
     {
       "Key": "materials.fast-grid",
@@ -25,8 +28,8 @@
       "KeyContract": "PrototypeColumnKey",
       "Columns": 52,
       "OwnerIncrement": "v50.4.1",
-      "HelpDestination": "materials.overview",
-      "Status": "planned"
+      "HelpDestination": "materials.controls-fields",
+      "Status": "covered"
     },
     {
       "Key": "measurements.fast-tensile",
@@ -61,8 +64,8 @@
       "KeyContract": "PrototypeColumnKey",
       "Columns": 6,
       "OwnerIncrement": "v50.4.1",
-      "HelpDestination": "settings.overview",
-      "Status": "planned"
+      "HelpDestination": "settings.controls-fields",
+      "Status": "covered"
     },
     {
       "Key": "base-materials.fast-grid",
@@ -70,8 +73,8 @@
       "KeyContract": "PrototypeColumnKey",
       "Columns": 23,
       "OwnerIncrement": "v50.4.1",
-      "HelpDestination": "base-materials.overview",
-      "Status": "planned"
+      "HelpDestination": "base-materials.controls-fields",
+      "Status": "covered"
     }
   ],
   "RuntimeSurfaces": [
@@ -79,8 +82,8 @@
       "Key": "runtime.bulk-update",
       "EntryPoint": "WorkflowBulkUpdateDialog",
       "OwnerIncrement": "v50.4.1",
-      "HelpDestination": "materials.overview",
-      "Status": "planned",
+      "HelpDestination": "materials.controls-fields",
+      "Status": "covered",
       "Controls": [
         "scope.remaining-visible",
         "scope.current-filtered",
@@ -170,7 +173,7 @@
       "EntryPoint": "ShowMaterialsRenderingPrototype_Click",
       "OwnerIncrement": "v50.4.1",
       "HelpDestination": "menu.tools-validation",
-      "Status": "planned",
+      "Status": "covered",
       "Controls": [
         "grid.snapshot-materials",
         "action.apply",

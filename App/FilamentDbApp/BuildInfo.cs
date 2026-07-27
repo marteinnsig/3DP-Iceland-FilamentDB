@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "SAFETY-RECOVERY-HELP";
-    public const string ReleaseTitle = "Safety and Recovery Help";
+    public const string ReleaseCode = "CONTROL-FIELD-HELP";
+    public const string ReleaseTitle = "Data and Configuration Control Help";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 37;
 

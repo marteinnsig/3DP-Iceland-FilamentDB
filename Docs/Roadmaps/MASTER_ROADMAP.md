@@ -2,13 +2,13 @@
 
 Current canonical release: **v50.3.0 — Safety and Recovery Help**
 
-Last runtime-accepted baseline: **v50.3.0 — Safety and Recovery Help**
+Last runtime-accepted baseline: **v50.4.1 — Data and Configuration Control Help**
 
-Current application candidate: **None; v50.4 is planned but not implemented**
+Current application candidate: **None; v50.4.2 is current**
 
-Current roadmap increment: **v50.4.1 — Data, Purchasing, Inventory, Cost and Configuration Control Help**
+Current roadmap increment: **v50.4.2 — Measurements, Experimental Testing and Analysis Control Help**
 
-Current acceptance note: v50.3.0 is runtime/safety accepted with Verification 374/374; parent v50 remains active.
+Current acceptance note: v50.4.1 is runtime/readability accepted with Verification 375/375; parent v50 remains active.
 
 Next note: v50.4 must prove zero unexplained supported controls/editable fields before parent v50 may close.
 
@@ -2137,10 +2137,13 @@ to unstarted authoritative planning slots.
   - Define machine-checkable registry and drift rules before adding exhaustive Help content.
   - Completion condition: the ledger covers every discovered candidate and every gap has one bounded v50.4 delivery owner.
 - **v50.4.1 — Data, Purchasing, Inventory, Cost and Configuration Control Help**
-  - State: Current authoritative subincrement; implementation not started.
+  - State: Complete, canonical and owner runtime/readability accepted on 2026-07-27.
   - Close ledger gaps for Materials, Manufacturers, Purchase Orders, Inventory, Usage, Printers, Quotes, Base Materials and Settings.
   - Explain every editable field/column, selector, filter and action including units, save timing, validation and history boundaries.
+  - Nine searchable control/field topics cover 222 XAML candidates, 81 custom columns and the Bulk Update runtime dialog.
+  - Verification passes 375/375 in disposable profile `20260727125607-36733e81` with exact logical/business-state equality.
 - **v50.4.2 — Measurements, Experimental Testing and Analysis Control Help**
+  - State: Current authoritative subincrement; implementation not started.
   - Close ledger gaps for native/experimental editors, Material Detail, Rankings, Category Rankings, Awards and Insights.
   - Cover owner-drawn cell editors, raw versus calculated columns, scopes, baselines, status fields and read-only interpretations.
 - **v50.4.3 — Reports, Website, Assistant, Creator and Runtime-window Control Help**

@@ -87,11 +87,11 @@ xaml.awards-winners.datagridtextcolumn.type	Awards & Winners	DataGridTextColumn	
 xaml.awards-winners.datagridtextcolumn.use-case	Awards & Winners	DataGridTextColumn	Use Case	editable-column-candidate	v50.4.2	analysis.awards	planned
 xaml.awards-winners.datagridtextcolumn.why	Awards & Winners	DataGridTextColumn	Why	editable-column-candidate	v50.4.2	analysis.awards	planned
 xaml.awards-winners.datagridtextcolumn.winner	Awards & Winners	DataGridTextColumn	Winner	editable-column-candidate	v50.4.2	analysis.awards	planned
-xaml.base-materials.button.addbasematerial	Base Materials	Button	AddBaseMaterial	action	v50.4.1	base-materials.overview	planned
-xaml.base-materials.button.bindexactbasematerialnames	Base Materials	Button	BindExactBaseMaterialNames	action	v50.4.1	base-materials.overview	planned
-xaml.base-materials.button.deletebasematerial	Base Materials	Button	DeleteBaseMaterial	action	v50.4.1	base-materials.overview	planned
-xaml.base-materials.button.duplicatebasematerial	Base Materials	Button	DuplicateBaseMaterial	action	v50.4.1	base-materials.overview	planned
-xaml.base-materials.button.resetbasematerialcolumnsbutton	Base Materials	Button	ResetBaseMaterialColumnsButton	action	v50.4.1	base-materials.overview	planned
+xaml.base-materials.button.addbasematerial	Base Materials	Button	AddBaseMaterial	action	v50.4.1	base-materials.controls-fields	covered
+xaml.base-materials.button.bindexactbasematerialnames	Base Materials	Button	BindExactBaseMaterialNames	action	v50.4.1	base-materials.controls-fields	covered
+xaml.base-materials.button.deletebasematerial	Base Materials	Button	DeleteBaseMaterial	action	v50.4.1	base-materials.controls-fields	covered
+xaml.base-materials.button.duplicatebasematerial	Base Materials	Button	DuplicateBaseMaterial	action	v50.4.1	base-materials.controls-fields	covered
+xaml.base-materials.button.resetbasematerialcolumnsbutton	Base Materials	Button	ResetBaseMaterialColumnsButton	action	v50.4.1	base-materials.controls-fields	covered
 xaml.category-rankings.button.exportcategoryrankingscsv-click	Category Rankings	Button	ExportCategoryRankingsCsv_Click	action	v50.4.2	analysis.category-rankings	planned
 xaml.category-rankings.button.refreshcategoryrankings-click	Category Rankings	Button	RefreshCategoryRankings_Click	action	v50.4.2	analysis.category-rankings	planned
 xaml.category-rankings.button.resetcategoryrankingfilters-click	Category Rankings	Button	ResetCategoryRankingFilters_Click	action	v50.4.2	analysis.category-rankings	planned
@@ -206,66 +206,66 @@ xaml.experimental-testing-tensile.datagridtextcolumn.notes	Experimental Testing 
 xaml.experimental-testing-tensile.datagridtextcolumn.orientation	Experimental Testing > Tensile	DataGridTextColumn	Orientation	read-only-column	v50.4.2	experimental.series	planned
 xaml.experimental-testing-tensile.datagridtextcolumn.std-dev	Experimental Testing > Tensile	DataGridTextColumn	Std Dev	read-only-column	v50.4.2	experimental.series	planned
 xaml.impact-measurements.button.resetfastimpactcolumns-click	Impact Measurements	Button	ResetFastImpactColumns_Click	action	v50.4.2	measurements.impact	planned
-xaml.inventory.button.addinventoryspool-click	Inventory	Button	AddInventorySpool_Click	action	v50.4.1	inventory.overview	planned
-xaml.inventory.button.clearinventoryfilters-click	Inventory	Button	ClearInventoryFilters_Click	action	v50.4.1	inventory.overview	planned
-xaml.inventory.button.deleteinventoryspool-click	Inventory	Button	DeleteInventorySpool_Click	action	v50.4.1	inventory.overview	planned
-xaml.inventory.button.duplicateinventoryspool-click	Inventory	Button	DuplicateInventorySpool_Click	action	v50.4.1	inventory.overview	planned
-xaml.inventory.button.refreshinventorysummary-click	Inventory	Button	RefreshInventorySummary_Click	action	v50.4.1	inventory.overview	planned
-xaml.inventory.checkbox.inventorylowstockcheckbox	Inventory	CheckBox	InventoryLowStockCheckBox	choice	v50.4.1	inventory.overview	planned
-xaml.inventory.checkbox.inventoryonlyopenedcheckbox	Inventory	CheckBox	InventoryOnlyOpenedCheckBox	choice	v50.4.1	inventory.overview	planned
-xaml.inventory.checkbox.inventoryshowarchivedcheckbox	Inventory	CheckBox	InventoryShowArchivedCheckBox	choice	v50.4.1	inventory.overview	planned
-xaml.inventory.checkbox.inventoryshowemptycheckbox	Inventory	CheckBox	InventoryShowEmptyCheckBox	choice	v50.4.1	inventory.overview	planned
-xaml.inventory.datagrid.inventoryspoolgrid	Inventory	DataGrid	InventorySpoolGrid	grid-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagrid.inventorysummarygrid	Inventory	DataGrid	InventorySummaryGrid	read-only-grid	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridcomboboxcolumn.material	Inventory	DataGridComboBoxColumn	Material	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridcomboboxcolumn.status	Inventory	DataGridComboBoxColumn	Status	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.batch	Inventory	DataGridTextColumn	Batch	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.cost-kg	Inventory	DataGridTextColumn	Cost/kg	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.currency	Inventory	DataGridTextColumn	Currency	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.estimated-value	Inventory	DataGridTextColumn	Estimated Value	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.material	Inventory	DataGridTextColumn	Material	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.notes	Inventory	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.order	Inventory	DataGridTextColumn	Order	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.price-spool	Inventory	DataGridTextColumn	Price / spool	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.purchase-date	Inventory	DataGridTextColumn	Purchase date	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.qty	Inventory	DataGridTextColumn	Qty	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.qty-2	Inventory	DataGridTextColumn	Qty	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.remaining	Inventory	DataGridTextColumn	Remaining	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.remaining-2	Inventory	DataGridTextColumn	Remaining %	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.remaining-g-spool	Inventory	DataGridTextColumn	Remaining g / spool	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.spool-g	Inventory	DataGridTextColumn	Spool g	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.spool-id	Inventory	DataGridTextColumn	Spool ID	read-only-column	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.spool-id-2	Inventory	DataGridTextColumn	Spool ID	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.status	Inventory	DataGridTextColumn	Status	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.storage	Inventory	DataGridTextColumn	Storage	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.supplier	Inventory	DataGridTextColumn	Supplier	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.datagridtextcolumn.validation-review	Inventory	DataGridTextColumn	Validation / Review	editable-column-candidate	v50.4.1	inventory.overview	planned
-xaml.inventory.textbox.inventorysearchtextbox	Inventory	TextBox	InventorySearchTextBox	input-candidate	v50.4.1	inventory.overview	planned
-xaml.manufacturers.button.addmanufacturer-click	Manufacturers	Button	AddManufacturer_Click	action	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.button.bindexactmaterialmanufacturernames	Manufacturers	Button	BindExactMaterialManufacturerNames	action	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.button.deletemanufacturer-click	Manufacturers	Button	DeleteManufacturer_Click	action	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.button.duplicatemanufacturer-click	Manufacturers	Button	DuplicateManufacturer_Click	action	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.button.togglemanufactureractive-click	Manufacturers	Button	ToggleManufacturerActive_Click	action	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.checkbox.showarchivedmanufacturerscheckbox	Manufacturers	CheckBox	ShowArchivedManufacturersCheckBox	choice	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagrid.manufacturersgrid	Manufacturers	DataGrid	ManufacturersGrid	grid-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridcheckboxcolumn.active	Manufacturers	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.country	Manufacturers	DataGridTextColumn	Country	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.description	Manufacturers	DataGridTextColumn	Description	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.display-name	Manufacturers	DataGridTextColumn	Display Name	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.engineering-focus	Manufacturers	DataGridTextColumn	Engineering Focus	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.founded	Manufacturers	DataGridTextColumn	Founded	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.headquarters	Manufacturers	DataGridTextColumn	Headquarters	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.logo-url	Manufacturers	DataGridTextColumn	Logo URL	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.material-categories	Manufacturers	DataGridTextColumn	Material Categories	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.name	Manufacturers	DataGridTextColumn	Name	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.notes	Manufacturers	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.sort	Manufacturers	DataGridTextColumn	Sort	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.strengths	Manufacturers	DataGridTextColumn	Strengths	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.sustainability	Manufacturers	DataGridTextColumn	Sustainability	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.typical-applications	Manufacturers	DataGridTextColumn	Typical Applications	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.weaknesses	Manufacturers	DataGridTextColumn	Weaknesses	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.datagridtextcolumn.website	Manufacturers	DataGridTextColumn	Website	editable-column-candidate	v50.4.1	manufacturers.overview	planned
-xaml.manufacturers.textbox.manufacturersearchbox	Manufacturers	TextBox	ManufacturerSearchBox	input-candidate	v50.4.1	manufacturers.overview	planned
+xaml.inventory.button.addinventoryspool-click	Inventory	Button	AddInventorySpool_Click	action	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.button.clearinventoryfilters-click	Inventory	Button	ClearInventoryFilters_Click	action	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.button.deleteinventoryspool-click	Inventory	Button	DeleteInventorySpool_Click	action	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.button.duplicateinventoryspool-click	Inventory	Button	DuplicateInventorySpool_Click	action	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.button.refreshinventorysummary-click	Inventory	Button	RefreshInventorySummary_Click	action	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.checkbox.inventorylowstockcheckbox	Inventory	CheckBox	InventoryLowStockCheckBox	choice	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.checkbox.inventoryonlyopenedcheckbox	Inventory	CheckBox	InventoryOnlyOpenedCheckBox	choice	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.checkbox.inventoryshowarchivedcheckbox	Inventory	CheckBox	InventoryShowArchivedCheckBox	choice	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.checkbox.inventoryshowemptycheckbox	Inventory	CheckBox	InventoryShowEmptyCheckBox	choice	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagrid.inventoryspoolgrid	Inventory	DataGrid	InventorySpoolGrid	grid-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagrid.inventorysummarygrid	Inventory	DataGrid	InventorySummaryGrid	read-only-grid	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridcomboboxcolumn.material	Inventory	DataGridComboBoxColumn	Material	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridcomboboxcolumn.status	Inventory	DataGridComboBoxColumn	Status	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.batch	Inventory	DataGridTextColumn	Batch	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.cost-kg	Inventory	DataGridTextColumn	Cost/kg	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.currency	Inventory	DataGridTextColumn	Currency	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.estimated-value	Inventory	DataGridTextColumn	Estimated Value	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.material	Inventory	DataGridTextColumn	Material	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.notes	Inventory	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.order	Inventory	DataGridTextColumn	Order	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.price-spool	Inventory	DataGridTextColumn	Price / spool	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.purchase-date	Inventory	DataGridTextColumn	Purchase date	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.qty	Inventory	DataGridTextColumn	Qty	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.qty-2	Inventory	DataGridTextColumn	Qty	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.remaining	Inventory	DataGridTextColumn	Remaining	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.remaining-2	Inventory	DataGridTextColumn	Remaining %	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.remaining-g-spool	Inventory	DataGridTextColumn	Remaining g / spool	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.spool-g	Inventory	DataGridTextColumn	Spool g	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.spool-id	Inventory	DataGridTextColumn	Spool ID	read-only-column	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.spool-id-2	Inventory	DataGridTextColumn	Spool ID	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.status	Inventory	DataGridTextColumn	Status	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.storage	Inventory	DataGridTextColumn	Storage	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.supplier	Inventory	DataGridTextColumn	Supplier	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.datagridtextcolumn.validation-review	Inventory	DataGridTextColumn	Validation / Review	editable-column-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.inventory.textbox.inventorysearchtextbox	Inventory	TextBox	InventorySearchTextBox	input-candidate	v50.4.1	inventory.controls-fields	covered
+xaml.manufacturers.button.addmanufacturer-click	Manufacturers	Button	AddManufacturer_Click	action	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.button.bindexactmaterialmanufacturernames	Manufacturers	Button	BindExactMaterialManufacturerNames	action	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.button.deletemanufacturer-click	Manufacturers	Button	DeleteManufacturer_Click	action	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.button.duplicatemanufacturer-click	Manufacturers	Button	DuplicateManufacturer_Click	action	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.button.togglemanufactureractive-click	Manufacturers	Button	ToggleManufacturerActive_Click	action	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.checkbox.showarchivedmanufacturerscheckbox	Manufacturers	CheckBox	ShowArchivedManufacturersCheckBox	choice	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagrid.manufacturersgrid	Manufacturers	DataGrid	ManufacturersGrid	grid-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridcheckboxcolumn.active	Manufacturers	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.country	Manufacturers	DataGridTextColumn	Country	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.description	Manufacturers	DataGridTextColumn	Description	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.display-name	Manufacturers	DataGridTextColumn	Display Name	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.engineering-focus	Manufacturers	DataGridTextColumn	Engineering Focus	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.founded	Manufacturers	DataGridTextColumn	Founded	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.headquarters	Manufacturers	DataGridTextColumn	Headquarters	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.logo-url	Manufacturers	DataGridTextColumn	Logo URL	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.material-categories	Manufacturers	DataGridTextColumn	Material Categories	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.name	Manufacturers	DataGridTextColumn	Name	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.notes	Manufacturers	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.sort	Manufacturers	DataGridTextColumn	Sort	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.strengths	Manufacturers	DataGridTextColumn	Strengths	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.sustainability	Manufacturers	DataGridTextColumn	Sustainability	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.typical-applications	Manufacturers	DataGridTextColumn	Typical Applications	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.weaknesses	Manufacturers	DataGridTextColumn	Weaknesses	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.datagridtextcolumn.website	Manufacturers	DataGridTextColumn	Website	editable-column-candidate	v50.4.1	manufacturers.controls-fields	covered
+xaml.manufacturers.textbox.manufacturersearchbox	Manufacturers	TextBox	ManufacturerSearchBox	input-candidate	v50.4.1	manufacturers.controls-fields	covered
 xaml.material-detail-analytics.button.clearanalyticsselection-click	Material Detail > Analytics	Button	ClearAnalyticsSelection_Click	action	v50.4.2	material-detail.general	planned
 xaml.material-detail-analytics.combobox.analyticschartmode	Material Detail > Analytics	ComboBox	AnalyticsChartMode	choice	v50.4.2	material-detail.general	planned
 xaml.material-detail-analytics.datagrid.analyticsresultslist	Material Detail > Analytics	DataGrid	AnalyticsResultsList	read-only-grid	v50.4.2	material-detail.general	planned
@@ -376,127 +376,127 @@ xaml.material-detail-video-planner.datagridtextcolumn.talking-points-3	Material 
 xaml.material-detail-video-planner.datagridtextcolumn.target-week	Material Detail > Video Planner	DataGridTextColumn	Target week	editable-column-candidate	v50.4.2	material-detail.general	planned
 xaml.material-detail-video-planner.datagridtextcolumn.type	Material Detail > Video Planner	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	material-detail.general	planned
 xaml.material-detail-video-planner.datagridtextcolumn.winner	Material Detail > Video Planner	DataGridTextColumn	Winner	editable-column-candidate	v50.4.2	material-detail.general	planned
-xaml.materials.button.addnativematerial-click	Materials	Button	AddNativeMaterial_Click	action	v50.4.1	materials.overview	planned
-xaml.materials.button.archivenativematerial-click	Materials	Button	ArchiveNativeMaterial_Click	action	v50.4.1	materials.overview	planned
-xaml.materials.button.clearnativematerialfilters-click	Materials	Button	ClearNativeMaterialFilters_Click	action	v50.4.1	materials.overview	planned
-xaml.materials.button.deletenativematerial-click	Materials	Button	DeleteNativeMaterial_Click	action	v50.4.1	materials.overview	planned
-xaml.materials.button.duplicatenativematerial-click	Materials	Button	DuplicateNativeMaterial_Click	action	v50.4.1	materials.overview	planned
-xaml.materials.button.resetfastmaterialscolumns-click	Materials	Button	ResetFastMaterialsColumns_Click	action	v50.4.1	materials.overview	planned
-xaml.materials.button.savenativematerialsbutton	Materials	Button	SaveNativeMaterialsButton	action	v50.4.1	materials.overview	planned
-xaml.materials.button.unarchivenativematerial-click	Materials	Button	UnarchiveNativeMaterial_Click	action	v50.4.1	materials.overview	planned
-xaml.materials.combobox.nativematerialbasematerialfilter	Materials	ComboBox	NativeMaterialBaseMaterialFilter	choice	v50.4.1	materials.overview	planned
-xaml.materials.combobox.nativematerialcategoryfilter	Materials	ComboBox	NativeMaterialCategoryFilter	choice	v50.4.1	materials.overview	planned
-xaml.materials.combobox.nativematerialmanufacturerfilter	Materials	ComboBox	NativeMaterialManufacturerFilter	choice	v50.4.1	materials.overview	planned
-xaml.materials.combobox.nativematerialreinforcementfilter	Materials	ComboBox	NativeMaterialReinforcementFilter	choice	v50.4.1	materials.overview	planned
-xaml.materials.combobox.nativematerialtestedfilter	Materials	ComboBox	NativeMaterialTestedFilter	choice	v50.4.1	materials.overview	planned
-xaml.materials.textbox.nativematerialsearchbox	Materials	TextBox	NativeMaterialSearchBox	input-candidate	v50.4.1	materials.overview	planned
-xaml.printers.button.addprinterbutton	Printers	Button	AddPrinterButton	action	v50.4.1	printers.overview	planned
-xaml.printers.button.archiveprinterbutton	Printers	Button	ArchivePrinterButton	action	v50.4.1	printers.overview	planned
-xaml.printers.button.deleteprinterbutton	Printers	Button	DeletePrinterButton	action	v50.4.1	printers.overview	planned
-xaml.printers.button.duplicateprinterbutton	Printers	Button	DuplicatePrinterButton	action	v50.4.1	printers.overview	planned
-xaml.printers.button.saveprintersbutton	Printers	Button	SavePrintersButton	action	v50.4.1	printers.overview	planned
-xaml.printers.datagrid.printergrid	Printers	DataGrid	PrinterGrid	grid-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridcheckboxcolumn.active	Printers	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridcomboboxcolumn.printercurrencycolumn	Printers	DataGridComboBoxColumn	PrinterCurrencyColumn	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.annual-maintenance	Printers	DataGridTextColumn	Annual maintenance	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.buffer-override	Printers	DataGridTextColumn	Buffer override	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.life-years	Printers	DataGridTextColumn	Life (years)	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.manufacturer	Printers	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.model	Printers	DataGridTextColumn	Model	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.name	Printers	DataGridTextColumn	Name	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.notes	Printers	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.power-w	Printers	DataGridTextColumn	Power (W)	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.printer-id	Printers	DataGridTextColumn	Printer ID	read-only-column	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.purchase-cost	Printers	DataGridTextColumn	Purchase cost	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.upfront-cost	Printers	DataGridTextColumn	Upfront cost	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.printers.datagridtextcolumn.uptime	Printers	DataGridTextColumn	Uptime (%)	editable-column-candidate	v50.4.1	printers.overview	planned
-xaml.print-job-quotes.button.deleteprintjobquote	Print Job Quotes	Button	DeletePrintJobQuote	action	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.button.exportprintjobquote	Print Job Quotes	Button	ExportPrintJobQuote	action	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.button.saveprintjobquote	Print Job Quotes	Button	SavePrintJobQuote	action	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.checkbox.quotemanualmaterialcheck	Print Job Quotes	CheckBox	QuoteManualMaterialCheck	choice	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.combobox.quotecurrencyselector	Print Job Quotes	ComboBox	QuoteCurrencySelector	choice	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.combobox.quotemanualcurrencyselector	Print Job Quotes	ComboBox	QuoteManualCurrencySelector	choice	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.combobox.quotematerialselector	Print Job Quotes	ComboBox	QuoteMaterialSelector	choice	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.combobox.quoteprinterselector	Print Job Quotes	ComboBox	QuotePrinterSelector	choice	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.datagrid.printjobquotehistory	Print Job Quotes	DataGrid	PrintJobQuoteHistory	read-only-grid	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.datagridtextcolumn.created-utc	Print Job Quotes	DataGridTextColumn	Created UTC	editable-column-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.datagridtextcolumn.currency	Print Job Quotes	DataGridTextColumn	Currency	editable-column-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.datagridtextcolumn.customer	Print Job Quotes	DataGridTextColumn	Customer	editable-column-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.datagridtextcolumn.final-price	Print Job Quotes	DataGridTextColumn	Final price	editable-column-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.datagridtextcolumn.material-snapshot	Print Job Quotes	DataGridTextColumn	Material snapshot	editable-column-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.datagridtextcolumn.printer-snapshot	Print Job Quotes	DataGridTextColumn	Printer snapshot	editable-column-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.datagridtextcolumn.quote	Print Job Quotes	DataGridTextColumn	Quote	editable-column-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quoteadditionalcostbox	Print Job Quotes	TextBox	QuoteAdditionalCostBox	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quoteconsultingminutesbox	Print Job Quotes	TextBox	QuoteConsultingMinutesBox	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quotecustomer	Print Job Quotes	TextBox	QuoteCustomer	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quotedescription	Print Job Quotes	TextBox	QuoteDescription	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quotedesignminutesbox	Print Job Quotes	TextBox	QuoteDesignMinutesBox	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quotegramsperpartbox	Print Job Quotes	TextBox	QuoteGramsPerPartBox	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quotemanualmaterialcostbox	Print Job Quotes	TextBox	QuoteManualMaterialCostBox	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quotemarginbox	Print Job Quotes	TextBox	QuoteMarginBox	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quotepreparedbybox	Print Job Quotes	TextBox	QuotePreparedByBox	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quoteprinthoursbox	Print Job Quotes	TextBox	QuotePrintHoursBox	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quoteprintlaborminutesbox	Print Job Quotes	TextBox	QuotePrintLaborMinutesBox	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.print-job-quotes.textbox.quotequantitybox	Print Job Quotes	TextBox	QuoteQuantityBox	input-candidate	v50.4.1	print-job-quotes.overview	planned
-xaml.purchase-orders.button.addpurchaseorder-click	Purchase Orders	Button	AddPurchaseOrder_Click	action	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.button.addpurchaseorderline-click	Purchase Orders	Button	AddPurchaseOrderLine_Click	action	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.button.browsepurchaseinvoice-click	Purchase Orders	Button	BrowsePurchaseInvoice_Click	action	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.button.calculatepurchasecosts-click	Purchase Orders	Button	CalculatePurchaseCosts_Click	action	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.button.createinventoryfrompurchaseorder-click	Purchase Orders	Button	CreateInventoryFromPurchaseOrder_Click	action	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.button.creatematerialfrompurchaseline-click	Purchase Orders	Button	CreateMaterialFromPurchaseLine_Click	action	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.button.deletepurchaseorder-click	Purchase Orders	Button	DeletePurchaseOrder_Click	action	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.button.deletepurchaseorderline-click	Purchase Orders	Button	DeletePurchaseOrderLine_Click	action	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.button.receivepurchaseorder-click	Purchase Orders	Button	ReceivePurchaseOrder_Click	action	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.button.refreshecbexchangerates	Purchase Orders	Button	RefreshEcbExchangeRates	action	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagrid.purchaseorderlinesgrid	Purchase Orders	DataGrid	PurchaseOrderLinesGrid	grid-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagrid.purchaseordersgrid	Purchase Orders	DataGrid	PurchaseOrdersGrid	grid-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridcheckboxcolumn.allocate	Purchase Orders	DataGridCheckBoxColumn	Allocate	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridcomboboxcolumn.category	Purchase Orders	DataGridComboBoxColumn	Category	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridcomboboxcolumn.check	Purchase Orders	DataGridComboBoxColumn	Check	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridcomboboxcolumn.currency	Purchase Orders	DataGridComboBoxColumn	Currency	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridcomboboxcolumn.link-existing-material-optional	Purchase Orders	DataGridComboBoxColumn	Link existing material (optional)	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridcomboboxcolumn.shipping-allocation	Purchase Orders	DataGridComboBoxColumn	Shipping allocation	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridcomboboxcolumn.tax-treatment	Purchase Orders	DataGridComboBoxColumn	Tax treatment	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridcomboboxcolumn.workflow-stage	Purchase Orders	DataGridComboBoxColumn	Workflow stage	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.1-currency-unit-isk	Purchase Orders	DataGridTextColumn	1 currency unit = ISK	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.allocation-status	Purchase Orders	DataGridTextColumn	Allocation status	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.clearance	Purchase Orders	DataGridTextColumn	Clearance	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.cost-status	Purchase Orders	DataGridTextColumn	Cost status	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.customs	Purchase Orders	DataGridTextColumn	Customs	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.customs-allocated	Purchase Orders	DataGridTextColumn	Customs allocated	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.discount	Purchase Orders	DataGridTextColumn	Discount	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.document	Purchase Orders	DataGridTextColumn	Document	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.expected	Purchase Orders	DataGridTextColumn	Expected	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.fees-allocated	Purchase Orders	DataGridTextColumn	Fees allocated	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.import-vat	Purchase Orders	DataGridTextColumn	Import VAT	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.invoice-total	Purchase Orders	DataGridTextColumn	Invoice total	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.items-total	Purchase Orders	DataGridTextColumn	Items total	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.landed-kg	Purchase Orders	DataGridTextColumn	Landed / kg	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.landed-line	Purchase Orders	DataGridTextColumn	Landed line	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.landed-unit	Purchase Orders	DataGridTextColumn	Landed / unit	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.line-id	Purchase Orders	DataGridTextColumn	Line ID	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.manual-shipping	Purchase Orders	DataGridTextColumn	Manual shipping	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.net-line	Purchase Orders	DataGridTextColumn	Net line	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.notes	Purchase Orders	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.notes-2	Purchase Orders	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.order	Purchase Orders	DataGridTextColumn	Order #	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.order-date	Purchase Orders	DataGridTextColumn	Order date	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.ordered-item-invoice-description	Purchase Orders	DataGridTextColumn	Ordered item / invoice description	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.other-fees	Purchase Orders	DataGridTextColumn	Other fees	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.po-id	Purchase Orders	DataGridTextColumn	PO ID	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.rate-date	Purchase Orders	DataGridTextColumn	Rate date	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.rate-source	Purchase Orders	DataGridTextColumn	Rate source	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.received	Purchase Orders	DataGridTextColumn	Received	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.received-date	Purchase Orders	DataGridTextColumn	Received date	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.shipping	Purchase Orders	DataGridTextColumn	Shipping	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.shipping-allocated	Purchase Orders	DataGridTextColumn	Shipping allocated	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.sku	Purchase Orders	DataGridTextColumn	SKU	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.storage-location	Purchase Orders	DataGridTextColumn	Storage location	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.supplier	Purchase Orders	DataGridTextColumn	Supplier	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.supplier-vat	Purchase Orders	DataGridTextColumn	Supplier VAT	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.tax-allocated	Purchase Orders	DataGridTextColumn	Tax allocated	read-only-column	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.unit-price	Purchase Orders	DataGridTextColumn	Unit price	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
-xaml.purchase-orders.datagridtextcolumn.unit-weight-g	Purchase Orders	DataGridTextColumn	Unit weight g	editable-column-candidate	v50.4.1	purchase-orders.overview	planned
+xaml.materials.button.addnativematerial-click	Materials	Button	AddNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
+xaml.materials.button.archivenativematerial-click	Materials	Button	ArchiveNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
+xaml.materials.button.clearnativematerialfilters-click	Materials	Button	ClearNativeMaterialFilters_Click	action	v50.4.1	materials.controls-fields	covered
+xaml.materials.button.deletenativematerial-click	Materials	Button	DeleteNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
+xaml.materials.button.duplicatenativematerial-click	Materials	Button	DuplicateNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
+xaml.materials.button.resetfastmaterialscolumns-click	Materials	Button	ResetFastMaterialsColumns_Click	action	v50.4.1	materials.controls-fields	covered
+xaml.materials.button.savenativematerialsbutton	Materials	Button	SaveNativeMaterialsButton	action	v50.4.1	materials.controls-fields	covered
+xaml.materials.button.unarchivenativematerial-click	Materials	Button	UnarchiveNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
+xaml.materials.combobox.nativematerialbasematerialfilter	Materials	ComboBox	NativeMaterialBaseMaterialFilter	choice	v50.4.1	materials.controls-fields	covered
+xaml.materials.combobox.nativematerialcategoryfilter	Materials	ComboBox	NativeMaterialCategoryFilter	choice	v50.4.1	materials.controls-fields	covered
+xaml.materials.combobox.nativematerialmanufacturerfilter	Materials	ComboBox	NativeMaterialManufacturerFilter	choice	v50.4.1	materials.controls-fields	covered
+xaml.materials.combobox.nativematerialreinforcementfilter	Materials	ComboBox	NativeMaterialReinforcementFilter	choice	v50.4.1	materials.controls-fields	covered
+xaml.materials.combobox.nativematerialtestedfilter	Materials	ComboBox	NativeMaterialTestedFilter	choice	v50.4.1	materials.controls-fields	covered
+xaml.materials.textbox.nativematerialsearchbox	Materials	TextBox	NativeMaterialSearchBox	input-candidate	v50.4.1	materials.controls-fields	covered
+xaml.printers.button.addprinterbutton	Printers	Button	AddPrinterButton	action	v50.4.1	printers.controls-fields	covered
+xaml.printers.button.archiveprinterbutton	Printers	Button	ArchivePrinterButton	action	v50.4.1	printers.controls-fields	covered
+xaml.printers.button.deleteprinterbutton	Printers	Button	DeletePrinterButton	action	v50.4.1	printers.controls-fields	covered
+xaml.printers.button.duplicateprinterbutton	Printers	Button	DuplicatePrinterButton	action	v50.4.1	printers.controls-fields	covered
+xaml.printers.button.saveprintersbutton	Printers	Button	SavePrintersButton	action	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagrid.printergrid	Printers	DataGrid	PrinterGrid	grid-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridcheckboxcolumn.active	Printers	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridcomboboxcolumn.printercurrencycolumn	Printers	DataGridComboBoxColumn	PrinterCurrencyColumn	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.annual-maintenance	Printers	DataGridTextColumn	Annual maintenance	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.buffer-override	Printers	DataGridTextColumn	Buffer override	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.life-years	Printers	DataGridTextColumn	Life (years)	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.manufacturer	Printers	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.model	Printers	DataGridTextColumn	Model	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.name	Printers	DataGridTextColumn	Name	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.notes	Printers	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.power-w	Printers	DataGridTextColumn	Power (W)	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.printer-id	Printers	DataGridTextColumn	Printer ID	read-only-column	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.purchase-cost	Printers	DataGridTextColumn	Purchase cost	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.upfront-cost	Printers	DataGridTextColumn	Upfront cost	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.uptime	Printers	DataGridTextColumn	Uptime (%)	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.print-job-quotes.button.deleteprintjobquote	Print Job Quotes	Button	DeletePrintJobQuote	action	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.button.exportprintjobquote	Print Job Quotes	Button	ExportPrintJobQuote	action	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.button.saveprintjobquote	Print Job Quotes	Button	SavePrintJobQuote	action	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.checkbox.quotemanualmaterialcheck	Print Job Quotes	CheckBox	QuoteManualMaterialCheck	choice	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.combobox.quotecurrencyselector	Print Job Quotes	ComboBox	QuoteCurrencySelector	choice	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.combobox.quotemanualcurrencyselector	Print Job Quotes	ComboBox	QuoteManualCurrencySelector	choice	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.combobox.quotematerialselector	Print Job Quotes	ComboBox	QuoteMaterialSelector	choice	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.combobox.quoteprinterselector	Print Job Quotes	ComboBox	QuotePrinterSelector	choice	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.datagrid.printjobquotehistory	Print Job Quotes	DataGrid	PrintJobQuoteHistory	read-only-grid	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.datagridtextcolumn.created-utc	Print Job Quotes	DataGridTextColumn	Created UTC	editable-column-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.datagridtextcolumn.currency	Print Job Quotes	DataGridTextColumn	Currency	editable-column-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.datagridtextcolumn.customer	Print Job Quotes	DataGridTextColumn	Customer	editable-column-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.datagridtextcolumn.final-price	Print Job Quotes	DataGridTextColumn	Final price	editable-column-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.datagridtextcolumn.material-snapshot	Print Job Quotes	DataGridTextColumn	Material snapshot	editable-column-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.datagridtextcolumn.printer-snapshot	Print Job Quotes	DataGridTextColumn	Printer snapshot	editable-column-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.datagridtextcolumn.quote	Print Job Quotes	DataGridTextColumn	Quote	editable-column-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quoteadditionalcostbox	Print Job Quotes	TextBox	QuoteAdditionalCostBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quoteconsultingminutesbox	Print Job Quotes	TextBox	QuoteConsultingMinutesBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quotecustomer	Print Job Quotes	TextBox	QuoteCustomer	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quotedescription	Print Job Quotes	TextBox	QuoteDescription	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quotedesignminutesbox	Print Job Quotes	TextBox	QuoteDesignMinutesBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quotegramsperpartbox	Print Job Quotes	TextBox	QuoteGramsPerPartBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quotemanualmaterialcostbox	Print Job Quotes	TextBox	QuoteManualMaterialCostBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quotemarginbox	Print Job Quotes	TextBox	QuoteMarginBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quotepreparedbybox	Print Job Quotes	TextBox	QuotePreparedByBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quoteprinthoursbox	Print Job Quotes	TextBox	QuotePrintHoursBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quoteprintlaborminutesbox	Print Job Quotes	TextBox	QuotePrintLaborMinutesBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.print-job-quotes.textbox.quotequantitybox	Print Job Quotes	TextBox	QuoteQuantityBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
+xaml.purchase-orders.button.addpurchaseorder-click	Purchase Orders	Button	AddPurchaseOrder_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.addpurchaseorderline-click	Purchase Orders	Button	AddPurchaseOrderLine_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.browsepurchaseinvoice-click	Purchase Orders	Button	BrowsePurchaseInvoice_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.calculatepurchasecosts-click	Purchase Orders	Button	CalculatePurchaseCosts_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.createinventoryfrompurchaseorder-click	Purchase Orders	Button	CreateInventoryFromPurchaseOrder_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.creatematerialfrompurchaseline-click	Purchase Orders	Button	CreateMaterialFromPurchaseLine_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.deletepurchaseorder-click	Purchase Orders	Button	DeletePurchaseOrder_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.deletepurchaseorderline-click	Purchase Orders	Button	DeletePurchaseOrderLine_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.receivepurchaseorder-click	Purchase Orders	Button	ReceivePurchaseOrder_Click	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.refreshecbexchangerates	Purchase Orders	Button	RefreshEcbExchangeRates	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagrid.purchaseorderlinesgrid	Purchase Orders	DataGrid	PurchaseOrderLinesGrid	grid-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagrid.purchaseordersgrid	Purchase Orders	DataGrid	PurchaseOrdersGrid	grid-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridcheckboxcolumn.allocate	Purchase Orders	DataGridCheckBoxColumn	Allocate	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridcomboboxcolumn.category	Purchase Orders	DataGridComboBoxColumn	Category	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridcomboboxcolumn.check	Purchase Orders	DataGridComboBoxColumn	Check	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridcomboboxcolumn.currency	Purchase Orders	DataGridComboBoxColumn	Currency	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridcomboboxcolumn.link-existing-material-optional	Purchase Orders	DataGridComboBoxColumn	Link existing material (optional)	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridcomboboxcolumn.shipping-allocation	Purchase Orders	DataGridComboBoxColumn	Shipping allocation	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridcomboboxcolumn.tax-treatment	Purchase Orders	DataGridComboBoxColumn	Tax treatment	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridcomboboxcolumn.workflow-stage	Purchase Orders	DataGridComboBoxColumn	Workflow stage	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.1-currency-unit-isk	Purchase Orders	DataGridTextColumn	1 currency unit = ISK	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.allocation-status	Purchase Orders	DataGridTextColumn	Allocation status	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.clearance	Purchase Orders	DataGridTextColumn	Clearance	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.cost-status	Purchase Orders	DataGridTextColumn	Cost status	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.customs	Purchase Orders	DataGridTextColumn	Customs	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.customs-allocated	Purchase Orders	DataGridTextColumn	Customs allocated	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.discount	Purchase Orders	DataGridTextColumn	Discount	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.document	Purchase Orders	DataGridTextColumn	Document	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.expected	Purchase Orders	DataGridTextColumn	Expected	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.fees-allocated	Purchase Orders	DataGridTextColumn	Fees allocated	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.import-vat	Purchase Orders	DataGridTextColumn	Import VAT	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.invoice-total	Purchase Orders	DataGridTextColumn	Invoice total	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.items-total	Purchase Orders	DataGridTextColumn	Items total	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.landed-kg	Purchase Orders	DataGridTextColumn	Landed / kg	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.landed-line	Purchase Orders	DataGridTextColumn	Landed line	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.landed-unit	Purchase Orders	DataGridTextColumn	Landed / unit	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.line-id	Purchase Orders	DataGridTextColumn	Line ID	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.manual-shipping	Purchase Orders	DataGridTextColumn	Manual shipping	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.net-line	Purchase Orders	DataGridTextColumn	Net line	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.notes	Purchase Orders	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.notes-2	Purchase Orders	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.order	Purchase Orders	DataGridTextColumn	Order #	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.order-date	Purchase Orders	DataGridTextColumn	Order date	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.ordered-item-invoice-description	Purchase Orders	DataGridTextColumn	Ordered item / invoice description	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.other-fees	Purchase Orders	DataGridTextColumn	Other fees	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.po-id	Purchase Orders	DataGridTextColumn	PO ID	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.rate-date	Purchase Orders	DataGridTextColumn	Rate date	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.rate-source	Purchase Orders	DataGridTextColumn	Rate source	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.received	Purchase Orders	DataGridTextColumn	Received	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.received-date	Purchase Orders	DataGridTextColumn	Received date	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.shipping	Purchase Orders	DataGridTextColumn	Shipping	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.shipping-allocated	Purchase Orders	DataGridTextColumn	Shipping allocated	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.sku	Purchase Orders	DataGridTextColumn	SKU	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.storage-location	Purchase Orders	DataGridTextColumn	Storage location	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.supplier	Purchase Orders	DataGridTextColumn	Supplier	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.supplier-vat	Purchase Orders	DataGridTextColumn	Supplier VAT	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.tax-allocated	Purchase Orders	DataGridTextColumn	Tax allocated	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.unit-price	Purchase Orders	DataGridTextColumn	Unit price	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.datagridtextcolumn.unit-weight-g	Purchase Orders	DataGridTextColumn	Unit weight g	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
 xaml.rankings-dashboard.button.exportrankingscsv-click	Rankings Dashboard	Button	ExportRankingsCsv_Click	action	v50.4.2	analysis.rankings	planned
 xaml.rankings-dashboard.button.refreshrankings-click	Rankings Dashboard	Button	RefreshRankings_Click	action	v50.4.2	analysis.rankings	planned
 xaml.rankings-dashboard.button.resetrankingfilters-click	Rankings Dashboard	Button	ResetRankingFilters_Click	action	v50.4.2	analysis.rankings	planned
@@ -536,44 +536,44 @@ xaml.reports-pdf-export.combobox.reportmaterialscopeselector	Reports / PDF Expor
 xaml.reports-pdf-export.combobox.reporttypeselector	Reports / PDF Export	ComboBox	ReportTypeSelector	choice	v50.4.3	reports.overview	planned
 xaml.reports-pdf-export.textbox.reportoutputfolder	Reports / PDF Export	TextBox	ReportOutputFolder	input-candidate	v50.4.3	reports.overview	planned
 xaml.reports-pdf-export.textbox.reportpreviewlog	Reports / PDF Export	TextBox	ReportPreviewLog	read-only	v50.4.3	reports.overview	planned
-xaml.settings-manager.button.reloadsavedsettingsbutton	Settings Manager	Button	ReloadSavedSettingsButton	action	v50.4.1	settings.overview	planned
-xaml.settings-manager.button.resetsettingscolumnsbutton	Settings Manager	Button	ResetSettingsColumnsButton	action	v50.4.1	settings.overview	planned
-xaml.settings-manager.button.restorebuiltinsettingsbutton	Settings Manager	Button	RestoreBuiltInSettingsButton	action	v50.4.1	settings.overview	planned
-xaml.settings-manager.button.savenativesettings-click	Settings Manager	Button	SaveNativeSettings_Click	action	v50.4.1	settings.overview	planned
+xaml.settings-manager.button.reloadsavedsettingsbutton	Settings Manager	Button	ReloadSavedSettingsButton	action	v50.4.1	settings.controls-fields	covered
+xaml.settings-manager.button.resetsettingscolumnsbutton	Settings Manager	Button	ResetSettingsColumnsButton	action	v50.4.1	settings.controls-fields	covered
+xaml.settings-manager.button.restorebuiltinsettingsbutton	Settings Manager	Button	RestoreBuiltInSettingsButton	action	v50.4.1	settings.controls-fields	covered
+xaml.settings-manager.button.savenativesettings-click	Settings Manager	Button	SaveNativeSettings_Click	action	v50.4.1	settings.controls-fields	covered
 xaml.stiffness-measurements.button.resetfaststiffnesscolumns-click	Stiffness Measurements	Button	ResetFastStiffnessColumns_Click	action	v50.4.2	measurements.stiffness	planned
 xaml.tensile-measurements.button.resetfasttensilecolumns-click	Tensile Measurements	Button	ResetFastTensileColumns_Click	action	v50.4.2	measurements.tensile	planned
-xaml.usage.button.beginusagecorrection	Usage	Button	BeginUsageCorrection	action	v50.4.1	usage.overview	planned
-xaml.usage.button.cancelusagecorrectionbutton	Usage	Button	CancelUsageCorrectionButton	action	v50.4.1	usage.overview	planned
-xaml.usage.button.saveusageevent	Usage	Button	SaveUsageEvent	action	v50.4.1	usage.overview	planned
-xaml.usage.combobox.usageeventtypeselector	Usage	ComboBox	UsageEventTypeSelector	choice	v50.4.1	usage.overview	planned
-xaml.usage.combobox.usageinventoryselector	Usage	ComboBox	UsageInventorySelector	choice	v50.4.1	usage.overview	planned
-xaml.usage.combobox.usagematerialselector	Usage	ComboBox	UsageMaterialSelector	choice	v50.4.1	usage.overview	planned
-xaml.usage.combobox.usageprovenanceselector	Usage	ComboBox	UsageProvenanceSelector	choice	v50.4.1	usage.overview	planned
-xaml.usage.datagrid.usageledgergrid	Usage	DataGrid	UsageLedgerGrid	read-only-grid	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.accepted	Usage	DataGridTextColumn	Accepted	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.entry	Usage	DataGridTextColumn	Entry	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.event-id	Usage	DataGridTextColumn	Event ID	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.filament-g	Usage	DataGridTextColumn	Filament g	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.hands-on-sec	Usage	DataGridTextColumn	Hands-on sec	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.inventory-spool	Usage	DataGridTextColumn	Inventory spool	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.materialid	Usage	DataGridTextColumn	MaterialID	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.note	Usage	DataGridTextColumn	Note	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.occurred-utc	Usage	DataGridTextColumn	Occurred UTC	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.print-sec	Usage	DataGridTextColumn	Print sec	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.produced	Usage	DataGridTextColumn	Produced	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.provenance	Usage	DataGridTextColumn	Provenance	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.rejected	Usage	DataGridTextColumn	Rejected	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.source	Usage	DataGridTextColumn	Source	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.datagridtextcolumn.type	Usage	DataGridTextColumn	Type	editable-column-candidate	v50.4.1	usage.overview	planned
-xaml.usage.textbox.usageacceptedcounttextbox	Usage	TextBox	UsageAcceptedCountTextBox	input-candidate	v50.4.1	usage.overview	planned
-xaml.usage.textbox.usagefilamentgramstextbox	Usage	TextBox	UsageFilamentGramsTextBox	input-candidate	v50.4.1	usage.overview	planned
-xaml.usage.textbox.usagehandsonminutestextbox	Usage	TextBox	UsageHandsOnMinutesTextBox	input-candidate	v50.4.1	usage.overview	planned
-xaml.usage.textbox.usagenotetextbox	Usage	TextBox	UsageNoteTextBox	input-candidate	v50.4.1	usage.overview	planned
-xaml.usage.textbox.usageoccurredatutctextbox	Usage	TextBox	UsageOccurredAtUtcTextBox	input-candidate	v50.4.1	usage.overview	planned
-xaml.usage.textbox.usageprintminutestextbox	Usage	TextBox	UsagePrintMinutesTextBox	input-candidate	v50.4.1	usage.overview	planned
-xaml.usage.textbox.usageproducedcounttextbox	Usage	TextBox	UsageProducedCountTextBox	input-candidate	v50.4.1	usage.overview	planned
-xaml.usage.textbox.usagerejectedcounttextbox	Usage	TextBox	UsageRejectedCountTextBox	input-candidate	v50.4.1	usage.overview	planned
-xaml.usage.textbox.usagesourcetextbox	Usage	TextBox	UsageSourceTextBox	input-candidate	v50.4.1	usage.overview	planned
+xaml.usage.button.beginusagecorrection	Usage	Button	BeginUsageCorrection	action	v50.4.1	usage.controls-fields	covered
+xaml.usage.button.cancelusagecorrectionbutton	Usage	Button	CancelUsageCorrectionButton	action	v50.4.1	usage.controls-fields	covered
+xaml.usage.button.saveusageevent	Usage	Button	SaveUsageEvent	action	v50.4.1	usage.controls-fields	covered
+xaml.usage.combobox.usageeventtypeselector	Usage	ComboBox	UsageEventTypeSelector	choice	v50.4.1	usage.controls-fields	covered
+xaml.usage.combobox.usageinventoryselector	Usage	ComboBox	UsageInventorySelector	choice	v50.4.1	usage.controls-fields	covered
+xaml.usage.combobox.usagematerialselector	Usage	ComboBox	UsageMaterialSelector	choice	v50.4.1	usage.controls-fields	covered
+xaml.usage.combobox.usageprovenanceselector	Usage	ComboBox	UsageProvenanceSelector	choice	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagrid.usageledgergrid	Usage	DataGrid	UsageLedgerGrid	read-only-grid	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.accepted	Usage	DataGridTextColumn	Accepted	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.entry	Usage	DataGridTextColumn	Entry	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.event-id	Usage	DataGridTextColumn	Event ID	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.filament-g	Usage	DataGridTextColumn	Filament g	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.hands-on-sec	Usage	DataGridTextColumn	Hands-on sec	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.inventory-spool	Usage	DataGridTextColumn	Inventory spool	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.materialid	Usage	DataGridTextColumn	MaterialID	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.note	Usage	DataGridTextColumn	Note	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.occurred-utc	Usage	DataGridTextColumn	Occurred UTC	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.print-sec	Usage	DataGridTextColumn	Print sec	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.produced	Usage	DataGridTextColumn	Produced	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.provenance	Usage	DataGridTextColumn	Provenance	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.rejected	Usage	DataGridTextColumn	Rejected	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.source	Usage	DataGridTextColumn	Source	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.datagridtextcolumn.type	Usage	DataGridTextColumn	Type	editable-column-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.textbox.usageacceptedcounttextbox	Usage	TextBox	UsageAcceptedCountTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.textbox.usagefilamentgramstextbox	Usage	TextBox	UsageFilamentGramsTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.textbox.usagehandsonminutestextbox	Usage	TextBox	UsageHandsOnMinutesTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.textbox.usagenotetextbox	Usage	TextBox	UsageNoteTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.textbox.usageoccurredatutctextbox	Usage	TextBox	UsageOccurredAtUtcTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.textbox.usageprintminutestextbox	Usage	TextBox	UsagePrintMinutesTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.textbox.usageproducedcounttextbox	Usage	TextBox	UsageProducedCountTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.textbox.usagerejectedcounttextbox	Usage	TextBox	UsageRejectedCountTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
+xaml.usage.textbox.usagesourcetextbox	Usage	TextBox	UsageSourceTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
 xaml.website-export.button.activateselectedwebsitetemplate-click	Website Export	Button	ActivateSelectedWebsiteTemplate_Click	action	v50.4.3	website.overview	planned
 xaml.website-export.button.choosewebsiteexportfolder-click	Website Export	Button	ChooseWebsiteExportFolder_Click	action	v50.4.3	website.overview	planned
 xaml.website-export.button.exportactivewebsitetemplate-click	Website Export	Button	ExportActiveWebsiteTemplate_Click	action	v50.4.3	website.overview	planned

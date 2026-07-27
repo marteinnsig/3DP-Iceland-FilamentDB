@@ -2,6 +2,26 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v50.4.1 - Data and Configuration Control Help
+
+- Adds nine detailed searchable control/field topics for Materials,
+  Manufacturers, Purchase Orders, Inventory, Usage, Printers, Print Job
+  Quotes, Base Materials and Settings.
+- Explains individual actions, selectors, editable/read-only columns, units,
+  validation, save timing, destructive boundaries and historical stability.
+- Documents all 52 Fast Materials columns plus Bulk Update scope, overwrite
+  summary, disabled state, cancellation and normal validation/save behavior.
+- Routes all 222 v50.4.1 XAML candidates and three custom column registries to
+  exact control/field Help destinations.
+- Adds deterministic Verification depth/marker checks and safe tester searches.
+- Initial tester work exposed one ambiguous Settings query, one case-sensitive
+  marker and one stale InformationalVersion; all three are corrected.
+- Debug/Release app and tester builds pass with zero warnings/errors.
+- Disposable profile `20260727125607-36733e81` passes Full Data Verification
+  375/375 with exact logical/business-state equality.
+- Owner runtime/readability acceptance passes on 2026-07-27.
+- v50.4.1 is canonical; schema remains v37 and parent v50 continues at v50.4.2.
+
 ## v50.3.0 - Safety and Recovery Help
 
 - Adds 18 substantive Help destinations for File/storage, Recovery,

@@ -1,6 +1,16 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v50.4.1 - Data and Configuration Control Help
+
+Nine detailed searchable topics cover every registered control/field group in
+Materials, Manufacturers, Purchase Orders, Inventory, Usage, Printers, Print
+Job Quotes, Base Materials and Settings. The ledger marks 222 XAML candidates,
+81 custom columns and the Bulk Update/runtime prototype owners covered.
+Debug/Release, vulnerability, documentation and disposable Full Data
+Verification 375/375 pass with exact state equality. Owner runtime/readability
+acceptance passes. Schema remains v37; parent v50 continues at v50.4.2.
+
 ## v50.3.0 - Safety and Recovery Help
 
 Eighteen detailed destinations cover Recovery, Verification, Diagnostics,

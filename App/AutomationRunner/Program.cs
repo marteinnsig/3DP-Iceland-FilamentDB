@@ -394,10 +394,31 @@ internal static class Program
                     "Support evidence collection reference",
                     StringComparison.Ordinal),
                 "Central Help did not expose the secret-safe support evidence boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("Current filtered rows");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Materials controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the Materials control/field reference.");
+            ((ValuePattern)helpValuePattern).SetValue("never automatically repriced");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Purchase Orders controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the Purchase Order historical-rate boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("Save Settings does not publish");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Settings Manager controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the Settings column/save-boundary reference.");
             Record(
                 "central-help",
                 true,
-                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1-v50.3 reference searches");
+                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1-v50.4.1 reference searches");
             CloseWindow(help, application.Id);
 
             Expand(FindById(main, "HelpMenu"), application.Id);
