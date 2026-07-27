@@ -290,3 +290,37 @@ Inventory is structurally complete when:
 - Every menu/runtime surface has an assigned v50.2 or v50.3 delivery owner.
 - Confirmed stale guidance has a recorded repair increment.
 - v50.2.1-v50.2.4 implementation uses this matrix as its coverage contract.
+
+## Mandatory v50.4 exhaustive control and editable-field audit
+
+v50.2 proves stable Help destinations and navigation for the 38 recorded tab
+surfaces. It does not claim that every individual control or editable grid
+field has its own complete explanation. v50.4 must rebuild the structural
+baseline and close that deeper gap after v50.3.
+
+The v50.4 ledger must include every supported:
+
+- top-level and nested tab, menu, runtime-built window and dialog;
+- button and menu action;
+- checkbox, radio option, selector and filter;
+- text, numeric, date, password and multiline user field;
+- editable grid and every user-editable column/cell type;
+- owner-drawn/custom input surface and its supported edit interactions;
+- visible status, validation, readiness and disabled/hidden state needed to
+  understand an action.
+
+Each ledger row must record:
+
+1. Stable control key and AutomationId where technically appropriate.
+2. Visible label/location and canonical UI/service/data owner.
+3. Exact Help section or subsection that explains the control.
+4. Purpose, prerequisites, allowed values, units and default meaning.
+5. Validation, auto/immediate/explicit save timing and failure behavior.
+6. Side effects, destructive confirmation and historical-data rules.
+7. Cross-tab inputs, downstream handoff and publication/external boundaries.
+8. Deterministic coverage evidence or an explicit manual-acceptance reason.
+
+A tab overview, handler count or AutomationId alone is not proof that its
+buttons and editable fields are documented. Completion requires zero supported
+controls or editable fields with missing Help coverage, deterministic drift
+detection for future additions and owner runtime/readability acceptance.

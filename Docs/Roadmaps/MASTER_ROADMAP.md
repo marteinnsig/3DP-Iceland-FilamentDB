@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v50.2.4 — Contextual Help Coverage**
 
 Current application candidate: **None; v50.3 is planned but not implemented**
 
-Current roadmap increment: **v50.3 — Troubleshooting, Recovery, Publishing Safety and Final Acceptance**
+Current roadmap increment: **v50.3 — Troubleshooting, Recovery and Publishing Safety Acceptance**
 
 Current acceptance note: v50.2.4 and parent v50.2 are runtime/UI accepted with Verification 373/373; parent v50 remains active.
 
-Next note: v50.3 must complete safety, recovery and final acceptance before the v50 parent milestone can close.
+Next note: v50.3 safety work is followed by the exhaustive v50.4 control/field Help audit; only v50.4 may close parent v50.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2094,15 +2094,31 @@ to unstarted authoritative planning slots.
   - Keep CRUD, Reports, Recovery, Updater, Production and FTPS behavior in their separately authorized scenarios.
   - Treat navigation coverage as startup/rendering evidence, not a claim that every workflow action was executed.
   - Completion condition: coverage matrix is complete, every link resolves to the intended section and owner accepts full v50.2.
-- **v50.3 — Troubleshooting, Recovery, Publishing Safety and Final Acceptance**
+- **v50.3 — Troubleshooting, Recovery and Publishing Safety Acceptance**
   - State: Current authoritative increment; research/implementation not started.
   - Add symptom-led troubleshooting, diagnostics collection, backup/recovery boundaries, Verification interpretation and safe
     Preview/Production/FTPS guidance.
   - Preserve mandatory crash, security, recovery and support evidence plus explicit default-No publishing.
-  - Completion condition: documentation/static/security gates, Full Data Verification and complete owner runtime/visual acceptance
-    pass; only then may the v50 parent milestone close and v51 become current.
+  - Completion condition: documentation/static/security gates, Full Data Verification and owner safety/recovery acceptance pass.
+  - Do not close parent v50 after v50.3; proceed to the mandatory exhaustive v50.4 UI control/field Help audit.
+- **v50.4 — Exhaustive UI Control and Field Help Audit and Final Acceptance**
+  - State: Planned after v50.3; mandatory before parent v50 may close.
+  - Re-inventory every top-level tab, nested tab, menu, runtime-built window, dialog and supported workflow surface.
+  - Inventory every button, menu action, checkbox, radio option, selector, editable field and user-editable grid column/cell type.
+  - Give every inventoried control a stable key, UI owner, Help destination/anchor and explicit coverage status.
+  - Explain purpose, prerequisites, allowed values, units, defaults, validation, save timing and disabled/hidden states.
+  - Explain side effects, destructive confirmations, historical-data rules, cross-tab inputs and downstream handoffs.
+  - Do not count a coarse tab overview as coverage for an undocumented control or editable field.
+  - Reconcile XAML, owner-drawn grids, runtime-generated controls, handlers, services and AutomationIds against the coverage ledger.
+  - Add missing Help sections or precise subsections until the ledger has no unexplained supported control or editable field.
+  - Retire unsupported/dead UI discovered by the audit or assign it a bounded supported owner and Help contract.
+  - Extend deterministic gates to compare the declared UI/control registry with Help coverage and detect future uncovered additions.
+  - Extend safe tester navigation/lookup where AutomationIds can prove coverage without authorizing mutations.
+  - Keep visual wrapping, readability and custom-grid cell usability as explicit manual owner acceptance.
+  - Completion condition: zero unexplained supported controls/editable fields, all gates pass and owner accepts the exhaustive audit.
+  - Only after v50.4 acceptance may parent v50 close and v51 become current.
 - **v51.0 — Governed Development/Verification and Production/Clean Profiles**
-  - State: Deferred until every recorded v50 increment is complete.
+  - State: Deferred until v50.4 and every earlier recorded v50 increment are complete.
   - Research only until diagnostics have measured cost.
   - Mandatory crash, recovery, security and support evidence can never be removed.
 - **v52.0 — Optional OpenAI Assistant Integration Contract**

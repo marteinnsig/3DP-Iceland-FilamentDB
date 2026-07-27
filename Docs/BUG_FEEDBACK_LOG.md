@@ -650,6 +650,9 @@ Preview dead-end. Profile `20260727113500-3bc427ca` passes 373/373 and exact log
 remaining gate.
 Owner accepted v50.2.4 contextual navigation, nested Help behavior and Website menu replacement on 2026-07-27. v50.2.4 and the parent
 v50.2 milestone are canonical and complete; the v50 parent remains In progress at authoritative increment v50.3.
+Owner review clarified that the accepted tab-level Help is not yet exhaustive at individual button, input and editable-grid-cell
+level. Authoritative v50.4 now requires a complete UI/control/field ledger, exact Help ownership, drift detection and zero unexplained
+supported controls or editable fields. v50.3 remains next; parent v50 cannot close until v50.4 receives final owner acceptance.
 What happened: The application has many connected workflows, but no single structured user guide explains what every tab does or how
 data should move through the platform from purchase entry to measurements, reports and website publication.
 Expected behavior: Provide a well-organized user-help system with a start-to-finish workflow, per-tab reference, field-entry guidance,
