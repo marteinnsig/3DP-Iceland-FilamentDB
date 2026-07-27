@@ -1,4 +1,33 @@
-# Current Build Notes - v53.0.1
+# Current Build Notes - v53.0.2
+
+## Landed-cost Currency Default and Draft Override
+
+v53.0.2 adds `Default Landed Cost Currency` to governed Purchasing Settings.
+The value is copied only when a new Purchase Order Draft is created. A
+dedicated review panel allows an explicit default-No override only while the
+order remains an uncalculated v53 Draft. Legacy, calculated and non-Draft
+orders remain locked, including after restart.
+
+The snapshot direction is `1 invoice currency = X landed-cost currency`.
+Optional ECB references are used only when both currency legs exist in the
+same catalog; otherwise both positive manual `ISK per 1` Settings legs are
+required. Same currency is the only automatic 1:1 case. This increment stores
+currency, rate and provenance metadata only. Monetary conversion remains
+owned by v53.0.3, and no saved purchase, Inventory, Material, Usage or Quote is
+rewritten.
+
+Full Verification owns formula direction, Settings/default ownership,
+restart-stable Draft eligibility, legacy locking and UI presence. Disposable
+smoke additionally checks the read-only UI contract while keeping Production,
+FTPS, owner data and live ECB access blocked. Release smoke
+`20260727200102-a16f943f` passes 387/387 with exact database and business-state
+hash equality. Runtime review found and corrected two candidate defects: the
+Settings default now uses the exact governed currency dropdown, and schema-v38
+startup no longer restamps new v53 Drafts as legacy. A narrow repair unlocks
+only affected uncalculated Drafts while real legacy orders stay locked.
+Owner runtime re-acceptance passes on 2026-07-27: the governed Settings
+dropdown, Draft override, restart persistence and Full Data Verification
+387/387 all behave as specified. v53.0.2 is canonical and runtime accepted.
 
 ## Governed Landed-cost Currency Contract and Additive Schema
 

@@ -1,5 +1,21 @@
 # Automated Runtime Acceptance
 
+## v53.0.2 - Landed-cost Currency Draft workflow accepted
+
+- Full Verification checks the governed Settings default, cross-rate direction,
+  persisted Draft eligibility, legacy lock and required UI controls.
+- Smoke remains read-only and checks all new AutomationIds plus honest
+  select/override/locked status.
+- Mutation is retained for owner runtime acceptance because New Order saves
+  immediately; Production, FTPS, owner data and live ECB access remain blocked.
+- No monetary calculation or historical rewrite is authorized in this increment.
+- Verification also proves the Settings editor uses the complete governed
+  currency set and startup distinguishes real legacy rows from v53 Drafts.
+- Replacement Release smoke `20260727200102-a16f943f` passes 387/387 with exact
+  database and business-state equality.
+- Owner runtime re-acceptance confirms the governed dropdown, Draft override,
+  restart persistence and Full Data Verification 387/387.
+
 ## v53.0.1 - Governed Landed-cost Currency schema accepted
 
 - Full Verification owns the new deterministic contract because this increment

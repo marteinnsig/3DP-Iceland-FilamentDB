@@ -1,6 +1,16 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v53.0.2 - Landed-cost Currency Default and Draft Override
+
+Governed Purchasing Settings now supply an exact currency dropdown whose
+default is copied only into a newly created Draft Purchase Order. A reviewed
+default-No override snapshots the explicit cross-rate and provenance while the
+order remains uncalculated. Legacy, calculated and non-Draft orders stay
+locked; no monetary value is recalculated. Release smoke
+`20260727200102-a16f943f` and owner Full Data Verification pass 387/387.
+Owner runtime acceptance confirms dropdown, override and restart persistence.
+
 ## v53.0.1 - Governed Landed-cost Currency Contract and Additive Schema
 
 Schema v38 adds separate Purchase Order and Inventory landed-result currency,

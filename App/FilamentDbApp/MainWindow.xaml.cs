@@ -13540,8 +13540,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                            .Select(rate => rate.ObservationDate)
                            .OrderByDescending(value => value, StringComparer.Ordinal)
                            .FirstOrDefault() ?? "Not available"));
-        sb.AppendLine("Ownership: reference prefill is restricted to new Purchase Orders; " +
-                      "saved purchases, inventory, Materials and quotes are never refreshed.");
+        var configuredLandedCostCurrency = _nativeSettingsRows.FirstOrDefault(row =>
+            string.Equals(row.Section, "Currency", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(row.Parameter, "Default Landed Cost Currency", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(row.UsedBy, "Purchasing", StringComparison.OrdinalIgnoreCase))?.Value;
+        sb.AppendLine("Configured landed-cost default: " +
+                      (string.IsNullOrWhiteSpace(configuredLandedCostCurrency)
+                          ? "Not configured"
+                          : configuredLandedCostCurrency));
+        sb.AppendLine("Effective landed-cost default: " + GetDefaultLandedCostCurrency());
+        sb.AppendLine("Ownership: reference data may prefill only a newly created uncalculated Draft. " +
+                      "Saved purchases, inventory, Materials and quotes are never refreshed or recalculated.");
         sb.AppendLine();
 
         var updateDiagnostics = GetApplicationUpdateDiagnostics();
@@ -17335,9 +17344,12 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 inventoryRecoveryTable.Columns.Contains(column)) &&
             _database.LoadPurchaseOrders().All(order =>
                 !string.IsNullOrWhiteSpace(order.LandedCostCurrency) &&
-                order.LandedCostConversionRate == "1" &&
+                TryParseDecimalAware(order.LandedCostConversionRate, out var landedRate) &&
+                landedRate > 0 &&
                 !string.IsNullOrWhiteSpace(order.LandedCostRateSource) &&
-                !string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion)) &&
+                (!string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion) ||
+                 (string.Equals(order.CostStatus, "Draft", StringComparison.OrdinalIgnoreCase) &&
+                  string.IsNullOrWhiteSpace(order.LandedCostCalculatedAtUtc)))) &&
             _database.LoadInventorySpoolItems().All(item =>
                 !string.IsNullOrWhiteSpace(item.LandedCostCurrency) &&
                 item.LandedCostConversionRate == "1" &&
@@ -17350,6 +17362,66 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             landedCostCurrencySchemaReady && excelRecoveryReady && releaseIdentityReady
                 ? landedCostMigration.Detail
                 : "Schema-v38 columns, Excel recovery ownership, legacy 1:1 metadata or exact-value migration failed"));
+        var defaultLandedCostSetting = _nativeSettingsRows.SingleOrDefault(row =>
+            string.Equals(row.Section, "Currency", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(row.Parameter, "Default Landed Cost Currency", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(row.UsedBy, "Purchasing", StringComparison.OrdinalIgnoreCase));
+        var landedCostCrossRateProbe = BuildDerivedLandedCostCurrencySnapshot(
+            "EUR",
+            125m,
+            135.87m,
+            "Manual governed Settings",
+            string.Empty,
+            string.Empty);
+        var landedCostDraftProbe = new PurchaseOrderRecord
+        {
+            LifecycleStatus = "Draft",
+            CostStatus = "Draft",
+            LandedCostCalculationVersion = string.Empty,
+            LandedCostCalculatedAtUtc = string.Empty
+        };
+        var landedCostLegacyProbe = new PurchaseOrderRecord
+        {
+            LifecycleStatus = "Draft",
+            CostStatus = "Draft",
+            LandedCostCalculationVersion = "legacy-v1"
+        };
+        var landedCostSettingsColumns = BuildFastNativeSettingsColumns();
+        var landedCostSettingsValueColumn = landedCostSettingsColumns.Single(column =>
+            string.Equals(column.PropertyName, "Value", StringComparison.Ordinal));
+        var landedCostSettingsEditorProbe = new MaterialsPrototypeRow(
+            defaultLandedCostSetting ?? new NativeSettingRow(),
+            "Default Landed Cost Currency",
+            [],
+            [],
+            () => true);
+        var landedCostDraftWorkflowReady =
+            defaultLandedCostSetting is not null &&
+            GetPurchasingCurrencyCodes().Contains(
+                GetDefaultLandedCostCurrency(),
+                StringComparer.OrdinalIgnoreCase) &&
+            UsesGovernedCurrencyChoiceEditor(
+                landedCostSettingsEditorProbe,
+                landedCostSettingsValueColumn) &&
+            GovernedPurchasingCurrencyChoices.SequenceEqual(
+                GetPurchasingCurrencyCodes(),
+                StringComparer.OrdinalIgnoreCase) &&
+            landedCostCrossRateProbe.ConversionRate == "0.919997" &&
+            landedCostCrossRateProbe.Source == "Manual governed Settings" &&
+            CanOverrideLandedCostCurrency(landedCostDraftProbe) &&
+            !CanOverrideLandedCostCurrency(landedCostLegacyProbe) &&
+            FindName("NewPurchaseOrderButton") is Button &&
+            FindName("PurchaseOrdersGrid") is DataGrid &&
+            FindName("LandedCostCurrencySelector") is ComboBox &&
+            FindName("ApplyLandedCostCurrencyOverride") is Button &&
+            FindName("LandedCostConversionRateText") is TextBlock &&
+            FindName("LandedCostRateStatusText") is TextBlock;
+        checks.Add(new VerificationCheck(
+            "v53.0.2 Landed-cost Currency Settings default and Draft override release gate",
+            landedCostDraftWorkflowReady && excelRecoveryReady && releaseIdentityReady,
+            landedCostDraftWorkflowReady && excelRecoveryReady && releaseIdentityReady
+                ? "Governed default; invoice-ISK / landed-ISK cross-rate direction; restart-stable uncalculated Draft override; legacy lock and explicit UI contract pass"
+                : "Settings default, cross-rate direction, Draft/legacy lock, persistence, UI or release identity failed"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {
@@ -24250,9 +24322,14 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void EnsurePurchasingCurrencySettings()
     {
+        var added = false;
         var defaults = GetDefaultNativeSettingsRows()
             .Where(r => string.Equals(r.Section, "Currency", StringComparison.OrdinalIgnoreCase) &&
-                        r.Parameter.StartsWith("ISK per 1 ", StringComparison.OrdinalIgnoreCase) &&
+                        (r.Parameter.StartsWith("ISK per 1 ", StringComparison.OrdinalIgnoreCase) ||
+                         string.Equals(
+                             r.Parameter,
+                             "Default Landed Cost Currency",
+                             StringComparison.OrdinalIgnoreCase)) &&
                         string.Equals(r.UsedBy, "Purchasing", StringComparison.OrdinalIgnoreCase));
 
         foreach (var defaultRow in defaults)
@@ -24270,7 +24347,9 @@ private List<string> GetVisibleAiMaterialLabels()
                 UsedBy = defaultRow.UsedBy,
                 Notes = defaultRow.Notes
             });
+            added = true;
         }
+        if (added) SaveCanonicalNativeSettings();
     }
 
     private string NativeSettingsFilePath()
@@ -24347,6 +24426,7 @@ private List<string> GetVisibleAiMaterialLabels()
             new NativeSettingRow { Section = "Currency", Parameter = "ISK per 1 AUD", Value = "82.00", Unit = "ISK", UsedBy = "Purchasing", Notes = "Update manually when needed" },
             new NativeSettingRow { Section = "Currency", Parameter = "ISK per 1 CNY", Value = "17.20", Unit = "ISK", UsedBy = "Purchasing", Notes = "Update manually when needed" },
             new NativeSettingRow { Section = "Currency", Parameter = "ISK per 1 JPY", Value = "0.84", Unit = "ISK", UsedBy = "Purchasing", Notes = "Update manually when needed" },
+            new NativeSettingRow { Section = "Currency", Parameter = "Default Landed Cost Currency", Value = "ISK", Unit = "currency", UsedBy = "Purchasing", Notes = "Prefills only a newly created Draft Purchase Order; saved orders are never rewritten" },
             new NativeSettingRow { Section = "Pricing", Parameter = "Material efficiency factor", Value = "1.10", Unit = "factor", UsedBy = "Print Job Pricing", Notes = "Applied once to grams per part times quantity" },
             new NativeSettingRow { Section = "Pricing", Parameter = "Labor hourly rate", Value = "7500", Unit = "ISK/hour", UsedBy = "Print Job Pricing", Notes = "Governed default retained by quote snapshots" },
             new NativeSettingRow { Section = "Pricing", Parameter = "Electricity cost per kWh", Value = "13", Unit = "ISK/kWh", UsedBy = "Print Job Pricing", Notes = "Used with each printer's average power" },
@@ -26064,6 +26144,8 @@ private List<string> GetVisibleAiMaterialLabels()
             .OrderBy(code => code == "ISK" ? 0 : 1)
             .ThenBy(code => code, StringComparer.OrdinalIgnoreCase)
             .ToList();
+        if (!codes.Contains("ISK", StringComparer.OrdinalIgnoreCase))
+            codes.Insert(0, "ISK");
         return codes.Count > 0 ? codes : new[] { "ISK", "USD", "EUR", "GBP" };
     }
 
@@ -26081,12 +26163,205 @@ private List<string> GetVisibleAiMaterialLabels()
             : null;
     }
 
+    private sealed record LandedCostCurrencySnapshot(
+        string Currency,
+        string ConversionRate,
+        string Source,
+        string ObservationDate,
+        string FetchedAtUtc);
+
+    private static LandedCostCurrencySnapshot BuildDerivedLandedCostCurrencySnapshot(
+        string landedCurrency,
+        decimal invoiceIskPerUnit,
+        decimal landedIskPerUnit,
+        string source,
+        string observationDate,
+        string fetchedAtUtc) =>
+        new(
+            landedCurrency,
+            (invoiceIskPerUnit / landedIskPerUnit).ToString(
+                "0.######",
+                CultureInfo.InvariantCulture),
+            source,
+            observationDate,
+            fetchedAtUtc);
+
+    private string GetDefaultLandedCostCurrency()
+    {
+        var configured = _nativeSettingsRows.FirstOrDefault(row =>
+            string.Equals(row.Section, "Currency", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(row.Parameter, "Default Landed Cost Currency", StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(row.UsedBy, "Purchasing", StringComparison.OrdinalIgnoreCase))?.Value;
+        var normalized = (configured ?? string.Empty).Trim().ToUpperInvariant();
+        return GetPurchasingCurrencyCodes().Contains(normalized, StringComparer.OrdinalIgnoreCase)
+            ? normalized
+            : "ISK";
+    }
+
+    private bool TryBuildLandedCostCurrencySnapshot(
+        string? invoiceCurrency,
+        string? landedCurrency,
+        out LandedCostCurrencySnapshot snapshot)
+    {
+        var invoice = (invoiceCurrency ?? string.Empty).Trim().ToUpperInvariant();
+        var landed = (landedCurrency ?? string.Empty).Trim().ToUpperInvariant();
+        snapshot = new LandedCostCurrencySnapshot(landed, string.Empty, string.Empty, string.Empty, string.Empty);
+        if (!GetPurchasingCurrencyCodes().Contains(invoice, StringComparer.OrdinalIgnoreCase) ||
+            !GetPurchasingCurrencyCodes().Contains(landed, StringComparer.OrdinalIgnoreCase))
+            return false;
+        if (string.Equals(invoice, landed, StringComparison.OrdinalIgnoreCase))
+        {
+            snapshot = new LandedCostCurrencySnapshot(
+                landed, "1", "Same-currency identity", string.Empty, string.Empty);
+            return true;
+        }
+
+        var invoiceReference = _ecbExchangeRateCatalog?.Rates.FirstOrDefault(rate =>
+            string.Equals(rate.Currency, invoice, StringComparison.OrdinalIgnoreCase));
+        var landedReference = _ecbExchangeRateCatalog?.Rates.FirstOrDefault(rate =>
+            string.Equals(rate.Currency, landed, StringComparison.OrdinalIgnoreCase));
+        if (invoiceReference is not null && landedReference is not null &&
+            invoiceReference.IskPerCurrencyUnit > 0 && landedReference.IskPerCurrencyUnit > 0)
+        {
+            snapshot = BuildDerivedLandedCostCurrencySnapshot(
+                landed,
+                invoiceReference.IskPerCurrencyUnit,
+                landedReference.IskPerCurrencyUnit,
+                EcbExchangeRateReferenceService.ProviderName + " derived ISK cross-rate",
+                string.CompareOrdinal(
+                    invoiceReference.ObservationDate,
+                    landedReference.ObservationDate) <= 0
+                    ? invoiceReference.ObservationDate
+                    : landedReference.ObservationDate,
+                invoiceReference.FetchedAtUtc);
+            return true;
+        }
+
+        if (!TryParseDecimalAware(GetIskRateForPurchaseCurrency(invoice) ?? string.Empty, out var invoiceIsk) ||
+            !TryParseDecimalAware(GetIskRateForPurchaseCurrency(landed) ?? string.Empty, out var landedIsk) ||
+            invoiceIsk <= 0 || landedIsk <= 0)
+            return false;
+        snapshot = BuildDerivedLandedCostCurrencySnapshot(
+            landed,
+            Convert.ToDecimal(invoiceIsk, CultureInfo.InvariantCulture),
+            Convert.ToDecimal(landedIsk, CultureInfo.InvariantCulture),
+            "Manual governed Settings",
+            string.Empty,
+            string.Empty);
+        return true;
+    }
+
+    private static bool CanOverrideLandedCostCurrency(PurchaseOrderRecord order) =>
+        string.Equals(order.LifecycleStatus, "Draft", StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(order.CostStatus, "Draft", StringComparison.OrdinalIgnoreCase) &&
+        string.IsNullOrWhiteSpace(order.LandedCostCalculatedAtUtc) &&
+        string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion);
+
+    private static void ApplyLandedCostCurrencySnapshot(
+        PurchaseOrderRecord order,
+        LandedCostCurrencySnapshot snapshot)
+    {
+        order.LandedCostCurrency = snapshot.Currency;
+        order.LandedCostConversionRate = snapshot.ConversionRate;
+        order.LandedCostRateSource = snapshot.Source;
+        order.LandedCostRateObservationDate = snapshot.ObservationDate;
+        order.LandedCostRateFetchedAtUtc = snapshot.FetchedAtUtc;
+    }
+
+    private void RefreshLandedCostCurrencyReview()
+    {
+        if (FindName("LandedCostCurrencySelector") is not ComboBox selector ||
+            FindName("LandedCostConversionRateText") is not TextBlock rateText ||
+            FindName("LandedCostRateStatusText") is not TextBlock statusText ||
+            FindName("ApplyLandedCostCurrencyOverride") is not Button applyButton)
+            return;
+        selector.ItemsSource = GetPurchasingCurrencyCodes();
+        if (FindName("PurchaseOrdersGrid") is not DataGrid grid ||
+            grid.SelectedItem is not PurchaseOrderRecord order)
+        {
+            selector.SelectedItem = null;
+            selector.IsEnabled = false;
+            applyButton.IsEnabled = false;
+            rateText.Text = string.Empty;
+            statusText.Text = "Select a Purchase Order to review its landed-cost currency snapshot.";
+            return;
+        }
+
+        selector.SelectedItem = order.LandedCostCurrency;
+        var canOverride = CanOverrideLandedCostCurrency(order);
+        selector.IsEnabled = canOverride;
+        applyButton.IsEnabled = canOverride;
+        rateText.Text = string.IsNullOrWhiteSpace(order.LandedCostConversionRate)
+            ? "Conversion rate requires review."
+            : $"1 {order.Currency} = {order.LandedCostConversionRate} {order.LandedCostCurrency}";
+        var provenance = string.IsNullOrWhiteSpace(order.LandedCostRateSource)
+            ? "No valid conversion provenance is available."
+            : order.LandedCostRateSource +
+              (string.IsNullOrWhiteSpace(order.LandedCostRateObservationDate)
+                  ? string.Empty
+                  : $"; observation {order.LandedCostRateObservationDate}");
+        statusText.Text = canOverride
+            ? provenance + " Draft override is available; applying it requires confirmation."
+            : provenance + " Snapshot is locked because this is not an uncalculated v53 Draft.";
+    }
+
+    private void ApplyLandedCostCurrencyOverride_Click(object sender, RoutedEventArgs e)
+    {
+        if (FindName("PurchaseOrdersGrid") is not DataGrid grid ||
+            grid.SelectedItem is not PurchaseOrderRecord order ||
+            FindName("LandedCostCurrencySelector") is not ComboBox selector)
+            return;
+        if (!CanOverrideLandedCostCurrency(order))
+        {
+            MessageBox.Show(
+                this,
+                "Landed-cost currency can be changed only for an uncalculated v53 Draft Purchase Order.",
+                "Landed Cost Currency",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            RefreshLandedCostCurrencyReview();
+            return;
+        }
+        var selected = selector.SelectedItem?.ToString() ?? string.Empty;
+        if (!TryBuildLandedCostCurrencySnapshot(order.Currency, selected, out var snapshot))
+        {
+            MessageBox.Show(
+                this,
+                $"No governed conversion from {order.Currency} to {selected} is available. Review the purchasing currency rates in Settings Manager.",
+                "Landed Cost Currency",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            RefreshLandedCostCurrencyReview();
+            return;
+        }
+        var confirmation = MessageBox.Show(
+            this,
+            $"Apply {selected} as the landed-cost currency for {order.PurchaseOrderId}?\n\n" +
+            $"1 {order.Currency} = {snapshot.ConversionRate} {selected}\n" +
+            $"Source: {snapshot.Source}\n\n" +
+            "This stores Draft metadata only. It does not calculate or rewrite any monetary amount.",
+            "Apply Draft Landed-cost Currency Override?",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question,
+            MessageBoxResult.No);
+        if (confirmation != MessageBoxResult.Yes)
+        {
+            RefreshLandedCostCurrencyReview();
+            return;
+        }
+        ApplyLandedCostCurrencySnapshot(order, snapshot);
+        SavePurchaseOrders();
+        RefreshLandedCostCurrencyReview();
+        RefreshPurchaseOrderSummary();
+    }
+
     private void RefreshPurchaseCurrencyChoices()
     {
         if (FindName("PurchaseOrdersGrid") is not DataGrid grid) return;
         var column = grid.Columns.OfType<DataGridComboBoxColumn>()
             .FirstOrDefault(c => string.Equals(c.Header?.ToString(), "Currency", StringComparison.OrdinalIgnoreCase));
         if (column is not null) column.ItemsSource = GetPurchasingCurrencyCodes();
+        RefreshLandedCostCurrencyReview();
     }
 
     private void ApplyPurchaseCurrencyRate(PurchaseOrderRecord order, bool showMissingRate)
@@ -26238,13 +26513,47 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         if (_ecbExchangeRateCatalog is null)
             await RefreshEcbExchangeRateCatalogAsync(showFailure: false);
-        var order = new PurchaseOrderRecord { PurchaseOrderId = "PO-" + DateTime.Now.ToString("yyyyMMdd-HHmmss", CultureInfo.InvariantCulture), PurchaseDate = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture), Currency = "ISK", ExchangeRate = "1", ExchangeRateSource = _ecbExchangeRateCatalog is null ? "Manual governed Settings" : EcbExchangeRateReferenceService.ProviderName, ExchangeRateObservationDate = _ecbExchangeRateCatalog?.Rates.FirstOrDefault(rate => rate.Currency == "ISK")?.ObservationDate ?? string.Empty, ExchangeRateFetchedAtUtc = _ecbExchangeRateCatalog?.FetchedAtUtc ?? string.Empty, TaxTreatment = "VAT included in invoice", CostStatus = "Draft", LifecycleStatus = "Draft", ShippingAllocationMethod = "Automatic", TaxAllocationMethod = "By line value", CustomsAllocationMethod = "By line value", FeeAllocationMethod = "By line value" };
+        var order = new PurchaseOrderRecord
+        {
+            PurchaseOrderId = "PO-" + DateTime.Now.ToString(
+                "yyyyMMdd-HHmmss",
+                CultureInfo.InvariantCulture),
+            PurchaseDate = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+            Currency = "ISK",
+            ExchangeRate = "1",
+            ExchangeRateSource = _ecbExchangeRateCatalog is null
+                ? "Manual governed Settings"
+                : EcbExchangeRateReferenceService.ProviderName,
+            ExchangeRateObservationDate = _ecbExchangeRateCatalog?.Rates
+                .FirstOrDefault(rate => rate.Currency == "ISK")?.ObservationDate ?? string.Empty,
+            ExchangeRateFetchedAtUtc = _ecbExchangeRateCatalog?.FetchedAtUtc ?? string.Empty,
+            TaxTreatment = "VAT included in invoice",
+            CostStatus = "Draft",
+            LifecycleStatus = "Draft",
+            ShippingAllocationMethod = "Automatic",
+            TaxAllocationMethod = "By line value",
+            CustomsAllocationMethod = "By line value",
+            FeeAllocationMethod = "By line value"
+        };
+        var defaultLandedCurrency = GetDefaultLandedCostCurrency();
+        if (!TryBuildLandedCostCurrencySnapshot(
+                order.Currency,
+                defaultLandedCurrency,
+                out var landedSnapshot))
+        {
+            _ = TryBuildLandedCostCurrencySnapshot(
+                order.Currency,
+                "ISK",
+                out landedSnapshot);
+        }
+        ApplyLandedCostCurrencySnapshot(order, landedSnapshot);
         _sessionNewPurchaseOrderIds.Add(order.PurchaseOrderId);
         _purchaseOrders.Add(order); SavePurchaseOrders();
         if (FindName("PurchaseOrdersGrid") is DataGrid grid) { grid.SelectedItem=order; grid.ScrollIntoView(order); }
         RefreshPurchaseOrderSummary();
         RefreshEcbExchangeRateStatus(
-            "New order created. Select its currency to apply the current ECB reference prefill.");
+            $"New order created. Landed-cost currency default {order.LandedCostCurrency} was snapshotted for this Draft only.");
+        RefreshLandedCostCurrencyReview();
     }
 
     private void DeletePurchaseOrder_Click(object sender, RoutedEventArgs e)
@@ -26258,7 +26567,9 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void PurchaseOrdersGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        _purchaseOrderLineView?.Refresh(); RefreshPurchaseOrderSummary();
+        _purchaseOrderLineView?.Refresh();
+        RefreshPurchaseOrderSummary();
+        RefreshLandedCostCurrencyReview();
     }
 
     private void AddPurchaseOrderLine_Click(object sender, RoutedEventArgs e)
@@ -26283,10 +26594,23 @@ private List<string> GetVisibleAiMaterialLabels()
         var order = e.Row.Item as PurchaseOrderRecord;
         Dispatcher.BeginInvoke(new Action(() =>
         {
-            if (editedCurrency && order is not null) ApplyPurchaseCurrencyRate(order, showMissingRate: true);
+            if (editedCurrency && order is not null)
+            {
+                ApplyPurchaseCurrencyRate(order, showMissingRate: true);
+                if (_sessionNewPurchaseOrderIds.Contains(order.PurchaseOrderId) &&
+                    CanOverrideLandedCostCurrency(order) &&
+                    TryBuildLandedCostCurrencySnapshot(
+                        order.Currency,
+                        order.LandedCostCurrency,
+                        out var landedSnapshot))
+                {
+                    ApplyLandedCostCurrencySnapshot(order, landedSnapshot);
+                }
+            }
             SavePurchaseOrders();
             RefreshPurchaseMaterialChoices();
             RefreshPurchaseOrderSummary();
+            RefreshLandedCostCurrencyReview();
         }), DispatcherPriority.Background);
     }
 

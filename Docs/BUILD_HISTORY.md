@@ -2,6 +2,25 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v53.0.2 - Landed-cost Currency Default and Draft Override
+
+The governed Settings default is copied only into a newly created Purchase
+Order Draft. A dedicated review panel can snapshot a confirmed manual or ECB
+cross-rate while the Draft remains uncalculated. The eligibility rule depends
+only on persisted lifecycle, cost and calculation metadata, so restart cannot
+silently unlock a legacy or calculated order.
+
+This increment deliberately changes no monetary result. Diagnostics disclose
+only configured/effective defaults and reference-catalog status. Help explains
+direction, fallback and lock behavior. Full Verification and disposable smoke
+cover the deterministic contract. Owner runtime review then found a free-text
+Settings editor and recurring legacy backfill. The corrected candidate uses a
+governed dropdown, runs legacy backfill only during pre-v38 migration and
+repairs only affected uncalculated Draft markers. Release smoke
+`20260727200102-a16f943f` passes 387/387 with exact state equality. Owner
+runtime re-acceptance confirms the dropdown, override, restart persistence and
+Full Data Verification PASS. v53.0.2 is canonical and runtime accepted.
+
 ## v53.0.1 - Governed Landed-cost Currency Contract and Additive Schema
 
 The accepted research contract preserves Purchase Order invoice currency and

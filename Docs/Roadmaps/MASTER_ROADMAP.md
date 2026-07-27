@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v53.0.1 — Contract and Additive Schema**
+Current canonical release: **v53.0.2 — Settings Default and Draft Override**
 
-Last runtime-accepted baseline: **v53.0.1 — Contract and Additive Schema**
+Last runtime-accepted baseline: **v53.0.2 — Settings Default and Draft Override**
 
-Current canonical application release: **v53.0.1 — Contract and Additive Schema**
+Current canonical application release: **v53.0.2 — Settings Default and Draft Override**
 
-Current roadmap increment: **v53.0.2 — Settings Default and Draft Override**
+Current roadmap increment: **v53.0.3 — Cross-currency Calculation and Downstream Snapshots**
 
-Current acceptance note: v53.0.1 is runtime accepted with schema v38 and exact-value migration evidence.
+Current acceptance note: v53.0.2 is runtime accepted with Full Data Verification 387/387.
 
-Next note: v53.0.2 owns the Settings default, new-order-only prefill and reviewed Draft override.
+Next note: v53.0.3 owns monetary conversion and downstream Inventory/Material snapshots.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -40,7 +40,12 @@ This file is the canonical strategic roadmap. Completed build details belong in
 
 | v53 | Governed Landed-cost Currency | ★★★★☆ | Planned |
 
-| v54 | Application Menu and Navigation Review | ★★★☆☆ | Planned |
+| v54 | Materials Scope and Collection Workflow | ★★★★☆ | Planned |
+| v55 | Operational Safety and Disposable Hygiene | ★★★★☆ | Planned |
+| v56 | Governed Public Demo Dataset | ★★★☆☆ | Planned |
+| v57 | Public Website Experience and Canonical Branding | ★★★★☆ | Planned |
+| v58 | Governed Custom Document Branding | ★★★☆☆ | Planned |
+| v59 | Application Navigation Finalization | ★★★☆☆ | Planned last |
 
 ## Reconciliation of the older plans
 
@@ -2296,12 +2301,12 @@ to unstarted authoritative planning slots.
   - Prove migration and Excel recovery retain exact legacy business values; do not add the Settings or calculation workflow yet.
   - Completion condition: schema/recovery gates pass and owner accepts unchanged historical values plus explicit legacy metadata.
 - **v53.0.2 — Settings Default and Draft Override**
-  - State: Current after v53.0.1 runtime acceptance.
+  - State: Complete; owner runtime acceptance and Full Data Verification 387/387 pass on 2026-07-27.
   - Add the governed Settings default, new-order-only prefill and reviewed Draft override.
   - Snapshot manual or optional ECB reference provenance without requiring network access or changing saved orders.
   - Completion condition: owner accepts default, override, offline and restart behavior for new Purchase Orders.
 - **v53.0.3 — Cross-currency Calculation and Downstream Snapshots**
-  - State: Planned after v53.0.2 runtime acceptance.
+  - State: Current after v53.0.2 runtime acceptance.
   - Convert accepted landed results while preserving invoice inputs, then snapshot Inventory and Material handoff evidence.
   - Update governed purchasing reports to use landed-currency provenance and preserve saved Usage and Quote history.
   - Completion condition: owner accepts cross-currency results and unchanged historical/downstream records.
@@ -2310,18 +2315,69 @@ to unstarted authoritative planning slots.
   - Add safe diagnostics, field/workflow Help and the required AutomationIds.
   - Extend disposable automation for defaults, override, restart, migration, recovery and historical stability.
   - Completion condition: all relevant gates and Full Data Verification pass, then owner accepts the completed v53 workflow.
+- **v53.0.5 — Post-v50 Help Reconciliation**
+  - State: Planned after v53.0.4; mandatory before parent v53 may close or v54 may start.
+  - Audit every user-visible change delivered after v50 Help acceptance through completed v51, v52 and the final v53 workflow.
+  - Reconcile tabs, controls, fields, menus, runtime windows, labels, validation, save timing, defaults and safety boundaries.
+  - Update current Help, stable destinations, coverage registry/ledger and deterministic gates for every confirmed drift or gap.
+  - Remove or redirect stale Help for retired behavior while preserving canonical historical release documentation.
+  - Require Debug/Release, Help/static/documentation gates, Full Data Verification and owner search/navigation/readability review.
+  - Completion condition: zero unexplained post-v50 Help gaps and owner acceptance; only then may parent v53 close.
 
-- **v54.0 — Application Menu and Navigation Review**
-  - State: Planned after the recorded v50-v53 sequence; inventory and owner review before menu changes.
-  - Inventory every application menu item, command target, shortcut, contextual Help link and supported navigation destination.
-  - Identify missing high-value actions, including menu commands that select and focus the correct top-level or nested application tab.
-  - Identify redundant, stale, duplicated or low-value menu items, but do not remove accepted paths until callers, workflows and
-    discoverability impact are mapped and the replacement or retirement is runtime accepted.
-  - Define consistent command naming, enabled/disabled state, keyboard access, current-context behavior and focus restoration.
-  - Keep Production, FTPS, updater, recovery and other guarded actions behind their existing confirmations and safety boundaries.
-  - Assess AutomationIds and extend deterministic tester navigation evidence for every added, redirected or retired menu command.
-  - Completion condition: owner accepts the inventory and bounded change set, then runtime confirms every retained or new command
-    reaches the intended safe destination without unexpected dialogs, state mutation or orphaned actions.
+- **v54.0 — Materials Scope and Collection Workflow**
+  - State: Planned after v53; research and interaction contract before replacing the accepted single-select filter path.
+  - Add no-modifier multi-select for Manufacturer, Base Material, Variant / Finish, Reinforcement, Color and Product Line.
+  - Use OR within one filter and AND across filter categories, with visible selections, counts and per-filter/global Clear actions.
+  - Keep AI Assistant and saved collection scope tied to the exact visible canonical MaterialID set.
+  - Preserve archived/unlinked behavior, report and website scope, saved collection snapshots and canonical data immutability.
+  - Extend deterministic scope/clear/restart evidence; keep dropdown layout, wrapping and usability as owner-manual acceptance.
+  - Completion condition: owner accepts exact filter logic, collection parity and unchanged canonical/business state.
+
+- **v55.0 — Operational Safety and Disposable Hygiene**
+  - State: Planned after v54; bounded safety fixes and cleanup ownership only.
+  - Add a named, default-No confirmation before deleting an unreferenced canonical Base Material.
+  - Prove cancellation preserves SQLite, selection and dependent calculations; retain referenced-delete blocking.
+  - Define a path-contained post-acceptance cleanup operation for obsolete successful profiles below the tester temp root.
+  - Preserve the latest required PASS evidence plus every unresolved FAIL, aborted run and current acceptance dependency.
+  - Never follow reparse points or touch the temp root, owner data, canonical seeds, Production, FTPS or external evidence.
+  - Completion condition: owner accepts destructive-action safety and cleanup evidence with no required artifact loss.
+
+- **v56.0 — Governed Public Demo Dataset**
+  - State: Planned after v55; privacy/data contract before generating or publishing a demo database.
+  - Build a deterministic, versioned SQLite demo from an explicit owner-approved allowlist of representative measured materials.
+  - Use disclosed fictional identities while preserving useful measurement and relationship patterns.
+  - Exclude purchasing, Inventory, notes, URLs, paths, credentials, deployment and Production identity.
+  - Keep the public demo separate from the canonical tester seed and require privacy scans, integrity, Verification and runtime review.
+  - Publish only through a separately authorized guarded download workflow with retained provenance and SHA-256 evidence.
+  - Completion condition: owner accepts privacy, usefulness, deterministic regeneration and the guarded downloadable artifact.
+
+- **v57.0 — Public Website Experience and Canonical Branding**
+  - State: Planned after v56; website-template and standalone-calculator research before HTML or asset changes.
+  - Add a responsive main-site navigation entry for the existing standalone `/3dp/price` calculator without changing its formulas.
+  - Preserve the standalone route and keep calculator data independent from SQLite, Materials, reports and desktop export payloads.
+  - Add the approved canonical website logo and favicon assets with valid relative routes and honest missing-asset fallback.
+  - Preserve existing main-site tabs, generated routes, report branding and narrow/mobile behavior.
+  - Require local Preview and owner visual inspection; Production and FTPS remain separately authorized and default-No.
+  - Completion condition: calculator parity, canonical branding and desktop/mobile navigation are accepted without route regression.
+
+- **v58.0 — Governed Custom Document Branding**
+  - State: Planned after v57; one renderer/asset ownership contract before implementation.
+  - Add an optional user-owned PNG logo for generated HTML/PDF reports, website documents and Print Job Quote output only.
+  - Validate signature, decoded dimensions, size and transparency; copy accepted content into a governed per-user location.
+  - Provide preview plus explicit Remove/Restore Default with honest missing/corrupt fallback.
+  - Never alter application icon, splash, desktop chrome or canonical public-site branding and never embed local source paths.
+  - Extend deterministic validation/selection/fallback coverage while retaining visual layout acceptance as owner-manual.
+  - Completion condition: owner accepts default/custom output across every governed renderer with compatibility preserved.
+
+- **v59.0 — Application Navigation Finalization**
+  - State: Planned last, after every earlier roadmap item and open implementation finding is completed or explicitly dispositioned.
+  - Inventory every menu item, command target, shortcut, Help link and supported top-level or nested tab destination.
+  - Add high-value commands that select and focus the correct tab; identify redundant, stale, duplicated or low-value actions.
+  - Do not retire accepted paths until callers, discoverability and replacement ownership are mapped and runtime accepted.
+  - Review the complete main-tab order as one coherent daily-workflow pass instead of incremental reordering.
+  - Preserve AutomationIds, keyboard access, focus restoration, lazy loading, saved layout and every guarded-action boundary.
+  - Extend deterministic tester navigation for changed commands/order; keep visual ordering acceptance owner-manual.
+  - Completion condition: owner accepts the final menu and tab structure with no orphaned action, regression or state mutation.
 
 ### Intentionally unscheduled
 

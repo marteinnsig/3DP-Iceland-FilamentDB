@@ -245,6 +245,22 @@ internal static class Program
                 ecbStatus.Contains("Manual governed Settings", StringComparison.Ordinal),
                 "Purchase Orders did not retain the offline-safe ECB reference status.");
             Record("ecb-reference-offline-boundary", true, ecbStatus);
+            Require(
+                FindById(main, "NewPurchaseOrderButton").Current.ControlType == ControlType.Button &&
+                FindById(main, "PurchaseOrdersGrid").Current.ControlType == ControlType.DataGrid &&
+                FindById(main, "LandedCostCurrencySelector").Current.ControlType == ControlType.ComboBox &&
+                FindById(main, "ApplyLandedCostCurrencyOverride").Current.ControlType == ControlType.Button,
+                "Purchase Orders did not expose the governed landed-cost Draft controls.");
+            var landedCostStatus = FindById(main, "LandedCostRateStatus").Current.Name;
+            Require(
+                landedCostStatus.Contains("Select a Purchase Order", StringComparison.Ordinal) ||
+                landedCostStatus.Contains("Draft override is available", StringComparison.Ordinal) ||
+                landedCostStatus.Contains("Snapshot is locked", StringComparison.Ordinal),
+                "Purchase Orders did not expose an honest landed-cost Draft status.");
+            Require(
+                FindById(main, "LandedCostConversionRate").Current.ControlType == ControlType.Text,
+                "Purchase Orders did not expose the landed-cost conversion-rate evidence.");
+            Record("landed-cost-draft-ui-contract", true, landedCostStatus);
 
             SelectTab(main, "SettingsManagerTab", application.Id);
             Invoke(FindById(main, "TestAiProviderFoundation"), application.Id);

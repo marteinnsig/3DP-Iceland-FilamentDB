@@ -249,10 +249,16 @@ internal static class HelpContentCatalog
             Allocation status are calculated. Categories are Filament, Printer, Equipment, Spare Parts, Consumables and Other.
 
             ECB and landed costs
-            Refresh ECB Reference is optional and offline-safe. Only orders created in the current session may receive reference prefill;
-            saved rates/provenance never refresh. Stale cache is labeled and governed Settings remain fallback. Calculate Landed Costs
-            commits edits, validates and saves allocations and synchronizes current linked-Material pricing evidence. Resolve the Cost
-            Allocation Validation message before receiving.
+            Refresh ECB Reference is optional and offline-safe. Settings `Default Landed Cost Currency` is copied only into a newly
+            created Draft; changing Settings never changes an existing order. Select an uncalculated v53 Draft to review or override
+            its landed-cost currency. Apply requires default-No confirmation and snapshots the target currency, conversion rate,
+            source and date. The displayed direction is `1 invoice currency = rate landed-cost currency`; ECB cross-rates use both
+            currencies from one catalog, otherwise both positive manual `ISK per 1` Settings legs are required. Same currency is the
+            only valid automatic 1:1 case. A legacy, calculated or non-Draft order is locked, including after restart. This v53.0.2
+            control stores currency metadata only; Calculate Landed Costs remains the separate monetary calculation boundary.
+            Stale ECB cache is labeled and governed Settings remain fallback. Calculate Landed Costs commits edits, validates and
+            saves allocations and synchronizes current linked-Material pricing evidence. Resolve the Cost Allocation Validation
+            message before receiving.
 
             Receiving and downstream creation
             Receive / Reconcile records counts, Check state, stage and received date; it does not create Inventory. Create Material from
@@ -272,7 +278,7 @@ internal static class HelpContentCatalog
             Order actions
             New Order immediately creates a Draft header. Delete Order is permanent/default-No for the order and lines but never
             deletes Inventory already created from it. Refresh ECB Reference uses official cached/network reference data only for an
-            eligible order created in the current session; it never replaces a saved rate or recalculates historical prices. Attach
+            eligible newly created Draft; it never replaces a saved rate or recalculates historical prices. Attach
             Document copies a chosen invoice/evidence file into governed storage. Calculate Landed Costs commits pending edits,
             validates totals/allocations, saves results and updates current linked-Material pricing evidence. Receive / Reconcile
             records received quantities/check state and does not create Inventory. Create Materials + Received Spools is repeat-safe
@@ -284,6 +290,11 @@ internal static class HelpContentCatalog
             Workflow stage choices are Draft, Ordered, Awaiting import charges, Awaiting delivery, Receiving, Verified, Inventory
             created and Complete. Currency is the invoice currency. `1 currency unit = ISK` is the reviewed conversion input used by
             current calculations; it must be positive. Rate source and Rate date are read-only provenance and never silently refresh.
+            `Default Landed Cost Currency` in Settings prefills only a new Draft. The landed-cost review below the order grid shows
+            `1 invoice currency = rate landed-cost currency`. Its selector and Apply action remain enabled only while both lifecycle
+            and cost status are Draft and no calculation version/time exists. Apply is default-No and stores reviewed currency,
+            positive cross-rate and provenance without changing monetary results. Same currency alone uses 1:1. A legacy, calculated
+            or non-Draft snapshot stays locked across restart.
             Tax treatment is the governed tax mode. Items total, Shipping, Supplier VAT, Invoice total, Import VAT, Customs, Clearance
             and Other fees are non-negative header amounts in the order currency unless the visible label states otherwise. Notes is
             editable. Cost status and Document are read-only readiness/evidence summaries.
@@ -642,8 +653,9 @@ internal static class HelpContentCatalog
 
             Currency and purchasing values
             Governed currency values are the offline/manual fallback and remain owner-editable. ECB is optional reference data for
-            eligible new Purchase Orders only. Saving new Settings may refresh current drafts/calculated views, but never rewrites saved
-            Purchase Orders, received Inventory, Usage history or saved Quotes.
+            eligible new Purchase Orders only. `Default Landed Cost Currency` accepts a governed currency code and is copied only when
+            a new Draft is created; invalid/missing values safely fall back to ISK for that new Draft. Changing or saving Settings never
+            rewrites an existing Purchase Order, received Inventory, Usage history or saved Quote.
 
             Deployment and FTPS values
             Deployment rows govern local output/publishing configuration. Password secrets are never stored in the Settings grid or

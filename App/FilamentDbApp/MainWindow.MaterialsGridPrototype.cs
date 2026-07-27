@@ -772,11 +772,16 @@ public partial class MainWindow
             }
 
             Control editor;
-            if (column.EditorKind == MaterialsPrototypeEditorKind.ComboBox)
+            var governedCurrencyEditor =
+                UsesGovernedCurrencyChoiceEditor(_rows[e.RowIndex], column);
+            if (column.EditorKind == MaterialsPrototypeEditorKind.ComboBox ||
+                governedCurrencyEditor)
             {
                 var comboBox = new ComboBox
                 {
-                    ItemsSource = column.Choices,
+                    ItemsSource = governedCurrencyEditor
+                        ? GovernedPurchasingCurrencyChoices
+                        : column.Choices,
                     SelectedItem = _rows[e.RowIndex].Cells[e.ColumnIndex],
                     Padding = new Thickness(4, 0, 4, 0)
                 };

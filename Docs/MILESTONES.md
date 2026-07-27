@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v53.0.2 - Landed-cost Currency Default and Draft Override
+
+New Purchase Order Drafts receive a governed landed-currency default and may
+snapshot one reviewed override before calculation. Exact dropdown ownership,
+manual/ECB provenance, restart persistence, legacy locking, 387/387
+Verification and owner runtime acceptance pass without monetary recalculation.
+
 # v53.0.1 - Governed Landed-cost Currency Contract and Additive Schema
 
 Schema v38 establishes separate, provenance-bearing landed-result currency

@@ -173,6 +173,31 @@
 - Verify README links and release identity during major-version documentation
   closure. README drift blocks closing the parent major milestone.
 
+## In-application Help maintenance
+
+- For every user-visible feature, workflow, field, control, menu item, runtime
+  window, validation rule or safety-boundary change, assess and update the
+  in-application Help in the same increment.
+- Keep Help synchronized with actual labels, navigation paths, units, defaults,
+  save timing, persistence ownership, offline behavior, failure handling and
+  read-only versus mutating boundaries.
+- Update `HelpContentCatalog`, the Help coverage registry/ledger and relevant
+  deterministic Verification or tester contracts whenever supported UI
+  ownership or behavior changes.
+- When functionality is retired or replaced, remove or redirect stale Help
+  destinations in the same accepted retirement workflow. Preserve historical
+  release documentation, but never leave current Help describing a retired
+  action.
+- New controls and fields must have a stable Help destination before their
+  increment can close. Existing controls whose behavior changes require their
+  current Help text to be revalidated even when their AutomationId is unchanged.
+- Cosmetic-only changes that do not alter labels, discoverability, behavior or
+  user decisions do not require low-value Help text changes; record that
+  assessment in increment evidence.
+- Run the Help coverage/drift gates and require owner readability/navigation
+  acceptance for material Help changes. Stale or missing Help blocks release
+  closure.
+
 ## Owner runtime test handoff clarity
 
 - Write owner test checklists as exact click-by-click instructions suitable for

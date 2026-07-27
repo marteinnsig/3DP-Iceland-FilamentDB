@@ -57,7 +57,7 @@ seven requests, 13,461 tokens and USD 0.37. The owner accepts `gpt-5.6-sol` as P
 local fallback remain available. Disposable smoke `20260727182043-ab84a0eb` passes 385/385 with exact state. Parent v52 is
 complete.
 
-## Status review — 2026-07-25
+## Status review — 2026-07-27
 
 This review preserves every original description and adds lifecycle metadata.
 `Solved` is used only where an accepted release or direct runtime evidence can
@@ -67,16 +67,31 @@ idea. Historical free-form entries remain in their original language and order.
 
 | Status | Items |
 |---|---:|
-| Open | 21 |
-| In progress | 0 |
-| Partially solved | 3 |
-| Solved | 57 |
+| Open | 11 |
+| In progress | 1 |
+| Partially solved | 0 |
+| Solved | 72 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 0 |
-| **Total tracked findings** | **85** |
+| **Total tracked findings** | **88** |
 
 ## Tracked findings
+
+Date: 2026-07-27
+Area: In-application Help / Post-v50 maintenance
+Type: Workflow friction / Documentation
+Severity: Important
+Status: Open
+What happened: The exhaustive v50 Help system is accepted, but later user-visible v51-v53 changes need one explicit reconciliation
+pass, and repository governance did not yet require Help maintenance in every future increment.
+Expected behavior: Keep Help, stable destinations, coverage registry/ledger and deterministic gates synchronized whenever supported
+features, controls, fields, workflows, labels, validation, persistence or safety boundaries change.
+Steps to reproduce: Compare accepted v51-v53 release changes with current Help topics, control/field ledger and coverage registry.
+Screenshot / export / report attached: Owner governance review on 2026-07-27.
+Resolution: Planned as mandatory v53.0.5 — Post-v50 Help Reconciliation. `AGENTS.md` now requires same-increment Help maintenance for
+future user-visible changes; cosmetic-only changes may record that no Help update is warranted.
+Verification evidence: Pending complete v51-v53 source/release/Help reconciliation, deterministic drift gates and owner review.
 
 Date: 2026-07-27
 Area: Runtime profiles / ownership and acceptance isolation
@@ -155,28 +170,29 @@ Expected behavior: Inventory every menu item and destination, propose high-value
 identify possible retirement candidates. Preserve guarded actions and do not remove accepted paths before impact and ownership review.
 Steps to reproduce: Compare the current application menu with all supported top-level and nested tabs and common user workflows.
 Screenshot / export / report attached: Owner workflow idea recorded on 2026-07-27.
-Resolution: Planned as research-first v54.0 — Application Menu and Navigation Review, after the recorded v50-v53 sequence.
+Resolution: Planned with the final tab-order review in v59.0 — Application Navigation Finalization.
 Verification evidence: Not implemented; roadmap scope, safety boundaries and completion condition are recorded.
 
 Date: 2026-07-27
 Area: GitHub README / Release and download discovery
 Type: Workflow friction / Documentation
 Severity: Important
-Status: In progress
+Status: Solved
 What happened: The repository README still advertises older v44.6.2/v43.8.9 release states and does not provide prominent stable
 installer or portable download links.
 Expected behavior: At each major-version closure, align README release/development text with the canonical Master Roadmap and retain
 stable links for the downloads page, latest Windows installer and portable ZIP. README drift must block major-milestone closure.
 Steps to reproduce: Open the GitHub repository README and compare its release identity with the current canonical roadmap.
 Screenshot / export / report attached: Owner GitHub review on 2026-07-27.
-Resolution: Root README and AGENTS release-governance rule updated in the current documentation workflow; commit/closure pending.
-Verification evidence: Stable governed routes are documented; documentation/diff checks pending in the parent workflow.
+Resolution: Solved as repository release governance on 2026-07-27. Root README now exposes stable installer, portable ZIP and
+downloads-page routes, while AGENTS requires README release alignment before every major-version closure.
+Verification evidence: The README links use the governed stable routes; release-documentation audit and diff checks pass.
 
 Date: 2026-07-27
 Area: Purchase Orders / Landed-cost currency
 Type: Workflow improvement / Data integrity
 Severity: Important
-Status: In progress — v53.0.1 complete; v53.0.2 current
+Status: In progress — v53.0.1-v53.0.2 complete; v53.0.3 current
 What happened: Purchase Orders calculate landed cost in the transaction currency, but an owner may need governed landed-cost results
 in a different operational currency such as ISK while retaining the original invoice currency and values.
 Expected behavior: Add a Settings-owned Default Landed Cost Currency for new Purchase Orders plus a reviewed per-order override.
@@ -190,12 +206,18 @@ Verification evidence: Disposable Release profile `20260727190229-ad32a552` pass
 hash equality. The v37 fixture migrates to v38 with exact monetary values and explicit 1:1 legacy metadata.
 Owner acceptance: PASS on 2026-07-27. The owner profile contained two empty test orders and no populated historical order lines, so
 visual monetary migration coverage was limited; the deterministic exact-value fixture owns populated monetary migration evidence.
+v53.0.2 adds the new-Draft-only Settings default and confirmed override without monetary calculation. Disposable Release smoke
+`20260727194840-c7ca50f8` passes 387/387 with exact state equality; owner runtime evidence remains pending.
+Owner runtime review then found two candidate defects: the Settings value used a free-text editor, and startup migration restamped a
+new v53 Draft as legacy. The correction uses a governed currency dropdown and limits legacy backfill to actual pre-v38 migration,
+with a narrow repair for affected uncalculated Drafts. Replacement smoke `20260727200102-a16f943f` passes 387/387 with exact state;
+owner runtime re-acceptance confirms dropdown, override, restart persistence and Full Data Verification PASS.
 
 Date: 2026-07-27
 Area: Automated acceptance / Application-wide navigation
 Type: Workflow improvement / Test coverage
 Severity: Important
-Status: Open
+Status: Solved
 What happened: The disposable tester visibly visits several tabs, but it does not yet provide exact evidence that every supported
 top-level tab and eligible nested tab was selected and rendered.
 Expected behavior: Add an all-top-level-tab navigation sweep with exact visited/expected evidence and nested-tab checks where stable
@@ -203,8 +225,10 @@ AutomationIds exist. Require no crash, unexpected dialog or business-state chang
 CRUD, Reports, Recovery and Updater scenarios; Production and FTPS remain blocked.
 Steps to reproduce: Run the smoke scenario and compare its navigation evidence with the authoritative tab inventory.
 Screenshot / export / report attached: Owner tester observation recorded on 2026-07-27.
-Resolution: Planned in v50.2.4 — Contextual Help Entry Points and Coverage Acceptance.
-Verification evidence: Not implemented; roadmap scope explicitly distinguishes navigation/rendering coverage from full action testing.
+Resolution: Solved through v50.2.4 and retained by later disposable smoke coverage. The runner selects all 22 unique top-level tabs
+by AutomationId plus Experimental nested/result views while preserving separate authorization for mutating scenarios.
+Verification evidence: `AutomationRunner` records exact `Visited 22/22 unique top-level tabs by AutomationId`; accepted v50-v52
+disposable runs retain exact business-state equality with Production and FTPS blocked.
 
 Date: 2026-07-26
 Area: Application release / signed update packaging
@@ -255,9 +279,8 @@ as-is, including its current fields, formulas, wording and client-side behavior.
 SQLite, MaterialID, reports, website export data or any other application data. The change is website navigation/presentation only.
 Steps to reproduce: Open the main public website and confirm that no dedicated tab currently exposes the standalone price calculator.
 Screenshot / export / report attached: Capture desktop and narrow/mobile tab navigation during implementation.
-Resolution: Unimplemented. Research the current main-template navigation, standalone calculator assets, relative paths and responsive
-behavior before integration. Keep the standalone `/3dp/price` route working unless an explicit redirect decision is separately
-approved. Preview and visually inspect the generated HTML before any Production or FTPS action.
+Resolution: Planned in v57.0 — Public Website Experience and Canonical Branding. Research main-template navigation, standalone
+calculator assets, relative paths and responsive behavior. Keep `/3dp/price` working unless a redirect is separately approved.
 Verification evidence: Future acceptance must prove calculator output parity with the current standalone page, no Materials/database
 payload or network dependency, working tab navigation at desktop and narrow widths, and unchanged existing main-site tabs/routes.
 
@@ -316,10 +339,8 @@ The UI must show active selections, resulting MaterialID count, per-filter/globa
 Steps to reproduce: Open Materials and attempt to select three Manufacturers, PLA and two Colors for one comparison collection.
 Only one value can currently be selected in each desktop filter.
 Screenshot / export / report attached: Capture current Materials single-select and website multi-select behavior during implementation.
-Resolution: Unimplemented. Preserve the accepted single-select path until replacement runtime acceptance. Saved AI collections remain
-explicit MaterialID snapshots and must not change silently when filters change. Research archived/unlinked handling and every report,
-website, AI, tester and Verification caller before implementation. Suggested ownership is a bounded v47 follow-up after v47.0.2;
-broader desktop filter redesign requires separate roadmap ownership.
+Resolution: Planned in v54.0 — Materials Scope and Collection Workflow. Preserve the accepted single-select path until replacement
+runtime acceptance. Saved collections remain explicit MaterialID snapshots and must not change silently when filters change.
 Verification evidence: Required future coverage includes OR within each filter, AND across filters, Clear restoring accepted scope,
 exact visible MaterialID count and AI preview/save parity. Deterministic scope tests belong in the existing safe acceptance boundary;
 multi-select dropdown layout, wrapping and usability remain owner-manual acceptance.
@@ -395,7 +416,7 @@ Area: Distribution / public demo dataset
 Type: Workflow improvement / Data issue
 Severity: Idea
 Status: Open
-Resolution: Plan as a separate bounded project. Build a versioned, distributable SQLite demo backup from an explicit allowlist of
+Resolution: Planned in v56.0 — Governed Public Demo Dataset. Build a versioned, distributable SQLite demo backup from an allowlist of
 roughly 30–40 owner-measured materials, with stable pseudonymous Manufacturer, Product Line, Marketing Name and demo MaterialID
 identities. Preserve real measurement values and useful same-manufacturer/base-material relationships, but remove or replace private
 purchasing, inventory, notes, URLs, local paths, credentials, deployment and production identity. Keep this public demo seed separate
@@ -416,7 +437,8 @@ Area: Disposable automation / evidence retention
 Type: Workflow friction
 Severity: Minor
 Status: Open
-Resolution: After Codex has reviewed a completed disposable tester run and retained the evidence still needed for the current
+Resolution: Planned in v55.0 — Operational Safety and Disposable Hygiene. After Codex has reviewed a completed disposable tester run
+and retained the evidence still needed for the current
 increment, Codex should remove obsolete profile folders below `%TEMP%\3DPIceland-Automation`. Keep the latest accepted PASS evidence
 for each scenario and every unresolved FAIL, aborted run or runtime-acceptance dependency. Never delete the automation root itself,
 follow reparse points or touch owner, Production, FTPS or unresolved paths. Record which profile IDs were removed and retained.
@@ -599,12 +621,11 @@ Date: 2026-07-25
 Area: Materials / manual backup and save ownership
 Type: Workflow friction / UI polish
 Severity: Minor
-Status: Open
-Resolution: Research the Materials `Manual Backup` command and its `SaveNativeMaterials_Click` ownership before changing it. Decide
-whether the action should be removed, renamed to an explicit save action or moved into Backup and Recovery Center. Preserve canonical
-SQLite persistence, validation, dirty-state honesty and the pre-save backup safety boundary.
-Verification evidence: Requires caller and backup-order research plus dirty/clean state, validation-blocked save, backup creation,
-SQLite persistence, close/restart and Backup and Recovery Center runtime tests.
+Status: Solved
+Resolution: Retained `Manual Backup` as an explicit SQLite evidence action, not a Save command. Normal Fast Materials edits auto-save;
+tooltip and exhaustive Help state the distinction. Backup and Recovery Center owns the wider catalog and restore workflow.
+Verification evidence: v44.7.17 accepted manual-backup discovery and guarded recovery; v50.4 accepted exhaustive Materials and
+runtime-window Help, and disposable Verification retained exact business-state recovery.
 What happened: The Materials toolbar labels the action `Manual Backup`, but it validates and saves Materials and creates a database
 backup before replacement; a separate canonical SQLite backup action already exists in Backup and Recovery Center.
 Expected behavior: The label and placement should state the action's real ownership without duplicating backup UI or weakening the
@@ -635,7 +656,8 @@ Area: Settings Manager / Base Material Catalog
 Type: Workflow friction / Data issue
 Severity: Important
 Status: Open
-Resolution: Add an explicit destructive-action confirmation before `Delete Selected Base Material` executes, with `No` as the
+Resolution: Planned in v55.0 — Operational Safety and Disposable Hygiene. Add an explicit destructive-action confirmation before
+`Delete Selected Base Material` executes, with `No` as the
 default focused response. Identify the selected Base Material in the warning and make cancellation leave canonical SQLite, selection
 and dependent calculations unchanged.
 Verification evidence: Requires Yes/No/default-focus, keyboard dismissal, cancellation, confirmed deletion, restart and Full Data
@@ -706,7 +728,7 @@ Date: 2026-07-24
 Area: Application-wide user help and workflow guidance
 Type: Workflow friction / UI polish
 Severity: Idea
-Status: In progress
+Status: Solved
 Resolution: v50.0.0 accepted the information architecture and one reusable non-modal Help window with offline search and F1
 contextual navigation. The parent milestone continues through recorded v50.1 start-to-finish guidance, v50.2 per-tab reference and
 contextual links, and v50.3 troubleshooting/recovery/publishing safety plus final acceptance.
@@ -874,18 +896,14 @@ Date: Historical feedback (date not recorded)
 Area: Pricing / analytics
 Type: Feature improvement
 Severity: Important
-Status: Partially solved
+Status: Solved
 What happened: USD/kg and price-per-engineering-result analytics
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: Material-level USD/kg and price/value context exist. v48.0 research
-selects Overall engineering score points per canonical MSRP USD/kg as the
-minimum honest candidate metric, with both inputs and comparison scope visible.
-No landed-cost fallback or stored metric is allowed.
-Verification evidence: `Docs/PricingUsageAnalytics.md` maps ownership and
-staged implementation. v48.0.1 canonical pricing provenance is owner accepted
-with Full Data Verification 351/351; the value index remains owned by v48.0.2.
+Resolution: Solved in v48.0.2. The non-persisted governed value index shows Overall engineering score per canonical MSRP USD/kg with
+both inputs, exact comparison scope and honest missing-data behavior; landed cost is never substituted.
+Verification evidence: Owner accepted exact scope, recommendation-price identity and alternatives; Full Data Verification 354/354.
 
 Date: Historical feedback (date not recorded)
 Area: Tensile / Impact data entry
@@ -903,15 +921,15 @@ Date: Historical feedback (date not recorded)
 Area: AI Assistant / Materials scope
 Type: Workflow issue
 Severity: Important
-Status: Partially solved
+Status: Solved
 What happened: AI collection scope and workflow clarity
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: The incorrect all-material collection scope was solved by canonical visible/active MaterialID projection. v47 now owns
-the local-first workflow, purpose and collection clarity. Planned v52 owns an optional, read-only OpenAI integration with explicit
-payload preview, Windows Credential Manager secret ownership, deterministic local fallback and no automatic canonical-data writes.
-Verification evidence: v47.0.1 through v47.0.3 are owner accepted; stable coverage identity and Full Data Verification 350/350 pass. v47 is complete; optional external integration remains planned under v52.
+Resolution: Solved through v47 and v52. Collections use exact visible/active MaterialID snapshots; local deterministic behavior
+remains available, and optional OpenAI generation requires exact preview, one-time consent and read-only advisory output.
+Verification evidence: v47 passes Full Data Verification 350/350. Parent v52 is owner accepted with Provisional model disposition;
+disposable smoke passes 385/385 with exact state equality.
 
 Date: Historical feedback (date not recorded)
 Area: Category Rankings
@@ -1054,17 +1072,14 @@ Date: Historical feedback (date not recorded)
 Area: Testing / printing / material usage
 Type: Data-model idea
 Severity: Normal
-Status: Open
+Status: Solved
 What happened: Track testing hours, print hours, material usage and sample count
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: v48.0 research assigns hours and filament consumption to future
-append-only job/usage events. Existing specimen counts remain measurement
-evidence and are not usage history. Schema remains blocked until the capture and
-correction workflow is owner approved.
-Verification evidence: `Docs/PricingUsageAnalytics.md` defines the proposed
-identity, provenance, missing-data and recovery boundaries.
+Resolution: Solved through v48.0.3-v48.0.7. Private append-only Usage Events record explicit grams and duration, optionally reconcile
+same-Material Inventory, and correct history through reversal/replacement; specimen counts remain measurement evidence.
+Verification evidence: Owner accepted Usage capture, correction and private analytics; Full Data Verification passes 361/361.
 
 Date: Historical feedback (date not recorded)
 Area: Website template / SQLite
@@ -1118,13 +1133,14 @@ Date: Historical feedback (date not recorded)
 Area: Materials / Manufacturer SKU
 Type: Field-retirement review
 Severity: Normal
-Status: Open
+Status: Solved
 What happened: Audit possible retirement of Manufacturer SKU
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: Product decision remains open. The field must not be removed until callers, Excel recovery and report compatibility are audited.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+Resolution: Solved as a retain decision in v45.0. The audit found active purchasing, Material Detail, export and recovery ownership,
+so Manufacturer SKU remains supported and is not eligible for retirement.
+Verification evidence: The v45.0 caller audit and later exhaustive v50 Help/control ledger retain the field and its supported owners.
 
 Date: Historical feedback (date not recorded)
 Area: Website / terminology
@@ -1154,13 +1170,14 @@ Date: Historical feedback (date not recorded)
 Area: Materials / video metadata
 Type: Field-retirement review
 Severity: Normal
-Status: Open
+Status: Solved
 What happened: Audit possible retirement of video thumbnail name
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: Product decision remains open. Audit YouTube/video-planner callers before hiding or retiring any thumbnail-name field.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+Resolution: Solved as a compatibility-retain decision in v45.0. Thumbnail Filename retains export/recovery compatibility ownership;
+no active website/report asset reader was found, so it remains supported without inventing a new runtime consumer.
+Verification evidence: The v45.0 caller audit and exhaustive v50 Help/control ledger document the retained compatibility boundary.
 
 Date: Historical feedback (date not recorded)
 Area: Dashboard Insights
@@ -1365,30 +1382,27 @@ Date: Historical feedback (date not recorded)
 Area: Pricing / job quotation
 Type: Feature proposal
 Severity: Important
-Status: Open
+Status: Solved
 What happened: MaterialID-aware print-job price calculator
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: Approved design concept, not an accepted implementation. Retain as a bounded future workflow; formula rights, units, currency provenance, profiles and immutable quote snapshots must be researched first.
-2026-07-26 v48.1 contract update: owner approved grams per part multiplied by
-quantity, ISK default with optional governed currencies, 0–100% uptime, a
-separate Printers catalog, Materials `LandedCostUsdPerKg` and explicit manual
-cost/kg plus currency fallback. Global Advanced values move to Settings.
-Historical quotes snapshot all inputs/rates and never recalculate.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+Resolution: Solved in v48.1.2. Print Job Quotes calculate quantity, Material/manual cost, Printer and governed Settings/FX inputs,
+retain accepted snapshots, support explicit deletion and export a customer-safe PDF without silently recalculating saved quotes.
+Verification evidence: Owner accepted the quote workflow and customer PDF; Full Data Verification passes 363/363.
 
 Date: Historical feedback (date not recorded)
 Area: Pricing settings / printer profiles
 Type: Data-model proposal
 Severity: Important
-Status: Open
+Status: Solved
 What happened: Governed calculator settings, printer profiles and quote snapshots
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: Design extension owned by the open MaterialID-aware print-job price calculator item; no schema/UI implementation is accepted.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+Resolution: Solved through v48.1.1-v48.1.2. Schema v35 owns canonical PrinterProfiles and seven pricing defaults; schema v36 owns
+saved quote snapshots and the dedicated Print Job Quotes workflow.
+Verification evidence: Owner accepted Printer CRUD/currency behavior and quote workflow; Full Data Verification passes 363/363.
 
 Date: Historical feedback (date not recorded)
 Area: Exchange rates / Settings
@@ -1406,25 +1420,27 @@ Date: Historical feedback (date not recorded)
 Area: Purchasing / inventory lots
 Type: Data-ownership rule
 Severity: Important
-Status: Open
+Status: Solved
 What happened: Purchase- and lot-scoped exchange-rate snapshots
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: Approved ownership rule for any future implementation; purchase/lot snapshots must never become MaterialID-wide mutable rates. No claim of delivery.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+Resolution: Solved through v48.2.0 and retained by v53. Purchase Orders snapshot accepted exchange-rate source/date/provenance;
+Inventory and downstream saved history retain their accepted values and never become MaterialID-wide mutable rates.
+Verification evidence: Owner accepted ECB new-order prefill and unchanged historical values; v48.2 Verification passes 364/364.
 
 Date: Historical feedback (date not recorded)
 Area: Build / diagnostics / packaging
 Type: Build-governance proposal
 Severity: Important
-Status: Open
+Status: Solved
 What happened: Governed Production and Development build profiles
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: Research item. Measure actual diagnostic cost before introducing build-profile behavior; mandatory recovery/security/support diagnostics must remain available.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+Resolution: Solved by the v51 governed runtime-profile milestone. Owner Production, Disposable Verification and Clean Readiness
+profiles share explicit identity/capability ownership while mandatory recovery, security, updater and support evidence remains active.
+Verification evidence: v51.4 owner acceptance and Release profile matrix pass; populated scenarios pass 382/382 with exact state.
 
 Date: 2026-07-25
 Area: Fast Materials / validation refresh
@@ -1453,7 +1469,8 @@ Expected behavior: Add the canonical 3DPIceland logo to the main public website 
 for favicon output. Preserve the accepted website layout, responsive behavior and report branding contracts.
 Steps to reproduce: Open the main website, inspect the visible header branding, browser tab icon and generated page metadata.
 Screenshot / export / report attached: Capture desktop, narrow/mobile and browser-tab presentation during implementation.
-Resolution: Unimplemented. Audit the active SQLite-governed website template, preview/Production renderers, static assets, relative
+Resolution: Planned with the public calculator/navigation work in v57.0 — Public Website Experience and Canonical Branding. Audit the
+active SQLite-governed website template, preview/Production renderers, static assets, relative
 paths and every generated route before changing branding. Reuse the approved canonical logo/icon sources rather than recreating
 them. Generate appropriate favicon formats/sizes, include explicit HTML metadata and retain an honest fallback when an asset is
 missing. Do not couple website branding to user-configurable document logos or permit it to alter desktop app icon/header/splash
@@ -1473,7 +1490,8 @@ quotes. Custom branding must be confined to generated document output. It must n
 the logo/header inside the desktop application, the splash screen or other application chrome.
 Steps to reproduce: Generate a report or quote and confirm there is no governed option to select a user-owned document logo.
 Screenshot / export / report attached: Future acceptance should compare default-branded and custom-branded HTML/PDF/quote output.
-Resolution: Unimplemented. Research one governed document-branding owner and every HTML/PDF/report/quote renderer before coding.
+Resolution: Planned in v58.0 — Governed Custom Document Branding. Research one governed document-branding owner and every
+HTML/PDF/report/quote renderer before coding.
 Accept PNG only after validating signature, decoded dimensions, size limits and transparency behavior; never trust extension alone.
 Store or copy the accepted asset into a controlled per-user location without modifying the source file. Provide preview, explicit
 Remove/Restore default branding, honest missing/corrupt fallback and consistent aspect-ratio sizing without stretching or clipping.
@@ -1495,7 +1513,8 @@ only after every authoritative Master Roadmap item is complete and the Bug / Fee
 Steps to reproduce: After roadmap and feedback completion, traverse every tab from left to right and compare the order with common
 Materials, measurement, reporting, website, purchasing, inventory, research and administration workflows.
 Screenshot / export / report attached: Capture the complete tab order before and after any accepted reordering.
-Resolution: Deliberately placed last in the project queue. Do not reorder tabs incrementally while new workspaces are still being
+Resolution: Planned last in v59.0 — Application Navigation Finalization. Do not reorder tabs incrementally while new workspaces are
+still being
 introduced. Preserve tab content, AutomationIds, keyboard navigation, lazy-load behavior and saved layout/state ownership. Assess the
 tester and Verification navigation contracts in the same final increment, while keeping visual ordering acceptance owner-manual.
 Verification evidence: None; blocked until the authoritative Master Roadmap is complete and all earlier open, partially solved and

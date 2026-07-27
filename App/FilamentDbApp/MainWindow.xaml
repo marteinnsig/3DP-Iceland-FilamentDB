@@ -431,9 +431,11 @@
 <TabItem x:Name="PurchaseOrdersTab" Header="Purchase Orders"
          AutomationProperties.AutomationId="PurchaseOrdersTab">
     <Grid Margin="12">
-        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="210"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="210"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
         <WrapPanel Margin="0,0,0,8">
-            <Button Click="AddPurchaseOrder_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="New Order"/></Button>
+            <Button x:Name="NewPurchaseOrderButton" Click="AddPurchaseOrder_Click"
+                    Style="{StaticResource IconActionButton}" Margin="0,0,8,8"
+                    AutomationProperties.AutomationId="NewPurchaseOrderButton"><TextBlock Text="New Order"/></Button>
             <Button Click="DeletePurchaseOrder_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Delete Order"/></Button>
             <Button Click="AddPurchaseOrderLine_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Add Ordered Item"/></Button>
             <Button Click="DeletePurchaseOrderLine_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><TextBlock Text="Delete Item"/></Button>
@@ -450,7 +452,9 @@
                        Text="ECB reference not loaded. Manual governed Settings remain available."
                        Foreground="#64748B" Margin="4,5,0,8" TextWrapping="Wrap" MaxWidth="520"/>
         </WrapPanel>
-        <DataGrid Grid.Row="1" Name="PurchaseOrdersGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" SelectionChanged="PurchaseOrdersGrid_SelectionChanged" CellEditEnding="PurchaseOrderGrid_CellEditEnding">
+        <DataGrid Grid.Row="1" Name="PurchaseOrdersGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False"
+                  AutomationProperties.AutomationId="PurchaseOrdersGrid"
+                  SelectionChanged="PurchaseOrdersGrid_SelectionChanged" CellEditEnding="PurchaseOrderGrid_CellEditEnding">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="PO ID" Binding="{Binding PurchaseOrderId}" Width="145" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Supplier" Binding="{Binding Supplier, UpdateSourceTrigger=PropertyChanged}" Width="150"/>
@@ -477,14 +481,46 @@
                 <DataGridTextColumn Header="Notes" Binding="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBlock Grid.Row="2" Name="PurchaseOrderSummaryText" Margin="0,8" FontWeight="SemiBold" Foreground="#475569" Text="Select a purchase order."/>
-        <Border Grid.Row="3" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="5" Padding="8" Margin="0,0,0,8">
+        <Border Grid.Row="2" Background="#EFF6FF" BorderBrush="#93C5FD" BorderThickness="1" CornerRadius="5"
+                Padding="8" Margin="0,8,0,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="130"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Landed cost currency" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,8,0"/>
+                <ComboBox Grid.Column="1" x:Name="LandedCostCurrencySelector"
+                          AutomationProperties.AutomationId="LandedCostCurrencySelector"
+                          MinWidth="110" Margin="0,0,12,0"/>
+                <Button Grid.Column="2" x:Name="ApplyLandedCostCurrencyOverride"
+                        AutomationProperties.AutomationId="ApplyLandedCostCurrencyOverride"
+                        Click="ApplyLandedCostCurrencyOverride_Click"
+                        Style="{StaticResource IconActionButton}" Margin="0,0,12,0">
+                    <TextBlock Text="Apply Draft Override"/>
+                </Button>
+                <TextBlock Grid.Column="3" x:Name="LandedCostConversionRateText"
+                           AutomationProperties.AutomationId="LandedCostConversionRate"
+                           VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,12,0"/>
+                <TextBlock Grid.Column="4" Text="Status" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,8,0"/>
+                <TextBlock Grid.Column="5" x:Name="LandedCostRateStatusText"
+                           AutomationProperties.AutomationId="LandedCostRateStatus"
+                           VerticalAlignment="Center" Foreground="#475569" TextWrapping="Wrap"/>
+            </Grid>
+        </Border>
+        <TextBlock Grid.Row="3" Name="PurchaseOrderSummaryText"
+                   AutomationProperties.AutomationId="PurchaseOrderSummary"
+                   Margin="0,0,0,8" FontWeight="SemiBold" Foreground="#475569" Text="Select a purchase order."/>
+        <Border Grid.Row="4" Background="#F8FAFC" BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="5" Padding="8" Margin="0,0,0,8">
             <StackPanel>
                 <TextBlock Text="Cost Allocation Validation" FontWeight="SemiBold"/>
                 <TextBlock Name="PurchaseCostValidationText" Margin="0,3,0,0" Foreground="#64748B" TextWrapping="Wrap" Text="Cost allocation validation will appear here after calculation."/>
             </StackPanel>
         </Border>
-        <DataGrid Grid.Row="4" Name="PurchaseOrderLinesGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CellEditEnding="PurchaseOrderGrid_CellEditEnding">
+        <DataGrid Grid.Row="5" Name="PurchaseOrderLinesGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CellEditEnding="PurchaseOrderGrid_CellEditEnding">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Line ID" Binding="{Binding PurchaseOrderLineId}" Width="140" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Ordered item / invoice description" Binding="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Width="270"/>
@@ -512,7 +548,7 @@
                 <DataGridTextColumn Header="Notes" Binding="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBlock Grid.Row="5" Margin="0,8,0,0" Foreground="#64748B" TextWrapping="Wrap" Text="Workflow: create the order when you buy → add every ordered item and assign its Category (materials do not need to exist) → when the box arrives enter Received quantities and Check status → optionally link existing materials → Create Materials + Received Spools processes Filament lines only: it creates missing draft materials and one inventory spool per received unit. Printer, Equipment, Spare Parts, Consumables and Other lines remain recorded on the purchase order for future downstream inventories. Attachments are optional and copied to the FilamentDB storage folder."/>
+        <TextBlock Grid.Row="6" Margin="0,8,0,0" Foreground="#64748B" TextWrapping="Wrap" Text="Workflow: create the order when you buy → add every ordered item and assign its Category (materials do not need to exist) → when the box arrives enter Received quantities and Check status → optionally link existing materials → Create Materials + Received Spools processes Filament lines only: it creates missing draft materials and one inventory spool per received unit. Printer, Equipment, Spare Parts, Consumables and Other lines remain recorded on the purchase order for future downstream inventories. Attachments are optional and copied to the FilamentDB storage folder."/>
     </Grid>
 </TabItem>
 <TabItem x:Name="PrintersTab" Header="Printers" AutomationProperties.AutomationId="PrintersTab">

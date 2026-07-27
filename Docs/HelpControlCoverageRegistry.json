@@ -1,13 +1,13 @@
 {
   "Schema": "3dpiceland.help-control-coverage.v1",
-  "Release": "v52.3.2",
+  "Release": "v53.0.2",
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
   "XamlCounts": {
-    "Button": 143,
+    "Button": 144,
     "MenuItem": 31,
     "TextBox": 35,
     "PasswordBox": 2,
-    "ComboBox": 48,
+    "ComboBox": 49,
     "CheckBox": 10,
     "RadioButton": 0,
     "DatePicker": 0,
@@ -24,7 +24,8 @@
     "v50.4.3",
     "v52.1",
     "v52.2",
-    "v52.3.2"
+    "v52.3.2",
+    "v53.0.2"
   ],
   "CustomColumnRegistries": [
     {

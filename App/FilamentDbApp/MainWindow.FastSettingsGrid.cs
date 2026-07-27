@@ -181,6 +181,17 @@ public partial class MainWindow
             FastSettingsColumn("Notes", 500, "Notes", true)
         ]);
 
+    private static bool UsesGovernedCurrencyChoiceEditor(
+        MaterialsPrototypeRow row,
+        MaterialsPrototypeColumn column) =>
+        row.Source is NativeSettingRow setting &&
+        string.Equals(setting.Section, "Currency", StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(setting.Parameter, "Default Landed Cost Currency", StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(column.PropertyName, "Value", StringComparison.Ordinal);
+
+    private static IReadOnlyList<string> GovernedPurchasingCurrencyChoices { get; } =
+        ["ISK", "AUD", "CAD", "CHF", "CNY", "DKK", "EUR", "GBP", "JPY", "NOK", "SEK", "USD"];
+
     private static List<MaterialsPrototypeColumn> BuildFastBaseMaterialColumns() =>
         AssignStablePrototypeLayoutKeys(
         [

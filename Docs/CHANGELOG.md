@@ -2,6 +2,24 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v53.0.2 - Landed-cost Currency Default and Draft Override
+
+- Adds the governed Purchasing Settings default for newly created Drafts only.
+- Adds a reviewed, default-No Draft override with rate direction and provenance.
+- Uses same-catalog ECB cross-rates or two positive manual ISK reference legs.
+- Locks legacy, calculated and non-Draft orders without rewriting saved data.
+- Adds safe diagnostics, searchable Help, AutomationIds, Verification and smoke
+  coverage for the new contract.
+- Defers all monetary cross-currency calculation to v53.0.3.
+- Corrects the Settings value to an exact governed currency dropdown.
+- Restricts legacy backfill to pre-v38 migration and repairs only affected
+  uncalculated v53 Draft markers so override eligibility survives restart.
+- Disposable Release smoke `20260727200102-a16f943f` passes 387/387 with exact
+  database and business-state equality.
+- Owner runtime re-acceptance confirms the governed dropdown, Draft override,
+  restart persistence and Full Data Verification 387/387.
+- v53.0.2 is canonical and runtime accepted; v53.0.3 becomes current.
+
 ## v53.0.1 - Governed Landed-cost Currency Contract and Additive Schema
 
 - Defines invoice values and charges as invoice-currency inputs and a separate
