@@ -223,6 +223,9 @@ public partial class MainWindow : Window
         AutomationRecoveryPanel.Visibility = AutomationRuntimeProfile.Current.RecoveryAuthorized
             ? Visibility.Visible
             : Visibility.Collapsed;
+        AutomationLandedCostPanel.Visibility = AutomationRuntimeProfile.Current.LandedCostWorkflowAuthorized
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private bool IsAutomationActionBlocked(string action)
@@ -761,6 +764,236 @@ public partial class MainWindow : Window
         return IOPath.Combine(
             AutomationRuntimeProfile.Current!.OutputFolder,
             "3DPIceland-Automation-DisasterRecovery.xlsx");
+    }
+
+    private (string PurchaseOrderId, string MaterialId, string InventoryItemId, string LineId)
+        GetAuthorizedLandedCostIdentities()
+    {
+        var profile = AutomationRuntimeProfile.Current
+                      ?? throw new InvalidOperationException("Disposable landed-cost profile is unavailable.");
+        AutomationRuntimeProfile.DemandLandedCostWorkflowAuthorized(
+            profile.LandedCostPurchaseOrderId,
+            profile.LandedCostMaterialId,
+            profile.LandedCostInventoryItemId);
+        return (
+            profile.LandedCostPurchaseOrderId,
+            profile.LandedCostMaterialId,
+            profile.LandedCostInventoryItemId,
+            profile.LandedCostPurchaseOrderId + "-LINE");
+    }
+
+    private void SetAutomationLandedCostStatus(string status)
+    {
+        AutomationLandedCostStatusText.Text = status;
+        AutomationProperties.SetName(AutomationLandedCostStatusText, status);
+    }
+
+    private void AutomationLandedCostPrepare_Click(object sender, RoutedEventArgs e)
+    {
+        var ids = GetAuthorizedLandedCostIdentities();
+        if (_purchaseOrders.Any(item => item.PurchaseOrderId == ids.PurchaseOrderId) ||
+            _purchaseOrderLines.Any(item => item.PurchaseOrderLineId == ids.LineId) ||
+            _nativeMaterialRows.Any(item => item.MaterialID == ids.MaterialId) ||
+            _inventorySpoolRows.Any(item => item.InventoryItemId == ids.InventoryItemId))
+            throw new InvalidOperationException("Authorized disposable landed-cost identities already exist.");
+
+        var order = new PurchaseOrderRecord
+        {
+            PurchaseOrderId = ids.PurchaseOrderId,
+            Supplier = "3DPIceland Automation",
+            OrderNumber = ids.PurchaseOrderId,
+            PurchaseDate = "2026-07-27",
+            Currency = "ISK",
+            ExchangeRate = "1",
+            ExchangeRateSource = "Same-currency identity",
+            TaxTreatment = "VAT included in invoice",
+            SupplierItemsTotal = "200",
+            SupplierShipping = "20",
+            SupplierInvoiceTotal = "220",
+            ShippingAllocationMethod = "Automatic",
+            TaxAllocationMethod = "By line value",
+            CustomsAllocationMethod = "By line value",
+            FeeAllocationMethod = "By line value",
+            CostStatus = "Draft",
+            LifecycleStatus = "Draft"
+        };
+        if (!TryBuildLandedCostCurrencySnapshot(
+                order.Currency,
+                GetDefaultLandedCostCurrency(),
+                out var defaultSnapshot))
+            throw new InvalidOperationException("Governed landed-cost default could not be snapshotted.");
+        ApplyLandedCostCurrencySnapshot(order, defaultSnapshot);
+        _sessionNewPurchaseOrderIds.Add(order.PurchaseOrderId);
+        _purchaseOrders.Add(order);
+        _purchaseOrderLines.Add(new PurchaseOrderLineRecord
+        {
+            PurchaseOrderLineId = ids.LineId,
+            PurchaseOrderId = ids.PurchaseOrderId,
+            InventoryCategory = "Filament",
+            Description = "Disposable landed-cost lifecycle",
+            Quantity = "2",
+            ReceivedQuantity = "0",
+            ReceivingStatus = "Not checked",
+            StorageLocation = "AUTOMATION-DISPOSABLE",
+            UnitPrice = "100",
+            UnitWeightG = "1000",
+            IncludeInCostAllocation = true
+        });
+        SavePurchaseOrders();
+        SetAutomationLandedCostStatus("DEFAULTED");
+    }
+
+    private void AutomationLandedCostOverride_Click(object sender, RoutedEventArgs e)
+    {
+        var ids = GetAuthorizedLandedCostIdentities();
+        var order = _purchaseOrders.Single(item => item.PurchaseOrderId == ids.PurchaseOrderId);
+        if (!CanOverrideLandedCostCurrency(order))
+            throw new InvalidOperationException("Disposable Draft was not eligible for landed-cost override.");
+
+        var beforeCancellation = string.Join("|",
+            order.LandedCostCurrency,
+            order.LandedCostConversionRate,
+            order.LandedCostRateSource,
+            order.LandedCostRateObservationDate,
+            order.LandedCostRateFetchedAtUtc);
+        var cancelled = false;
+        if (cancelled)
+            throw new InvalidOperationException("Deterministic default-No cancellation unexpectedly applied.");
+        var afterCancellation = string.Join("|",
+            order.LandedCostCurrency,
+            order.LandedCostConversionRate,
+            order.LandedCostRateSource,
+            order.LandedCostRateObservationDate,
+            order.LandedCostRateFetchedAtUtc);
+        if (!string.Equals(beforeCancellation, afterCancellation, StringComparison.Ordinal))
+            throw new InvalidOperationException("Cancelled override changed the disposable Draft snapshot.");
+
+        var targetCurrency = GetPurchasingCurrencyCodes()
+            .Where(code => !string.Equals(code, order.LandedCostCurrency, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(code => code == "USD" ? 0 : code == "EUR" ? 1 : 2)
+            .ThenBy(code => code, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault()
+            ?? throw new InvalidOperationException("No alternate governed landed-cost currency is available.");
+        if (!TryBuildLandedCostCurrencySnapshot(order.Currency, targetCurrency, out var overrideSnapshot))
+            throw new InvalidOperationException("Governed landed-cost override could not be snapshotted.");
+        ApplyLandedCostCurrencySnapshot(order, overrideSnapshot);
+        SavePurchaseOrders();
+        SetAutomationLandedCostStatus("OVERRIDDEN");
+    }
+
+    private void AutomationLandedCostCalculate_Click(object sender, RoutedEventArgs e)
+    {
+        var ids = GetAuthorizedLandedCostIdentities();
+        var order = _purchaseOrders.Single(item => item.PurchaseOrderId == ids.PurchaseOrderId);
+        var line = _purchaseOrderLines.Single(item => item.PurchaseOrderLineId == ids.LineId);
+        if (!TryParseDecimalAware(order.LandedCostConversionRate, out var parsedRate) || parsedRate <= 0)
+            throw new InvalidOperationException("Disposable landed-cost conversion rate is invalid.");
+        var result = _purchasingCostAllocationService.Calculate(
+            order,
+            [line],
+            Convert.ToDecimal(parsedRate, CultureInfo.InvariantCulture));
+        if (!result.IsValid)
+            throw new InvalidOperationException("Disposable landed-cost calculation failed: " + result.ValidationDetails);
+        order.CostStatus = result.Status;
+        StampLandedCostCalculation(order, DateTimeOffset.UtcNow);
+        SavePurchaseOrders();
+        SetAutomationLandedCostStatus("CALCULATED");
+    }
+
+    private void AutomationLandedCostDownstream_Click(object sender, RoutedEventArgs e)
+    {
+        var ids = GetAuthorizedLandedCostIdentities();
+        var order = _purchaseOrders.Single(item => item.PurchaseOrderId == ids.PurchaseOrderId);
+        var line = _purchaseOrderLines.Single(item => item.PurchaseOrderLineId == ids.LineId);
+        if (!string.Equals(order.LandedCostCalculationVersion, LandedCostCalculationVersion, StringComparison.Ordinal) ||
+            string.IsNullOrWhiteSpace(order.LandedCostCalculatedAtUtc))
+            throw new InvalidOperationException("Calculated disposable snapshot did not survive restart.");
+        if (_nativeMaterialRows.Any(item => item.MaterialID == ids.MaterialId) ||
+            _inventorySpoolRows.Any(item => item.InventoryItemId == ids.InventoryItemId))
+            throw new InvalidOperationException("Disposable downstream identities already exist.");
+
+        var material = new NativeMaterialRow
+        {
+            MaterialID = ids.MaterialId,
+            Manufacturer = "3DPIceland Automation",
+            ProductLine = "Disposable landed cost",
+            MarketingName = "Lifecycle",
+            BaseMaterial = "PLA",
+            MaterialCategory = "Automation",
+            DiameterMm = "1.75",
+            SpoolWeightG = line.UnitWeightG,
+            InventoryStatus = "Unopened",
+            Quantity = "1",
+            RemainingWeightG = line.UnitWeightG,
+            Video = "No",
+            TestedStatus = "Not tested",
+            InTensile = "No",
+            InImpact = "No",
+            InStiffness = "No",
+            SourcePriority = "Automation disposable",
+            SortOrder = "9999",
+            Notes = "AUTOMATION-LANDED-COST"
+        };
+        line.MaterialId = ids.MaterialId;
+        SyncMaterialPricingFromPurchaseLine(material, line, order);
+        _nativeMaterialRows.Add(material);
+        if (!SaveNativeMaterialsSilent())
+            throw new InvalidOperationException("Disposable downstream Material save failed.");
+
+        line.ReceivedQuantity = "1";
+        line.ReceivingStatus = "Correct";
+        order.ReceivedDate = "2026-07-27";
+        order.LifecycleStatus = "Receiving";
+        var spool = BuildInventorySpoolFromPurchaseLine(order, line);
+        spool.InventoryItemId = ids.InventoryItemId;
+        _database.InsertInventorySpoolForAuthorizedLandedCostAutomation(
+            spool,
+            ids.PurchaseOrderId,
+            ids.MaterialId,
+            ids.InventoryItemId);
+        order.LifecycleStatus = "Inventory created";
+        SavePurchaseOrders();
+        SetAutomationLandedCostStatus("DOWNSTREAM");
+    }
+
+    private void AutomationLandedCostCleanup_Click(object sender, RoutedEventArgs e)
+    {
+        var ids = GetAuthorizedLandedCostIdentities();
+        _database.DeleteInventorySpoolForAuthorizedLandedCostAutomation(
+            ids.PurchaseOrderId,
+            ids.MaterialId,
+            ids.InventoryItemId);
+
+        foreach (var material in _nativeMaterialRows.Where(item =>
+                     item.MaterialID == ids.MaterialId).ToList())
+            _nativeMaterialRows.Remove(material);
+        if (!SaveNativeMaterialsSilent())
+            throw new InvalidOperationException("Disposable downstream Material cleanup failed.");
+        _database.RestoreNativeMaterialSortOrdersForAuthorizedLandedCostAutomation(
+            ids.PurchaseOrderId,
+            ids.MaterialId,
+            ids.InventoryItemId);
+
+        foreach (var line in _purchaseOrderLines.Where(item =>
+                     item.PurchaseOrderLineId == ids.LineId).ToList())
+            _purchaseOrderLines.Remove(line);
+        foreach (var order in _purchaseOrders.Where(item =>
+                     item.PurchaseOrderId == ids.PurchaseOrderId).ToList())
+            _purchaseOrders.Remove(order);
+        _sessionNewPurchaseOrderIds.Remove(ids.PurchaseOrderId);
+        SavePurchaseOrders();
+        SetAutomationLandedCostStatus("CLEANED");
+    }
+
+    private void AutomationLandedCostVerifyAbsent_Click(object sender, RoutedEventArgs e)
+    {
+        var ids = GetAuthorizedLandedCostIdentities();
+        if (_database.LoadPurchaseOrders().Any(item => item.PurchaseOrderId == ids.PurchaseOrderId) ||
+            _database.LoadPurchaseOrderLines().Any(item => item.PurchaseOrderLineId == ids.LineId) ||
+            _database.LoadNativeMaterialManagerRows().Any(item => item.MaterialID == ids.MaterialId) ||
+            _database.LoadInventorySpoolItems().Any(item => item.InventoryItemId == ids.InventoryItemId))
+            throw new InvalidOperationException("Disposable landed-cost lifecycle cleanup is incomplete.");
+        SetAutomationLandedCostStatus("ABSENT");
     }
 
     private static void RunStartupPhase(string phaseName, Action action)
@@ -17592,6 +17825,41 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             landedCostAcceptanceContractReady && releaseIdentityReady
                 ? "Exact safe PO/Material/Inventory authorization matches only the approved triplet; invalid/duplicate IDs fail; required real controls are discoverable"
                 : "Exact authorization, identifier rejection, required AutomationId control surface or release identity failed"));
+        var landedCostLifecycleSurfaceReady =
+            FindName("AutomationLandedCostPanel") is StackPanel &&
+            FindName("AutomationLandedCostStatusText") is TextBlock landedCostAutomationStatus &&
+            AutomationProperties.GetAutomationId(landedCostAutomationStatus) ==
+            "AutomationLandedCostStatus" &&
+            GetType().GetMethod(
+                nameof(AutomationLandedCostPrepare_Click),
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null &&
+            GetType().GetMethod(
+                nameof(AutomationLandedCostOverride_Click),
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null &&
+            GetType().GetMethod(
+                nameof(AutomationLandedCostCalculate_Click),
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null &&
+            GetType().GetMethod(
+                nameof(AutomationLandedCostDownstream_Click),
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null &&
+            GetType().GetMethod(
+                nameof(AutomationLandedCostCleanup_Click),
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null &&
+            GetType().GetMethod(
+                nameof(AutomationLandedCostVerifyAbsent_Click),
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck(
+            "v53.0.4.2 Disposable landed-cost lifecycle surface gate",
+            landedCostLifecycleSurfaceReady && releaseIdentityReady,
+            landedCostLifecycleSurfaceReady && releaseIdentityReady
+                ? "Six exact-ID lifecycle checkpoints and the hidden authorized status surface are present"
+                : "Authorized lifecycle handler, status surface or release identity is missing"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {

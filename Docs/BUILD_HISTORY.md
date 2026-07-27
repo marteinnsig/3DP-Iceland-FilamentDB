@@ -2,6 +2,23 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v53.0.4.2 - Disposable Landed-cost Lifecycle
+
+The candidate enables the exact authorization established in v53.0.4.1 only
+for a new `landed-cost` scenario. Six hidden actions and controlled restarts
+prove default/cancellation/override persistence, one-time calculation,
+downstream Material/Inventory provenance, cleanup and final absence. The
+scenario uses production helpers, retains secret-safe evidence and requires
+exact baseline/final business-state equality. Schema remains v38.
+
+The first runs correctly rejected broad Inventory persistence because it
+normalized legacy provenance and refreshed historical Material-derived fields.
+The accepted candidate path uses exact authorized Inventory insert/delete and
+restores temporary SortOrder effects from the disposable baseline. Profile
+`20260727222431-7383588f` passes 390/390 with exact normalized state; owner
+runtime accepts the intentional 200-Material owner dataset, zero automation
+residue and Full Data Verification PASS. v53.0.4.2 is canonical.
+
 ## v53.0.4.1 - Landed-cost Acceptance Contract and Automation Surface
 
 The candidate establishes the safety boundary required before lifecycle

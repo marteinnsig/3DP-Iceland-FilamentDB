@@ -2,6 +2,25 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v53.0.4.2 - Disposable Landed-cost Lifecycle
+
+- Adds a dedicated, default-off `landed-cost` AutomationRunner scenario.
+- Uses exact disposable Purchase Order, Material and Inventory identities.
+- Exercises default, cancellation, override, calculation, downstream and
+  cleanup checkpoints across five controlled restarts.
+- Reuses production snapshot, allocation, calculation-stamp, Material pricing
+  and Inventory provenance helpers.
+- Retains only secret-safe exact-ID, rate/provenance, checkpoint and hash
+  evidence.
+- Adds a deterministic lifecycle surface gate; schema remains v38.
+- Replaces broad Inventory save/sync after the final-state gate exposed legacy
+  normalization and historical derived-field drift.
+- Release profile `20260727222431-7383588f` passes 390/390 and exact normalized
+  business-state equality; owner runtime acceptance remains pending.
+- Read-only smoke `20260727222716-fdeff6d3` passes 390/390 with exact state.
+- Owner runtime accepts the intentional 200-Material dataset, zero automation
+  residue and Full Data Verification PASS. v53.0.4.2 is canonical.
+
 ## v53.0.4.1 - Landed-cost Acceptance Contract and Automation Surface
 
 - Adds default-off, exact-triplet disposable landed-cost authorization.

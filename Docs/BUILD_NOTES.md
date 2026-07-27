@@ -1,4 +1,35 @@
-# Current Build Notes - v53.0.4.1
+# Current Build Notes - v53.0.4.2
+
+## Disposable Landed-cost Lifecycle
+
+v53.0.4.2 adds a dedicated `landed-cost` AutomationRunner scenario. Its profile
+is default-off outside that scenario and is bound to exact disposable Purchase
+Order, Material and Inventory identities. Six hidden authorized checkpoints
+exercise governed default snapshot creation, a no-change cancellation proof,
+confirmed override, restart persistence, calculation locking, downstream
+Material/Inventory snapshots, exact cleanup and post-restart absence.
+
+The actions reuse the production currency snapshot, allocation, calculation
+stamp, Material pricing and Inventory provenance helpers. Retained evidence is
+limited to exact disposable IDs, currency/rate provenance, calculation
+metadata, restart checkpoints and state hashes. Supplier, notes, credentials,
+payloads and owner paths remain excluded. Smoke, owner data, Production, FTPS,
+updater and live ECB access remain outside the scenario. Schema stays v38.
+
+The first candidate run correctly failed final state equality because global
+Inventory save normalized legacy `NULL` provenance and global inventory sync
+recomputed historical Material fields. Exact authorized Inventory insert/delete
+replaced those broad calls. A second gate then exposed Material SortOrder
+renumbering during disposable add/remove; cleanup now restores only that
+derived field from the retained disposable baseline before restart.
+
+Corrected Release profile `20260727222431-7383588f` passes all lifecycle
+checkpoints, Full Data Verification 390/390 and exact normalized business-state
+equality. Debug/Release, documentation/static and NuGet gates pass. Read-only regression smoke
+`20260727222716-fdeff6d3` also passes 390/390 with exact state equality.
+Owner runtime acceptance passes on the intentional 200-Material owner dataset:
+all identities begin `MAT`, no disposable automation identity remains and Full
+Data Verification passes. v53.0.4.2 is canonical; v53.0.4.3 is current.
 
 ## Landed-cost Acceptance Contract and Automation Surface
 

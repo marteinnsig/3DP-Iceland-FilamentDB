@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v53.0.4.2 - Disposable Landed-cost Lifecycle
+
+Accepted exact-ID automation proves the complete landed-cost Draft lifecycle,
+saved calculation and downstream provenance across restarts, then removes all
+disposable records and returns business state exactly to baseline. Verification
+390/390, read-only smoke and owner zero-residue review pass.
+
 # v53.0.4.1 - Landed-cost Acceptance Contract and Automation Surface
 
 Accepted exact disposable authorization, secret-safe evidence and stable

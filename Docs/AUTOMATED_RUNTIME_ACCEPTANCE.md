@@ -1,5 +1,27 @@
 # Automated Runtime Acceptance
 
+## v53.0.4.2 - Disposable landed-cost lifecycle candidate
+
+- Scenario: `--scenario landed-cost`.
+- Authorization is default-off elsewhere and binds three exact safe IDs.
+- Checkpoints: `DEFAULTED`, `OVERRIDDEN`, `CALCULATED`, `DOWNSTREAM`,
+  `CLEANED` and `ABSENT`, with restart boundaries between material stages.
+- Cancellation must preserve the default snapshot before the confirmed
+  override is applied.
+- Calculation must persist version/UTC and landed line/unit/kg outputs.
+- Material and Inventory must copy the saved order currency provenance.
+- Cleanup must remove only the exact disposable PO/line/Material/Inventory and
+  return the normalized business-state hash to baseline.
+- Smoke, Production, FTPS, updater, owner database and live ECB remain blocked.
+- Failed candidates exposed and rejected global Inventory normalization plus
+  historical Material-derived-field refresh.
+- Corrected profile `20260727222431-7383588f` passes six lifecycle checkpoints,
+  Verification 390/390 and exact normalized business-state equality.
+- Default-off regression smoke `20260727222716-fdeff6d3` passes 390/390 with
+  exact normalized state and invokes no landed-cost mutation.
+- Owner runtime acceptance passes with 200 intentional `MAT` identities, zero
+  automation residue and Full Data Verification PASS.
+
 ## v53.0.4.1 - Landed-cost acceptance contract accepted
 
 - `LandedCostWorkflowAuthorized` is default-off and requires exact safe,

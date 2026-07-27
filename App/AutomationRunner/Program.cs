@@ -31,6 +31,7 @@ internal static class Program
         string seedDatabaseHash = string.Empty;
         string databaseHashBefore = string.Empty;
         string databaseBusinessHashBefore = string.Empty;
+        LandedCostEvidenceCapture? landedCostCapture = null;
         try
         {
             var options = RunnerOptions.Parse(args);
@@ -50,11 +51,15 @@ internal static class Program
                 cleanReadiness,
                 string.Equals(options.Scenario, "reports", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "crud", StringComparison.Ordinal),
+                string.Equals(options.Scenario, "landed-cost", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "recovery", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "updater", StringComparison.Ordinal),
                 out var markerPath,
                 out databasePath,
-                out var materialCrudId);
+                out var materialCrudId,
+                out var landedCostPurchaseOrderId,
+                out var landedCostMaterialId,
+                out var landedCostInventoryItemId);
             seedDatabaseHash = cleanReadiness ? string.Empty : Sha256(seedDatabase);
             Require(
                 !cleanReadiness || !IOFile.Exists(databasePath),
@@ -797,6 +802,113 @@ internal static class Program
                 Record("crud-restart-verify-absent", true, materialCrudId);
                 CaptureWindow(main, IOPath.Combine(root, "evidence", "crud-complete.png"));
             }
+            else if (string.Equals(options.Scenario, "landed-cost", StringComparison.Ordinal))
+            {
+                var lineId = landedCostPurchaseOrderId + "-LINE";
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostPrepare", "DEFAULTED");
+                RequireExactRowCount(databasePath, "PurchaseOrders", "PurchaseOrderId",
+                    landedCostPurchaseOrderId, 1);
+                RequireExactRowCount(databasePath, "PurchaseOrderLines", "PurchaseOrderLineId",
+                    lineId, 1);
+                Record("landed-cost-default", true,
+                    $"{landedCostPurchaseOrderId}: governed default snapshot persisted");
+
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostOverride", "OVERRIDDEN");
+                var overrideRow = ReadExactRow(
+                    databasePath, "PurchaseOrders", "PurchaseOrderId", landedCostPurchaseOrderId);
+                Require(
+                    !string.IsNullOrWhiteSpace(overrideRow["LandedCostCurrency"]) &&
+                    !string.IsNullOrWhiteSpace(overrideRow["LandedCostConversionRate"]) &&
+                    !string.IsNullOrWhiteSpace(overrideRow["LandedCostRateSource"]),
+                    "Disposable landed-cost override did not retain governed provenance.");
+                Record("landed-cost-override", true,
+                    $"cancel preserved default; applied {overrideRow["LandedCostCurrency"]} at " +
+                    overrideRow["LandedCostConversionRate"]);
+
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostCalculate", "CALCULATED");
+                var calculatedOrder = ReadExactRow(
+                    databasePath, "PurchaseOrders", "PurchaseOrderId", landedCostPurchaseOrderId);
+                var calculatedLine = ReadExactRow(
+                    databasePath, "PurchaseOrderLines", "PurchaseOrderLineId", lineId);
+                Require(
+                    calculatedOrder["LandedCostCalculationVersion"] == "landed-currency-v2" &&
+                    !string.IsNullOrWhiteSpace(calculatedOrder["LandedCostCalculatedAtUtc"]) &&
+                    !string.IsNullOrWhiteSpace(calculatedLine["LandedLineCost"]) &&
+                    !string.IsNullOrWhiteSpace(calculatedLine["LandedUnitCost"]) &&
+                    !string.IsNullOrWhiteSpace(calculatedLine["LandedCostPerKg"]),
+                    "Disposable landed-cost calculation snapshot is incomplete.");
+                Record("landed-cost-calculation-lock", true,
+                    "calculation version, UTC stamp and line/unit/kg results persisted");
+
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostDownstream", "DOWNSTREAM");
+                var materialRow = ReadExactRow(
+                    databasePath, "NativeMaterialManagerRows", "MaterialID", landedCostMaterialId);
+                var inventoryRow = ReadExactRow(
+                    databasePath, "InventorySpoolItems", "InventoryItemId", landedCostInventoryItemId);
+                Require(
+                    materialRow["PurchaseId"] == landedCostPurchaseOrderId &&
+                    materialRow["LandedCostCurrency"] == calculatedOrder["LandedCostCurrency"] &&
+                    inventoryRow["PurchaseId"] == landedCostPurchaseOrderId &&
+                    inventoryRow["MaterialId"] == landedCostMaterialId &&
+                    inventoryRow["LandedCostCurrency"] == calculatedOrder["LandedCostCurrency"] &&
+                    inventoryRow["LandedCostCalculationVersion"] == "landed-currency-v2",
+                    "Disposable downstream Material/Inventory snapshots do not match the saved order.");
+                landedCostCapture = new LandedCostEvidenceCapture(
+                    landedCostPurchaseOrderId,
+                    landedCostMaterialId,
+                    landedCostInventoryItemId,
+                    calculatedOrder["Currency"],
+                    calculatedOrder["LandedCostCurrency"],
+                    calculatedOrder["LandedCostConversionRate"],
+                    calculatedOrder["LandedCostRateSource"],
+                    calculatedOrder["LandedCostRateObservationDate"],
+                    calculatedOrder["LandedCostRateFetchedAtUtc"],
+                    calculatedOrder["LandedCostCalculatedAtUtc"],
+                    calculatedOrder["LandedCostCalculationVersion"],
+                    [
+                        "DEFAULTED-RESTART",
+                        "OVERRIDDEN-RESTART",
+                        "CALCULATED-RESTART",
+                        "DOWNSTREAM-RESTART",
+                        "CLEANED-RESTART",
+                        "ABSENT"
+                    ],
+                    HashExactRow(databasePath, "PurchaseOrders", "PurchaseOrderId",
+                        landedCostPurchaseOrderId),
+                    HashExactRow(databasePath, "InventorySpoolItems", "InventoryItemId",
+                        landedCostInventoryItemId),
+                    HashExactRow(databasePath, "NativeMaterialManagerRows", "MaterialID",
+                        landedCostMaterialId),
+                    HashTable(databasePath, "UsageEvents"),
+                    HashTable(databasePath, "PrintJobQuotes"));
+                Record("landed-cost-downstream", true,
+                    $"{landedCostMaterialId}/{landedCostInventoryItemId}: exact saved provenance");
+
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostCleanup", "CLEANED");
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunLandedCostAction(
+                    main, application.Id, "AutomationLandedCostVerifyAbsent", "ABSENT");
+                RequireExactRowCount(databasePath, "PurchaseOrders", "PurchaseOrderId",
+                    landedCostPurchaseOrderId, 0);
+                RequireExactRowCount(databasePath, "PurchaseOrderLines", "PurchaseOrderLineId",
+                    lineId, 0);
+                RequireExactRowCount(databasePath, "NativeMaterialManagerRows", "MaterialID",
+                    landedCostMaterialId, 0);
+                RequireExactRowCount(databasePath, "InventorySpoolItems", "InventoryItemId",
+                    landedCostInventoryItemId, 0);
+                CaptureWindow(main, IOPath.Combine(root, "evidence", "landed-cost-complete.png"));
+                Record("landed-cost-cleanup", true,
+                    "exact disposable PO/line/Material/Inventory identities absent after restart");
+            }
             else if (string.Equals(options.Scenario, "recovery", StringComparison.Ordinal))
             {
                 RunRecoveryAction(main, application.Id, "AutomationRecoveryBackup", "BACKUPS-VERIFIED");
@@ -848,6 +960,40 @@ internal static class Program
             Require(
                 string.Equals(databaseBusinessHashBefore, databaseBusinessHashAfter, StringComparison.OrdinalIgnoreCase),
                 "Disposable canonical business state did not return to its baseline after the scenario.");
+            if (landedCostCapture is not null)
+            {
+                var evidence = new LandedCostAutomationEvidence(
+                    "3dpiceland.landed-cost-automation-evidence.v1",
+                    IOPath.GetFileName(root),
+                    landedCostCapture.PurchaseOrderId,
+                    landedCostCapture.MaterialId,
+                    landedCostCapture.InventoryItemId,
+                    landedCostCapture.InvoiceCurrency,
+                    landedCostCapture.LandedCurrency,
+                    landedCostCapture.ConversionRate,
+                    landedCostCapture.RateSource,
+                    landedCostCapture.ObservationDate,
+                    landedCostCapture.FetchedAtUtc,
+                    landedCostCapture.CalculatedAtUtc,
+                    landedCostCapture.CalculationVersion,
+                    landedCostCapture.RestartCheckpoints,
+                    landedCostCapture.PurchaseOrderStateSha256,
+                    landedCostCapture.InventoryStateSha256,
+                    landedCostCapture.MaterialStateSha256,
+                    landedCostCapture.UsageStateSha256,
+                    landedCostCapture.QuoteStateSha256,
+                    databaseBusinessHashBefore,
+                    databaseBusinessHashAfter,
+                    true);
+                IOFile.WriteAllText(
+                    IOPath.Combine(root, "evidence", "landed-cost-evidence.json"),
+                    JsonSerializer.Serialize(evidence, new JsonSerializerOptions
+                    {
+                        WriteIndented = true,
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    }),
+                    new UTF8Encoding(false));
+            }
             Record("database-hash", true, databaseHashAfter);
             Record("database-business-state-hash", true, databaseBusinessHashAfter);
             WriteResult(
@@ -900,19 +1046,23 @@ internal static class Program
         bool cleanReadiness,
         bool reportGenerationAuthorized,
         bool materialCrudAuthorized,
+        bool landedCostWorkflowAuthorized,
         bool recoveryAuthorized,
         bool updaterAuthorized,
         out string markerPath,
         out string databasePath,
-        out string materialCrudId)
+        out string materialCrudId,
+        out string landedCostPurchaseOrderId,
+        out string landedCostMaterialId,
+        out string landedCostInventoryItemId)
     {
         var allowedRoot = IOPath.Combine(IOPath.GetTempPath(), "3DPIceland-Automation");
         IODirectory.CreateDirectory(allowedRoot);
         var profileId = DateTime.UtcNow.ToString("yyyyMMddHHmmss") + "-" + Guid.NewGuid().ToString("N")[..8];
         materialCrudId = "AUT" + profileId[^8..];
-        var landedCostPurchaseOrderId = "AUT-PO-" + profileId[^8..];
-        var landedCostMaterialId = "AUT-MAT-" + profileId[^8..];
-        var landedCostInventoryItemId = "AUT-INV-" + profileId[^8..];
+        landedCostPurchaseOrderId = "AUT-PO-" + profileId[^8..];
+        landedCostMaterialId = "AUT-MAT-" + profileId[^8..];
+        landedCostInventoryItemId = "AUT-INV-" + profileId[^8..];
         var root = IOPath.Combine(allowedRoot, profileId);
         var databaseFolder = IOPath.Combine(root, "database");
         var preferencesFolder = IOPath.Combine(root, "preferences");
@@ -946,7 +1096,7 @@ internal static class Program
             reportGenerationAuthorized,
             materialCrudAuthorized,
             materialCrudId,
-            landedCostWorkflowAuthorized = false,
+            landedCostWorkflowAuthorized,
             landedCostPurchaseOrderId,
             landedCostMaterialId,
             landedCostInventoryItemId,
@@ -1301,6 +1451,25 @@ internal static class Program
             Thread.Sleep(150);
         }
         throw new TimeoutException($"Timed out waiting for recovery status {expectedStatus}.");
+    }
+
+    private static void RunLandedCostAction(
+        AutomationElement main,
+        int processId,
+        string automationId,
+        string expectedStatus)
+    {
+        Invoke(FindById(main, automationId), processId);
+        var status = FindById(main, "AutomationLandedCostStatus");
+        var timer = Stopwatch.StartNew();
+        while (timer.Elapsed < ElementTimeout)
+        {
+            AssertNoUnexpectedWindows(processId, "MainWindow");
+            if (string.Equals(status.Current.Name, expectedStatus, StringComparison.Ordinal)) return;
+            Thread.Sleep(150);
+        }
+        throw new TimeoutException(
+            $"Timed out waiting for landed-cost status {expectedStatus}.");
     }
 
     private static int ValidateRecoveryBackupArtifacts(string root, string databasePath)
@@ -1926,6 +2095,104 @@ internal static class Program
         return Convert.ToInt64(command.ExecuteScalar(), CultureInfo.InvariantCulture);
     }
 
+    private static void RequireExactRowCount(
+        string databasePath,
+        string tableName,
+        string keyColumn,
+        string keyValue,
+        int expected)
+    {
+        using var connection = new SqliteConnection(
+            $"Data Source={databasePath};Mode=ReadOnly;Pooling=False");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText =
+            $"SELECT COUNT(*) FROM {QuoteIdentifier(tableName)} " +
+            $"WHERE {QuoteIdentifier(keyColumn)} = $value;";
+        command.Parameters.AddWithValue("$value", keyValue);
+        var actual = Convert.ToInt32(command.ExecuteScalar(), CultureInfo.InvariantCulture);
+        Require(actual == expected,
+            $"{tableName}.{keyColumn} expected {expected} exact row(s), found {actual}.");
+    }
+
+    private static Dictionary<string, string> ReadExactRow(
+        string databasePath,
+        string tableName,
+        string keyColumn,
+        string keyValue)
+    {
+        using var connection = new SqliteConnection(
+            $"Data Source={databasePath};Mode=ReadOnly;Pooling=False");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText =
+            $"SELECT * FROM {QuoteIdentifier(tableName)} " +
+            $"WHERE {QuoteIdentifier(keyColumn)} = $value;";
+        command.Parameters.AddWithValue("$value", keyValue);
+        using var reader = command.ExecuteReader();
+        Require(reader.Read(), $"{tableName}.{keyColumn} exact row is missing.");
+        var result = Enumerable.Range(0, reader.FieldCount).ToDictionary(
+            reader.GetName,
+            index => reader.IsDBNull(index)
+                ? string.Empty
+                : Convert.ToString(reader.GetValue(index), CultureInfo.InvariantCulture) ?? string.Empty,
+            StringComparer.Ordinal);
+        Require(!reader.Read(), $"{tableName}.{keyColumn} exact identity is not unique.");
+        return result;
+    }
+
+    private static string HashExactRow(
+        string databasePath,
+        string tableName,
+        string keyColumn,
+        string keyValue) =>
+        HashRows(databasePath, tableName,
+            $"{QuoteIdentifier(keyColumn)} = $value", keyValue);
+
+    private static string HashTable(string databasePath, string tableName) =>
+        HashRows(databasePath, tableName, null, null);
+
+    private static string HashRows(
+        string databasePath,
+        string tableName,
+        string? whereClause,
+        string? parameterValue)
+    {
+        using var connection = new SqliteConnection(
+            $"Data Source={databasePath};Mode=ReadOnly;Pooling=False");
+        connection.Open();
+        var columns = new List<string>();
+        using (var info = connection.CreateCommand())
+        {
+            info.CommandText = $"PRAGMA table_info({QuoteIdentifier(tableName)});";
+            using var reader = info.ExecuteReader();
+            while (reader.Read())
+            {
+                var column = reader.GetString(1);
+                if (!string.Equals(column, "UpdatedAtUtc", StringComparison.Ordinal))
+                    columns.Add(column);
+            }
+        }
+        using var command = connection.CreateCommand();
+        var columnList = string.Join(", ", columns.Select(QuoteIdentifier));
+        command.CommandText =
+            $"SELECT {columnList} FROM {QuoteIdentifier(tableName)}" +
+            (whereClause is null ? string.Empty : " WHERE " + whereClause) +
+            $" ORDER BY {columnList};";
+        if (parameterValue is not null)
+            command.Parameters.AddWithValue("$value", parameterValue);
+        using var stream = new MemoryStream();
+        using var writer = new BinaryWriter(stream, Encoding.UTF8, leaveOpen: true);
+        using var rows = command.ExecuteReader();
+        while (rows.Read())
+        {
+            for (var index = 0; index < rows.FieldCount; index++)
+                WriteCanonicalValue(writer, rows.GetValue(index));
+        }
+        writer.Flush();
+        return Convert.ToHexString(SHA256.HashData(stream.ToArray()));
+    }
+
     private static void Require(bool condition, string message)
     {
         if (!condition) throw new InvalidOperationException(message);
@@ -1963,7 +2230,7 @@ internal static class Program
                 inputConfinedToOwnedProcess = true,
                 reportGenerationAuthorized = string.Equals(CurrentScenario, "reports", StringComparison.Ordinal)
                 ,materialCrudAuthorized = string.Equals(CurrentScenario, "crud", StringComparison.Ordinal)
-                ,landedCostWorkflowAuthorized = false
+                ,landedCostWorkflowAuthorized = string.Equals(CurrentScenario, "landed-cost", StringComparison.Ordinal)
                 ,recoveryAuthorized = string.Equals(CurrentScenario, "recovery", StringComparison.Ordinal)
                 ,updaterAuthorized = string.Equals(CurrentScenario, "updater", StringComparison.Ordinal)
             },
@@ -1989,6 +2256,24 @@ internal static class Program
 
     private sealed record StepResult(string Name, string Status, string Detail, DateTimeOffset AtUtc);
     private sealed record ArtifactEvidence(string RelativePath, long Bytes, string Sha256);
+    private sealed record LandedCostEvidenceCapture(
+        string PurchaseOrderId,
+        string MaterialId,
+        string InventoryItemId,
+        string InvoiceCurrency,
+        string LandedCurrency,
+        string ConversionRate,
+        string RateSource,
+        string ObservationDate,
+        string FetchedAtUtc,
+        string CalculatedAtUtc,
+        string CalculationVersion,
+        IReadOnlyList<string> RestartCheckpoints,
+        string PurchaseOrderStateSha256,
+        string InventoryStateSha256,
+        string MaterialStateSha256,
+        string UsageStateSha256,
+        string QuoteStateSha256);
     private sealed record LandedCostAutomationEvidence(
         string Schema,
         string ProfileId,
@@ -2032,8 +2317,9 @@ internal static class Program
             var scenario = scenarioIndex >= 0 && scenarioIndex + 1 < args.Length
                 ? args[scenarioIndex + 1].Trim().ToLowerInvariant()
                 : "smoke";
-            if (scenario is not ("smoke" or "reports" or "crud" or "recovery" or "updater" or "clean"))
-                throw new ArgumentException("--scenario must be smoke, reports, crud, recovery, updater or clean.");
+            if (scenario is not ("smoke" or "reports" or "crud" or "landed-cost" or "recovery" or "updater" or "clean"))
+                throw new ArgumentException(
+                    "--scenario must be smoke, reports, crud, landed-cost, recovery, updater or clean.");
             var updater = scenario == "updater" ? Required("--updater") : string.Empty;
             var seed = scenario == "clean" ? Optional("--seed-database") : Required("--seed-database");
             return new RunnerOptions(Required("--app"), seed, scenario, updater);

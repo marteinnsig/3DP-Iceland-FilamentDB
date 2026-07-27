@@ -62,7 +62,12 @@ Clean Readiness exclusion, secret-safe evidence shape, required real-control Aut
 Verification evidence: Debug/Release app and runner builds pass with 0 warnings/errors; documentation/static and NuGet gates pass.
 Disposable Release smoke `20260727215805-25c18520` passes 389/389 with exact database and business-state equality. Owner runtime
 accepted the unchanged Purchase Orders surface and secret-safe diagnostics report
-`3DPIceland_FilamentDB_System_Diagnostics_20260727_220416.txt`. The parent item continues at v53.0.4.2.
+`3DPIceland_FilamentDB_System_Diagnostics_20260727_220416.txt`. v53.0.4.2 now adds the exact-ID disposable lifecycle with
+restart, calculation, downstream and cleanup checkpoints. Initial final-state failures exposed broad legacy Inventory normalization
+and historical Material derived-field refresh; exact-row persistence and baseline restoration corrected both. Release profile
+`20260727222431-7383588f` passes 390/390 with exact normalized state. Owner runtime acceptance passes with the intentional
+200-Material owner dataset, all identities beginning `MAT`, zero automation
+residue and Full Data Verification PASS. The parent item continues at v53.0.4.3.
 
 Date: 2026-07-27
 Area: Purchase Orders exchange-rate refresh

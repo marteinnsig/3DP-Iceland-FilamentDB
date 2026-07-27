@@ -2813,6 +2813,161 @@ ORDER BY
         transaction.Commit();
     }
 
+    public void InsertInventorySpoolForAuthorizedLandedCostAutomation(
+        InventorySpoolRecord item,
+        string purchaseOrderId,
+        string materialId,
+        string inventoryItemId)
+    {
+        AutomationRuntimeProfile.DemandLandedCostWorkflowAuthorized(
+            purchaseOrderId,
+            materialId,
+            inventoryItemId);
+        if (!string.Equals(item.InventoryItemId, inventoryItemId, StringComparison.Ordinal) ||
+            !string.Equals(item.MaterialId, materialId, StringComparison.Ordinal) ||
+            !string.Equals(item.PurchaseId, purchaseOrderId, StringComparison.Ordinal))
+            throw new InvalidOperationException(
+                "Authorized landed-cost Inventory insert identity mismatch.");
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var insert = connection.CreateCommand();
+        insert.CommandText = """
+            INSERT INTO InventorySpoolItems
+                (InventoryItemId,MaterialId,Status,Quantity,SpoolWeightG,RemainingWeightG,StorageLocation,BatchNumber,
+                 PurchaseId,PurchaseOrderLineId,PurchasedFrom,PurchaseDate,OrderNumber,PurchasePriceAmount,
+                 PurchaseCurrency,ShippingAmount,VatAmount,CustomsAmount,OtherFeesAmount,LandedCostAmount,
+                 LandedCostCurrency,LandedCostConversionRate,LandedCostRateSource,LandedCostRateObservationDate,
+                 LandedCostRateFetchedAtUtc,LandedCostCalculatedAtUtc,LandedCostCalculationVersion,Notes,UpdatedAtUtc)
+            VALUES
+                ($id,$material,$status,$qty,$weight,$remaining,$storage,$batch,$purchase,$line,$supplier,$date,$order,
+                 $price,$currency,$shipping,$vat,$customs,$fees,$landed,$landedCurrency,$landedRate,$landedSource,
+                 $landedDate,$landedFetched,$landedCalculated,$landedVersion,$notes,$updated);
+            """;
+        insert.Parameters.AddWithValue("$id", item.InventoryItemId);
+        insert.Parameters.AddWithValue("$material", item.MaterialId);
+        insert.Parameters.AddWithValue("$status", item.Status);
+        insert.Parameters.AddWithValue("$qty", item.Quantity);
+        insert.Parameters.AddWithValue("$weight", item.SpoolWeightG);
+        insert.Parameters.AddWithValue("$remaining", item.RemainingWeightG);
+        insert.Parameters.AddWithValue("$storage", item.StorageLocation);
+        insert.Parameters.AddWithValue("$batch", item.BatchNumber);
+        insert.Parameters.AddWithValue("$purchase", item.PurchaseId);
+        insert.Parameters.AddWithValue("$line", item.PurchaseOrderLineId);
+        insert.Parameters.AddWithValue("$supplier", item.PurchasedFrom);
+        insert.Parameters.AddWithValue("$date", item.PurchaseDate);
+        insert.Parameters.AddWithValue("$order", item.OrderNumber);
+        insert.Parameters.AddWithValue("$price", item.PurchasePriceAmount);
+        insert.Parameters.AddWithValue("$currency", item.PurchaseCurrency);
+        insert.Parameters.AddWithValue("$shipping", item.ShippingAmount);
+        insert.Parameters.AddWithValue("$vat", item.VatAmount);
+        insert.Parameters.AddWithValue("$customs", item.CustomsAmount);
+        insert.Parameters.AddWithValue("$fees", item.OtherFeesAmount);
+        insert.Parameters.AddWithValue("$landed", item.LandedCostAmount);
+        insert.Parameters.AddWithValue("$landedCurrency", item.LandedCostCurrency);
+        insert.Parameters.AddWithValue("$landedRate", item.LandedCostConversionRate);
+        insert.Parameters.AddWithValue("$landedSource", item.LandedCostRateSource);
+        insert.Parameters.AddWithValue("$landedDate", item.LandedCostRateObservationDate);
+        insert.Parameters.AddWithValue("$landedFetched", item.LandedCostRateFetchedAtUtc);
+        insert.Parameters.AddWithValue("$landedCalculated", item.LandedCostCalculatedAtUtc);
+        insert.Parameters.AddWithValue("$landedVersion", item.LandedCostCalculationVersion);
+        insert.Parameters.AddWithValue("$notes", item.Notes);
+        insert.Parameters.AddWithValue(
+            "$updated",
+            DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture));
+        if (insert.ExecuteNonQuery() != 1)
+            throw new InvalidOperationException(
+                "Authorized landed-cost Inventory insert did not affect exactly one row.");
+    }
+
+    public void DeleteInventorySpoolForAuthorizedLandedCostAutomation(
+        string purchaseOrderId,
+        string materialId,
+        string inventoryItemId)
+    {
+        AutomationRuntimeProfile.DemandLandedCostWorkflowAuthorized(
+            purchaseOrderId,
+            materialId,
+            inventoryItemId);
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            DELETE FROM InventorySpoolItems
+            WHERE InventoryItemId = $inventory
+              AND MaterialId = $material
+              AND PurchaseId = $purchase;
+            """;
+        command.Parameters.AddWithValue("$inventory", inventoryItemId);
+        command.Parameters.AddWithValue("$material", materialId);
+        command.Parameters.AddWithValue("$purchase", purchaseOrderId);
+        if (command.ExecuteNonQuery() != 1)
+            throw new InvalidOperationException(
+                "Authorized landed-cost Inventory cleanup did not affect exactly one row.");
+    }
+
+    public void RestoreNativeMaterialSortOrdersForAuthorizedLandedCostAutomation(
+        string purchaseOrderId,
+        string materialId,
+        string inventoryItemId)
+    {
+        AutomationRuntimeProfile.DemandLandedCostWorkflowAuthorized(
+            purchaseOrderId,
+            materialId,
+            inventoryItemId);
+        var profile = AutomationRuntimeProfile.Current
+                      ?? throw new InvalidOperationException(
+                          "Disposable landed-cost profile is unavailable.");
+        var baselinePath = IOPath.GetFullPath(
+            IOPath.Combine(profile.EvidenceFolder, "database-before.sqlite"));
+        var expectedPath = IOPath.GetFullPath(
+            IOPath.Combine(profile.EvidenceFolder, "database-before.sqlite"));
+        if (!string.Equals(baselinePath, expectedPath, StringComparison.OrdinalIgnoreCase) ||
+            !IOFile.Exists(baselinePath))
+            throw new InvalidOperationException(
+                "Disposable landed-cost baseline evidence is unavailable.");
+
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using (var attach = connection.CreateCommand())
+        {
+            attach.CommandText = "ATTACH DATABASE $baseline AS automation_baseline;";
+            attach.Parameters.AddWithValue("$baseline", baselinePath);
+            attach.ExecuteNonQuery();
+        }
+        using var transaction = connection.BeginTransaction();
+        using var validate = connection.CreateCommand();
+        validate.Transaction = transaction;
+        validate.CommandText = """
+            SELECT
+                (SELECT COUNT(*) FROM NativeMaterialManagerRows),
+                (SELECT COUNT(*) FROM automation_baseline.NativeMaterialManagerRows);
+            """;
+        using (var reader = validate.ExecuteReader())
+        {
+            if (!reader.Read() || reader.GetInt64(0) != reader.GetInt64(1))
+                throw new InvalidOperationException(
+                    "Disposable landed-cost Material cleanup did not return to the baseline row count.");
+        }
+        using var restore = connection.CreateCommand();
+        restore.Transaction = transaction;
+        restore.CommandText = """
+            UPDATE NativeMaterialManagerRows
+            SET SortOrder =
+                (SELECT baseline.SortOrder
+                 FROM automation_baseline.NativeMaterialManagerRows AS baseline
+                 WHERE baseline.MaterialID = NativeMaterialManagerRows.MaterialID)
+            WHERE EXISTS
+                (SELECT 1
+                 FROM automation_baseline.NativeMaterialManagerRows AS baseline
+                 WHERE baseline.MaterialID = NativeMaterialManagerRows.MaterialID);
+            """;
+        var restored = restore.ExecuteNonQuery();
+        if (restored <= 0)
+            throw new InvalidOperationException(
+                "Disposable landed-cost baseline SortOrder restore affected no rows.");
+        transaction.Commit();
+    }
+
     public List<PurchaseOrderRecord> LoadPurchaseOrders()
     {
         using var connection = new SqliteConnection(ConnectionString); connection.Open(); Initialize();

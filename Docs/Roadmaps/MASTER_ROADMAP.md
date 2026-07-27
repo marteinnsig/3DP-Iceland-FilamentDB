@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v53.0.4.1 — Acceptance Contract and Automation Surface**
+Current canonical release: **v53.0.4.2 — Disposable Landed-cost Lifecycle**
 
-Last runtime-accepted baseline: **v53.0.4.1 — Acceptance Contract and Automation Surface**
+Last runtime-accepted baseline: **v53.0.4.2 — Disposable Landed-cost Lifecycle**
 
-Current canonical application release: **v53.0.4.1 — Acceptance Contract and Automation Surface**
+Current canonical application release: **v53.0.4.2 — Disposable Landed-cost Lifecycle**
 
-Current roadmap increment: **v53.0.4.2 — Disposable Landed-cost Lifecycle**
+Current roadmap increment: **v53.0.4.3 — Migration, Recovery and Historical Stability**
 
-Current acceptance note: v53.0.4.1 is runtime accepted with Full Data Verification 389/389.
+Current acceptance note: v53.0.4.2 is runtime accepted with Full Data Verification 390/390.
 
-Next note: v53.0.4.2 adds the exact disposable default/override/restart/calculation/downstream lifecycle.
+Next note: v53.0.4.3 adds schema-v37 migration, recovery and historical-stability evidence.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -38,7 +38,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v51 | Governed Runtime Profiles | ★★★☆☆ | Complete — canonical v51.4.0 runtime accepted |
 | v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Complete — Provisional model; runtime v52.3.2 |
 
-| v53 | Governed Landed-cost Currency | ★★★★☆ | In progress — current v53.0.4.2 |
+| v53 | Governed Landed-cost Currency | ★★★★☆ | In progress — current v53.0.4.3 |
 
 | v54 | Materials Scope and Collection Workflow | ★★★★☆ | Planned |
 | v55 | Operational Safety and Disposable Hygiene | ★★★★☆ | Planned |
@@ -2322,12 +2322,13 @@ to unstarted authoritative planning slots.
   - Evidence: Release smoke `20260727215805-25c18520` passes 389/389 with exact database and business-state equality.
   - Owner accepted the unchanged Purchase Orders surface and safe diagnostics on 2026-07-27.
 - **v53.0.4.2 — Disposable Landed-cost Lifecycle**
-  - State: Current; begin only after recording the accepted v53.0.4.1 evidence.
+  - State: Complete, canonical and runtime accepted.
   - Add a dedicated scenario for default, Draft override, cancellation, restart, calculation lock and downstream snapshot creation.
   - Use exact disposable records, production helpers, full cleanup and final logical/business-state hash equality.
-  - Completion condition: lifecycle and restart checkpoints pass without owner-data or external-action access.
+  - Evidence: Release profile `20260727222431-7383588f` passes 390/390 and exact normalized business-state equality.
+  - Owner accepted 200 intentional Materials, zero automation residue and Full Data Verification PASS on 2026-07-27.
 - **v53.0.4.3 — Migration, Recovery and Historical Stability**
-  - State: Planned after v53.0.4.2.
+  - State: Current after v53.0.4.2 runtime acceptance.
   - Add read-only schema-v37 startup migration coverage and exact v53 field comparison across governed Excel recovery.
   - Prove existing Purchase Orders, Inventory, Materials, Usage and Quotes remain unchanged outside exact disposable records.
   - Completion condition: migration/recovery evidence and all preservation/hash gates pass.

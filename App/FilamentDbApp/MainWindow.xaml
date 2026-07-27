@@ -264,6 +264,30 @@
                                    AutomationProperties.AutomationId="AutomationRecoveryStatus"
                                    Foreground="#F8FAFC" VerticalAlignment="Center" />
                     </StackPanel>
+                    <StackPanel x:Name="AutomationLandedCostPanel" Orientation="Horizontal" Margin="0,6,0,0"
+                                Visibility="Collapsed">
+                        <Button AutomationProperties.AutomationId="AutomationLandedCostPrepare"
+                                Content="Landed cost: Prepare" Click="AutomationLandedCostPrepare_Click"
+                                Margin="0,0,6,0" />
+                        <Button AutomationProperties.AutomationId="AutomationLandedCostOverride"
+                                Content="Override" Click="AutomationLandedCostOverride_Click"
+                                Margin="0,0,6,0" />
+                        <Button AutomationProperties.AutomationId="AutomationLandedCostCalculate"
+                                Content="Calculate" Click="AutomationLandedCostCalculate_Click"
+                                Margin="0,0,6,0" />
+                        <Button AutomationProperties.AutomationId="AutomationLandedCostDownstream"
+                                Content="Downstream" Click="AutomationLandedCostDownstream_Click"
+                                Margin="0,0,6,0" />
+                        <Button AutomationProperties.AutomationId="AutomationLandedCostCleanup"
+                                Content="Cleanup" Click="AutomationLandedCostCleanup_Click"
+                                Margin="0,0,6,0" />
+                        <Button AutomationProperties.AutomationId="AutomationLandedCostVerifyAbsent"
+                                Content="Verify absent" Click="AutomationLandedCostVerifyAbsent_Click"
+                                Margin="0,0,6,0" />
+                        <TextBlock x:Name="AutomationLandedCostStatusText"
+                                   AutomationProperties.AutomationId="AutomationLandedCostStatus"
+                                   Foreground="#F8FAFC" VerticalAlignment="Center" />
+                    </StackPanel>
                 </StackPanel>
 
                 <Border Grid.Column="2" Background="#1F2937" CornerRadius="6" Padding="12,7" VerticalAlignment="Center">

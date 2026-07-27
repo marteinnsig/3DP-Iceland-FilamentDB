@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "LANDED-COST-ACCEPTANCE-CONTRACT";
-    public const string ReleaseTitle = "Landed-cost Acceptance Contract";
+    public const string ReleaseCode = "DISPOSABLE-LANDED-COST-LIFECYCLE";
+    public const string ReleaseTitle = "Disposable Landed-cost Lifecycle";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 38;
 

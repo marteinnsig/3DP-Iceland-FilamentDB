@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v53.0.4.2 - Disposable Landed-cost Lifecycle
+
+An exact-ID, default-off disposable scenario proves governed default,
+cancellation, override, restart, calculation lock, downstream
+Material/Inventory provenance and full cleanup. Initial final-state failures
+blocked broad legacy normalization and historical derived-field refresh.
+Corrected profile `20260727222431-7383588f` and read-only smoke
+`20260727222716-fdeff6d3` pass 390/390 with exact state equality. Owner runtime
+accepts 200 intentional Materials, zero automation residue and Verification
+PASS; schema remains v38.
+
 ## v53.0.4.1 - Landed-cost Acceptance Contract and Automation Surface
 
 Default-off exact disposable PO/Material/Inventory authorization, secret-safe
