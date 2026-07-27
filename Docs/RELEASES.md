@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v51.2.0 - Clean Readiness Profile
+
+The manifest-governed `CLEAN / READINESS` profile creates schema v37 from no
+seed and confines database, preferences, output and evidence to a disposable
+root. Owner state, Production, FTPS, updates and mutating scenario
+authorizations remain blocked. Release Clean acceptance passes 280/280
+applicable with 100 explicit N/A checks; populated Full Data Verification
+passes 380/380 with exact state recovery. A bounded anonymous WPF popup retry
+retains the unexpected-dialog guard while removing a Help-menu UIA race.
+Owner runtime acceptance passes on 2026-07-27; v51.3 is current.
+
 ## v51.1.0 - Runtime Profile Foundation
 
 The main shell, Verification and System Diagnostics share one governed runtime

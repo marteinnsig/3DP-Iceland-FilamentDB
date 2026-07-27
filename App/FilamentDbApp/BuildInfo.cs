@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "RUNTIME-PROFILE-FOUNDATION";
-    public const string ReleaseTitle = "Runtime Profile Foundation";
+    public const string ReleaseCode = "CLEAN-READINESS-PROFILE";
+    public const string ReleaseTitle = "Clean Readiness Profile";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 37;
 

@@ -2,6 +2,37 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v51.2.0 - Clean Readiness Profile
+
+- Adds the explicit `clean-readiness` manifest purpose and visible
+  `CLEAN / READINESS` runtime identity.
+- Creates the clean database from no seed and confines database, preferences,
+  output and evidence to the disposable manifest root.
+- Rejects every mutating scenario authorization in a Clean Readiness manifest;
+  Production, FTPS and updates remain hard-blocked.
+- Extends deterministic automation with seedless first-start, zero canonical
+  Materials, Application Readiness evidence and controlled restart checks.
+- Classifies ten exact recovery/reporting composite gates as legitimate
+  zero-data N/A without weakening release, identity or security failures.
+- Profile `20260727143116-3138cb93` passes 280 mandatory checks, zero FAIL and
+  100 explicit N/A checks with exact post-initialization state equality.
+- Release clean profile `20260727143346-142a5972` repeats 280/280 applicable
+  and 100 N/A; populated Release smoke `20260727143423-7961372f` passes Full
+  Data Verification 380/380 with exact state recovery.
+- Debug/Release app and tester builds, Help/document audits and the read-only
+  NuGet vulnerability scan pass. Owner runtime acceptance remains pending;
+  schema remains v37.
+- Fixes an owner-observed UIA race where an anonymous transient WPF Help-menu
+  popup could be mistaken for an unexpected dialog.
+- Retries only a fully anonymous owned window for at most one second; any
+  identified or persistent window remains blocked.
+- Consecutive Clean Release profiles `20260727144106-e4feeaf6` and
+  `20260727144139-15e29155` pass, followed by populated Release profile
+  `20260727144213-6e88b752` at 380/380 with exact state.
+- Owner Clean rerun completes without unexpected dialogs or PowerShell errors;
+  v51.2.0 is canonical and runtime accepted on 2026-07-27. Schema remains v37
+  and v51.3 is current.
+
 ## v51.1.0 - Runtime Profile Foundation
 
 - Records v51.0 research and the authoritative v51.1-v51.4 delivery sequence

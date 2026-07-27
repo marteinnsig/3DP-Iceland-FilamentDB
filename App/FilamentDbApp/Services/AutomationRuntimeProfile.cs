@@ -8,8 +8,11 @@ public sealed class AutomationRuntimeProfile
 {
     public const string ArgumentName = "--automation-profile";
     public const string MarkerFileName = ".3dpiceland-disposable-profile.json";
+    public const string VerificationPurpose = "verification";
+    public const string CleanReadinessPurpose = "clean-readiness";
 
     public string ProfileId { get; init; } = string.Empty;
+    public string Purpose { get; init; } = VerificationPurpose;
     public string RootPath { get; init; } = string.Empty;
     public string DatabaseFolder { get; init; } = string.Empty;
     public string PreferencesFolder { get; init; } = string.Empty;
@@ -89,6 +92,11 @@ public sealed class AutomationRuntimeProfile
             throw new InvalidOperationException("Automation ProfileId must be a non-empty safe identifier.");
         if (!ProductionAndFtpsBlocked || !UpdatesBlocked)
             throw new InvalidOperationException("Automation profiles must hard-block Production, FTPS and updates.");
+        if (Purpose is not (VerificationPurpose or CleanReadinessPurpose))
+            throw new InvalidOperationException("Automation profile purpose must be verification or clean-readiness.");
+        if (Purpose == CleanReadinessPurpose &&
+            (ReportGenerationAuthorized || MaterialCrudAuthorized || RecoveryAuthorized || UpdaterAuthorized))
+            throw new InvalidOperationException("Clean Readiness profiles cannot authorize mutating automation scenarios.");
         if (MaterialCrudAuthorized &&
             (string.IsNullOrWhiteSpace(MaterialCrudId) ||
              !MaterialCrudId.All(ch => char.IsLetterOrDigit(ch) || ch is '-' or '_')))

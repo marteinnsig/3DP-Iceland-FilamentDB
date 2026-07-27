@@ -3,7 +3,8 @@ namespace FilamentDbApp.Services;
 public enum RuntimeProfileKind
 {
     OwnerProduction,
-    DisposableVerification
+    DisposableVerification,
+    CleanReadiness
 }
 
 public sealed record RuntimeProfileDescriptor(
@@ -35,7 +36,9 @@ public static class RuntimeProfileContext
             var automation = AutomationRuntimeProfile.Current;
             return automation is null
                 ? DescribeOwnerProduction()
-                : DescribeDisposableVerification(automation);
+                : automation.Purpose == AutomationRuntimeProfile.CleanReadinessPurpose
+                    ? DescribeCleanReadiness(automation)
+                    : DescribeDisposableVerification(automation);
         }
     }
 
@@ -65,4 +68,18 @@ public static class RuntimeProfileContext
             DatabaseOwnership: "Disposable manifest database folder",
             PreferencesOwnership: "Disposable manifest preferences folder",
             OutputOwnership: "Disposable manifest output folder");
+
+    public static RuntimeProfileDescriptor DescribeCleanReadiness(
+        AutomationRuntimeProfile automation) =>
+        new(
+            RuntimeProfileKind.CleanReadiness,
+            automation.ProfileId,
+            $"CLEAN / READINESS — {automation.ProfileId}",
+            IsDisposable: true,
+            OwnerDatabaseAllowed: false,
+            ProductionAndFtpsAllowed: false,
+            UpdatesAllowed: false,
+            DatabaseOwnership: "Seedless disposable manifest database folder",
+            PreferencesOwnership: "Seedless disposable manifest preferences folder",
+            OutputOwnership: "Seedless disposable manifest output folder");
 }

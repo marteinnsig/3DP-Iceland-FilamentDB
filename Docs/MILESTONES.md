@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v51.2.0 - Clean Readiness Profile
+
+The governed runtime-profile milestone now includes a seedless Clean Readiness
+contract for deterministic first-run, zero-data diagnostics and restart
+acceptance. It preserves hard owner-state and external-action isolation while
+keeping non-data release and security failures mandatory. Clean and populated
+Release acceptance plus owner runtime acceptance pass; schema remains v37.
+
 # v51.1.0 - Runtime Profile Foundation
 
 Owner Production and Disposable Verification now expose one consistent runtime

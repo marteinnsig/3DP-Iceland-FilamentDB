@@ -1309,6 +1309,8 @@ internal static class HelpContentCatalog
             The main header always names the active ownership contract. OWNER / PRODUCTION uses the configured owner database and
             owner preferences and retains separately guarded Production/FTPS/update capabilities. VERIFICATION / DISPOSABLE uses
             manifest-contained database, preferences and output roots; owner database, Production/FTPS and general updates are blocked.
+            CLEAN / READINESS is a seedless disposable first-run contract. It creates a new empty SQLite database only inside its
+            manifest root, reports data-dependent checks as Not applicable and keeps release, identity and security failures mandatory.
             Profile identity never grants an action by itself and never weakens crash, recovery, security or support evidence.
 
             File, update and publishing commands

@@ -199,9 +199,12 @@ public partial class MainWindow : Window
     {
         var runtimeProfile = RuntimeProfileContext.Current;
         RuntimeProfileIdentityText.Text = runtimeProfile.VisibleIdentity;
-        RuntimeProfileIdentityText.Foreground = runtimeProfile.IsDisposable
-            ? new SolidColorBrush(Color.FromRgb(251, 191, 36))
-            : new SolidColorBrush(Color.FromRgb(134, 239, 172));
+        RuntimeProfileIdentityText.Foreground = runtimeProfile.Kind switch
+        {
+            RuntimeProfileKind.CleanReadiness => new SolidColorBrush(Color.FromRgb(125, 211, 252)),
+            RuntimeProfileKind.DisposableVerification => new SolidColorBrush(Color.FromRgb(251, 191, 36)),
+            _ => new SolidColorBrush(Color.FromRgb(134, 239, 172))
+        };
         AutomationProperties.SetHelpText(RuntimeProfileIdentityText, runtimeProfile.CapabilitySummary);
         if (!AutomationRuntimeProfile.IsActive) return;
         Title += " — " + runtimeProfile.VisibleIdentity;
@@ -13854,7 +13857,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             "v43.1 Local SQLite Backup and Restore release gate" or
             "v43.2 Excel Disaster Recovery release gate" or
             "v43.3 Recovery Compatibility Center release gate" or
-            "v43.3.1 Backup and Recovery Center UI release gate")
+            "v43.3.1 Backup and Recovery Center UI release gate" or
+            "v44.5.1 Active SQLite preservation release gate" or
+            "v44.5.3 Canonical storage terminology release gate" or
+            "v44.5.5 Retired legacy write entry points release gate" or
+            "v44.5.6 Retired workbook metadata readers release gate" or
+            "v44.5.7 Legacy workbook schema retirement release gate" or
+            "v44.5.8 Retired transition UI residue release gate" or
+            "v44.5.9 Supported migration naming release gate" or
+            "v44.6.0 Recovery Center clarity release gate" or
+            "v44.7.8 Backup Filename Compatibility release gate" or
+            "v44.7.12 Clean baseline retirement release gate")
             return true;
 
         return check.Name.StartsWith("v41.1 ", StringComparison.Ordinal) ||
@@ -14006,7 +14019,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 "OWNER / PRODUCTION uses",
                 StringComparison.Ordinal) &&
             (!AutomationRuntimeProfile.IsActive ||
-             (runtimeProfile.Kind == RuntimeProfileKind.DisposableVerification &&
+             ((runtimeProfile.Kind == RuntimeProfileKind.DisposableVerification ||
+               runtimeProfile.Kind == RuntimeProfileKind.CleanReadiness) &&
               runtimeProfile.IsDisposable &&
               !runtimeProfile.OwnerDatabaseAllowed &&
               !runtimeProfile.ProductionAndFtpsAllowed &&
@@ -14016,6 +14030,30 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             runtimeProfileFoundationReady
                 ? $"{runtimeProfile.VisibleIdentity}; {runtimeProfile.CapabilitySummary}; database ownership: {runtimeProfile.DatabaseOwnership}"
                 : "Owner/Disposable runtime identity, visible AutomationId or effective capability contract is incomplete."));
+        var cleanProfileProbe = RuntimeProfileContext.DescribeCleanReadiness(new AutomationRuntimeProfile
+        {
+            ProfileId = "verification-probe",
+            Purpose = AutomationRuntimeProfile.CleanReadinessPurpose
+        });
+        var cleanReadinessContractReady =
+            AutomationRuntimeProfile.VerificationPurpose == "verification" &&
+            AutomationRuntimeProfile.CleanReadinessPurpose == "clean-readiness" &&
+            cleanProfileProbe.Kind == RuntimeProfileKind.CleanReadiness &&
+            cleanProfileProbe.IsDisposable &&
+            !cleanProfileProbe.OwnerDatabaseAllowed &&
+            !cleanProfileProbe.ProductionAndFtpsAllowed &&
+            !cleanProfileProbe.UpdatesAllowed &&
+            cleanProfileProbe.VisibleIdentity.StartsWith("CLEAN / READINESS", StringComparison.Ordinal) &&
+            cleanProfileProbe.DatabaseOwnership.Contains("Seedless", StringComparison.Ordinal) &&
+            HelpContentCatalog.Sections.Single(
+                section => section.Id == "menu-runtime.controls-fields").Body.Contains(
+                "seedless disposable first-run contract",
+                StringComparison.Ordinal);
+        checks.Add(new VerificationCheck("v51.2 seedless Clean Readiness profile contract",
+            cleanReadinessContractReady,
+            cleanReadinessContractReady
+                ? "Clean Readiness is manifest-contained, seedless and blocks owner database, Production/FTPS and updates"
+                : "Clean Readiness purpose, identity, isolation, capability or Help contract is incomplete."));
         var automationFoundationReady =
             AutomationRuntimeProfile.MarkerFileName == ".3dpiceland-disposable-profile.json" &&
             typeof(AutomationRuntimeProfile).GetMethod(nameof(AutomationRuntimeProfile.Configure)) is not null &&

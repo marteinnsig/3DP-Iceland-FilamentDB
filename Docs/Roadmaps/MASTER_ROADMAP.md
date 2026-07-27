@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v50.4.4 — Help Zero-gap Final Acceptance**
+Current canonical release: **v51.2.0 — Clean Readiness Profile**
 
-Last runtime-accepted baseline: **v51.1.0 — Runtime Profile Foundation**
+Last runtime-accepted baseline: **v51.2.0 — Clean Readiness Profile**
 
-Current application candidate: **None; v51.2 is current**
+Current application candidate: **None; v51.3 is current**
 
-Current roadmap increment: **v51.2 — Clean Readiness Profile and Zero-data Diagnostics**
+Current roadmap increment: **v51.3 — Verification Classification and Mandatory Evidence Contract**
 
-Current acceptance note: v51.1.0 is runtime accepted with owner and disposable Verification 379/379.
+Current acceptance note: v51.2.0 is owner accepted; Release clean passes 280/280 plus 100 N/A and populated passes 380/380.
 
 Next note: v51.0 is research-first; measure profile cost and boundaries before implementation.
 
@@ -2182,13 +2182,17 @@ to unstarted authoritative planning slots.
   - Disposable profile `20260727141117-d8438ac6` passes Verification 379/379 with exact state equality.
   - Owner Verification and Diagnostics confirm OWNER / PRODUCTION, the canonical database path and governed capabilities.
 - **v51.2 — Clean Readiness Profile and Zero-data Diagnostics**
-  - State: Current authoritative increment.
+  - State: Complete, canonical and owner runtime accepted on 2026-07-27.
   - Add a manifest-governed isolated empty/seedless profile for first-run, readiness, compatibility and zero-data testing.
   - Keep owner database, preferences, credentials, Production, FTPS and general updates inaccessible.
   - Distinguish legitimate zero-data Not applicable checks from release/identity/security failures that must remain FAIL.
   - Completion condition: clean-start and restart evidence pass without owner-state access or persistent automation residue.
+  - Seedless profile `20260727143116-3138cb93` passes 280/280 applicable, zero FAIL and 100 N/A with exact stable state.
+  - Release profiles `20260727143346-142a5972` and `20260727143423-7961372f` pass clean 280/280 plus 100 N/A and full 380/380.
+  - Popup-race fix passes two consecutive Clean runs and populated profile `20260727144213-6e88b752` with exact state.
+  - Owner rerun passes without unexpected dialogs or PowerShell errors.
 - **v51.3 — Verification Classification and Mandatory Evidence Contract**
-  - State: Planned after v51.2 acceptance.
+  - State: Current authoritative increment.
   - Make profile identity explicit in Verification while retaining Full Data Verification for canonical populated data.
   - Keep crash, recovery, security, updater transaction, path ownership and support evidence mandatory in every profile.
   - Prevent a profile from converting unexpected readiness or release failures into Not applicable.

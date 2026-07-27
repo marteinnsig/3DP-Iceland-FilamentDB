@@ -2,6 +2,16 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v51.2.0 - Clean Readiness Profile
+
+Clean Readiness adds a seedless, manifest-contained schema-v37 first-run
+profile with visible identity and hard owner-state, Production, FTPS, update
+and mutation blocks. Application Readiness passes 280/280 applicable with 100
+explicit N/A checks; populated Full Data Verification passes 380/380. Two
+consecutive Clean Release runs and one populated Release run retain exact
+business-state equality after a bounded anonymous WPF popup-race correction.
+Owner runtime acceptance passes on 2026-07-27; v51.3 is current.
+
 ## v51.1.0 - Runtime Profile Foundation
 
 Research found only two current runtime contracts: implicit owner/normal and

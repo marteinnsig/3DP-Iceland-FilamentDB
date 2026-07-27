@@ -1,5 +1,32 @@
 # Automated Runtime Acceptance
 
+## v51.2.0 - Clean Readiness candidate
+
+The `clean` scenario creates a manifest-contained profile without accepting or
+copying a seed database. First launch creates schema v37 only below the
+disposable database root. The header, Diagnostics and Verification identify
+`CLEAN / READINESS`; owner database, preferences, credentials, Production,
+FTPS, updates and all mutating scenario authorizations remain inaccessible.
+
+Profile `20260727143116-3138cb93` passes Application Readiness with 280
+mandatory PASS, zero FAIL and 100 explicit zero-data N/A checks. It contains
+zero canonical Materials and no seed-evidence file. A controlled restart
+preserves identity and zero-data state; the post-initialization logical and
+business-state baseline remains exact through final shutdown.
+
+Release profile `20260727143346-142a5972` repeats the same 280/280 applicable,
+100 N/A and exact-state result. Populated Release smoke profile
+`20260727143423-7961372f` passes Full Data Verification 380/380 with exact
+business-state recovery.
+
+Owner execution exposed a transient anonymous WPF Help-menu popup that could
+survive the immediate UIA window enumeration and falsely trigger the
+unexpected-dialog guard. The runner now retries only an entirely anonymous
+owned window for at most one second; any identified or persistent window still
+fails immediately or at the bounded deadline. Clean profiles
+`20260727144106-e4feeaf6` and `20260727144139-15e29155` pass consecutively.
+Populated profile `20260727144213-6e88b752` passes 380/380 with exact state.
+
 ## v50.3.0 - Safety and recovery Help accepted
 
 Smoke opens Recovery Center, System Diagnostics and Verification Center in the

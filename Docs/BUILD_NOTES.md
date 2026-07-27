@@ -1,4 +1,31 @@
-# Current Build Notes - v51.1.0
+# Current Build Notes - v51.2.0
+
+## Clean Readiness Profile
+
+The new `CLEAN / READINESS` runtime is a manifest-governed, seedless
+first-run profile. It creates a new schema-v37 SQLite database only inside its
+disposable root and blocks owner database/preferences, credentials,
+Production, FTPS, updates and mutating tester authorizations.
+
+Application Readiness now classifies ten exact recovery/reporting composite
+gates as zero-data dependent while retaining unexpected release, identity,
+schema, executable, path and security failures as mandatory FAIL.
+Profile `20260727143116-3138cb93` passes 280 applicable checks with zero FAIL
+and 100 explicit N/A checks. Controlled restart preserves the clean identity,
+zero Materials and exact post-initialization state. Release clean profile
+`20260727143346-142a5972` repeats 280/280 applicable and 100 N/A; populated
+Release smoke `20260727143423-7961372f` passes Full Data Verification 380/380
+with exact state recovery. Debug/Release app and tester builds, Help/document
+audits and the NuGet vulnerability scan pass. Owner runtime acceptance passes
+on 2026-07-27; schema remains v37 and v51.3 is current.
+
+An owner-run Clean test found a transient anonymous WPF Help-menu popup race in
+the tester's unexpected-window enumeration. A bounded one-second retry applies
+only while both AutomationId and name are empty; identified or persistent
+windows remain blocked. Two consecutive Clean Release profiles
+`20260727144106-e4feeaf6` and `20260727144139-15e29155` pass, followed by
+populated Release profile `20260727144213-6e88b752` at 380/380 with exact state.
+The owner rerun completes without unexpected dialogs or PowerShell errors.
 
 ## Runtime Profile Foundation
 

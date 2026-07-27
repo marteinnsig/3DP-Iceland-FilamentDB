@@ -35,14 +35,19 @@ internal static class Program
         {
             var options = RunnerOptions.Parse(args);
             CurrentScenario = options.Scenario;
+            var cleanReadiness = string.Equals(options.Scenario, "clean", StringComparison.Ordinal);
             executable = IOPath.GetFullPath(options.ApplicationPath);
-            seedDatabase = IOPath.GetFullPath(options.SeedDatabasePath);
+            seedDatabase = string.IsNullOrWhiteSpace(options.SeedDatabasePath)
+                ? string.Empty
+                : IOPath.GetFullPath(options.SeedDatabasePath);
             if (!IOFile.Exists(executable)) throw new FileNotFoundException("Application executable not found.", executable);
-            if (!IOFile.Exists(seedDatabase)) throw new FileNotFoundException("Explicit seed database not found.", seedDatabase);
+            if (!cleanReadiness && !IOFile.Exists(seedDatabase))
+                throw new FileNotFoundException("Explicit seed database not found.", seedDatabase);
 
             root = CreateDisposableProfile(
                 executable,
                 seedDatabase,
+                cleanReadiness,
                 string.Equals(options.Scenario, "reports", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "crud", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "recovery", StringComparison.Ordinal),
@@ -50,7 +55,10 @@ internal static class Program
                 out var markerPath,
                 out databasePath,
                 out var materialCrudId);
-            seedDatabaseHash = Sha256(seedDatabase);
+            seedDatabaseHash = cleanReadiness ? string.Empty : Sha256(seedDatabase);
+            Require(
+                !cleanReadiness || !IOFile.Exists(databasePath),
+                "Clean Readiness database unexpectedly existed before first launch.");
             application = Process.Start(new ProcessStartInfo(executable)
             {
                 UseShellExecute = false,
@@ -76,8 +84,9 @@ internal static class Program
 
             var identity = FindById(main, "RuntimeProfileIdentity");
             var identityName = identity.Current.Name;
-            Require(identityName.Contains("VERIFICATION / DISPOSABLE", StringComparison.Ordinal),
-                "Disposable Verification runtime profile identity is not visible.");
+            var expectedIdentity = cleanReadiness ? "CLEAN / READINESS" : "VERIFICATION / DISPOSABLE";
+            Require(identityName.Contains(expectedIdentity, StringComparison.Ordinal),
+                $"{expectedIdentity} runtime profile identity is not visible.");
             Require(
                 identity.Current.HelpText.Contains("Owner database: BLOCKED", StringComparison.Ordinal) &&
                 identity.Current.HelpText.Contains("Production/FTPS: BLOCKED", StringComparison.Ordinal) &&
@@ -199,7 +208,7 @@ internal static class Program
                 diagnosticsReport.Contains(
                     "Diagnostics do not modify application files",
                     StringComparison.Ordinal) &&
-                diagnosticsReport.Contains("Identity: VERIFICATION / DISPOSABLE", StringComparison.Ordinal) &&
+                diagnosticsReport.Contains("Identity: " + expectedIdentity, StringComparison.Ordinal) &&
                 diagnosticsReport.Contains(
                     "Capabilities: Owner database: BLOCKED; Production/FTPS: BLOCKED; updates: BLOCKED",
                     StringComparison.Ordinal),
@@ -244,23 +253,33 @@ internal static class Program
             var assistantOutput = FindById(main, "AiAssistantOutput")
                 .GetCurrentPropertyValue(ValuePattern.ValueProperty)?.ToString() ?? string.Empty;
             Require(
-                assistantOutput.Contains("AI ASSISTANT", StringComparison.Ordinal) &&
-                assistantOutput.Contains("Visible materials used:", StringComparison.Ordinal),
+                cleanReadiness
+                    ? assistantOutput.Contains("No visible materials are loaded", StringComparison.Ordinal)
+                    : assistantOutput.Contains("AI ASSISTANT", StringComparison.Ordinal) &&
+                      assistantOutput.Contains("Visible materials used:", StringComparison.Ordinal),
                 "AI Assistant local full brief did not retain visible-scope evidence.");
             Record("ai-assistant-local-scope", true, assistantScope + " " + assistantMaterialIds);
             var collectionAction = FindById(main, "AiCollectionActionState").Current.Name;
             Require(
                 collectionAction.StartsWith("Action: Create a new collection", StringComparison.Ordinal),
                 "AI collection workflow read non-disposable collection state.");
-            Invoke(FindById(main, "PreviewAiMaterialCollection"), application.Id);
-            var collectionPreview = FindById(main, "AiAssistantOutput")
-                .GetCurrentPropertyValue(ValuePattern.ValueProperty)?.ToString() ?? string.Empty;
-            Require(
-                collectionPreview.Contains("COLLECTION SAVE PREVIEW", StringComparison.Ordinal) &&
-                collectionPreview.Contains("No data has been written.", StringComparison.Ordinal) &&
-                collectionPreview.Contains("Unique MaterialIDs to save:", StringComparison.Ordinal),
-                "AI collection preview did not expose its read-only exact MaterialID contract.");
-            Record("ai-collection-preview", true, collectionAction);
+            if (cleanReadiness)
+            {
+                Record("ai-collection-zero-data-boundary", true,
+                    "Preview was not invoked because zero visible Materials has no valid collection payload");
+            }
+            else
+            {
+                Invoke(FindById(main, "PreviewAiMaterialCollection"), application.Id);
+                var collectionPreview = FindById(main, "AiAssistantOutput")
+                    .GetCurrentPropertyValue(ValuePattern.ValueProperty)?.ToString() ?? string.Empty;
+                Require(
+                    collectionPreview.Contains("COLLECTION SAVE PREVIEW", StringComparison.Ordinal) &&
+                    collectionPreview.Contains("No data has been written.", StringComparison.Ordinal) &&
+                    collectionPreview.Contains("Unique MaterialIDs to save:", StringComparison.Ordinal),
+                    "AI collection preview did not expose its read-only exact MaterialID contract.");
+                Record("ai-collection-preview", true, collectionAction);
+            }
             var coverageIdentity = FindById(main, "AiCoverageIdentityStatus").Current.Name;
             Require(
                 coverageIdentity.Contains("0 stable CollectionID/MaterialID, 0 legacy", StringComparison.Ordinal),
@@ -534,12 +553,47 @@ internal static class Program
             Require(
                 verificationEvidence.RootElement.TryGetProperty("Passed", out var passedElement) &&
                 passedElement.GetBoolean(),
-                "Exported Full Data Verification reported FAIL.");
+                "Exported Verification reported FAIL.");
+            if (cleanReadiness)
+            {
+                var rootElement = verificationEvidence.RootElement;
+                Require(
+                    rootElement.GetProperty("profile").GetString() == "Application Readiness" &&
+                    rootElement.GetProperty("NotApplicableCount").GetInt32() > 0 &&
+                    rootElement.GetProperty("runtimeProfileKind").GetString() == "CleanReadiness",
+                    "Clean Readiness evidence did not report Application Readiness, explicit N/A checks and CleanReadiness identity.");
+                Require(CountRows(databasePath, "NativeMaterialManagerRows") == 0,
+                    "Clean Readiness unexpectedly contains canonical Materials.");
+                Require(
+                    !IOFile.Exists(IOPath.Combine(root, "database", "3DPIceland-Automation-Seed-Evidence.bak")),
+                    "Clean Readiness unexpectedly retained seed evidence.");
+                Record("clean-zero-data-classification", true,
+                    $"{rootElement.GetProperty("PassedCount").GetInt32()} PASS; " +
+                    $"{rootElement.GetProperty("NotApplicableCount").GetInt32()} N/A; 0 Materials");
+            }
             CaptureWindow(verification, IOPath.Combine(root, "evidence", "verification-center.png"));
             Record("verification-export", true, "TXT/JSON evidence exported");
 
             CloseWindow(verification, application.Id);
-            if (string.Equals(options.Scenario, "reports", StringComparison.Ordinal))
+            if (cleanReadiness)
+            {
+                (application, main) = RestartApplication(application, executable, markerPath);
+                var restartedIdentity = FindById(main, "RuntimeProfileIdentity").Current.Name;
+                Require(restartedIdentity.Contains("CLEAN / READINESS", StringComparison.Ordinal),
+                    "Clean Readiness identity was not preserved across restart.");
+                Require(CountRows(databasePath, "NativeMaterialManagerRows") == 0,
+                    "Clean Readiness restart unexpectedly introduced canonical Materials.");
+                var restartBaselinePath = IOPath.Combine(root, "evidence", "clean-restart-baseline.sqlite");
+                CreateConsistentSnapshot(databasePath, restartBaselinePath);
+                databaseHashBefore = ComputeLogicalDatabaseHash(restartBaselinePath);
+                databaseBusinessHashBefore = ComputeLogicalDatabaseHash(
+                    restartBaselinePath,
+                    excludeVolatileTimestamps: true);
+                Record("clean-restart", true,
+                    "Same manifest restarted with CLEAN / READINESS identity, zero canonical Materials and a stable post-initialization baseline");
+                CaptureWindow(main, IOPath.Combine(root, "evidence", "clean-restart.png"));
+            }
+            else if (string.Equals(options.Scenario, "reports", StringComparison.Ordinal))
             {
                 SelectTab(main, "ReportsTab", application.Id);
                 var outputFolder = FindById(main, "ReportOutputFolder");
@@ -683,6 +737,7 @@ internal static class Program
     private static string CreateDisposableProfile(
         string executable,
         string seedDatabase,
+        bool cleanReadiness,
         bool reportGenerationAuthorized,
         bool materialCrudAuthorized,
         bool recoveryAuthorized,
@@ -704,15 +759,19 @@ internal static class Program
             IODirectory.CreateDirectory(folder);
 
         databasePath = IOPath.Combine(databaseFolder, "filamentdb.sqlite");
-        IOFile.Copy(seedDatabase, databasePath, overwrite: false);
-        IOFile.Copy(
-            seedDatabase,
-            IOPath.Combine(databaseFolder, "3DPIceland-Automation-Seed-Evidence.bak"),
-            overwrite: false);
+        if (!cleanReadiness)
+        {
+            IOFile.Copy(seedDatabase, databasePath, overwrite: false);
+            IOFile.Copy(
+                seedDatabase,
+                IOPath.Combine(databaseFolder, "3DPIceland-Automation-Seed-Evidence.bak"),
+                overwrite: false);
+        }
         markerPath = IOPath.Combine(root, MarkerFileName);
         var manifest = new
         {
             profileId,
+            purpose = cleanReadiness ? "clean-readiness" : "verification",
             rootPath = root,
             databaseFolder,
             preferencesFolder,
@@ -1226,16 +1285,40 @@ internal static class Program
     private static void AssertNoUnexpectedWindows(int processId, params string[] allowedIds)
     {
         var allowed = allowedIds.ToHashSet(StringComparer.Ordinal);
+        for (var attempt = 0; attempt < 11; attempt++)
+        {
+            var unexpected = FindUnexpectedOwnedWindow(processId, allowed);
+            if (unexpected is null) return;
+            var (id, name) = unexpected.Value;
+            var anonymousTransient = string.IsNullOrWhiteSpace(id) && string.IsNullOrWhiteSpace(name);
+            if (!anonymousTransient || attempt == 10)
+                throw new InvalidOperationException(
+                    $"Unexpected dialog/window blocked the run: AutomationId '{id}', name '{name}'.");
+            Thread.Sleep(100);
+        }
+    }
+
+    private static (string Id, string Name)? FindUnexpectedOwnedWindow(
+        int processId,
+        IReadOnlySet<string> allowedIds)
+    {
         var windows = AutomationElement.RootElement.FindAll(
             TreeScope.Children,
             new PropertyCondition(AutomationElement.ProcessIdProperty, processId));
         foreach (AutomationElement window in windows)
         {
-            var id = window.Current.AutomationId;
-            if (!allowed.Contains(id))
-                throw new InvalidOperationException(
-                    $"Unexpected dialog/window blocked the run: AutomationId '{id}', name '{window.Current.Name}'.");
+            try
+            {
+                var id = window.Current.AutomationId;
+                if (!allowedIds.Contains(id))
+                    return (id, window.Current.Name);
+            }
+            catch (ElementNotAvailableException)
+            {
+                // A UIA popup disappeared between enumeration and inspection.
+            }
         }
+        return null;
     }
 
     private static void CaptureWindow(AutomationElement window, string path)
@@ -1667,6 +1750,15 @@ internal static class Program
     private static string QuoteIdentifier(string identifier) =>
         "\"" + identifier.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"";
 
+    private static long CountRows(string databasePath, string tableName)
+    {
+        using var connection = new SqliteConnection($"Data Source={databasePath};Mode=ReadOnly");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = $"SELECT COUNT(*) FROM {QuoteIdentifier(tableName)};";
+        return Convert.ToInt64(command.ExecuteScalar(), CultureInfo.InvariantCulture);
+    }
+
     private static void Require(bool condition, string message)
     {
         if (!condition) throw new InvalidOperationException(message);
@@ -1749,10 +1841,17 @@ internal static class Program
             var scenario = scenarioIndex >= 0 && scenarioIndex + 1 < args.Length
                 ? args[scenarioIndex + 1].Trim().ToLowerInvariant()
                 : "smoke";
-            if (scenario is not ("smoke" or "reports" or "crud" or "recovery" or "updater"))
-                throw new ArgumentException("--scenario must be smoke, reports, crud, recovery or updater.");
+            if (scenario is not ("smoke" or "reports" or "crud" or "recovery" or "updater" or "clean"))
+                throw new ArgumentException("--scenario must be smoke, reports, crud, recovery, updater or clean.");
             var updater = scenario == "updater" ? Required("--updater") : string.Empty;
-            return new RunnerOptions(Required("--app"), Required("--seed-database"), scenario, updater);
+            var seed = scenario == "clean" ? Optional("--seed-database") : Required("--seed-database");
+            return new RunnerOptions(Required("--app"), seed, scenario, updater);
+
+            string Optional(string name)
+            {
+                var index = Array.IndexOf(args, name);
+                return index >= 0 && index + 1 < args.Length ? args[index + 1] : string.Empty;
+            }
         }
     }
 
