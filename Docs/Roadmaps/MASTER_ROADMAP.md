@@ -6,9 +6,9 @@ Last runtime-accepted baseline: **v50.0.0 — Comprehensive User Help**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v51.0 — Governed Development/Verification and Production/Clean Profiles**
+Current roadmap increment: **v50.1 — Start-to-finish Workflow Guide**
 
-Current acceptance note: v50.0.0 is runtime accepted with Full Data Verification 370/370.
+Current acceptance note: v50.0.0 Help foundation is runtime accepted with Full Data Verification 370/370; v50 remains active.
 
 Candidate note: None.
 
@@ -2026,24 +2026,39 @@ to unstarted authoritative planning slots.
   - Schema remains v37; no new recovery table or canonical seed refresh is required.
   - Do not duplicate Materials or create dynamic schema columns.
   - Completion condition met: governed gates and runtime acceptance pass with schema v37.
-- **v50.0 — Comprehensive User Help and Workflow Guide**
+- **v50.0 — Information Architecture and Central Help Foundation**
   - State: Complete, canonical and runtime accepted as v50.0.0 — Comprehensive User Help.
-  - Feedback disposition: Solved.
+  - Feedback disposition: Foundation accepted; parent v50 milestone remains in progress.
   - Treat this as a full information-architecture and user-documentation project, not incidental tooltip work.
   - Inventory every supported tab, command, prerequisite, validation state and cross-tab handoff before writing guidance.
-  - Document the complete workflow from Purchasing, Inventory and Materials through measurement entry and engineering review.
-  - Continue through reports, website Preview, public-selection boundaries and guarded Production/FTPS publishing.
-  - Provide a start-to-finish guide, per-tab reference, contextual in-app entry points and troubleshooting/recovery boundaries.
   - Preserve canonical calculations, SQLite ownership, public allowlists, default-No publishing and guarded recovery behavior.
   - Entry condition: approved help structure and verified mapping to current runtime behavior.
   - Approved architecture: one reusable non-modal Help window, local search and stable section IDs shared by Help > Documentation,
     F1 contextual navigation and future in-workflow entry points.
-  - v50.0.0 candidate covers the complete owner workflow, all top-level tab families, immutable pricing/rate history, guarded
-    Production/FTPS, Verification and recovery boundaries. Deterministic tester and Verification contracts are included.
+  - v50.0.0 provides the central overview, initial workflow/topic catalog and contextual section-ID foundation.
   - Debug/Release, documentation and security gates pass; disposable smoke and Full Data Verification pass 370/370 with exact
     business-state recovery. Owner accepted workflow, search, contextual navigation and corrected contents-list wrapping.
+- **v50.1 — Start-to-finish Workflow Guide**
+  - State: Current; research and content mapping before edits.
+  - Expand the central guide into a complete ordered owner workflow from Purchase Orders and Inventory through Materials,
+    measurements, engineering review, reports and Website Preview.
+  - State prerequisites, save/validation boundaries and cross-tab handoffs without redefining calculations or stored ownership.
+  - Completion condition: owner accepts that a new user can follow the complete workflow without relying on undocumented knowledge.
+- **v50.2 — Per-tab Reference and Contextual Help Links**
+  - State: Planned after v50.1 acceptance.
+  - Add a governed reference for every supported top-level tab and relevant nested workflow, including fields, commands and states.
+  - Add contextual Help entry points that open the same central window at stable section IDs; do not create parallel help systems.
+  - Completion condition: tab/action inventory maps to Help sections and deterministic navigation checks pass.
+- **v50.3 — Troubleshooting, Recovery, Publishing Safety and Final Acceptance**
+  - State: Planned after v50.2 acceptance.
+  - Add symptom-led troubleshooting, diagnostics collection, backup/recovery boundaries, Verification interpretation and safe
+    Preview/Production/FTPS guidance.
+  - Preserve mandatory crash, security, recovery and support evidence plus explicit default-No publishing.
+  - Completion condition: documentation/static/security gates, Full Data Verification and complete owner runtime/visual acceptance
+    pass; only then may the v50 parent milestone close and v51 become current.
 - **v51.0 — Governed Development/Verification and Production/Clean Profiles**
-  - State: Research only until diagnostics have measured cost.
+  - State: Deferred until every recorded v50 increment is complete.
+  - Research only until diagnostics have measured cost.
   - Mandatory crash, recovery, security and support evidence can never be removed.
 - **v52.0 — Optional OpenAI Assistant Integration Contract**
   - State: Planned; implementation cannot begin before v47 workflow and data-boundary acceptance.

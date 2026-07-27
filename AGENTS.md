@@ -136,6 +136,17 @@
 
 ## Roadmap major-version governance
 
+- When a milestone is divided into planned increments, record every agreed
+  increment in `Docs/Roadmaps/MASTER_ROADMAP.md` immediately, before
+  implementation starts. Give each increment an explicit scope, state and
+  completion condition.
+- Treat those recorded increments as the authoritative delivery sequence.
+  Do not close the parent milestone or advance to the next major version until
+  every recorded increment is complete, deliberately deferred or formally
+  removed by an owner-approved roadmap decision.
+- If implementation reveals a new required increment, add it to the current
+  roadmap milestone before starting that work. Never rely on a chat-only plan
+  as the sole record of remaining release scope.
 - Give each future major version one coherent strategic theme and a bounded
   completion condition.
 - Advance to a new major version when the next material milestone has a
