@@ -2,6 +2,26 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v50.4.3 - Output and Runtime Control Help
+
+- Adds five detailed searchable control/field topics for Reports, Website
+  Export, AI Assistant, YouTube Research, application menus and runtime windows.
+- Covers all 156 v50.4.3 XAML candidates and routes the eight declared runtime
+  surfaces to exact Help destinations or an explicit unsupported-user boundary.
+- Separates local report generation, Website Preview, local Production, FTPS
+  Test/Production and live Website restore into distinct contracts.
+- Documents transient credentials, confirmations, retained evidence and the
+  read-only versus mutating boundaries for recovery, diagnostics and updates.
+- Records that AI output is local/deterministic, YouTube actions are
+  clipboard-only and hidden automation shell controls are not owner-facing UI.
+- Adds deterministic Verification depth/marker checks and five safe tester
+  searches without invoking Production, FTPS, restore, update or recalculation.
+- Debug/Release app and tester builds pass with zero warnings/errors.
+- Disposable profile `20260727132731-ea4e1d20` passes Full Data Verification
+  377/377 with exact logical/business-state equality.
+- Owner runtime/readability acceptance passes on 2026-07-27.
+- v50.4.3 is canonical; schema remains v37 and parent v50 continues at v50.4.4.
+
 ## v50.4.2 - Engineering Control and Field Help
 
 - Adds four detailed searchable control/field topics for native Measurements,

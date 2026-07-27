@@ -20,7 +20,8 @@
   },
   "CoveredOwnerIncrements": [
     "v50.4.1",
-    "v50.4.2"
+    "v50.4.2",
+    "v50.4.3"
   ],
   "CustomColumnRegistries": [
     {
@@ -97,8 +98,8 @@
       "Key": "runtime.recovery-center",
       "EntryPoint": "ShowRecoveryCenter_Click",
       "OwnerIncrement": "v50.4.3",
-      "HelpDestination": "recovery.overview",
-      "Status": "planned",
+      "HelpDestination": "menu-runtime.controls-fields",
+      "Status": "covered",
       "Controls": [
         "status.catalog",
         "details.selected-backup",
@@ -117,8 +118,8 @@
       "Key": "runtime.verification-center",
       "EntryPoint": "ShowVerificationCenterWindow",
       "OwnerIncrement": "v50.4.3",
-      "HelpDestination": "verification.overview",
-      "Status": "planned",
+      "HelpDestination": "menu-runtime.controls-fields",
+      "Status": "covered",
       "Controls": [
         "output.verification-report",
         "status.overall",
@@ -133,8 +134,8 @@
       "Key": "runtime.system-diagnostics",
       "EntryPoint": "ShowSystemDiagnosticsWindow",
       "OwnerIncrement": "v50.4.3",
-      "HelpDestination": "diagnostics.overview",
-      "Status": "planned",
+      "HelpDestination": "menu-runtime.controls-fields",
+      "Status": "covered",
       "Controls": [
         "output.diagnostics-report",
         "action.refresh",
@@ -147,8 +148,8 @@
       "Key": "runtime.application-update-choice",
       "EntryPoint": "StartGuardedApplicationUpdate",
       "OwnerIncrement": "v50.4.3",
-      "HelpDestination": "updates.guarded-apply-and-recovery",
-      "Status": "planned",
+      "HelpDestination": "menu-runtime.controls-fields",
+      "Status": "covered",
       "Controls": [
         "confirmation.download",
         "confirmation.apply",
@@ -159,8 +160,8 @@
       "Key": "runtime.document-viewer",
       "EntryPoint": "ShowHelpDocument",
       "OwnerIncrement": "v50.4.3",
-      "HelpDestination": "help.changelog",
-      "Status": "planned",
+      "HelpDestination": "menu-runtime.controls-fields",
+      "Status": "covered",
       "Controls": [
         "input.search",
         "action.find-next",
@@ -187,7 +188,7 @@
       "Key": "runtime.report-print-host",
       "EntryPoint": "CreateHiddenReportPrintHost",
       "OwnerIncrement": "v50.4.3",
-      "HelpDestination": "reports.preview-evidence",
+      "HelpDestination": "reports.controls-fields",
       "Status": "unsupported",
       "Controls": [
         "internal.webview"

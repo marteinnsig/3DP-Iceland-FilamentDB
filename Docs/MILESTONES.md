@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v50.4.3 - Output and Runtime Control Help
+
+The exhaustive Help audit now has accepted control/field coverage for Reports,
+Website Export, AI Assistant, YouTube Research, application menus and supported
+runtime windows. Owner runtime review and Full Data Verification 377/377 pass
+with exact state equality. Schema remains v37; Comprehensive User Help
+continues at v50.4.4 for zero-gap reconciliation and final parent acceptance.
+
 # v50.4.2 - Engineering Control and Field Help
 
 The exhaustive Help audit now has accepted control/field coverage for native

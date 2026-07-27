@@ -1,74 +1,74 @@
 Key	Surface	Type	Identity	Classification	OwnerIncrement	HelpDestination	Status
-xaml.ai-assistant.button.applycollectionstatus-click	AI Assistant	Button	ApplyCollectionStatus_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.bindexactaicoverageidentity	AI Assistant	Button	BindExactAiCoverageIdentity	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.clearcollectioncoverage-click	AI Assistant	Button	ClearCollectionCoverage_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.deleteaimaterialcollection-click	AI Assistant	Button	DeleteAiMaterialCollection_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.deleteaisession-click	AI Assistant	Button	DeleteAiSession_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.generateaicomparisons-click	AI Assistant	Button	GenerateAiComparisons_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.generateaifromtemplate-click	AI Assistant	Button	GenerateAiFromTemplate_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.generateaifullbrief	AI Assistant	Button	GenerateAiFullBrief	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.generateaihiddengems-click	AI Assistant	Button	GenerateAiHiddenGems_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.generateaiideas-click	AI Assistant	Button	GenerateAiIdeas_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.generateairecommendedcomparisons-click	AI Assistant	Button	GenerateAiRecommendedComparisons_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.generateairecommendednextvideo-click	AI Assistant	Button	GenerateAiRecommendedNextVideo_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.generatecollectiondashboard-click	AI Assistant	Button	GenerateCollectionDashboard_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.generatevideopipelinedashboard-click	AI Assistant	Button	GenerateVideoPipelineDashboard_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.loadaimaterialcollectionbrief-click	AI Assistant	Button	LoadAiMaterialCollectionBrief_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.loadaisession-click	AI Assistant	Button	LoadAiSession_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.markcollectionpublished-click	AI Assistant	Button	MarkCollectionPublished_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.previewaimaterialcollection	AI Assistant	Button	PreviewAiMaterialCollection	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.refreshaiassistantscope	AI Assistant	Button	RefreshAiAssistantScope	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.refreshaisessions-click	AI Assistant	Button	RefreshAiSessions_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.saveaimaterialcollection	AI Assistant	Button	SaveAiMaterialCollection	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.button.saveaisession-click	AI Assistant	Button	SaveAiSession_Click	action	v50.4.3	ai.overview	planned
-xaml.ai-assistant.combobox.aimaterialcollectionscombo	AI Assistant	ComboBox	AiMaterialCollectionsCombo	choice	v50.4.3	ai.overview	planned
-xaml.ai-assistant.combobox.aimaterialcollectionscopecombo	AI Assistant	ComboBox	AiMaterialCollectionScopeCombo	choice	v50.4.3	ai.overview	planned
-xaml.ai-assistant.combobox.aimaterialstatuscombo	AI Assistant	ComboBox	AiMaterialStatusCombo	choice	v50.4.3	ai.overview	planned
-xaml.ai-assistant.combobox.aiprompttemplatecombo	AI Assistant	ComboBox	AiPromptTemplateCombo	choice	v50.4.3	ai.overview	planned
-xaml.ai-assistant.combobox.aisavedsessionscombo	AI Assistant	ComboBox	AiSavedSessionsCombo	choice	v50.4.3	ai.overview	planned
-xaml.ai-assistant.textbox.aiassistantoutput	AI Assistant	TextBox	AiAssistantOutput	read-only	v50.4.3	ai.overview	planned
-xaml.ai-assistant.textbox.aimaterialcollectiontitlebox	AI Assistant	TextBox	AiMaterialCollectionTitleBox	input-candidate	v50.4.3	ai.overview	planned
-xaml.ai-assistant.textbox.aiprompteditorbox	AI Assistant	TextBox	AiPromptEditorBox	input-candidate	v50.4.3	ai.overview	planned
-xaml.ai-assistant.textbox.aisessiontitlebox	AI Assistant	TextBox	AiSessionTitleBox	input-candidate	v50.4.3	ai.overview	planned
-xaml.application-menu.menuitem.about-click	Application menu	MenuItem	About_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.addnativematerial-click	Application menu	MenuItem	AddNativeMaterial_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.archivenativematerial-click	Application menu	MenuItem	ArchiveNativeMaterial_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.changelog-click	Application menu	MenuItem	Changelog_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.checkforupdates	Application menu	MenuItem	CheckForUpdates	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.choosestoragefolder	Application menu	MenuItem	ChooseStorageFolder	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.clearnativematerialfilters-click	Application menu	MenuItem	ClearNativeMaterialFilters_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.clearsearch-click	Application menu	MenuItem	ClearSearch_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.deletenativematerial-click	Application menu	MenuItem	DeleteNativeMaterial_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.duplicatenativematerial-click	Application menu	MenuItem	DuplicateNativeMaterial_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.exit-click	Application menu	MenuItem	Exit_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.exportengineeringwhitepaper-click	Application menu	MenuItem	ExportEngineeringWhitepaper_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.filemenu	Application menu	MenuItem	FileMenu	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.helpmenu	Application menu	MenuItem	HelpMenu	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.materials	Application menu	MenuItem	_Materials	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.opencontexthelp	Application menu	MenuItem	OpenContextHelp	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.openhelp	Application menu	MenuItem	OpenHelp	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.openrecoverycenter	Application menu	MenuItem	OpenRecoveryCenter	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.openstoragefolder	Application menu	MenuItem	OpenStorageFolder	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.opensystemdiagnostics	Application menu	MenuItem	OpenSystemDiagnostics	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.openverificationcenter	Application menu	MenuItem	OpenVerificationCenter	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.openwebsiteexporttab	Application menu	MenuItem	OpenWebsiteExportTab	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.publishapplicationrelease	Application menu	MenuItem	PublishApplicationRelease	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.publishapplicationupdate	Application menu	MenuItem	PublishApplicationUpdate	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.rebuildnativematerialdisplaynames-click	Application menu	MenuItem	RebuildNativeMaterialDisplayNames_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.showmaterialsrenderingprototype-click	Application menu	MenuItem	ShowMaterialsRenderingPrototype_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.toolsmenu	Application menu	MenuItem	ToolsMenu	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.unarchivenativematerial-click	Application menu	MenuItem	UnarchiveNativeMaterial_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.updatereadiness	Application menu	MenuItem	UpdateReadiness	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.validatenativematerials-click	Application menu	MenuItem	ValidateNativeMaterials_Click	action	v50.4.3	menu.help	planned
-xaml.application-menu.menuitem.websitemenu	Application menu	MenuItem	WebsiteMenu	action	v50.4.3	menu.help	planned
-xaml.application-shell.button.automationcrudcreate	Application shell	Button	AutomationCrudCreate	action	v50.4.3	start.workflow	planned
-xaml.application-shell.button.automationcruddelete	Application shell	Button	AutomationCrudDelete	action	v50.4.3	start.workflow	planned
-xaml.application-shell.button.automationcrudedit	Application shell	Button	AutomationCrudEdit	action	v50.4.3	start.workflow	planned
-xaml.application-shell.button.automationcrudverifyabsent	Application shell	Button	AutomationCrudVerifyAbsent	action	v50.4.3	start.workflow	planned
-xaml.application-shell.button.automationrecoverybackup	Application shell	Button	AutomationRecoveryBackup	action	v50.4.3	start.workflow	planned
-xaml.application-shell.button.automationrecoveryexportexcel	Application shell	Button	AutomationRecoveryExportExcel	action	v50.4.3	start.workflow	planned
-xaml.application-shell.button.automationrecoverymutate	Application shell	Button	AutomationRecoveryMutate	action	v50.4.3	start.workflow	planned
-xaml.application-shell.button.automationrecoveryrestoreexcel	Application shell	Button	AutomationRecoveryRestoreExcel	action	v50.4.3	start.workflow	planned
+xaml.ai-assistant.button.applycollectionstatus-click	AI Assistant	Button	ApplyCollectionStatus_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.bindexactaicoverageidentity	AI Assistant	Button	BindExactAiCoverageIdentity	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.clearcollectioncoverage-click	AI Assistant	Button	ClearCollectionCoverage_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.deleteaimaterialcollection-click	AI Assistant	Button	DeleteAiMaterialCollection_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.deleteaisession-click	AI Assistant	Button	DeleteAiSession_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.generateaicomparisons-click	AI Assistant	Button	GenerateAiComparisons_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.generateaifromtemplate-click	AI Assistant	Button	GenerateAiFromTemplate_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.generateaifullbrief	AI Assistant	Button	GenerateAiFullBrief	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.generateaihiddengems-click	AI Assistant	Button	GenerateAiHiddenGems_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.generateaiideas-click	AI Assistant	Button	GenerateAiIdeas_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.generateairecommendedcomparisons-click	AI Assistant	Button	GenerateAiRecommendedComparisons_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.generateairecommendednextvideo-click	AI Assistant	Button	GenerateAiRecommendedNextVideo_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.generatecollectiondashboard-click	AI Assistant	Button	GenerateCollectionDashboard_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.generatevideopipelinedashboard-click	AI Assistant	Button	GenerateVideoPipelineDashboard_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.loadaimaterialcollectionbrief-click	AI Assistant	Button	LoadAiMaterialCollectionBrief_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.loadaisession-click	AI Assistant	Button	LoadAiSession_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.markcollectionpublished-click	AI Assistant	Button	MarkCollectionPublished_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.previewaimaterialcollection	AI Assistant	Button	PreviewAiMaterialCollection	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.refreshaiassistantscope	AI Assistant	Button	RefreshAiAssistantScope	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.refreshaisessions-click	AI Assistant	Button	RefreshAiSessions_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.saveaimaterialcollection	AI Assistant	Button	SaveAiMaterialCollection	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.button.saveaisession-click	AI Assistant	Button	SaveAiSession_Click	action	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.combobox.aimaterialcollectionscombo	AI Assistant	ComboBox	AiMaterialCollectionsCombo	choice	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.combobox.aimaterialcollectionscopecombo	AI Assistant	ComboBox	AiMaterialCollectionScopeCombo	choice	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.combobox.aimaterialstatuscombo	AI Assistant	ComboBox	AiMaterialStatusCombo	choice	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.combobox.aiprompttemplatecombo	AI Assistant	ComboBox	AiPromptTemplateCombo	choice	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.combobox.aisavedsessionscombo	AI Assistant	ComboBox	AiSavedSessionsCombo	choice	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.textbox.aiassistantoutput	AI Assistant	TextBox	AiAssistantOutput	read-only	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.textbox.aimaterialcollectiontitlebox	AI Assistant	TextBox	AiMaterialCollectionTitleBox	input-candidate	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.textbox.aiprompteditorbox	AI Assistant	TextBox	AiPromptEditorBox	input-candidate	v50.4.3	ai.controls-fields	covered
+xaml.ai-assistant.textbox.aisessiontitlebox	AI Assistant	TextBox	AiSessionTitleBox	input-candidate	v50.4.3	ai.controls-fields	covered
+xaml.application-menu.menuitem.about-click	Application menu	MenuItem	About_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.addnativematerial-click	Application menu	MenuItem	AddNativeMaterial_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.archivenativematerial-click	Application menu	MenuItem	ArchiveNativeMaterial_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.changelog-click	Application menu	MenuItem	Changelog_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.checkforupdates	Application menu	MenuItem	CheckForUpdates	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.choosestoragefolder	Application menu	MenuItem	ChooseStorageFolder	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.clearnativematerialfilters-click	Application menu	MenuItem	ClearNativeMaterialFilters_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.clearsearch-click	Application menu	MenuItem	ClearSearch_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.deletenativematerial-click	Application menu	MenuItem	DeleteNativeMaterial_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.duplicatenativematerial-click	Application menu	MenuItem	DuplicateNativeMaterial_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.exit-click	Application menu	MenuItem	Exit_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.exportengineeringwhitepaper-click	Application menu	MenuItem	ExportEngineeringWhitepaper_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.filemenu	Application menu	MenuItem	FileMenu	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.helpmenu	Application menu	MenuItem	HelpMenu	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.materials	Application menu	MenuItem	_Materials	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.opencontexthelp	Application menu	MenuItem	OpenContextHelp	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.openhelp	Application menu	MenuItem	OpenHelp	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.openrecoverycenter	Application menu	MenuItem	OpenRecoveryCenter	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.openstoragefolder	Application menu	MenuItem	OpenStorageFolder	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.opensystemdiagnostics	Application menu	MenuItem	OpenSystemDiagnostics	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.openverificationcenter	Application menu	MenuItem	OpenVerificationCenter	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.openwebsiteexporttab	Application menu	MenuItem	OpenWebsiteExportTab	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.publishapplicationrelease	Application menu	MenuItem	PublishApplicationRelease	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.publishapplicationupdate	Application menu	MenuItem	PublishApplicationUpdate	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.rebuildnativematerialdisplaynames-click	Application menu	MenuItem	RebuildNativeMaterialDisplayNames_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.showmaterialsrenderingprototype-click	Application menu	MenuItem	ShowMaterialsRenderingPrototype_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.toolsmenu	Application menu	MenuItem	ToolsMenu	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.unarchivenativematerial-click	Application menu	MenuItem	UnarchiveNativeMaterial_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.updatereadiness	Application menu	MenuItem	UpdateReadiness	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.validatenativematerials-click	Application menu	MenuItem	ValidateNativeMaterials_Click	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.websitemenu	Application menu	MenuItem	WebsiteMenu	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationcrudcreate	Application shell	Button	AutomationCrudCreate	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationcruddelete	Application shell	Button	AutomationCrudDelete	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationcrudedit	Application shell	Button	AutomationCrudEdit	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationcrudverifyabsent	Application shell	Button	AutomationCrudVerifyAbsent	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationrecoverybackup	Application shell	Button	AutomationRecoveryBackup	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationrecoveryexportexcel	Application shell	Button	AutomationRecoveryExportExcel	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationrecoverymutate	Application shell	Button	AutomationRecoveryMutate	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationrecoveryrestoreexcel	Application shell	Button	AutomationRecoveryRestoreExcel	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.awards-winners.button.exportawardscsv-click	Awards & Winners	Button	ExportAwardsCsv_Click	action	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.button.refreshawards-click	Awards & Winners	Button	RefreshAwards_Click	action	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.button.resetawardsfilters-click	Awards & Winners	Button	ResetAwardsFilters_Click	action	v50.4.2	analysis.controls-fields	covered
@@ -520,22 +520,22 @@ xaml.rankings-dashboard.datagridtextcolumn.status	Rankings Dashboard	DataGridTex
 xaml.rankings-dashboard.datagridtextcolumn.stiffness	Rankings Dashboard	DataGridTextColumn	Stiffness	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.rankings-dashboard.datagridtextcolumn.tensile	Rankings Dashboard	DataGridTextColumn	Tensile	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.rankings-dashboard.datagridtextcolumn.type	Rankings Dashboard	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
-xaml.reports-pdf-export.button.buildpubliccomparisonreportpreviewbutton	Reports / PDF Export	Button	BuildPublicComparisonReportPreviewButton	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.button.buildpublicmanufacturerreportpreviewbutton	Reports / PDF Export	Button	BuildPublicManufacturerReportPreviewButton	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.button.buildpublicmaterialreportpreviewbutton	Reports / PDF Export	Button	BuildPublicMaterialReportPreviewButton	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.button.buildpublicmaterialsummarypreviewbutton	Reports / PDF Export	Button	BuildPublicMaterialSummaryPreviewButton	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.button.buildpublicprintingrecommendationpreviewbutton	Reports / PDF Export	Button	BuildPublicPrintingRecommendationPreviewButton	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.button.buildpublicreportpackage	Reports / PDF Export	Button	BuildPublicReportPackage	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.button.buildpublictestsessionreportpreviewbutton	Reports / PDF Export	Button	BuildPublicTestSessionReportPreviewButton	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.button.choosereportoutputfolder-click	Reports / PDF Export	Button	ChooseReportOutputFolder_Click	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.button.exportengineeringreportpackagebutton	Reports / PDF Export	Button	ExportEngineeringReportPackageButton	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.button.exportpdfreport-click	Reports / PDF Export	Button	ExportPdfReport_Click	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.button.openreportoutputfolder-click	Reports / PDF Export	Button	OpenReportOutputFolder_Click	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.button.refreshreportpreview-click	Reports / PDF Export	Button	RefreshReportPreview_Click	action	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.combobox.reportmaterialscopeselector	Reports / PDF Export	ComboBox	ReportMaterialScopeSelector	choice	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.combobox.reporttypeselector	Reports / PDF Export	ComboBox	ReportTypeSelector	choice	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.textbox.reportoutputfolder	Reports / PDF Export	TextBox	ReportOutputFolder	input-candidate	v50.4.3	reports.overview	planned
-xaml.reports-pdf-export.textbox.reportpreviewlog	Reports / PDF Export	TextBox	ReportPreviewLog	read-only	v50.4.3	reports.overview	planned
+xaml.reports-pdf-export.button.buildpubliccomparisonreportpreviewbutton	Reports / PDF Export	Button	BuildPublicComparisonReportPreviewButton	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.buildpublicmanufacturerreportpreviewbutton	Reports / PDF Export	Button	BuildPublicManufacturerReportPreviewButton	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.buildpublicmaterialreportpreviewbutton	Reports / PDF Export	Button	BuildPublicMaterialReportPreviewButton	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.buildpublicmaterialsummarypreviewbutton	Reports / PDF Export	Button	BuildPublicMaterialSummaryPreviewButton	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.buildpublicprintingrecommendationpreviewbutton	Reports / PDF Export	Button	BuildPublicPrintingRecommendationPreviewButton	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.buildpublicreportpackage	Reports / PDF Export	Button	BuildPublicReportPackage	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.buildpublictestsessionreportpreviewbutton	Reports / PDF Export	Button	BuildPublicTestSessionReportPreviewButton	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.choosereportoutputfolder-click	Reports / PDF Export	Button	ChooseReportOutputFolder_Click	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.exportengineeringreportpackagebutton	Reports / PDF Export	Button	ExportEngineeringReportPackageButton	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.exportpdfreport-click	Reports / PDF Export	Button	ExportPdfReport_Click	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.openreportoutputfolder-click	Reports / PDF Export	Button	OpenReportOutputFolder_Click	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.refreshreportpreview-click	Reports / PDF Export	Button	RefreshReportPreview_Click	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.combobox.reportmaterialscopeselector	Reports / PDF Export	ComboBox	ReportMaterialScopeSelector	choice	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.combobox.reporttypeselector	Reports / PDF Export	ComboBox	ReportTypeSelector	choice	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.textbox.reportoutputfolder	Reports / PDF Export	TextBox	ReportOutputFolder	input-candidate	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.textbox.reportpreviewlog	Reports / PDF Export	TextBox	ReportPreviewLog	read-only	v50.4.3	reports.controls-fields	covered
 xaml.settings-manager.button.reloadsavedsettingsbutton	Settings Manager	Button	ReloadSavedSettingsButton	action	v50.4.1	settings.controls-fields	covered
 xaml.settings-manager.button.resetsettingscolumnsbutton	Settings Manager	Button	ResetSettingsColumnsButton	action	v50.4.1	settings.controls-fields	covered
 xaml.settings-manager.button.restorebuiltinsettingsbutton	Settings Manager	Button	RestoreBuiltInSettingsButton	action	v50.4.1	settings.controls-fields	covered
@@ -574,73 +574,73 @@ xaml.usage.textbox.usageprintminutestextbox	Usage	TextBox	UsagePrintMinutesTextB
 xaml.usage.textbox.usageproducedcounttextbox	Usage	TextBox	UsageProducedCountTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
 xaml.usage.textbox.usagerejectedcounttextbox	Usage	TextBox	UsageRejectedCountTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
 xaml.usage.textbox.usagesourcetextbox	Usage	TextBox	UsageSourceTextBox	input-candidate	v50.4.1	usage.controls-fields	covered
-xaml.website-export.button.activateselectedwebsitetemplate-click	Website Export	Button	ActivateSelectedWebsiteTemplate_Click	action	v50.4.3	website.overview	planned
-xaml.website-export.button.choosewebsiteexportfolder-click	Website Export	Button	ChooseWebsiteExportFolder_Click	action	v50.4.3	website.overview	planned
-xaml.website-export.button.exportactivewebsitetemplate-click	Website Export	Button	ExportActiveWebsiteTemplate_Click	action	v50.4.3	website.overview	planned
-xaml.website-export.button.generatewebsiteexportpreview-click	Website Export	Button	GenerateWebsiteExportPreview_Click	action	v50.4.3	website.overview	planned
-xaml.website-export.button.generatewebsiteproductionexport-click	Website Export	Button	GenerateWebsiteProductionExport_Click	action	v50.4.3	website.overview	planned
-xaml.website-export.button.importwebsitetemplatetodatabase-click	Website Export	Button	ImportWebsiteTemplateToDatabase_Click	action	v50.4.3	website.overview	planned
-xaml.website-export.button.openwebsiteexportfolder-click	Website Export	Button	OpenWebsiteExportFolder_Click	action	v50.4.3	website.overview	planned
-xaml.website-export.button.publishwebsiteftpsbutton	Website Export	Button	PublishWebsiteFtpsButton	action	v50.4.3	website.overview	planned
-xaml.website-export.button.publishwebsitetestftpsbutton	Website Export	Button	PublishWebsiteTestFtpsButton	action	v50.4.3	website.overview	planned
-xaml.website-export.button.restorewebsitebackupbutton	Website Export	Button	RestoreWebsiteBackupButton	action	v50.4.3	website.overview	planned
-xaml.website-export.button.testftpsconnectionbutton	Website Export	Button	TestFtpsConnectionButton	action	v50.4.3	website.overview	planned
-xaml.website-export.combobox.websitetemplateversioncombo	Website Export	ComboBox	WebsiteTemplateVersionCombo	choice	v50.4.3	website.overview	planned
-xaml.website-export.passwordbox.ftpspasswordbox	Website Export	PasswordBox	FtpsPasswordBox	input-candidate	v50.4.3	website.overview	planned
-xaml.website-export.textbox.websiteexportfolderbox	Website Export	TextBox	WebsiteExportFolderBox	input-candidate	v50.4.3	website.overview	planned
-xaml.website-export.textbox.websiteexportpreviewlog	Website Export	TextBox	WebsiteExportPreviewLog	read-only	v50.4.3	website.overview	planned
-xaml.youtube-research.button.copybestyoutubethumbnail-click	YouTube Research	Button	CopyBestYouTubeThumbnail_Click	action	v50.4.3	youtube.overview	planned
-xaml.youtube-research.button.copycontentcalendarplan-click	YouTube Research	Button	CopyContentCalendarPlan_Click	action	v50.4.3	youtube.overview	planned
-xaml.youtube-research.button.copytopchannelgaps-click	YouTube Research	Button	CopyTopChannelGaps_Click	action	v50.4.3	youtube.overview	planned
-xaml.youtube-research.button.copytopcomparisondiscovery-click	YouTube Research	Button	CopyTopComparisonDiscovery_Click	action	v50.4.3	youtube.overview	planned
-xaml.youtube-research.button.copytopplaylists-click	YouTube Research	Button	CopyTopPlaylists_Click	action	v50.4.3	youtube.overview	planned
-xaml.youtube-research.button.copyyoutuberesearchprompt-click	YouTube Research	Button	CopyYouTubeResearchPrompt_Click	action	v50.4.3	youtube.overview	planned
-xaml.youtube-research.button.copyyoutubethumbnailbriefs-click	YouTube Research	Button	CopyYouTubeThumbnailBriefs_Click	action	v50.4.3	youtube.overview	planned
-xaml.youtube-research.button.refreshyoutuberesearch-click	YouTube Research	Button	RefreshYouTubeResearch_Click	action	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagrid.channelgaplist	YouTube Research	DataGrid	ChannelGapList	read-only-grid	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagrid.comparisondiscoverylist	YouTube Research	DataGrid	ComparisonDiscoveryList	read-only-grid	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagrid.contentcalendarlist	YouTube Research	DataGrid	ContentCalendarList	read-only-grid	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagrid.playlistdiscoverylist	YouTube Research	DataGrid	PlaylistDiscoveryList	read-only-grid	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagrid.youtuberesearchtitlelist	YouTube Research	DataGrid	YouTubeResearchTitleList	read-only-grid	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.advanced-title	YouTube Research	DataGridTextColumn	Advanced title	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.comparison-idea	YouTube Research	DataGridTextColumn	Comparison idea	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.coverage	YouTube Research	DataGridTextColumn	Coverage	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.face-reaction	YouTube Research	DataGridTextColumn	Face / reaction	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.family	YouTube Research	DataGridTextColumn	Family	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.family-2	YouTube Research	DataGridTextColumn	Family	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.gap	YouTube Research	DataGridTextColumn	Gap	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.grade	YouTube Research	DataGridTextColumn	Grade	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.main-text	YouTube Research	DataGridTextColumn	Main text	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.manufacturer	YouTube Research	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.manufacturer-2	YouTube Research	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.manufacturer-3	YouTube Research	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.material	YouTube Research	DataGridTextColumn	Material	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.material-2	YouTube Research	DataGridTextColumn	Material	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.material-a	YouTube Research	DataGridTextColumn	Material A	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.material-b	YouTube Research	DataGridTextColumn	Material B	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.missing-next	YouTube Research	DataGridTextColumn	Missing / next	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.pattern	YouTube Research	DataGridTextColumn	Pattern	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.playlist	YouTube Research	DataGridTextColumn	Playlist	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.priority	YouTube Research	DataGridTextColumn	Priority	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.reinforcement	YouTube Research	DataGridTextColumn	Reinforcement	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.score	YouTube Research	DataGridTextColumn	Score	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.score-2	YouTube Research	DataGridTextColumn	Score	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.score-3	YouTube Research	DataGridTextColumn	Score	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.thumbnail	YouTube Research	DataGridTextColumn	Thumbnail	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.thumbnail-2	YouTube Research	DataGridTextColumn	Thumbnail	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.thumbnail-hook-angle	YouTube Research	DataGridTextColumn	Thumbnail / hook angle	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.thumbnail-text	YouTube Research	DataGridTextColumn	Thumbnail text	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.type	YouTube Research	DataGridTextColumn	Type	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.type-2	YouTube Research	DataGridTextColumn	Type	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.type-3	YouTube Research	DataGridTextColumn	Type	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.type-4	YouTube Research	DataGridTextColumn	Type	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.video	YouTube Research	DataGridTextColumn	Video	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.video-angle	YouTube Research	DataGridTextColumn	Video angle	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.video-idea	YouTube Research	DataGridTextColumn	Video idea	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.videos	YouTube Research	DataGridTextColumn	Videos	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.visual-layout	YouTube Research	DataGridTextColumn	Visual layout	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.week	YouTube Research	DataGridTextColumn	Week	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.why	YouTube Research	DataGridTextColumn	Why	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.why-2	YouTube Research	DataGridTextColumn	Why	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.why-3	YouTube Research	DataGridTextColumn	Why	editable-column-candidate	v50.4.3	youtube.overview	planned
-xaml.youtube-research.datagridtextcolumn.why-this-week	YouTube Research	DataGridTextColumn	Why this week	editable-column-candidate	v50.4.3	youtube.overview	planned
+xaml.website-export.button.activateselectedwebsitetemplate-click	Website Export	Button	ActivateSelectedWebsiteTemplate_Click	action	v50.4.3	website.controls-fields	covered
+xaml.website-export.button.choosewebsiteexportfolder-click	Website Export	Button	ChooseWebsiteExportFolder_Click	action	v50.4.3	website.controls-fields	covered
+xaml.website-export.button.exportactivewebsitetemplate-click	Website Export	Button	ExportActiveWebsiteTemplate_Click	action	v50.4.3	website.controls-fields	covered
+xaml.website-export.button.generatewebsiteexportpreview-click	Website Export	Button	GenerateWebsiteExportPreview_Click	action	v50.4.3	website.controls-fields	covered
+xaml.website-export.button.generatewebsiteproductionexport-click	Website Export	Button	GenerateWebsiteProductionExport_Click	action	v50.4.3	website.controls-fields	covered
+xaml.website-export.button.importwebsitetemplatetodatabase-click	Website Export	Button	ImportWebsiteTemplateToDatabase_Click	action	v50.4.3	website.controls-fields	covered
+xaml.website-export.button.openwebsiteexportfolder-click	Website Export	Button	OpenWebsiteExportFolder_Click	action	v50.4.3	website.controls-fields	covered
+xaml.website-export.button.publishwebsiteftpsbutton	Website Export	Button	PublishWebsiteFtpsButton	action	v50.4.3	website.controls-fields	covered
+xaml.website-export.button.publishwebsitetestftpsbutton	Website Export	Button	PublishWebsiteTestFtpsButton	action	v50.4.3	website.controls-fields	covered
+xaml.website-export.button.restorewebsitebackupbutton	Website Export	Button	RestoreWebsiteBackupButton	action	v50.4.3	website.controls-fields	covered
+xaml.website-export.button.testftpsconnectionbutton	Website Export	Button	TestFtpsConnectionButton	action	v50.4.3	website.controls-fields	covered
+xaml.website-export.combobox.websitetemplateversioncombo	Website Export	ComboBox	WebsiteTemplateVersionCombo	choice	v50.4.3	website.controls-fields	covered
+xaml.website-export.passwordbox.ftpspasswordbox	Website Export	PasswordBox	FtpsPasswordBox	input-candidate	v50.4.3	website.controls-fields	covered
+xaml.website-export.textbox.websiteexportfolderbox	Website Export	TextBox	WebsiteExportFolderBox	input-candidate	v50.4.3	website.controls-fields	covered
+xaml.website-export.textbox.websiteexportpreviewlog	Website Export	TextBox	WebsiteExportPreviewLog	read-only	v50.4.3	website.controls-fields	covered
+xaml.youtube-research.button.copybestyoutubethumbnail-click	YouTube Research	Button	CopyBestYouTubeThumbnail_Click	action	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.button.copycontentcalendarplan-click	YouTube Research	Button	CopyContentCalendarPlan_Click	action	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.button.copytopchannelgaps-click	YouTube Research	Button	CopyTopChannelGaps_Click	action	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.button.copytopcomparisondiscovery-click	YouTube Research	Button	CopyTopComparisonDiscovery_Click	action	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.button.copytopplaylists-click	YouTube Research	Button	CopyTopPlaylists_Click	action	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.button.copyyoutuberesearchprompt-click	YouTube Research	Button	CopyYouTubeResearchPrompt_Click	action	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.button.copyyoutubethumbnailbriefs-click	YouTube Research	Button	CopyYouTubeThumbnailBriefs_Click	action	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.button.refreshyoutuberesearch-click	YouTube Research	Button	RefreshYouTubeResearch_Click	action	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagrid.channelgaplist	YouTube Research	DataGrid	ChannelGapList	read-only-grid	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagrid.comparisondiscoverylist	YouTube Research	DataGrid	ComparisonDiscoveryList	read-only-grid	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagrid.contentcalendarlist	YouTube Research	DataGrid	ContentCalendarList	read-only-grid	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagrid.playlistdiscoverylist	YouTube Research	DataGrid	PlaylistDiscoveryList	read-only-grid	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagrid.youtuberesearchtitlelist	YouTube Research	DataGrid	YouTubeResearchTitleList	read-only-grid	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.advanced-title	YouTube Research	DataGridTextColumn	Advanced title	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.comparison-idea	YouTube Research	DataGridTextColumn	Comparison idea	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.coverage	YouTube Research	DataGridTextColumn	Coverage	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.face-reaction	YouTube Research	DataGridTextColumn	Face / reaction	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.family	YouTube Research	DataGridTextColumn	Family	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.family-2	YouTube Research	DataGridTextColumn	Family	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.gap	YouTube Research	DataGridTextColumn	Gap	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.grade	YouTube Research	DataGridTextColumn	Grade	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.main-text	YouTube Research	DataGridTextColumn	Main text	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.manufacturer	YouTube Research	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.manufacturer-2	YouTube Research	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.manufacturer-3	YouTube Research	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.material	YouTube Research	DataGridTextColumn	Material	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.material-2	YouTube Research	DataGridTextColumn	Material	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.material-a	YouTube Research	DataGridTextColumn	Material A	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.material-b	YouTube Research	DataGridTextColumn	Material B	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.missing-next	YouTube Research	DataGridTextColumn	Missing / next	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.pattern	YouTube Research	DataGridTextColumn	Pattern	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.playlist	YouTube Research	DataGridTextColumn	Playlist	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.priority	YouTube Research	DataGridTextColumn	Priority	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.reinforcement	YouTube Research	DataGridTextColumn	Reinforcement	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.score	YouTube Research	DataGridTextColumn	Score	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.score-2	YouTube Research	DataGridTextColumn	Score	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.score-3	YouTube Research	DataGridTextColumn	Score	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.thumbnail	YouTube Research	DataGridTextColumn	Thumbnail	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.thumbnail-2	YouTube Research	DataGridTextColumn	Thumbnail	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.thumbnail-hook-angle	YouTube Research	DataGridTextColumn	Thumbnail / hook angle	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.thumbnail-text	YouTube Research	DataGridTextColumn	Thumbnail text	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.type	YouTube Research	DataGridTextColumn	Type	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.type-2	YouTube Research	DataGridTextColumn	Type	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.type-3	YouTube Research	DataGridTextColumn	Type	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.type-4	YouTube Research	DataGridTextColumn	Type	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.video	YouTube Research	DataGridTextColumn	Video	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.video-angle	YouTube Research	DataGridTextColumn	Video angle	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.video-idea	YouTube Research	DataGridTextColumn	Video idea	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.videos	YouTube Research	DataGridTextColumn	Videos	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.visual-layout	YouTube Research	DataGridTextColumn	Visual layout	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.week	YouTube Research	DataGridTextColumn	Week	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.why	YouTube Research	DataGridTextColumn	Why	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.why-2	YouTube Research	DataGridTextColumn	Why	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.why-3	YouTube Research	DataGridTextColumn	Why	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.why-this-week	YouTube Research	DataGridTextColumn	Why this week	editable-column-candidate	v50.4.3	youtube.controls-fields	covered

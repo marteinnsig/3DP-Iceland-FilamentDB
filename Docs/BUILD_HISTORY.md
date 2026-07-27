@@ -2,6 +2,20 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v50.4.3 - Output and Runtime Control Help
+
+The final bounded content group in the v50.4 ledger adds exact control/field
+guidance for Reports, Website Export, AI Assistant, YouTube Research,
+application menus and runtime windows. Five substantive topics route all 156
+XAML candidates and the eight declared runtime surfaces.
+
+Verification enforces topic depth and representative safety/ownership markers.
+Smoke proves unique searches and read-only runtime inspection while retaining
+the Production, FTPS, restore, update, recalculation and owner-database locks.
+Profile `20260727132731-ea4e1d20` passes 377/377 with exact logical and
+business-state equality. Owner runtime/readability acceptance passes on
+2026-07-27; v50.4.3 is canonical and v50.4.4 is current.
+
 ## v50.4.2 - Engineering Control and Field Help
 
 The v50.4 ledger routes native Measurements, Experimental Testing, interactive

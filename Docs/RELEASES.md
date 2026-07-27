@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v50.4.3 - Output and Runtime Control Help
+
+Five detailed searchable topics cover Reports, Website Export, AI Assistant,
+YouTube Research, application menus and supported runtime windows. The ledger
+marks all 156 v50.4.3 XAML candidates and five user-facing runtime surfaces
+covered; the internal report print host remains explicitly unsupported as a
+user-facing control. Debug/Release, vulnerability, documentation and
+disposable Full Data Verification 377/377 pass with exact state equality.
+Owner runtime/readability acceptance passes. Schema remains v37; parent v50
+continues at v50.4.4.
+
 ## v50.4.2 - Engineering Control and Field Help
 
 Four detailed searchable topics cover native Measurements, Experimental

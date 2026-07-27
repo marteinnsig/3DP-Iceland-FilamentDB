@@ -17345,6 +17345,42 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             v5042HelpCoverageReady
                 ? "Four substantive destinations cover native Measurements, Experimental Testing, interactive Material Detail and global Analysis controls/fields with units, read-only projections, persistence and scope."
                 : "A v50.4.2 control/field Help destination, depth requirement or representative ownership marker is missing."));
+        var v5043RequiredHelpIds = new[]
+        {
+            "reports.controls-fields",
+            "website.controls-fields",
+            "ai.controls-fields",
+            "youtube.controls-fields",
+            "menu-runtime.controls-fields"
+        };
+        var v5043RequiredMarkers = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["reports.controls-fields"] = "None of these actions perform FTPS",
+            ["website.controls-fields"] = "four separate contracts",
+            ["ai.controls-fields"] = "sends no payload to OpenAI",
+            ["youtube.controls-fields"] = "do not open a browser",
+            ["menu-runtime.controls-fields"] = "Eight hidden CRUD/recovery buttons"
+        };
+        var v5043HelpCoverageReady =
+            v5043RequiredHelpIds.Length == 5 &&
+            v5043RequiredHelpIds.Distinct(StringComparer.Ordinal).Count() == 5 &&
+            v5043RequiredHelpIds.All(requiredId =>
+            {
+                var section = helpSections.SingleOrDefault(item => item.Id == requiredId);
+                return section is not null &&
+                       section.Body.Length >= 1400 &&
+                       section.Body.Replace("\r\n", "\n", StringComparison.Ordinal)
+                           .Contains("\n\n", StringComparison.Ordinal);
+            }) &&
+            v5043RequiredMarkers.All(marker =>
+                helpSections.Single(section => section.Id == marker.Key).Body.Contains(
+                    marker.Value,
+                    StringComparison.Ordinal));
+        checks.Add(new VerificationCheck("v50.4.3 output, creator and runtime control/field Help contract",
+            v5043HelpCoverageReady,
+            v5043HelpCoverageReady
+                ? "Five substantive destinations cover Reports, Website, AI, YouTube, menus and runtime windows with local/external, read-only/mutating, credential, confirmation and automation-only boundaries."
+                : "A v50.4.3 control/field Help destination, depth requirement or representative safety marker is missing."));
         var zeroDataProfileContractReady =
             IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
             IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&

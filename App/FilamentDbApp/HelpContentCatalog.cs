@@ -1154,6 +1154,192 @@ internal static class HelpContentCatalog
             retain status/log evidence. Reports consume canonical results; they never repair or recalculate raw measurements.
             """, "reports", "PDF", "template", "scope", "preview", "export", "public builds"),
         new(
+            "reports.controls-fields",
+            "Output and publishing",
+            "Reports controls and fields",
+            "Every report selector, folder field, preview/export action, public-build command and read-only evidence output.",
+            """
+            Report selectors and folder
+            Report template selects one of the twelve governed engineering/purchasing templates. Report scope selects the current
+            MaterialID or the current Materials Visible projection where supported. Output folder is an editable local path. Choose
+            Folder changes that path; Open Folder opens it in Explorer and writes nothing. Verify scope and the full path before
+            generation because same-named local artifacts may be replaced.
+
+            Current report actions
+            Refresh Preview builds the selected read-only canonical report model and writes no source data. Export Current Report
+            validates the same template/scope and writes its governed HTML/PDF/text/metadata/manifest artifacts locally. Export
+            Engineering Package builds the six accepted engineering report families as one local indexed package; it is distinct from
+            the selected purchasing report. None of these actions perform FTPS or publish a website.
+
+            Public build actions
+            Build Public Material, Comparison, Manufacturer, Test Session, Printing Recommendation and Material Summary Reports each
+            use their own explicit MaterialID/publication rules; Report template/scope do not control them. Public Test Sessions may
+            expose eligible raw detail only when Public test details allows it. Build Public Report Package verifies/ensures all six
+            eligible families and creates the local canonical portfolio handoff. Building locally uploads nothing.
+
+            Preview and status output
+            Report Preview/Log and the blue summary/status line are read-only. They identify model validation, scope, output paths and
+            generated evidence. A successful log proves structure/generation only; visually inspect representative HTML/PDF for
+            wrapping, pagination, charts and customer/public fields before external use.
+
+            Failure and historical boundaries
+            Missing selection/data, validation or output-folder errors block the requested action and do not repair measurements.
+            Reports consume canonical results and saved snapshots where their model requires them. They never recalculate raw
+            measurements, rewrite purchases/Inventory/Usage/Quotes or authorize Website Production/FTPS.
+            """,
+            "report controls", "report template", "report scope", "output folder", "refresh preview",
+            "export current report", "engineering package", "public report package", "preview log"),
+        new(
+            "website.controls-fields",
+            "Output and publishing",
+            "Website Export controls and fields",
+            "Every folder/template/credential control and the separate Preview, Production, FTPS and restore actions.",
+            """
+            Folder and template controls
+            Website root folder is the editable local root containing the generated index location. Choose Folder stores that path;
+            Open Folder only opens it. Template versions selects a SQLite-owned stored version. Import HTML validates/stores/activates a
+            new master template; never import generated index.html or index-test.html as the template. Activate Selected explicitly
+            makes the chosen stored version canonical. Export Active Template writes a review/backup copy only.
+
+            Generate Preview
+            Generate Preview validates the active template/data, ensures eligible public reports and writes index-test.html,
+            export-manifest.txt and a timestamped log. It does not replace index.html, create Production, transfer files or change
+            business data. Inspect the local preview manually.
+
+            Generate Production
+            Generate Production is a local guarded write. It validates, presents a default-No confirmation, backs up existing
+            index.html and creates the new local index plus publish plan. It does not perform FTPS. Stop on any validation, backup or
+            generation failure.
+
+            FTPS credential and connection
+            Password is a transient masked input. Test Connection validates explicit-TLS/passive connectivity and may retain the
+            accepted secret in Windows Credential Manager; it never stores the password in SQLite, logs or website artifacts.
+            Connection success does not publish.
+
+            Publish Test and Publish Production
+            Publish Website Test regenerates/transfers only the isolated Preview route and is not Production evidence. Publish Website
+            Production first regenerates governed Production, then requires a second default-No live FTPS confirmation. It transfers
+            the governed changed set and root index last. Independently inspect the live HTTPS site after success.
+
+            Restore and evidence
+            Restore Last Production Backup is live website recovery, not SQLite recovery. It requires confirmation, a completed
+            governed backup and retained transfer/recovery evidence. Export Log is read-only and must identify paths, stage, success/
+            failure and transfer results without secrets. Preview, Production, FTPS and Restore are four separate contracts.
+            """,
+            "website controls", "template versions", "generate preview", "generate production", "password",
+            "test connection", "publish website test", "publish website production", "restore production backup"),
+        new(
+            "ai.controls-fields",
+            "Assistant",
+            "AI Assistant controls and fields",
+            "Every local prompt, session, collection, coverage and dashboard control with explicit persistence boundaries.",
+            """
+            Scope and prompt controls
+            Refresh Scope rebuilds the current visible MaterialID preview and changes no data. Prompt Template selects a governed local
+            template. Prompt Editor is editable local text. Generate from Template, Full Brief, Ideas, Comparisons, Hidden Gems,
+            Recommended Comparisons and Recommended Next Video create advisory read-only output only; they do not call an external AI
+            service or mutate engineering records. Assistant Output is read-only.
+
+            Session controls
+            Session Title names an explicit local planning session. Saved Sessions selects a stored session. Save Session writes the
+            current local title/prompt/output; Load Session replaces the current local editor/output after selection; Refresh Sessions
+            reloads the list. Delete Session is permanent/default-No for that local planning record only.
+
+            Collection controls
+            Collection Title and Collection Scope define a local MaterialID collection draft. Preview Collection shows the exact
+            intended MaterialIDs and writes nothing. Save Collection explicitly persists it. Collections selector chooses a stored
+            collection; Load Brief generates advisory output from it. Delete Collection is permanent/default-No for that local record.
+            Status selector plus Apply Status changes only collection workflow state. Mark Published records the local planning status;
+            it does not publish any external content.
+
+            Coverage identity and dashboards
+            Bind Exact Coverage Identity previews/commits only unique exact legacy identity matches. Clear Coverage removes the selected
+            local coverage state after confirmation. Generate Collection Dashboard and Video Pipeline Dashboard build read-only local
+            planning summaries. Their counts/status never change Material lifecycle, tests, reports or website publication flags.
+
+            Data and network boundary
+            All generated text is advisory. The current implementation is local/deterministic and sends no payload to OpenAI or another
+            external provider. Sessions/collections are separate from canonical engineering SQLite ownership. No Assistant action may
+            silently edit Materials, measurements, purchasing, Inventory, Usage, saved Quotes, reports or Website Production.
+            """,
+            "assistant controls", "prompt editor", "generate full brief", "save session", "delete session",
+            "collection title", "apply status", "mark published", "coverage identity", "local deterministic"),
+        new(
+            "youtube.controls-fields",
+            "Configuration and creator tools",
+            "YouTube Research controls and fields",
+            "Refresh-generated read-only research tables and the seven explicit clipboard actions.",
+            """
+            Refresh and source boundary
+            Refresh Research rebuilds local creator suggestions from current canonical Materials, results and retained video metadata.
+            It writes no engineering data and performs no YouTube/network search. All five tables are read-only even where XAML
+            column-level metadata inherits from their grid definition.
+
+            Title and thumbnail research
+            Title candidates show Material, Manufacturer, Family, Type, Score, Coverage, Advanced title, Video angle and Thumbnail/hook
+            angle. Thumbnail briefs show Material, Grade, Main text, Face/reaction, Visual layout and Why. These are generated planning
+            suggestions, not saved engineering conclusions.
+
+            Comparison, gap, calendar and playlist tables
+            Comparison Discovery shows Material A/B, Comparison idea, Thumbnail text, Score and Why. Channel Gaps shows Gap, Pattern,
+            Videos, Missing/next, Score and Why. Content Calendar shows Week, Video idea, Type, Manufacturer, Reinforcement, Why this
+            week and Thumbnail. Playlist Discovery shows Playlist, Type, Video, Priority and Why. Every column is read-only.
+
+            Clipboard actions
+            Copy Research Prompt, Best Thumbnail, Thumbnail Briefs, Top Comparisons, Top Channel Gaps, Calendar Plan and Top Playlists
+            copy the named current local text to the Windows clipboard. They do not open a browser, create calendar/YouTube records,
+            upload, publish or save canonical data. Empty/unavailable output reports the limitation instead of inventing content.
+            """,
+            "youtube controls", "refresh research", "advanced title", "thumbnail brief", "comparison discovery",
+            "channel gaps", "content calendar", "playlist discovery", "clipboard"),
+        new(
+            "menu-runtime.controls-fields",
+            "Safety and support",
+            "Application menu and runtime-window controls and fields",
+            "Menu command destinations plus Recovery, Verification, Diagnostics, updater and document-viewer runtime controls.",
+            """
+            Menu containers and ordinary commands
+            File, Materials, Tools, Website and Help are menu containers, not invoked actions. Exit closes the app through normal
+            save/close guards. Materials Add/Duplicate/Archive/Unarchive/Delete/Clear Search/Clear Filters invoke the same governed
+            tab workflows and confirmations described in Materials Help. Open Website Export only selects that tab and never generates
+            or publishes. Validate Materials is read-only validation; Rebuild Computed Fields is mutating. The rendering prototype is a
+            snapshot-only diagnostic surface.
+
+            File, update and publishing commands
+            Backup and Recovery Center opens the runtime recovery window. Choose Storage Folder is a guarded storage mutation; Open
+            Storage Folder is read-only navigation. Update Readiness and Check for Updates are read-only discovery until a separately
+            confirmed download/apply. Publish Application Release and Publish Application Update build/upload application artifacts
+            under their own guarded authority and are distinct from Website publishing. Standard automation blocks them.
+
+            Help/document commands
+            Documentation opens the whole-system overview; Help for Current View/F1 resolves the selected tab. Whitepaper and Changelog
+            open generated/document viewers; About shows release/storage/license identity. Verification Center and System Diagnostics
+            open separate runtime windows.
+
+            Recovery Center runtime controls
+            Catalog status, selected-backup details and backup grid are read-only. Refresh and Verify Selected inspect only. Create
+            SQLite/Excel backups write evidence. Restore Selected, Restore SQLite File and Restore Excel Backup are mutating,
+            confirmation-guarded recovery actions. Open Storage Folder is navigation. Never infer restore authority from successful
+            verification.
+
+            Verification and Diagnostics runtime controls
+            Report/output boxes and status labels are read-only. Refresh is read-only. Run Integrity Check reads SQLite integrity.
+            Export Report writes evidence. Recalculate Native Results and Recalculate All Materials are mutating repair actions and are
+            not routine verification. Automation Evidence export exists only in an authorized disposable profile.
+
+            Updater and document viewer
+            Guarded updater confirmations separate Download, Apply and Cancel; default-No cancellation changes no application files.
+            The document viewer Search/Find Next and Version/Jump fields navigate read-only packaged text. The hidden HTML print-host
+            WebView is supported internal report infrastructure but is not a user-facing Help control.
+
+            Automation-only shell controls
+            Eight hidden CRUD/recovery buttons exist only in an authorized disposable automation profile. They are unsupported as
+            owner-facing UI and must never appear in normal operation. Their presence in source does not authorize owner-database,
+            Production, FTPS, update or recovery mutations.
+            """,
+            "application menu controls", "recovery center controls", "verification controls", "diagnostics controls",
+            "recalculate mutating", "updater confirmations", "document viewer", "automation-only"),
+        new(
             "reports.current-report", "Reports", "Current report reference",
             "Preview and export one of the twelve governed report templates.",
             """

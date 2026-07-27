@@ -69,7 +69,9 @@ in v50.4.3. Six custom registries add 189 stable-key columns and eight runtime s
 The read-only drift gate passes; v50.4.0 is complete. The v50.4.1 candidate adds nine detailed topics, and disposable profile
 `20260727125607-36733e81` passes Verification 375/375 with exact state equality. Owner runtime/readability acceptance passes;
 v50.4.2 now adds four detailed engineering/analysis topics. Disposable profile `20260727131457-dee03dd4` passes Verification
-376/376 with exact state equality. Owner v50.4.2 runtime/readability acceptance passes; v50.4.3 is current while the parent
+376/376 with exact state equality. Owner v50.4.2 runtime/readability acceptance passes. The v50.4.3 candidate adds five output,
+creator and runtime control topics; disposable profile `20260727132731-ea4e1d20` passes Verification 377/377 with exact state
+equality. Owner v50.4.3 runtime/readability acceptance passes; v50.4.4 zero-gap reconciliation is current while the parent
 exhaustive finding remains in progress.
 
 Date: 2026-07-27

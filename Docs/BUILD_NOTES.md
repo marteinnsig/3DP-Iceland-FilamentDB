@@ -1,4 +1,21 @@
-# Current Build Notes - v50.4.2
+# Current Build Notes - v50.4.3
+
+## Output and Runtime Control Help
+
+Five detailed Help topics cover Reports, Website Export, AI Assistant, YouTube
+Research, application menus and the supported runtime windows. They name the
+individual controls and fields and explain editability, local/external effects,
+credentials, confirmations, failure handling and evidence.
+
+The registry routes all 156 v50.4.3 XAML candidates and the eight runtime
+surfaces to these destinations or an explicit unsupported-user boundary.
+Verification and smoke enforce topic depth, unique search routing and the
+Production/FTPS/restore/update/recalculation safety separation.
+
+Debug/Release app and tester builds pass with zero warnings/errors. Disposable
+profile `20260727132731-ea4e1d20` passes Full Data Verification 377/377 with
+exact logical/business-state equality. Owner runtime/readability acceptance
+passes on 2026-07-27; schema remains v37 and v50.4.4 is current.
 
 ## Engineering Control and Field Help
 

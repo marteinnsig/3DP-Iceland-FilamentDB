@@ -138,12 +138,12 @@ function Get-HelpDestination([string]$SurfacePath) {
         "Category Rankings" = "analysis.controls-fields"
         "Awards & Winners" = "analysis.controls-fields"
         "Dashboard Insights" = "analysis.controls-fields"
-        "Reports / PDF Export" = "reports.overview"
-        "Website Export" = "website.overview"
-        "AI Assistant" = "ai.overview"
-        "YouTube Research" = "youtube.overview"
-        "Application menu" = "menu.help"
-        "Application shell" = "start.workflow"
+        "Reports / PDF Export" = "reports.controls-fields"
+        "Website Export" = "website.controls-fields"
+        "AI Assistant" = "ai.controls-fields"
+        "YouTube Research" = "youtube.controls-fields"
+        "Application menu" = "menu-runtime.controls-fields"
+        "Application shell" = "menu-runtime.controls-fields"
     }
     if ($destinations.ContainsKey($topSurface)) {
         return $destinations[$topSurface]

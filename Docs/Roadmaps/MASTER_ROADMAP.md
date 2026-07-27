@@ -2,13 +2,13 @@
 
 Current canonical release: **v50.3.0 — Safety and Recovery Help**
 
-Last runtime-accepted baseline: **v50.4.2 — Engineering Control and Field Help**
+Last runtime-accepted baseline: **v50.4.3 — Output and Runtime Control Help**
 
-Current application candidate: **None; v50.4.3 is current**
+Current application candidate: **None; v50.4.4 is current**
 
-Current roadmap increment: **v50.4.3 — Reports, Website, Assistant, Creator and Runtime-window Control Help**
+Current roadmap increment: **v50.4.4 — Zero-gap Reconciliation, Deterministic Gates and Final Owner Acceptance**
 
-Current acceptance note: v50.4.2 is runtime/readability accepted with Verification 376/376; parent v50 remains active.
+Current acceptance note: v50.4.3 is runtime/readability accepted with Verification 377/377; parent v50 remains active.
 
 Next note: v50.4 must prove zero unexplained supported controls/editable fields before parent v50 may close.
 
@@ -2149,10 +2149,13 @@ to unstarted authoritative planning slots.
   - Four searchable topics cover 267 XAML candidates plus 108 custom native measurement columns.
   - Verification passes 376/376 in disposable profile `20260727131457-dee03dd4` with exact logical/business-state equality.
 - **v50.4.3 — Reports, Website, Assistant, Creator and Runtime-window Control Help**
-  - State: Current authoritative subincrement; implementation not started.
+  - State: Complete, canonical and owner runtime/readability accepted on 2026-07-27.
   - Close ledger gaps for Reports, Website Export, AI Assistant, YouTube Research, menus and supported runtime windows/dialogs.
   - Keep Preview, Production, FTPS, update, restore, recalculation, deletion and evidence boundaries explicit.
+  - Five searchable topics cover 156 XAML candidates and the eight declared runtime-window surfaces.
+  - Verification passes 377/377 in disposable profile `20260727132731-ea4e1d20` with exact state equality.
 - **v50.4.4 — Zero-gap Reconciliation, Deterministic Gates and Final Owner Acceptance**
+  - State: Current authoritative subincrement.
   - Fail Verification when a declared supported control/field lacks a registry key, Help destination or required coverage metadata.
   - Extend safe tester lookup/navigation without invoking mutating, Production, FTPS, restore, update or owner-database actions.
   - Run all release gates and a dummy-proof manual readability/control audit before closing v50 and advancing to v51.

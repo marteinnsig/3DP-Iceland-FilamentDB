@@ -363,7 +363,7 @@ internal static class Program
             Require(
                 string.Equals(
                     FindById(help, "HelpSectionTitle").Current.Name,
-                    "Generate Production reference",
+                    "Website Export controls and fields",
                     StringComparison.Ordinal),
                 "Central Help did not expose the local Production versus FTPS boundary.");
             ((ValuePattern)helpValuePattern).SetValue("do not create external calendar events");
@@ -443,10 +443,45 @@ internal static class Program
                     "Rankings, Category Rankings, Awards and Insights controls and fields",
                     StringComparison.Ordinal),
                 "Central Help did not expose the global Analysis read-only boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("None of these actions perform FTPS");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Reports controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the Reports local-only action boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("four separate contracts");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Website Export controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the four separate Website action contracts.");
+            ((ValuePattern)helpValuePattern).SetValue("sends no payload to OpenAI");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "AI Assistant controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the AI Assistant local/network boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("do not open a browser");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "YouTube Research controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the YouTube clipboard-only boundary.");
+            ((ValuePattern)helpValuePattern).SetValue("Eight hidden CRUD/recovery buttons");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Application menu and runtime-window controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the automation-only shell boundary.");
             Record(
                 "central-help",
                 true,
-                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1-v50.4.2 reference searches");
+                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1-v50.4.3 reference searches");
             CloseWindow(help, application.Id);
 
             Expand(FindById(main, "HelpMenu"), application.Id);
