@@ -1,4 +1,52 @@
-# Current Build Notes - v50.2.1
+# Current Build Notes - v50.2.2
+
+## Testing and Analysis Reference
+
+The v50.2.0 matrix defines 22 stable destinations across native Tensile,
+Impact and Stiffness; Experimental Series, Runs, editors and Results;
+Material Detail nested views; and Rankings, Category Rankings, Awards and
+Dashboard Insights. All are now searchable in the central Help catalog.
+
+The references distinguish editable raw inputs from ResultsService outputs,
+auto-save from read-only analysis, current visible Materials scope from
+selected-Series Experimental scope, and active history from optional inactive
+comparison. Rankings default Top 25 and Category Rankings default 10 rows per
+group remain separate contracts.
+
+Four stale UI messages are corrected: Material Detail Notes no longer calls the
+whole app read-only; Rankings/Category/Awards no longer request import; Awards
+no longer claims future website ownership. No schema, calculation or data
+persistence behavior changes.
+
+Full Data Verification requires all 22 unique IDs, nine top-level mappings and
+representative save/scope/lifecycle markers. Smoke searches the Top 25 and
+Notes corrections. Debug compile passes; remaining gates and owner acceptance
+are pending.
+
+Debug/Release, documentation, roadmap and vulnerability gates pass. Disposable
+profile `20260727103712-93b32f7b` passes the expanded Help searches and Full
+Data Verification 371/371 with exact logical/business-state equality.
+
+Owner review found that `Experimental Results Dashboard/Table` did not match
+natural searches for `Experimental Dashboard/Table`. The visible titles now
+use those direct names, and Series Help lists Dashboard, Table and Charts.
+
+The first retest showed that the Series overview then won the catalog-order
+search before the exact Table title. Search relevance now ranks title, summary,
+category and body in that order. The accepted Purchase Order smoke assertion
+was aligned with its now-higher-ranked direct reference. Profile
+`20260727104534-dc519c51` passes 371/371 with exact state equality.
+
+Owner review found that Help > Documentation inherited the active Materials
+context and opened Materials reference. The menu action now opens the canonical
+Start-to-finish whole-system overview; F1 remains contextual.
+Profile `20260727105308-cc3ce0b1` passes the overview contract, Full Data
+Verification 371/371 and exact state equality.
+
+Owner runtime/visual acceptance passes all testing/analysis references,
+terminology corrections, Experimental discovery, search relevance and the
+menu-versus-F1 entry behavior. v50.2.2 is canonical; parent v50 continues at
+v50.2.3.
 
 ## Data, Cost and Configuration Reference
 
@@ -18,7 +66,7 @@ be explicitly deleted and are not described as immutable.
 Full Data Verification requires all nine stable IDs, representative contract
 phrases and exact top-level tab mappings. The existing safe smoke scenario adds
 read-only searches for the Materials save boundary and Printer-to-quote
-immutability handoff. No schema, data, calculation or Production/FTPS behavior
+saved-history handoff. No schema, data, calculation or Production/FTPS behavior
 changes. Debug compile succeeds with zero warnings; remaining gates and owner
 runtime/visual acceptance were pending at implementation time.
 

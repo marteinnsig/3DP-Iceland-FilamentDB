@@ -88,7 +88,7 @@ Nested tabs (16):
 | Manufacturers | `manufacturers.overview` | SQLite Manufacturers + Material relationship | Fields, search, archived scope, Add, Duplicate, exact-name binding, Archive/Restore, Delete, rename propagation and auto-save | Tab, grid, filters and most actions lack IDs |
 | Purchase Orders | `purchase-orders.overview` | SQLite PO/lines + purchasing services | Header/line fields, lifecycle, ECB, landed costs, receiving, Material/Inventory creation, attachments and deletion | Tab/ECB only; both grids and almost every action lack IDs |
 | Inventory | `inventory.overview` | SQLite Inventory + `InventoryEngineService` | Spool fields, filters, summaries, Add, Duplicate, Delete, Refresh, validation, auto-save and Usage handoff | Entire tab currently lacks IDs |
-| Usage | `usage.overview` | Immutable Usage ledger + atomic Inventory transaction | Event inputs, Record, Correct, Cancel, fixed units, spool decrement, totals, ledger and append-only history | Good core IDs; several inputs, Cancel and totals missing |
+| Usage | `usage.overview` | Accepted Usage ledger + atomic Inventory transaction | Event inputs, Record, Correct, Cancel, fixed units, spool decrement, totals, ledger and append-only history | Good core IDs; several inputs, Cancel and totals missing |
 | Printers | `printers.overview` | SQLite Printers + `PrinterRateService` | Rate fields, Add, Duplicate, Archive/Restore, Delete, Save, auto-save and quote handoff | Strong ID coverage |
 | Print Job Quotes | `print-job-quotes.overview` | SQLite saved quote snapshots | Customer/currency, Material evidence, Printer/time/labor inputs, calculation, Save, history, PDF and explicit Delete | Key paths covered; most numeric inputs/evidence/status missing |
 | Base Materials | `base-materials.overview` | SQLite Base Material Catalog | Profile fields, Add, Duplicate, Delete, Reset Columns, exact-name binding, rename propagation and relationship blocks | Tab/key actions covered; grid, Reset and status missing |
@@ -173,6 +173,10 @@ Important scope contract:
   analysis surfaces.
 - Experimental Results remain selected-Series scoped.
 
+v50.2.2 accepted status: all 22 destinations above exist as searchable Help
+sections. Deterministic ID, mapping, scope and stale-guidance gates plus owner
+runtime/visual acceptance pass.
+
 ## v50.2.3 — Reports, Website, Assistant and creator/output tools
 
 | Surface | Stable Help ID | Owner / source of truth | Required reference coverage | Automation / current gap |
@@ -249,9 +253,9 @@ Required leaf destinations:
 | Auto-save after edit | Materials, Manufacturers, Purchase grids/lines, Inventory, Printers, native measurements, Experimental graph |
 | Immediate command persistence | Most Add, Duplicate, Archive/Restore and governed binding actions |
 | Explicit save/record | Settings Save, Save Quote, Record Usage, report/export/build actions |
-| Immutable append-only history | Accepted Usage ledger and corrections |
+| Append-only accepted history | Usage ledger and corrections |
 | Saved calculation snapshot with explicit deletion | Print Job Quotes |
-| Immutable purchase/inventory provenance | Received purchase and Inventory history |
+| Retained purchase/inventory provenance | Received purchase and Inventory history |
 | Read-only interpretation | Material Detail result surfaces, Rankings, Category Rankings, Awards and Dashboard Insights |
 | Evidence only | Materials Manual Backup, Verification/Diagnostics exports and generated logs/manifests |
 

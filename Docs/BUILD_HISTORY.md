@@ -2,6 +2,21 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v50.2.2 - Testing and Analysis Reference
+
+The accepted increment implements the 22 testing/analysis destinations recorded
+by the v50.2.0 coverage matrix. It documents native input ranges and calculated
+fields, Experimental graph lifecycle/result scope, nine Material Detail views
+and four global analysis surfaces without changing schema or calculations.
+
+Owner review corrected stale Notes/import/publishing guidance, Usage
+terminology, natural Experimental Dashboard/Table/Charts discovery and
+title-first search relevance. Help > Documentation now opens the whole-system
+overview while F1 remains contextual. Disposable profile
+`20260727105308-cc3ce0b1` passes Full Data Verification 371/371 with exact
+state equality. All build/security/documentation gates and owner runtime/visual
+acceptance pass. Schema remains v37; v50.2.2 is canonical.
+
 ## v50.2.1 - Data, Cost and Configuration Reference
 
 The v50.2.0 matrix drove nine bounded Help references for the complete

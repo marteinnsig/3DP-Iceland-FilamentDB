@@ -163,8 +163,8 @@ internal static class Program
             AssertNoUnexpectedWindows(application.Id, "MainWindow", "HelpWindow");
             var helpTitle = FindById(help, "HelpSectionTitle").Current.Name;
             Require(
-                !string.IsNullOrWhiteSpace(helpTitle),
-                "Central Help opened without a selected contextual topic.");
+                string.Equals(helpTitle, "Start-to-finish workflow", StringComparison.Ordinal),
+                "Help > Documentation did not open the canonical whole-system overview.");
             var helpSearch = FindById(help, "HelpSearch");
             Require(
                 helpSearch.TryGetCurrentPattern(ValuePattern.Pattern, out var helpValuePattern),
@@ -181,8 +181,8 @@ internal static class Program
             var helpBody = FindById(help, "HelpSectionBody").Current.Name;
             Require(
                 helpBody.Contains("Create Materials + Received Spools", StringComparison.Ordinal) &&
-                helpBody.Contains("READY FOR PUBLISH", StringComparison.Ordinal),
-                "Central Help did not expose the required receiving and publish-readiness handoffs.");
+                helpBody.Contains("Calculate Landed Costs", StringComparison.Ordinal),
+                "Central Help did not expose the required Purchase Order costing and receiving handoffs.");
             Require(
                 string.Equals(
                     FindById(help, "HelpSectionBody").Current.HelpText,
@@ -228,10 +228,31 @@ internal static class Program
                     "Highlighted search: lifecycle",
                     StringComparison.Ordinal),
                 "Central Help did not highlight a search match found in topic summary metadata.");
+            ((ValuePattern)helpValuePattern).SetValue("Rows defaults to Top 25");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Rankings Dashboard reference",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the Rankings Top 25 default-scope reference.");
+            ((ValuePattern)helpValuePattern).SetValue("application is not read-only");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Material Detail — Notes reference",
+                    StringComparison.Ordinal),
+                "Central Help retained the stale Material Detail Notes application-wide read-only guidance.");
+            ((ValuePattern)helpValuePattern).SetValue("Experimental Table");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Experimental Table reference",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the owner-searchable Experimental Table reference.");
             Record(
                 "central-help",
                 true,
-                $"Opened contextual topic '{helpTitle}', verified body/summary highlighting, wrapping and v50.2.1 reference searches");
+                $"Opened overview '{helpTitle}', verified highlighting plus v50.2.1/v50.2.2 reference searches");
             CloseWindow(help, application.Id);
 
             Expand(FindById(main, "HelpMenu"), application.Id);

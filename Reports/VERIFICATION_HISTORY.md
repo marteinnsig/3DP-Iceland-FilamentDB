@@ -1,3 +1,27 @@
+# v50.2.2 - Testing and Analysis Reference
+
+Date: 2026-07-27
+
+- Twenty-two stable Help destinations cover the recorded v50.2.2 matrix scope.
+- Verification owns exact IDs/mappings and representative save/scope markers.
+- Smoke owns Rankings Top 25 and corrected Material Detail Notes searches.
+- Debug/Release, documentation, roadmap and vulnerability gates pass.
+- Profile `20260727103712-93b32f7b` passes Full Data Verification 371/371 and
+  exact logical/business-state equality.
+- Owner-search correction makes Experimental Dashboard/Table/Charts directly
+  discoverable and adds an `Experimental Table` smoke query.
+- Profile `20260727104534-dc519c51` proves title-first search relevance and
+  passes Full Data Verification 371/371 with exact state equality.
+- Usage Help terminology now says accepted events plus append-only corrections
+  instead of immutable events; runtime/data behavior is unchanged.
+- Help > Documentation now has a deterministic Start-to-finish overview
+  contract, while F1 remains contextual.
+- Profile `20260727105308-cc3ce0b1` passes Full Data Verification 371/371 and
+  exact logical/business-state equality.
+- Owner accepted reference content, terminology, direct Experimental discovery,
+  title-first search and Help-menu/F1 entry behavior. v50.2.2 is canonical.
+- Schema remains v37; owner runtime/visual acceptance is pending.
+
 # v50.2.1 - Data, Cost and Configuration Reference
 
 Date: 2026-07-27

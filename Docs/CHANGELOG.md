@@ -2,6 +2,36 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v50.2.2 - Testing and Analysis Reference
+
+- Adds 22 stable searchable Help destinations for native measurements,
+  Experimental Series/Runs/editors/results, Material Detail and global analysis.
+- Documents raw versus calculated fields, input ranges, Settings ownership,
+  auto-save, validation, baseline/history scope and read-only projections.
+- Preserves Rankings Top 25 and Category Rankings 10-row defaults explicitly.
+- Corrects stale Material Detail Notes, Rankings, Category Rankings and Awards
+  runtime guidance without changing calculations or persistence.
+- Extends Full Data Verification and disposable smoke with exact section,
+  mapping, scope, lifecycle and stale-guidance checks.
+- Disposable smoke `20260727103712-93b32f7b` passes Full Data Verification
+  371/371 with exact logical/business-state equality.
+- Owner review shortens the three Experimental result-view titles to directly
+  searchable Dashboard, Table and Charts names and lists them in Series Help.
+- Search now ranks title matches before summary, category and body matches, so
+  a named reference opens before an overview that merely mentions it.
+- Correction profile `20260727104534-dc519c51` passes Full Data Verification
+  371/371 with exact logical/business-state equality.
+- Owner review replaces the `immutable usage events` summary with accepted
+  events and append-only correction terminology; ledger behavior is unchanged.
+- Help > Documentation now always opens the whole-system Start-to-finish
+  overview; F1 remains contextual to the active top-level tab.
+- Correction profile `20260727105308-cc3ce0b1` passes Full Data Verification
+  371/371 with exact logical/business-state equality.
+- Schema remains v37. Owner accepted all references, corrected terminology,
+  direct Experimental discovery, title-first search relevance and the
+  whole-system Help menu overview. v50.2.2 is canonical; parent v50 continues
+  at v50.2.3.
+
 ## v50.2.1 - Data, Cost and Configuration Reference
 
 - Replaces three coarse Help topics with nine stable searchable references for

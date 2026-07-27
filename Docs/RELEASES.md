@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v50.2.2 - Testing and Analysis Reference
+
+Twenty-two stable Help destinations cover native measurements, Experimental
+Series/Runs/editors/results, Material Detail and global analysis. References
+separate raw/calculated fields, native/Series scope, auto-save/read-only
+analysis and active/inactive history. Search ranks direct title matches first;
+Help menu opens the whole-system overview while F1 remains contextual.
+Debug/Release, security, documentation and disposable Full Data Verification
+371/371 pass with exact state equality. Owner runtime/visual acceptance passes.
+Schema remains v37; parent v50 continues at v50.2.3.
+
 ## v50.2.1 - Data, Cost and Configuration Reference
 
 Nine stable searchable Help references now cover Materials, Manufacturers,

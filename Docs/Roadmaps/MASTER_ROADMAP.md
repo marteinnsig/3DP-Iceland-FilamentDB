@@ -1,14 +1,14 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v50.2.1 — Data, Cost and Configuration Reference**
+Current canonical release: **v50.2.2 — Testing and Analysis Reference**
 
-Last runtime-accepted baseline: **v50.2.1 — Data, Cost and Configuration Reference**
+Last runtime-accepted baseline: **v50.2.2 — Testing and Analysis Reference**
 
 Current application candidate: **None**
 
-Current roadmap increment: **v50.2.2 — Measurements, Experimental Testing and Engineering Analysis Reference**
+Current roadmap increment: **v50.2.3 — Reports, Website, Assistant and Creator-tool Reference**
 
-Current acceptance note: v50.2.1 is runtime accepted with Full Data Verification 370/370; parent v50 remains active.
+Current acceptance note: v50.2.2 is runtime accepted with Full Data Verification 371/371; parent v50 remains active.
 
 Candidate note: None.
 
@@ -2068,12 +2068,12 @@ to unstarted authoritative planning slots.
   - Document every command/state, prospective versus immutable values, validation and cross-tab ownership without changing behavior.
   - Completion condition: coverage matrix entries for these surfaces map to complete searchable Help sections and owner acceptance.
 - **v50.2.2 — Measurements, Experimental Testing and Engineering Analysis Reference**
-  - State: Current; implement only the recorded testing/analysis matrix scope.
+  - State: Complete, canonical and runtime/visual accepted.
   - Cover native measurement tabs, Experimental Series/Runs/editors/results and all Material Detail/analysis/ranking surfaces.
   - Document raw/computed fields, auto-save, ranges, filters, comparison scope, readiness and historical-data boundaries.
   - Completion condition: every testing/analysis control and nested tab has searchable reference coverage and owner acceptance.
 - **v50.2.3 — Reports, Website, Assistant and Creator-tool Reference**
-  - State: Planned after v50.2.2 acceptance.
+  - State: Current; implement only the recorded output/tool matrix scope.
   - Cover Reports/PDF, Website Export, AI Assistant, YouTube Research and remaining creator/output commands, states and handoffs.
   - Preserve public allowlists, local-versus-upload actions, credential boundaries and advisory/local tool ownership.
   - Completion condition: every output/tool control maps to complete searchable reference coverage and owner acceptance.

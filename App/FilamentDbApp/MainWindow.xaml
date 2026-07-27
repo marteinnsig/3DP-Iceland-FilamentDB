@@ -1936,7 +1936,7 @@
                         </TabItem>
                                     <TabItem Header="Notes">
                             <Grid Margin="14">
-                                <TextBlock Text="Notes and media fields will be added later. The app is still read-only." TextWrapping="Wrap" Foreground="#64748B" />
+                                <TextBlock Text="A dedicated Detail Notes workspace is not implemented. Edit governed notes at their owning tabs, including Materials Notes." TextWrapping="Wrap" Foreground="#64748B" />
                             </Grid>
                         </TabItem>
 </TabControl>
@@ -2584,7 +2584,7 @@
                                     <TextBlock Text="Rankings Dashboard" FontSize="22" FontWeight="SemiBold" />
                                     <TextBlock Text="Top material rankings from the currently visible dataset. Uses the same scoring profile as the analytics/recommendation engine: Overall, Tensile, Impact, Stiffness, Consistency, and Layer Adhesion." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
                                 </StackPanel>
-                                <TextBlock Grid.Column="1" x:Name="RankingSummaryText" Text="Import data to build rankings." Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" x:Name="RankingSummaryText" Text="Rankings use the current visible Materials scope." Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
                             </Grid>
                         </Border>
 
@@ -2689,7 +2689,7 @@
                                     <TextBlock Text="Category Rankings" FontSize="22" FontWeight="SemiBold" />
                                     <TextBlock Text="Winner-focused rankings by performance category. Use this to quickly find strongest, toughest, stiffest, most consistent, and best layer-adhesion materials overall or within each material family." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
                                 </StackPanel>
-                                <TextBlock Grid.Column="1" x:Name="CategoryRankingSummaryText" Text="Import data to build category rankings." Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" x:Name="CategoryRankingSummaryText" Text="Category rankings use the current visible Materials scope." Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
                             </Grid>
                         </Border>
 
@@ -2800,9 +2800,9 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel>
                                     <TextBlock Text="Awards &amp; Winners" FontSize="22" FontWeight="SemiBold" />
-                                    <TextBlock Text="Automatic winner badges for video planning, reports, and future website exports. Awards use the same visible material set as the Materials tab plus the filters below." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
+                                    <TextBlock Text="Automatic winner badges for video planning and governed report outputs. Awards use the same visible material set as Materials plus the filters below; this view does not publish." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
                                 </StackPanel>
-                                <TextBlock Grid.Column="1" x:Name="AwardsSummaryText" Text="Import data to build awards." Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" x:Name="AwardsSummaryText" Text="Awards use the current visible Materials scope." Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
                             </Grid>
                         </Border>
 

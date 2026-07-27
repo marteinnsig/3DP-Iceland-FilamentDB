@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v50.2.2 - Testing and Analysis Reference
+
+The central Help system now has complete searchable references for native
+measurements, Experimental Testing, Material Detail and global analysis.
+Direct result-view discovery, title-first search, whole-system menu opening and
+contextual F1 behavior are owner accepted. Full Data Verification 371/371
+passes with exact state equality. Schema remains v37; the Comprehensive User
+Help milestone continues at v50.2.3.
+
 # v50.2.1 - Data, Cost and Configuration Reference
 
 The accepted Help system now has exhaustive searchable references for nine

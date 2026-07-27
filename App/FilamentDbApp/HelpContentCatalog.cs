@@ -217,7 +217,7 @@ internal static class HelpContentCatalog
             "usage.overview",
             "Purchasing and cost",
             "Usage reference",
-            "Explicit immutable usage events, Inventory-linked consumption, totals and append-only corrections.",
+            "Accepted usage events, Inventory-linked consumption, totals and append-only corrections.",
             """
             Record Usage
             Select an active MaterialID and optionally a matching Inventory spool. Enter event Type, Occurred UTC, fixed Filament g,
@@ -237,7 +237,7 @@ internal static class HelpContentCatalog
             transaction; MaterialID cannot change and a reversal cannot be reversed again. Cancel Correction abandons the draft only.
             """,
             "usage", "record usage", "correct selected", "cancel correction", "filament grams", "provenance",
-            "inventory spool", "ledger", "immutable", "reversal", "replacement"),
+            "inventory spool", "ledger", "accepted event", "reversal", "replacement"),
         new(
             "printers.overview",
             "Costing and quoting",
@@ -386,6 +386,203 @@ internal static class HelpContentCatalog
             """,
             "results", "rankings", "category", "awards", "dashboard", "comparison", "filters"),
         new(
+            "measurements.tensile", "Testing and engineering", "Tensile Measurements reference",
+            "Upright/Flat force samples, calculated MPa, validation, date ownership and auto-save.",
+            """
+            Materials search/filter determines visible MaterialID rows; there is no separate selector. Enter up to ten Upright N and ten
+            Flat N samples from 0 through less than 505. Notes and measured date are editable. Identity, MPa, standard deviation, CV,
+            count, confidence and Validation are read-only.
+
+            A valid committed sample invokes ResultsService with the governed tensile cross-section Setting, updates tested state and
+            auto-saves SQLite. The first sample assigns today only when measured date is empty. Invalid input is rejected. Reset Columns
+            changes layout only. Correct raw samples here rather than calculated fields.
+            """, "tensile", "upright", "flat", "MPa", "CV", "confidence", "auto-save"),
+        new(
+            "measurements.impact", "Testing and engineering", "Impact Measurements reference",
+            "Upright/Flat percentages, calculated energy, governed Settings, validation and auto-save.",
+            """
+            Materials search/filter owns visible MaterialID rows. Enter up to ten Upright and ten Flat needle percentages from 0 through
+            100. Notes and measured date are editable. Identity, kJ/m², standard deviation, CV, count, confidence and Validation are
+            read-only.
+
+            A valid commit invokes ResultsService with governed impact Settings and auto-saves SQLite. The first input assigns today only
+            if the date is blank. Invalid values remain errors. Reset Columns changes layout only; correct source percentages or Settings
+            at their owner instead of calculated energy.
+            """, "impact", "percentage", "kJ/m²", "Settings", "CV", "validation", "auto-save"),
+        new(
+            "measurements.stiffness", "Testing and engineering", "Stiffness Measurements reference",
+            "Revolutions/degrees inputs, calculated deflection/modulus, validation and auto-save.",
+            """
+            Materials search/filter owns visible MaterialID rows. Enter Revolutions from 0 through 10 and Degrees from 0 through 359,
+            plus optional Notes/date. Identity, Deflection mm, Modulus MPa and Validation are read-only.
+
+            A valid commit invokes ResultsService with governed stiffness Settings and auto-saves SQLite. The first source input assigns
+            today only when the date is empty. Invalid values are rejected. Reset Columns changes layout only. Revolutions and Degrees
+            form one observation; never edit Deflection or Modulus directly.
+            """, "stiffness", "revolutions", "degrees", "deflection", "modulus", "auto-save"),
+        new(
+            "experimental.series", "Experimental testing", "Experimental Series reference",
+            "Material-linked definitions, filters, publication readiness and governed lifecycle.",
+            """
+            Add Series prefers the selected active Material; Duplicate creates a new identity and resets publication state. Delete
+            confirms and removes the Series graph. Find, Active only and Clear Filters affect visibility only; Active only defaults on.
+
+            Series ID is read-only. Material, Experiment, Default Unit, Baseline Material, Website, Active and Notes save after commit.
+            Website is separate from Material report permissions. Enabling it checks readiness, defaults incomplete confirmation to No
+            and persists only an accepted choice; hiding needs no confirmation.
+
+            Result views
+            Experimental Dashboard summarizes completeness and best results. Experimental Table lists comparable Runs and deltas.
+            Experimental Charts visualizes metrics and baseline-normalized results.
+            """, "series", "add", "duplicate", "delete", "active only", "website", "readiness"),
+        new(
+            "experimental.runs", "Experimental testing", "Experimental Runs reference",
+            "Controlled values, lifecycle, baseline uniqueness, active history and persistence.",
+            """
+            Add Run creates a Planned active row. Duplicate creates a clean Planned, non-baseline Run without a measured date. Delete
+            confirms and removes the Run graph. Value, Unit, Status, date, Baseline, Active and Notes save after commit.
+
+            Only one Run per Series can be Baseline. Inactive Runs retain history. Include inactive history changes Results comparison
+            scope only when eligible completed history exists; it never changes the grid, reactivates or publishes a Run.
+            """, "runs", "planned", "baseline", "active", "inactive history"),
+        new(
+            "experimental.measurements", "Experimental testing", "Experimental measurement editors reference",
+            "Run-scoped Tensile, Impact and Stiffness source rows with canonical calculation.",
+            """
+            Editors belong to the selected Run, not native Material rows. Enter only bounded Tensile force, Impact percentage,
+            Stiffness Revolutions/Degrees, dates and Notes.
+
+            MPa, kJ/m², Deflection, Modulus, deviation, CV, counts, confidence and Validation are ResultsService outputs. Valid commits
+            auto-save the graph and refresh Results. Invalid or missing coverage remains incomplete regardless of Run status.
+            """, "experimental measurement", "tensile", "impact", "stiffness", "auto-save"),
+        new(
+            "experimental.results.dashboard", "Experimental testing", "Experimental Dashboard reference",
+            "Selected-Series completeness, baseline, best results, recommendation and history scope.",
+            """
+            Scope is the selected Series plus active/history comparison choice. Cards show Run/Completed counts, missing results,
+            Baseline, quality, highest CV, best metrics, best overall and recommended setting.
+
+            These are comparative summaries, not measurements. Missing/high-variation evidence stays visible; without eligible Runs,
+            the dashboard reports unavailable rather than inventing values.
+            """, "dashboard", "recommended", "quality", "highest CV", "baseline"),
+        new(
+            "experimental.results.table", "Experimental testing", "Experimental Table reference",
+            "Read-only ranked Run metrics, delta-to-baseline, variation and baseline highlighting.",
+            """
+            The table ranks eligible selected-Series Runs and shows identity, controlled value/unit, lifecycle, date, calculated metrics,
+            overall score, delta to baseline, CV and Baseline. Rows are read-only.
+
+            Baseline highlighting identifies the comparison reference. Without a valid baseline, delta is unavailable; correct baseline
+            ownership in the Run grid.
+            """, "results table", "rank", "delta", "CV", "baseline", "read-only"),
+        new(
+            "experimental.results.charts", "Experimental testing", "Experimental Charts reference",
+            "Metric charts and baseline-normalized comparison for the selected Series.",
+            """
+            Charts plot eligible selected-Series Runs for Tensile, Impact, Stiffness and overall score. Baseline normalization requires
+            one valid Baseline Run. Charts refresh from ResultsService outputs and are read-only; they never save or alter lifecycle.
+            """, "charts", "tensile", "impact", "stiffness", "baseline normalized"),
+        new(
+            "material-detail.general", "Material detail", "Material Detail — General reference",
+            "Selected MaterialID identity and dynamically grouped read-only fields.",
+            """
+            Material Detail follows the selected Materials row and repeats its MaterialID. General groups available identity, catalog,
+            pricing, Inventory, media and governance fields. Edit values at Materials, Manufacturers, Base Materials, Purchasing or
+            Inventory; this projection is read-only.
+            """, "material detail", "general", "MaterialID", "grouped", "read-only"),
+        new(
+            "material-detail.printing-profile", "Material detail", "Material Detail — Printing Profile reference",
+            "Controlled Base Material test-print/G-code baseline and Not recorded meaning.",
+            """
+            The profile resolves through the Base Material relationship and shows the controlled 3DPIceland test-print/G-code baseline.
+            It is not a manufacturer recommendation and publishes nothing. Not recorded means the catalog has no value; edit Base
+            Materials rather than this read-only view.
+            """, "printing profile", "base material", "G-code", "not recorded"),
+        new(
+            "material-detail.mechanical", "Material detail", "Material Detail — Mechanical reference",
+            "Canonical test status, calculated properties, reliability and expanded evidence.",
+            """
+            Mechanical shows identity/status plus canonical Tensile, Impact and Stiffness outputs. Orientation metrics, consistency,
+            counts and reliability come from native measurements and ResultsService. Expand Canonical mechanical data for source rows.
+            Correct raw inputs on measurement tabs; this view never edits them.
+            """, "mechanical", "tensile", "impact", "stiffness", "reliability"),
+        new(
+            "material-detail.charts", "Material detail", "Material Detail — Charts reference",
+            "Five normalized engineering axes and the limits of the overall profile.",
+            """
+            Charts shows normalized 0–100 Tensile, Impact, Stiffness, Consistency and Layer Adhesion. Overall averages available radar
+            axes. This is comparative 3DPIceland chart input, not a certified scientific rating; missing results remain unavailable.
+            """, "charts", "0-100", "consistency", "layer adhesion", "scientific rating"),
+        new(
+            "material-detail.analytics", "Material detail", "Material Detail — Analytics reference",
+            "Visible-scope grouping, multi-select radar overlay and selection controls.",
+            """
+            Chart Mode groups visible Materials into radar rows. Select one or Ctrl-click multiple rows; Clear radar selection removes
+            local selection only. Materials search/filters define scope. Analytics uses the five normalized axes and changes no data.
+            """, "analytics", "chart mode", "radar", "multi-select", "clear"),
+        new(
+            "material-detail.compare", "Material detail", "Material Detail — Compare reference",
+            "A–D Material selectors, selected-Material handoff, winners and deltas.",
+            """
+            Choose up to four canonical Materials in A–D. Use Selected copies the current identity into a slot without changing source
+            data. Winners/deltas appear only for comparable canonical results; missing results stay missing and the view is read-only.
+            """, "compare", "A-D", "use selected", "winner", "delta"),
+        new(
+            "material-detail.video-planner", "Material detail", "Material Detail — Video Planner reference",
+            "Local creator-planning filters, idea lifecycle, dashboard and prompt handoff.",
+            """
+            Video Planner derives candidates from visible Materials. Filters, Refresh and Clear affect planning only. Idea actions own
+            separate local records. Copy prompt writes owner-review text to the clipboard; it calls no external service and publishes
+            nothing.
+            """, "video planner", "filters", "refresh", "ideas", "copy prompt"),
+        new(
+            "material-detail.recommendations", "Material detail", "Material Detail — Recommendations reference",
+            "Evidence, alternatives, cautions, prompt and Video Planner handoff.",
+            """
+            Recommendations project verified results in visible scope. Filters/Refresh choose guidance; details expose evidence,
+            alternatives and cautions. Copy prompt is local; Send to Video Planner transfers planning context only. Neither action edits
+            measurements, certifies suitability or publishes.
+            """, "recommendations", "evidence", "alternatives", "cautions", "video planner"),
+        new(
+            "material-detail.notes", "Material detail", "Material Detail — Notes reference",
+            "Current placeholder boundary for a future dedicated Detail notes workspace.",
+            """
+            A dedicated Detail Notes workspace is not implemented. The application is not read-only: governed edits remain at owning
+            tabs, including Materials Notes. Do not treat this placeholder as evidence that notes are absent from SQLite.
+            """, "notes", "placeholder", "materials notes"),
+        new(
+            "analysis.rankings", "Analysis and decisions", "Rankings Dashboard reference",
+            "Visible-scope metric ranking, filters, Top 25 default, refresh and CSV.",
+            """
+            Choose Overall, Tensile, Impact, Stiffness, Consistency or Layer Adhesion plus optional Base Material, Manufacturer and
+            Reinforcement filters. Rows defaults to Top 25; Top 10/50/100 and All ranked are available. Missing scores are omitted.
+
+            Reset restores defaults, Refresh rebuilds read-only rows and Export CSV writes displayed scope. Clear Materials filters
+            before whole-database interpretation.
+            """, "rankings", "top 25", "filters", "refresh", "CSV"),
+        new(
+            "analysis.category-rankings", "Analysis and decisions", "Category Rankings reference",
+            "Winner-focused grouped rankings with 10 rows per group by default.",
+            """
+            Choose a performance Category and Overall/Base Material/Manufacturer grouping, then optional scope filters. Rows per group
+            defaults to 10; 5, 50, 100 and All are available. Reset, Refresh and Export CSV operate on this read-only projection.
+            """, "category rankings", "winner", "rows per group", "10", "CSV"),
+        new(
+            "analysis.awards", "Analysis and decisions", "Awards & Winners reference",
+            "Governed award sets, visible-scope filters, winner reasoning and CSV.",
+            """
+            Choose All, Performance, Material family or Reinforcement awards plus optional scope filters. Rows show Winner, score,
+            Runner Up, Use Case, Why and Status. Reset/Refresh rebuild read-only awards and Export CSV writes them; this view does not
+            publish.
+            """, "awards", "winner", "runner up", "why", "CSV"),
+        new(
+            "analysis.dashboard-insights", "Analysis and decisions", "Dashboard Insights reference",
+            "Current counts, highest verified metrics and read-only narrative insights.",
+            """
+            Insights summarizes tested Materials, Manufacturers, Material/Reinforcement Types and highest Overall, Tensile, Impact and
+            Stiffness results. Narrative derives from canonical calculated results, edits nothing and has no separate Save.
+            """, "dashboard insights", "counts", "highest overall", "read-only"),
+        new(
             "reports-website",
             "Output and publishing",
             "Reports, Website Export and public publishing",
@@ -453,10 +650,15 @@ internal static class HelpContentCatalog
         "Print Job Quotes" => "print-job-quotes.overview",
         "Base Materials" => "base-materials.overview",
         "Settings Manager" => "settings.overview",
-        "Material Detail" => "materials.overview",
-        "Tensile Measurements" or "Impact Measurements" or "Stiffness Measurements" => "measurements",
-        "Experimental Testing" => "experimental-testing",
-        "Rankings Dashboard" or "Category Rankings" or "Awards & Winners" or "Dashboard Insights" => "analysis",
+        "Material Detail" => "material-detail.general",
+        "Tensile Measurements" => "measurements.tensile",
+        "Impact Measurements" => "measurements.impact",
+        "Stiffness Measurements" => "measurements.stiffness",
+        "Experimental Testing" => "experimental.series",
+        "Rankings Dashboard" => "analysis.rankings",
+        "Category Rankings" => "analysis.category-rankings",
+        "Awards & Winners" => "analysis.awards",
+        "Dashboard Insights" => "analysis.dashboard-insights",
         "Reports / PDF Export" or "Website Export" => "reports-website",
         "AI Assistant" or "YouTube Research" => "settings-tools",
         _ => StartHereId

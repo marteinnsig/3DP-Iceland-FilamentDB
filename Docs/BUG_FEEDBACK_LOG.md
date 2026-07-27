@@ -586,6 +586,19 @@ The renderer now highlights every visible searchable field and excludes hidden k
 `retained purchase evidence` instead of `immutable purchase snapshot`. Profile `20260727102551-3b35ebbc` passes 370/370.
 Owner accepted all v50.2.1 reference content, terminology, wrapping and header/body highlighting on 2026-07-27. v50.2.1 is canonical;
 the parent item remains In progress for recorded v50.2.2-v50.2.4 and v50.3 work.
+The v50.2.2 candidate adds 22 stable references for native measurements, Experimental Testing, Material Detail and global analysis.
+It corrects stale Notes/import/future-export UI guidance and adds deterministic scope/save/lifecycle coverage. Owner acceptance is
+pending.
+Disposable profile `20260727103712-93b32f7b` passes the new Help searches, Full Data Verification 371/371 and exact state equality.
+Owner review found that the visible `Experimental Results Dashboard/Table` titles did not match natural searches without `Results`.
+The titles and Series overview now expose direct Experimental Dashboard, Table and Charts names. Title matches rank before overview
+body matches. Profile `20260727104534-dc519c51` passes Full Data Verification 371/371 and exact state equality.
+Owner review also removed `immutable` from current Usage Help. Accepted events remain preserved and corrections still append exact
+reversal/replacement rows; only the user-facing terminology changed.
+Owner review found Help > Documentation opening Materials reference because it reused F1 context. The menu now opens the canonical
+whole-system Start-to-finish overview; F1 remains contextual. Profile `20260727105308-cc3ce0b1` passes 371/371 and exact state equality.
+Owner accepted the complete v50.2.2 content, terminology, search/discovery and Help entry behavior on 2026-07-27. v50.2.2 is canonical;
+the parent item remains In progress for v50.2.3-v50.2.4 and v50.3.
 What happened: The application has many connected workflows, but no single structured user guide explains what every tab does or how
 data should move through the platform from purchase entry to measurements, reports and website publication.
 Expected behavior: Provide a well-organized user-help system with a start-to-finish workflow, per-tab reference, field-entry guidance,

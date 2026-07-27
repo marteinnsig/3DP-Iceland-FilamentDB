@@ -39,7 +39,9 @@ public partial class HelpWindow : Window
                 Contains(section.Title, query) ||
                 Contains(section.Category, query) ||
                 Contains(section.Summary, query) ||
-                Contains(section.Body, query)).ToArray();
+                Contains(section.Body, query))
+                .OrderBy(section => SearchMatchRank(section, query))
+                .ToArray();
 
         SectionList.ItemsSource = _visibleSections;
         ResultStatusText.Text = string.IsNullOrWhiteSpace(query)
@@ -89,6 +91,14 @@ public partial class HelpWindow : Window
 
     private static bool Contains(string value, string query) =>
         value.Contains(query, StringComparison.OrdinalIgnoreCase);
+
+    private static int SearchMatchRank(HelpSection section, string query)
+    {
+        if (Contains(section.Title, query)) return 0;
+        if (Contains(section.Summary, query)) return 1;
+        if (Contains(section.Category, query)) return 2;
+        return 3;
+    }
 
     private Run? RenderBody(string body, string query)
     {

@@ -16994,7 +16994,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 !string.IsNullOrWhiteSpace(section.Summary) &&
                 !string.IsNullOrWhiteSpace(section.Body)) &&
             helpSections.Select(section => section.Id).Distinct(StringComparer.Ordinal).Count() == helpSections.Count &&
-            HelpContentCatalog.SectionIdForTab("Experimental Testing") == "experimental-testing" &&
+            HelpContentCatalog.SectionIdForTab("Experimental Testing") == "experimental.series" &&
             HelpContentCatalog.SectionIdForTab("Website Export") == "reports-website" &&
             typeof(MainWindow).GetMethod("OpenHelp", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         var v5021ReferenceContractReady =
@@ -17022,6 +17022,43 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             helpContractReady && startToFinishContractReady && v5021ReferenceContractReady
                 ? $"{helpSections.Count} unique offline topics retain the accepted workflow and cover nine mapped data, cost and configuration surfaces."
                 : "Central Help structure, accepted workflow, required reference text or tab-to-section mapping is incomplete."));
+        var v5022RequiredHelpSectionIds = new[]
+        {
+            "measurements.tensile", "measurements.impact", "measurements.stiffness",
+            "experimental.series", "experimental.runs", "experimental.measurements",
+            "experimental.results.dashboard", "experimental.results.table", "experimental.results.charts",
+            "material-detail.general", "material-detail.printing-profile", "material-detail.mechanical",
+            "material-detail.charts", "material-detail.analytics", "material-detail.compare",
+            "material-detail.video-planner", "material-detail.recommendations", "material-detail.notes",
+            "analysis.rankings", "analysis.category-rankings", "analysis.awards", "analysis.dashboard-insights"
+        };
+        var v5022TabMappings = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["Material Detail"] = "material-detail.general",
+            ["Tensile Measurements"] = "measurements.tensile",
+            ["Impact Measurements"] = "measurements.impact",
+            ["Stiffness Measurements"] = "measurements.stiffness",
+            ["Experimental Testing"] = "experimental.series",
+            ["Rankings Dashboard"] = "analysis.rankings",
+            ["Category Rankings"] = "analysis.category-rankings",
+            ["Awards & Winners"] = "analysis.awards",
+            ["Dashboard Insights"] = "analysis.dashboard-insights"
+        };
+        var v5022ReferenceContractReady =
+            v5022RequiredHelpSectionIds.All(requiredId =>
+                helpSections.Count(section => string.Equals(section.Id, requiredId, StringComparison.Ordinal)) == 1) &&
+            v5022TabMappings.All(mapping =>
+                string.Equals(HelpContentCatalog.SectionIdForTab(mapping.Key), mapping.Value, StringComparison.Ordinal)) &&
+            helpSections.Single(section => section.Id == "measurements.tensile").Body.Contains("auto-saves SQLite", StringComparison.Ordinal) &&
+            helpSections.Single(section => section.Id == "experimental.runs").Body.Contains("Only one Run per Series", StringComparison.Ordinal) &&
+            helpSections.Single(section => section.Id == "analysis.rankings").Body.Contains("Top 25", StringComparison.Ordinal) &&
+            helpSections.Single(section => section.Id == "analysis.category-rankings").Body.Contains("defaults to 10", StringComparison.Ordinal) &&
+            helpSections.Single(section => section.Id == "material-detail.notes").Body.Contains("application is not read-only", StringComparison.Ordinal);
+        checks.Add(new VerificationCheck("v50.2.2 testing and analysis Help reference contract",
+            helpContractReady && v5022ReferenceContractReady,
+            helpContractReady && v5022ReferenceContractReady
+                ? "22 stable testing/analysis Help destinations, exact top-level mappings and representative scope/save/lifecycle markers are present."
+                : "A required testing/analysis Help destination, mapping or reference marker is missing."));
         var zeroDataProfileContractReady =
             IsKnownZeroDataDependency(new VerificationCheck("Native material source loaded", false, "0 native materials")) &&
             IsKnownZeroDataDependency(new VerificationCheck("Website portal release contract", false, "Generic downstream contract detail")) &&
@@ -18644,7 +18681,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private void Documentation_Click(object sender, RoutedEventArgs e)
     {
-        OpenHelpForCurrentContext();
+        OpenHelp(HelpContentCatalog.StartHereId);
     }
 
     private void OpenHelpForCurrentContext()

@@ -1,5 +1,28 @@
 # Automated Runtime Acceptance
 
+## v50.2.2 - Testing and analysis reference accepted
+
+Full Data Verification requires 22 stable Help destinations, exact top-level
+mapping and representative native auto-save, Experimental baseline, Rankings
+Top 25, Category 10-row and Material Detail Notes markers.
+
+The read-only central Help smoke searches the Rankings default-scope phrase and
+the corrected Notes application boundary. Production, FTPS, updates and owner
+database selection remain blocked. Profile `20260727103712-93b32f7b` passes
+the expanded Help contract, Full Data Verification 371/371 and exact
+logical/business-state equality. Owner acceptance remains pending.
+
+Owner-search correction adds a smoke query for `Experimental Table` and
+requires the direct visible `Experimental Table reference` title.
+Profile `20260727104534-dc519c51` passes title-first relevance, the revised
+Purchase Order direct-reference assertion, Full Data Verification 371/371 and
+exact logical/business-state equality.
+
+The smoke scenario now requires Help > Documentation to open
+`Start-to-finish workflow`; contextual F1 ownership remains separate.
+Profile `20260727105308-cc3ce0b1` passes 371/371 with exact state equality.
+Owner runtime and visual acceptance pass.
+
 ## v50.2.1 - Data, cost and configuration reference accepted
 
 Full Data Verification requires unique, non-empty Help content plus nine stable
