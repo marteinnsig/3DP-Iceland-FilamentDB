@@ -6,14 +6,13 @@ Private Windows deployment supports a per-user Setup EXE and a portable ZIP buil
 
 - **Current runtime-accepted release:** v55.0.6 — Operational Safety and Disposable Hygiene
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v56.0.3 — Fictional Identity and Transformation Contract
+- **Current development focus:** v56.0.4 — Deterministic SQLite Builder and Privacy Gates
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Download the Windows application
 
 - [Download the latest Windows installer](https://www.iskort.is/3dp/downloads/3DPIceland-Setup-x64.exe)
 - [Download the latest portable ZIP](https://www.iskort.is/3dp/downloads/3DPIceland-Portable-x64.zip)
-- [Open the downloads page](https://www.iskort.is/3dp/downloads/)
 
 The stable installer and portable links always point to the latest explicitly
 published application release. Application publishing remains a separate,
@@ -124,14 +123,15 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 52.3.2 is the current runtime-accepted application release. It provides
-the optional read-only OpenAI pilot with exact payload preview, explicit
-consent, strict response validation, secret-safe operational evidence and an
-offline local fallback. The v52.3.3 governance evaluation leaves
-`gpt-5.6-sol` Provisional rather than pinned and closes parent v52.
+Version 55.0.6 is the current runtime-accepted application release. It
+completes the operational-safety and disposable-hygiene workflow, including
+consistent cancellable confirmation dialogs, guarded tester-profile cleanup
+and Full Data Verification 403/403 PASS.
 
-The current roadmap increment is v53.0 — Governed Landed-cost Currency,
-research-first before schema or UI changes.
+The current roadmap increment is v56.0.4 — Deterministic SQLite Builder and
+Privacy Gates. It builds only disposable public-demo output from the accepted
+36-Material allowlist and fictional identity contract. Production, FTPS, the
+owner database and the canonical tester seed remain outside this increment.
 
 The clean-install profile contains no material dataset or private FTPS
 identity. SQLite is never restored automatically by application update
