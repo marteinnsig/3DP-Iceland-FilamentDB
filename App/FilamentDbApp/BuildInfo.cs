@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "DOCUMENT-BRANDING-FOUNDATION";
-    public const string ReleaseTitle = "Governed Custom Document Branding Foundation";
+    public const string ReleaseCode = "DOCUMENT-BRANDING-SETTINGS";
+    public const string ReleaseTitle = "Governed Document Branding Settings Workflow";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 39;
 

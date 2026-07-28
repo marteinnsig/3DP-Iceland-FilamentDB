@@ -98,6 +98,9 @@ function Get-TopSurface([string]$SurfacePath) {
 }
 
 function Get-OwnerIncrement([string]$SurfacePath, [string]$Identity) {
+    if ($Identity -match "DocumentBranding") {
+        return "v58.0.3"
+    }
     if ($Identity -match "^AutomationLandedCost") {
         return "v53.0.4.1"
     }

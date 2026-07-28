@@ -655,9 +655,15 @@ internal static class HelpContentCatalog
             deployment. Changes apply prospectively and may refresh current calculated views/drafts. They never rewrite saved Purchase
             Order rates, received Inventory provenance, Usage history or saved quote snapshots. ECB remains an optional reference for
             session-new Purchase Orders, not the Settings owner.
+
+            Document branding
+            The Document Branding group owns an optional PNG for generated documents only. Select PNG validates and immediately stores
+            a governed normalized copy in this SQLite database; Save Settings is not required and the selected source file is never
+            changed or remembered by path. Preview is read-only. Current generated output continues to use built-in branding until the
+            renderer integration increment is complete. Application chrome, icons and canonical public-site branding are never changed.
             """,
             "settings", "value", "measurement", "calculation", "currency", "purchasing", "deployment", "FTPS",
-            "save settings", "reload", "restore defaults", "reset columns", "prospective"),
+            "save settings", "reload", "restore defaults", "reset columns", "prospective", "document branding", "PNG"),
         new(
             "settings.controls-fields",
             "Configuration",
@@ -697,9 +703,24 @@ internal static class HelpContentCatalog
             SQLite. Save / Replace Credential writes the masked API key only to Windows Credential Manager; Delete Credential is
             default-No. Test Provider Foundation checks configuration and credential presence locally. It sends no network request or
             material payload. The separate AI Assistant pilot requires exact payload preview and one-time consent before a live request.
+
+            Document Branding controls
+            Go to the actual Settings Manager tab and use Document Branding — generated documents only; do not search for these buttons
+            inside Help. Select PNG accepts one real PNG up to 5 MiB, with width and height from 16 through 4,096 pixels and no more than
+            16,000,000 decoded pixels. It fully decodes, strips metadata by normalization, stores the governed bytes and SHA-256 in the
+            current SQLite database and materializes a derived fixed-name cache. The source file and source path are not changed or
+            retained. Selection saves immediately and survives restart, backup and restore independently of Save Settings.
+
+            Preview opens a larger read-only logo window showing the current Default, Custom or Fallback state; Close, Escape and the
+            window close button return to Settings without changing data. Restore Default defaults to No and, after Yes, removes any
+            saved custom copy without changing other Settings. Escape and the dialog close button act like No.
+            Missing or corrupt custom state reports Fallback and shows the built-in logo. In this v58.0.3 workflow, report, website and
+            quote renderers still use their accepted built-in branding until the separately governed renderer integration is accepted.
+            These controls never alter the application icon, splash, window chrome or canonical public website logo/favicon.
             """,
             "settings fields", "section", "parameter", "value", "unit", "used by", "reload saved settings",
-            "restore built-in defaults", "measurement constants", "currency fallback", "deployment", "credential manager"),
+            "restore built-in defaults", "measurement constants", "currency fallback", "deployment", "credential manager",
+            "select PNG", "preview document logo", "restore default document branding", "fallback"),
         new(
             "measurements",
             "Testing and engineering",

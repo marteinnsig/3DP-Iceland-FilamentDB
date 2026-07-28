@@ -1913,6 +1913,62 @@ deletion, corrected comma-decimal pricing and the final customer PDF with the
 Labs logo and no internal MaterialID, Printer identity or methodology text.
 Full Data Verification passes 363/363. The increment is complete, canonical
 and runtime accepted.
+
+# 2026-07-28 - v58.0.3 document branding Settings workflow
+
+- **Observed:** The accepted schema-v39 document-logo foundation had no
+  user-visible selection, preview, status or removal workflow.
+- **Correction:** Added a dedicated Settings Manager group with stable
+  AutomationIds, governed Select PNG, read-only Preview, default-No Remove
+  Custom Logo and default-No Restore Default. Status and preview distinguish
+  Default, Custom and honest Fallback without changing the source file.
+- **Boundary:** The workflow saves immediately and remains separate from generic
+  Settings save/reset. Renderer output stays on built-in branding until v58.0.4;
+  application and canonical public-site branding are out of scope.
+- **Status:** Implementation and Help complete. Debug/Release, Help,
+  documentation and read-only vulnerability gates pass. Disposable smoke
+  `20260728221033-cb9d2635` passes 410/410 with exact state. Owner runtime
+  acceptance remains pending.
+
+# 2026-07-28 - v58.0.3 preview and safe-cancel runtime correction
+
+- **Observed:** Preview only refreshed the inline image and gave no visible
+  response. Standard MessageBox confirmation did not map Escape or window close
+  to No for Remove Custom Logo or Restore Default.
+- **Correction:** Preview now opens a large, read-only, owner-modal window with
+  Close/Escape/X support. Both mutating actions use the shared accepted
+  `SafeDeleteConfirmationWindow`, where No is focused/default and Escape/X
+  preserve the custom logo.
+- **Preserved:** Custom selection survived restart, Restore Default Yes returned
+  to built-in branding and owner Verification passed.
+- **Status:** Corrected Debug/Release, Help/documentation and disposable smoke
+  `20260728221852-cdfa377b` pass 410/410 with exact state. Owner retest pending.
+
+# 2026-07-28 - v58.0.3 redundant action and Settings layout correction
+
+- **Observed:** Remove Custom Logo and Restore Default produced the same
+  persisted default state. The Settings grid declared only four rows while the
+  measurement host used row 4, so it overlaid the AI provider row.
+- **Correction:** Owner approved retaining only Restore Default. Remove control,
+  handler, Help, inventory and Verification ownership are retired. The missing
+  Auto row is restored before the final measurement star row.
+- **Status:** Debug/Release, Help/documentation and disposable smoke
+  `20260728222506-c4fc44fe` pass 410/410 with exact state. Owner visual retest
+  pending.
+
+# 2026-07-28 - v58.0.3 Settings row correction initially targeted wrong grid
+
+- **Observed:** Owner retest showed the AI/measurement overlap remained.
+- **Finding:** The first generic XAML patch inserted extra rows into Base
+  Materials instead of `SettingsManagerTab`; Settings still had four rows while
+  its measurement host used row 4.
+- **Correction:** Removed the unintended Base Materials rows, added the fifth
+  Settings row in an explicitly anchored patch and named the Settings layout,
+  AI group and measurement host. Verification now requires exactly five rows
+  with the two groups in rows 3 and 4.
+- **Status:** Debug/Release, Help/documentation and disposable smoke
+  `20260728223043-346ac3db` pass 410/410 with the explicit five-row layout
+  contract. Owner confirms the layout is normal and Verification passes.
 # 2026-07-27 - v52.3.2 live response validation lacked safe failure detail
 
 - **Observed:** After owner consent, the first live Responses result reached the

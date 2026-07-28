@@ -17899,18 +17899,42 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             documentBrandingFoundation.Passed,
             documentBrandingFoundation.Detail));
         var v5802FoundationReady =
-            BuildInfo.Version == "58.0.2" &&
-            BuildInfo.ReleaseCode == "DOCUMENT-BRANDING-FOUNDATION" &&
-            BuildInfo.ReleaseTitle == "Governed Custom Document Branding Foundation" &&
             BuildInfo.CurrentDatabaseSchema == 39 &&
-            documentBrandingFoundation.Passed &&
-            releaseIdentityReady;
+            documentBrandingFoundation.Passed;
         checks.Add(new VerificationCheck(
-            "v58.0.2 Document branding foundation release gate",
+            "v58.0.2 Document branding foundation retained contract",
             v5802FoundationReady,
             v5802FoundationReady
-                ? "Schema v39, release identity and governed PNG validation/persistence foundation align"
-                : "v58.0.2 identity, schema, validation/persistence or generic assembly alignment failed"));
+                ? "Schema v39 and governed PNG validation/persistence foundation remain aligned"
+                : "Schema or governed PNG validation/persistence foundation failed"));
+        var v5803SettingsReady =
+            BuildInfo.Version == "58.0.3" &&
+            BuildInfo.ReleaseCode == "DOCUMENT-BRANDING-SETTINGS" &&
+            BuildInfo.ReleaseTitle == "Governed Document Branding Settings Workflow" &&
+            FindName("SelectDocumentBrandingLogoButton") is Button &&
+            FindName("PreviewDocumentBrandingLogoButton") is Button &&
+            FindName("RestoreDefaultDocumentBrandingButton") is Button &&
+            FindName("DocumentBrandingStatusText") is TextBlock &&
+            FindName("DocumentBrandingPreviewImage") is Image &&
+            FindName("SettingsManagerLayoutGrid") is Grid settingsLayout &&
+            settingsLayout.RowDefinitions.Count == 5 &&
+            FindName("AiProviderSettingsGroup") is GroupBox aiProviderGroup &&
+            Grid.GetRow(aiProviderGroup) == 3 &&
+            FindName("MeasurementSettingsLayoutHost") is Grid measurementSettingsHost &&
+            Grid.GetRow(measurementSettingsHost) == 4 &&
+            typeof(MainWindow).GetMethod(
+                "RefreshDocumentBrandingStatus",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(DocumentBrandingPreviewWindow).GetConstructor(
+                [typeof(System.Windows.Media.ImageSource), typeof(string)]) is not null &&
+            releaseIdentityReady;
+        checks.Add(new VerificationCheck(
+            "v58.0.3 Document branding Settings workflow release gate",
+            v5803SettingsReady && v5802FoundationReady,
+            v5803SettingsReady && v5802FoundationReady
+                ? "Schema v39; Select, Preview, default-No Restore, status, image preview and Help-owned release identity align"
+                : "v58.0.3 identity, Settings controls, preview/status, foundation or generic assembly alignment failed"));
         var inventoryRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "InventorySpoolItems");
         var landedCostMigration = _database.RunLandedCostCurrencyMigrationContractVerification();
@@ -25221,6 +25245,7 @@ private List<string> GetVisibleAiMaterialLabels()
         }
         EnsurePurchasingCurrencySettings();
         RefreshFtpsEndpointSummary();
+        RefreshDocumentBrandingStatus();
     }
 
     private void LoadCanonicalNativeSettings()

@@ -547,12 +547,15 @@ xaml.reports-pdf-export.combobox.reporttypeselector	Reports / PDF Export	ComboBo
 xaml.reports-pdf-export.textbox.reportoutputfolder	Reports / PDF Export	TextBox	ReportOutputFolder	input-candidate	v50.4.3	reports.controls-fields	covered
 xaml.reports-pdf-export.textbox.reportpreviewlog	Reports / PDF Export	TextBox	ReportPreviewLog	read-only	v50.4.3	reports.controls-fields	covered
 xaml.settings-manager.button.deleteaiprovidercredential	Settings Manager	Button	DeleteAiProviderCredential	action	v52.1	settings.controls-fields	covered
+xaml.settings-manager.button.previewdocumentbrandinglogo	Settings Manager	Button	PreviewDocumentBrandingLogo	action	v58.0.3	settings.controls-fields	covered
 xaml.settings-manager.button.reloadsavedsettingsbutton	Settings Manager	Button	ReloadSavedSettingsButton	action	v50.4.1	settings.controls-fields	covered
 xaml.settings-manager.button.resetsettingscolumnsbutton	Settings Manager	Button	ResetSettingsColumnsButton	action	v50.4.1	settings.controls-fields	covered
 xaml.settings-manager.button.restorebuiltinsettingsbutton	Settings Manager	Button	RestoreBuiltInSettingsButton	action	v50.4.1	settings.controls-fields	covered
+xaml.settings-manager.button.restoredefaultdocumentbranding	Settings Manager	Button	RestoreDefaultDocumentBranding	action	v58.0.3	settings.controls-fields	covered
 xaml.settings-manager.button.saveaiprovidercredential	Settings Manager	Button	SaveAiProviderCredential	action	v52.1	settings.controls-fields	covered
 xaml.settings-manager.button.saveaiprovidersettings	Settings Manager	Button	SaveAiProviderSettings	action	v52.1	settings.controls-fields	covered
 xaml.settings-manager.button.savenativesettings-click	Settings Manager	Button	SaveNativeSettings_Click	action	v50.4.1	settings.controls-fields	covered
+xaml.settings-manager.button.selectdocumentbrandinglogo	Settings Manager	Button	SelectDocumentBrandingLogo	action	v58.0.3	settings.controls-fields	covered
 xaml.settings-manager.button.testaiproviderfoundation	Settings Manager	Button	TestAiProviderFoundation	action	v52.1	settings.controls-fields	covered
 xaml.settings-manager.combobox.aiprovider	Settings Manager	ComboBox	AiProvider	choice	v52.1	settings.controls-fields	covered
 xaml.settings-manager.passwordbox.aiproviderapikey	Settings Manager	PasswordBox	AiProviderApiKey	input-candidate	v52.1	settings.controls-fields	covered

@@ -92,7 +92,7 @@ Nested tabs (16):
 | Printers | `printers.overview` | SQLite Printers + `PrinterRateService` | Rate fields, Add, Duplicate, Archive/Restore, Delete, Save, auto-save and quote handoff | Strong ID coverage |
 | Print Job Quotes | `print-job-quotes.overview` | SQLite saved quote snapshots | Customer/currency, Material evidence, Printer/time/labor inputs, calculation, Save, history, PDF and explicit Delete | Key paths covered; most numeric inputs/evidence/status missing |
 | Base Materials | `base-materials.overview` | SQLite Base Material Catalog | Profile fields, Add, Duplicate, Delete, Reset Columns, exact-name binding, rename propagation and relationship blocks | Tab/key actions covered; grid, Reset and status missing |
-| Settings Manager | `settings.overview` | SQLite General/Deployment settings | Sections/fields, prospective boundary, Save, Reload, Restore Defaults, Reset Columns and separate Base Material ownership | Tab only; commands/grid/status missing |
+| Settings Manager | `settings.overview` | SQLite settings and document branding | Settings fields, prospective effects, document PNG limits/save/fallback, commands and safety boundaries | Branding layout remains owner-manual |
 
 Required leaf destinations:
 

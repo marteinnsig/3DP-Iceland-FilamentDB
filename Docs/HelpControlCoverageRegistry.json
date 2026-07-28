@@ -1,9 +1,9 @@
 {
   "Schema": "3dpiceland.help-control-coverage.v1",
-  "Release": "v57.0.5",
+  "Release": "v58.0.3",
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
   "XamlCounts": {
-    "Button": 150,
+    "Button": 153,
     "MenuItem": 32,
     "TextBox": 35,
     "PasswordBox": 2,
@@ -45,7 +45,8 @@
     "v57.0.1",
     "v57.0.3",
     "v57.0.4",
-    "v57.0.5"
+    "v57.0.5",
+    "v58.0.3"
   ],
   "CustomColumnRegistries": [
     {
@@ -244,6 +245,20 @@
         "action.default-no",
         "action.escape-no",
         "action.close-no"
+      ]
+    },
+    {
+      "Key": "runtime.document-branding-preview",
+      "EntryPoint": "DocumentBrandingPreviewWindow",
+      "OwnerIncrement": "v58.0.3",
+      "HelpDestination": "settings.controls-fields",
+      "Status": "covered",
+      "Controls": [
+        "output.logo-preview",
+        "output.provenance-status",
+        "action.close",
+        "action.escape-close",
+        "action.window-close"
       ]
     }
   ],

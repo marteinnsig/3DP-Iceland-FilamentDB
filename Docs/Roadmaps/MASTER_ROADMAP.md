@@ -2568,11 +2568,12 @@ to unstarted authoritative planning slots.
     - Preserved fixture: schema v38 SHA-256 `7DC91C93456F612B93B0E9A15D353ABABF2C93323E7E30F78C5B10620C6FB16F`.
     - Completion condition met: validation, restart, migration, cache, fallback and exact business-state recovery pass.
   - **v58.0.3 — Document Branding Settings Workflow and Help**
-    - State: Current next increment after accepted v58.0.2 foundation.
-    - Add Select PNG, Preview, Remove Custom Logo and Restore Default with stable AutomationIds and honest status.
+    - State: Complete and owner runtime accepted; Full Data Verification passes 410/410.
+    - Add Select PNG, Preview and one Restore Default action with stable AutomationIds and honest status.
     - Keep the workflow separate from free-text Fast Settings and generic Restore Built-in Defaults behavior.
     - Document exact limits, save timing, governed copy, fallback and output-only scope in Help and its coverage ledger.
     - Completion condition: keyboard/mouse workflow, restart state, Help navigation and default-No boundaries are accepted.
+    - Completion condition met: preview, restart, Escape/X, one Restore action, Help, layout and Verification are accepted.
   - **v58.0.4 — Canonical Renderer Integration**
     - State: Planned after v58.0.3.
     - Pass one resolved snapshot into report packages, website documents and Print Job Quote HTML/PDF generation.

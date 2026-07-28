@@ -2325,8 +2325,9 @@
                 </Grid>
             </TabItem>
 <TabItem Header="Settings Manager" AutomationProperties.AutomationId="SettingsManagerTab">
-                <Grid Margin="12">
+                <Grid Name="SettingsManagerLayoutGrid" Margin="12">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -2339,7 +2340,7 @@
                                    FontWeight="SemiBold"
                                    Foreground="#0F172A"
                                    Margin="0,0,0,4"/>
-                        <TextBlock Text="Maintain governed measurement, calculation, multi-currency purchasing and deployment settings. Changes apply prospectively; saved purchase, Inventory and quote snapshots stay unchanged."
+                        <TextBlock Text="Maintain governed document branding, measurement, calculation, multi-currency purchasing and deployment settings. Changes apply prospectively; saved purchase, Inventory and quote snapshots stay unchanged."
                                    Foreground="#64748B"
                                    TextWrapping="Wrap"/>
                     </StackPanel>
@@ -2352,6 +2353,62 @@
                     </WrapPanel>
 
                     <GroupBox Grid.Row="2"
+                              Header="Document Branding — generated documents only"
+                              Margin="0,0,0,10">
+                        <Grid Margin="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0"
+                                    Width="200"
+                                    Height="82"
+                                    Margin="0,0,16,0"
+                                    Padding="8"
+                                    BorderBrush="#CBD5E1"
+                                    BorderThickness="1"
+                                    Background="White"
+                                    CornerRadius="4">
+                                <Image Name="DocumentBrandingPreviewImage"
+                                       AutomationProperties.AutomationId="DocumentBrandingPreview"
+                                       Stretch="Uniform"
+                                       SnapsToDevicePixels="True"/>
+                            </Border>
+                            <StackPanel Grid.Column="1">
+                                <WrapPanel Margin="0,0,0,4">
+                                    <Button Name="SelectDocumentBrandingLogoButton"
+                                            AutomationProperties.AutomationId="SelectDocumentBrandingLogo"
+                                            Content="Select PNG..."
+                                            Click="SelectDocumentBrandingLogo_Click"
+                                            Padding="12,6"
+                                            Margin="0,0,8,8"/>
+                                    <Button Name="PreviewDocumentBrandingLogoButton"
+                                            AutomationProperties.AutomationId="PreviewDocumentBrandingLogo"
+                                            Content="Preview"
+                                            Click="PreviewDocumentBrandingLogo_Click"
+                                            Padding="12,6"
+                                            Margin="0,0,8,8"/>
+                                    <Button Name="RestoreDefaultDocumentBrandingButton"
+                                            AutomationProperties.AutomationId="RestoreDefaultDocumentBranding"
+                                            Content="Restore Default..."
+                                            Click="RestoreDefaultDocumentBranding_Click"
+                                            Padding="12,6"
+                                            Margin="0,0,8,8"/>
+                                </WrapPanel>
+                                <TextBlock Name="DocumentBrandingStatusText"
+                                           AutomationProperties.AutomationId="DocumentBrandingStatus"
+                                           Text="Document branding: loading..."
+                                           Foreground="#475569"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,0,3"/>
+                                <TextBlock Text="Selection is saved immediately in this database. Current generated output continues to use built-in branding until renderer integration."
+                                           Foreground="#64748B"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Name="AiProviderSettingsGroup" Grid.Row="3"
                               Header="Optional AI Assistant Provider — credential remains in Windows Credential Manager"
                               Margin="0,0,0,10">
                         <Grid Margin="8">
@@ -2419,7 +2476,7 @@
                         </Grid>
                     </GroupBox>
 
-                    <Grid Grid.Row="3">
+                    <Grid Name="MeasurementSettingsLayoutHost" Grid.Row="4">
                         <GroupBox Header="Measurement / Calculation Settings - only Value is editable">
                             <Grid>
                                 <ContentControl Name="FastNativeSettingsViewHost" Margin="8"/>

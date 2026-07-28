@@ -2,6 +2,38 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v58.0.3 - Document Branding Settings Workflow and Help
+
+The candidate exposes the accepted schema-v39 foundation in a bounded Settings
+Manager group. Select PNG performs the governed validation/import and saves
+immediately; Preview is read-only. Restore Default is separate from generic
+Settings reset and requires explicit Yes with No as the default. The preview
+reports Default, Custom or honest Fallback provenance.
+
+Current report, website and quote output deliberately remains on accepted
+built-in branding until v58.0.4. Help documents navigation, exact file/resource
+limits, persistence, source immutability, fallback and output-only scope.
+AutomationIds and deterministic Verification cover stable workflow presence;
+visual layout, keyboard/mouse behavior, restart and dialog close/Escape remain
+owner-runtime acceptance.
+
+Debug and Release build with zero warnings/errors. Help coverage reconciles
+666/666 XAML candidates and release documentation passes. Read-only NuGet
+vulnerability review is clean. Final corrected disposable smoke
+`20260728223043-346ac3db` passes 410/410 Full Data Verification with exact
+baseline/final database and business-state equality.
+
+Owner testing found that Preview had no visible result and standard MessageBox
+did not honor Escape/X as safe cancellation. Preview now opens a dedicated
+read-only window and Restore uses the accepted shared default-No safe
+confirmation window. The redundant Remove action was owner-approved for
+retirement. A missing grid row that overlaid AI and measurement content is
+restored. Corrected Debug/Release and deterministic gates pass.
+
+Owner runtime acceptance confirms the final three-action branding surface,
+large preview, restart persistence, Restore Default Yes, Escape/X cancellation
+and corrected Settings layout. Owner Full Data Verification passes.
+
 ## v58.0.2 - Governed Custom Document Branding Foundation
 
 The candidate introduces schema v39 and one dedicated

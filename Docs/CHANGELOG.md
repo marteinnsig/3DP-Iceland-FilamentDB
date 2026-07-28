@@ -2,6 +2,23 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v58.0.3 - Document Branding Settings Workflow and Help
+
+- Adds a dedicated Settings Manager group with Select PNG, Preview and one
+  Restore Default action plus honest Default/Custom/Fallback
+  status and a contained aspect-ratio preview.
+- Saves an accepted normalized PNG immediately to schema-v39 SQLite without
+  changing the source file or retaining its path; generic Save Settings and
+  Restore Built-in Defaults remain separate.
+- Keeps Restore Default default-No and limits this increment to configuration
+  and preview; accepted renderer output remains built-in until v58.0.4.
+- Updates in-app Help, stable AutomationIds, coverage ownership and deterministic
+  release contracts. Visual, keyboard, restart and dialog acceptance were
+  retained as owner-runtime gates.
+- Owner accepts custom/default preview, restart persistence, Escape/X-safe
+  restore and the corrected non-overlapping Settings layout. Full Data
+  Verification passes 410/410.
+
 ## v58.0.2 - Governed Custom Document Branding Foundation
 
 - Advances the canonical SQLite schema to v39 with one optional document
