@@ -1,4 +1,4 @@
-# Current Build Notes - v56.0.1 Research
+# Current Build Notes - v56.0.4 Development
 
 ## Governed Public Demo Dataset
 
@@ -24,8 +24,8 @@ risk. It covers 10 manufacturer groups, 11 base-material classes, 712 tensile,
 The exact raw mapping is gitignored; tracked documentation records only its
 SHA-256.
 
-v56.0.1 is complete and v56.0.2 read-only inspection/dependency closure is
-current. `App/DemoDatasetTool` is now a candidate isolated CLI with explicit
+v56.0.1-v56.0.3 are complete and v56.0.4 deterministic SQLite builder is
+current. `App/DemoDatasetTool` provides an isolated CLI with explicit
 source, private allowlist and new-output arguments. It opens only immutable,
 read-only, query-only SQLite, pins source/registry/schema hashes and emits a
 counts-only deterministic manifest. It has no generation, apply, migration,
@@ -41,8 +41,38 @@ Source SHA-256 remains unchanged and no SQLite sidecars are created.
 AutomationRunner and in-application Help do not change in v56.0.2. This
 operator-only dry-run has no app runtime contract; bounded demo runtime
 automation and Help ownership remain planned for v56.0.5. Owner accepts the
-hardened inspector and dry-run evidence. v56.0.2 is complete and v56.0.3
-fictional identity/transformation work is current.
+hardened inspector and dry-run evidence. v56.0.2 is complete.
+
+v56.0.3 adds a tracked public-safe atomic transformation spec and a separate
+dry-run validator. The owner-approved policy fictionalizes Manufacturer,
+Product Line, Marketing Name, Color and Variant while retaining generic Base
+Material and `CF`/`GF`. The spec contains only demo IDs and fictional/generic
+tokens; raw source mappings remain gitignored.
+
+The validator binds the accepted private allowlist and tracked spec hashes,
+requires approval semantics, source/demo bijection, exact group/Base Material
+parity, NFC/trim canonicalization and one Manufacturer parent per Product Line.
+It derives integer IDs, fictional names, display labels, MaterialKeys and fixed
+timestamps. SortOrder and SourcePriority are deliberately deferred to an
+app-parity rule in v56.0.4.
+
+Validation passes for 36 unique identities, 10 Manufacturers, 14 Product Lines,
+11 Base Materials, 10 Colors, 4 Variants, 11 `CF` and 6 `GF` Materials.
+Two final Release runs are byte-identical. The logical manifest SHA-256 is
+`82C62984153513CD78797FDBE71839BE4B4F4E805F009234105CF5A3EE30F621`;
+the public spec SHA-256 is
+`1AED8DE62B74CFDFE34AFD8992BDBD4D1ED557EFA8515971EFDCCCBB3017017C`.
+Spec-hash and group-parity drift fail closed. Final isolated Debug and Release
+builds pass with zero warnings/errors. Release-documentation, Help coverage,
+roadmap-length and read-only NuGet vulnerability gates pass. No SQLite is
+generated, so Full Data Verification and runtime acceptance remain owned by
+v56.0.5 rather than this contract-only increment.
+
+Reports, website, collections, AI, Diagnostics and Verification transformation
+ownership is recorded in the governed contract. Owner profile collections,
+cached outputs, URLs, notes, pricing, public flags and source fingerprints are
+never copied. The owner accepted v56.0.3; it is complete and v56.0.4
+deterministic SQLite builder/privacy-gate work is current.
 
 ## Operational Safety and Disposable Hygiene
 

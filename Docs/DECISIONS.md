@@ -1,5 +1,16 @@
 ﻿# Decisions
 
+## DEMO-002 Fictional Identity Surface
+
+The public demo fictionalizes Manufacturer, Product Line, Marketing Name,
+Color and Variant/Finish. Generic Base Material and `CF`/`GF` reinforcement
+remain because they are required for useful engineering comparisons.
+
+Every identity is derived from one immutable public-safe atomic spec. Source
+labels, display names, keys, summaries, reports, collections and cached hashes
+are never copied. Downstream consumers receive only the completed fictional
+graph and must recompute their own labels, groups and evidence.
+
 ## DEMO-001 Real Measurements Under Fictional Public Identities
 
 The v56 public demo uses only explicitly owner-approved real measurement sets

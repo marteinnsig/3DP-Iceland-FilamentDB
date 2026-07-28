@@ -2,6 +2,30 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v56.0.3 - Fictional Identity and Transformation
+
+The candidate adds a tracked public-safe transformation spec containing only
+demo IDs, generic engineering taxonomy and fictional tokens. A deterministic
+validator binds it to the accepted private registry, validates exact equality
+partitions and derives the public identity graph without generating SQLite.
+
+Hardened validation requires owner approval semantics, unique source/demo
+bijection, exact expected counts, canonical NFC/trim values and one
+Manufacturer parent per Product Line. Validation passes for 36 Materials,
+10 Manufacturers, 14 Product Lines, 11 Base Materials, 10 Colors and
+4 Variants. Eleven Materials retain `CF` and six retain `GF`.
+
+Derived MaterialIDs, display names and MaterialKeys are unique. A disposable
+changed Manufacturer group fails both pinned spec hash and private group
+parity. SortOrder and SourcePriority are excluded from this graph pending the
+app-parity builder rule in v56.0.4. Two final Release runs are byte-identical
+with logical manifest SHA-256
+`82C62984153513CD78797FDBE71839BE4B4F4E805F009234105CF5A3EE30F621`.
+Final Debug/Release, documentation, Help coverage, roadmap-length and read-only
+NuGet vulnerability gates pass. No SQLite/runtime contract changes in this
+increment, so Full Data Verification is deferred to v56.0.5. The owner accepted
+the fictional identity and transformation contract; v56.0.3 is complete.
+
 ## v56.0.2 - Read-only Input Inspection
 
 The new isolated `DemoDatasetTool` accepts only explicit source, private

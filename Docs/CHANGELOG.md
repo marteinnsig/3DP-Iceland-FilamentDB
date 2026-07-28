@@ -2,6 +2,27 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v56.0.3 - Fictional Identity and Transformation
+
+- Adds a public-safe 36-row transformation spec with fictional Manufacturer,
+  Product Line, Marketing Name, Color and Variant values.
+- Retains only approved generic Base Material and `CF`/`GF` taxonomy.
+- Derives stable integer IDs, display names, MaterialKeys and fixed timestamps
+  from one immutable identity graph.
+- Adds deterministic validation against the pinned private allowlist without
+  emitting source IDs, labels or paths.
+- Requires approval/bijection, exact partitions, NFC/trim canonicalization,
+  unique derived identity and one Manufacturer parent per Product Line.
+- Two final Release validations are byte-identical with logical manifest
+  SHA-256
+  `82C62984153513CD78797FDBE71839BE4B4F4E805F009234105CF5A3EE30F621`.
+- Final Debug/Release, documentation, Help coverage, roadmap-length and
+  read-only NuGet vulnerability gates pass.
+- No SQLite is generated. SortOrder/SourcePriority app parity is deferred to
+  v56.0.4; Full Data Verification/runtime remain owned by v56.0.5.
+- Owner accepted the fictional identity and transformation contract; v56.0.3
+  is complete and v56.0.4 is current.
+
 ## v56.0.2 - Read-only Input Inspection
 
 - Adds a separate explicit-path `DemoDatasetTool` with no WPF/profile,

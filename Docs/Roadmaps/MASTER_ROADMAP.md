@@ -10,7 +10,7 @@ Current roadmap increment: **v56.0 — Governed Public Demo Dataset research**
 
 Current acceptance note: v55.0.6 is runtime accepted with Full Data Verification 403/403 PASS.
 
-Next note: parent v55 is complete; v56.0 research is current before any implementation.
+Next note: parent v55 is complete; v56.0.1-v56.0.3 are complete and v56.0.4 deterministic SQLite builder is current.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2451,7 +2451,7 @@ to unstarted authoritative planning slots.
     - Final evidence: profile `20260728135719-4ac326ab` passes 403/403 with exact database/business-state equality.
 
 - **v56.0 — Governed Public Demo Dataset**
-  - State: In progress; v56.0.1-v56.0.2 are complete and v56.0.3 fictional identity/transformation is current.
+  - State: In progress; v56.0.1-v56.0.3 are complete and v56.0.4 deterministic SQLite builder is current.
   - Build a deterministic, versioned SQLite demo from an explicit owner-approved allowlist of representative measured materials.
   - Use disclosed fictional identities with real owner-approved measurements and useful relationship patterns.
   - Exclude purchasing, Inventory, notes, URLs, paths, credentials, deployment and Production identity.
@@ -2465,10 +2465,10 @@ to unstarted authoritative planning slots.
     - State: Complete; owner accepted the hardened inspector and privacy-safe deterministic dry-run evidence.
     - Do not generate SQLite; reject missing links, duplicates, unknown schema and any unclassified table, column or value.
   - **v56.0.3 — Fictional Identity and Transformation Contract**
-    - State: Current; add stable mappings for materials, manufacturers and product relationships.
+    - State: Complete; owner accepted the public-safe mapping and deterministic identity-graph validation.
     - Rewrite every governed relationship consistently with fixed timestamps and provenance; never ship the private mapping registry.
   - **v56.0.4 — Deterministic SQLite Builder and Privacy Gates**
-    - State: Planned after v56.0.3; build only in disposable output with schema, privacy, integrity and relationship gates.
+    - State: Current; build only in disposable output with schema, privacy, integrity and relationship gates.
     - Generate twice and require byte-identical SHA-256 plus stable logical/table hashes and an exact governed manifest.
   - **v56.0.5 — Disposable Runtime, Verification, Help and Reports**
     - State: Planned after v56.0.4; keep the canonical tester seed unchanged and add bounded demo acceptance.

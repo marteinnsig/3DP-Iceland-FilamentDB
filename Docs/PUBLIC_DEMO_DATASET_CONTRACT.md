@@ -3,7 +3,7 @@
 ## Status and ownership
 
 - Increment: v56.0.1.
-- State: accepted for v56.0.1; v56.0.2 read-only inspection is current.
+- State: accepted through v56.0.3; v56.0.4 deterministic SQLite builder is current.
 - Canonical application release: v55.0.6.
 - Database schema: v38.
 - Public demo ownership is independent from the canonical tester seed.
@@ -271,3 +271,106 @@ manifest and fail-closed drift probes. v56.0.2 is complete.
 
 v56.0.3 may now define stable fictional identity and transformation behavior.
 It must not generate SQLite, publish artifacts or expose the private registry.
+
+## v56.0.3 accepted transformation
+
+The owner approves fictional Manufacturer, Product Line, Marketing Name, Color
+and Variant/Finish. Generic Base Material and `CF`/`GF` reinforcement taxonomy
+remain because they are necessary for useful engineering comparisons.
+
+The public-safe atomic specification is
+`App/DemoDatasetTool/Contracts/public-demo-transformation-v1.json`. It contains
+only demo identifiers, generic taxonomy and fictional tokens. It contains no
+source IDs, source labels, paths, measurements or private registry values.
+
+### Stable identity rules
+
+- Materials are exactly `DEMO-MAT-001` through `DEMO-MAT-036`.
+- Manufacturer groups are exactly `DEMO-MFR-001` through `DEMO-MFR-010`.
+- Manufacturer integer IDs are `560001` through `560010`.
+- Manufacturer names are `Fictional Manufacturer 01` through `10`.
+- Product-family groups are exactly `DEMO-FAM-001` through `014`.
+- Product Line values are `Demo Line 01` through `14`.
+- Marketing Name values are `Engineering Sample 001` through `036`.
+- Base Material integer IDs are `561001` through `561011`.
+- Base labels use the fixed approved 11-value generic taxonomy in spec order.
+- Color values are `Demo Color 01` through `10`.
+- Non-empty Variant/Finish values are `Demo Variant 01` through `04`.
+- Reinforcement is empty, `CF` or `GF`.
+- Every generated timestamp is `2026-01-01T00:00:00.0000000Z`.
+
+SortOrder and SourcePriority are not part of the v56.0.3 identity graph.
+v56.0.4 must derive them through an app-parity rule rather than persisting a
+parallel value that the application would change.
+
+`WebsiteDisplayName` is the space-joined sequence Manufacturer, Product Line,
+Marketing Name, Base Material, Variant/Finish, Reinforcement and Color,
+excluding empty values.
+
+`MaterialKey` is the exact seven-position pipe-delimited sequence Base Material,
+Variant/Finish, Reinforcement, Color, Manufacturer, Product Line and Marketing
+Name. Empty positions remain empty. Generated atomic values may not contain the
+pipe delimiter.
+
+The validator requires unique case-insensitive MaterialID, display name and
+MaterialKey values. Manufacturer, family and Base Material partitions must
+match the private approved registry without exposing its source identities.
+
+### Relationship rewrite
+
+Every native tensile sample/result, impact sample and stiffness row must rewrite
+its MaterialID through the single immutable 36-entry map. Orientation, sample
+number and retained numeric value stay together. Unmapped children, partial
+groups and duplicate rewritten composite keys fail.
+
+ManufacturerId/Manufacturer and BaseMaterialId/BaseMaterial must resolve one
+exact catalog row with label parity. Runtime summaries, scores and coverage
+flags are recomputed; legacy `TestSummaryValues` is not generated.
+
+### Consumer closure matrix
+
+| Consumer | Transform | Recompute | Empty/exclude |
+|---|---|---|---|
+| Materials | IDs, names, groups, color, variant | display, key, status, sort | URLs, SKU, notes, costs |
+| Measurements | MaterialID, fixed timestamp | tensile results/summaries | notes and source text |
+| Rankings | fictional group labels | scores, averages, leaders | owner cached aggregates |
+| Reports | IDs, names and local routes | models, fingerprints, manifests | price, URLs, notes, public flags |
+| Website | IDs, labels, anchors and payload | charts, counts and routes | owner templates/assets/output |
+| Collections | demo IDs and fictional labels | new hashes if later created | owner collection/coverage JSON |
+| AI | exact visible demo IDs and labels | peer/group summaries | owner sessions, network, secrets |
+| Diagnostics | public-demo profile descriptor | safe counts/hashes | absolute paths and private values |
+
+Collections, coverage, AI sessions and preferences start empty. A later
+synthetic demo collection must use new IDs, fictional labels and recomputed set
+hashes. Owner profile JSON is never transformed or copied.
+
+Public-report and public-test-detail flags remain false. MSRP/pricing is empty
+or `n/a`. Existing HTML/PDF, website output, redirects, report fingerprints
+and cached assets are never copied.
+
+### v56.0.3 validation
+
+`DemoDatasetTool validate-transform` accepts the pinned private allowlist,
+tracked public transformation spec and a create-new output inside the governed
+inspection root. It emits only aggregate counts and hashes.
+
+The candidate proves:
+
+- 36 Materials, 10 Manufacturers, 14 Product Lines and 11 Base Materials;
+- 10 fictional Color and 4 fictional Variant equality groups;
+- 11 `CF` and 6 `GF` materials;
+- exact private group/Base Material parity;
+- unique derived display names and MaterialKeys;
+- deterministic MaterialID-set and full identity-graph hashes;
+- no source ID, source name or path in the manifest;
+- fail-closed spec-hash and private-group drift.
+
+Two final Release validations are byte-identical. Their logical manifest
+SHA-256 is
+`82C62984153513CD78797FDBE71839BE4B4F4E805F009234105CF5A3EE30F621`;
+the tracked public transformation spec SHA-256 is
+`1AED8DE62B74CFDFE34AFD8992BDBD4D1ED557EFA8515971EFDCCCBB3017017C`.
+
+No SQLite output, report, collection, website or publication artifact is
+created in v56.0.3. The owner accepted this fictional identity and
+transformation contract; v56.0.3 is complete.

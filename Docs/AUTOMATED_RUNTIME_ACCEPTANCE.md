@@ -1,5 +1,21 @@
 # Automated Runtime Acceptance
 
+## v56.0.3 - Fictional transformation accepted
+
+- No AutomationRunner scenario is added because this increment generates no
+  SQLite and exposes no application runtime surface.
+- `validate-transform` checks pinned private/public hashes, owner approval,
+  source/demo bijection, exact identity partitions and derived key uniqueness.
+- Repeated validation must be byte-identical. Changed public spec or private
+  partition parity fails closed with codes only.
+- Two final Release validations pass byte-identically with logical manifest
+  SHA-256
+  `82C62984153513CD78797FDBE71839BE4B4F4E805F009234105CF5A3EE30F621`.
+- v56.0.5 remains the owner of disposable app runtime, restart, filters,
+  rankings, collections, reports, Help and Full Data Verification.
+- Owner accepted the fictional identity and transformation contract; v56.0.3
+  is complete and v56.0.4 is current.
+
 ## v56.0.2 - Read-only inspector accepted
 
 - No AutomationRunner scenario is added. The inspector accepts private
