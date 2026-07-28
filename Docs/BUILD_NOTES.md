@@ -1,4 +1,38 @@
-# Current Build Notes - v56.0.5 Development
+# Current Build Notes - v56.0.6 Development
+
+## v56.0.5 Disposable Runtime, Verification, Help and Reports
+
+The bounded `demo` AutomationRunner scenario copies only the corrected public
+demo artifact into a disposable profile. The visible identity is
+`DEMO / DISPOSABLE`; owner database, Production, FTPS, updates, CRUD,
+landed-cost and recovery remain blocked. Report output alone is authorized.
+
+Profile `20260728164408-ba9afb2f` passes. Search narrows the visible scope to
+`DEMO-MAT-001`, survives restart, binds AI and collection preview to that exact
+scope, and global Clear restores all 36 fictional MaterialIDs. Public Demo
+Verification passes 391/391 applicable checks with 12 explicit
+CanonicalDataDependent N/A checks for excluded owner website-publication
+configuration and zero mandatory N/A.
+
+The normal Material Summary Report / All Visible Materials path writes five
+verified local artifacts below disposable output. Customer-facing report text
+contains fictional identities and the exact 36/36 scope but no MaterialID.
+Database business-state SHA-256 is identical before and after:
+`78D52C17B6ADA7BC264A4E2F079F5AAE67928D25D3BDAD3F59D9E4901CA49E18`.
+
+## v56.0.4.1 Demo Coverage and Verification Parity Correction
+
+Runtime exposed that source-era Yes/Fully tested flags overstated current valid
+Impact-result coverage. The builder now derives flags from canonical valid
+inputs: 9 Fully tested and 27 Partially tested. Blank optional pricing no
+longer fails currency validation when no price amount exists.
+
+Final A/B SQLite SHA-256 is
+`1BA01065925F2BD8FC8ABF62B5A9C5D710D7403E9EDFC0DD5744BBC604EF61E6`;
+logical SHA-256 is
+`A5498A2773ECEDAF7A7E306295FDD56C6856C51CFFE0BD6FEE119DE615E24DD2`;
+manifest SHA-256 is
+`2FD6FFEF13E3295C07CBE11E3D55C4F576BFC75FD71E4468E78D6DBA44338E8F`.
 
 ## Governed Public Demo Dataset
 

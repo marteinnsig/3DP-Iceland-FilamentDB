@@ -2728,7 +2728,9 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Report template" FontWeight="SemiBold" Foreground="#334155" VerticalAlignment="Center" />
-                            <ComboBox Grid.Row="0" Grid.Column="1" x:Name="ReportTypeSelector" SelectedIndex="0" Margin="0,0,16,0" SelectionChanged="ReportTypeSelector_SelectionChanged">
+                            <ComboBox Grid.Row="0" Grid.Column="1" x:Name="ReportTypeSelector"
+                                      AutomationProperties.AutomationId="ReportTypeSelector"
+                                      SelectedIndex="0" Margin="0,0,16,0" SelectionChanged="ReportTypeSelector_SelectionChanged">
                                 <ComboBoxItem Content="Material Summary Report" Tag="material-summary" />
                                 <ComboBoxItem Content="Material Engineering Report" Tag="engineering" />
                                 <ComboBoxItem Content="Comparison Report" Tag="comparison" />
@@ -2752,7 +2754,9 @@
                             <Button Grid.Row="0" Grid.Column="5" Click="OpenReportOutputFolder_Click" Style="{StaticResource IconActionButton}"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE838;"/><TextBlock Text="Open Folder"/></StackPanel></Button>
 
                             <TextBlock Grid.Row="2" Grid.Column="0" Text="Report scope" FontWeight="SemiBold" Foreground="#334155" VerticalAlignment="Center" />
-                            <ComboBox Grid.Row="2" Grid.Column="1" x:Name="ReportMaterialScopeSelector" SelectedIndex="0" Margin="0,0,16,0" SelectionChanged="ReportMaterialScopeSelector_SelectionChanged">
+                            <ComboBox Grid.Row="2" Grid.Column="1" x:Name="ReportMaterialScopeSelector"
+                                      AutomationProperties.AutomationId="ReportMaterialScopeSelector"
+                                      SelectedIndex="0" Margin="0,0,16,0" SelectionChanged="ReportMaterialScopeSelector_SelectionChanged">
                                 <ComboBoxItem Content="Selected Material Only" Tag="selected" />
                                 <ComboBoxItem Content="All Visible Materials" Tag="visible" />
                             </ComboBox>
@@ -2761,8 +2765,10 @@
                             <TextBlock Grid.Row="4" Grid.Column="0" Text="Workflow" FontWeight="SemiBold" Foreground="#334155" VerticalAlignment="Center" />
                             <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="5">
                                 <WrapPanel>
-                                    <Button Click="RefreshReportPreview_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" FontWeight="SemiBold"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE72C;"/><TextBlock Text="Refresh Preview"/></StackPanel></Button>
-                                    <Button Click="ExportPdfReport_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" FontWeight="SemiBold" ToolTip="Export the selected report as canonical HTML, PDF, text, metadata and manifest."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xEA90;"/><TextBlock Text="Export Current Report"/></StackPanel></Button>
+                                    <Button AutomationProperties.AutomationId="RefreshReportPreview"
+                                            Click="RefreshReportPreview_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" FontWeight="SemiBold"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE72C;"/><TextBlock Text="Refresh Preview"/></StackPanel></Button>
+                                    <Button AutomationProperties.AutomationId="ExportCurrentReport"
+                                            Click="ExportPdfReport_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" FontWeight="SemiBold" ToolTip="Export the selected report as canonical HTML, PDF, text, metadata and manifest."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xEA90;"/><TextBlock Text="Export Current Report"/></StackPanel></Button>
                                     <Button x:Name="ExportEngineeringReportPackageButton" Click="ExportEngineeringReportPackage_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" FontWeight="SemiBold" ToolTip="Export all six accepted engineering reports with canonical HTML and PDF into one indexed package."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE7B8;"/><TextBlock Text="Export Engineering Package"/></StackPanel></Button>
                                     <Button x:Name="BuildPublicMaterialReportPreviewButton" Click="BuildPublicMaterialReportPreview_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" FontWeight="SemiBold" ToolTip="Build allowlisted Material Engineering HTML/PDF previews for every active MaterialID checked Public reports. Report template and Report scope do not control this public batch action. This does not upload anything."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE774;"/><TextBlock Text="Build Public Material Reports"/></StackPanel></Button>
                                     <Button x:Name="BuildPublicComparisonReportPreviewButton" Click="BuildPublicComparisonReportPreview_Click" Style="{StaticResource IconActionButton}" Margin="0,0,8,8" FontWeight="SemiBold" ToolTip="Build local public Material Family comparison presets from explicitly allowlisted MaterialIDs. This does not upload anything."><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE8EF;"/><TextBlock Text="Build Public Comparisons"/></StackPanel></Button>

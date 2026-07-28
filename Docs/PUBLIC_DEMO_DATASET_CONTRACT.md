@@ -3,7 +3,7 @@
 ## Status and ownership
 
 - Increment: v56.0.1.
-- State: accepted through v56.0.4; v56.0.5 disposable runtime acceptance is current.
+- State: accepted through v56.0.5; v56.0.6 owner acceptance is current.
 - Canonical application release: v55.0.6.
 - Database schema: v38.
 - Public demo ownership is independent from the canonical tester seed.
@@ -407,9 +407,30 @@ row/hash ledgers. The builder also requires:
 - no source MaterialID, URL, email, path or private value in any TEXT row;
 - unchanged source bytes and no SQLite sidecars.
 
-The candidate hash is not publication authorization. v56.0.5 must still prove
-runtime/restart, filters, rankings, collections, reports, Help and Full Data
-Verification without changing candidate bytes.
+The original candidate hash was not publication authorization. Runtime
+acceptance exposed coverage-parity drift and required the bounded v56.0.4.1
+correction below.
 
-Deterministic generation and privacy acceptance are complete. v56.0.5 is
-current.
+## v56.0.4.1 coverage parity correction
+
+Coverage flags describe valid current calculation inputs, not mere source-row
+presence. The governed 36-Material set contains 9 Fully tested and 27 Partially
+tested records because 27 retained real Impact datasets exceed the current
+0–100 input boundary. Their real measurements remain unchanged and disclosed
+under fictional identities.
+
+Corrected deterministic A/B SQLite SHA-256 is
+`1BA01065925F2BD8FC8ABF62B5A9C5D710D7403E9EDFC0DD5744BBC604EF61E6`.
+
+## v56.0.5 disposable runtime acceptance
+
+Public Demo Verification requires every applicable engineering, identity,
+privacy, report and safety check to pass. Twelve owner website-publication
+configuration checks are explicitly CanonicalDataDependent N/A because
+WebsiteTemplates and deployment identity are intentionally excluded; no
+mandatory check may become N/A.
+
+The accepted disposable scenario passes 391/391 applicable checks, restart,
+exact filter/AI/collection scope and a local 36-Material Summary export.
+Production, FTPS and publication remain unauthorized. v56.0.6 owner acceptance
+is current.

@@ -614,6 +614,15 @@ SQLite SHA-256 is
 `8D68E8B8E03F5714565D1258EB9D79D9BBDD851D4E8A5FB8B4A10ED024C082D9`;
 all 25 table ledgers, exact counts, integrity/FK/privacy and 17 empty-domain
 gates pass. Runtime and Full Data Verification remain owned by v56.0.5.
+v56.0.4.1 corrects runtime-found coverage drift: 9 records are Fully tested
+and 27 are Partially tested under current valid-result rules. Corrected A/B
+SQLite SHA-256 is
+`1BA01065925F2BD8FC8ABF62B5A9C5D710D7403E9EDFC0DD5744BBC604EF61E6`.
+v56.0.5 disposable profile `20260728164408-ba9afb2f` passes 391/391
+applicable Public Demo Verification checks with 12 explicit owner
+website-publication N/A checks, zero mandatory N/A, exact restart/filter/AI/
+collection scope, local Material Summary export and business-state equality.
+v56.0.6 owner privacy, usefulness and visual report acceptance is current.
 What happened: Trial users or evaluators currently lack a safe populated database that demonstrates Materials, measurements, filters,
 rankings, reports and same-family/manufacturer comparisons without exposing the owner database or commercial product identities.
 Expected behavior: Offer an optional downloadable demo SQLite backup with real 3DPIceland measurement evidence under fictional,

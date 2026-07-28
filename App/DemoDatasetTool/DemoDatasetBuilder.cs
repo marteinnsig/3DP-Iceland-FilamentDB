@@ -84,7 +84,7 @@ internal static class DemoDatasetBuilder
             RequireNoSidecars(options.Source, options.OutputA, options.OutputB);
 
             var manifest = new BuildManifest(
-                "3dpiceland-public-demo-build-v1", "v56.0.4", "PASS",
+                "3dpiceland-public-demo-build-v1", "v56.0.4.1", "PASS",
                 sourceBefore, AllowlistHash, TransformationHash, SchemaHash,
                 hashA, hashB, inspectionA.LogicalHash, inspectionB.LogicalHash,
                 inspectionA.TableRowCounts, inspectionA.TableSha256,
@@ -532,9 +532,18 @@ internal static class DemoDatasetBuilder
         foreach (var row in contract.Materials.OrderBy(item => item.MaterialId,
                      StringComparer.Ordinal))
         {
-            var hasTensile = payload.Tensile.Any(item => item.MaterialId == row.MaterialId);
-            var hasImpact = payload.Impact.Any(item => item.MaterialId == row.MaterialId);
-            var hasStiffness = payload.Stiffness.Any(item => item.MaterialId == row.MaterialId);
+            var hasTensile = payload.Tensile.Any(item =>
+                item.MaterialId == row.MaterialId &&
+                TryParseFlexibleDouble(item.RawValue, out _));
+            var hasImpact = payload.Impact.Any(item =>
+                item.MaterialId == row.MaterialId &&
+                TryParseFlexibleDouble(item.RawValue, out var value) &&
+                value is >= 0 and <= 100);
+            var hasStiffness = payload.Stiffness.Any(item =>
+                item.MaterialId == row.MaterialId &&
+                TryParseFlexibleDouble(item.Revolutions, out var revolutions) &&
+                TryParseFlexibleDouble(item.Degrees, out var degrees) &&
+                revolutions + degrees / 360d > 0);
             var testedCount = new[] { hasTensile, hasImpact, hasStiffness }
                 .Count(value => value);
             var tested = testedCount switch
@@ -686,8 +695,9 @@ internal static class DemoDatasetBuilder
                                NOT BETWEEN 1 AND 4))
                    OR COALESCE(Reinforcement,'') NOT IN ('','CF','GF')
                    OR SourcePriority <> 'Materials master'
-                   OR TestedStatus <> 'Fully tested'
-                   OR InTensile <> 'Yes' OR InImpact <> 'Yes'
+                   OR TestedStatus NOT IN ('Fully tested','Partially tested')
+                   OR InTensile <> 'Yes'
+                   OR InImpact NOT IN ('Yes','No')
                    OR InStiffness <> 'Yes' OR Video <> 'No'
                    OR UpdatedAtUtc <> '{FixedUtc}'
                    OR WebsiteDisplayName <>
@@ -701,6 +711,17 @@ internal static class DemoDatasetBuilder
                       Manufacturer||'|'||ProductLine||'|'||MarketingName;
                 """), CultureInfo.InvariantCulture) != 0)
             throw new InvalidDataException("MATERIAL_DERIVATION");
+        if (Scalar(db, """
+                SELECT COUNT(*) FROM NativeMaterialManagerRows
+                WHERE InTensile='Yes' AND InImpact='Yes' AND InStiffness='Yes'
+                  AND TestedStatus='Fully tested';
+                """) != "9" ||
+            Scalar(db, """
+                SELECT COUNT(*) FROM NativeMaterialManagerRows
+                WHERE InTensile='Yes' AND InImpact='No' AND InStiffness='Yes'
+                  AND TestedStatus='Partially tested';
+                """) != "27")
+            throw new InvalidDataException("MATERIAL_COVERAGE");
         if (Convert.ToInt64(Scalar(db, """
                 WITH ordered AS (
                   SELECT m.MaterialId, CAST(m.SortOrder AS REAL) AS Actual,

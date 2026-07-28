@@ -1,5 +1,24 @@
 # Automated Runtime Acceptance
 
+## v56.0.5 - Public demo runtime accepted
+
+- Scenario `demo` uses only a disposable copy of the governed public artifact.
+- Search, restart, exact AI/collection MaterialID scope and global Clear pass.
+- Public Demo Verification passes 391/391 applicable checks; 12 owner
+  website-publication checks are explicitly N/A and no mandatory check is N/A.
+- Material Summary / All Visible exports five local artifacts with fictional
+  identity, 36/36 scope and no customer-facing MaterialID.
+- Source seed remains byte-identical and disposable business state returns
+  exactly to SHA-256
+  `78D52C17B6ADA7BC264A4E2F079F5AAE67928D25D3BDAD3F59D9E4901CA49E18`.
+
+## v56.0.4.1 - Coverage parity correction accepted
+
+- Corrected A/B artifacts are byte-identical and retain all privacy/integrity
+  gates.
+- Valid-result coverage produces 9 Fully tested and 27 Partially tested rows;
+  REPORT-110 parity and blank optional-pricing validation pass.
+
 ## v56.0.4 - Deterministic builder accepted
 
 - No AutomationRunner scenario is added because the builder is an operator-only

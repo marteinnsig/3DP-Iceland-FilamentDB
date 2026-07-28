@@ -64,7 +64,8 @@ internal static class Program
                 executable,
                 seedDatabase,
                 cleanReadiness,
-                string.Equals(options.Scenario, "reports", StringComparison.Ordinal),
+                string.Equals(options.Scenario, "reports", StringComparison.Ordinal) ||
+                string.Equals(options.Scenario, "demo", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "crud", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "landed-cost", StringComparison.Ordinal) ||
                 string.Equals(options.Scenario, "recovery", StringComparison.Ordinal),
@@ -105,7 +106,11 @@ internal static class Program
 
             var identity = FindById(main, "RuntimeProfileIdentity");
             var identityName = identity.Current.Name;
-            var expectedIdentity = cleanReadiness ? "CLEAN / READINESS" : "VERIFICATION / DISPOSABLE";
+            var expectedIdentity = cleanReadiness
+                ? "CLEAN / READINESS"
+                : string.Equals(options.Scenario, "demo", StringComparison.Ordinal)
+                    ? "DEMO / DISPOSABLE"
+                    : "VERIFICATION / DISPOSABLE";
             Require(identityName.Contains(expectedIdentity, StringComparison.Ordinal),
                 $"{expectedIdentity} runtime profile identity is not visible.");
             Require(
@@ -159,6 +164,32 @@ internal static class Program
             }
             FindById(main, "NativeMaterialSearch");
             FindById(main, "ClearNativeMaterialFilters");
+            if (string.Equals(options.Scenario, "demo", StringComparison.Ordinal))
+            {
+                var search = FindById(main, "NativeMaterialSearch");
+                Require(
+                    search.TryGetCurrentPattern(ValuePattern.Pattern, out var searchPattern),
+                    "Demo Materials search does not expose the UI Automation value contract.");
+                ((ValuePattern)searchPattern).SetValue("Engineering Sample 001");
+                Thread.Sleep(250);
+                Require(
+                    CountRows(databasePath, "NativeMaterialManagerRows") == 36 &&
+                    CountRows(databasePath, "NativeTensileSamples") == 712 &&
+                    CountRows(databasePath, "NativeTensileResults") == 36 &&
+                    CountRows(databasePath, "NativeImpactSamples") == 718 &&
+                    CountRows(databasePath, "NativeStiffnessMeasurements") == 36,
+                    "Demo runtime does not retain the accepted identity and measurement counts.");
+                Require(
+                    CountRowsWhere(
+                        databasePath,
+                        "NativeMaterialManagerRows",
+                        "\"PublishPublicReports\" <> 0 OR \"PublishPublicTestDetails\" <> 0") == 0,
+                    "Demo runtime unexpectedly enables public report or public test-detail publication.");
+                Record(
+                    "demo-material-filter",
+                    true,
+                    "Search narrowed the visible canonical scope to DEMO-MAT-001; accepted 36/712/36/718/36 database counts remain intact");
+            }
             Record(
                 "materials-multi-select-discovery",
                 true,
@@ -358,11 +389,16 @@ internal static class Program
             Require(
                 cleanReadiness
                     ? assistantOutput.Contains("No visible materials are loaded", StringComparison.Ordinal)
+                    : string.Equals(options.Scenario, "demo", StringComparison.Ordinal)
+                        ? !string.IsNullOrWhiteSpace(assistantOutput) &&
+                          assistantScope.Contains("unique MaterialID(s)", StringComparison.Ordinal) &&
+                          assistantMaterialIds.Contains("DEMO-MAT-001", StringComparison.Ordinal)
                     : assistantOutput.Contains("AI ASSISTANT", StringComparison.Ordinal) &&
                       assistantOutput.Contains("Visible source materials:", StringComparison.Ordinal) &&
                       assistantOutput.Contains("Materials processed:", StringComparison.Ordinal) &&
                       assistantOutput.Contains("Materials omitted by the 60-material local brief limit:", StringComparison.Ordinal),
-                "AI Assistant local full brief did not retain visible-scope evidence.");
+                "AI Assistant local full brief did not retain visible-scope evidence. " +
+                $"scope={assistantScope}; ids={assistantMaterialIds}; outputLength={assistantOutput.Length}");
             Record("ai-assistant-local-scope", true, assistantScope + " " + assistantMaterialIds);
             if (cleanReadiness)
             {
@@ -798,10 +834,27 @@ internal static class Program
             }
             else
             {
-                Require(
-                    verificationRoot.GetProperty("profile").GetString() == "Full Data Verification" &&
-                    verificationRoot.GetProperty("NotApplicableCount").GetInt32() == 0,
-                    "Populated Verification did not retain Full Data Verification with zero N/A checks.");
+                if (string.Equals(options.Scenario, "demo", StringComparison.Ordinal))
+                {
+                    Require(
+                        verificationRoot.GetProperty("profile").GetString() ==
+                        "Public Demo Verification" &&
+                        verificationRoot.GetProperty("NotApplicableCount").GetInt32() == 12 &&
+                        verificationRoot.GetProperty("CanonicalDataNotApplicableCount").GetInt32() == 12 &&
+                        verificationRoot.GetProperty("MandatoryNotApplicableCount").GetInt32() == 0,
+                        "Public Demo Verification did not retain exact privacy-exclusion classification.");
+                    Record(
+                        "demo-verification-classification",
+                        true,
+                        "All applicable checks passed; exactly 12 owner website-publication checks are N/A");
+                }
+                else
+                {
+                    Require(
+                        verificationRoot.GetProperty("profile").GetString() == "Full Data Verification" &&
+                        verificationRoot.GetProperty("NotApplicableCount").GetInt32() == 0,
+                        "Populated Verification did not retain Full Data Verification with zero N/A checks.");
+                }
             }
             CaptureWindow(verification, IOPath.Combine(root, "evidence", "verification-center.png"));
             Record("verification-export", true, "TXT/JSON evidence exported");
@@ -840,6 +893,68 @@ internal static class Program
                 var artifactCount = ValidateReportArtifacts(root);
                 CaptureWindow(main, IOPath.Combine(root, "evidence", "report-package.png"));
                 Record("report-package", true, $"{artifactCount} catalog/root artifacts verified and hashed");
+            }
+            else if (string.Equals(options.Scenario, "demo", StringComparison.Ordinal))
+            {
+                (application, main) = RestartApplication(application, executable, markerPath);
+                SelectTab(main, "MaterialsTab", application.Id);
+                var restartedSearch = FindById(main, "NativeMaterialSearch");
+                Require(
+                    restartedSearch.GetCurrentPropertyValue(ValuePattern.ValueProperty)?.ToString() ==
+                    "Engineering Sample 001",
+                    "Demo Materials search did not persist across restart.");
+                SelectTab(main, "AiAssistantTab", application.Id);
+                Invoke(FindById(main, "RefreshAiAssistantScope"), application.Id);
+                Require(
+                    FindById(main, "AiAssistantScopeSummary").Current.Name.Contains(
+                        "1 unique MaterialID(s)",
+                        StringComparison.Ordinal) &&
+                    FindById(main, "AiAssistantScopeMaterialIds").Current.Name.Contains(
+                        "DEMO-MAT-001",
+                        StringComparison.Ordinal),
+                    "Demo AI scope did not remain bound to the restarted visible canonical MaterialID.");
+                Record(
+                    "demo-restart-visible-scope",
+                    true,
+                    "Engineering Sample 001 search and exact DEMO-MAT-001 AI scope persisted across restart");
+
+                SelectTab(main, "MaterialsTab", application.Id);
+                Invoke(FindById(main, "ClearNativeMaterialFilters"), application.Id);
+                Thread.Sleep(250);
+                SelectTab(main, "AiAssistantTab", application.Id);
+                Invoke(FindById(main, "RefreshAiAssistantScope"), application.Id);
+                Require(
+                    FindById(main, "AiAssistantScopeSummary").Current.Name.Contains(
+                        "36 unique MaterialID(s)",
+                        StringComparison.Ordinal),
+                    "Global Clear did not restore the exact 36-Material demo scope.");
+                Record(
+                    "demo-global-clear",
+                    true,
+                    "Global Clear restored all 36 visible canonical demo MaterialIDs");
+
+                SelectTab(main, "ReportsTab", application.Id);
+                SelectComboBoxItem(
+                    FindById(main, "ReportTypeSelector"),
+                    "Material Summary Report",
+                    application.Id);
+                SelectComboBoxItem(
+                    FindById(main, "ReportMaterialScopeSelector"),
+                    "All Visible Materials",
+                    application.Id);
+                Invoke(FindById(main, "RefreshReportPreview"), application.Id);
+                Require(
+                    FindById(main, "ReportExportSummary").Current.Name ==
+                    "Preview: Material Summary Report",
+                    "Demo report preview did not use Material Summary Report.");
+                Invoke(FindById(main, "ExportCurrentReport"), application.Id);
+                WaitForCurrentReportCompletion(main, application.Id);
+                var artifactCount = ValidateCurrentReportArtifacts(root);
+                CaptureWindow(main, IOPath.Combine(root, "evidence", "demo-material-summary-report.png"));
+                Record(
+                    "demo-local-material-summary-report",
+                    true,
+                    $"{artifactCount} local report artifacts verified; Production/FTPS remained blocked");
             }
             else if (string.Equals(options.Scenario, "crud", StringComparison.Ordinal))
             {
@@ -1200,6 +1315,7 @@ internal static class Program
             expectedExecutableSha256 = Sha256(executable),
             productionAndFtpsBlocked = true,
             updatesBlocked = true,
+            publicDemoDataset = string.Equals(CurrentScenario, "demo", StringComparison.Ordinal),
             reportGenerationAuthorized,
             materialCrudAuthorized,
             materialCrudId,
@@ -1682,6 +1798,32 @@ internal static class Program
         AssertNoUnexpectedWindows(processId, "MainWindow");
     }
 
+    private static void SelectComboBoxItem(
+        AutomationElement comboBox,
+        string itemName,
+        int processId)
+    {
+        DemandOwned(comboBox, processId);
+        Expand(comboBox, processId);
+        var item = WaitForElement(
+            comboBox,
+            new AndCondition(
+                new PropertyCondition(
+                    AutomationElement.ControlTypeProperty,
+                    ControlType.ListItem),
+                new PropertyCondition(
+                    AutomationElement.NameProperty,
+                    itemName)),
+            itemName);
+        DemandOwned(item, processId);
+        if (!item.TryGetCurrentPattern(SelectionItemPattern.Pattern, out var pattern))
+            throw new InvalidOperationException(
+                $"{itemName} does not expose SelectionItemPattern.");
+        ((SelectionItemPattern)pattern).Select();
+        Thread.Sleep(100);
+        AssertNoUnexpectedWindows(processId, "MainWindow");
+    }
+
     private static void InvokeWebsiteMenuNavigation(AutomationElement main, int processId)
     {
         Expand(FindById(main, "WebsiteMenu"), processId);
@@ -1827,6 +1969,110 @@ internal static class Program
             Thread.Sleep(250);
         }
         throw new TimeoutException("Timed out waiting for the public report package.");
+    }
+
+    private static void WaitForCurrentReportCompletion(
+        AutomationElement main,
+        int processId)
+    {
+        var summary = FindById(main, "ReportExportSummary");
+        var log = FindById(main, "ReportPreviewLog");
+        var timer = Stopwatch.StartNew();
+        while (timer.Elapsed < ReportTimeout)
+        {
+            AssertNoUnexpectedWindows(processId, "MainWindow", "ReportPrintHostWindow");
+            var status = summary.Current.Name;
+            if (status.StartsWith("Exported current report:", StringComparison.Ordinal))
+                return;
+            if (log.GetCurrentPropertyValue(ValuePattern.ValueProperty)?.ToString()
+                    ?.Contains("PDF export failed:", StringComparison.Ordinal) == true)
+                throw new InvalidOperationException(
+                    $"Current report export failed: " +
+                    $"{log.GetCurrentPropertyValue(ValuePattern.ValueProperty)}");
+            Thread.Sleep(250);
+        }
+        throw new TimeoutException("Timed out waiting for the current report export.");
+    }
+
+    private static int ValidateCurrentReportArtifacts(string profileRoot)
+    {
+        var outputRoot = IOPath.GetFullPath(IOPath.Combine(profileRoot, "output"));
+        var packageFolders = IODirectory.EnumerateDirectories(
+                outputRoot,
+                "material-summary-*",
+                SearchOption.TopDirectoryOnly)
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToList();
+        Require(
+            packageFolders.Count == 1,
+            "Demo runtime must create exactly one Material Summary report package.");
+        var packageRoot = IOPath.GetFullPath(packageFolders[0]);
+        var packagePrefix =
+            packageRoot.TrimEnd(IOPath.DirectorySeparatorChar) +
+            IOPath.DirectorySeparatorChar;
+        var requiredFiles = new[]
+        {
+            "report.html", "report.pdf", "report.txt", "manifest.txt",
+            "report-metadata.json"
+        };
+        var artifacts = new List<ArtifactEvidence>();
+        foreach (var relative in requiredFiles)
+        {
+            var fullPath = IOPath.GetFullPath(IOPath.Combine(
+                packageRoot,
+                relative.Replace('/', IOPath.DirectorySeparatorChar)));
+            Require(
+                fullPath.StartsWith(packagePrefix, StringComparison.OrdinalIgnoreCase),
+                $"Current report route escaped output root: {relative}");
+            Require(IOFile.Exists(fullPath), $"Current report artifact is missing: {relative}");
+            var info = new FileInfo(fullPath);
+            Require(info.Length > 0, $"Current report artifact is empty: {relative}");
+            if (relative.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+            {
+                using var stream = IOFile.OpenRead(fullPath);
+                var header = new byte[5];
+                Require(
+                    stream.Read(header, 0, header.Length) == header.Length &&
+                    Encoding.ASCII.GetString(header) == "%PDF-",
+                    $"Invalid current report PDF header: {relative}");
+            }
+            if (relative.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+                using (JsonDocument.Parse(IOFile.ReadAllText(fullPath))) { }
+            artifacts.Add(new ArtifactEvidence(relative, info.Length, Sha256(fullPath)));
+        }
+        Require(
+            IODirectory.EnumerateFiles(
+                    packageRoot,
+                    "*",
+                    SearchOption.AllDirectories)
+                .All(path => IOPath.GetFullPath(path).StartsWith(
+                    packagePrefix,
+                    StringComparison.OrdinalIgnoreCase)),
+            "Current report package contains a path outside its disposable root.");
+        var reportText = IOFile.ReadAllText(IOPath.Combine(packageRoot, "report.txt"));
+        Require(
+            reportText.Contains(
+                "Materials in report scope: 36 of 36 active materials",
+                StringComparison.Ordinal) &&
+            reportText.Contains("Fictional Manufacturer", StringComparison.Ordinal) &&
+            reportText.Contains("Engineering Sample", StringComparison.Ordinal) &&
+            !reportText.Contains("DEMO-MAT-", StringComparison.Ordinal),
+            "Material Summary report does not expose the exact full demo scope.");
+
+        IOFile.WriteAllText(
+            IOPath.Combine(profileRoot, "evidence", "demo-report-artifacts.json"),
+            JsonSerializer.Serialize(
+                new
+                {
+                    schema = "3dpiceland-demo-report-evidence-v1",
+                    status = "PASS",
+                    manualVisualReview = "REQUIRED",
+                    packageRoot,
+                    artifacts
+                },
+                new JsonSerializerOptions { WriteIndented = true }),
+            new UTF8Encoding(false));
+        return artifacts.Count;
     }
 
     private static int ValidateReportArtifacts(string profileRoot)
@@ -2225,6 +2471,20 @@ internal static class Program
         return Convert.ToInt64(command.ExecuteScalar(), CultureInfo.InvariantCulture);
     }
 
+    private static long CountRowsWhere(
+        string databasePath,
+        string tableName,
+        string predicate)
+    {
+        using var connection = new SqliteConnection(
+            $"Data Source={databasePath};Mode=ReadOnly;Pooling=False");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText =
+            $"SELECT COUNT(*) FROM {QuoteIdentifier(tableName)} WHERE {predicate};";
+        return Convert.ToInt64(command.ExecuteScalar(), CultureInfo.InvariantCulture);
+    }
+
     private static void RequireExactRowCount(
         string databasePath,
         string tableName,
@@ -2489,7 +2749,9 @@ internal static class Program
                 ownerDatabaseAutoSelection = false,
                 unexpectedDialogsBlocked = true,
                 inputConfinedToOwnedProcess = true,
-                reportGenerationAuthorized = string.Equals(CurrentScenario, "reports", StringComparison.Ordinal)
+                reportGenerationAuthorized =
+                    string.Equals(CurrentScenario, "reports", StringComparison.Ordinal) ||
+                    string.Equals(CurrentScenario, "demo", StringComparison.Ordinal)
                 ,materialCrudAuthorized = string.Equals(CurrentScenario, "crud", StringComparison.Ordinal)
                 ,landedCostWorkflowAuthorized =
                     string.Equals(CurrentScenario, "landed-cost", StringComparison.Ordinal) ||
@@ -2597,9 +2859,9 @@ internal static class Program
             var scenario = scenarioIndex >= 0 && scenarioIndex + 1 < args.Length
                 ? args[scenarioIndex + 1].Trim().ToLowerInvariant()
                 : "smoke";
-            if (scenario is not ("smoke" or "reports" or "crud" or "landed-cost" or "migration" or "recovery" or "updater" or "clean"))
+            if (scenario is not ("smoke" or "reports" or "demo" or "crud" or "landed-cost" or "migration" or "recovery" or "updater" or "clean"))
                 throw new ArgumentException(
-                    "--scenario must be smoke, reports, crud, landed-cost, migration, recovery, updater or clean.");
+                    "--scenario must be smoke, reports, demo, crud, landed-cost, migration, recovery, updater or clean.");
             var updater = scenario == "updater" ? Required("--updater") : string.Empty;
             var seed = scenario == "clean" ? Optional("--seed-database") : Required("--seed-database");
             return new RunnerOptions(Required("--app"), seed, scenario, updater);

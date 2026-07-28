@@ -537,10 +537,10 @@ xaml.reports-pdf-export.button.buildpublicprintingrecommendationpreviewbutton	Re
 xaml.reports-pdf-export.button.buildpublicreportpackage	Reports / PDF Export	Button	BuildPublicReportPackage	action	v50.4.3	reports.controls-fields	covered
 xaml.reports-pdf-export.button.buildpublictestsessionreportpreviewbutton	Reports / PDF Export	Button	BuildPublicTestSessionReportPreviewButton	action	v50.4.3	reports.controls-fields	covered
 xaml.reports-pdf-export.button.choosereportoutputfolder-click	Reports / PDF Export	Button	ChooseReportOutputFolder_Click	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.exportcurrentreport	Reports / PDF Export	Button	ExportCurrentReport	action	v50.4.3	reports.controls-fields	covered
 xaml.reports-pdf-export.button.exportengineeringreportpackagebutton	Reports / PDF Export	Button	ExportEngineeringReportPackageButton	action	v50.4.3	reports.controls-fields	covered
-xaml.reports-pdf-export.button.exportpdfreport-click	Reports / PDF Export	Button	ExportPdfReport_Click	action	v50.4.3	reports.controls-fields	covered
 xaml.reports-pdf-export.button.openreportoutputfolder-click	Reports / PDF Export	Button	OpenReportOutputFolder_Click	action	v50.4.3	reports.controls-fields	covered
-xaml.reports-pdf-export.button.refreshreportpreview-click	Reports / PDF Export	Button	RefreshReportPreview_Click	action	v50.4.3	reports.controls-fields	covered
+xaml.reports-pdf-export.button.refreshreportpreview	Reports / PDF Export	Button	RefreshReportPreview	action	v50.4.3	reports.controls-fields	covered
 xaml.reports-pdf-export.combobox.reportmaterialscopeselector	Reports / PDF Export	ComboBox	ReportMaterialScopeSelector	choice	v50.4.3	reports.controls-fields	covered
 xaml.reports-pdf-export.combobox.reporttypeselector	Reports / PDF Export	ComboBox	ReportTypeSelector	choice	v50.4.3	reports.controls-fields	covered
 xaml.reports-pdf-export.textbox.reportoutputfolder	Reports / PDF Export	TextBox	ReportOutputFolder	input-candidate	v50.4.3	reports.controls-fields	covered

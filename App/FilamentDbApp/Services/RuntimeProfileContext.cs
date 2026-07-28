@@ -68,12 +68,16 @@ public static class RuntimeProfileContext
         new(
             RuntimeProfileKind.DisposableVerification,
             automation.ProfileId,
-            $"VERIFICATION / DISPOSABLE — {automation.ProfileId}",
+            automation.PublicDemoDataset
+                ? $"DEMO / DISPOSABLE — {automation.ProfileId}"
+                : $"VERIFICATION / DISPOSABLE — {automation.ProfileId}",
             IsDisposable: true,
             OwnerDatabaseAllowed: false,
             ProductionAndFtpsAllowed: false,
             UpdatesAllowed: false,
-            DatabaseOwnership: "Disposable manifest database folder",
+            DatabaseOwnership: automation.PublicDemoDataset
+                ? "Public-demo copy in disposable manifest database folder"
+                : "Disposable manifest database folder",
             PreferencesOwnership: "Disposable manifest preferences folder",
             OutputOwnership: "Disposable manifest output folder",
             CredentialOwnership: "Owner credentials inaccessible",

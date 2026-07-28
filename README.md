@@ -6,7 +6,7 @@ Private Windows deployment supports a per-user Setup EXE and a portable ZIP buil
 
 - **Current runtime-accepted release:** v55.0.6 — Operational Safety and Disposable Hygiene
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v56.0.5 — Disposable Runtime, Verification, Help and Reports
+- **Current development focus:** v56.0.6 — Owner Acceptance and Guarded Artifact Closure
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Download the Windows application
@@ -128,8 +128,8 @@ completes the operational-safety and disposable-hygiene workflow, including
 consistent cancellable confirmation dialogs, guarded tester-profile cleanup
 and Full Data Verification 403/403 PASS.
 
-The current roadmap increment is v56.0.5 — Disposable Runtime, Verification,
-Help and Reports. It validates the accepted deterministic public-demo candidate
+The current roadmap increment is v56.0.6 — Owner Acceptance and Guarded
+Artifact Closure. It validates the accepted deterministic public-demo candidate
 inside a bounded disposable profile. Production, FTPS, the owner database and
 the canonical tester seed remain outside this increment.
 

@@ -14200,8 +14200,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var checks = BuildVerificationChecks();
         var runtimeProfile = RuntimeProfileContext.Current;
         var hasCanonicalMaterials = _nativeMaterialRows.Any(row => !row.IsArchived);
-        var profileName = hasCanonicalMaterials ? "Full Data Verification" : "Application Readiness";
-        var profileReason = hasCanonicalMaterials
+        var isPublicDemo =
+            AutomationRuntimeProfile.Current?.PublicDemoDataset == true;
+        var profileName = isPublicDemo
+            ? "Public Demo Verification"
+            : hasCanonicalMaterials ? "Full Data Verification" : "Application Readiness";
+        var profileReason = isPublicDemo
+            ? $"{_nativeMaterialRows.Count(row => !row.IsArchived):N0} active fictional demo Materials; owner website publication configuration is excluded"
+            : hasCanonicalMaterials
             ? $"{_nativeMaterialRows.Count(row => !row.IsArchived):N0} active canonical Materials require every verification check to pass"
             : "No canonical Materials are present; data-dependent calculation, website, report and recovery checks are not applicable";
         var profiledChecks = checks.Select(check =>
@@ -14223,6 +14229,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                     VerificationCheckStatus.NotApplicable,
                     "No canonical data — " + check.Detail,
                     applicability,
+                    mandatoryEvidence);
+            if (isPublicDemo && IsPublicDemoPrivacyExclusion(check.Name))
+                return new VerificationProfileCheck(
+                    check.Name,
+                    VerificationCheckStatus.NotApplicable,
+                    "Public demo excludes owner website publication configuration — " +
+                    check.Detail,
+                    VerificationApplicability.CanonicalDataDependent,
                     mandatoryEvidence);
             return new VerificationProfileCheck(
                 check.Name,
@@ -14329,6 +14343,26 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         "v44.7.8 Backup Filename Compatibility release gate",
         "v44.7.12 Clean baseline retirement release gate"
     };
+
+    private static readonly HashSet<string> PublicDemoPrivacyExcludedCheckNames =
+        new(StringComparer.Ordinal)
+        {
+            "Website verification suite",
+            "Native website template database",
+            "Website master template identity",
+            "Website publish readiness",
+            "Website Preview/Production renderer parity",
+            "Website portal release contract",
+            "Website export package contract",
+            "Long-term stability baseline",
+            "Website production workflow preserved",
+            "v40 local integration release gate",
+            "v42.9 Public Website Report Portal release gate",
+            "v42.9.1 Automatic Website Report Prerequisites release gate"
+        };
+
+    private static bool IsPublicDemoPrivacyExclusion(string name) =>
+        PublicDemoPrivacyExcludedCheckNames.Contains(name);
 
     private static readonly HashSet<string> MandatoryEvidenceCheckNames = new(StringComparer.Ordinal)
     {
@@ -14439,8 +14473,12 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
             if (hasAnyPricing && (!weight.HasValue || weight <= 0)) result.MissingWeight++;
             if (string.IsNullOrWhiteSpace(row.PriceCheckedDate)) result.MissingCheckedDate++;
-            if (!PricingProvenanceService.IsSupportedCurrency(row.MsrpCurrency) ||
-                !PricingProvenanceService.IsSupportedCurrency(row.LandedCostCurrency)) result.InvalidCurrency++;
+            if ((msrp.HasValue || !string.IsNullOrWhiteSpace(row.MsrpAmount)) &&
+                !PricingProvenanceService.IsSupportedCurrency(row.MsrpCurrency))
+                result.InvalidCurrency++;
+            if ((landed.HasValue || !string.IsNullOrWhiteSpace(row.LandedCostAmount)) &&
+                !PricingProvenanceService.IsSupportedCurrency(row.LandedCostCurrency))
+                result.InvalidCurrency++;
             if ((msrp.HasValue && msrp <= 0) || (landed.HasValue && landed <= 0) ||
                 (msrpPerKg.HasValue && msrpPerKg <= 0) || (landedPerKg.HasValue && landedPerKg <= 0)) result.InvalidPriceValues++;
             if ((msrp.HasValue && weight is > 0 && !msrpPerKg.HasValue) ||

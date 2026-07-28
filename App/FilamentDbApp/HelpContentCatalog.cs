@@ -1200,6 +1200,11 @@ internal static class HelpContentCatalog
 
             Current report, Engineering Package and public-build actions have different output contracts. Inspect HTML/PDF visually and
             retain status/log evidence. Reports consume canonical results; they never repair or recalculate raw measurements.
+
+            Governed public-demo acceptance keeps every Public reports and Public test details choice off. In the actual Reports / PDF
+            Export tab, choose Material Summary Report, All Visible Materials, Refresh Preview and Export Current Report. This writes
+            fictional demo identities only to the disposable output folder. An empty public-build result is expected because demo
+            acceptance never opts records into publication or authorizes Production/FTPS.
             """, "reports", "PDF", "template", "scope", "preview", "export", "public builds"),
         new(
             "reports.controls-fields",

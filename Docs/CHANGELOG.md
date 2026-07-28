@@ -2,6 +2,26 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v56.0.5 - Disposable Runtime, Verification, Help and Reports
+
+- Adds a bounded public-demo AutomationRunner scenario with restart, exact
+  filter/AI/collection scope, local Material Summary export and source-seed
+  immutability evidence.
+- Adds `DEMO / DISPOSABLE` identity and Public Demo Verification: 391/391
+  applicable PASS, 12 declared owner website-publication N/A and zero
+  mandatory N/A.
+- Keeps Production, FTPS, updates, CRUD, landed-cost, recovery and the
+  canonical tester seed outside the demo scenario.
+
+## v56.0.4.1 - Demo Coverage and Verification Parity Correction
+
+- Derives Tensile, Impact, Stiffness and Tested status from valid current
+  result inputs rather than row presence.
+- Corrects optional pricing validation so blank currencies are valid when no
+  price amount exists.
+- Rebuilds byte-identical A/B artifacts with 9 Fully tested and 27 Partially
+  tested fictional materials.
+
 ## v56.0.4 - Deterministic SQLite Builder and Privacy Gates
 
 - Adds fresh-build `DemoDatasetTool build` generation with immutable,
@@ -23,7 +43,8 @@
 - Release candidate SQLite SHA-256 is
   `8D68E8B8E03F5714565D1258EB9D79D9BBDD851D4E8A5FB8B4A10ED024C082D9`.
 - AutomationRunner and Help remain owned by v56.0.5 runtime acceptance.
-- v56.0.4 is complete; v56.0.5 disposable runtime acceptance is current.
+- The original v56.0.4 bytes were superseded by the bounded v56.0.4.1
+  coverage-parity correction before runtime acceptance.
 
 ## v56.0.3 - Fictional Identity and Transformation
 

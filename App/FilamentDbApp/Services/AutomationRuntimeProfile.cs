@@ -21,6 +21,7 @@ public sealed class AutomationRuntimeProfile
     public string ExpectedExecutableSha256 { get; init; } = string.Empty;
     public bool ProductionAndFtpsBlocked { get; init; }
     public bool UpdatesBlocked { get; init; }
+    public bool PublicDemoDataset { get; init; }
     public bool ReportGenerationAuthorized { get; init; }
     public bool MaterialCrudAuthorized { get; init; }
     public string MaterialCrudId { get; init; } = string.Empty;
@@ -129,6 +130,11 @@ public sealed class AutomationRuntimeProfile
             (ReportGenerationAuthorized || MaterialCrudAuthorized || LandedCostWorkflowAuthorized ||
              RecoveryAuthorized || UpdaterAuthorized))
             throw new InvalidOperationException("Clean Readiness profiles cannot authorize mutating automation scenarios.");
+        if (PublicDemoDataset &&
+            (Purpose != VerificationPurpose || MaterialCrudAuthorized ||
+             LandedCostWorkflowAuthorized || RecoveryAuthorized || UpdaterAuthorized))
+            throw new InvalidOperationException(
+                "Public demo profiles permit report output only; CRUD, landed-cost, recovery and updater authorization remain blocked.");
         if (MaterialCrudAuthorized &&
             (string.IsNullOrWhiteSpace(MaterialCrudId) ||
              !MaterialCrudId.All(ch => char.IsLetterOrDigit(ch) || ch is '-' or '_')))

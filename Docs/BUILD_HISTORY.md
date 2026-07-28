@@ -2,6 +2,23 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v56.0.5 - Disposable Runtime, Verification, Help and Reports
+
+Disposable demo profile `20260728164408-ba9afb2f` passes the new bounded
+scenario. Public Demo Verification reports 391/391 applicable PASS, 12 exact
+website-publication privacy exclusions as N/A, zero failures and zero mandatory
+N/A. Filter scope persists across restart, AI/collection scope remains exact,
+global Clear restores 36 MaterialIDs and local Material Summary export produces
+five verified artifacts. Business state is exactly equal before and after.
+
+## v56.0.4.1 - Demo Coverage and Verification Parity Correction
+
+The first runtime exposed 27 records whose legacy Yes/Fully tested flags did
+not match current valid Impact calculation inputs. The corrected builder emits
+9 Fully tested and 27 Partially tested records, and REPORT-110 parity passes.
+Release A/B outputs are byte-identical at
+`1BA01065925F2BD8FC8ABF62B5A9C5D710D7403E9EDFC0DD5744BBC604EF61E6`.
+
 ## v56.0.4 - Deterministic SQLite Builder and Privacy Gates
 
 `DemoDatasetTool build` creates two fresh schema-v38 SQLite candidates from

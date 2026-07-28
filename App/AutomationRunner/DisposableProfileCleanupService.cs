@@ -11,7 +11,7 @@ internal static class DisposableProfileCleanupService
     private const string PlanSchema = "3dpiceland-automation-cleanup-plan-v1";
     private static readonly HashSet<string> Scenarios =
     [
-        "smoke", "reports", "crud", "landed-cost", "migration", "recovery", "updater", "clean"
+        "smoke", "reports", "demo", "crud", "landed-cost", "migration", "recovery", "updater", "clean"
     ];
 
     public static int CreateDryRun(IReadOnlySet<string> pinnedProfileIds)
