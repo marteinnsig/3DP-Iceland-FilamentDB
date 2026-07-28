@@ -61,7 +61,8 @@ public partial class MainWindow
         var confirmation = ShowSafeDeleteConfirmation(
             "Restore Default Document Branding?",
             "Restore built-in document branding?\n\n" +
-            "Any saved custom document logo will be removed from this database. Other Settings are unchanged.\n\n" +
+            "Any saved custom document logo and Brand / Organization Name will be removed from this database. " +
+            "Other Settings are unchanged.\n\n" +
             "Choose No, press Escape or close this warning to keep the current selection.");
         if (!confirmation) return;
 
@@ -73,6 +74,8 @@ public partial class MainWindow
         try
         {
             new DocumentBrandingService(_database).RestoreDefault();
+            new DocumentBrandIdentityService(_database).RestoreDefault();
+            RefreshDocumentBrandIdentity();
             RefreshDocumentBrandingStatus();
             ShowTransientStatus(status);
         }
@@ -114,6 +117,48 @@ public partial class MainWindow
             DocumentBrandingStatusText.Text =
                 "Fallback active: document branding state could not be read; built-in branding is shown.";
         }
+    }
+
+    private void SaveDocumentBrandDisplayName_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var saved = new DocumentBrandIdentityService(_database)
+                .Save(DocumentBrandDisplayNameBox.Text);
+            DocumentBrandDisplayNameBox.Text = saved;
+            SyncDocumentBrandIdentityToRenderers();
+            ShowTransientStatus(
+                $"Document brand name saved as '{saved}'. New exports use it immediately.");
+        }
+        catch (ArgumentException ex)
+        {
+            MessageBox.Show(
+                this,
+                ex.Message,
+                "Brand Name Not Accepted",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+    }
+
+    private void RefreshDocumentBrandIdentity()
+    {
+        if (DocumentBrandDisplayNameBox is null) return;
+        DocumentBrandDisplayNameBox.Text =
+            new DocumentBrandIdentityService(_database).Resolve();
+        SyncDocumentBrandIdentityToRenderers();
+    }
+
+    private void SyncDocumentBrandIdentityToRenderers()
+    {
+        var brand = new DocumentBrandIdentityService(_database).Resolve();
+        _publicReportPublishingService.BrandDisplayName = brand;
+        _publicComparisonReportPublishingService.BrandDisplayName = brand;
+        _publicManufacturerReportPublishingService.BrandDisplayName = brand;
+        _publicTestSessionReportPublishingService.BrandDisplayName = brand;
+        _publicPrintingRecommendationReportPublishingService.BrandDisplayName = brand;
+        _publicMaterialSummaryReportPublishingService.BrandDisplayName = brand;
+        _publicEngineeringReportPackageService.BrandDisplayName = brand;
     }
 
     private static BitmapImage LoadDocumentLogo(byte[] bytes)

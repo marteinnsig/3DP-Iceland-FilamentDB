@@ -8,6 +8,8 @@ namespace FilamentDbApp.Services.Reporting;
 
 public sealed class PublicTestSessionReportPublishingService
 {
+    public string BrandDisplayName { get; set; } =
+        DocumentBrandIdentityService.DefaultBrandDisplayName;
     public static IReadOnlyList<string> PublicFieldAllowlist { get; } = new[]
     {
         "MaterialId", "MaterialName", "Manufacturer", "SummaryStatus", "ResultModules",
@@ -40,7 +42,12 @@ public sealed class PublicTestSessionReportPublishingService
         return new PublicTestSessionPublicationResult
         {
             RelativeDirectory = directory,
-            Html = PublicReportScreenThemeService.Apply(Html(model, generatedAt, version, release, directory)),
+            Html = DocumentBrandTextRendererService.ApplyToPublicReportHtml(
+                PublicReportScreenThemeService.Apply(
+                    Html(model, generatedAt, version, release, directory)),
+                BrandDisplayName,
+                version,
+                release),
             Manifest = $"3DPIceland Public Test Session Report\nVersion: {version}\nGenerated: {generatedAt:O}\nMaterialID: {model.MaterialId}\nStable relative directory: {directory}\nCanonical HTML: index.html\nPDF from canonical HTML: report.pdf\nMetadata: report-metadata.json\nAssets: assets/\n",
             MetadataJson = JsonSerializer.Serialize(new
             {

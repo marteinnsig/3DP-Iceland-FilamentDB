@@ -657,10 +657,12 @@ internal static class HelpContentCatalog
             session-new Purchase Orders, not the Settings owner.
 
             Document branding
-            The Document Branding group owns an optional PNG for generated documents only. Select PNG validates and immediately stores
-            a governed normalized copy in this SQLite database; Save Settings is not required and the selected source file is never
-            changed or remembered by path. Preview is read-only. Current generated output continues to use built-in branding until the
-            renderer integration increment is complete. Application chrome, icons and canonical public-site branding are never changed.
+            The Document Branding group owns an optional Brand / Organization Name and PNG for generated documents only. Save Brand Name
+            trims repeated whitespace and immediately stores 1–80 visible characters in this SQLite database. Select PNG validates and
+            immediately stores a governed normalized copy; Save Settings is not required and the selected source file is never changed
+            or remembered by path. Preview is read-only. Newly generated reports, report website documents and customer quote exports
+            use the current name and logo. Existing files are not rewritten automatically. Application chrome, icons and canonical
+            public-site branding are never changed. Generated documents retain a smaller 3DPIceland Engineering Platform provenance.
             """,
             "settings", "value", "measurement", "calculation", "currency", "purchasing", "deployment", "FTPS",
             "save settings", "reload", "restore defaults", "reset columns", "prospective", "document branding", "PNG"),
@@ -706,21 +708,30 @@ internal static class HelpContentCatalog
 
             Document Branding controls
             Go to the actual Settings Manager tab and use Document Branding — generated documents only; do not search for these buttons
-            inside Help. Select PNG accepts one real PNG up to 5 MiB, with width and height from 16 through 4,096 pixels and no more than
+            inside Help. Brand / Organization Name accepts 1–80 visible characters. Save Brand Name trims leading/trailing whitespace,
+            collapses repeated whitespace, saves immediately and survives restart, backup and restore. The default and invalid-state
+            fallback are 3DPIceland Labs.
+
+            Select PNG accepts one real PNG up to 5 MiB, with width and height from 16 through 4,096 pixels and no more than
             16,000,000 decoded pixels. It fully decodes, strips metadata by normalization, stores the governed bytes and SHA-256 in the
             current SQLite database and materializes a derived fixed-name cache. The source file and source path are not changed or
             retained. Selection saves immediately and survives restart, backup and restore independently of Save Settings.
 
             Preview opens a larger read-only logo window showing the current Default, Custom or Fallback state; Close, Escape and the
-            window close button return to Settings without changing data. Restore Default defaults to No and, after Yes, removes any
-            saved custom copy without changing other Settings. Escape and the dialog close button act like No.
-            Missing or corrupt custom state reports Fallback and shows the built-in logo. In this v58.0.3 workflow, report, website and
-            quote renderers still use their accepted built-in branding until the separately governed renderer integration is accepted.
+            window close button return to Settings without changing data. Restore Default defaults to No and, after Yes, clears both
+            the custom name and custom logo without changing other Settings. Escape and the dialog close button act like No.
+            Missing or corrupt custom state reports Fallback and uses the built-in logo. HTML reports and customer quotes embed the
+            normalized selected PNG. Report website/PDF packages keep the stable
+            `assets/3dp-iceland-labs-logo-pdf.jpg` route by creating a white-background JPEG derivative from the same immutable
+            selection; native PDF evidence uses that exact derivative rather than injecting PNG bytes into a JPEG object. Existing
+            generated files and saved quote calculation snapshots are not rewritten. The selected name replaces prominent 3DPIceland
+            document headings while a smaller Generated with 3DPIceland Engineering Platform line preserves platform provenance.
             These controls never alter the application icon, splash, window chrome or canonical public website logo/favicon.
             """,
             "settings fields", "section", "parameter", "value", "unit", "used by", "reload saved settings",
             "restore built-in defaults", "measurement constants", "currency fallback", "deployment", "credential manager",
-            "select PNG", "preview document logo", "restore default document branding", "fallback"),
+            "brand organization name", "save brand name", "select PNG", "preview document logo",
+            "restore default document branding", "fallback", "platform provenance"),
         new(
             "measurements",
             "Testing and engineering",

@@ -1,4 +1,5 @@
 using FilamentDbApp.Models;
+using FilamentDbApp.Services;
 using Microsoft.Win32;
 using System.Globalization;
 using System.Net;
@@ -351,7 +352,9 @@ public partial class MainWindow
     private string BuildCustomerQuoteHtml(PrintJobQuoteRecord quote)
     {
         static string H(string value) => WebUtility.HtmlEncode(value);
-        var logoDataUri = QuoteLogoDataUri();
+        var branding = new DocumentBrandingRendererService(_database).Resolve();
+        var logoDataUri = branding.PngDataUri;
+        var brandDisplayName = H(branding.BrandDisplayName);
         var customerMaterial = Regex.Replace(
             quote.MaterialLabelSnapshot,
             @"\s+\(MAT[^)]*\)\s*$",
@@ -391,7 +394,8 @@ public partial class MainWindow
                  .grand td:last-child{font-size:22px;font-weight:800}.note{margin-top:28px;border-top:1px solid #cbd5e1;padding-top:16px;color:#475569;line-height:1.55}
                  .footer{margin-top:28px;text-align:center;font-size:11px;color:#64748b}
                  </style></head><body>
-                 <div class="header"><div class="brand"><img src="{{logoDataUri}}" alt="3DP Iceland Labs">
+                 <div class="header"><div class="brand"><img src="{{logoDataUri}}" alt="{{brandDisplayName}}">
+                 <h1>{{brandDisplayName}}</h1>
                  <p><strong>3D Printing Price Quote</strong></p>
                  <p class="meta">Quote #: {{H(quote.QuoteNumber)}}</p>
                  <p class="meta">Date: {{H(created)}}</p></div>
@@ -411,23 +415,14 @@ public partial class MainWindow
                  <div class="note">This quote is an estimate based on the supplied project information.
                  Final pricing may change if the model, material, quantity, design requirements,
                  shipping, or delivery requirements change.</div>
+                 <div class="footer">Generated with 3DPIceland Engineering Platform v{{H(BuildInfo.Version)}}</div>
                  </body></html>
                  """;
     }
 
-    private static string QuoteLogoDataUri()
+    private string QuoteLogoDataUri()
     {
-        var resource = Application.GetResourceStream(new Uri(
-            "pack://application:,,,/Assets/3dp-iceland-labs-header-logo.png",
-            UriKind.Absolute));
-        if (resource?.Stream is null) return string.Empty;
-        using (resource.Stream)
-        using (var memory = new System.IO.MemoryStream())
-        {
-            resource.Stream.CopyTo(memory);
-            return "data:image/png;base64," +
-                   Convert.ToBase64String(memory.ToArray());
-        }
+        return new DocumentBrandingRendererService(_database).Resolve().PngDataUri;
     }
 
     private void DeletePrintJobQuote_Click(object sender, RoutedEventArgs e)

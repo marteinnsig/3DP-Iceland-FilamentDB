@@ -13,6 +13,8 @@ namespace FilamentDbApp.Services.Reporting;
 /// </summary>
 public sealed class PublicReportPublishingService
 {
+    public string BrandDisplayName { get; set; } =
+        DocumentBrandIdentityService.DefaultBrandDisplayName;
     public const string PreviewRootFolderName = "public-report-preview";
 
     public static IReadOnlyList<string> PublicFieldAllowlist { get; } = new[]
@@ -55,7 +57,12 @@ public sealed class PublicReportPublishingService
             throw new InvalidOperationException("A canonical MaterialID is required for public report publishing.");
 
         var relativeDirectory = $"reports/materials/{materialSegment}";
-        var html = PublicReportScreenThemeService.Apply(BuildHtml(model, generatedAt, versionLabel, releaseTitle));
+        var html = DocumentBrandTextRendererService.ApplyToPublicReportHtml(
+            PublicReportScreenThemeService.Apply(
+                BuildHtml(model, generatedAt, versionLabel, releaseTitle)),
+            BrandDisplayName,
+            versionLabel,
+            releaseTitle);
         var manifest = BuildManifest(model, generatedAt, versionLabel, relativeDirectory);
         var metadataJson = BuildMetadata(model, generatedAt, versionLabel, relativeDirectory);
         var previewIndexHtml = BuildPreviewIndex(new[] { model }, generatedAt);

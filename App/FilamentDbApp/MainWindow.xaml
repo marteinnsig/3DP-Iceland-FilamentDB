@@ -2395,13 +2395,29 @@
                                             Padding="12,6"
                                             Margin="0,0,8,8"/>
                                 </WrapPanel>
+                                <WrapPanel Margin="0,0,0,6">
+                                    <TextBlock Text="Brand / Organization Name"
+                                               VerticalAlignment="Center"
+                                               Margin="0,0,8,8"/>
+                                    <TextBox Name="DocumentBrandDisplayNameBox"
+                                             AutomationProperties.AutomationId="DocumentBrandDisplayName"
+                                             Width="280"
+                                             MaxLength="80"
+                                             Margin="0,0,8,8"/>
+                                    <Button Name="SaveDocumentBrandDisplayNameButton"
+                                            AutomationProperties.AutomationId="SaveDocumentBrandDisplayName"
+                                            Content="Save Brand Name"
+                                            Click="SaveDocumentBrandDisplayName_Click"
+                                            Padding="12,6"
+                                            Margin="0,0,8,8"/>
+                                </WrapPanel>
                                 <TextBlock Name="DocumentBrandingStatusText"
                                            AutomationProperties.AutomationId="DocumentBrandingStatus"
                                            Text="Document branding: loading..."
                                            Foreground="#475569"
                                            TextWrapping="Wrap"
                                            Margin="0,0,0,3"/>
-                                <TextBlock Text="Selection is saved immediately in this database. Current generated output continues to use built-in branding until renderer integration."
+                                <TextBlock Text="Selection is saved immediately and applies to newly generated reports, report website documents and quote exports."
                                            Foreground="#64748B"
                                            TextWrapping="Wrap"/>
                             </StackPanel>

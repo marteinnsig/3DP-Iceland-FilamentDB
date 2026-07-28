@@ -554,12 +554,14 @@ xaml.settings-manager.button.restorebuiltinsettingsbutton	Settings Manager	Butto
 xaml.settings-manager.button.restoredefaultdocumentbranding	Settings Manager	Button	RestoreDefaultDocumentBranding	action	v58.0.3	settings.controls-fields	covered
 xaml.settings-manager.button.saveaiprovidercredential	Settings Manager	Button	SaveAiProviderCredential	action	v52.1	settings.controls-fields	covered
 xaml.settings-manager.button.saveaiprovidersettings	Settings Manager	Button	SaveAiProviderSettings	action	v52.1	settings.controls-fields	covered
+xaml.settings-manager.button.savedocumentbranddisplayname	Settings Manager	Button	SaveDocumentBrandDisplayName	action	v58.0.4.1	settings.controls-fields	covered
 xaml.settings-manager.button.savenativesettings-click	Settings Manager	Button	SaveNativeSettings_Click	action	v50.4.1	settings.controls-fields	covered
 xaml.settings-manager.button.selectdocumentbrandinglogo	Settings Manager	Button	SelectDocumentBrandingLogo	action	v58.0.3	settings.controls-fields	covered
 xaml.settings-manager.button.testaiproviderfoundation	Settings Manager	Button	TestAiProviderFoundation	action	v52.1	settings.controls-fields	covered
 xaml.settings-manager.combobox.aiprovider	Settings Manager	ComboBox	AiProvider	choice	v52.1	settings.controls-fields	covered
 xaml.settings-manager.passwordbox.aiproviderapikey	Settings Manager	PasswordBox	AiProviderApiKey	input-candidate	v52.1	settings.controls-fields	covered
 xaml.settings-manager.textbox.aiprovidermodel	Settings Manager	TextBox	AiProviderModel	input-candidate	v52.1	settings.controls-fields	covered
+xaml.settings-manager.textbox.documentbranddisplayname	Settings Manager	TextBox	DocumentBrandDisplayName	input-candidate	v58.0.4.1	settings.controls-fields	covered
 xaml.stiffness-measurements.button.resetfaststiffnesscolumns-click	Stiffness Measurements	Button	ResetFastStiffnessColumns_Click	action	v50.4.2	measurements.controls-fields	covered
 xaml.tensile-measurements.button.resetfasttensilecolumns-click	Tensile Measurements	Button	ResetFastTensileColumns_Click	action	v50.4.2	measurements.controls-fields	covered
 xaml.usage.button.beginusagecorrection	Usage	Button	BeginUsageCorrection	action	v50.4.1	usage.controls-fields	covered

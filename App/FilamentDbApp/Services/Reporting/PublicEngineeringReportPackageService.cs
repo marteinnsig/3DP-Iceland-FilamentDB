@@ -9,6 +9,8 @@ namespace FilamentDbApp.Services.Reporting;
 
 public sealed class PublicEngineeringReportPackageService
 {
+    public string BrandDisplayName { get; set; } =
+        DocumentBrandIdentityService.DefaultBrandDisplayName;
     public const string CatalogFileName = "report-catalog.json";
     public const string ManifestFileName = "manifest.txt";
     public const string PortfolioMarker = "3DP-PUBLIC-REPORT-PORTFOLIO-v42.8";
@@ -55,7 +57,12 @@ public sealed class PublicEngineeringReportPackageService
 
         return new PublicEngineeringReportPackageResult
         {
-            IndexHtml = PublicReportScreenThemeService.Apply(BuildIndex(model, generatedAt, version, releaseTitle)),
+            IndexHtml = DocumentBrandTextRendererService.ApplyToPublicReportHtml(
+                PublicReportScreenThemeService.Apply(
+                    BuildIndex(model, generatedAt, version, releaseTitle)),
+                BrandDisplayName,
+                version,
+                releaseTitle),
             Manifest = BuildManifest(model, generatedAt, version, releaseTitle),
             CatalogJson = catalog
         };

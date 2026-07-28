@@ -9011,7 +9011,10 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         var manifestPath = System.IO.Path.Combine(packageFolder, "manifest.txt");
         var metadataPath = System.IO.Path.Combine(packageFolder, "report-metadata.json");
 
-        SafeFileOperations.WriteAllTextAtomic(htmlPath, report.Html, Encoding.UTF8);
+        SafeFileOperations.WriteAllTextAtomic(
+            htmlPath,
+            ApplyDocumentBrandIdentityToPublicHtml(report.Html),
+            Encoding.UTF8);
         SafeFileOperations.WriteAllTextAtomic(txtPath, report.Text, Encoding.UTF8);
         await WriteReportPdfFromCanonicalHtmlAsync(pdfPath, htmlPath);
         SafeFileOperations.WriteAllTextAtomic(manifestPath, BuildReportManifest(report, pdfPath, htmlPath, generatedAt, packageFolder, assetsFolder, metadataPath), Encoding.UTF8);
@@ -9081,7 +9084,10 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                 var manifestPath = System.IO.Path.Combine(materialFolder, "manifest.txt");
                 var metadataPath = System.IO.Path.Combine(materialFolder, "report-metadata.json");
 
-                SafeFileOperations.WriteAllTextAtomic(htmlPath, item.Publication.Html, Encoding.UTF8);
+                SafeFileOperations.WriteAllTextAtomic(
+                    htmlPath,
+                    ApplyDocumentBrandIdentityToPublicHtml(item.Publication.Html),
+                    Encoding.UTF8);
                 SafeFileOperations.WriteAllTextAtomic(manifestPath, item.Publication.Manifest, Encoding.UTF8);
                 SafeFileOperations.WriteAllTextAtomic(metadataPath, item.Publication.MetadataJson, Encoding.UTF8);
                 if (File.Exists(pdfPath)) File.Delete(pdfPath);
@@ -9180,7 +9186,10 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                 Directory.CreateDirectory(assets);
                 CopyReportPackageAssets(assets);
                 var htmlPath = System.IO.Path.Combine(folder, "index.html");
-                SafeFileOperations.WriteAllTextAtomic(htmlPath, item.Publication.Html, Encoding.UTF8);
+                SafeFileOperations.WriteAllTextAtomic(
+                    htmlPath,
+                    ApplyDocumentBrandIdentityToPublicHtml(item.Publication.Html),
+                    Encoding.UTF8);
                 SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder, "manifest.txt"), item.Publication.Manifest, Encoding.UTF8);
                 SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder, "report-metadata.json"), item.Publication.MetadataJson, Encoding.UTF8);
                 await WriteReportPdfFromCanonicalHtmlAsync(System.IO.Path.Combine(folder, "report.pdf"), htmlPath);
@@ -9355,7 +9364,10 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             Directory.CreateDirectory(assets);
             CopyReportPackageAssets(assets);
             var html = System.IO.Path.Combine(folder, "index.html");
-            SafeFileOperations.WriteAllTextAtomic(html, result.Html, Encoding.UTF8);
+            SafeFileOperations.WriteAllTextAtomic(
+                html,
+                ApplyDocumentBrandIdentityToPublicHtml(result.Html),
+                Encoding.UTF8);
             SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder, "manifest.txt"), result.Manifest, Encoding.UTF8);
             SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder, "report-metadata.json"), result.MetadataJson, Encoding.UTF8);
             await WriteReportPdfFromCanonicalHtmlAsync(System.IO.Path.Combine(folder, "report.pdf"), html);
@@ -10538,14 +10550,16 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private string BuildReportHtmlShell(string title, string key, DateTime generatedAt, IReadOnlyList<DataRow> rows, int totalRows, string bodyHtml)
     {
-        var logoDataUri = BuildReportLogoDataUri();
+        var branding = new DocumentBrandingRendererService(_database).Resolve();
+        var logoDataUri = branding.PngDataUri;
+        var brandDisplayName = Html(branding.BrandDisplayName);
         var logoHtml = string.IsNullOrWhiteSpace(logoDataUri)
             ? ""
-            : $"<div class=\"brand-logo\"><img src=\"{logoDataUri}\" alt=\"3DPIceland Labs\"></div>";
+            : $"<div class=\"brand-logo\"><img src=\"{logoDataUri}\" alt=\"{brandDisplayName}\"></div>";
 
         return "<!doctype html>\n" +
                "<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n" +
-               $"<title>{Html(title)} - 3DP Iceland Labs</title>\n" +
+               $"<title>{Html(title)} - {brandDisplayName}</title>\n" +
                "<style>" +
                "body{font-family:Segoe UI,Arial,sans-serif;margin:32px;color:#0f172a;background:#fff;}" +
                ".report-shell{max-width:1120px;margin:0 auto;}" +
@@ -10592,7 +10606,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                "</head>\n<body>\n<div class=\"report-shell\">\n" +
                "<div class=\"header\"><div class=\"brand-text\">" +
                $"<h1>{Html(title)}</h1>" +
-               $"<div class=\"meta\"><strong>3DP Iceland Labs Engineering Platform</strong><br>Platform version v{Html(BuildInfo.Version)}<br>Generated {generatedAt:yyyy-MM-dd HH:mm:ss}<br>Report key: {Html(key)}</div>" +
+               $"<div class=\"meta\"><strong>{brandDisplayName}</strong><br>Generated with 3DPIceland Engineering Platform v{Html(BuildInfo.Version)}<br>Generated {generatedAt:yyyy-MM-dd HH:mm:ss}<br>Report key: {Html(key)}</div>" +
                "</div>" + logoHtml + "</div>\n" +
 
                "<div class=\"cards\">" +
@@ -10601,31 +10615,18 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                "<div class=\"card\"><div class=\"card-label\">Report engine</div><div class=\"card-value\">Unified HTML</div></div>" +
                "</div>\n" +
                bodyHtml +
-               "<div class=\"footer\">HTML is the canonical report layout. Preview and PDF export share the same report foundation, styling language, and embedded 3DPIceland Labs branding.</div>\n" +
+               $"<div class=\"footer\">{brandDisplayName} document generated with 3DPIceland Engineering Platform v{Html(BuildInfo.Version)}. HTML is the canonical report layout shared by preview and PDF export.</div>\n" +
                "</div>\n</body>\n</html>\n";
     }
 
-    private static string BuildReportLogoDataUri()
+    private string BuildReportLogoDataUri()
     {
-        var bytes = LoadReportLogoJpegBytes();
-        return bytes.Length == 0 ? string.Empty : "data:image/jpeg;base64," + Convert.ToBase64String(bytes);
+        return new DocumentBrandingRendererService(_database).Resolve().PngDataUri;
     }
 
-    private static byte[] LoadReportLogoJpegBytes()
+    private byte[] LoadReportLogoJpegBytes()
     {
-        var candidatePaths = new[]
-        {
-            System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "3dp-iceland-labs-logo-pdf.jpg"),
-            System.IO.Path.Combine(AppContext.BaseDirectory, "3dp-iceland-labs-logo-pdf.jpg"),
-            System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Assets", "3dp-iceland-labs-logo-pdf.jpg")
-        };
-
-        foreach (var path in candidatePaths)
-        {
-            if (File.Exists(path)) return File.ReadAllBytes(path);
-        }
-
-        return Array.Empty<byte>();
+        return new DocumentBrandingRendererService(_database).Resolve().JpegBytes;
     }
 
     private string BuildScoreBarChartHtml(string title, IEnumerable<RankingRow> rankingRows, Func<RankingRow, double?> scoreSelector, string valueSuffix = "/100")
@@ -12770,9 +12771,12 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private void CopyReportPackageAssets(string assetsFolder)
     {
+        var branding = new DocumentBrandingRendererService(_database).Resolve();
+        SafeFileOperations.WriteAllBytesAtomic(
+            IOPath.Combine(assetsFolder, DocumentBrandingRendererService.StableJpegAssetName),
+            branding.JpegBytes);
         var assetNames = new[]
         {
-            "3dp-iceland-labs-logo-pdf.jpg",
             "3dp-iceland-labs-icon.ico"
         };
 
@@ -12780,8 +12784,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         {
             var sourcePath = FindReportAssetPath(assetName);
             if (string.IsNullOrWhiteSpace(sourcePath)) continue;
-            var targetPath = System.IO.Path.Combine(assetsFolder, assetName);
-            File.Copy(sourcePath, targetPath, overwrite: true);
+            var targetPath = IOPath.Combine(assetsFolder, assetName);
+            IOFile.Copy(sourcePath, targetPath, overwrite: true);
         }
     }
 
@@ -12891,6 +12895,51 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         catch (Exception ex)
         {
             MessageBox.Show(this, $"Could not export the Excel disaster-recovery package:\n\n{ex.Message}", "Excel Disaster Recovery Export", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private string ApplyDocumentBrandIdentityToPublicHtml(string html)
+    {
+        var branding = new DocumentBrandingRendererService(_database).Resolve();
+        return DocumentBrandTextRendererService.ApplyToPublicReportHtml(
+            html,
+            branding.BrandDisplayName,
+            BuildInfo.ShortLabel,
+            BuildInfo.ReleaseTitle);
+    }
+
+    private bool VerifyDocumentBrandingPackageAsset(
+        DocumentBrandingRenderAsset expected)
+    {
+        var probeFolder = IOPath.Combine(
+            IOPath.GetTempPath(),
+            "3DPIceland-DocumentBranding-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            IODirectory.CreateDirectory(probeFolder);
+            CopyReportPackageAssets(probeFolder);
+            var stableAssetPath = IOPath.Combine(
+                probeFolder,
+                DocumentBrandingRendererService.StableJpegAssetName);
+            return IOFile.Exists(stableAssetPath) &&
+                   IOFile.ReadAllBytes(stableAssetPath)
+                       .SequenceEqual(expected.JpegBytes);
+        }
+        catch
+        {
+            return false;
+        }
+        finally
+        {
+            try
+            {
+                if (IODirectory.Exists(probeFolder))
+                    IODirectory.Delete(probeFolder, recursive: true);
+            }
+            catch
+            {
+                // Verification reports the failed probe; cleanup is best effort.
+            }
         }
     }
 
@@ -16103,7 +16152,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             reportRadarSelectedProbe,
             new[] { reportRadarSelectedProbe, reportRadarMaterialProbe, reportRadarManufacturerProbe });
         var manufacturerReportPresentationReady =
-            reportShellIdentityProbe.Contains($"Platform version v{BuildInfo.Version}", StringComparison.Ordinal) &&
+            reportShellIdentityProbe.Contains(
+                $"Generated with 3DPIceland Engineering Platform v{BuildInfo.Version}",
+                StringComparison.Ordinal) &&
             !reportShellIdentityProbe.Contains("v36.0 Stability & Data Integrity", StringComparison.Ordinal) &&
             reportRadarLegendProbe.Contains("Material average - PLA", StringComparison.Ordinal) &&
             reportRadarLegendProbe.Contains("Manufacturer average - Maker A", StringComparison.Ordinal) &&
@@ -17418,8 +17469,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             reportingPipeline.Available ? "PDF output is generated by printing the canonical HTML layout" : reportingPipeline.ErrorMessage));
         checks.Add(new VerificationCheck("Report logo asset", reportingPipeline.Available && reportingPipeline.PdfLogoAssetAvailable,
             reportingPipeline.Available ? "3DPIceland Labs logo is available to native PDF renderer" : reportingPipeline.ErrorMessage));
-        checks.Add(new VerificationCheck("Canonical report JPEG logo", BuildReportLogoDataUri().StartsWith("data:image/jpeg;base64,", StringComparison.Ordinal),
-            "Canonical HTML and PDF use 3dp-iceland-labs-logo-pdf.jpg instead of the obsolete PNG report asset"));
+        checks.Add(new VerificationCheck(
+            "Canonical report branding selection",
+            BuildReportLogoDataUri().StartsWith("data:image/png;base64,", StringComparison.Ordinal) &&
+            LoadReportLogoJpegBytes().Length > 4,
+            "Canonical HTML embeds the selected normalized PNG; package/native PDF use its stable JPEG derivative"));
         checks.Add(new VerificationCheck("Canonical report material scope", canonicalReportScopeReady,
             canonicalReportScopeReady
                 ? "All Visible Materials uses the filtered native Materials view and the active SQLite material total"
@@ -17899,18 +17953,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             documentBrandingFoundation.Passed,
             documentBrandingFoundation.Detail));
         var v5802FoundationReady =
-            BuildInfo.CurrentDatabaseSchema == 39 &&
+            BuildInfo.CurrentDatabaseSchema >= 39 &&
             documentBrandingFoundation.Passed;
         checks.Add(new VerificationCheck(
             "v58.0.2 Document branding foundation retained contract",
             v5802FoundationReady,
             v5802FoundationReady
-                ? "Schema v39 and governed PNG validation/persistence foundation remain aligned"
+                ? "Schema v39+ and governed PNG validation/persistence foundation remain aligned"
                 : "Schema or governed PNG validation/persistence foundation failed"));
         var v5803SettingsReady =
-            BuildInfo.Version == "58.0.3" &&
-            BuildInfo.ReleaseCode == "DOCUMENT-BRANDING-SETTINGS" &&
-            BuildInfo.ReleaseTitle == "Governed Document Branding Settings Workflow" &&
             FindName("SelectDocumentBrandingLogoButton") is Button &&
             FindName("PreviewDocumentBrandingLogoButton") is Button &&
             FindName("RestoreDefaultDocumentBrandingButton") is Button &&
@@ -17927,14 +17978,98 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 System.Reflection.BindingFlags.Instance |
                 System.Reflection.BindingFlags.NonPublic) is not null &&
             typeof(DocumentBrandingPreviewWindow).GetConstructor(
-                [typeof(System.Windows.Media.ImageSource), typeof(string)]) is not null &&
-            releaseIdentityReady;
+                [typeof(System.Windows.Media.ImageSource), typeof(string)]) is not null;
         checks.Add(new VerificationCheck(
-            "v58.0.3 Document branding Settings workflow release gate",
+            "v58.0.3 Document branding Settings workflow retained contract",
             v5803SettingsReady && v5802FoundationReady,
             v5803SettingsReady && v5802FoundationReady
-                ? "Schema v39; Select, Preview, default-No Restore, status, image preview and Help-owned release identity align"
-                : "v58.0.3 identity, Settings controls, preview/status, foundation or generic assembly alignment failed"));
+                ? "Schema v39+; Select, Preview, default-No Restore, status and image preview align"
+                : "Settings controls, preview/status, layout or foundation failed"));
+        var rendererBrandingContract = new DocumentBrandingRendererService(_database).Resolve();
+        var rendererBrandingReady =
+            rendererBrandingContract.PngDataUri.StartsWith(
+                "data:image/png;base64,",
+                StringComparison.Ordinal) &&
+            rendererBrandingContract.PngBytes.Length > 8 &&
+            rendererBrandingContract.JpegBytes.Length > 4 &&
+            rendererBrandingContract.JpegBytes[0] == 0xFF &&
+            rendererBrandingContract.JpegBytes[1] == 0xD8 &&
+            rendererBrandingContract.JpegBytes[^2] == 0xFF &&
+            rendererBrandingContract.JpegBytes[^1] == 0xD9 &&
+            string.Equals(
+                Convert.ToHexString(SHA256.HashData(rendererBrandingContract.JpegBytes)),
+                rendererBrandingContract.JpegSha256,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                BuildReportLogoDataUri(),
+                rendererBrandingContract.PngDataUri,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                QuoteLogoDataUri(),
+                rendererBrandingContract.PngDataUri,
+                StringComparison.Ordinal) &&
+            LoadReportLogoJpegBytes().SequenceEqual(rendererBrandingContract.JpegBytes) &&
+            VerifyDocumentBrandingPackageAsset(rendererBrandingContract) &&
+            DocumentBrandingRendererService.StableJpegAssetName ==
+            "3dp-iceland-labs-logo-pdf.jpg";
+        checks.Add(new VerificationCheck(
+            "v58.0.4 Canonical document branding renderer retained contract",
+            rendererBrandingReady,
+            rendererBrandingReady
+                ? $"{rendererBrandingContract.Provenance}; source SHA-256 " +
+                  $"{rendererBrandingContract.SourceSha256[..12]}; embedded PNG and stable JPEG derivative align"
+                : "Renderer provenance/hash, PNG data URI, JPEG derivative or stable package route failed"));
+        var brandIdentityProbe = new DocumentBrandIdentityService(_database);
+        var encodedBrandHtml = DocumentBrandTextRendererService.ApplyToPublicReportHtml(
+            "<h1>3DPIceland engineering dataset</h1>" +
+            "<img alt=\"3DPIceland Labs\">" +
+            WebUtility.HtmlEncode(BuildInfo.ShortLabel) + " - " +
+            WebUtility.HtmlEncode(BuildInfo.ReleaseTitle),
+            "<Test & Brand>",
+            BuildInfo.ShortLabel,
+            BuildInfo.ReleaseTitle);
+        var idempotentBrandHtml = DocumentBrandTextRendererService.ApplyToPublicReportHtml(
+            encodedBrandHtml,
+            "<Test & Brand>",
+            BuildInfo.ShortLabel,
+            BuildInfo.ReleaseTitle);
+        var preformattedProvenanceHtml =
+            "<strong>&lt;Test &amp; Brand&gt;</strong><br>" +
+            "Generated with 3DPIceland Engineering Platform " +
+            WebUtility.HtmlEncode(BuildInfo.ShortLabel + " - " + BuildInfo.ReleaseTitle);
+        var preservedProvenanceHtml = DocumentBrandTextRendererService.ApplyToPublicReportHtml(
+            preformattedProvenanceHtml,
+            "<Test & Brand>",
+            BuildInfo.ShortLabel,
+            BuildInfo.ReleaseTitle);
+        var v58041BrandIdentityReady =
+            BuildInfo.CurrentDatabaseSchema == 40 &&
+            BuildInfo.Version == "58.0.4.1" &&
+            BuildInfo.ReleaseCode == "DOCUMENT-BRAND-IDENTITY" &&
+            BuildInfo.ReleaseTitle == "Governed Document Brand Identity" &&
+            FindName("DocumentBrandDisplayNameBox") is TextBox brandNameBox &&
+            brandNameBox.MaxLength == DocumentBrandIdentityService.MaximumLength &&
+            FindName("SaveDocumentBrandDisplayNameButton") is Button &&
+            rendererBrandingContract.BrandDisplayName == brandIdentityProbe.Resolve() &&
+            DocumentBrandIdentityService.TryNormalize(
+                "  Test   Brand  ",
+                out var normalizedBrand) &&
+            normalizedBrand == "Test Brand" &&
+            encodedBrandHtml.Contains(
+                "&lt;Test &amp; Brand&gt; engineering dataset",
+                StringComparison.Ordinal) &&
+            encodedBrandHtml.Contains(
+                "Generated with 3DPIceland Engineering Platform",
+                StringComparison.Ordinal) &&
+            !encodedBrandHtml.Contains("<Test & Brand>", StringComparison.Ordinal) &&
+            idempotentBrandHtml == encodedBrandHtml &&
+            preservedProvenanceHtml == preformattedProvenanceHtml;
+        checks.Add(new VerificationCheck(
+            "v58.0.4.1 Governed document brand identity release gate",
+            v58041BrandIdentityReady && documentBrandingFoundation.Passed && releaseIdentityReady,
+            v58041BrandIdentityReady && documentBrandingFoundation.Passed && releaseIdentityReady
+                ? $"Schema v40; brand '{rendererBrandingContract.BrandDisplayName}' is normalized, encoded and renderer-aligned"
+                : "Brand schema, Settings controls, normalization, encoding, renderer parity, provenance or release identity failed"));
         var inventoryRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "InventorySpoolItems");
         var landedCostMigration = _database.RunLandedCostCurrencyMigrationContractVerification();
@@ -20106,8 +20241,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             var pipeline = _reportingDataPipelineService.Verify(reportInputs);
             var generator = _reportGeneratorService.Verify(payload);
             var reportModel = _reportGeneratorService.BuildReport(payload);
-            var pdfRenderer = _reportPdfRendererService.Verify(reportModel);
-            var pdfDocument = _reportPdfRendererService.Render(reportModel);
+            var rendererBranding = new DocumentBrandingRendererService(_database).Resolve();
+            var pdfRenderer = _reportPdfRendererService.Verify(reportModel, rendererBranding);
+            var pdfDocument = _reportPdfRendererService.Render(reportModel, rendererBranding);
             var certificateGenerator = _reportCertificateGeneratorService.Verify(reportModel, pdfDocument);
             var templates = _reportTemplateService.Verify(reportModel);
             var exportUi = _reportExportUiService.Verify(templates);
@@ -25245,6 +25381,7 @@ private List<string> GetVisibleAiMaterialLabels()
         }
         EnsurePurchasingCurrencySettings();
         RefreshFtpsEndpointSummary();
+        RefreshDocumentBrandIdentity();
         RefreshDocumentBrandingStatus();
     }
 

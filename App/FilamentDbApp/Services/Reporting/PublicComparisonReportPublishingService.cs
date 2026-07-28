@@ -8,6 +8,8 @@ namespace FilamentDbApp.Services.Reporting;
 
 public sealed class PublicComparisonReportPublishingService
 {
+    public string BrandDisplayName { get; set; } =
+        DocumentBrandIdentityService.DefaultBrandDisplayName;
     public static IReadOnlyList<string> PublicFieldAllowlist { get; } = new[]
     {
         "PresetSlug", "Title", "BaseMaterial", "ScopeDescription", "Materials",
@@ -32,7 +34,16 @@ public sealed class PublicComparisonReportPublishingService
         return new PublicComparisonPublicationResult
         {
             RelativeDirectory = relativeDirectory,
-            Html = BuildHtml(model, generatedAt, versionLabel, releaseTitle, relativeDirectory),
+            Html = DocumentBrandTextRendererService.ApplyToPublicReportHtml(
+                BuildHtml(
+                    model,
+                    generatedAt,
+                    versionLabel,
+                    releaseTitle,
+                    relativeDirectory),
+                BrandDisplayName,
+                versionLabel,
+                releaseTitle),
             Manifest = BuildManifest(model, generatedAt, versionLabel, relativeDirectory),
             MetadataJson = BuildMetadata(model, generatedAt, versionLabel, relativeDirectory)
         };

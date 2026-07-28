@@ -2575,15 +2575,24 @@ to unstarted authoritative planning slots.
     - Completion condition: keyboard/mouse workflow, restart state, Help navigation and default-No boundaries are accepted.
     - Completion condition met: preview, restart, Escape/X, one Restore action, Help, layout and Verification are accepted.
   - **v58.0.4 — Canonical Renderer Integration**
-    - State: Planned after v58.0.3.
+    - State: Complete and owner runtime accepted; Full Data Verification passes 411/411.
     - Pass one resolved snapshot into report packages, website documents and Print Job Quote HTML/PDF generation.
     - Preserve the HTML-to-WebView2-to-PDF path, stable relative asset names, manifests, routes and public-data allowlists.
     - Normalize a compatible derivative for native PDF evidence; do not inject PNG bytes into a JPEG PDF object.
     - Completion condition: every governed renderer selects identical provenance/hash with canonical default compatibility.
+    - Completion condition met: custom/default report, website-document and quote outputs are accepted with stable routes.
+  - **v58.0.4.1 — Document Brand Identity**
+    - State: Complete and owner runtime accepted; Full Data Verification passes 412/412.
+    - Add an optional Brand / Organization Name beside the document logo; default and invalid fallback are 3DPIceland Labs.
+    - Apply the brand name to report, website-document and quote-facing headings/footers without changing stable routes.
+    - Retain a small Generated with 3DPIceland Engineering Platform version provenance line and immutable release identity.
+    - Persist the governed value with document branding so restart, backup, restore and migration preserve the selection.
+    - Completion condition: brand/default/fallback text parity and platform provenance pass deterministic and visual acceptance.
+    - Completion condition met: custom/default identity, one provenance line, restart, Restore Default and Verification pass.
   - **v58.0.5 — Disposable Acceptance, Migration and Recovery**
-    - State: Planned after v58.0.4.
+    - State: Planned after v58.0.4.1.
     - Update schema fixture/seed only if required; prove old databases default safely and backups retain branding state.
-    - Test valid/invalid/oversize assets, source immutability, restart, missing/corrupt fallback and Remove/Restore.
+    - Test valid/invalid/oversize assets, source immutability, restart, missing/corrupt fallback and Restore Default.
     - Keep owner database, Production and FTPS blocked; preserve exact baseline/final business-state equality.
     - Completion condition: deterministic Verification and the bounded disposable scenario pass with retained evidence.
   - **v58.0.6 — Visual Acceptance and Parent Closure**

@@ -2,6 +2,60 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v58.0.4.1 - Governed Document Brand Identity
+
+Schema v40 adds a singleton document brand display name beside the accepted
+logo selection. `DocumentBrandIdentityService` normalizes whitespace, enforces
+the 1–80 visible-character boundary and supplies `3DPIceland Labs` for absent
+or invalid persisted state.
+
+The resolved immutable renderer asset carries the brand name into internal
+report HTML/native PDF, public report website documents and customer quote
+HTML/PDF. Prominent customer-facing headings use the selected brand while a
+smaller generated-with line preserves the exact 3DPIceland Engineering
+Platform version and release provenance. HTML output encodes the value.
+
+Settings saves the name independently and immediately. Restore Default clears
+both custom name and custom logo through the accepted default-No confirmation.
+Application chrome, canonical public main-site branding, stable package routes,
+historical files and saved calculation snapshots remain unchanged.
+
+Debug and Release build with zero warnings/errors. Help coverage reconciles
+667/667 XAML candidates, documentation and roadmap gates pass and the read-only
+NuGet vulnerability scan is clean. Disposable smoke
+`20260728230807-481ac60c` passes 412/412 with exact logical database and
+business-state equality after schema-v39-to-v40 startup migration. Visual,
+restart and Restore Default behavior pass owner-runtime acceptance. The owner
+also confirms the corrected output contains exactly one platform-provenance
+line beside the custom identity.
+
+## v58.0.4 - Canonical Document Branding Renderer Integration
+
+`DocumentBrandingRendererService` resolves the schema-v39 selection once into
+an immutable renderer asset. It supplies the normalized PNG/data URI plus a
+deterministic quality-92 JPEG derivative composited against white so alpha is
+safe in legacy package and native-PDF paths.
+
+Internal report HTML and customer quote export consume the PNG data URI.
+Public report website/PDF packages materialize the same selection under the
+unchanged `assets/3dp-iceland-labs-logo-pdf.jpg` route. The native PDF renderer
+receives the matching JPEG bytes and decoded dimensions explicitly. Default and
+Fallback use the built-in PNG through the same pipeline.
+
+The canonical public main-site logo/favicon, application chrome, routes,
+manifests, allowlists, WebView2 PDF flow and saved quote calculation snapshots
+remain unchanged. Existing generated artifacts are not rewritten.
+
+Debug and Release build with zero warnings/errors. Help coverage reconciles
+665/665 XAML candidates, documentation/roadmap gates pass and the read-only
+NuGet vulnerability scan is clean. Disposable smoke
+`20260728224453-a8dd5135` passes 411/411 with exact database and business-state
+equality; Default source PNG and its stable JPEG derivative hashes align.
+
+Owner runtime acceptance confirms custom/default logo output in internal
+reports, public report website/PDF documents and customer quote PDF. Stable
+asset naming and Full Data Verification pass.
+
 ## v58.0.3 - Document Branding Settings Workflow and Help
 
 The candidate exposes the accepted schema-v39 foundation in a bounded Settings

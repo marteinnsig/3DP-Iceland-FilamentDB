@@ -2,6 +2,39 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v58.0.4.1 - Governed Document Brand Identity
+
+- Adds an optional Brand / Organization Name beside the governed document logo,
+  with `3DPIceland Labs` as the default and invalid-state fallback.
+- Saves a normalized 1–80 character name immediately in schema-v40 SQLite and
+  preserves it across restart, backup, restore and supported migration.
+- Applies the selected brand to prominent report, public website-document and
+  customer quote headings while retaining a smaller
+  `Generated with 3DPIceland Engineering Platform` release provenance.
+- Keeps application identity, stable report routes, canonical public main-site
+  branding, historical generated files and saved calculation snapshots intact.
+- Restore Default clears both custom document name and logo after the existing
+  default-No confirmation.
+- Owner accepts custom identity, restart persistence, combined Restore Default
+  and one exact platform-provenance line; Full Data Verification passes
+  412/412.
+
+## v58.0.4 - Canonical Document Branding Renderer Integration
+
+- Resolves one immutable Default, Custom or Fallback branding asset for
+  generated report HTML, customer quote HTML/PDF, public report website
+  documents and native PDF evidence.
+- Embeds the normalized selected PNG in HTML while deriving a deterministic
+  white-background JPEG for the stable
+  `assets/3dp-iceland-labs-logo-pdf.jpg` package route and native PDF object.
+- Preserves public report routes, manifests, public-data allowlists,
+  HTML-to-WebView2-to-PDF rendering and saved quote calculation snapshots.
+- Leaves application chrome plus canonical public main-site logo/favicon
+  unchanged and does not rewrite existing generated files automatically.
+- Adds deterministic provenance, source/JPEG hash and renderer parity contracts.
+- Owner accepts custom/default report, public report website-document and quote
+  outputs; Full Data Verification passes 411/411.
+
 ## v58.0.3 - Document Branding Settings Workflow and Help
 
 - Adds a dedicated Settings Manager group with Select PNG, Preview and one

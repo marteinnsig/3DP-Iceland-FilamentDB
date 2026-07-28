@@ -8,6 +8,8 @@ namespace FilamentDbApp.Services.Reporting;
 
 public sealed class PublicMaterialSummaryReportPublishingService
 {
+    public string BrandDisplayName { get; set; } =
+        DocumentBrandIdentityService.DefaultBrandDisplayName;
     public const string StableDirectory = "reports/material-summary";
 
     public static IReadOnlyList<string> PublicFieldAllowlist { get; } = new[]
@@ -37,7 +39,11 @@ public sealed class PublicMaterialSummaryReportPublishingService
         return new PublicMaterialSummaryPublicationResult
         {
             RelativeDirectory = StableDirectory,
-            Html = BuildHtml(model, generatedAt, version, releaseTitle),
+            Html = DocumentBrandTextRendererService.ApplyToPublicReportHtml(
+                BuildHtml(model, generatedAt, version, releaseTitle),
+                BrandDisplayName,
+                version,
+                releaseTitle),
             Manifest = $"3DPIceland Public Material Summary Report\nVersion: {version}\nGenerated: {generatedAt:O}\nMaterials: {model.Materials.Count}\nStable relative directory: {StableDirectory}\nCanonical HTML: index.html\nPDF from canonical HTML: report.pdf\nMetadata: report-metadata.json\nAssets: assets/\nPublic field allowlist: {string.Join(", ", PublicFieldAllowlist)}\n",
             MetadataJson = JsonSerializer.Serialize(new
             {

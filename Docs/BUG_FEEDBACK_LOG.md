@@ -15,9 +15,9 @@ deliberate boundary rather than silently discarding the idea.
 | Open | 1 |
 | In progress | 1 |
 | Partially solved | 0 |
-| Solved | 89 |
+| Solved | 90 |
 | Solved and runtime accepted | 6 |
-| Deferred | 4 |
+| Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
 | **Total tracked findings** | **103** |
@@ -48,6 +48,68 @@ Status: Open / In progress / Partially solved / Solved / Deferred / Duplicate / 
 Resolution:
 Verification evidence:
 ```
+
+## Deferred findings
+
+Date: 2026-07-27
+Area: Purchase Orders exchange-rate refresh
+Type: Workflow friction
+Severity: Minor
+What happened: Currency required leaving the cell before rate/source refreshed. A live ECB cache still used manual EUR fallback
+because the ECB base EUR leg was absent from the parsed catalog, and existing cache was not opportunistically refreshed daily.
+Expected behavior: Dropdown close immediately commits currency; official EUR/ISK provenance is available; a new-order action
+refreshes missing or older-than-24-hour cache while offline/manual operation and saved history remain unchanged.
+Steps to reproduce: Create a new order, select EUR and inspect Rate source, observation date and ECB cache status.
+Screenshot / export / report attached: Owner screenshots `codex-clipboard-31b7e94c-b01d-48f0-9afe-0d4dd73bbe0e.png` and
+`codex-clipboard-7fb3c07a-35d4-49c3-8746-501d54789b4c.png`.
+Status: Deferred
+Resolution: Owner accepted the standard DataGrid commit behavior as a minor detail: rate/source refresh after Enter or focus change.
+Unsuccessful immediate-event adapters were removed rather than retaining unnecessary UI complexity. The material defects are fixed:
+the parser adds the official EUR base leg, old cache without EUR is rejected, and New Order refreshes missing/older-than-24-hour
+cache with cache/manual fallback on failure and no saved-order rewrite.
+Verification evidence: Owner confirms correct post-commit rate behavior and Full Data Verification PASS. Final regression gates pass;
+the immediate-without-cell-commit enhancement is deliberately deferred.
+
+Date: Historical feedback (date not recorded)
+Area: AI integration
+Type: Feature idea
+Severity: Normal
+Status: Deferred
+What happened: External AI API connection
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
+Resolution: External AI API connectivity requires an approved concrete consumer, privacy/credential boundary and support contract. Do not implement speculatively.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+
+Date: Historical feedback (date not recorded)
+Area: Installer / uninstall
+Type: Destructive workflow proposal
+Severity: Important
+Status: Deferred
+What happened: Optional explicit clean uninstall
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
+Resolution: Normal uninstall remains deliberately data-preserving. A destructive profile-reset option is deferred until its exact ownership, credential separation and recoverability contract justify the risk.
+Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+
+## Other findings
+
+Date: Historical feedback (date not recorded)
+Area: Exchange rates / Settings
+Type: Integration proposal
+Severity: Important
+Status: Solved
+What happened: Delayed optional official exchange-rate refresh
+Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
+Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
+Screenshot / export / report attached: None retained with the original note.
+Resolution: Solved through v48.2.0 and retained by later v53/daily ECB corrections. The accepted ECB SDMX catalog derives ISK through
+EUR, preserves manual/offline fallback and immutable saved history, and refreshes missing or older-than-24-hour cache for new-order
+work without silently rewriting accepted records.
+Verification evidence: v48.2.0 is canonical and runtime accepted. Later accepted evidence confirms the official EUR base leg,
+daily/missing-cache refresh, offline fallback and Full Data Verification PASS.
 
 Date: 2026-07-28
 Area: Clean installer / restored public demo Verification
@@ -219,25 +281,6 @@ Migration `20260727224150-47f14b19` and recovery
 `20260727224236-eaa2bdb1` pass 391/391, source/final state and cleanup gates.
 Owner runtime accepts 200 intentional Materials, unchanged Purchase
 Orders/Inventory, zero automation residue and Full Data Verification 391/391.
-
-Date: 2026-07-27
-Area: Purchase Orders exchange-rate refresh
-Type: Workflow friction
-Severity: Minor
-What happened: Currency required leaving the cell before rate/source refreshed. A live ECB cache still used manual EUR fallback
-because the ECB base EUR leg was absent from the parsed catalog, and existing cache was not opportunistically refreshed daily.
-Expected behavior: Dropdown close immediately commits currency; official EUR/ISK provenance is available; a new-order action
-refreshes missing or older-than-24-hour cache while offline/manual operation and saved history remain unchanged.
-Steps to reproduce: Create a new order, select EUR and inspect Rate source, observation date and ECB cache status.
-Screenshot / export / report attached: Owner screenshots `codex-clipboard-31b7e94c-b01d-48f0-9afe-0d4dd73bbe0e.png` and
-`codex-clipboard-7fb3c07a-35d4-49c3-8746-501d54789b4c.png`.
-Status: Deferred
-Resolution: Owner accepted the standard DataGrid commit behavior as a minor detail: rate/source refresh after Enter or focus change.
-Unsuccessful immediate-event adapters were removed rather than retaining unnecessary UI complexity. The material defects are fixed:
-the parser adds the official EUR base leg, old cache without EUR is rejected, and New Order refreshes missing/older-than-24-hour
-cache with cache/manual fallback on failure and no saved-order rewrite.
-Verification evidence: Owner confirms correct post-commit rate behavior and Full Data Verification PASS. Final regression gates pass;
-the immediate-without-cell-commit enhancement is deliberately deferred.
 
 Date: 2026-07-27
 Area: Full Data Verification OpenAI timeout probe
@@ -1402,18 +1445,6 @@ Verification evidence: No recurrence has been observed across the subsequent acc
 explicit owner disposition, not evidence that one historical fix was identified.
 
 Date: Historical feedback (date not recorded)
-Area: AI integration
-Type: Feature idea
-Severity: Normal
-Status: Deferred
-What happened: External AI API connection
-Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
-Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
-Screenshot / export / report attached: None retained with the original note.
-Resolution: External AI API connectivity requires an approved concrete consumer, privacy/credential boundary and support contract. Do not implement speculatively.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
-
-Date: Historical feedback (date not recorded)
 Area: Testing / printing / material usage
 Type: Data-model idea
 Severity: Normal
@@ -1698,18 +1729,6 @@ retired after staged runtime acceptance.
 Verification evidence: Staged owner runtime acceptance completed with Full Data Verification 332/332 PASS.
 
 Date: Historical feedback (date not recorded)
-Area: Installer / uninstall
-Type: Destructive workflow proposal
-Severity: Important
-Status: Deferred
-What happened: Optional explicit clean uninstall
-Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
-Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
-Screenshot / export / report attached: None retained with the original note.
-Resolution: Normal uninstall remains deliberately data-preserving. A destructive profile-reset option is deferred until its exact ownership, credential separation and recoverability contract justify the risk.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
-
-Date: Historical feedback (date not recorded)
 Area: Base Materials / Materials relationship
 Type: Data-model / workflow improvement
 Severity: Important
@@ -1748,18 +1767,6 @@ Screenshot / export / report attached: None retained with the original note.
 Resolution: Solved through v48.1.1-v48.1.2. Schema v35 owns canonical PrinterProfiles and seven pricing defaults; schema v36 owns
 saved quote snapshots and the dedicated Print Job Quotes workflow.
 Verification evidence: Owner accepted Printer CRUD/currency behavior and quote workflow; Full Data Verification passes 363/363.
-
-Date: Historical feedback (date not recorded)
-Area: Exchange rates / Settings
-Type: Integration proposal
-Severity: Important
-Status: Deferred
-What happened: Delayed optional official exchange-rate refresh
-Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
-Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
-Screenshot / export / report attached: None retained with the original note.
-Resolution: Deferred until an official stable endpoint, reuse contract and concrete purchase/quotation consumer are approved. Existing manual/governed purchasing rates remain authoritative.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
 
 Date: Historical feedback (date not recorded)
 Area: Purchasing / inventory lots
@@ -1969,6 +1976,52 @@ and runtime accepted.
 - **Status:** Debug/Release, Help/documentation and disposable smoke
   `20260728223043-346ac3db` pass 410/410 with the explicit five-row layout
   contract. Owner confirms the layout is normal and Verification passes.
+
+# 2026-07-28 - v58.0.4 renderer branding ownership
+
+- **Observed:** Accepted v58.0.3 selection and preview did not yet affect
+  generated report, report website-document or customer quote output.
+- **Correction:** One immutable renderer asset now supplies normalized PNG data
+  URIs and a matching white-background JPEG derivative. Internal HTML and quote
+  export use the PNG; public report packages and native PDF use the derivative
+  under the existing stable JPEG route.
+- **Preserved:** Main-site/app branding, public routes and allowlists, WebView2
+  PDF path, manifests, canonical data and saved quote calculations are
+  unchanged. Existing generated files are not rewritten.
+- **Status:** Debug/Release, Help/documentation/security and disposable smoke
+  `20260728224453-a8dd5135` pass 411/411 with exact state. Owner custom/default
+  output review and Full Data Verification pass.
+
+# 2026-07-28 - v58.0.4.1 document brand identity
+
+- **Observed:** A selected custom document logo could appear beside prominent
+  hard-coded 3DPIceland document headings, producing mixed branding.
+- **Decision:** Add one optional Brand / Organization Name with
+  `3DPIceland Labs` as default/fallback. Apply it only to generated report,
+  website-document and quote-facing text.
+- **Preserved:** A smaller Generated with 3DPIceland Engineering Platform
+  version line retains platform provenance. Application identity, canonical
+  public main-site branding, stable routes and saved snapshots are unchanged.
+- **Status:** Debug/Release, Help/documentation/security and disposable smoke
+  `20260728230807-481ac60c` pass 412/412 with exact logical state after
+  schema-v39-to-v40 migration. Owner visual, restart and Restore Default
+  acceptance remain required before closure.
+
+# 2026-07-28 - v58.0.4.1 duplicate platform provenance
+
+- **Observed:** A custom-brand website document displayed two Generated with
+  3DPIceland Engineering Platform lines, and the first incorrectly ended with
+  the custom brand name.
+- **Finding:** The write path reapplied the brand transform to HTML whose
+  platform provenance had already been rendered.
+- **Correction:** The transform now recognizes an existing exact platform
+  identity and is idempotent. Deterministic checks cover both repeated
+  transformation and already-formatted provenance.
+- **Status:** Solved and owner runtime accepted. Debug/Release,
+  Help/documentation and disposable smoke `20260728231627-626aa475` pass
+  412/412 with exact logical state. Custom/default identity, Restore Default
+  and exactly one platform-provenance line are confirmed.
+
 # 2026-07-27 - v52.3.2 live response validation lacked safe failure detail
 
 - **Observed:** After owner consent, the first live Responses result reached the

@@ -10,6 +10,49 @@ namespace FilamentDbApp.Data;
 
 public sealed partial class LocalDatabase
 {
+    public string? LoadDocumentBrandDisplayName()
+    {
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT BrandDisplayName
+            FROM DocumentBrandIdentitySettings
+            WHERE SettingsId = 1;
+            """;
+        return command.ExecuteScalar()?.ToString();
+    }
+
+    public void SaveDocumentBrandDisplayName(string value)
+    {
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            INSERT INTO DocumentBrandIdentitySettings
+                (SettingsId, BrandDisplayName, UpdatedAtUtc)
+            VALUES (1, $name, $updated)
+            ON CONFLICT(SettingsId) DO UPDATE SET
+                BrandDisplayName=excluded.BrandDisplayName,
+                UpdatedAtUtc=excluded.UpdatedAtUtc;
+            """;
+        command.Parameters.AddWithValue("$name", value);
+        command.Parameters.AddWithValue(
+            "$updated",
+            DateTime.UtcNow.ToString("O", System.Globalization.CultureInfo.InvariantCulture));
+        command.ExecuteNonQuery();
+    }
+
+    public void ClearDocumentBrandDisplayName()
+    {
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText =
+            "DELETE FROM DocumentBrandIdentitySettings WHERE SettingsId = 1;";
+        command.ExecuteNonQuery();
+    }
+
     public DocumentBrandingRecord? LoadDocumentBranding()
     {
         using var connection = new SqliteConnection(ConnectionString);
@@ -108,6 +151,10 @@ public sealed partial class LocalDatabase
             var service = new DocumentBrandingService(database);
             var saved = service.ImportCustomLogo(sourcePath);
             var resolved = new DocumentBrandingService(new LocalDatabase(databasePath)).ResolveCustomOrFallback();
+            var identityService = new DocumentBrandIdentityService(database);
+            var savedBrand = identityService.Save("  Test   Brand  ");
+            var restartedBrand = new DocumentBrandIdentityService(
+                new LocalDatabase(databasePath)).Resolve();
             var sourceAfter = Convert.ToHexString(SHA256.HashData(IOFile.ReadAllBytes(sourcePath)));
             var cacheHash = IOFile.Exists(service.CachePath)
                 ? Convert.ToHexString(SHA256.HashData(IOFile.ReadAllBytes(service.CachePath)))
@@ -137,6 +184,9 @@ public sealed partial class LocalDatabase
             var fallback = new DocumentBrandingService(new LocalDatabase(databasePath)).ResolveCustomOrFallback();
             service.RestoreDefault();
             var defaultSnapshot = new DocumentBrandingService(new LocalDatabase(databasePath)).ResolveCustomOrFallback();
+            identityService.RestoreDefault();
+            var defaultBrand = new DocumentBrandIdentityService(
+                new LocalDatabase(databasePath)).Resolve();
 
             var passed =
                 saved.PixelWidth == 16 &&
@@ -150,12 +200,15 @@ public sealed partial class LocalDatabase
                 wrongSignatureRejected &&
                 fallback.Provenance == DocumentBrandingProvenance.Fallback &&
                 defaultSnapshot.Provenance == DocumentBrandingProvenance.Default &&
+                savedBrand == "Test Brand" &&
+                restartedBrand == "Test Brand" &&
+                defaultBrand == DocumentBrandIdentityService.DefaultBrandDisplayName &&
                 database.CurrentSchemaVersion == BuildInfo.CurrentDatabaseSchema;
             return new DocumentBrandingFoundationContractVerification(
                 passed,
                 passed
-                    ? $"Schema v{BuildInfo.CurrentDatabaseSchema}; normalized 16x16 transparent PNG; source/hash/cache/restart/fallback/default pass."
-                    : "Document branding validation, persistence, cache, restart or fallback contract failed.");
+                    ? $"Schema v{BuildInfo.CurrentDatabaseSchema}; PNG source/hash/cache and normalized brand restart/default pass."
+                    : "Document branding image or brand identity validation, persistence, restart or fallback contract failed.");
         }
         catch (Exception ex)
         {

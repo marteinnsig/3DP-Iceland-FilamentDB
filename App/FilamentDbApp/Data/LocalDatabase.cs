@@ -1538,6 +1538,12 @@ CREATE TABLE IF NOT EXISTS DocumentBrandingSettings (
     UpdatedAtUtc TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS DocumentBrandIdentitySettings (
+    SettingsId INTEGER PRIMARY KEY CHECK (SettingsId = 1),
+    BrandDisplayName TEXT NOT NULL,
+    UpdatedAtUtc TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS PurchaseOrders (
     PurchaseOrderId TEXT PRIMARY KEY, Supplier TEXT, OrderNumber TEXT, PurchaseDate TEXT, Currency TEXT, ExchangeRate TEXT,
     ExchangeRateSource TEXT, ExchangeRateObservationDate TEXT, ExchangeRateFetchedAtUtc TEXT,

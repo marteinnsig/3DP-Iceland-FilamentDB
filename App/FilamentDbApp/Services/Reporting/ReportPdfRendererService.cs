@@ -11,13 +11,37 @@ public sealed class ReportPdfRendererService
 
     public ReportingPdfDocument Render(ReportingReportModel reportModel)
     {
+        return Render(
+            reportModel,
+            TryLoadLogo(),
+            DocumentBrandIdentityService.DefaultBrandDisplayName);
+    }
+
+    public ReportingPdfDocument Render(
+        ReportingReportModel reportModel,
+        DocumentBrandingRenderAsset branding)
+    {
+        ArgumentNullException.ThrowIfNull(branding);
+        return Render(
+            reportModel,
+            new PdfLogoAsset(
+                branding.JpegBytes,
+                branding.PixelWidth,
+                branding.PixelHeight),
+            branding.BrandDisplayName);
+    }
+
+    private static ReportingPdfDocument Render(
+        ReportingReportModel reportModel,
+        PdfLogoAsset? logo,
+        string brandDisplayName)
+    {
         var pages = reportModel.MaterialReports
             .Where(report => !string.IsNullOrWhiteSpace(report.MaterialId))
-            .Select(BuildPage)
+            .Select(report => BuildPage(report, brandDisplayName))
             .ToList();
 
-        var logo = TryLoadLogo();
-        var bytes = BuildBrandedPdf(pages, logo);
+        var bytes = BuildBrandedPdf(pages, logo, brandDisplayName);
         return new ReportingPdfDocument(
             FileName: "3DPIceland_Material_Engineering_Report.pdf",
             ContentType: ContentType,
@@ -30,14 +54,28 @@ public sealed class ReportPdfRendererService
 
     public ReportingPdfRendererVerificationResult Verify(ReportingReportModel reportModel)
     {
-        var document = Render(reportModel);
+        return Verify(reportModel, null);
+    }
+
+    public ReportingPdfRendererVerificationResult Verify(
+        ReportingReportModel reportModel,
+        DocumentBrandingRenderAsset? branding)
+    {
+        var document = branding is null
+            ? Render(reportModel)
+            : Render(reportModel, branding);
         var payload = document.Payload;
         var materialIds = payload.Pages
             .Select(page => page.MaterialId)
             .Where(id => !string.IsNullOrWhiteSpace(id))
             .ToList();
         var pdfText = Encoding.ASCII.GetString(document.Bytes.Where(b => b < 128).ToArray());
-        var logo = TryLoadLogo();
+        var logo = branding is null
+            ? TryLoadLogo()
+            : new PdfLogoAsset(
+                branding.JpegBytes,
+                branding.PixelWidth,
+                branding.PixelHeight);
 
         var result = new ReportingPdfRendererVerificationResult
         {
@@ -73,11 +111,13 @@ public sealed class ReportPdfRendererService
         return result;
     }
 
-    private static ReportingPdfPage BuildPage(ReportingMaterialReportModel report)
+    private static ReportingPdfPage BuildPage(
+        ReportingMaterialReportModel report,
+        string brandDisplayName)
     {
         var lines = new List<string>
         {
-            "3DPIceland Labs Material Engineering Report",
+            brandDisplayName + " Material Engineering Report",
             "MaterialID: " + report.MaterialId,
             "Label: " + Clean(report.Label),
             "Manufacturer: " + Clean(report.Manufacturer),
@@ -126,7 +166,10 @@ public sealed class ReportPdfRendererService
         return null;
     }
 
-    private static byte[] BuildBrandedPdf(IReadOnlyList<ReportingPdfPage> pages, PdfLogoAsset? logo)
+    private static byte[] BuildBrandedPdf(
+        IReadOnlyList<ReportingPdfPage> pages,
+        PdfLogoAsset? logo,
+        string brandDisplayName)
     {
         var objects = new List<byte[]>();
         var pageObjectNumbers = new List<int>();
@@ -151,7 +194,10 @@ public sealed class ReportPdfRendererService
             var xObjectResources = logoObjectNumber > 0 ? $" /XObject << /ImLogo {logoObjectNumber.ToString(CultureInfo.InvariantCulture)} 0 R >>" : string.Empty;
             objects.Add(Ascii($"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >>{xObjectResources} >> /Contents {contentObjectNumber.ToString(CultureInfo.InvariantCulture)} 0 R >>"));
 
-            var stream = BuildPageStream(page.Lines, logoObjectNumber > 0);
+            var stream = BuildPageStream(
+                page.Lines,
+                logoObjectNumber > 0,
+                brandDisplayName);
             var streamBytes = Encoding.ASCII.GetBytes(stream);
             objects.Add(Ascii($"<< /Length {streamBytes.Length.ToString(CultureInfo.InvariantCulture)} >>\nstream\n{stream}\nendstream"));
         }
@@ -198,7 +244,10 @@ public sealed class ReportPdfRendererService
         return ms.ToArray();
     }
 
-    private static string BuildPageStream(IReadOnlyList<string> lines, bool includeLogo)
+    private static string BuildPageStream(
+        IReadOnlyList<string> lines,
+        bool includeLogo,
+        string brandDisplayName)
     {
         var sb = new StringBuilder();
 
@@ -218,7 +267,7 @@ public sealed class ReportPdfRendererService
             sb.AppendLine("q 145 0 0 87 420 676 cm /ImLogo Do Q");
         }
 
-        Text(sb, "3DPIceland Labs", 42, 724, 22, true);
+        Text(sb, brandDisplayName, 42, 724, 22, true);
         Text(sb, "Material Engineering Report", 42, 698, 15, false);
         Text(sb, "Verified Engineering Platform output - no raw measurement consumption", 42, 676, 9, false);
 
@@ -242,7 +291,7 @@ public sealed class ReportPdfRendererService
         }
 
         Text(sb, "Source of truth: SQLite + MaterialID + verified Material Summary", 42, 44, 8, false);
-        Text(sb, "3DPIceland Labs", 468, 44, 8, true);
+        Text(sb, "Generated with 3DPIceland Engineering Platform", 350, 44, 7, true);
 
         return sb.ToString();
     }
