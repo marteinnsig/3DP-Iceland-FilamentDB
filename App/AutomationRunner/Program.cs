@@ -120,6 +120,35 @@ internal static class Program
             Record("top-level-tab-navigation", true,
                 $"Visited {topLevelTabIds.Length}/22 unique top-level tabs by AutomationId");
 
+            SelectTab(main, "MaterialsTab", application.Id);
+            var materialFacetIds = new[]
+            {
+                "NativeMaterialManufacturerMultiFilter",
+                "NativeMaterialBaseMaterialMultiFilter",
+                "NativeMaterialVariantFinishMultiFilter",
+                "NativeMaterialReinforcementMultiFilter",
+                "NativeMaterialColorMultiFilter",
+                "NativeMaterialProductLineMultiFilter"
+            };
+            foreach (var facetId in materialFacetIds)
+            {
+                FindById(main, facetId);
+                FindById(main, facetId + "Open");
+                FindById(main, facetId + "Clear");
+                var summary = FindById(main, facetId + "SelectionSummary");
+                Require(
+                    summary.Current.Name.Contains(
+                        "selection",
+                        StringComparison.OrdinalIgnoreCase),
+                    $"{facetId} did not expose its visible selection summary.");
+            }
+            FindById(main, "NativeMaterialSearch");
+            FindById(main, "ClearNativeMaterialFilters");
+            Record(
+                "materials-multi-select-discovery",
+                true,
+                "Six no-modifier facets expose open, selection summary and per-filter Clear controls; global Clear is stable");
+
             SelectTab(main, "ExperimentalTestingTab", application.Id);
             var experimentalNestedTabIds = new[]
             {
@@ -315,7 +344,9 @@ internal static class Program
                 cleanReadiness
                     ? assistantOutput.Contains("No visible materials are loaded", StringComparison.Ordinal)
                     : assistantOutput.Contains("AI ASSISTANT", StringComparison.Ordinal) &&
-                      assistantOutput.Contains("Visible materials used:", StringComparison.Ordinal),
+                      assistantOutput.Contains("Visible source materials:", StringComparison.Ordinal) &&
+                      assistantOutput.Contains("Materials processed:", StringComparison.Ordinal) &&
+                      assistantOutput.Contains("Materials omitted by the 60-material local brief limit:", StringComparison.Ordinal),
                 "AI Assistant local full brief did not retain visible-scope evidence.");
             Record("ai-assistant-local-scope", true, assistantScope + " " + assistantMaterialIds);
             if (cleanReadiness)
@@ -361,6 +392,8 @@ internal static class Program
                     openAiStatus.Contains("no network used", StringComparison.OrdinalIgnoreCase);
                 Require(
                     openAiPreview.Contains("OPENAI EXACT OUTBOUND PAYLOAD PREVIEW", StringComparison.Ordinal) &&
+                    openAiPreview.Contains("Visible source MaterialIDs:", StringComparison.Ordinal) &&
+                    openAiPreview.Contains("Omitted by governed 40-material limit:", StringComparison.Ordinal) &&
                     previewHasStoreFalse &&
                     previewHasNoTools &&
                     previewHasMaterialId &&
@@ -423,7 +456,8 @@ internal static class Program
                 Require(
                     collectionPreview.Contains("COLLECTION SAVE PREVIEW", StringComparison.Ordinal) &&
                     collectionPreview.Contains("No data has been written.", StringComparison.Ordinal) &&
-                    collectionPreview.Contains("Unique MaterialIDs to save:", StringComparison.Ordinal),
+                    collectionPreview.Contains("Unique MaterialIDs to save:", StringComparison.Ordinal) &&
+                    collectionPreview.Contains("Exact MaterialID set SHA-256:", StringComparison.Ordinal),
                     "AI collection preview did not expose its read-only exact MaterialID contract.");
                 Record("ai-collection-preview", true, collectionAction);
             }
@@ -584,6 +618,14 @@ internal static class Program
                     "Materials controls and fields",
                     StringComparison.Ordinal),
                 "Central Help did not expose the Materials control/field reference.");
+            ((ValuePattern)helpValuePattern).SetValue(
+                "An empty result clears the current Materials selection/details");
+            Require(
+                string.Equals(
+                    FindById(help, "HelpSectionTitle").Current.Name,
+                    "Materials controls and fields",
+                    StringComparison.Ordinal),
+                "Central Help did not expose the v54 no-modifier OR/AND multi-select contract.");
             ((ValuePattern)helpValuePattern).SetValue("never automatically repriced");
             Require(
                 string.Equals(

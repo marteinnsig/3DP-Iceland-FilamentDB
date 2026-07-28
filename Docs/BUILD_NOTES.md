@@ -1,4 +1,29 @@
-# Current Build Notes - v53.0.5
+# Current Build Notes - v54.0.6
+
+## Materials Scope and Collection Workflow
+
+v54.0.6 replaces the visible Materials scalar Manufacturer, Base Material and
+Reinforcement controls with six no-modifier facet surfaces. After owner runtime
+acceptance, the hidden scalar controls and obsolete matcher were retired.
+Variant / Finish, Color and Product Line now have first-class filters. Values
+use OR inside one facet and AND across facets, Search, Category and Test status.
+
+The candidate persists exact profile-local Search and selected facet keys,
+keeps unavailable values visible for review/Clear and never stores computed
+MaterialID results. Materials Manager continues to include archived rows;
+canonical active consumers exclude them. AI and collection previews share an
+ordered unique MaterialID snapshot with deterministic SHA-256 evidence.
+Collections retain saved IDs and report active, archived and missing
+membership without rewriting the snapshot.
+
+The OpenAI 40-ID allowlist and local 60/250 processing caps remain governed,
+but source, processed/allowed and omitted counts are now explicit. Website DATA
+and public-report publication scopes remain independent from Materials filters.
+Help, stable AutomationIds, read-only tester discovery and deterministic
+Verification contracts are included. Schema remains v38. Owner runtime
+acceptance passed. Final disposable Release smoke `20260728124401-5f1d1f99`
+passes 400/400 with exact database/business-state equality and isolated AI
+storage. v54.0.6 is canonical and parent v54 is complete.
 
 ## Post-v50 Help Reconciliation
 

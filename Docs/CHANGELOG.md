@@ -2,6 +2,39 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v54.0.6 - Materials Scope and Collection Workflow
+
+- Owner accepts six-facet mouse/keyboard interaction, wrapping, restart,
+  empty-result behavior, collection parity, local previews and Verification.
+- Retires the hidden scalar Manufacturer, Base Material and Reinforcement
+  ComboBoxes plus their obsolete matcher after replacement acceptance.
+- Moves unlinked Manufacturer/Base Material Verification to stable facet keys.
+- Final Debug/Release builds pass with zero warnings/errors. Profile
+  `20260728124401-5f1d1f99` passes 400/400 with exact database/business-state
+  equality; v54.0.6 is canonical and parent v54 is complete.
+
+## v54.0.5 - Materials Multi-select and Exact Scope Candidate
+
+- Adds no-modifier multi-select for Manufacturer, Base Material, Variant /
+  Finish, Reinforcement, Color and Product Line.
+- Uses OR within each facet and AND across facets, Search, Category and Test
+  status, with visible selections/counts and per-filter/global Clear.
+- Persists exact profile-local Search and facet selections without changing
+  canonical SQLite data; unavailable saved selections remain clearable.
+- Preserves archived Materials in manager scope and excludes them from the
+  canonical active visible scope used by AI, collections and visible reports.
+- Adds deterministic visible MaterialID set hashing, exact collection snapshot
+  hashes and active/archived/missing collection diagnostics.
+- Makes OpenAI 40, local brief 60 and Material Intelligence 250 limits honest
+  through explicit source, processed and omitted counts.
+- Keeps website DATA candidates and opted-in public publication scope
+  independent from Materials filters.
+- Adds Help, AutomationIds, AutomationRunner discovery and Full Data
+  Verification contracts.
+- Disposable Release smoke `20260728122340-f5ff3f77` passes 399/399 with exact
+  database and normalized business-state equality. Runtime acceptance remains
+  pending.
+
 ## v53.0.5 - Post-v50 Help Reconciliation
 
 - Audits every user-visible v51-v53 change against current Help, source

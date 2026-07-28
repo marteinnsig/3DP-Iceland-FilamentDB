@@ -1,6 +1,24 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v54.0.6 - Materials Scope and Collection Workflow
+
+Owner runtime acceptance passes for no-modifier six-facet filtering, OR/AND
+logic, selected values/counts, Clear actions, restart persistence, empty
+results, AI/collection parity and local previews. The hidden scalar filter
+adapter is retired after acceptance. Final profile
+`20260728124401-5f1d1f99` passes 400/400 with exact database/business-state
+equality. Schema remains v38; v54.0.6 is canonical and parent v54 is complete.
+
+## v54.0.5 - Materials Multi-select and Exact Scope Candidate
+
+Candidate only. Six no-modifier Materials facets use OR within and AND between
+filters, persist exact profile-local state and feed one hashed canonical active
+MaterialID snapshot to AI, collection and visible-report workflows. Saved
+collections retain exact IDs while reporting active, archived and missing
+membership. Website DATA and public publication remain filter-independent.
+Runtime acceptance and final gates are pending; v53.0.5 remains canonical.
+
 ## v53.0.5 - Post-v50 Help Reconciliation
 
 The mandatory parent-closure audit reconciles every completed v51-v53

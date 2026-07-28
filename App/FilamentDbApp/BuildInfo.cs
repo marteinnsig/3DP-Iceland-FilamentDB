@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "POST-V50-HELP-RECONCILIATION";
-    public const string ReleaseTitle = "Post-v50 Help Reconciliation";
+    public const string ReleaseCode = "MATERIALS-SCOPE-ACCEPTED";
+    public const string ReleaseTitle = "Materials Scope and Collection Workflow";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 38;
 

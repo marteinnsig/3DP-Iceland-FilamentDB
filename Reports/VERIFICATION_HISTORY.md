@@ -1,3 +1,31 @@
+# v54.0.6 - Materials Scope and Collection Workflow
+
+Date: 2026-07-28
+
+- Owner accepts interaction, wrapping, restart, empty-result, AI/collection
+  parity, local previews and Full Data Verification PASS.
+- Hidden scalar filter controls and obsolete matcher are retired.
+- Debug/Release builds pass with zero warnings/errors.
+- Final profile `20260728124401-5f1d1f99` passes 400/400 with exact database
+  hash `355D53E1575350F883DA977E678806A781892AB80E32808987C1B9B527CDC28F`
+  and business-state hash
+  `225265A099D4A409D97383CF12FD054834F2794F1E9CF9260B264E4490C91CD5`.
+- Schema remains v38; v54.0.6 is canonical and parent v54 is complete.
+
+# v54.0.5 - Materials Multi-select and Exact Scope Candidate
+
+Date: 2026-07-28
+
+- Debug solution build passes with zero warnings/errors.
+- Verification adds pure OR/AND, persistence compatibility, visible set-hash,
+  stable-control and website/publication isolation contracts.
+- AutomationRunner discovers all six facets, their summaries and Clear actions.
+- Schema remains v38; no Production, FTPS or owner-database action is allowed.
+- Debug/Release, Help, documentation, roadmap and NuGet gates pass.
+- Disposable Release smoke `20260728122340-f5ff3f77` passes Full Data
+  Verification 399/399 with exact database and business-state equality.
+- Owner runtime acceptance remains pending. v53.0.5 remains canonical.
+
 # v53.0.5 - Post-v50 Help Reconciliation
 
 Date: 2026-07-27

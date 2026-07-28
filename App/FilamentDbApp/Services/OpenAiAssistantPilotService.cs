@@ -26,7 +26,12 @@ public sealed record OpenAiPilotPreview(
     string Model,
     string RequestBodyJson,
     string RequestSha256,
-    IReadOnlySet<string> AllowedMaterialIds);
+    IReadOnlySet<string> AllowedMaterialIds,
+    int SourceMaterialIdCount)
+{
+    public int OmittedMaterialIdCount =>
+        Math.Max(0, SourceMaterialIdCount - AllowedMaterialIds.Count);
+}
 
 public sealed record OpenAiPilotFinding(
     string Title,
@@ -131,10 +136,12 @@ public sealed class OpenAiAssistantPilotService
 
     public OpenAiPilotPreview BuildPreview(string model, OpenAiPilotInput input)
     {
-        var normalizedMaterials = input.Materials
+        var distinctMaterials = input.Materials
             .Where(material => !string.IsNullOrWhiteSpace(material.MaterialID))
             .GroupBy(material => material.MaterialID.Trim(), StringComparer.OrdinalIgnoreCase)
             .Select(group => Normalize(group.First()))
+            .ToList();
+        var normalizedMaterials = distinctMaterials
             .Take(MaximumMaterials)
             .ToList();
 
@@ -187,7 +194,12 @@ public sealed class OpenAiAssistantPilotService
 
         var requestJson = JsonSerializer.Serialize(request, JsonOptions);
         var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(requestJson)));
-        return new OpenAiPilotPreview(normalizedModel, requestJson, hash, ids);
+        return new OpenAiPilotPreview(
+            normalizedModel,
+            requestJson,
+            hash,
+            ids,
+            distinctMaterials.Count);
     }
 
     public async Task<OpenAiPilotExecution> GenerateAsync(

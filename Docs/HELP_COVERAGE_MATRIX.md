@@ -84,7 +84,7 @@ Nested tabs (16):
 
 | Surface | Stable Help ID | Owner / source of truth | Required reference coverage | Automation / current gap |
 |---|---|---|---|---|
-| Materials | `materials.overview` | SQLite Materials + owner-drawn grid | Identity, all field groups, filters, Manual Backup, Add, Duplicate, Archive, Unarchive, Delete, Reset Columns, validation, publication choices and auto-save | Only tab/filter/host fragments have IDs; lifecycle/filter commands need coverage |
+| Materials | `materials.overview` | SQLite Materials + owner-drawn grid | Identity, all field groups, six OR/AND facets, persisted scope, per-filter/global Clear, lifecycle, validation, publication choices and auto-save | v54 facets, summaries and Clear controls have stable IDs; visual wrapping remains manual |
 | Manufacturers | `manufacturers.overview` | SQLite Manufacturers + Material relationship | Fields, search, archived scope, Add, Duplicate, exact-name binding, Archive/Restore, Delete, rename propagation and auto-save | Tab, grid, filters and most actions lack IDs |
 | Purchase Orders | `purchase-orders.overview` | SQLite PO/lines + purchasing services | Header/line fields, lifecycle, ECB, landed costs, receiving, Material/Inventory creation, attachments and deletion | Tab/ECB only; both grids and almost every action lack IDs |
 | Inventory | `inventory.overview` | SQLite Inventory + `InventoryEngineService` | Spool fields, filters, summaries, Add, Duplicate, Delete, Refresh, validation, auto-save and Usage handoff | Entire tab currently lacks IDs |
@@ -221,7 +221,7 @@ Required leaf destinations:
 | Surface | Stable Help ID | Required coverage | Delivery |
 |---|---|---|---|
 | File menu / Storage | `menu.file-recovery`, `menu.storage` | Recovery Center, Choose Storage Folder, Exit and storage mutation boundary | v50.3 |
-| Materials menu | `menu.materials` | Lifecycle commands plus Clear Search/Filters; same owners as Materials tab | v50.2.1 |
+| Materials menu | `menu.materials` | Lifecycle commands plus Clear Search/Filters; same owners as Materials tab | v50.2.1; v54 global Clear wording |
 | Tools validation | `menu.tools-validation` | Validate Materials, Rebuild Computed Fields and rendering prototype | v50.2.4 candidate implemented |
 | Tools updates/releases | `menu.updates`, `menu.release-publishing` | Update readiness/check/apply and application release/update publishing, distinct from Website FTPS | v50.3 |
 | Help menu | `menu.help` | Documentation/F1, whitepaper, Changelog, Verification, Diagnostics and About | v50.2.4 candidate implemented |

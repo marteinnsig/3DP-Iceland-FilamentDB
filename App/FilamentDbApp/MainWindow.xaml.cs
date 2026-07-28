@@ -1,5 +1,6 @@
 using FilamentDbApp.Data;
 using FilamentDbApp.Models;
+using FilamentDbApp.Controls;
 using FilamentDbApp.Services;
 using FilamentDbApp.Services.Calculations;
 using FilamentDbApp.Services.Website;
@@ -18,6 +19,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -83,6 +85,7 @@ public partial class MainWindow : Window
     private Microsoft.Web.WebView2.Wpf.WebView2? _publicReportBatchWebView;
     private Window? _publicReportBatchHostWindow;
     private readonly WorkflowPreferencesService _workflowPreferencesService = new();
+    private MaterialFilterState _materialFilterState = new();
     private readonly OpenAiAssistantPilotService _openAiAssistantPilotService = new();
     private CancellationTokenSource? _openAiPilotCancellation;
     private OpenAiPilotOperationalEvidence? _lastOpenAiOperationalEvidence;
@@ -10163,26 +10166,14 @@ private void OpenReportOutputFolder_Click(object sender, RoutedEventArgs e)
                 : $"Selected material only: {_detailService.BuildTitle(selected)} ({GetCell(selected, "Material ID")}).";
         }
 
-        var filters = new List<string>();
-        if (FindName("NativeMaterialSearchBox") is TextBox searchBox && !string.IsNullOrWhiteSpace(searchBox.Text))
-            filters.Add($"Search: {searchBox.Text.Trim()}");
-
-        foreach (var item in new[]
-        {
-            (Name: "NativeMaterialManufacturerFilter", Label: "Manufacturer"),
-            (Name: "NativeMaterialBaseMaterialFilter", Label: "Base material"),
-            (Name: "NativeMaterialCategoryFilter", Label: "Category"),
-            (Name: "NativeMaterialReinforcementFilter", Label: "Reinforcement"),
-            (Name: "NativeMaterialTestedFilter", Label: "Test status")
-        })
-        {
-            var value = NativeMaterialFilterValue(item.Name);
-            if (!IsNativeMaterialAllFilter(value)) filters.Add($"{item.Label}: {value}");
-        }
-
-        return filters.Count == 0
+        var filterDescription = BuildCurrentMaterialFilterDescription();
+        return string.Equals(
+            filterDescription,
+            "All active canonical Materials",
+            StringComparison.Ordinal)
             ? "All visible active materials; no Materials-tab search or filters are applied."
-            : "All visible active materials. Applied Materials-tab scope: " + string.Join("; ", filters) + ".";
+            : "All visible active materials. Applied Materials-tab scope: " +
+              filterDescription + ".";
     }
 
     private void UpdateReportSelectedMaterial(DataRow? row)
@@ -14672,6 +14663,87 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             canonicalMaterialProjectionReady
                 ? $"{canonicalVisibleRows.Count} visible and {canonicalActiveRows.Count} active unique MaterialIDs come from the native SQLite-backed Materials view; legacy tab absent"
                 : "Native active/visible MaterialID parity or legacy-tab removal failed"));
+        var materialFilterContract =
+            MaterialFilterProjectionService.RunContractVerification();
+        checks.Add(new VerificationCheck(
+            "v54 Materials OR-within AND-between filter contract",
+            materialFilterContract.Passed,
+            materialFilterContract.Details));
+        var materialFilterPersistenceContract =
+            WorkflowPreferencesService.RunMaterialFilterPersistenceContractVerification();
+        checks.Add(new VerificationCheck(
+            "v54 Materials filter persistence compatibility",
+            materialFilterPersistenceContract.Passed,
+            materialFilterPersistenceContract.Details));
+        var visibleScopeSnapshot = CaptureCanonicalVisibleMaterialScope();
+        var repeatedVisibleScopeSnapshot = CaptureCanonicalVisibleMaterialScope();
+        var visibleScopeSnapshotReady =
+            visibleScopeSnapshot.Count == canonicalVisibleIds.Count &&
+            visibleScopeSnapshot.MaterialIds
+                .SequenceEqual(canonicalVisibleIds, StringComparer.OrdinalIgnoreCase) &&
+            visibleScopeSnapshot.ScopeHash.Length == 64 &&
+            string.Equals(
+                visibleScopeSnapshot.ScopeHash,
+                repeatedVisibleScopeSnapshot.ScopeHash,
+                StringComparison.Ordinal);
+        checks.Add(new VerificationCheck(
+            "v54 canonical visible MaterialID snapshot parity",
+            visibleScopeSnapshotReady,
+            visibleScopeSnapshotReady
+                ? $"{visibleScopeSnapshot.Count} exact visible MaterialID(s), stable SHA-256 {visibleScopeSnapshot.ScopeHash[..12]}"
+                : "Visible rows, ordered unique IDs or deterministic scope hash diverged"));
+        var materialMultiSelectUiReady =
+            AutomationProperties.GetAutomationId(
+                NativeMaterialManufacturerMultiFilter) ==
+            "NativeMaterialManufacturerMultiFilter" &&
+            AutomationProperties.GetAutomationId(
+                NativeMaterialBaseMaterialMultiFilter) ==
+            "NativeMaterialBaseMaterialMultiFilter" &&
+            AutomationProperties.GetAutomationId(
+                NativeMaterialVariantFinishMultiFilter) ==
+            "NativeMaterialVariantFinishMultiFilter" &&
+            AutomationProperties.GetAutomationId(
+                NativeMaterialReinforcementMultiFilter) ==
+            "NativeMaterialReinforcementMultiFilter" &&
+            AutomationProperties.GetAutomationId(
+                NativeMaterialColorMultiFilter) ==
+            "NativeMaterialColorMultiFilter" &&
+            AutomationProperties.GetAutomationId(
+                NativeMaterialProductLineMultiFilter) ==
+            "NativeMaterialProductLineMultiFilter" &&
+            AutomationProperties.GetAutomationId(
+                NativeMaterialSearchBox) == "NativeMaterialSearch";
+        checks.Add(new VerificationCheck(
+            "v54 Materials multi-select stable control contract",
+            materialMultiSelectUiReady,
+            materialMultiSelectUiReady
+                ? "Six no-modifier facet surfaces and Materials search expose stable AutomationIds"
+                : "A v54 facet surface or Materials search lacks its stable AutomationId"));
+        var websiteCandidateIds = GetNativeWebsiteExportCandidateRows()
+            .Select(row => row.MaterialID?.Trim() ?? string.Empty)
+            .Where(materialId => !string.IsNullOrWhiteSpace(materialId))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var filteredWebsiteProbeRows = canonicalVisibleRows.Take(1).ToList();
+        var resolvedWebsiteIds = GetNativeWebsitePipelineRows(filteredWebsiteProbeRows)
+            .Select(row => row.MaterialID?.Trim() ?? string.Empty)
+            .Where(materialId => !string.IsNullOrWhiteSpace(materialId))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var publicPublicationIds = _nativeMaterialRows
+            .Where(row =>
+                !row.IsArchived &&
+                row.PublishPublicReports &&
+                !string.IsNullOrWhiteSpace(row.MaterialID))
+            .Select(row => row.MaterialID.Trim())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var materialScopeIsolationReady =
+            resolvedWebsiteIds.SetEquals(websiteCandidateIds) &&
+            publicPublicationIds.IsSubsetOf(canonicalActiveIds);
+        checks.Add(new VerificationCheck(
+            "v54 website and public publication scope isolation",
+            materialScopeIsolationReady,
+            materialScopeIsolationReady
+                ? $"{websiteCandidateIds.Count} website candidate(s) and {publicPublicationIds.Count} opted-in public report ID(s) remain filter-independent"
+                : "Materials-visible filters leaked into website candidates or public publication ownership"));
         var aiAssistantScopeReady =
             (!AutomationRuntimeProfile.IsActive ||
              string.Equals(
@@ -17966,8 +18038,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var v5305InventoryHelp = HelpContentCatalog.Sections.Single(section =>
             section.Id == "inventory.controls-fields");
         var v5305HelpReconciliationReady =
-            BuildInfo.Version == "53.0.5" &&
-            BuildInfo.ReleaseCode == "POST-V50-HELP-RECONCILIATION" &&
             v5305RuntimeHelp.Body.Contains("CanonicalDataDependent", StringComparison.Ordinal) &&
             v5305AiHelp.Body.Contains("Copy Operational Evidence", StringComparison.Ordinal) &&
             v5305InventoryHelp.Body.Contains(
@@ -17979,6 +18049,42 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             v5305HelpReconciliationReady && releaseIdentityReady
                 ? "v51 runtime profiles, v52 OpenAI boundaries and v53 Inventory provenance have exact Help markers"
                 : "Post-v50 Help markers or release identity are incomplete"));
+        var v54MaterialsHelp = HelpContentCatalog.Sections.Single(section =>
+            section.Id == "materials.controls-fields");
+        var v54AiScopeHelp = HelpContentCatalog.Sections.Single(section =>
+            section.Id == "ai.visible-scope");
+        var v54ReleaseGateReady =
+            v54MaterialsHelp.Body.Contains(
+                "no-modifier multi-select filters",
+                StringComparison.Ordinal) &&
+            v54MaterialsHelp.Body.Contains(
+                "persist per local profile across restart",
+                StringComparison.Ordinal) &&
+            v54AiScopeHelp.Body.Contains(
+                "source, allowlisted and omitted counts",
+                StringComparison.Ordinal);
+        checks.Add(new VerificationCheck(
+            "v54.0.5 Materials multi-select and exact-scope candidate gate",
+            v54ReleaseGateReady && releaseIdentityReady,
+            v54ReleaseGateReady && releaseIdentityReady
+                ? "v54 identity, OR/AND persistence Help and honest AI scope-limit markers are aligned"
+                : "v54 release identity, Help markers or generic assembly alignment failed"));
+        var v5406LegacyRetirementReady =
+            BuildInfo.Version == "54.0.6" &&
+            BuildInfo.ReleaseCode == "MATERIALS-SCOPE-ACCEPTED" &&
+            FindName("NativeMaterialManufacturerFilter") is null &&
+            FindName("NativeMaterialBaseMaterialFilter") is null &&
+            FindName("NativeMaterialReinforcementFilter") is null &&
+            typeof(MainWindow).GetMethod(
+                "NativeMaterialRowMatchesCurrentFilters",
+                System.Reflection.BindingFlags.Static |
+                System.Reflection.BindingFlags.NonPublic) is null;
+        checks.Add(new VerificationCheck(
+            "v54.0.6 Runtime acceptance and scalar-filter retirement gate",
+            v5406LegacyRetirementReady && releaseIdentityReady,
+            v5406LegacyRetirementReady && releaseIdentityReady
+                ? "Owner-accepted six-facet workflow is canonical and hidden scalar filter controls/matcher are absent"
+                : "v54.0.6 identity, legacy retirement or generic assembly alignment failed"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {
@@ -19143,16 +19249,21 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 manufacturerCatalogById.TryGetValue(row.ManufacturerId!.Value, out var manufacturer) &&
                 string.Equals(row.Manufacturer, manufacturer.Name, StringComparison.Ordinal));
         var unlinkedManufacturerCount = _nativeMaterialRows.Count(row => !row.ManufacturerId.HasValue);
+        var manufacturerFacetOptions =
+            BuildNativeMaterialFacetOptions(MaterialFilterFacet.Manufacturer);
         var unlinkedManufacturerFilterReady =
             unlinkedManufacturerCount > 0
-                ? NativeMaterialManufacturerFilter.Items.Cast<object>().Any(item =>
+                ? manufacturerFacetOptions.Any(option =>
                       string.Equals(
-                          item.ToString(),
-                          UnlinkedManufacturerFilterText(unlinkedManufacturerCount),
+                          option.Key,
+                          MaterialFilterProjectionService.UnlinkedKey,
                           StringComparison.Ordinal)) &&
                   BindExactMaterialManufacturerNamesButton.Visibility == Visibility.Visible
-                : !NativeMaterialManufacturerFilter.Items.Cast<object>().Any(item =>
-                      IsUnlinkedManufacturerFilter(item.ToString())) &&
+                : !manufacturerFacetOptions.Any(option =>
+                      string.Equals(
+                          option.Key,
+                          MaterialFilterProjectionService.UnlinkedKey,
+                          StringComparison.Ordinal)) &&
                   BindExactMaterialManufacturerNamesButton.Visibility == Visibility.Collapsed;
         var canonicalManufacturerSelectionReady =
             manufacturerColumn?.EditorKind == MaterialsPrototypeEditorKind.ComboBox &&
@@ -19222,17 +19333,25 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 baseMaterialCatalogById.TryGetValue(row.BaseMaterialId!.Value, out var baseMaterial) &&
                 string.Equals(row.BaseMaterial, baseMaterial.BaseMaterial, StringComparison.Ordinal));
         var unlinkedBaseMaterialCount = _nativeMaterialRows.Count(row => !row.BaseMaterialId.HasValue);
+        var baseMaterialFacetOptions =
+            BuildNativeMaterialFacetOptions(MaterialFilterFacet.BaseMaterial);
         var unlinkedBaseMaterialFilterReady =
             unlinkedBaseMaterialCount > 0
-                ? NativeMaterialBaseMaterialFilter.Items.Cast<object>().Any(item =>
-                      IsUnlinkedBaseMaterialFilter(item.ToString())) &&
+                ? baseMaterialFacetOptions.Any(option =>
+                      string.Equals(
+                          option.Key,
+                          MaterialFilterProjectionService.UnlinkedKey,
+                          StringComparison.Ordinal)) &&
                   BindExactBaseMaterialNamesButton.Visibility == Visibility.Visible &&
                   string.Equals(
                       NativeMaterialBaseMaterialLinkStatusText.Text,
                       $"{unlinkedBaseMaterialCount} unlinked",
                       StringComparison.Ordinal)
-                : !NativeMaterialBaseMaterialFilter.Items.Cast<object>().Any(item =>
-                      IsUnlinkedBaseMaterialFilter(item.ToString())) &&
+                : !baseMaterialFacetOptions.Any(option =>
+                      string.Equals(
+                          option.Key,
+                          MaterialFilterProjectionService.UnlinkedKey,
+                          StringComparison.Ordinal)) &&
                   BindExactBaseMaterialNamesButton.Visibility == Visibility.Collapsed &&
                   string.Equals(
                       NativeMaterialBaseMaterialLinkStatusText.Text,
@@ -22380,6 +22499,8 @@ private void UpdateDashboardInsights()
         public List<string> MaterialKeys { get; set; } = new();
         public List<string> MaterialLabels { get; set; } = new();
         public string DatabaseContext { get; set; } = string.Empty;
+        public string MaterialIdSetSha256 { get; set; } = string.Empty;
+        public int SavedMaterialIdCount { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
@@ -22401,17 +22522,15 @@ private void UpdateDashboardInsights()
     private void RefreshAiAssistantScopePreview()
     {
         var visibleRows = GetCanonicalVisibleMaterialRows();
-        var materialIds = visibleRows
-            .Select(BuildAiMaterialKey)
-            .Where(id => !string.IsNullOrWhiteSpace(id))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
+        var scope = CaptureCanonicalVisibleMaterialScope();
+        var materialIds = scope.MaterialIds;
 
         if (FindName("AiAssistantScopeSummary") is TextBlock summary)
         {
             summary.Text = visibleRows.Count == 0
                 ? "Current visible MaterialID scope: 0 active rows, 0 unique MaterialID(s). Clear Materials filters or load data before generating."
-                : $"Current visible MaterialID scope: {visibleRows.Count:N0} active row(s), {materialIds.Count:N0} unique MaterialID(s).";
+                : $"Current visible MaterialID scope: {visibleRows.Count:N0} active row(s), " +
+                  $"{materialIds.Count:N0} unique MaterialID(s). Scope SHA-256: {scope.ScopeHash[..12]}.";
         }
 
         if (FindName("AiAssistantScopeMaterialIds") is TextBlock preview)
@@ -22660,7 +22779,10 @@ private void UpdateDashboardInsights()
         $"Model: {preview.Model}\r\n" +
         "Store response: false\r\n" +
         "Tools/files/web search: none\r\n" +
+        $"Visible source MaterialIDs: {preview.SourceMaterialIdCount:N0}\r\n" +
         $"Allowlisted MaterialIDs: {preview.AllowedMaterialIds.Count:N0}\r\n" +
+        $"Omitted by governed {OpenAiAssistantPilotService.MaximumMaterials:N0}-material limit: " +
+        $"{preview.OmittedMaterialIdCount:N0}\r\n" +
         $"Request SHA-256: {preview.RequestSha256}\r\n" +
         "Network used by this preview: no\r\n\r\n" +
         "The API provider may retain request data for abuse monitoring under the account's applicable data-retention terms.\r\n" +
@@ -23172,11 +23294,8 @@ private void UpdateDashboardInsights()
     private string BuildAiMaterialCollectionSavePreview()
     {
         var rows = GetCanonicalVisibleMaterialRows();
-        var materialKeys = rows
-            .Select(BuildAiMaterialKey)
-            .Where(key => !string.IsNullOrWhiteSpace(key))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
+        var scope = CaptureCanonicalVisibleMaterialScope();
+        var materialKeys = scope.MaterialIds.ToList();
         var title = GetTextBoxText("AiMaterialCollectionTitleBox").Trim();
         if (string.IsNullOrWhiteSpace(title))
         {
@@ -23194,6 +23313,7 @@ private void UpdateDashboardInsights()
             $"Title: {title}",
             $"Current visible rows: {rows.Count:N0}",
             $"Unique MaterialIDs to save: {materialKeys.Count:N0}",
+            $"Exact MaterialID set SHA-256: {scope.ScopeHash}",
             existing is null
                 ? "Existing saved membership: not applicable"
                 : $"Existing saved membership: {(existing.MaterialKeys?.Count ?? 0):N0} MaterialID(s)",
@@ -23287,7 +23407,8 @@ private void UpdateDashboardInsights()
                 SetTextBoxText("AiMaterialCollectionTitleBox", title);
             }
 
-            var materialKeys = rows.Select(BuildAiMaterialKey).Where(key => !string.IsNullOrWhiteSpace(key)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+            var scope = CaptureCanonicalVisibleMaterialScope();
+            var materialKeys = scope.MaterialIds.ToList();
             var materialLabels = GetVisibleAiMaterialLabels();
 
             var collections = LoadAiMaterialCollections().ToList();
@@ -23336,6 +23457,8 @@ private void UpdateDashboardInsights()
             existing.Title = title;
             existing.MaterialKeys = materialKeys;
             existing.MaterialLabels = materialLabels;
+            existing.MaterialIdSetSha256 = scope.ScopeHash;
+            existing.SavedMaterialIdCount = materialKeys.Count;
             existing.DatabaseContext = $"Saved: {DateTime.Now:yyyy-MM-dd HH:mm}; Materials: {materialKeys.Count}; Source: current visible rows";
             existing.UpdatedAt = DateTime.Now;
 
@@ -23545,12 +23668,31 @@ private void UpdateDashboardInsights()
 
     private string BuildAiMaterialCollectionBrief(AiMaterialCollection collection)
     {
+        var savedKeys = collection.MaterialKeys
+            .Where(key => !string.IsNullOrWhiteSpace(key))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var activeCount = _nativeMaterialRows.Count(row =>
+            !row.IsArchived && savedKeys.Contains(row.MaterialID));
+        var archivedCount = _nativeMaterialRows.Count(row =>
+            row.IsArchived && savedKeys.Contains(row.MaterialID));
+        var knownKeys = _nativeMaterialRows
+            .Where(row => savedKeys.Contains(row.MaterialID))
+            .Select(row => row.MaterialID)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var missingCount = savedKeys.Count(key => !knownKeys.Contains(key));
         var lines = new List<string>
         {
             "MATERIAL COLLECTION",
             "===================",
             "Title: " + collection.Title,
             "Materials: " + collection.MaterialKeys.Count,
+            $"Resolved active: {activeCount}",
+            $"Archived: {archivedCount}",
+            $"Missing: {missingCount}",
+            "Saved set SHA-256: " +
+            (string.IsNullOrWhiteSpace(collection.MaterialIdSetSha256)
+                ? "not recorded by this legacy snapshot"
+                : collection.MaterialIdSetSha256),
             "Updated: " + collection.UpdatedAt.ToString("yyyy-MM-dd HH:mm"),
             "",
             "DATABASE CONTEXT",
@@ -24287,7 +24429,9 @@ private List<string> GetVisibleAiMaterialLabels()
             "MATERIAL INTELLIGENCE",
             "=====================",
             $"Mode: {mode}",
-            $"Materials analyzed: {sourceRows.Count}",
+            $"Visible source materials: {sourceRows.Count}",
+            $"Materials processed: {rows.Count}",
+            $"Materials omitted by the 250-material analysis limit: {sourceRows.Count - rows.Count}",
             $"Scope: {GetAiMaterialIntelligenceScopeLabel()}",
             "",
             "HOW TO USE THIS",
@@ -24621,7 +24765,9 @@ private List<string> GetVisibleAiMaterialLabels()
             "=============================",
             $"Mode: {mode}",
             $"Template: {GetSelectedAiTemplateName()}",
-            $"Visible materials used: {visibleRows.Count}",
+            $"Visible source materials: {visibleRows.Count}",
+            $"Materials processed: {rows.Count}",
+            $"Materials omitted by the 60-material local brief limit: {visibleRows.Count - rows.Count}",
             "",
             "PLANNING NOTE (REFERENCE ONLY)",
             "------------------------------",
@@ -25367,9 +25513,14 @@ private List<string> GetVisibleAiMaterialLabels()
     private bool _nativeMaterialIntelligenceRefreshCompleted;
     private bool _nativeMaterialIntelligenceRefreshPending;
     private bool _nativeMaterialCollectionRefreshQueued;
+    private bool _suppressMaterialFacetFilterEvents;
 
     private void InitializeNativeMaterialManager()
     {
+        _materialFilterState = _workflowPreferencesService.GetMaterialFilterState();
+        _suppressMaterialFacetFilterEvents = true;
+        NativeMaterialSearchBox.Text = _materialFilterState.SearchText;
+        _suppressMaterialFacetFilterEvents = false;
         _nativeMaterialRows.CollectionChanged += (_, _) =>
         {
             if (_suppressNativeMaterialDirty) return;
@@ -25482,12 +25633,226 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void PopulateNativeMaterialFilters()
     {
-        SetNativeMaterialFilterItems("NativeMaterialManufacturerFilter", _nativeMaterialRows.Select(r => r.Manufacturer));
-        SetNativeMaterialFilterItems("NativeMaterialBaseMaterialFilter", _nativeMaterialRows.Select(r => r.BaseMaterial));
         SetNativeMaterialFilterItems("NativeMaterialCategoryFilter", _nativeMaterialRows.Select(r => r.MaterialCategory));
-        SetNativeMaterialFilterItems("NativeMaterialReinforcementFilter", _nativeMaterialRows.Select(r => r.Reinforcement));
         SetNativeMaterialFilterItems("NativeMaterialTestedFilter", new[] { "Tested", "Not Tested", "Tensile", "Impact", "Stiffness" });
+        RefreshNativeMaterialLinkFilterStatus();
+        PopulateNativeMaterialFacetFilters();
     }
+
+    private void RefreshNativeMaterialLinkFilterStatus()
+    {
+        var unlinkedManufacturerCount =
+            _nativeMaterialRows.Count(row => !row.ManufacturerId.HasValue);
+        BindExactMaterialManufacturerNamesButton.Visibility =
+            unlinkedManufacturerCount > 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+
+        var unlinkedBaseMaterialCount =
+            _nativeMaterialRows.Count(row => !row.BaseMaterialId.HasValue);
+        NativeMaterialBaseMaterialLinkStatusText.Text =
+            unlinkedBaseMaterialCount > 0
+                ? $"{unlinkedBaseMaterialCount} unlinked"
+                : "All linked";
+        NativeMaterialBaseMaterialLinkStatusText.Foreground =
+            unlinkedBaseMaterialCount > 0
+                ? new SolidColorBrush(Color.FromRgb(180, 83, 9))
+                : new SolidColorBrush(Color.FromRgb(21, 128, 61));
+        BindExactBaseMaterialNamesButton.Visibility =
+            unlinkedBaseMaterialCount > 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+    }
+
+    private void PopulateNativeMaterialFacetFilters()
+    {
+        foreach (var facet in Enum.GetValues<MaterialFilterFacet>())
+        {
+            if (NativeMaterialFacetControl(facet) is not { } control) continue;
+            control.SetOptions(
+                BuildNativeMaterialFacetOptions(facet),
+                _materialFilterState.GetSelections(facet));
+        }
+    }
+
+    private IReadOnlyList<MaterialFacetOption> BuildNativeMaterialFacetOptions(
+        MaterialFilterFacet facet)
+    {
+        var optionRows = _nativeMaterialRows
+            .Select(row => (
+                Key: NativeMaterialFacetKey(row, facet),
+                Label: NativeMaterialFacetLabel(row, facet)))
+            .Where(item =>
+                !string.IsNullOrWhiteSpace(item.Key) &&
+                !string.IsNullOrWhiteSpace(item.Label))
+            .GroupBy(item => item.Key, StringComparer.Ordinal)
+            .Select(group => (
+                Key: group.Key,
+                Label: group
+                    .Select(item => item.Label)
+                    .OrderBy(label => label, StringComparer.OrdinalIgnoreCase)
+                    .First()))
+            .ToList();
+
+        var stateWithoutOwnFacet = _materialFilterState.Clone();
+        stateWithoutOwnFacet.Clear(facet);
+        var category = NativeMaterialFilterValue("NativeMaterialCategoryFilter");
+        var tested = NativeMaterialFilterValue("NativeMaterialTestedFilter");
+        var candidates = _nativeMaterialRows
+            .Select(BuildMaterialFilterCandidate)
+            .ToList();
+
+        return optionRows
+            .Select(option =>
+            {
+                var optionState = stateWithoutOwnFacet.Clone();
+                optionState.SetSelections(
+                    facet,
+                    new[] { new MaterialFacetSelection(option.Key, option.Label) });
+                var projectedIds = MaterialFilterProjectionService
+                    .ProjectMaterialIds(candidates, optionState, includeArchived: true)
+                    .ToHashSet(StringComparer.OrdinalIgnoreCase);
+                var count = _nativeMaterialRows
+                    .Where(row =>
+                        projectedIds.Contains(row.MaterialID) &&
+                        NativeMaterialMatches(row.MaterialCategory, category) &&
+                        NativeMaterialMatchesTestedFilter(row, tested))
+                    .Select(row => row.MaterialID?.Trim() ?? string.Empty)
+                    .Where(materialId => !string.IsNullOrWhiteSpace(materialId))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .Count();
+                var selected = _materialFilterState.GetSelections(facet)
+                    .Any(selection =>
+                        string.Equals(selection.Key, option.Key, StringComparison.Ordinal));
+                return new MaterialFacetOption(
+                    option.Key,
+                    option.Label,
+                    count,
+                    selected);
+            })
+            .OrderBy(option => option.Label, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(option => option.Key, StringComparer.Ordinal)
+            .ToList();
+    }
+
+    private VisibleMaterialScopeSnapshot CaptureCanonicalVisibleMaterialScope()
+    {
+        var materialIds = GetCanonicalVisibleMaterialRows()
+            .Select(BuildAiMaterialKey)
+            .Where(materialId => !string.IsNullOrWhiteSpace(materialId))
+            .Select(materialId => materialId.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var normalizedSet = materialIds
+            .Select(materialId => materialId.ToUpperInvariant())
+            .OrderBy(materialId => materialId, StringComparer.Ordinal);
+        var hash = Convert.ToHexString(
+            SHA256.HashData(Encoding.UTF8.GetBytes(string.Join("\n", normalizedSet))));
+        return new VisibleMaterialScopeSnapshot(
+            materialIds,
+            hash,
+            BuildCurrentMaterialFilterDescription());
+    }
+
+    private string BuildCurrentMaterialFilterDescription()
+    {
+        var parts = new List<string>();
+        if (!string.IsNullOrWhiteSpace(_materialFilterState.SearchText))
+        {
+            parts.Add($"Search: {_materialFilterState.SearchText}");
+        }
+
+        foreach (var facet in Enum.GetValues<MaterialFilterFacet>())
+        {
+            var selections = _materialFilterState.GetSelections(facet);
+            if (selections.Count == 0) continue;
+            parts.Add($"{facet}: {string.Join(" OR ", selections.Select(item => item.Label))}");
+        }
+
+        var category = NativeMaterialFilterValue("NativeMaterialCategoryFilter");
+        if (!IsNativeMaterialAllFilter(category)) parts.Add($"Category: {category}");
+        var tested = NativeMaterialFilterValue("NativeMaterialTestedFilter");
+        if (!IsNativeMaterialAllFilter(tested)) parts.Add($"Test status: {tested}");
+        return parts.Count == 0
+            ? "All active canonical Materials"
+            : string.Join("; ", parts);
+    }
+
+    private MaterialFacetFilterControl? NativeMaterialFacetControl(
+        MaterialFilterFacet facet) =>
+        facet switch
+        {
+            MaterialFilterFacet.Manufacturer => NativeMaterialManufacturerMultiFilter,
+            MaterialFilterFacet.BaseMaterial => NativeMaterialBaseMaterialMultiFilter,
+            MaterialFilterFacet.VariantFinish => NativeMaterialVariantFinishMultiFilter,
+            MaterialFilterFacet.Reinforcement => NativeMaterialReinforcementMultiFilter,
+            MaterialFilterFacet.Color => NativeMaterialColorMultiFilter,
+            MaterialFilterFacet.ProductLine => NativeMaterialProductLineMultiFilter,
+            _ => null
+        };
+
+    private static string NativeMaterialFacetKey(
+        NativeMaterialRow row,
+        MaterialFilterFacet facet) =>
+        facet switch
+        {
+            MaterialFilterFacet.Manufacturer => row.ManufacturerId.HasValue
+                ? MaterialFilterProjectionService.LinkedIdKey(row.ManufacturerId.Value)
+                : MaterialFilterProjectionService.UnlinkedKey,
+            MaterialFilterFacet.BaseMaterial => row.BaseMaterialId.HasValue
+                ? MaterialFilterProjectionService.LinkedIdKey(row.BaseMaterialId.Value)
+                : MaterialFilterProjectionService.UnlinkedKey,
+            MaterialFilterFacet.VariantFinish =>
+                MaterialFilterProjectionService.ExactValueKey(row.VariantFinish),
+            MaterialFilterFacet.Reinforcement =>
+                MaterialFilterProjectionService.ExactValueKey(row.Reinforcement),
+            MaterialFilterFacet.Color =>
+                MaterialFilterProjectionService.ExactValueKey(row.Color),
+            MaterialFilterFacet.ProductLine =>
+                MaterialFilterProjectionService.ExactValueKey(row.ProductLine),
+            _ => string.Empty
+        };
+
+    private static string NativeMaterialFacetLabel(
+        NativeMaterialRow row,
+        MaterialFilterFacet facet) =>
+        facet switch
+        {
+            MaterialFilterFacet.Manufacturer => row.ManufacturerId.HasValue
+                ? row.Manufacturer?.Trim() ?? string.Empty
+                : "Unlinked manufacturers",
+            MaterialFilterFacet.BaseMaterial => row.BaseMaterialId.HasValue
+                ? row.BaseMaterial?.Trim() ?? string.Empty
+                : "Unlinked base materials",
+            MaterialFilterFacet.VariantFinish => row.VariantFinish?.Trim() ?? string.Empty,
+            MaterialFilterFacet.Reinforcement => row.Reinforcement?.Trim() ?? string.Empty,
+            MaterialFilterFacet.Color => row.Color?.Trim() ?? string.Empty,
+            MaterialFilterFacet.ProductLine => row.ProductLine?.Trim() ?? string.Empty,
+            _ => string.Empty
+        };
+
+    private static MaterialFilterCandidate BuildMaterialFilterCandidate(
+        NativeMaterialRow row) =>
+        new(
+            row.MaterialID,
+            row.IsArchived,
+            string.Join(
+                " ",
+                row.MaterialID,
+                row.Manufacturer,
+                row.ProductLine,
+                row.MarketingName,
+                row.BaseMaterial,
+                row.MaterialCategory,
+                row.VariantFinish,
+                row.Reinforcement,
+                row.Color,
+                row.WebsiteDisplayName,
+                row.MaterialKey),
+            Enum.GetValues<MaterialFilterFacet>()
+                .ToDictionary(
+                    facet => facet,
+                    facet => NativeMaterialFacetKey(row, facet)));
 
     private void SetNativeMaterialFilterItems(string comboName, IEnumerable<string> values)
     {
@@ -25496,36 +25861,9 @@ private List<string> GetVisibleAiMaterialLabels()
         var allText = NativeMaterialAllFilterText(comboName);
         var previous = combo.SelectedItem?.ToString() ?? allText;
         var previousWasAll = IsNativeMaterialAllFilter(previous);
-        var previousWasUnlinked = IsUnlinkedManufacturerFilter(previous);
-        var previousWasUnlinkedBaseMaterial = IsUnlinkedBaseMaterialFilter(previous);
         combo.SelectionChanged -= NativeMaterialFilter_Changed;
         combo.Items.Clear();
         combo.Items.Add(allText);
-        if (string.Equals(comboName, "NativeMaterialManufacturerFilter", StringComparison.Ordinal))
-        {
-            var unlinkedCount = _nativeMaterialRows.Count(row => !row.ManufacturerId.HasValue);
-            if (unlinkedCount > 0)
-            {
-                combo.Items.Add(UnlinkedManufacturerFilterText(unlinkedCount));
-            }
-            BindExactMaterialManufacturerNamesButton.Visibility =
-                unlinkedCount > 0 ? Visibility.Visible : Visibility.Collapsed;
-        }
-        if (string.Equals(comboName, "NativeMaterialBaseMaterialFilter", StringComparison.Ordinal))
-        {
-            var unlinkedCount = _nativeMaterialRows.Count(row => !row.BaseMaterialId.HasValue);
-            if (unlinkedCount > 0)
-                combo.Items.Add(UnlinkedBaseMaterialFilterText(unlinkedCount));
-            NativeMaterialBaseMaterialLinkStatusText.Text = unlinkedCount > 0
-                ? $"{unlinkedCount} unlinked"
-                : "All linked";
-            NativeMaterialBaseMaterialLinkStatusText.Foreground =
-                unlinkedCount > 0
-                    ? new SolidColorBrush(Color.FromRgb(180, 83, 9))
-                    : new SolidColorBrush(Color.FromRgb(21, 128, 61));
-            BindExactBaseMaterialNamesButton.Visibility =
-                unlinkedCount > 0 ? Visibility.Visible : Visibility.Collapsed;
-        }
         foreach (var value in values.Select(v => v?.Trim() ?? string.Empty)
                      .Where(v => !string.IsNullOrWhiteSpace(v))
                      .Distinct(StringComparer.OrdinalIgnoreCase)
@@ -25536,37 +25874,19 @@ private List<string> GetVisibleAiMaterialLabels()
 
         combo.SelectedItem = previousWasAll
             ? allText
-            : previousWasUnlinked
-                ? combo.Items.Cast<object>().FirstOrDefault(item =>
-                    IsUnlinkedManufacturerFilter(item.ToString())) ?? allText
-                : previousWasUnlinkedBaseMaterial
-                    ? combo.Items.Cast<object>().FirstOrDefault(item =>
-                        IsUnlinkedBaseMaterialFilter(item.ToString())) ?? allText
-                : combo.Items.Cast<object>().FirstOrDefault(item =>
-                    string.Equals(item.ToString(), previous, StringComparison.OrdinalIgnoreCase)) ?? allText;
+            : combo.Items.Cast<object>().FirstOrDefault(item =>
+                string.Equals(
+                    item.ToString(),
+                    previous,
+                    StringComparison.OrdinalIgnoreCase)) ?? allText;
         combo.SelectionChanged += NativeMaterialFilter_Changed;
     }
-
-    private static string UnlinkedManufacturerFilterText(int count) =>
-        $"Unlinked manufacturers ({count})";
-
-    private static bool IsUnlinkedManufacturerFilter(string? value) =>
-        value?.StartsWith("Unlinked manufacturers (", StringComparison.OrdinalIgnoreCase) == true;
-
-    private static string UnlinkedBaseMaterialFilterText(int count) =>
-        $"Unlinked base materials ({count})";
-
-    private static bool IsUnlinkedBaseMaterialFilter(string? value) =>
-        value?.StartsWith("Unlinked base materials (", StringComparison.OrdinalIgnoreCase) == true;
 
     private static string NativeMaterialAllFilterText(string comboName)
     {
         return comboName switch
         {
-            "NativeMaterialManufacturerFilter" => "All manufacturers",
-            "NativeMaterialBaseMaterialFilter" => "All material types",
             "NativeMaterialCategoryFilter" => "All categories",
-            "NativeMaterialReinforcementFilter" => "All reinforcements",
             "NativeMaterialTestedFilter" => "All test statuses",
             _ => "All"
         };
@@ -25631,6 +25951,7 @@ private List<string> GetVisibleAiMaterialLabels()
             _nativeMaterialSearchDebounceTimer.Stop();
             ApplyNativeMaterialFilters();
             ApplyNativeMeasurementFilters();
+            PopulateNativeMaterialFacetFilters();
             QueueNativeMaterialDependentIntelligenceRefresh();
             _embeddedMaterialsPrototypeView?.Focus();
         }
@@ -25639,16 +25960,26 @@ private List<string> GetVisibleAiMaterialLabels()
             e.Handled = true;
             _nativeMaterialSearchDebounceTimer.Stop();
             searchBox.Clear();
+            _nativeMaterialSearchDebounceTimer.Stop();
             ApplyNativeMaterialFilters();
             ApplyNativeMeasurementFilters();
+            PopulateNativeMaterialFacetFilters();
             QueueNativeMaterialDependentIntelligenceRefresh();
         }
     }
 
     private void NativeMaterialFilter_Changed(object sender, RoutedEventArgs e)
     {
+        if (_suppressMaterialFacetFilterEvents) return;
+
         if (sender is TextBox)
         {
+            if (sender is TextBox searchBox)
+            {
+                _materialFilterState.SearchText = searchBox.Text.Trim();
+                _workflowPreferencesService.SetMaterialFilterState(_materialFilterState);
+            }
+
             // Keep typing responsive. Filtering the material and three measurement
             // views is deferred until the user pauses briefly.
             _nativeMaterialSearchDebounceTimer.Stop();
@@ -25658,6 +25989,38 @@ private List<string> GetVisibleAiMaterialLabels()
 
         ApplyNativeMaterialFilters();
         ApplyNativeMeasurementFilters();
+        PopulateNativeMaterialFacetFilters();
+        QueueNativeMaterialDependentIntelligenceRefresh();
+    }
+
+    private void NativeMaterialFacetFilter_Changed(object? sender, EventArgs e)
+    {
+        if (_suppressMaterialFacetFilterEvents ||
+            sender is not MaterialFacetFilterControl control)
+        {
+            return;
+        }
+
+        var facet = control switch
+        {
+            _ when ReferenceEquals(control, NativeMaterialManufacturerMultiFilter) =>
+                MaterialFilterFacet.Manufacturer,
+            _ when ReferenceEquals(control, NativeMaterialBaseMaterialMultiFilter) =>
+                MaterialFilterFacet.BaseMaterial,
+            _ when ReferenceEquals(control, NativeMaterialVariantFinishMultiFilter) =>
+                MaterialFilterFacet.VariantFinish,
+            _ when ReferenceEquals(control, NativeMaterialReinforcementMultiFilter) =>
+                MaterialFilterFacet.Reinforcement,
+            _ when ReferenceEquals(control, NativeMaterialColorMultiFilter) =>
+                MaterialFilterFacet.Color,
+            _ => MaterialFilterFacet.ProductLine
+        };
+
+        _materialFilterState.SetSelections(facet, control.SelectedValues);
+        _workflowPreferencesService.SetMaterialFilterState(_materialFilterState);
+        ApplyNativeMaterialFilters();
+        ApplyNativeMeasurementFilters();
+        PopulateNativeMaterialFacetFilters();
         QueueNativeMaterialDependentIntelligenceRefresh();
     }
 
@@ -25666,20 +26029,30 @@ private List<string> GetVisibleAiMaterialLabels()
         _nativeMaterialSearchDebounceTimer.Stop();
         ApplyNativeMaterialFilters();
         ApplyNativeMeasurementFilters();
+        PopulateNativeMaterialFacetFilters();
         QueueNativeMaterialDependentIntelligenceRefresh();
     }
 
     private void ClearNativeMaterialFilters_Click(object sender, RoutedEventArgs e)
     {
+        _suppressMaterialFacetFilterEvents = true;
+        _materialFilterState.ClearAll();
         if (FindName("NativeMaterialSearchBox") is TextBox searchBox) searchBox.Text = string.Empty;
         _nativeMaterialSearchDebounceTimer.Stop();
-        foreach (var name in new[] { "NativeMaterialManufacturerFilter", "NativeMaterialBaseMaterialFilter", "NativeMaterialCategoryFilter", "NativeMaterialReinforcementFilter", "NativeMaterialTestedFilter" })
+        foreach (var name in new[]
+                 {
+                     "NativeMaterialCategoryFilter",
+                     "NativeMaterialTestedFilter"
+                 })
         {
             if (FindName(name) is ComboBox combo) combo.SelectedItem = NativeMaterialAllFilterText(name);
         }
 
+        _suppressMaterialFacetFilterEvents = false;
+        _workflowPreferencesService.SetMaterialFilterState(_materialFilterState);
         ApplyNativeMaterialFilters();
         ApplyNativeMeasurementFilters();
+        PopulateNativeMaterialFacetFilters();
         QueueNativeMaterialDependentIntelligenceRefresh();
     }
 
@@ -25711,43 +26084,20 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private HashSet<string> GetVisibleNativeMaterialIdsFromCurrentFilters()
     {
-        var search = FindName("NativeMaterialSearchBox") is TextBox searchBox ? searchBox.Text.Trim() : string.Empty;
-        var manufacturer = NativeMaterialFilterValue("NativeMaterialManufacturerFilter");
-        var baseMaterial = NativeMaterialFilterValue("NativeMaterialBaseMaterialFilter");
         var category = NativeMaterialFilterValue("NativeMaterialCategoryFilter");
-        var reinforcement = NativeMaterialFilterValue("NativeMaterialReinforcementFilter");
         var tested = NativeMaterialFilterValue("NativeMaterialTestedFilter");
 
-        return _nativeMaterialRows
-            .Where(row => !string.IsNullOrWhiteSpace(row.MaterialID))
-            .Where(row => NativeMaterialRowMatchesCurrentFilters(row, search, manufacturer, baseMaterial, category, reinforcement, tested))
-            .Select(row => row.MaterialID.Trim())
+        var matchingCandidates = _nativeMaterialRows
+            .Where(row =>
+                NativeMaterialMatches(row.MaterialCategory, category) &&
+                NativeMaterialMatchesTestedFilter(row, tested))
+            .Select(BuildMaterialFilterCandidate);
+        return MaterialFilterProjectionService
+            .ProjectMaterialIds(
+                matchingCandidates,
+                _materialFilterState,
+                includeArchived: true)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
-    }
-
-    private static bool NativeMaterialRowMatchesCurrentFilters(NativeMaterialRow row, string search, string manufacturer, string baseMaterial, string category, string reinforcement, string tested)
-    {
-        if (IsUnlinkedManufacturerFilter(manufacturer))
-        {
-            if (row.ManufacturerId.HasValue) return false;
-        }
-        else if (!NativeMaterialMatches(row.Manufacturer, manufacturer)) return false;
-        if (IsUnlinkedBaseMaterialFilter(baseMaterial))
-        {
-            if (row.BaseMaterialId.HasValue) return false;
-        }
-        else if (!NativeMaterialMatches(row.BaseMaterial, baseMaterial)) return false;
-        if (!NativeMaterialMatches(row.MaterialCategory, category)) return false;
-        if (!NativeMaterialMatches(row.Reinforcement, reinforcement)) return false;
-        if (!NativeMaterialMatchesTestedFilter(row, tested)) return false;
-
-        if (!string.IsNullOrWhiteSpace(search))
-        {
-            var haystack = string.Join(" ", row.MaterialID, row.Manufacturer, row.ProductLine, row.MarketingName, row.BaseMaterial, row.MaterialCategory, row.VariantFinish, row.Reinforcement, row.Color, row.WebsiteDisplayName, row.MaterialKey);
-            if (haystack.IndexOf(search, StringComparison.OrdinalIgnoreCase) < 0) return false;
-        }
-
-        return true;
     }
 
     private string NativeMaterialFilterValue(string comboName)
@@ -26228,6 +26578,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
         _workflowPreferencesService.CaptureWindow(this);
         _workflowPreferencesService.SetLastSelectedMaterialId(_lastSelectedNativeMaterial?.MaterialID);
+        _workflowPreferencesService.SetMaterialFilterState(_materialFilterState);
         SaveWebsiteExportFolderPreference(WebsiteExportFolderBox.Text?.Trim() ?? string.Empty);
         foreach (var gridName in WorkflowGridNames)
         {

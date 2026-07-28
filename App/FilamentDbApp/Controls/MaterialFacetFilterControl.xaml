@@ -1,0 +1,26 @@
+<UserControl x:Class="FilamentDbApp.Controls.MaterialFacetFilterControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             MinWidth="180">
+    <Border BorderBrush="#CBD5E1" BorderThickness="1" CornerRadius="4"
+            Background="White" Padding="6">
+        <StackPanel>
+            <DockPanel LastChildFill="True">
+                <Button x:Name="OpenButton" DockPanel.Dock="Left"
+                        Click="OpenButton_Click" Padding="7,3"
+                        HorizontalContentAlignment="Left"
+                        AutomationProperties.Name="{Binding FilterLabel,
+                            RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                <Button x:Name="ClearButton" DockPanel.Dock="Right"
+                        Content="Clear" Click="ClearButton_Click"
+                        Padding="6,3" Margin="6,0,0,0"
+                        AutomationProperties.Name="{Binding FilterLabel,
+                            RelativeSource={RelativeSource AncestorType=UserControl},
+                            StringFormat=Clear {0}}"/>
+            </DockPanel>
+            <TextBlock x:Name="SelectionText" Margin="1,5,1,0"
+                       Foreground="#475569" FontSize="11"
+                       TextWrapping="Wrap"/>
+        </StackPanel>
+    </Border>
+</UserControl>

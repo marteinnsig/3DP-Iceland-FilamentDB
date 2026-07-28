@@ -404,7 +404,7 @@ $postV50RequiredIncrements = @(
     "v51.1", "v51.2", "v51.3", "v51.4",
     "v52.1", "v52.2", "v52.3.2",
     "v53.0.2", "v53.0.3", "v53.0.4.1", "v53.0.4.2",
-    "v53.0.4.3", "v53.0.4.4", "v53.0.5"
+    "v53.0.4.3", "v53.0.4.4", "v53.0.5", "v54.0.5", "v54.0.6"
 )
 $coveredOwnerIncrements = @(
     $registry.CoveredOwnerIncrements |

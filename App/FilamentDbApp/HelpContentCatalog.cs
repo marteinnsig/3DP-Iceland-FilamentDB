@@ -109,9 +109,11 @@ internal static class HelpContentCatalog
             Reset Columns changes only local layout. Manual Backup creates evidence; it is not a Save button. Normal grid edits auto-save.
 
             Search and filters
-            Search plus Manufacturer, Material type, Category, Reinforcement and Test status control the visible workflow. Clear Filters
-            restores full active scope. Filters also affect native measurement visibility and global analysis/report Visible scope; they
-            never delete records.
+            Search plus no-modifier Manufacturer, Base Material, Variant / Finish, Reinforcement, Color and Product Line multi-select
+            filters control the visible workflow. Values inside one filter use OR; different filters, Category and Test status use AND.
+            Each multi-select shows its selected count and values and has Clear. Clear All Filters also clears Search, Category and Test
+            status. Exact selections persist per local profile across restart; unavailable saved values remain visible until cleared.
+            Filters affect native measurement visibility and global analysis/report Visible scope but never change canonical records.
 
             Fields and states
             Edit governed identity/catalog values, public choices, purchase/spool facts, MSRP/landed evidence, media, notes and archive
@@ -141,9 +143,16 @@ internal static class HelpContentCatalog
             default column order/width only. Normal committed cell edits auto-save; there is no separate Save requirement.
 
             Search and filter controls
-            Find searches displayed identity/content. Manufacturer, Base Material, Category, Reinforcement and Tested Status selectors
-            combine with Find and each other. Clear Filters clears Find and restores the normal active scope. Filters never change or
-            delete records, but Visible scope is reused by native Measurements, analysis and several report actions.
+            Search searches displayed identity/content. Manufacturer, Base Material, Variant / Finish, Reinforcement, Color and Product
+            Line are no-modifier multi-select filters: click each value or use keyboard activation without Ctrl/Shift. Values within one
+            filter use OR, while different filters, Search, Category and Test status use AND. Each filter shows selected values, a count
+            and Clear; selected zero-count or unavailable restart values remain visible so they can be reviewed and cleared. Clear All
+            Filters restores the normal scope. Exact Search and multi-select state persist per local profile across restart.
+
+            Filtering is read-only. Archived rows remain discoverable in Materials Manager, including linked/unlinked review, but leave
+            canonical active consumer scope. An empty result clears the current Materials selection/details and changes no database,
+            relationship, measurement, report publication or website publication state. Native Measurements, AI Assistant, collections
+            and All Visible Materials reports reuse the exact active visible MaterialID projection.
 
             Identity, publication and catalog cells
             Material ID is generated/read-only. Manufacturer and Base Material are governed selectors; Product Line, Marketing Name,
@@ -1636,15 +1645,18 @@ internal static class HelpContentCatalog
             "Review the exact visible MaterialID input before any analysis.",
             """
             AI Assistant uses the current Materials search/filter projection. Refresh Visible Scope rebuilds the scope summary and
-            MaterialID preview, including row count, unique stable IDs and representative identifiers. Filtering Materials therefore
-            changes later briefs even though no engineering row is edited.
+            MaterialID preview, including row count, unique stable IDs, representative identifiers and a deterministic scope hash.
+            Multi-select values use OR within one filter and AND across filters. Filtering Materials changes later briefs even though no
+            engineering row is edited.
 
             Review the count and IDs before generating. Clear Materials filters for whole-database intent, or deliberately keep them to
             analyze a bounded family/manufacturer subset. Empty, duplicate or legacy identity warnings should be resolved or explicitly
             understood before trusting coverage conclusions.
 
             Refresh Visible Scope is read-only. It does not save a collection, change lifecycle status or contact an external service.
-            The same canonical IDs feed the OpenAI pilot, capped at forty unique IDs; review the exact payload before sending.
+            The same canonical scope feeds the OpenAI pilot, which shows source, allowlisted and omitted counts for its governed
+            forty-MaterialID limit. Local briefs similarly disclose their processed and omitted counts. Narrow Materials scope when the
+            complete visible set must be processed, and review the exact payload before any separately consented live request.
             """,
             "visible scope", "Refresh Visible Scope", "MaterialID", "filters", "read-only"),
         new(
@@ -1692,7 +1704,8 @@ internal static class HelpContentCatalog
 
             Create / Update Collection is the explicit persistence boundary. Load Collection Brief analyzes the selected saved
             collection. Delete Collection removes that planning collection after owner intent; it does not delete the referenced
-            Materials. A collection stores stable MaterialID membership rather than duplicate material records.
+            Materials. A collection stores stable MaterialID membership and an exact set hash rather than duplicate material records.
+            Load Collection Brief reports active, archived and missing membership without rewriting the saved snapshot.
 
             Collection Dashboard and Video Pipeline Dashboard summarize local planning coverage. Review missing/legacy identity before
             treating their counts as complete, and re-preview visible rows before updating membership.

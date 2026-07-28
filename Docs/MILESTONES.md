@@ -3,6 +3,22 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v54.0.6 - Materials Scope and Collection Workflow
+
+Owner runtime acceptance confirms the six-facet OR/AND workflow, persisted
+restart state, exact downstream MaterialID parity, honest AI limits and
+filter-independent website/publication scope. Hidden scalar filter adapters
+are retired after acceptance. Final profile `20260728124401-5f1d1f99` passes
+400/400 with exact state equality; v54.0.6 is canonical and parent v54 is
+complete.
+
+# v54.0.5 - Materials Multi-select and Exact Scope Candidate
+
+Candidate implementation delivers the accepted six-facet OR/AND interaction
+and exact downstream MaterialID scope contract. It is not canonical or
+runtime accepted; v53.0.5 remains the accepted baseline until owner review and
+all gates pass.
+
 # v53.0.5 - Post-v50 Help Reconciliation
 
 Accepted reconciliation proves that completed v51-v53 user-visible contracts

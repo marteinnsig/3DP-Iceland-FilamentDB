@@ -388,18 +388,15 @@ xaml.material-detail-video-planner.datagridtextcolumn.type	Material Detail > Vid
 xaml.material-detail-video-planner.datagridtextcolumn.winner	Material Detail > Video Planner	DataGridTextColumn	Winner	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.materials.button.addnativematerial-click	Materials	Button	AddNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
 xaml.materials.button.archivenativematerial-click	Materials	Button	ArchiveNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
-xaml.materials.button.clearnativematerialfilters-click	Materials	Button	ClearNativeMaterialFilters_Click	action	v50.4.1	materials.controls-fields	covered
+xaml.materials.button.clearnativematerialfilters	Materials	Button	ClearNativeMaterialFilters	action	v50.4.1	materials.controls-fields	covered
 xaml.materials.button.deletenativematerial-click	Materials	Button	DeleteNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
 xaml.materials.button.duplicatenativematerial-click	Materials	Button	DuplicateNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
 xaml.materials.button.resetfastmaterialscolumns-click	Materials	Button	ResetFastMaterialsColumns_Click	action	v50.4.1	materials.controls-fields	covered
 xaml.materials.button.savenativematerialsbutton	Materials	Button	SaveNativeMaterialsButton	action	v50.4.1	materials.controls-fields	covered
 xaml.materials.button.unarchivenativematerial-click	Materials	Button	UnarchiveNativeMaterial_Click	action	v50.4.1	materials.controls-fields	covered
-xaml.materials.combobox.nativematerialbasematerialfilter	Materials	ComboBox	NativeMaterialBaseMaterialFilter	choice	v50.4.1	materials.controls-fields	covered
 xaml.materials.combobox.nativematerialcategoryfilter	Materials	ComboBox	NativeMaterialCategoryFilter	choice	v50.4.1	materials.controls-fields	covered
-xaml.materials.combobox.nativematerialmanufacturerfilter	Materials	ComboBox	NativeMaterialManufacturerFilter	choice	v50.4.1	materials.controls-fields	covered
-xaml.materials.combobox.nativematerialreinforcementfilter	Materials	ComboBox	NativeMaterialReinforcementFilter	choice	v50.4.1	materials.controls-fields	covered
 xaml.materials.combobox.nativematerialtestedfilter	Materials	ComboBox	NativeMaterialTestedFilter	choice	v50.4.1	materials.controls-fields	covered
-xaml.materials.textbox.nativematerialsearchbox	Materials	TextBox	NativeMaterialSearchBox	input-candidate	v50.4.1	materials.controls-fields	covered
+xaml.materials.textbox.nativematerialsearch	Materials	TextBox	NativeMaterialSearch	input-candidate	v50.4.1	materials.controls-fields	covered
 xaml.printers.button.addprinterbutton	Printers	Button	AddPrinterButton	action	v50.4.1	printers.controls-fields	covered
 xaml.printers.button.archiveprinterbutton	Printers	Button	ArchivePrinterButton	action	v50.4.1	printers.controls-fields	covered
 xaml.printers.button.deleteprinterbutton	Printers	Button	DeletePrinterButton	action	v50.4.1	printers.controls-fields	covered

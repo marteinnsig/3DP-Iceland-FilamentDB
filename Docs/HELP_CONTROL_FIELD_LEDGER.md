@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v53.0.5 post-v50 Help reconciliation
+Version: v54.0.6 Materials scope closure
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted
@@ -35,7 +35,7 @@ AutomationId presence, a click-handler count or a tab overview is not coverage.
 
 ## Discovery baseline
 
-Source snapshot: v53.0.5 candidate on 2026-07-27.
+Source snapshot: canonical runtime-accepted v54.0.6 on 2026-07-28.
 
 | Source | Discovered candidates | Reconciliation requirement |
 |---|---:|---|
@@ -68,7 +68,7 @@ Current exact inventory:
 
 | Owner | Candidates |
 |---|---:|
-| v50.4.1 | 222 |
+| v50.4.1 | 219 |
 | v50.4.2 | 267 |
 | v50.4.3 | 156 |
 | v52.1 | 7 |
@@ -76,7 +76,7 @@ Current exact inventory:
 | v52.3.2 | 1 |
 | v53.0.2 | 2 |
 | v53.0.4.1 | 6 |
-| **Total** | **664** |
+| **Total** | **661** |
 
 v52.1 adds seven Settings candidates for provider/model preference, protected
 credential ownership and local-only foundation diagnostics. All route to
@@ -167,6 +167,8 @@ not misclassified as a user-editable XAML field.
 | v50.4.3 | Output, publishing, assistant, creator, menus and runtime windows | No unexplained supported control/field |
 | v50.4.4 | Cross-scope reconciliation, deterministic drift gates and tester | Zero gaps plus owner acceptance |
 | v53.0.5 | v51-v53 Help, owner and runtime-surface reconciliation | Zero unexplained post-v50 gaps |
+| v54.0.5 | Six Materials facets, persisted scope, exact AI/collection evidence | Owner runtime accepted |
+| v54.0.6 | Hidden scalar filter retirement and final Help inventory | Canonical; 661/661 Help audit |
 
 ## Initial findings and risks
 

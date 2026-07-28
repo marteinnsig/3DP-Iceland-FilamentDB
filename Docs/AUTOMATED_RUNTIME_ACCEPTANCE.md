@@ -1,5 +1,27 @@
 # Automated Runtime Acceptance
 
+## v54.0.6 - Materials scope accepted
+
+- Owner runtime acceptance passes for the complete v54 workflow.
+- The accepted six-facet controls replace and retire hidden scalar filters.
+- Final profile `20260728124401-5f1d1f99` passes 400/400 with exact database
+  and normalized business-state equality. Schema remains v38.
+
+## v54.0.5 - Materials multi-select candidate
+
+- Smoke discovers six stable no-modifier facet surfaces, visible selection
+  summaries, per-filter Clear, global Clear and Materials Search.
+- Full Data Verification owns deterministic OR-within/AND-between, archived,
+  unlinked, Clear, persistence, exact scope-hash and publication-isolation
+  contracts.
+- AI smoke requires honest local processed/omitted counts, OpenAI
+  source/allowlisted/omitted counts and exact collection snapshot SHA-256.
+- The scenario remains disposable and read-only; collection persistence,
+  Production, FTPS, owner data and live OpenAI remain blocked.
+- Release profile `20260728122340-f5ff3f77` passes 399/399, exact database and
+  normalized business-state equality and isolated AI storage.
+- Superseded by accepted v54.0.6 closure evidence above.
+
 ## v53.0.5 - Post-v50 Help reconciliation accepted
 
 - No new mutating tester scenario is warranted because runtime business

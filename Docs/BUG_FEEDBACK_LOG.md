@@ -454,7 +454,7 @@ Date: 2026-07-26
 Area: Materials filters / AI Assistant collections / Video planning
 Type: Workflow improvement
 Severity: Important
-Status: Open
+Status: In progress
 What happened: Materials filters allow only one selected value per category. Building a comparison collection therefore requires
 repeated filtering or manual collection work, while the website already supports multi-select Base Material, Variant / Finish,
 Reinforcement, Color, Manufacturer and Product Line filters.
@@ -468,9 +468,16 @@ Only one value can currently be selected in each desktop filter.
 Screenshot / export / report attached: Capture current Materials single-select and website multi-select behavior during implementation.
 Resolution: Planned in v54.0 — Materials Scope and Collection Workflow. Preserve the accepted single-select path until replacement
 runtime acceptance. Saved collections remain explicit MaterialID snapshots and must not change silently when filters change.
+Candidate v54.0.5 implements six no-modifier facets, OR-within/AND-between semantics, profile-local restart persistence, selected
+value/count/Clear presentation, exact visible-scope SHA-256 evidence, immutable collection membership diagnostics and honest AI
+processing limits. Website/publication scope remains independent. Owner runtime acceptance passed and v54.0.6 retired the hidden
+scalar controls and obsolete matcher.
 Verification evidence: Required future coverage includes OR within each filter, AND across filters, Clear restoring accepted scope,
 exact visible MaterialID count and AI preview/save parity. Deterministic scope tests belong in the existing safe acceptance boundary;
 multi-select dropdown layout, wrapping and usability remain owner-manual acceptance.
+Candidate evidence: Debug/Release and static/security/documentation gates pass. Disposable Release smoke
+`20260728124401-5f1d1f99` passes Full Data Verification 400/400 with exact database/business-state equality. Owner runtime
+interaction, wrapping, restart and local preview acceptance passed; v54.0.6 is canonical and parent v54 is complete.
 
 Date: 2026-07-26
 Area: Base Materials / Settings / Materials

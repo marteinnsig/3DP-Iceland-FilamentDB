@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:FilamentDbApp"
+        xmlns:controls="clr-namespace:FilamentDbApp.Controls"
         Title="3DPIceland Engineering Platform - Filament Database" Height="960" Width="1700" MinHeight="760" MinWidth="1280"
         AutomationProperties.AutomationId="MainWindow" PreviewKeyDown="MainWindow_PreviewKeyDown">
     <Window.Resources>
@@ -379,29 +380,64 @@
                     <WrapPanel Grid.Row="2" Margin="0,0,0,10">
                         <TextBlock Text="Filters:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,8,8"/>
                         <TextBlock Text="Search materials" VerticalAlignment="Center" Margin="0,0,4,8"/>
-                        <TextBox Name="NativeMaterialSearchBox" Width="220" TextChanged="NativeMaterialFilter_Changed" KeyDown="NativeMaterialSearchBox_KeyDown" TabIndex="0" Margin="0,0,12,8"
+                        <TextBox Name="NativeMaterialSearchBox" Width="220"
+                                 AutomationProperties.AutomationId="NativeMaterialSearch"
+                                 TextChanged="NativeMaterialFilter_Changed"
+                                 KeyDown="NativeMaterialSearchBox_KeyDown"
+                                 TabIndex="0" Margin="0,0,12,8"
 />
-                        <TextBlock Text="Manufacturer" VerticalAlignment="Center" Margin="0,0,4,8"/>
-                        <ComboBox Name="NativeMaterialManufacturerFilter" AutomationProperties.AutomationId="NativeMaterialManufacturerFilter"
-                                  Width="205" TabIndex="1" SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
-/>
-                        <TextBlock Text="Material type" VerticalAlignment="Center" Margin="0,0,4,8"/>
-                        <ComboBox Name="NativeMaterialBaseMaterialFilter" Width="145" TabIndex="2" SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
-/>
+                        <controls:MaterialFacetFilterControl
+                            x:Name="NativeMaterialManufacturerMultiFilter"
+                            FilterLabel="Manufacturer" Width="235" Margin="0,0,12,8"
+                            AutomationProperties.AutomationId="NativeMaterialManufacturerMultiFilter"
+                            SelectionChanged="NativeMaterialFacetFilter_Changed"/>
+                        <controls:MaterialFacetFilterControl
+                            x:Name="NativeMaterialBaseMaterialMultiFilter"
+                            FilterLabel="Base Material" Width="220" Margin="0,0,12,8"
+                            AutomationProperties.AutomationId="NativeMaterialBaseMaterialMultiFilter"
+                            SelectionChanged="NativeMaterialFacetFilter_Changed"/>
                         <TextBlock Name="NativeMaterialBaseMaterialLinkStatusText"
                                    AutomationProperties.AutomationId="NativeMaterialBaseMaterialLinkStatus"
                                    VerticalAlignment="Center" FontWeight="SemiBold"
                                    Foreground="#B45309" Margin="0,0,12,8"/>
+                        <controls:MaterialFacetFilterControl
+                            x:Name="NativeMaterialVariantFinishMultiFilter"
+                            FilterLabel="Variant / Finish" Width="220" Margin="0,0,12,8"
+                            AutomationProperties.AutomationId="NativeMaterialVariantFinishMultiFilter"
+                            SelectionChanged="NativeMaterialFacetFilter_Changed"/>
+                        <controls:MaterialFacetFilterControl
+                            x:Name="NativeMaterialReinforcementMultiFilter"
+                            FilterLabel="Reinforcement" Width="220" Margin="0,0,12,8"
+                            AutomationProperties.AutomationId="NativeMaterialReinforcementMultiFilter"
+                            SelectionChanged="NativeMaterialFacetFilter_Changed"/>
+                        <controls:MaterialFacetFilterControl
+                            x:Name="NativeMaterialColorMultiFilter"
+                            FilterLabel="Color" Width="200" Margin="0,0,12,8"
+                            AutomationProperties.AutomationId="NativeMaterialColorMultiFilter"
+                            SelectionChanged="NativeMaterialFacetFilter_Changed"/>
+                        <controls:MaterialFacetFilterControl
+                            x:Name="NativeMaterialProductLineMultiFilter"
+                            FilterLabel="Product Line" Width="220" Margin="0,0,12,8"
+                            AutomationProperties.AutomationId="NativeMaterialProductLineMultiFilter"
+                            SelectionChanged="NativeMaterialFacetFilter_Changed"/>
                         <TextBlock Text="Category" VerticalAlignment="Center" Margin="0,0,4,8"/>
-                        <ComboBox Name="NativeMaterialCategoryFilter" Width="145" TabIndex="3" SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
-/>
-                        <TextBlock Text="Reinforcement" VerticalAlignment="Center" Margin="0,0,4,8"/>
-                        <ComboBox Name="NativeMaterialReinforcementFilter" Width="155" TabIndex="4" SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
+                        <ComboBox Name="NativeMaterialCategoryFilter" Width="145" TabIndex="7"
+                                  AutomationProperties.AutomationId="NativeMaterialCategoryFilter"
+                                  SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
 />
                         <TextBlock Text="Test status" VerticalAlignment="Center" Margin="0,0,4,8"/>
-                        <ComboBox Name="NativeMaterialTestedFilter" Width="135" TabIndex="5" SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
+                        <ComboBox Name="NativeMaterialTestedFilter" Width="135" TabIndex="8"
+                                  AutomationProperties.AutomationId="NativeMaterialTestedFilter"
+                                  SelectionChanged="NativeMaterialFilter_Changed" Margin="0,0,12,8"
 />
-                        <Button Click="ClearNativeMaterialFilters_Click" TabIndex="6" Style="{StaticResource IconActionButton}" Margin="0,0,8,8"><StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource ActionIcon}" Text="&#xE894;"/><TextBlock Text="Clear Filters"/></StackPanel></Button>
+                        <Button Click="ClearNativeMaterialFilters_Click" TabIndex="9"
+                                AutomationProperties.AutomationId="ClearNativeMaterialFilters"
+                                Style="{StaticResource IconActionButton}" Margin="0,0,8,8">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource ActionIcon}" Text="&#xE894;"/>
+                                <TextBlock Text="Clear All Filters"/>
+                            </StackPanel>
+                        </Button>
                     </WrapPanel>
 
                     <GroupBox Grid.Row="3" Header="Materials - source of truth for native modules">

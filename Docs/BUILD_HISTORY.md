@@ -2,6 +2,26 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v54.0.6 - Materials Scope and Collection Workflow
+
+Owner runtime acceptance passes for the complete multi-select, restart,
+empty-result, AI/collection and local-preview workflow. The accepted
+replacement now owns Manufacturer, Base Material and Reinforcement filtering,
+so the hidden scalar controls and obsolete matcher are retired. Final
+Debug/Release builds pass with zero warnings/errors. Disposable profile
+`20260728124401-5f1d1f99` passes 400/400 with exact database/business-state
+equality; v54.0.6 is canonical and parent v54 is complete.
+
+## v54.0.5 - Materials Multi-select and Exact Scope Candidate
+
+The candidate implements the accepted v54.0.1-v54.0.5 sequence: typed persisted
+filter state, six no-modifier facets, exact visible scope snapshots, honest AI
+limits, immutable collection membership evidence and filter-independent
+website/publication scope. Debug solution build passes with zero warnings and
+errors. Static/security/documentation and Release gates pass. Disposable smoke
+`20260728122340-f5ff3f77` passes 399/399 with exact state equality. Owner
+runtime acceptance remains pending; v53.0.5 stays canonical.
+
 ## v53.0.5 - Post-v50 Help Reconciliation
 
 The candidate reconciles completed v51-v53 user-visible contracts with current

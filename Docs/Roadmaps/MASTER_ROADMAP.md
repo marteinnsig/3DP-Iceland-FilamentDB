@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v53.0.5 — Post-v50 Help Reconciliation**
+Current canonical release: **v54.0.6 — Materials Scope and Collection Workflow**
 
-Last runtime-accepted baseline: **v53.0.5 — Post-v50 Help Reconciliation**
+Last runtime-accepted baseline: **v54.0.6 — Materials Scope and Collection Workflow**
 
-Current canonical application release: **v53.0.5 — Post-v50 Help Reconciliation**
+Current canonical application release: **v54.0.6 — Materials Scope and Collection Workflow**
 
-Current roadmap increment: **v54.0 — Materials Scope and Collection Workflow research**
+Current roadmap increment: **v55.0 — Operational Safety and Disposable Hygiene research**
 
-Current acceptance note: v53.0.5 is runtime accepted with Full Data Verification PASS.
+Current acceptance note: v54.0.6 is runtime accepted with Full Data Verification 400/400 PASS.
 
-Next note: parent v53 is complete; v54.0 research and interaction-contract work is current.
+Next note: parent v54 is complete; v55.0 research is current before any implementation.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -40,8 +40,8 @@ This file is the canonical strategic roadmap. Completed build details belong in
 
 | v53 | Governed Landed-cost Currency | ★★★★☆ | Complete — canonical v53.0.5 runtime accepted |
 
-| v54 | Materials Scope and Collection Workflow | ★★★★☆ | In progress — v54.0 research current |
-| v55 | Operational Safety and Disposable Hygiene | ★★★★☆ | Planned |
+| v54 | Materials Scope and Collection Workflow | ★★★★☆ | Complete — canonical v54.0.6 runtime accepted |
+| v55 | Operational Safety and Disposable Hygiene | ★★★★☆ | Current — research before implementation |
 | v56 | Governed Public Demo Dataset | ★★★☆☆ | Planned |
 | v57 | Public Website Experience and Canonical Branding | ★★★★☆ | Planned |
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Planned |
@@ -2354,16 +2354,55 @@ to unstarted authoritative planning slots.
   - Owner accepted Help search/navigation/readability and Full Data Verification PASS.
 
 - **v54.0 — Materials Scope and Collection Workflow**
-  - State: Current research and interaction contract before replacing the accepted single-select filter path.
+  - State: Complete, canonical and runtime accepted at v54.0.6.
   - Add no-modifier multi-select for Manufacturer, Base Material, Variant / Finish, Reinforcement, Color and Product Line.
   - Use OR within one filter and AND across filter categories, with visible selections, counts and per-filter/global Clear actions.
   - Keep AI Assistant and saved collection scope tied to the exact visible canonical MaterialID set.
   - Preserve archived/unlinked behavior, report and website scope, saved collection snapshots and canonical data immutability.
   - Extend deterministic scope/clear/restart evidence; keep dropdown layout, wrapping and usability as owner-manual acceptance.
   - Completion condition: owner accepts exact filter logic, collection parity and unchanged canonical/business state.
+  - **v54.0.1 — Filter State and Scope Contract**
+    - State: Complete and owner runtime accepted.
+    - Add typed six-facet state, stable linked/legacy/unlinked keys and one deterministic MaterialID projection.
+    - Persist exact search and facet selections per profile; stale values remain reviewable and are never fuzzy-remapped.
+    - Preserve archived rows in Materials Manager while canonical visible consumers continue to exclude archived rows.
+    - Define cross-filter counts while retaining selected zero-count values; one logical change triggers one refresh cycle.
+    - Completion condition: deterministic state, restart and scope probes pass without changing canonical data.
+  - **v54.0.2 — No-modifier Multi-select Materials UI**
+    - State: Complete and owner runtime accepted.
+    - Add six keyboard/mouse multi-select surfaces, visible selections/counts and per-filter/global Clear actions.
+    - Add stable AutomationIds and explicit empty-result behavior while preserving search, selection and viewport contracts.
+    - Retain the accepted scalar filter adapter until replacement acceptance; v54.0.6 then retires it.
+    - Completion condition: owner accepts interaction, wrapping, focus, keyboard behavior and responsive performance.
+  - **v54.0.3 — Canonical Scope and Collection Parity**
+    - State: Complete and owner runtime accepted.
+    - Carry ordered distinct IDs, count, hash and filter description in one immutable visible-scope snapshot.
+    - Make AI limits explicit or require narrower scope; never describe a silently truncated subset as the exact visible set.
+    - Preserve saved collection IDs and expose resolved, archived and missing membership without rewriting the snapshot.
+    - Completion condition: AI preview/save and collection reload prove exact MaterialID parity and honest limits.
+  - **v54.0.4 — Report, Website and Publication Isolation**
+    - State: Complete and owner runtime accepted.
+    - Keep All Visible Materials reports aligned with the exact canonical visible snapshot.
+    - Keep website DATA scope and public publication scope independent from Materials filters and separately typed.
+    - Prove filters never mutate report publication flags, generated website candidates or canonical relationships.
+    - Completion condition: report parity and unchanged website/publication candidate sets pass deterministic evidence.
+  - **v54.0.5 — Help, Automation and Verification**
+    - State: Complete and owner runtime accepted.
+    - Reconcile Help topics, control ledger, AutomationIds, tester authorization and release documentation.
+    - Cover OR/AND, archived/unlinked, zero-result, per-filter/global Clear, restart and downstream exact-ID parity.
+    - Keep wrapping, DPI, discoverability and representative local HTML/PDF/website presentation owner-manual.
+    - Completion condition: Debug/Release, static/security/documentation, disposable smoke and Full Verification pass.
+    - Evidence: Release profile `20260728122340-f5ff3f77` passes 399/399 and exact database/business-state equality.
+  - **v54.0.6 — Runtime Acceptance and Legacy Retirement**
+    - State: Complete, canonical and runtime accepted.
+    - Require owner acceptance of mouse/keyboard behavior, restart, empty results, collection parity and local previews.
+    - Retire or deliberately retain the scalar adapter only after replacement acceptance; review every related legacy surface.
+    - Completion condition: owner accepts v54, exact business state is preserved and all release gates pass.
+    - Owner evidence: interaction, wrapping, restart, AI/collection scope, local previews and Verification PASS accepted.
+    - Final evidence: profile `20260728124401-5f1d1f99` passes 400/400 with exact database/business-state equality.
 
 - **v55.0 — Operational Safety and Disposable Hygiene**
-  - State: Planned after v54; bounded safety fixes and cleanup ownership only.
+  - State: Current research; bounded safety fixes and cleanup ownership only.
   - Add a named, default-No confirmation before deleting an unreferenced canonical Base Material.
   - Prove cancellation preserves SQLite, selection and dependent calculations; retain referenced-delete blocking.
   - Define a path-contained post-acceptance cleanup operation for obsolete successful profiles below the tester temp root.

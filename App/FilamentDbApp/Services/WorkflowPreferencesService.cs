@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using FilamentDbApp.Models;
 
 namespace FilamentDbApp.Services;
 
@@ -87,6 +88,73 @@ public sealed class WorkflowPreferencesService
     public void SetLastSelectedMaterialId(string? materialId)
     {
         _preferences.LastSelectedMaterialId = materialId?.Trim() ?? string.Empty;
+    }
+
+    public MaterialFilterState GetMaterialFilterState() =>
+        (_preferences.MaterialFilterState ?? new MaterialFilterState()).Clone();
+
+    public void SetMaterialFilterState(MaterialFilterState? state)
+    {
+        _preferences.MaterialFilterState =
+            (state ?? new MaterialFilterState()).Clone();
+    }
+
+    public static MaterialFilterContractVerificationResult
+        RunMaterialFilterPersistenceContractVerification()
+    {
+        var state = new MaterialFilterState { SearchText = "  blue  " };
+        state.SetSelections(
+            MaterialFilterFacet.Manufacturer,
+            new[]
+            {
+                new MaterialFacetSelection("id:2", "Maker B"),
+                new MaterialFacetSelection("ID:1", "Maker A"),
+                new MaterialFacetSelection(" id:1 ", "duplicate")
+            });
+        state.SetSelections(
+            MaterialFilterFacet.Color,
+            new[] { new MaterialFacetSelection("value:blue", "Blue") });
+
+        var preferences = new WorkflowPreferences
+        {
+            MaterialFilterState = state.Clone()
+        };
+        var json = JsonSerializer.Serialize(preferences);
+        var restored = JsonSerializer.Deserialize<WorkflowPreferences>(json) ??
+                       new WorkflowPreferences();
+        var restoredState =
+            (restored.MaterialFilterState ?? new MaterialFilterState()).Normalize();
+        var legacy = JsonSerializer.Deserialize<WorkflowPreferences>("{}") ??
+                     new WorkflowPreferences();
+        var legacyState =
+            (legacy.MaterialFilterState ?? new MaterialFilterState()).Normalize();
+        var nullListPreferences = JsonSerializer.Deserialize<WorkflowPreferences>(
+                                      """
+                                      {
+                                        "MaterialFilterState": {
+                                          "Manufacturers": null
+                                        }
+                                      }
+                                      """) ??
+                                  new WorkflowPreferences();
+        var nullListState =
+            (nullListPreferences.MaterialFilterState ??
+             new MaterialFilterState()).Clone();
+
+        var passed =
+            restoredState.SearchText == "blue" &&
+            restoredState.Manufacturers.Select(item => item.Key)
+                .SequenceEqual(new[] { "id:1", "id:2" }) &&
+            restoredState.Colors.Single().Key == "value:BLUE" &&
+            string.IsNullOrEmpty(legacyState.SearchText) &&
+            nullListState.Manufacturers.Count == 0 &&
+            Enum.GetValues<MaterialFilterFacet>()
+                .All(facet => legacyState.GetSelections(facet).Count == 0);
+        return new MaterialFilterContractVerificationResult(
+            passed,
+            passed
+                ? "Material filter state round-trip and legacy empty-default contracts pass"
+                : "Material filter preference normalization or backward compatibility failed");
     }
 
     public AiAssistantProviderConfiguration GetAiAssistantProviderConfiguration() =>
@@ -395,6 +463,7 @@ public sealed class WorkflowPreferencesService
         public WindowPreference? Window { get; set; }
         public string WebsiteExportFolder { get; set; } = string.Empty;
         public string LastSelectedMaterialId { get; set; } = string.Empty;
+        public MaterialFilterState? MaterialFilterState { get; set; }
         public string AiAssistantProviderId { get; set; } = LocalAiAssistantProvider.Id;
         public string AiAssistantModel { get; set; } = OpenAiAssistantProviderFoundation.DefaultModel;
         public List<WorkflowColumnLayout> FastMaterialsGridLayout { get; set; } = new();
