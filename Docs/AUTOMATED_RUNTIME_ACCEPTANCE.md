@@ -1,5 +1,22 @@
 # Automated Runtime Acceptance
 
+## v58.0.5 - Document branding migration and recovery accepted
+
+- Existing smoke remains the bounded runtime owner; no new file-dialog or
+  branding mutation authorization is added.
+- Full Verification synthetically covers valid/invalid/oversize PNG input,
+  source/cache integrity, brand validation, restart, SQLite backup parity,
+  corrupt fallback and combined Restore Default.
+- Schema-v39 migration smoke `20260728232355-2dd2b477` passes 413/413 with
+  exact logical database and business-state equality.
+- The old seed remains
+  `C:\Seed-Database\filamentdb-schema39-migration.sqlite`, SHA-256
+  `C56963156E2CC660E088AF1F07D54B9ACA5C439A0532B7BBA0FFFBC45B25E5E6`.
+- The schema-v40 canonical seed SHA-256 is
+  `A0C1E72984ED747C8205D8C847C1620C5C22AC6C587C86FDC7A1B6998A600870`;
+  current-schema smoke `20260728232520-3f97f349` repeats 413/413 exact state.
+- Owner database, Production, FTPS, updater and live network remain blocked.
+
 ## v56.0.6 - Owner acceptance and guarded artifact closure
 
 - Owner accepts the full demo plus all 36 corrected Impact rows.

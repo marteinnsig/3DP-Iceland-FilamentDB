@@ -2,6 +2,33 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v58.0.5 - Document Branding Migration and Recovery
+
+The document-branding foundation now creates a fully synthetic valid
+transparent PNG, rejects invalid signature and oversized dimensions, verifies
+the selected source remains byte-identical and confirms cache/hash parity.
+Brand validation rejects overlong/control-character input. A consistent manual
+SQLite backup resolves the same custom logo SHA-256 and normalized brand after
+reopen; corrupt custom bytes fall back honestly and Restore Default clears
+both governed selections.
+
+Disposable smoke `20260728232355-2dd2b477` migrates the accepted schema-v39
+seed to schema v40 and passes 413/413 with exact logical database and
+business-state equality. The byte-identical old seed is retained as
+`C:\Seed-Database\filamentdb-schema39-migration.sqlite`, SHA-256
+`C56963156E2CC660E088AF1F07D54B9ACA5C439A0532B7BBA0FFFBC45B25E5E6`.
+
+The validated disposable derivative becomes the canonical tester seed at
+`C:\Seed-Database\filamentdb.sqlite`, schema v40, 201 Materials, SQLite
+integrity `ok`, SHA-256
+`A0C1E72984ED747C8205D8C847C1620C5C22AC6C587C86FDC7A1B6998A600870`.
+Current-schema smoke `20260728232520-3f97f349` repeats 413/413 with exact state.
+
+AutomationRunner needs no new mutating scenario: existing disposable smoke
+owns startup/restart, safety boundaries and Full Verification, while the
+synthetic database contract safely owns invalid/oversize/corrupt inputs.
+Owner database, Production and FTPS remain blocked.
+
 ## v58.0.4.1 - Governed Document Brand Identity
 
 Schema v40 adds a singleton document brand display name beside the accepted

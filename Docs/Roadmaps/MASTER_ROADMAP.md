@@ -2590,11 +2590,14 @@ to unstarted authoritative planning slots.
     - Completion condition: brand/default/fallback text parity and platform provenance pass deterministic and visual acceptance.
     - Completion condition met: custom/default identity, one provenance line, restart, Restore Default and Verification pass.
   - **v58.0.5 — Disposable Acceptance, Migration and Recovery**
-    - State: Planned after v58.0.4.1.
+    - State: Complete; schema-v39 migration and schema-v40 smoke pass 413/413 with exact state.
     - Update schema fixture/seed only if required; prove old databases default safely and backups retain branding state.
     - Test valid/invalid/oversize assets, source immutability, restart, missing/corrupt fallback and Restore Default.
     - Keep owner database, Production and FTPS blocked; preserve exact baseline/final business-state equality.
     - Completion condition: deterministic Verification and the bounded disposable scenario pass with retained evidence.
+    - Implementation: extend synthetic Verification for limits/backup parity; preserve schema-v39 fixture; promote validated v40 seed.
+    - Automation: existing disposable smoke owns safe startup/restart and Verification; no new mutating UI scenario is needed.
+    - Completion condition met: limits, backup parity, migration fixture, promoted seed and bounded runtime evidence pass.
   - **v58.0.6 — Visual Acceptance and Parent Closure**
     - State: Planned after v58.0.5.
     - Review default plus wide, tall, square and transparent custom logos across HTML, PDF and customer quote output.

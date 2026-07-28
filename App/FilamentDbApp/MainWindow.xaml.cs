@@ -18044,9 +18044,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             BuildInfo.ReleaseTitle);
         var v58041BrandIdentityReady =
             BuildInfo.CurrentDatabaseSchema == 40 &&
-            BuildInfo.Version == "58.0.4.1" &&
-            BuildInfo.ReleaseCode == "DOCUMENT-BRAND-IDENTITY" &&
-            BuildInfo.ReleaseTitle == "Governed Document Brand Identity" &&
             FindName("DocumentBrandDisplayNameBox") is TextBox brandNameBox &&
             brandNameBox.MaxLength == DocumentBrandIdentityService.MaximumLength &&
             FindName("SaveDocumentBrandDisplayNameButton") is Button &&
@@ -18065,11 +18062,25 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             idempotentBrandHtml == encodedBrandHtml &&
             preservedProvenanceHtml == preformattedProvenanceHtml;
         checks.Add(new VerificationCheck(
-            "v58.0.4.1 Governed document brand identity release gate",
-            v58041BrandIdentityReady && documentBrandingFoundation.Passed && releaseIdentityReady,
-            v58041BrandIdentityReady && documentBrandingFoundation.Passed && releaseIdentityReady
+            "v58.0.4.1 Governed document brand identity retained contract",
+            v58041BrandIdentityReady && documentBrandingFoundation.Passed,
+            v58041BrandIdentityReady && documentBrandingFoundation.Passed
                 ? $"Schema v40; brand '{rendererBrandingContract.BrandDisplayName}' is normalized, encoded and renderer-aligned"
-                : "Brand schema, Settings controls, normalization, encoding, renderer parity, provenance or release identity failed"));
+                : "Brand schema, Settings controls, normalization, encoding, renderer parity or provenance failed"));
+        var v5805AcceptanceReady =
+            BuildInfo.Version == "58.0.5" &&
+            BuildInfo.ReleaseCode == "DOCUMENT-BRANDING-ACCEPTANCE" &&
+            BuildInfo.ReleaseTitle == "Document Branding Migration and Recovery" &&
+            documentBrandingFoundation.Passed &&
+            documentBrandingFoundation.Detail.Contains(
+                "backup/restart",
+                StringComparison.Ordinal);
+        checks.Add(new VerificationCheck(
+            "v58.0.5 Document branding migration and recovery release gate",
+            v5805AcceptanceReady && releaseIdentityReady,
+            v5805AcceptanceReady && releaseIdentityReady
+                ? documentBrandingFoundation.Detail
+                : "Asset limits, backup/restart parity, fallback/default or release identity failed"));
         var inventoryRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "InventorySpoolItems");
         var landedCostMigration = _database.RunLandedCostCurrencyMigrationContractVerification();

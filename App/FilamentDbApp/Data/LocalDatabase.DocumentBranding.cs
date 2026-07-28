@@ -155,6 +155,10 @@ public sealed partial class LocalDatabase
             var savedBrand = identityService.Save("  Test   Brand  ");
             var restartedBrand = new DocumentBrandIdentityService(
                 new LocalDatabase(databasePath)).Resolve();
+            var backup = database.CreateManualBackupNow();
+            var backupDatabase = new LocalDatabase(backup.FullName);
+            var backupLogo = new DocumentBrandingService(backupDatabase).ResolveCustomOrFallback();
+            var backupBrand = new DocumentBrandIdentityService(backupDatabase).Resolve();
             var sourceAfter = Convert.ToHexString(SHA256.HashData(IOFile.ReadAllBytes(sourcePath)));
             var cacheHash = IOFile.Exists(service.CachePath)
                 ? Convert.ToHexString(SHA256.HashData(IOFile.ReadAllBytes(service.CachePath)))
@@ -168,6 +172,40 @@ public sealed partial class LocalDatabase
             catch (InvalidDataException)
             {
                 wrongSignatureRejected = true;
+            }
+
+            var oversizedDimensionsRejected = false;
+            try
+            {
+                var oversizedPixels = new byte[4097 * 16 * 4];
+                var oversizedBitmap = BitmapSource.Create(
+                    4097, 16, 96, 96, PixelFormats.Bgra32, null, oversizedPixels, 4097 * 4);
+                var oversizedEncoder = new PngBitmapEncoder();
+                oversizedEncoder.Frames.Add(BitmapFrame.Create(oversizedBitmap));
+                using var oversizedOutput = new MemoryStream();
+                oversizedEncoder.Save(oversizedOutput);
+                _ = DocumentBrandingService.NormalizePng(oversizedOutput.ToArray());
+            }
+            catch (InvalidDataException)
+            {
+                oversizedDimensionsRejected = true;
+            }
+
+            var invalidBrandsRejected = false;
+            try
+            {
+                identityService.Save(new string('x', DocumentBrandIdentityService.MaximumLength + 1));
+            }
+            catch (ArgumentException)
+            {
+                try
+                {
+                    identityService.Save("Control\u0001Character");
+                }
+                catch (ArgumentException)
+                {
+                    invalidBrandsRejected = true;
+                }
             }
 
             using (var connection = new SqliteConnection($"Data Source={databasePath};Pooling=False"))
@@ -197,7 +235,12 @@ public sealed partial class LocalDatabase
                 sourceBefore == sourceAfter &&
                 resolved.Provenance == DocumentBrandingProvenance.Custom &&
                 resolved.Sha256 == saved.Sha256 &&
+                backupLogo.Provenance == DocumentBrandingProvenance.Custom &&
+                backupLogo.Sha256 == saved.Sha256 &&
+                backupBrand == "Test Brand" &&
                 wrongSignatureRejected &&
+                oversizedDimensionsRejected &&
+                invalidBrandsRejected &&
                 fallback.Provenance == DocumentBrandingProvenance.Fallback &&
                 defaultSnapshot.Provenance == DocumentBrandingProvenance.Default &&
                 savedBrand == "Test Brand" &&
@@ -207,8 +250,8 @@ public sealed partial class LocalDatabase
             return new DocumentBrandingFoundationContractVerification(
                 passed,
                 passed
-                    ? $"Schema v{BuildInfo.CurrentDatabaseSchema}; PNG source/hash/cache and normalized brand restart/default pass."
-                    : "Document branding image or brand identity validation, persistence, restart or fallback contract failed.");
+                    ? $"Schema v{BuildInfo.CurrentDatabaseSchema}; PNG limits/source/cache, brand validation, backup/restart and fallback/default pass."
+                    : "Document branding limits, persistence, backup, restart or fallback/default contract failed.");
         }
         catch (Exception ex)
         {

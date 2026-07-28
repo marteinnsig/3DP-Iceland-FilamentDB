@@ -2022,6 +2022,19 @@ and runtime accepted.
   412/412 with exact logical state. Custom/default identity, Restore Default
   and exactly one platform-provenance line are confirmed.
 
+# 2026-07-28 - v58.0.5 branding migration and recovery acceptance
+
+- **Risk:** Schema-v40 brand identity could leave the canonical tester seed
+  stale or allow logo/name state to diverge across restart and SQLite backup.
+- **Correction:** Synthetic Verification now covers PNG limits, source/cache
+  integrity, brand validation, backup parity, corrupt fallback and combined
+  Restore Default. Existing disposable smoke owns bounded runtime execution.
+- **Evidence:** Schema-v39 migration smoke `20260728232355-2dd2b477` and
+  promoted schema-v40 smoke `20260728232520-3f97f349` pass 413/413 with exact
+  logical and business state.
+- **Status:** Complete. Schema-v39 fixture is retained; validated schema-v40
+  seed is canonical. Owner database, Production and FTPS were not touched.
+
 # 2026-07-27 - v52.3.2 live response validation lacked safe failure detail
 
 - **Observed:** After owner consent, the first live Responses result reached the

@@ -2,6 +2,20 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v58.0.5 - Document Branding Migration and Recovery
+
+- Extends synthetic Verification across valid, invalid-signature and
+  oversized-dimension PNGs, source immutability, cache/hash parity, restart,
+  corrupt fallback and Restore Default.
+- Proves normalized Brand / Organization Name validation plus custom
+  logo/name equality in a consistent SQLite backup.
+- Preserves the prior schema-v39 seed as a supported migration fixture and
+  promotes only the validated disposable schema-v40 derivative.
+- Keeps AutomationRunner on its existing bounded disposable smoke contract;
+  no file-dialog automation, owner database, Production or FTPS is authorized.
+- Schema-v39 migration and current-schema smoke both pass 413/413 with exact
+  logical database and business-state equality.
+
 ## v58.0.4.1 - Governed Document Brand Identity
 
 - Adds an optional Brand / Organization Name beside the governed document logo,
