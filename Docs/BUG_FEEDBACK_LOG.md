@@ -603,7 +603,7 @@ Verification evidence: v56 research and the fictional-identity/real-measurement 
 publication contract. v56.0.1 is complete: the owner accepted the exact private 36-Material allowlist and re-identification risk.
 Schema v38 integrity, relationships, uniqueness and measurement coverage pass; the gitignored registry is hash-bound.
 v56.0.2 is complete: the owner accepted the isolated read-only inspector, deterministic privacy-safe manifest and fail-closed
-source, private-registry and schema-drift evidence. v56.0.3 and v56.0.4 are complete; v56.0.5 runtime acceptance is current.
+source, private-registry and schema-drift evidence. v56.0.3 and v56.0.4 are complete; v56.0.5.1 correction is current.
 v56.0.3 fictionalizes Manufacturer, Product Line, Marketing Name, Color and Variant while retaining approved generic Base
 Material and CF/GF taxonomy. Public spec/private parity, identity uniqueness and deterministic graph hashes pass; no SQLite is built.
 Two final Release validations are byte-identical with logical manifest SHA-256
@@ -622,7 +622,13 @@ v56.0.5 disposable profile `20260728164408-ba9afb2f` passes 391/391
 applicable Public Demo Verification checks with 12 explicit owner
 website-publication N/A checks, zero mandatory N/A, exact restart/filter/AI/
 collection scope, local Material Summary export and business-state equality.
-v56.0.6 owner privacy, usefulness and visual report acceptance is current.
+Independent PDF review then found customer-facing MaterialID disclosure and
+split rows. v56.0.5.1 owns removal from visible HTML/PDF, retained internal
+metadata traceability, row pagination guards and renewed disposable/PDF
+acceptance before v56.0.6 owner review resumes.
+Correction profile `20260728173706-49ad4986` passes 391/391 applicable checks.
+The seven-page PDF uses compact customer identity, four-row CSS-grid ledgers
+and repeating `@page` margins; extracted text and every rendered page pass.
 What happened: Trial users or evaluators currently lack a safe populated database that demonstrates Materials, measurements, filters,
 rankings, reports and same-family/manufacturer comparisons without exposing the owner database or commercial product identities.
 Expected behavior: Offer an optional downloadable demo SQLite backup with real 3DPIceland measurement evidence under fictional,

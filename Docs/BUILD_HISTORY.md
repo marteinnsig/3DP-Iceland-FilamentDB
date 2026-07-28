@@ -2,6 +2,24 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v56.0.5.1 - Demo Report Privacy and Pagination Correction
+
+Independent PDF review caught customer-facing MaterialID disclosure and two
+rows split across page boundaries after v56.0.5 runtime acceptance. REPORT-110
+now omits MaterialID from its visible table and selected identity, but governed
+metadata retains the canonical scope for internal traceability.
+
+The accepted correction uses compact customer identity, four-row CSS-grid
+ledger groups and a repeating 18 mm `@page` margin. This avoids Chromium's
+table-row fragmentation and body-margin continuation-page clipping while
+retaining every report score and fictional identity dimension.
+
+Disposable profile `20260728173706-49ad4986` passes 391/391 applicable checks,
+12 canonical-data N/A, zero mandatory N/A and exact business-state recovery.
+Extracted text contains neither MaterialID nor `DEMO-MAT-`; all seven rendered
+pages pass visual privacy, row-integrity, wrapping, branding and clipping
+review.
+
 ## v56.0.5 - Disposable Runtime, Verification, Help and Reports
 
 Disposable demo profile `20260728164408-ba9afb2f` passes the new bounded

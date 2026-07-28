@@ -1,5 +1,24 @@
 # Current Build Notes - v56.0.6 Development
 
+## v56.0.5.1 Demo Report Privacy and Pagination Correction
+
+Independent review of the accepted demo PDF found two release blockers:
+customer-facing MaterialID values remained in the Material Summary table and
+long table rows could split across pages. The report now omits MaterialID from
+customer-facing HTML/PDF and selected-identity content while retaining exact
+canonical traceability in governed internal metadata and manifests.
+
+Print CSS keeps each table row together and repeats the table header after a
+page break. The dense ledger uses compact customer identity and four-row
+CSS-grid groups; `@page` owns the repeating 18 mm PDF margin. Verification and
+the disposable demo scenario fail if HTML contains the MaterialID header, a
+`DEMO-MAT-` value or lacks the pagination structure.
+
+Final profile `20260728173706-49ad4986` passes 391/391 applicable checks with
+12 canonical-data N/A and zero mandatory N/A. Its seven-page PDF passes
+page-by-page visual review plus extracted-text privacy checks. PDF SHA-256 is
+`DDD48F096E2624133F07F059F2901A95EB29E9C6EC21370B56FAE7417A884F23`.
+
 ## v56.0.5 Disposable Runtime, Verification, Help and Reports
 
 The bounded `demo` AutomationRunner scenario copies only the corrected public

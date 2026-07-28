@@ -2,6 +2,15 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v56.0.5.1 - Demo Report Privacy and Pagination Correction
+
+- Removes MaterialID from customer-facing Material Summary HTML/PDF and
+  selected-material identity while retaining canonical internal metadata.
+- Uses compact customer identity, four-row CSS-grid ledgers and repeating
+  `@page` margins to prevent clipping or fragmented PDF rows.
+- Adds Verification, disposable runtime and Help contracts for the privacy and
+  pagination boundary.
+
 ## v56.0.5 - Disposable Runtime, Verification, Help and Reports
 
 - Adds a bounded public-demo AutomationRunner scenario with restart, exact

@@ -1,5 +1,20 @@
 # Automated Runtime Acceptance
 
+## v56.0.5.1 - Demo report privacy and pagination correction
+
+- Material Summary customer-facing HTML/PDF omits the MaterialID header and
+  every fictional `DEMO-MAT-` value.
+- Governed report metadata and manifest retain exact internal scope
+  traceability.
+- Compact customer identity, four-row CSS-grid ledger groups and repeating
+  `@page` margins prevent row fragmentation and continuation-page clipping.
+- Verification and scenario `demo` own deterministic HTML checks; corrected
+  PDF text and rendered pages require independent review.
+- Final profile `20260728173706-49ad4986` passes 391/391 applicable checks,
+  12 canonical-data N/A, zero mandatory N/A and exact state recovery.
+- Seven rendered pages and extracted PDF text pass; PDF SHA-256 is
+  `DDD48F096E2624133F07F059F2901A95EB29E9C6EC21370B56FAE7417A884F23`.
+
 ## v56.0.5 - Public demo runtime accepted
 
 - Scenario `demo` uses only a disposable copy of the governed public artifact.

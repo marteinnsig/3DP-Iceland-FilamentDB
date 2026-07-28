@@ -1203,8 +1203,9 @@ internal static class HelpContentCatalog
 
             Governed public-demo acceptance keeps every Public reports and Public test details choice off. In the actual Reports / PDF
             Export tab, choose Material Summary Report, All Visible Materials, Refresh Preview and Export Current Report. This writes
-            fictional demo identities only to the disposable output folder. An empty public-build result is expected because demo
-            acceptance never opts records into publication or authorizes Production/FTPS.
+            fictional demo identities only to the disposable output folder. Customer-facing Material Summary HTML/PDF omits
+            MaterialID while its internal metadata and manifest retain canonical traceability. An empty public-build result is expected
+            because demo acceptance never opts records into publication or authorizes Production/FTPS.
             """, "reports", "PDF", "template", "scope", "preview", "export", "public builds"),
         new(
             "reports.controls-fields",
@@ -1233,7 +1234,8 @@ internal static class HelpContentCatalog
             Preview and status output
             Report Preview/Log and the blue summary/status line are read-only. They identify model validation, scope, output paths and
             generated evidence. A successful log proves structure/generation only; visually inspect representative HTML/PDF for
-            wrapping, pagination, charts and customer/public fields before external use.
+            wrapping, pagination, charts and customer/public fields before external use. Material Summary HTML/PDF omits MaterialID
+            from customer-facing content while governed metadata retains internal traceability.
 
             Failure and historical boundaries
             Missing selection/data, validation or output-folder errors block the requested action and do not repair measurements.

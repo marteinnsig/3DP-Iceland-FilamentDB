@@ -10570,8 +10570,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                "table{border-collapse:collapse;width:100%;margin-top:12px;font-size:13px;}" +
                "th,td{border-bottom:1px solid #e2e8f0;text-align:left;padding:8px;vertical-align:top;}" +
                "th{background:#f1f5f9;color:#334155;}" +
+               ".report-ledger-group{display:inline-block;width:100%;margin:8px 0;}" +
+               ".report-ledger-row{display:grid;grid-template-columns:1.35fr 1.15fr .55fr .8fr 1fr .45fr .55fr .55fr .55fr .65fr .75fr .75fr;}" +
+               ".report-ledger-row-shell{display:inline-block;width:100%;}" +
+               ".report-ledger-cell{border-bottom:1px solid #e2e8f0;padding:8px;vertical-align:top;overflow-wrap:anywhere;}" +
+               ".report-ledger-header .report-ledger-cell{background:#f1f5f9;color:#334155;font-weight:700;}" +
                ".footer{margin-top:28px;color:#64748b;font-size:12px;border-top:1px solid #e2e8f0;padding-top:12px;}" +
-               "@media print{body{margin:18mm;}.card,.report-visual,.radar-card,.chart,.intel-card,.ai-review,.review-panel{break-inside:avoid;}.brand-logo,.report-visual,.radar-card{box-shadow:none;}.chart-grid,.review-section-grid{grid-template-columns:1fr;}table{font-size:11px;}}" +
+               "@page{margin:18mm;}" +
+               "@media print{body{margin:0;}.card,.report-visual,.radar-card,.chart,.intel-card,.ai-review,.review-panel,tr,.report-ledger-row-shell{break-inside:avoid!important;page-break-inside:avoid!important;}thead{display:table-header-group;}.brand-logo,.report-visual,.radar-card{box-shadow:none;}.chart-grid,.review-section-grid{grid-template-columns:1fr;}table,.report-ledger-row{font-size:11px;}}" +
                "</style>\n" +
                "</head>\n<body>\n<div class=\"report-shell\">\n" +
                "<div class=\"header\"><div class=\"brand-text\">" +
@@ -11287,8 +11293,52 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         };
         var coverageTable = string.Join("", coverageRows.Select(item =>
             $"<tr><td>{Html(item.Item1)}</td><td>{item.Item2}</td><td>{FormatCoveragePercent(item.Item2, rows.Count)}</td></tr>"));
-        var materialRows = string.Join("", summaries.Select(item =>
-            $"<tr><td>{Html(item.Video.MaterialId)}</td><td>{Html(item.Ranking.Label)}</td><td>{Html(DisplayText(item.Ranking.Manufacturer))}</td><td>{Html(DisplayText(item.Ranking.BaseMaterial))}</td><td>{Html(item.Summary?.SummaryStatus ?? "No native results")}</td><td>{Html(DisplayText(item.Ranking.Status))}</td><td>{BuildExternalReportLinkHtml(GetCell(item.Source, "YouTube Review URL", "Video URL", "YouTube URL"), "Watch video")}</td><td>{Html(item.Ranking.OverallText)}</td><td>{Html(item.Ranking.TensileText)}</td><td>{Html(item.Ranking.ImpactText)}</td><td>{Html(item.Ranking.StiffnessText)}</td><td>{Html(item.Ranking.ConsistencyText)}</td><td>{Html(item.Ranking.LayerAdhesionText)}</td></tr>"));
+        const string materialLedgerHeader =
+            "<div class=\"report-ledger-row-shell\"><div class=\"report-ledger-row report-ledger-header\">" +
+            "<div class=\"report-ledger-cell\">Material</div><div class=\"report-ledger-cell\">Manufacturer</div>" +
+            "<div class=\"report-ledger-cell\">Type</div><div class=\"report-ledger-cell\">Test coverage</div>" +
+            "<div class=\"report-ledger-cell\">Publishing status</div><div class=\"report-ledger-cell\">Video</div>" +
+            "<div class=\"report-ledger-cell\">Overall</div><div class=\"report-ledger-cell\">Tensile</div>" +
+            "<div class=\"report-ledger-cell\">Impact</div><div class=\"report-ledger-cell\">Stiffness</div>" +
+            "<div class=\"report-ledger-cell\">Consistency</div><div class=\"report-ledger-cell\">Layer adhesion</div></div></div>";
+        var materialGroups = string.Join("", summaries.Chunk(4).Select(chunk =>
+        {
+            var groupRows = string.Join("", chunk.Select(item =>
+            {
+                var compactIdentity = string.Join(
+                    " · ",
+                    new[]
+                    {
+                        GetCell(item.Source, "Marketing Name", "Material Name"),
+                        GetCell(item.Source, "Product Line"),
+                        GetCell(item.Source, "Variant"),
+                        GetCell(item.Source, "Color")
+                    }
+                    .Where(value => !string.IsNullOrWhiteSpace(value))
+                    .Distinct(StringComparer.OrdinalIgnoreCase));
+                var cells = new[]
+                {
+                    Html(DisplayText(compactIdentity)),
+                    Html(DisplayText(item.Ranking.Manufacturer)),
+                    Html(DisplayText(item.Ranking.BaseMaterial)),
+                    Html(item.Summary?.SummaryStatus ?? "No native results"),
+                    Html(DisplayText(item.Ranking.Status)),
+                    BuildExternalReportLinkHtml(
+                        GetCell(item.Source, "YouTube Review URL", "Video URL", "YouTube URL"),
+                        "Watch video"),
+                    Html(item.Ranking.OverallText),
+                    Html(item.Ranking.TensileText),
+                    Html(item.Ranking.ImpactText),
+                    Html(item.Ranking.StiffnessText),
+                    Html(item.Ranking.ConsistencyText),
+                    Html(item.Ranking.LayerAdhesionText)
+                };
+                return "<div class=\"report-ledger-row-shell\"><div class=\"report-ledger-row\">" +
+                       string.Join("", cells.Select(cell => $"<div class=\"report-ledger-cell\">{cell}</div>")) +
+                       "</div></div>";
+            }));
+            return "<div class=\"report-ledger-group\">" + materialLedgerHeader + groupRows + "</div>";
+        }));
         var selectedIdentity = rows.Count == 1
             ? BuildMaterialSummaryIdentityHtml(rows[0])
             : string.Empty;
@@ -11309,7 +11359,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             "<h2>Native test-result coverage</h2><table><thead><tr><th>Engineering module / score</th><th>Materials</th><th>Coverage</th></tr></thead><tbody>" + coverageTable + "</tbody></table>" +
             BuildDistributionBarChartHtml("Material type distribution", MaterialTypeDistribution(rows)) +
             BuildDistributionBarChartHtml("Manufacturer distribution", ManufacturerDistribution(rows)) +
-            "<h2>Materials in report scope</h2><table><thead><tr><th>MaterialID</th><th>Material</th><th>Manufacturer</th><th>Type</th><th>Test coverage</th><th>Publishing status</th><th>Video</th><th>Overall</th><th>Tensile</th><th>Impact</th><th>Stiffness</th><th>Consistency</th><th>Layer adhesion</th></tr></thead><tbody>" + materialRows + "</tbody></table>" +
+            "<h2>Materials in report scope</h2>" + materialGroups +
             BuildMaterialSummarySourceHtml();
 
         return BuildReportHtmlShell(title, key, generatedAt, rows, totalRows, body);
@@ -11324,7 +11374,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
     {
         var fields = new[]
         {
-            ("MaterialID", GetCell(row, "Material ID")),
             ("Manufacturer", GetCell(row, "Manufacturer", "Brand")),
             ("Product line", GetCell(row, "Product Line")),
             ("Material", _detailService.BuildTitle(row)),
@@ -11355,7 +11404,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
     private static string BuildMaterialSummarySourceHtml()
     {
         return "<h2>Methodology and source</h2>" +
-               "<div class=\"note\">This report reads canonical MaterialID identity and existing Verified Material Summary / governed report-model outputs. In plain language, verified means an accepted test result is available for the material under the platform's validation rules. It does not calculate tensile, impact, stiffness or engineering scores. Results are comparative 3DPIceland measurements and are not a replacement for certified manufacturer datasheets or accredited laboratory testing.</div>" +
+               "<div class=\"note\">This report reads canonical material identity and existing Verified Material Summary / governed report-model outputs. In plain language, verified means an accepted test result is available for the material under the platform's validation rules. It does not calculate tensile, impact, stiffness or engineering scores. Results are comparative 3DPIceland measurements and are not a replacement for certified manufacturer datasheets or accredited laboratory testing.</div>" +
                "<ul>" +
                "<li><a href=\"https://iskort.is/3dp/\">3DPIceland Engineering Platform</a></li>" +
                "<li><a href=\"https://iskort.is/3dp/index.html#methodology\">Testing methodology</a></li>" +
@@ -16025,6 +16074,13 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var materialSummaryReportReady =
             materialSummaryHtmlProbe.Contains("REPORT-110 - Material Summary", StringComparison.Ordinal) &&
             materialSummaryHtmlProbe.Contains("summary-probe", StringComparison.Ordinal) &&
+            !materialSummaryHtmlProbe.Contains("<th>MaterialID</th>", StringComparison.Ordinal) &&
+            !materialSummaryHtmlProbe.Contains("<td>summary-probe</td>", StringComparison.Ordinal) &&
+            materialSummaryHtmlProbe.Contains("class=\"report-ledger-group\"", StringComparison.Ordinal) &&
+            materialSummaryHtmlProbe.Contains("report-ledger-header", StringComparison.Ordinal) &&
+            materialSummaryHtmlProbe.Contains("class=\"report-ledger-row-shell\"", StringComparison.Ordinal) &&
+            materialSummaryHtmlProbe.Contains("page-break-inside:avoid!important", StringComparison.Ordinal) &&
+            materialSummaryHtmlProbe.Contains("page-break-inside:avoid!important", StringComparison.Ordinal) &&
             materialSummaryHtmlProbe.Contains("Native test-result coverage", StringComparison.Ordinal) &&
             materialSummaryHtmlProbe.Contains("Materials in report scope", StringComparison.Ordinal) &&
             materialSummaryHtmlProbe.Contains("Selected material identity", StringComparison.Ordinal) &&

@@ -10,7 +10,7 @@ Current roadmap increment: **v56.0 — Governed Public Demo Dataset research**
 
 Current acceptance note: v55.0.6 is runtime accepted with Full Data Verification 403/403 PASS.
 
-Next note: parent v55 is complete; v56.0.1-v56.0.5 are complete and v56.0.6 owner acceptance is current.
+Next note: parent v55 is complete; v56.0.5.1 is complete and v56.0.6 owner acceptance is current.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2451,7 +2451,7 @@ to unstarted authoritative planning slots.
     - Final evidence: profile `20260728135719-4ac326ab` passes 403/403 with exact database/business-state equality.
 
 - **v56.0 — Governed Public Demo Dataset**
-  - State: In progress; v56.0.1-v56.0.5 are complete and v56.0.6 owner acceptance is current.
+  - State: In progress; v56.0.1-v56.0.5.1 are complete and v56.0.6 owner acceptance is current.
   - Build a deterministic, versioned SQLite demo from an explicit owner-approved allowlist of representative measured materials.
   - Use disclosed fictional identities with real owner-approved measurements and useful relationship patterns.
   - Exclude purchasing, Inventory, notes, URLs, paths, credentials, deployment and Production identity.
@@ -2476,6 +2476,9 @@ to unstarted authoritative planning slots.
   - **v56.0.5 — Disposable Runtime, Verification, Help and Reports**
     - State: Complete; demo scenario passes 391/391 applicable checks, 12 declared privacy N/A and exact state recovery.
     - Require restart, filters, rankings, collections, local reports and Full Verification without changing the demo artifact.
+  - **v56.0.5.1 — Demo Report Privacy and Pagination Correction**
+    - State: Complete; privacy checks and all seven rendered pages pass with 391/391 applicable Verification.
+    - Remove MaterialID from the report table, keep internal metadata traceability and prevent row fragmentation in HTML/PDF.
   - **v56.0.6 — Owner Acceptance and Guarded Artifact Closure**
     - State: Current; require owner privacy, usefulness, runtime and report acceptance plus final release gates.
     - Produce a publish-ready governed download; Production and FTPS remain default-No and require separate authority.

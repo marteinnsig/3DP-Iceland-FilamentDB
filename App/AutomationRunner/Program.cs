@@ -2050,6 +2050,7 @@ internal static class Program
                     StringComparison.OrdinalIgnoreCase)),
             "Current report package contains a path outside its disposable root.");
         var reportText = IOFile.ReadAllText(IOPath.Combine(packageRoot, "report.txt"));
+        var reportHtml = IOFile.ReadAllText(IOPath.Combine(packageRoot, "report.html"));
         Require(
             reportText.Contains(
                 "Materials in report scope: 36 of 36 active materials",
@@ -2058,6 +2059,16 @@ internal static class Program
             reportText.Contains("Engineering Sample", StringComparison.Ordinal) &&
             !reportText.Contains("DEMO-MAT-", StringComparison.Ordinal),
             "Material Summary report does not expose the exact full demo scope.");
+        Require(
+            !reportHtml.Contains("<th>MaterialID</th>", StringComparison.Ordinal) &&
+            !reportHtml.Contains("DEMO-MAT-", StringComparison.Ordinal) &&
+            reportHtml.Contains("class=\"report-ledger-group\"", StringComparison.Ordinal) &&
+            reportHtml.Contains("report-ledger-header", StringComparison.Ordinal) &&
+            reportHtml.Contains("class=\"report-ledger-row-shell\"", StringComparison.Ordinal) &&
+            reportHtml.Contains(
+                "page-break-inside:avoid!important",
+                StringComparison.Ordinal),
+            "Customer-facing Material Summary HTML exposes MaterialID or permits split rows.");
 
         IOFile.WriteAllText(
             IOPath.Combine(profileRoot, "evidence", "demo-report-artifacts.json"),

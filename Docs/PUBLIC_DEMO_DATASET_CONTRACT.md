@@ -3,7 +3,7 @@
 ## Status and ownership
 
 - Increment: v56.0.1.
-- State: accepted through v56.0.5; v56.0.6 owner acceptance is current.
+- State: accepted through v56.0.5.1; v56.0.6 owner acceptance is current.
 - Canonical application release: v55.0.6.
 - Database schema: v38.
 - Public demo ownership is independent from the canonical tester seed.
@@ -433,4 +433,19 @@ mandatory check may become N/A.
 The accepted disposable scenario passes 391/391 applicable checks, restart,
 exact filter/AI/collection scope and a local 36-Material Summary export.
 Production, FTPS and publication remain unauthorized. v56.0.6 owner acceptance
-is current.
+resumes only after v56.0.5.1 correction evidence passes.
+
+## v56.0.5.1 report privacy and pagination correction
+
+Customer-facing Material Summary HTML/PDF must omit MaterialID headers and
+fictional `DEMO-MAT-` values. Internal report metadata and manifests retain the
+exact canonical MaterialID scope for governed traceability. Print output must
+keep each material row together and repeat table headers across pages.
+
+Deterministic Verification and the disposable `demo` scenario enforce the
+HTML boundary. Compact customer identity, four-row CSS-grid ledger groups and
+repeating `@page` margins own pagination.
+
+Profile `20260728173706-49ad4986` passes 391/391 applicable checks. Extracted
+PDF text contains no MaterialID or `DEMO-MAT-`; all seven rendered pages pass
+privacy, row-integrity, clipping, overlap, wrapping and branding review.
