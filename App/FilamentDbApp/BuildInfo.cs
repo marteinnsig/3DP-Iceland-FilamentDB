@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "LANDED-COST-DIAGNOSTICS-HELP";
-    public const string ReleaseTitle = "Diagnostics, Help and Final Acceptance";
+    public const string ReleaseCode = "POST-V50-HELP-RECONCILIATION";
+    public const string ReleaseTitle = "Post-v50 Help Reconciliation";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 38;
 

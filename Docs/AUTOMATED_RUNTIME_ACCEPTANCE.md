@@ -1,5 +1,18 @@
 # Automated Runtime Acceptance
 
+## v53.0.5 - Post-v50 Help reconciliation accepted
+
+- No new mutating tester scenario is warranted because runtime business
+  behavior, schema and visible controls are unchanged.
+- The read-only Help audit requires exact v51 profile, v52 OpenAI and v53
+  landed-cost markers plus explicit coverage ownership.
+- Disposable smoke `20260727234421-49e325d1` passes 393/393.
+- It visits all 22 top-level and 16 nested tabs, validates contextual Help and
+  restores database and normalized business-state hashes exactly.
+- Production, FTPS, updates and owner-database selection remain blocked.
+- Owner accepts Help search/navigation/readability and Full Data Verification
+  PASS; v53.0.5 requires no additional AutomationRunner scenario.
+
 ## v53.0.4.4 - Diagnostics and Help accepted
 
 - Existing smoke opens System Diagnostics read-only.

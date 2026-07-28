@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v52.3.2 OpenAI operational-evidence reconciliation
+Version: v53.0.5 post-v50 Help reconciliation
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted
@@ -35,17 +35,17 @@ AutomationId presence, a click-handler count or a tab overview is not coverage.
 
 ## Discovery baseline
 
-Source snapshot: `master` commit `a662677` on 2026-07-27.
+Source snapshot: v53.0.5 candidate on 2026-07-27.
 
 | Source | Discovered candidates | Reconciliation requirement |
 |---|---:|---|
 | Top-level tabs | 22 | Preserve accepted overview and contextual mappings |
 | Nested tabs | 16 | Preserve accepted nested-aware mappings |
-| XAML buttons | 143 | Map visible action, handler, owner and Help subsection |
+| XAML buttons | 150 | Map visible action, handler, owner and Help subsection |
 | XAML menu items | 31 | Separate headings/separators from invoked commands |
 | XAML text boxes | 35 | Determine editable, read-only, multiline and generated output |
 | XAML password boxes | 2 | Record secret ownership and non-persistence boundary |
-| XAML combo boxes | 48 | Record source, allowed choice, default and save timing |
+| XAML combo boxes | 49 | Record source, allowed choice, default and save timing |
 | XAML checkboxes | 10 | Record true/false effect, persistence and dependent states |
 | XAML data grids | 31 | Reconcile grid-level read-only state and runtime columns |
 | XAML grid-column declarations | 356 | Resolve binding, grid owner and actual editability |
@@ -74,7 +74,9 @@ Current exact inventory:
 | v52.1 | 7 |
 | v52.2 | 3 |
 | v52.3.2 | 1 |
-| **Total** | **656** |
+| v53.0.2 | 2 |
+| v53.0.4.1 | 6 |
+| **Total** | **664** |
 
 v52.1 adds seven Settings candidates for provider/model preference, protected
 credential ownership and local-only foundation diagnostics. All route to
@@ -88,11 +90,18 @@ network I/O.
 v52.3.2 adds one secret-safe operational-evidence clipboard action. It remains
 disabled until a live attempt and never retains raw payloads or credentials.
 
+v53.0.2 adds the landed-cost currency selector and default-No Draft override.
+Both route to `purchase-orders.controls-fields` and remain disabled for legacy,
+calculated or non-Draft orders.
+
+v53.0.4.1 adds six hidden landed-cost lifecycle controls. They are authorized
+only by an exact disposable manifest and remain unsupported owner-facing UI.
+
 | Initial source classification | Candidates |
 |---|---:|
-| Actions | 169 |
-| Choices | 57 |
-| Input candidates | 31 |
+| Actions | 181 |
+| Choices | 59 |
+| Input candidates | 33 |
 | Grid candidates | 11 |
 | Editable-column candidates | 318 |
 | Read-only fields | 4 |
@@ -128,9 +137,25 @@ Eight runtime surface owners declare 42 exact controls in
 control keys, a live entry point, a live Help destination and a valid status.
 
 The hidden PDF print host is explicitly `unsupported` as a user Help surface.
-It remains supported internal report infrastructure. Bulk Update, Recovery,
-Verification, Diagnostics, updater confirmations, document viewer and the
-Materials prototype retain bounded v50.4.1 or v50.4.3 Help ownership.
+It remains supported internal report infrastructure. Verification now records
+its v51.3 classification owner, while Diagnostics records its v53.0.4.4
+aggregate landed-cost reconciliation owner. Other surfaces retain their
+bounded v50 ownership.
+
+## Post-v50 reconciliation
+
+The deterministic gate requires explicit coverage ownership for v51.1-v51.4,
+v52.1-v52.3.2 and v53.0.2-v53.0.5. It also requires exact Help markers for:
+
+- Owner, Verification/Disposable and Clean/Readiness runtime profiles;
+- Mandatory versus CanonicalDataDependent Verification classification;
+- Windows Credential Manager and OpenAI payload/evidence boundaries;
+- landed-cost defaults, manual fallback, calculation provenance and
+  Diagnostics non-mutation.
+
+Inventory provenance retained in SQLite but not exposed as an editable visible
+column is explained as read-only historical evidence in Inventory Help. It is
+not misclassified as a user-editable XAML field.
 
 ## Delivery ownership
 
@@ -141,6 +166,7 @@ Materials prototype retain bounded v50.4.1 or v50.4.3 Help ownership.
 | v50.4.2 | Measurements, Experimental Testing and analysis | No unexplained supported control/field |
 | v50.4.3 | Output, publishing, assistant, creator, menus and runtime windows | No unexplained supported control/field |
 | v50.4.4 | Cross-scope reconciliation, deterministic drift gates and tester | Zero gaps plus owner acceptance |
+| v53.0.5 | v51-v53 Help, owner and runtime-surface reconciliation | Zero unexplained post-v50 gaps |
 
 ## Initial findings and risks
 

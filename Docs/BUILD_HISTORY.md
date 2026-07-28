@@ -2,6 +2,16 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v53.0.5 - Post-v50 Help Reconciliation
+
+The candidate reconciles completed v51-v53 user-visible contracts with current
+Help, stable destinations, runtime surfaces and the exact coverage ledger.
+Debug/Release and static/documentation/security gates pass. Disposable smoke
+`20260727234421-49e325d1` passes Verification 393/393, all 22 top-level and
+16 nested tabs, contextual Help and exact database/business-state equality.
+Owner accepts Help search/navigation/readability and Full Data Verification
+PASS. v53.0.5 is canonical and parent v53 is complete.
+
 ## v53.0.4.4 - Diagnostics, Help and Final Acceptance
 
 The candidate adds secret-safe aggregate landed-cost snapshot counts to System

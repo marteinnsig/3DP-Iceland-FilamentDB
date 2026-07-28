@@ -200,16 +200,18 @@ Date: 2026-07-27
 Area: In-application Help / Post-v50 maintenance
 Type: Workflow friction / Documentation
 Severity: Important
-Status: In progress — v53.0.5 current
+Status: Solved
 What happened: The exhaustive v50 Help system is accepted, but later user-visible v51-v53 changes need one explicit reconciliation
 pass, and repository governance did not yet require Help maintenance in every future increment.
 Expected behavior: Keep Help, stable destinations, coverage registry/ledger and deterministic gates synchronized whenever supported
 features, controls, fields, workflows, labels, validation, persistence or safety boundaries change.
 Steps to reproduce: Compare accepted v51-v53 release changes with current Help topics, control/field ledger and coverage registry.
 Screenshot / export / report attached: Owner governance review on 2026-07-27.
-Resolution: Planned as mandatory v53.0.5 — Post-v50 Help Reconciliation. `AGENTS.md` now requires same-increment Help maintenance for
-future user-visible changes; cosmetic-only changes may record that no Help update is warranted.
-Verification evidence: Pending complete v51-v53 source/release/Help reconciliation, deterministic drift gates and owner review.
+Resolution: v53.0.5 reconciles v51 runtime-profile ownership, v52 OpenAI boundaries, v53 landed-cost controls, Inventory provenance,
+runtime surfaces and the exact 664-row XAML inventory. `AGENTS.md` requires same-increment Help maintenance for future user-visible
+changes; cosmetic-only changes may record that no Help update is warranted.
+Verification evidence: Debug/Release, Help, documentation and NuGet gates pass. Disposable smoke `20260727234421-49e325d1` passes
+393/393 with exact database/business-state equality. Owner accepts search/navigation/readability and Full Data Verification PASS.
 
 Date: 2026-07-27
 Area: Runtime profiles / ownership and acceptance isolation

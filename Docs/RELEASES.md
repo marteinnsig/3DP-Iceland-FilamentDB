@@ -1,6 +1,17 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v53.0.5 - Post-v50 Help Reconciliation
+
+The mandatory parent-closure audit reconciles every completed v51-v53
+user-visible contract with searchable Help, stable destinations, runtime
+surfaces and the exact 664-row XAML coverage ledger. Inventory Help now names
+retained read-only landed-cost provenance without treating it as editable
+spool data. Debug/Release, Help, documentation and NuGet gates pass.
+Disposable smoke `20260727234421-49e325d1` passes 393/393 with exact database
+and business-state equality. Owner accepts Help search/navigation/readability
+and Full Data Verification PASS; schema remains v38 and parent v53 is complete.
+
 ## v53.0.4.4 - Diagnostics, Help and Final Acceptance
 
 Secret-safe Diagnostics separates current, legacy, other-versioned and

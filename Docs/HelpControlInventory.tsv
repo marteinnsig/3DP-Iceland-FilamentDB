@@ -69,12 +69,12 @@ xaml.application-shell.button.automationcrudcreate	Application shell	Button	Auto
 xaml.application-shell.button.automationcruddelete	Application shell	Button	AutomationCrudDelete	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationcrudedit	Application shell	Button	AutomationCrudEdit	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationcrudverifyabsent	Application shell	Button	AutomationCrudVerifyAbsent	action	v50.4.3	menu-runtime.controls-fields	covered
-xaml.application-shell.button.automationlandedcostcalculate	Application shell	Button	AutomationLandedCostCalculate	action	v50.4.3	menu-runtime.controls-fields	covered
-xaml.application-shell.button.automationlandedcostcleanup	Application shell	Button	AutomationLandedCostCleanup	action	v50.4.3	menu-runtime.controls-fields	covered
-xaml.application-shell.button.automationlandedcostdownstream	Application shell	Button	AutomationLandedCostDownstream	action	v50.4.3	menu-runtime.controls-fields	covered
-xaml.application-shell.button.automationlandedcostoverride	Application shell	Button	AutomationLandedCostOverride	action	v50.4.3	menu-runtime.controls-fields	covered
-xaml.application-shell.button.automationlandedcostprepare	Application shell	Button	AutomationLandedCostPrepare	action	v50.4.3	menu-runtime.controls-fields	covered
-xaml.application-shell.button.automationlandedcostverifyabsent	Application shell	Button	AutomationLandedCostVerifyAbsent	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostcalculate	Application shell	Button	AutomationLandedCostCalculate	action	v53.0.4.1	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostcleanup	Application shell	Button	AutomationLandedCostCleanup	action	v53.0.4.1	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostdownstream	Application shell	Button	AutomationLandedCostDownstream	action	v53.0.4.1	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostoverride	Application shell	Button	AutomationLandedCostOverride	action	v53.0.4.1	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostprepare	Application shell	Button	AutomationLandedCostPrepare	action	v53.0.4.1	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationlandedcostverifyabsent	Application shell	Button	AutomationLandedCostVerifyAbsent	action	v53.0.4.1	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationrecoverybackup	Application shell	Button	AutomationRecoveryBackup	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationrecoveryexportexcel	Application shell	Button	AutomationRecoveryExportExcel	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationrecoverymutate	Application shell	Button	AutomationRecoveryMutate	action	v50.4.3	menu-runtime.controls-fields	covered
@@ -449,7 +449,7 @@ xaml.print-job-quotes.textbox.quoteprinthoursbox	Print Job Quotes	TextBox	QuoteP
 xaml.print-job-quotes.textbox.quoteprintlaborminutesbox	Print Job Quotes	TextBox	QuotePrintLaborMinutesBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
 xaml.print-job-quotes.textbox.quotequantitybox	Print Job Quotes	TextBox	QuoteQuantityBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
 xaml.purchase-orders.button.addpurchaseorderlinebutton	Purchase Orders	Button	AddPurchaseOrderLineButton	action	v50.4.1	purchase-orders.controls-fields	covered
-xaml.purchase-orders.button.applylandedcostcurrencyoverride	Purchase Orders	Button	ApplyLandedCostCurrencyOverride	action	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.button.applylandedcostcurrencyoverride	Purchase Orders	Button	ApplyLandedCostCurrencyOverride	action	v53.0.2	purchase-orders.controls-fields	covered
 xaml.purchase-orders.button.browsepurchaseinvoice-click	Purchase Orders	Button	BrowsePurchaseInvoice_Click	action	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.button.calculatepurchasecostsbutton	Purchase Orders	Button	CalculatePurchaseCostsButton	action	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.button.createinventoryfrompurchaseorderbutton	Purchase Orders	Button	CreateInventoryFromPurchaseOrderButton	action	v50.4.1	purchase-orders.controls-fields	covered
@@ -459,7 +459,7 @@ xaml.purchase-orders.button.deletepurchaseorderlinebutton	Purchase Orders	Button
 xaml.purchase-orders.button.newpurchaseorderbutton	Purchase Orders	Button	NewPurchaseOrderButton	action	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.button.receivepurchaseorderbutton	Purchase Orders	Button	ReceivePurchaseOrderButton	action	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.button.refreshecbexchangerates	Purchase Orders	Button	RefreshEcbExchangeRates	action	v50.4.1	purchase-orders.controls-fields	covered
-xaml.purchase-orders.combobox.landedcostcurrencyselector	Purchase Orders	ComboBox	LandedCostCurrencySelector	choice	v50.4.1	purchase-orders.controls-fields	covered
+xaml.purchase-orders.combobox.landedcostcurrencyselector	Purchase Orders	ComboBox	LandedCostCurrencySelector	choice	v53.0.2	purchase-orders.controls-fields	covered
 xaml.purchase-orders.datagrid.purchaseorderlinesgrid	Purchase Orders	DataGrid	PurchaseOrderLinesGrid	grid-candidate	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.datagrid.purchaseordersgrid	Purchase Orders	DataGrid	PurchaseOrdersGrid	grid-candidate	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.datagridcheckboxcolumn.allocate	Purchase Orders	DataGridCheckBoxColumn	Allocate	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered

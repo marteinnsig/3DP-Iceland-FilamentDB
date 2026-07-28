@@ -17938,8 +17938,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var v53044DiagnosticsHelp = HelpContentCatalog.Sections.Single(section =>
             section.Id == "diagnostics.overview");
         var v53044ReconciliationReady =
-            BuildInfo.Version == "53.0.4.4" &&
-            BuildInfo.ReleaseCode == "LANDED-COST-DIAGNOSTICS-HELP" &&
             v53044DiagnosticsReport.Contains(
                 "Purchase Order landed-cost snapshots: current ",
                 StringComparison.Ordinal) &&
@@ -17960,7 +17958,27 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             v53044ReconciliationReady && releaseIdentityReady,
             v53044ReconciliationReady && releaseIdentityReady
                 ? "Secret-safe landed-cost snapshot aggregates, migration/recovery boundaries and matching Help markers are present"
-                : "v53 diagnostics aggregates, Help markers or release identity are incomplete"));
+                : "v53 diagnostics aggregates or Help markers are incomplete"));
+        var v5305RuntimeHelp = HelpContentCatalog.Sections.Single(section =>
+            section.Id == "menu-runtime.controls-fields");
+        var v5305AiHelp = HelpContentCatalog.Sections.Single(section =>
+            section.Id == "ai.controls-fields");
+        var v5305InventoryHelp = HelpContentCatalog.Sections.Single(section =>
+            section.Id == "inventory.controls-fields");
+        var v5305HelpReconciliationReady =
+            BuildInfo.Version == "53.0.5" &&
+            BuildInfo.ReleaseCode == "POST-V50-HELP-RECONCILIATION" &&
+            v5305RuntimeHelp.Body.Contains("CanonicalDataDependent", StringComparison.Ordinal) &&
+            v5305AiHelp.Body.Contains("Copy Operational Evidence", StringComparison.Ordinal) &&
+            v5305InventoryHelp.Body.Contains(
+                "calculation UTC and calculation version",
+                StringComparison.Ordinal);
+        checks.Add(new VerificationCheck(
+            "v53.0.5 Post-v50 Help reconciliation gate",
+            v5305HelpReconciliationReady && releaseIdentityReady,
+            v5305HelpReconciliationReady && releaseIdentityReady
+                ? "v51 runtime profiles, v52 OpenAI boundaries and v53 Inventory provenance have exact Help markers"
+                : "Post-v50 Help markers or release identity are incomplete"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {

@@ -98,6 +98,12 @@ function Get-TopSurface([string]$SurfacePath) {
 }
 
 function Get-OwnerIncrement([string]$SurfacePath, [string]$Identity) {
+    if ($Identity -match "^AutomationLandedCost") {
+        return "v53.0.4.1"
+    }
+    if ($Identity -match "^(LandedCostCurrencySelector|ApplyLandedCostCurrencyOverride)$") {
+        return "v53.0.2"
+    }
     if ($Identity -match "CopyOpenAiOperationalEvidence") {
         return "v52.3.2"
     }
@@ -394,6 +400,40 @@ foreach ($runtimeSurface in $registry.RuntimeSurfaces) {
     }
 }
 
+$postV50RequiredIncrements = @(
+    "v51.1", "v51.2", "v51.3", "v51.4",
+    "v52.1", "v52.2", "v52.3.2",
+    "v53.0.2", "v53.0.3", "v53.0.4.1", "v53.0.4.2",
+    "v53.0.4.3", "v53.0.4.4", "v53.0.5"
+)
+$coveredOwnerIncrements = @(
+    $registry.CoveredOwnerIncrements |
+        ForEach-Object { [string]$_ }
+)
+foreach ($requiredIncrement in $postV50RequiredIncrements) {
+    if ($coveredOwnerIncrements -notcontains $requiredIncrement) {
+        $failures.Add("Post-v50 Help owner increment is missing: $requiredIncrement.")
+    }
+}
+
+$postV50Markers = @(
+    "OWNER / PRODUCTION",
+    "CLEAN / READINESS",
+    "CanonicalDataDependent",
+    "Windows Credential Manager",
+    "Preview OpenAI Payload",
+    "Copy Operational Evidence",
+    "Default Landed Cost Currency",
+    "Manual Governed Settings",
+    "calculation UTC and calculation version",
+    "opening or refreshing Diagnostics never runs either one"
+)
+foreach ($marker in $postV50Markers) {
+    if ($allCode.IndexOf($marker, [StringComparison]::Ordinal) -lt 0) {
+        $failures.Add("Post-v50 Help contract marker is missing: $marker.")
+    }
+}
+
 $duplicateKeys = @(
     @($registry.CustomColumnRegistries.Key) + @($registry.RuntimeSurfaces.Key) |
         Group-Object |
@@ -448,5 +488,5 @@ if ($failures.Count -gt 0) {
     exit 1
 }
 
-Write-Host "PASS - discovery counts, owners, destinations, statuses and keys match the v50.4.0 registry."
+Write-Host "PASS - discovery counts, owners, destinations, statuses and keys match the post-v50 reconciled registry."
 Write-Host "NOTE - planned rows remain implementation gaps until their status becomes covered or manual-only."

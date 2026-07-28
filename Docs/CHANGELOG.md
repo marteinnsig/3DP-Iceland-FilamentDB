@@ -2,6 +2,26 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v53.0.5 - Post-v50 Help Reconciliation
+
+- Audits every user-visible v51-v53 change against current Help, source
+  controls, runtime surfaces and the machine-checkable coverage ledger.
+- Formally records v51 runtime-profile and Verification classification
+  ownership that was already explained in Help but absent from the registry.
+- Correctly assigns the two visible v53 Draft landed-cost controls and six
+  disposable-only lifecycle controls to their actual increments.
+- Expands Inventory Help with the retained invoice/landed currency, rate,
+  observation/fetch and calculation provenance boundary.
+- Updates the exact XAML inventory from 656 to 664 candidates and reconciles
+  the ledger with current control counts.
+- Adds deterministic post-v50 markers and a Full Data Verification gate.
+- No schema, database, business-logic or visible-control change; schema
+  remains v38.
+- Debug/Release and static/documentation/security gates pass. Disposable smoke
+  `20260727234421-49e325d1` passes 393/393 with exact database-state equality.
+- Owner accepts Help search/navigation/readability and Full Data Verification
+  PASS. v53.0.5 is canonical and parent v53 is complete.
+
 ## v53.0.4.4 - Diagnostics, Help and Final Acceptance
 
 - Separates current, legacy, other-versioned and uncalculated/unversioned

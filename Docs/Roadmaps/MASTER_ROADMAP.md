@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v53.0.4.4 — Diagnostics, Help and Final Acceptance**
+Current canonical release: **v53.0.5 — Post-v50 Help Reconciliation**
 
-Last runtime-accepted baseline: **v53.0.4.4 — Diagnostics, Help and Final Acceptance**
+Last runtime-accepted baseline: **v53.0.5 — Post-v50 Help Reconciliation**
 
-Current canonical application release: **v53.0.4.4 — Diagnostics, Help and Final Acceptance**
+Current canonical application release: **v53.0.5 — Post-v50 Help Reconciliation**
 
-Current roadmap increment: **v53.0.5 — Post-v50 Help Reconciliation**
+Current roadmap increment: **v54.0 — Materials Scope and Collection Workflow research**
 
-Current acceptance note: v53.0.4.4 is runtime accepted with Full Data Verification 392/392.
+Current acceptance note: v53.0.5 is runtime accepted with Full Data Verification PASS.
 
-Next note: v53.0.5 performs the mandatory post-v50 Help reconciliation before parent v53 closure.
+Next note: parent v53 is complete; v54.0 research and interaction-contract work is current.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -38,9 +38,9 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v51 | Governed Runtime Profiles | ★★★☆☆ | Complete — canonical v51.4.0 runtime accepted |
 | v52 | Optional OpenAI Assistant Integration | ★★★★☆ | Complete — Provisional model; runtime v52.3.2 |
 
-| v53 | Governed Landed-cost Currency | ★★★★☆ | In progress — current v53.0.5 |
+| v53 | Governed Landed-cost Currency | ★★★★☆ | Complete — canonical v53.0.5 runtime accepted |
 
-| v54 | Materials Scope and Collection Workflow | ★★★★☆ | Planned |
+| v54 | Materials Scope and Collection Workflow | ★★★★☆ | In progress — v54.0 research current |
 | v55 | Operational Safety and Disposable Hygiene | ★★★★☆ | Planned |
 | v56 | Governed Public Demo Dataset | ★★★☆☆ | Planned |
 | v57 | Public Website Experience and Canonical Branding | ★★★★☆ | Planned |
@@ -2342,16 +2342,19 @@ to unstarted authoritative planning slots.
   - Evidence: final smoke `20260727232314-5c3961bc` passes 392/392; all seven additional disposable scenarios pass.
   - Owner accepted aggregate Diagnostics, Help search/readability, unchanged canonical data and Full Data Verification 392/392.
 - **v53.0.5 — Post-v50 Help Reconciliation**
-  - State: Current after v53.0.4.4; mandatory before parent v53 may close or v54 may start.
+  - State: Complete, canonical and runtime accepted; parent v53 is closed.
   - Audit every user-visible change delivered after v50 Help acceptance through completed v51, v52 and the final v53 workflow.
   - Reconcile tabs, controls, fields, menus, runtime windows, labels, validation, save timing, defaults and safety boundaries.
   - Update current Help, stable destinations, coverage registry/ledger and deterministic gates for every confirmed drift or gap.
   - Remove or redirect stale Help for retired behavior while preserving canonical historical release documentation.
   - Require Debug/Release, Help/static/documentation gates, Full Data Verification and owner search/navigation/readability review.
   - Completion condition: zero unexplained post-v50 Help gaps and owner acceptance; only then may parent v53 close.
+  - Candidate evidence: 664 XAML candidates; v51-v53 owners, runtime surfaces and exact Help markers are reconciled.
+  - Disposable smoke `20260727234421-49e325d1` passes 393/393 with exact state.
+  - Owner accepted Help search/navigation/readability and Full Data Verification PASS.
 
 - **v54.0 — Materials Scope and Collection Workflow**
-  - State: Planned after v53; research and interaction contract before replacing the accepted single-select filter path.
+  - State: Current research and interaction contract before replacing the accepted single-select filter path.
   - Add no-modifier multi-select for Manufacturer, Base Material, Variant / Finish, Reinforcement, Color and Product Line.
   - Use OR within one filter and AND across filter categories, with visible selections, counts and per-filter/global Clear actions.
   - Keep AI Assistant and saved collection scope tied to the exact visible canonical MaterialID set.

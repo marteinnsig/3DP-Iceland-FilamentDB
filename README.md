@@ -4,9 +4,9 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v52.3.2 — OpenAI Operational Evidence and Failure Harness
+- **Current runtime-accepted release:** v53.0.5 — Post-v50 Help Reconciliation
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current candidate:** None — v52 is complete; v53.0 research is current
+- **Current candidate:** None — v53 is complete; v54.0 research is current
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Download the Windows application

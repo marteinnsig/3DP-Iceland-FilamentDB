@@ -1,4 +1,34 @@
-# Current Build Notes - v53.0.4.4
+# Current Build Notes - v53.0.5
+
+## Post-v50 Help Reconciliation
+
+v53.0.5 audits completed v51 runtime profiles, v52 OpenAI integration and the
+final v53 landed-cost workflow against current Help, stable destinations,
+source controls, runtime surfaces and the exact coverage ledger.
+
+The accepted Help text already contained the substantive v51 and v52 safety
+contracts. The audit found formal ownership drift: v51 increments were absent
+from the coverage registry, v53 controls inherited broad v50 owners, and the
+ledger still described the v52.3.2 snapshot. Those gaps are now reconciled.
+Inventory Help also names the retained read-only invoice/landed currency,
+rate, observation/fetch and calculation provenance copied from a calculated
+Purchase Order without exposing it as editable spool fields.
+
+The deterministic Help gate now requires explicit v51-v53 owner increments and
+exact runtime-profile, Verification classification, OpenAI secret/payload and
+landed-cost provenance markers. Full Data Verification has a matching v53.0.5
+contract. There is no schema, database, business-logic or visible-control
+change; schema remains v38.
+
+Debug and Release application builds and the Release AutomationRunner build
+pass with zero warnings/errors. Help coverage reports 664/664 reconciled XAML
+candidates; release documentation, roadmap line length and read-only NuGet
+vulnerability gates pass. Disposable smoke
+`20260727234421-49e325d1` passes Full Data Verification 393/393, visits all
+22 top-level and 16 nested tabs and returns both database hashes exactly to
+baseline. Production, FTPS, updates and owner-database selection remain
+blocked. Owner Help search/navigation/readability and Full Data Verification
+PASS are accepted. v53.0.5 is canonical and parent v53 is complete.
 
 ## Diagnostics, Help and Final Acceptance
 

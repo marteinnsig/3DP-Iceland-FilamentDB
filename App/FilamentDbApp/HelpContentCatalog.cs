@@ -393,7 +393,11 @@ internal static class HelpContentCatalog
             Downstream rules
             Purchase receiving may create Unopened spool rows. Usage may consume only a same-MaterialID spool with sufficient remaining
             grams and decrements it atomically with the accepted Usage event. Later currency/catalog changes never rewrite retained
-            purchase or Inventory provenance.
+            purchase or Inventory provenance. A spool created from a calculated v53 Purchase Order retains separate invoice purchase
+            amount/currency and landed amount/currency plus the snapshotted conversion rate, rate source, observation/fetch evidence,
+            calculation UTC and calculation version. Those provenance values are read-only historical evidence even though the normal
+            editable spool grid shows only the owner-editable purchase price/currency fields. Legacy rows retain their explicit legacy
+            provenance and are never silently upgraded or recalculated by opening, refreshing or editing Inventory.
             """,
             "inventory fields", "show empty", "only opened", "low stock", "spool id", "spool grams",
             "remaining grams", "price per spool", "estimated value", "cost per kg"),
