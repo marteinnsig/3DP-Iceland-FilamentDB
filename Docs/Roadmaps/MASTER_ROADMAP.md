@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v55.0.6 — Operational Safety and Disposable 
 
 Current canonical application release: **v55.0.6 — Operational Safety and Disposable Hygiene**
 
-Current roadmap increment: **v56.0 — Governed Public Demo Dataset research**
+Current roadmap increment: **v57.0 — Public Website Experience and Canonical Branding research**
 
-Current acceptance note: v55.0.6 is runtime accepted with Full Data Verification 403/403 PASS.
+Current acceptance note: v56.0.6 demo dataset is owner accepted with Public Demo Verification 391/391 PASS.
 
-Next note: parent v55 is complete; v56.0.5.1 is complete and v56.0.6 owner acceptance is current.
+Next note: parent v56 is complete; v57.0 research is current before website or asset changes.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2451,7 +2451,7 @@ to unstarted authoritative planning slots.
     - Final evidence: profile `20260728135719-4ac326ab` passes 403/403 with exact database/business-state equality.
 
 - **v56.0 — Governed Public Demo Dataset**
-  - State: In progress; v56.0.1-v56.0.5.1 are complete and v56.0.6 owner acceptance is current.
+  - State: Complete; owner accepted privacy, usefulness, runtime, reports, corrected Impact data and the governed local package.
   - Build a deterministic, versioned SQLite demo from an explicit owner-approved allowlist of representative measured materials.
   - Use disclosed fictional identities with real owner-approved measurements and useful relationship patterns.
   - Exclude purchasing, Inventory, notes, URLs, paths, credentials, deployment and Production identity.
@@ -2479,12 +2479,16 @@ to unstarted authoritative planning slots.
   - **v56.0.5.1 — Demo Report Privacy and Pagination Correction**
     - State: Complete; privacy checks and all seven rendered pages pass with 391/391 applicable Verification.
     - Remove MaterialID from the report table, keep internal metadata traceability and prevent row fragmentation in HTML/PDF.
+  - **v56.0.5.2 — Demo Impact Percentage Correction**
+    - State: Complete; owner accepted 36 normal Impact rows after deterministic restoration of 567 legacy decimal encodings.
+    - Restore only deterministic invalid legacy decimal encodings, rebuild A/B and require all 36 Impact rows to validate.
   - **v56.0.6 — Owner Acceptance and Guarded Artifact Closure**
-    - State: Current; require owner privacy, usefulness, runtime and report acceptance plus final release gates.
+    - State: Complete; owner accepted privacy, usefulness, runtime, reports and the corrected demo; all final gates pass.
     - Produce a publish-ready governed download; Production and FTPS remain default-No and require separate authority.
+    - Local ZIP SHA-256: `B38F3173CBAE4E95D4EF589D460BC820AEB9040FF9CC59EB0E7CA4077EE191F4`.
 
 - **v57.0 — Public Website Experience and Canonical Branding**
-  - State: Planned after v56; website-template and standalone-calculator research before HTML or asset changes.
+  - State: Current research; inspect website templates, calculator routing and canonical assets before HTML or asset changes.
   - Add a responsive main-site navigation entry for the existing standalone `/3dp/price` calculator without changing its formulas.
   - Preserve the standalone route and keep calculator data independent from SQLite, Materials, reports and desktop export payloads.
   - Add the approved canonical website logo and favicon assets with valid relative routes and honest missing-asset fallback.

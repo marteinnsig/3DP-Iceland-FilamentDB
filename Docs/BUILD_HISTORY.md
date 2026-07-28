@@ -2,6 +2,41 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v56.0.6 - Governed Public Demo Dataset
+
+The owner accepts privacy, usefulness, runtime, reports and all 36 corrected
+Impact rows. Parent v56 is complete.
+
+The governed local package contains only the versioned SQLite, README, public
+manifest and checksums. Two fixed-timestamp ZIP builds are byte-identical.
+Expanded content allowlisting, per-file hashes, manifest parity, SQLite
+integrity, zero foreign-key violations, exact counts and zero invalid Impact
+samples pass.
+
+SQLite SHA-256 is
+`FF7F387FEBE3E9EEDBC94C98766D630448E3E1954E90402435B2E8E93D7D8AFE`;
+ZIP SHA-256 is
+`B38F3173CBAE4E95D4EF589D460BC820AEB9040FF9CC59EB0E7CA4077EE191F4`.
+Production, FTPS and stable-route activation remain unauthorized.
+
+## v56.0.5.2 - Demo Impact Percentage Correction
+
+Owner review exposed 34 red/invalid Impact rows in the otherwise accepted demo.
+The source contains 567 values above the current 0-100 input boundary. Every
+one follows a deterministic legacy decimal encoding: 557 integer values end in
+zero and 10 end in five.
+
+The builder now restores only those invalid values. Ending zero divides by 100
+and ending five divides by 10; all 151 already-valid values remain unchanged.
+The builder fails if counts, integer shape, final digit or restored range
+drifts. Debug/Release A/B output is byte-identical at
+`FF7F387FEBE3E9EEDBC94C98766D630448E3E1954E90402435B2E8E93D7D8AFE`.
+
+Disposable profile `20260728180126-bb11afd8` passes 391/391 applicable checks,
+12 canonical-data N/A, zero mandatory N/A and exact state recovery. Runtime
+contains 718 valid Impact samples and 36 Fully tested rows. All seven PDF pages
+and extracted text pass renewed layout/privacy review.
+
 ## v56.0.5.1 - Demo Report Privacy and Pagination Correction
 
 Independent PDF review caught customer-facing MaterialID disclosure and two

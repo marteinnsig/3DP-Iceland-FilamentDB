@@ -3,7 +3,7 @@
 ## Status and ownership
 
 - Increment: v56.0.1.
-- State: accepted through v56.0.5.1; v56.0.6 owner acceptance is current.
+- State: complete and owner accepted through v56.0.6.
 - Canonical application release: v55.0.6.
 - Database schema: v38.
 - Public demo ownership is independent from the canonical tester seed.
@@ -449,3 +449,51 @@ repeating `@page` margins own pagination.
 Profile `20260728173706-49ad4986` passes 391/391 applicable checks. Extracted
 PDF text contains no MaterialID or `DEMO-MAT-`; all seven rendered pages pass
 privacy, row-integrity, clipping, overlap, wrapping and branding review.
+
+## v56.0.5.2 Impact percentage correction
+
+Owner review exposed 34 red/invalid Impact rows. The approved source has 567
+samples above the current 0-100 runtime input boundary. They form one complete
+deterministic legacy decimal pattern:
+
+- 557 integer values end in zero and divide by 100;
+- 10 integer values end in five and divide by 10;
+- 151 already-valid values remain unchanged.
+
+The builder must reject any count, integer-shape, final-digit or restored-range
+drift. Output requires 718/718 samples within 0-100 and 36 Fully tested
+materials. This is a public-demo transformation only; it never rewrites the
+read-only owner-approved source or any canonical owner database.
+
+Corrected SQLite SHA-256 is
+`FF7F387FEBE3E9EEDBC94C98766D630448E3E1954E90402435B2E8E93D7D8AFE`.
+Profile `20260728180126-bb11afd8` passes 391/391 applicable checks and exact
+state recovery. The owner accepted all 36 Impact rows as normal.
+
+## v56.0.6 owner acceptance and guarded artifact closure
+
+The owner accepts demo privacy, usefulness, runtime behavior, report output
+and the corrected Impact grid. Parent v56 is complete.
+
+The publish-ready local package contains exactly:
+
+- `3DPIceland-Public-Demo-v56.0.6.sqlite`;
+- `README.md`;
+- `manifest.json`;
+- `SHA256SUMS.txt`.
+
+The ZIP is generated twice with fixed entry timestamps and byte-identical
+output. Expanded-file allowlisting, checksums, public manifest, SQLite
+integrity, foreign keys, counts and Impact range pass.
+
+- SQLite SHA-256:
+  `FF7F387FEBE3E9EEDBC94C98766D630448E3E1954E90402435B2E8E93D7D8AFE`.
+- ZIP SHA-256:
+  `B38F3173CBAE4E95D4EF589D460BC820AEB9040FF9CC59EB0E7CA4077EE191F4`.
+- Governed local path:
+  `Deployment/PublicDemo/v56.0.6/3DPIceland-Public-Demo-v56.0.6.zip`.
+
+The tracked README, manifest and checksum evidence contain no private mapping
+or owner path. The SQLite and ZIP remain local gitignored release artifacts.
+Production, FTPS and stable-route activation remain unauthorized and require
+separate explicit owner authority.

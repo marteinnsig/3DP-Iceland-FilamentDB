@@ -1,6 +1,21 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v56.0.6 - Governed Public Demo Dataset
+
+Owner accepts privacy, usefulness, runtime, reports and all 36 corrected Impact
+rows. The schema-v38 demo contains 36 fictional identities with approved real
+measurements and excludes private/operational domains. Final disposable profile
+`20260728180126-bb11afd8` passes 391/391 applicable checks, 12 declared N/A,
+zero mandatory N/A and exact state recovery.
+
+The four-file local governed ZIP is byte-deterministic and passes expanded
+allowlist, checksum, manifest, integrity, foreign-key, count and Impact-range
+validation. ZIP SHA-256 is
+`B38F3173CBAE4E95D4EF589D460BC820AEB9040FF9CC59EB0E7CA4077EE191F4`.
+Production/FTPS remain unauthorized. Parent v56 is complete; canonical
+application release remains v55.0.6.
+
 ## v56.0.2 - Read-only Input Inspection
 
 The accepted operator-only CLI validates the approved private 36-Material

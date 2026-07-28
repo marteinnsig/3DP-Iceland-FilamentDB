@@ -32,3 +32,8 @@
 *.7z binary
 *.exe binary
 *.dll binary
+
+# Keep governed public-demo package metadata byte-stable for checksum/ZIP parity.
+Deployment/PublicDemo/**/README.md text eol=lf
+Deployment/PublicDemo/**/manifest.json text eol=lf
+Deployment/PublicDemo/**/SHA256SUMS.txt text eol=lf

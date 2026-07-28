@@ -182,6 +182,16 @@ internal static class Program
                 Require(
                     CountRowsWhere(
                         databasePath,
+                        "NativeImpactSamples",
+                        "CAST(\"RawValue\" AS REAL) < 0 OR CAST(\"RawValue\" AS REAL) > 100") == 0 &&
+                    CountRowsWhere(
+                        databasePath,
+                        "NativeMaterialManagerRows",
+                        "\"InImpact\" <> 'Yes' OR \"TestedStatus\" <> 'Fully tested'") == 0,
+                    "Demo Impact percentages or derived full-test coverage are invalid.");
+                Require(
+                    CountRowsWhere(
+                        databasePath,
                         "NativeMaterialManagerRows",
                         "\"PublishPublicReports\" <> 0 OR \"PublishPublicTestDetails\" <> 0") == 0,
                     "Demo runtime unexpectedly enables public report or public test-detail publication.");

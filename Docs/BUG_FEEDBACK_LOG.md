@@ -590,8 +590,8 @@ Date: 2026-07-25
 Area: Distribution / public demo dataset
 Type: Workflow improvement / Data issue
 Severity: Idea
-Status: In progress
-Resolution: Planned in v56.0 — Governed Public Demo Dataset. Build a versioned, distributable SQLite demo backup from an allowlist of
+Status: Solved
+Resolution: Solved in v56.0.6 — Governed Public Demo Dataset. Built a versioned, distributable SQLite demo backup from an allowlist of
 roughly 30–40 owner-measured materials, with stable pseudonymous Manufacturer, Product Line, Marketing Name and demo MaterialID
 identities. Preserve real measurement values and useful same-manufacturer/base-material relationships, but remove or replace private
 purchasing, inventory, notes, URLs, local paths, credentials, deployment and production identity. Keep this public demo seed separate
@@ -603,7 +603,7 @@ Verification evidence: v56 research and the fictional-identity/real-measurement 
 publication contract. v56.0.1 is complete: the owner accepted the exact private 36-Material allowlist and re-identification risk.
 Schema v38 integrity, relationships, uniqueness and measurement coverage pass; the gitignored registry is hash-bound.
 v56.0.2 is complete: the owner accepted the isolated read-only inspector, deterministic privacy-safe manifest and fail-closed
-source, private-registry and schema-drift evidence. v56.0.3 and v56.0.4 are complete; v56.0.5.1 correction is current.
+source, private-registry and schema-drift evidence. v56.0.3 through v56.0.6 are complete.
 v56.0.3 fictionalizes Manufacturer, Product Line, Marketing Name, Color and Variant while retaining approved generic Base
 Material and CF/GF taxonomy. Public spec/private parity, identity uniqueness and deterministic graph hashes pass; no SQLite is built.
 Two final Release validations are byte-identical with logical manifest SHA-256
@@ -629,6 +629,17 @@ acceptance before v56.0.6 owner review resumes.
 Correction profile `20260728173706-49ad4986` passes 391/391 applicable checks.
 The seven-page PDF uses compact customer identity, four-row CSS-grid ledgers
 and repeating `@page` margins; extracted text and every rendered page pass.
+Owner review then exposed 34 red/invalid Impact rows. All 567 samples above
+100 follow one deterministic legacy decimal pattern: 557 end in zero and 10
+end in five. v56.0.5.2 owns bounded normalization of only those invalid values,
+fresh deterministic A/B generation and renewed runtime/Verification acceptance.
+Candidate profile `20260728180126-bb11afd8` passes 391/391 applicable checks,
+contains 718/718 Impact samples inside 0-100 and reports 36 Fully tested rows.
+The owner accepted all corrected Impact rows and confirmed the rest of the
+demo remained normal. The governed local four-file ZIP is byte-deterministic;
+ZIP SHA-256 is
+`B38F3173CBAE4E95D4EF589D460BC820AEB9040FF9CC59EB0E7CA4077EE191F4`.
+Production, FTPS and stable-route activation remain separately unauthorized.
 What happened: Trial users or evaluators currently lack a safe populated database that demonstrates Materials, measurements, filters,
 rankings, reports and same-family/manufacturer comparisons without exposing the owner database or commercial product identities.
 Expected behavior: Offer an optional downloadable demo SQLite backup with real 3DPIceland measurement evidence under fictional,

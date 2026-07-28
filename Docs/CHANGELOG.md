@@ -2,6 +2,28 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v56.0.6 - Governed Public Demo Dataset
+
+- Records owner acceptance of privacy, usefulness, runtime, reports and the
+  corrected 36-row Impact surface.
+- Produces a four-file local governed package with SQLite, README, public
+  manifest and checksums.
+- Builds the ZIP twice with fixed entry timestamps and requires byte-identical
+  output plus expanded allowlist/checksum/SQLite validation.
+- Keeps Production, FTPS and stable-route activation separately unauthorized.
+
+## v56.0.5.2 - Demo Impact Percentage Correction
+
+- Restores only the 567 hash-pinned legacy Impact values that exceed the
+  current 0-100 percentage contract.
+- Applies one fail-closed decimal rule: 557 integer values ending in zero are
+  divided by 100 and 10 integer values ending in five are divided by 10.
+- Leaves all 151 already-valid Impact samples unchanged and requires all 718
+  output values to remain within 0-100.
+- Rebuilds byte-identical Debug/Release A/B artifacts with 36 Fully tested
+  fictional materials and adds deterministic tester coverage.
+- Owner runtime accepts all 36 Impact rows as normal.
+
 ## v56.0.5.1 - Demo Report Privacy and Pagination Correction
 
 - Removes MaterialID from customer-facing Material Summary HTML/PDF and

@@ -774,7 +774,8 @@ internal static class HelpContentCatalog
             Upright percent 1-10 and Flat percent 1-10 are needle/pendulum percentage inputs from 0 through 100. Test Notes and Measured
             date are editable. kJ/m² Upright/Flat, standard deviation, CV percent, sample counts, confidence and Validation are
             calculated/read-only using governed impact Settings. Correct source percentages or Settings at their owner, not the energy
-            result.
+            result. The governed public-demo builder restores only its hash-pinned legacy decimal encodings before runtime, so every
+            fictional demo row follows this same 0-100 validation contract; owner/canonical measurements are never rewritten.
 
             Stiffness columns
             Revolutions accepts 0 through 10 and Degrees accepts 0 through 359; together they form one source observation. Test Notes

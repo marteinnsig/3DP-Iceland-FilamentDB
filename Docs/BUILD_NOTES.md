@@ -1,4 +1,40 @@
-# Current Build Notes - v56.0.6 Development
+# Current Build Notes - v57.0 Research
+
+## v56.0.6 Owner Acceptance and Guarded Artifact Closure
+
+The owner accepts privacy, usefulness, runtime, reports and all 36 corrected
+Impact rows. Final profile `20260728180126-bb11afd8` passes 391/391 applicable
+checks, 12 canonical-data N/A, zero mandatory N/A and exact state recovery.
+
+The local governed package contains the versioned SQLite, README, public
+manifest and checksums. Two fixed-timestamp ZIP builds are byte-identical at
+SHA-256
+`B38F3173CBAE4E95D4EF589D460BC820AEB9040FF9CC59EB0E7CA4077EE191F4`.
+Expanded allowlist, checksums, manifest, integrity, foreign keys, exact counts
+and Impact range pass. Production, FTPS and stable-route activation remain
+unauthorized. Parent v56 is complete; v57.0 research is current.
+
+## v56.0.5.2 Demo Impact Percentage Correction
+
+Owner review exposed 34 red/invalid Impact rows. The 567 source samples above
+100 follow an exact legacy decimal pattern: 557 integer values end in zero and
+10 end in five. The builder now divides those two bounded groups by 100 and 10
+respectively, while leaving all 151 already-valid samples unchanged.
+
+The builder rejects pattern/count/range drift and requires every output sample
+inside 0-100 plus 36/36 Fully tested coverage. Independent Debug and Release
+A/B generation is byte-identical. SQLite SHA-256 is
+`FF7F387FEBE3E9EEDBC94C98766D630448E3E1954E90402435B2E8E93D7D8AFE`;
+logical SHA-256 is
+`5A6597DCAB587B9784DF7D219B93C23698D3845B301B476C46348C93B63193B9`;
+manifest SHA-256 is
+`FFE1D464D7AC26313CCC1F005C7CC344AC84876AB65AA680558EDA6CE705867A`.
+
+Disposable profile `20260728180126-bb11afd8` passes 391/391 applicable checks,
+12 canonical-data N/A, zero mandatory N/A and exact database/business-state
+recovery. Its seven-page report passes renewed visual and extracted-text
+privacy review; PDF SHA-256 is
+`2B2C507E87D7F98BB0AD580D571B72732F98E91F25153E7F7DEC9D31EBA51F10`.
 
 ## v56.0.5.1 Demo Report Privacy and Pagination Correction
 

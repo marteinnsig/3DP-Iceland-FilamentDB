@@ -1,3 +1,27 @@
+# v56.0.6 - Governed Public Demo Dataset
+
+Date: 2026-07-28
+
+- Owner accepts privacy, usefulness, runtime, reports and all 36 corrected
+  Impact rows.
+- Debug and Release builds pass with zero warnings/errors.
+- Independent Debug/Release A/B builds are byte-identical at SQLite SHA-256
+  `FF7F387FEBE3E9EEDBC94C98766D630448E3E1954E90402435B2E8E93D7D8AFE`.
+- Final profile `20260728180126-bb11afd8` passes 391/391 applicable checks,
+  12 canonical-data N/A, zero mandatory N/A and exact database/business-state
+  recovery.
+- Runtime has 718/718 Impact samples inside 0-100 and 36 Fully tested rows.
+- Seven PDF pages pass visual privacy/layout review; extracted HTML/PDF text
+  contains no customer-facing MaterialID or `DEMO-MAT-`.
+- Help coverage passes 661 candidates; documentation audit, roadmap-length,
+  cleanup self-test and read-only NuGet vulnerability scans pass.
+- The four-file local ZIP is built twice byte-identically and passes expanded
+  allowlist, checksums, manifest, SQLite integrity/FK/count/range validation.
+- ZIP SHA-256 is
+  `B38F3173CBAE4E95D4EF589D460BC820AEB9040FF9CC59EB0E7CA4077EE191F4`.
+- Production, FTPS and stable-route activation remain unauthorized. Parent
+  v56 is complete.
+
 # v55.0.6 - Operational Safety and Disposable Hygiene
 
 Date: 2026-07-28

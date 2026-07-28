@@ -84,7 +84,7 @@ internal static class DemoDatasetBuilder
             RequireNoSidecars(options.Source, options.OutputA, options.OutputB);
 
             var manifest = new BuildManifest(
-                "3dpiceland-public-demo-build-v1", "v56.0.4.1", "PASS",
+                "3dpiceland-public-demo-build-v1", "v56.0.5.2", "PASS",
                 sourceBefore, AllowlistHash, TransformationHash, SchemaHash,
                 hashA, hashB, inspectionA.LogicalHash, inspectionB.LogicalHash,
                 inspectionA.TableRowCounts, inspectionA.TableSha256,
@@ -279,7 +279,8 @@ internal static class DemoDatasetBuilder
         var sourceMap = contract.Materials.ToDictionary(
             item => item.SourceId, StringComparer.Ordinal);
         var tensile = ReadSamples(connection, "NativeTensileSamples", sourceMap);
-        var impact = ReadSamples(connection, "NativeImpactSamples", sourceMap);
+        var impact = NormalizeLegacyImpactPercentages(
+            ReadSamples(connection, "NativeImpactSamples", sourceMap));
         var stiffness = ReadStiffness(connection, sourceMap);
         var expectedTensile = ReadExpectedTensile(connection, sourceMap);
         if (tensile.Count != 712 || impact.Count != 718 || stiffness.Count != 36)
@@ -290,6 +291,47 @@ internal static class DemoDatasetBuilder
             throw new InvalidDataException("SOURCE_CLOSURE");
         VerifyTensileParity(contract, tensile, expectedTensile);
         return new Payload(tensile, impact, stiffness, expectedTensile);
+    }
+
+    private static List<Sample> NormalizeLegacyImpactPercentages(
+        IReadOnlyList<Sample> samples)
+    {
+        var normalized = new List<Sample>(samples.Count);
+        var dividedByHundred = 0;
+        var dividedByTen = 0;
+        foreach (var sample in samples)
+        {
+            if (!decimal.TryParse(sample.RawValue, NumberStyles.Number,
+                    CultureInfo.InvariantCulture, out var value) ||
+                value < 0)
+                throw new InvalidDataException("IMPACT_VALUE");
+            if (value <= 100)
+            {
+                normalized.Add(sample);
+                continue;
+            }
+            if (value != decimal.Truncate(value))
+                throw new InvalidDataException("IMPACT_DECIMAL_PATTERN");
+            var finalDigit = (int)(value % 10);
+            var restored = finalDigit switch
+            {
+                0 => value / 100m,
+                5 => value / 10m,
+                _ => throw new InvalidDataException("IMPACT_DECIMAL_PATTERN")
+            };
+            if (restored is < 0 or > 100)
+                throw new InvalidDataException("IMPACT_RANGE");
+            if (finalDigit == 0) dividedByHundred++;
+            else dividedByTen++;
+            normalized.Add(sample with
+            {
+                RawValue = restored.ToString(
+                    "0.############################", CultureInfo.InvariantCulture)
+            });
+        }
+        if (dividedByHundred != 557 || dividedByTen != 10)
+            throw new InvalidDataException("IMPACT_DECIMAL_COUNTS");
+        return normalized;
     }
 
     private static List<ExpectedTensile> ReadExpectedTensile(
@@ -695,9 +737,9 @@ internal static class DemoDatasetBuilder
                                NOT BETWEEN 1 AND 4))
                    OR COALESCE(Reinforcement,'') NOT IN ('','CF','GF')
                    OR SourcePriority <> 'Materials master'
-                   OR TestedStatus NOT IN ('Fully tested','Partially tested')
+                   OR TestedStatus <> 'Fully tested'
                    OR InTensile <> 'Yes'
-                   OR InImpact NOT IN ('Yes','No')
+                   OR InImpact <> 'Yes'
                    OR InStiffness <> 'Yes' OR Video <> 'No'
                    OR UpdatedAtUtc <> '{FixedUtc}'
                    OR WebsiteDisplayName <>
@@ -715,12 +757,7 @@ internal static class DemoDatasetBuilder
                 SELECT COUNT(*) FROM NativeMaterialManagerRows
                 WHERE InTensile='Yes' AND InImpact='Yes' AND InStiffness='Yes'
                   AND TestedStatus='Fully tested';
-                """) != "9" ||
-            Scalar(db, """
-                SELECT COUNT(*) FROM NativeMaterialManagerRows
-                WHERE InTensile='Yes' AND InImpact='No' AND InStiffness='Yes'
-                  AND TestedStatus='Partially tested';
-                """) != "27")
+                """) != "36")
             throw new InvalidDataException("MATERIAL_COVERAGE");
         if (Convert.ToInt64(Scalar(db, """
                 WITH ordered AS (
@@ -749,6 +786,7 @@ internal static class DemoDatasetBuilder
                       OR Orientation NOT IN ('Flat','Upright')
                       OR SampleNumber NOT BETWEEN 1 AND 10
                       OR COALESCE(RawValue,'')=''
+                      OR CAST(RawValue AS REAL) NOT BETWEEN 0 AND 100
                       OR UpdatedAtUtc<>'{FixedUtc}')
                 + (SELECT COUNT(*) FROM NativeTensileResults
                    WHERE MaterialId NOT GLOB 'DEMO-MAT-[0-9][0-9][0-9]'

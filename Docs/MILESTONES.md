@@ -3,6 +3,17 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v56.0.6 - Governed Public Demo Dataset
+
+Delivers a deterministic schema-v38 SQLite demo with 36 fictional identities,
+approved real measurements, excluded private/operational domains, full
+disposable runtime/Verification/report evidence and owner acceptance.
+
+The corrected dataset has 718 valid Impact samples and 36 Fully tested rows.
+The four-file local package is byte-deterministic with ZIP SHA-256
+`B38F3173CBAE4E95D4EF589D460BC820AEB9040FF9CC59EB0E7CA4077EE191F4`.
+Production and FTPS remain separately unauthorized. Parent v56 is complete.
+
 # v55.0.6 - Operational Safety and Disposable Hygiene
 
 Delivers shared default-No Material/Base Material deletion and runner-owned,

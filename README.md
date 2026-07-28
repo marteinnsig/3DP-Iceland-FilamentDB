@@ -6,7 +6,7 @@ Private Windows deployment supports a per-user Setup EXE and a portable ZIP buil
 
 - **Current runtime-accepted release:** v55.0.6 — Operational Safety and Disposable Hygiene
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v56.0.6 — Owner Acceptance and Guarded Artifact Closure
+- **Current development focus:** v57.0 — Public Website Experience and Canonical Branding research
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Download the Windows application
@@ -128,10 +128,14 @@ completes the operational-safety and disposable-hygiene workflow, including
 consistent cancellable confirmation dialogs, guarded tester-profile cleanup
 and Full Data Verification 403/403 PASS.
 
-The current roadmap increment is v56.0.6 — Owner Acceptance and Guarded
-Artifact Closure. It validates the accepted deterministic public-demo candidate
-inside a bounded disposable profile. Production, FTPS, the owner database and
-the canonical tester seed remain outside this increment.
+The v56.0.6 governed public-demo dataset is complete and owner accepted. Its
+36 fictional identities retain approved real comparative measurements; the
+local publish-ready package remains separate from the owner database and the
+canonical tester seed. Production and FTPS publication remain unauthorized.
+
+The current roadmap increment is v57.0 research. It maps the public website
+templates, standalone calculator route and canonical branding assets before
+any HTML, asset, Production or FTPS change.
 
 The clean-install profile contains no material dataset or private FTPS
 identity. SQLite is never restored automatically by application update

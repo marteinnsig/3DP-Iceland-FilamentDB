@@ -1,5 +1,29 @@
 # Automated Runtime Acceptance
 
+## v56.0.6 - Owner acceptance and guarded artifact closure
+
+- Owner accepts the full demo plus all 36 corrected Impact rows.
+- Final profile `20260728180126-bb11afd8` passes 391/391 applicable checks,
+  12 canonical-data N/A, zero mandatory N/A and exact state recovery.
+- The four-file local package is ZIP-built twice with fixed timestamps and
+  byte-identical SHA-256.
+- Expanded allowlist, checksums, manifest, SQLite integrity, foreign keys,
+  exact counts and zero invalid Impact samples pass.
+- Production, FTPS and stable-route activation remain unauthorized.
+
+## v56.0.5.2 - Demo Impact percentage correction
+
+- Builder normalization is limited to the exact 567 invalid legacy encodings:
+  557 integer values ending in zero and 10 ending in five.
+- All 151 already-valid samples remain unchanged; all 718 output samples must
+  be numeric and within 0-100.
+- Scenario `demo` requires 36 `InImpact=Yes` and Fully tested rows in addition
+  to the accepted identity and measurement counts.
+- Profile `20260728180126-bb11afd8` passes 391/391 applicable checks, 12
+  canonical-data N/A, zero mandatory N/A and exact state recovery.
+- Seven rendered report pages and extracted text pass renewed privacy/layout
+  review; Production, FTPS, updates and owner data remain blocked.
+
 ## v56.0.5.1 - Demo report privacy and pagination correction
 
 - Material Summary customer-facing HTML/PDF omits the MaterialID header and
