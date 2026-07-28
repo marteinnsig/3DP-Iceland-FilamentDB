@@ -1,6 +1,20 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v58.0.6 - Governed Document Branding Closure
+
+Generated reports, report website documents and customer quotes now support
+one governed custom PNG plus optional Brand / Organization Name. The normalized
+SQLite-owned selection survives restart and backup/restore, falls back honestly
+and keeps a smaller 3DPIceland Engineering Platform provenance line.
+
+Schema v40, renderer parity, schema-v39 migration, promoted canonical seed and
+exact-state disposable recovery pass. The owner accepts default plus wide,
+tall, square and transparent logo output across HTML/PDF and quote paths.
+Application chrome, canonical public main-site branding, stable report routes
+and saved calculation snapshots remain unchanged. Full Data Verification
+passes 414/414 and parent v58 is complete.
+
 ## v57.0.5 - Public Website Experience and Canonical Branding
 
 The generated public website gains a responsive Printing Price Calculator tab

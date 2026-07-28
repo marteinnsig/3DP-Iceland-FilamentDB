@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v58.0.6 - Governed Document Branding Closure
+
+Delivers SQLite-owned custom document logo and Brand / Organization Name
+selection across reports, website documents and customer quotes. Validation,
+fallback, restart, backup/restore, schema migration and stable renderer assets
+remain governed. Owner multi-aspect visual acceptance and Full Data
+Verification pass 414/414. Parent v58 is complete.
+
 # v57.0.5 - Public Website Experience and Canonical Branding
 
 Delivers the accepted main-site Printing Price Calculator, corrected material

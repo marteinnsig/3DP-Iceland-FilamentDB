@@ -2,6 +2,18 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v58.0.6 - Governed Document Branding Closure
+
+- Advances the final v58 parent-closure candidate after schema-v40 migration,
+  recovery, renderer and identity contracts pass.
+- Supplies disposable wide, tall, square and transparent PNG fixtures for
+  manual report, website-document and customer-quote layout review.
+- Aligns README development focus while retaining v57.0.5 as the advertised
+  runtime-accepted release until final owner acceptance.
+- Debug/Release and disposable smoke pass 414/414 with exact logical state.
+- Owner accepts default plus wide, tall, square and transparent logo output
+  across reports, website documents and customer quotes; parent v58 closes.
+
 ## v58.0.5 - Document Branding Migration and Recovery
 
 - Extends synthetic Verification across valid, invalid-signature and

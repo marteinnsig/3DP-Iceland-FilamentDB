@@ -18068,19 +18068,29 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? $"Schema v40; brand '{rendererBrandingContract.BrandDisplayName}' is normalized, encoded and renderer-aligned"
                 : "Brand schema, Settings controls, normalization, encoding, renderer parity or provenance failed"));
         var v5805AcceptanceReady =
-            BuildInfo.Version == "58.0.5" &&
-            BuildInfo.ReleaseCode == "DOCUMENT-BRANDING-ACCEPTANCE" &&
-            BuildInfo.ReleaseTitle == "Document Branding Migration and Recovery" &&
             documentBrandingFoundation.Passed &&
             documentBrandingFoundation.Detail.Contains(
                 "backup/restart",
                 StringComparison.Ordinal);
         checks.Add(new VerificationCheck(
-            "v58.0.5 Document branding migration and recovery release gate",
-            v5805AcceptanceReady && releaseIdentityReady,
-            v5805AcceptanceReady && releaseIdentityReady
+            "v58.0.5 Document branding migration and recovery retained contract",
+            v5805AcceptanceReady,
+            v5805AcceptanceReady
                 ? documentBrandingFoundation.Detail
-                : "Asset limits, backup/restart parity, fallback/default or release identity failed"));
+                : "Asset limits, backup/restart parity or fallback/default failed"));
+        var v5806ClosureReady =
+            BuildInfo.Version == "58.0.6" &&
+            BuildInfo.ReleaseCode == "DOCUMENT-BRANDING-CLOSURE" &&
+            BuildInfo.ReleaseTitle == "Governed Document Branding Closure" &&
+            v5805AcceptanceReady &&
+            rendererBrandingReady &&
+            v58041BrandIdentityReady;
+        checks.Add(new VerificationCheck(
+            "v58.0.6 Governed document branding closure release gate",
+            v5806ClosureReady && releaseIdentityReady,
+            v5806ClosureReady && releaseIdentityReady
+                ? "Schema v40, image/name renderers, migration/recovery and release identity align"
+                : "Branding renderer, identity, migration/recovery or release identity failed"));
         var inventoryRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "InventorySpoolItems");
         var landedCostMigration = _database.RunLandedCostCurrencyMigrationContractVerification();

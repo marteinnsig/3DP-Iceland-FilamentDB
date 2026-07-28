@@ -2,6 +2,24 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v58.0.6 - Governed Document Branding Closure
+
+The parent-closure candidate advances to v58.0.6 without changing schema v40.
+Renderer, brand identity and v58.0.5 migration/recovery contracts remain
+mandatory. README development focus now identifies the final visual acceptance
+stage but correctly leaves v57.0.5 advertised as runtime accepted.
+
+Debug and Release build with zero warnings/errors. Disposable smoke
+`20260728233100-98643431` passes 414/414 with exact logical database and
+business-state equality. Help coverage, release documentation and roadmap
+line-length gates pass.
+
+Four disposable PNGs under
+`artifacts\v58.0.6-branding-visual-tests` cover 1200x240 wide, 240x1200 tall,
+600x600 square and 800x400 transparent selections. Owner review across report,
+website-document and quote output passes with correct aspect ratio, alpha,
+scale and pagination. Full Data Verification passes and parent v58 closes.
+
 ## v58.0.5 - Document Branding Migration and Recovery
 
 The document-branding foundation now creates a fully synthetic valid

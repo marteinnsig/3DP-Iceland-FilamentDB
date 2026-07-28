@@ -2,15 +2,15 @@
 
 Current canonical release: **v57.0.5 — Public Website Experience and Canonical Branding**
 
-Last runtime-accepted baseline: **v57.0.5 — Public Website Experience and Canonical Branding**
+Last runtime-accepted baseline: **v58.0.6 — Governed Document Branding Closure**
 
-Current canonical application release: **v57.0.5 — Public Website Experience and Canonical Branding**
+Current canonical application release: **v58.0.6 — Governed Document Branding Closure**
 
-Current roadmap increment: **v58.0 — Governed Custom Document Branding research**
+Current roadmap increment: **v59.0 — Application Navigation Finalization**
 
-Current acceptance note: v57.0.5 passes owner review and Verification 407/407; the coordinated website is live over HTTPS.
+Current acceptance note: v58.0.6 passes owner multi-aspect review and Full Data Verification 414/414.
 
-Next note: research renderer and asset ownership before any v58.0 implementation.
+Next note: research every menu/tab command and preserve accepted navigation before v59 implementation.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -44,8 +44,8 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v55 | Operational Safety and Disposable Hygiene | ★★★★☆ | Complete — canonical v55.0.6 runtime accepted |
 | v56 | Governed Public Demo Dataset | ★★★☆☆ | Complete — canonical v56.0.6 dataset accepted |
 | v57 | Public Website Experience and Canonical Branding | ★★★★☆ | Complete — canonical v57.0.5 runtime accepted |
-| v58 | Governed Custom Document Branding | ★★★☆☆ | Current — research before implementation |
-| v59 | Application Navigation Finalization | ★★★☆☆ | Planned last |
+| v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
+| v59 | Application Navigation Finalization | ★★★☆☆ | Current — research before implementation |
 
 ## Reconciliation of the older plans
 
@@ -2546,13 +2546,14 @@ to unstarted authoritative planning slots.
       - Demo backup: `/backups/public_demo/release_2026-07-28_192806_443`; stable/versioned HTTPS PASS.
 
 - **v58.0 — Governed Custom Document Branding**
-  - State: Current; research is complete and the recorded implementation sequence is authoritative.
+  - State: Complete and owner runtime accepted at canonical v58.0.6; Full Data Verification passes 414/414.
   - Add an optional user-owned PNG logo for generated HTML/PDF reports, website documents and Print Job Quote output only.
   - Validate signature, decoded dimensions, size and transparency; copy accepted content into a governed per-user location.
   - Provide preview plus explicit Remove/Restore Default with honest missing/corrupt fallback.
   - Never alter application icon, splash, desktop chrome or canonical public-site branding and never embed local source paths.
   - Extend deterministic validation/selection/fallback coverage while retaining visual layout acceptance as owner-manual.
   - Completion condition: owner accepts default/custom output across every governed renderer with compatibility preserved.
+  - Completion condition met: default plus wide/tall/square/transparent output, migration, recovery and Help are accepted.
   - **v58.0.1 — Renderer, Asset and Persistence Contract**
     - State: Research complete; one immutable `DocumentBrandingSnapshot` owns renderer selection and provenance.
     - Preserve canonical website/app branding, stable report asset routes and saved quote calculation snapshots.
@@ -2599,11 +2600,12 @@ to unstarted authoritative planning slots.
     - Automation: existing disposable smoke owns safe startup/restart and Verification; no new mutating UI scenario is needed.
     - Completion condition met: limits, backup parity, migration fixture, promoted seed and bounded runtime evidence pass.
   - **v58.0.6 — Visual Acceptance and Parent Closure**
-    - State: Planned after v58.0.5.
+    - State: Complete and owner runtime accepted; Full Data Verification passes 414/414.
     - Review default plus wide, tall, square and transparent custom logos across HTML, PDF and customer quote output.
     - Confirm aspect ratio, alpha, scale, pagination and no change to app chrome or canonical public-site branding.
     - Run final build, security, Help, documentation and Verification gates; review README before parent closure.
     - Completion condition: owner runtime/visual acceptance passes and every recorded v58 increment can close.
+    - Completion condition met: multi-aspect report/website-document/quote output and final release gates pass.
 
 - **v59.0 — Application Navigation Finalization**
   - State: Planned last, after every earlier roadmap item and open implementation finding is completed or explicitly dispositioned.

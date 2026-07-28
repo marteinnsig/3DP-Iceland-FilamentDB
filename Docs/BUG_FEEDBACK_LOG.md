@@ -2035,6 +2035,17 @@ and runtime accepted.
 - **Status:** Complete. Schema-v39 fixture is retained; validated schema-v40
   seed is canonical. Owner database, Production and FTPS were not touched.
 
+# 2026-07-28 - v58.0.6 document branding parent-closure candidate
+
+- **Scope:** Review default plus wide, tall, square and transparent custom
+  logos across internal report, website-document and customer quote output.
+- **Preserved:** Schema v40, canonical data, app chrome, public main-site
+  branding, stable routes and saved snapshots remain unchanged.
+- **Evidence:** Debug/Release and disposable smoke
+  `20260728233100-98643431` pass 414/414 with exact logical state.
+- **Status:** Complete and owner runtime accepted. Default, wide, tall, square
+  and transparent outputs are normal; Full Verification passes 414/414.
+
 # 2026-07-27 - v52.3.2 live response validation lacked safe failure detail
 
 - **Observed:** After owner consent, the first live Responses result reached the

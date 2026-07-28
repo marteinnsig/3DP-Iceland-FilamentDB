@@ -4,10 +4,28 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v57.0.5 — Public Website Experience and Canonical Branding
+- **Current runtime-accepted release:** v58.0.6 — Governed Document Branding Closure
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v58.0 — Governed Custom Document Branding research
+- **Current development focus:** v59.0 — Application Navigation Finalization research
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
+
+## Your data stays yours
+
+> **3DPIceland does not collect telemetry, user accounts or the information you
+> enter into the application. Your SQLite database, measurements, purchases,
+> inventory, notes, settings and backups remain under your control and are not
+> automatically uploaded or sent to 3DPIceland.**
+
+Normal application use is local. Backups, reports, website previews and exports
+stay on your computer or in a storage location you choose until you explicitly
+move or publish them. Uninstalling the application does not claim or delete
+your database.
+
+Data can leave your computer only through an action you deliberately authorize.
+The optional OpenAI pilot shows the exact allowlisted payload and requires
+one-time consent before each live request. Guarded Production/FTPS publishing
+also requires an explicit publishing workflow. Neither action runs silently,
+and neither sends your private database to 3DPIceland.
 
 ## Download the Windows application
 
@@ -156,9 +174,9 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 57.0.5 is the current runtime-accepted application release. Full Data
-Verification passes 407/407 with the calculator, canonical website branding
-and release-identity contracts aligned.
+Version 58.0.6 is the current runtime-accepted application release. Full Data
+Verification passes 414/414 with governed document logo/name, renderer,
+migration, recovery and release-identity contracts aligned.
 
 The v56.0.6.1 governed public-demo dataset is complete and owner accepted. Its
 36 fictional identities retain approved real comparative measurements; the
@@ -168,8 +186,10 @@ separate guarded default-No actions.
 
 The coordinated public website is live with the independent Printing Price
 Calculator, canonical Labs wordmark and favicon. `/3dp/price/` redirects to
-`index.html#calculator`. The current roadmap increment is research-first
-v58.0 — Governed Custom Document Branding.
+`index.html#calculator`. Governed custom document logo and Brand / Organization
+Name output is runtime accepted across reports, website documents and customer
+quotes. The current roadmap increment is research-first v59.0 — Application
+Navigation Finalization.
 
 The clean-install profile contains no material dataset or private FTPS
 identity. SQLite is never restored automatically by application update
