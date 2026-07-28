@@ -156,10 +156,9 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 57.0.2 is the current runtime-accepted application release. Its
-schema-v38 installer and portable payload restore the governed public demo on
-a clean VM. Corrected demo v56.0.6.1 produces Public Demo Verification 393/393
-PASS, 12 declared website-publication N/A and zero mandatory N/A.
+Version 57.0.5 is the current runtime-accepted application release. Full Data
+Verification passes 407/407 with the calculator, canonical website branding
+and release-identity contracts aligned.
 
 The v56.0.6.1 governed public-demo dataset is complete and owner accepted. Its
 36 fictional identities retain approved real comparative measurements; the
@@ -167,11 +166,10 @@ local publish-ready package remains separate from the owner database and the
 canonical tester seed. Application and corrected-demo publication remain
 separate guarded default-No actions.
 
-The current roadmap increment is v57.0 acceptance. Local Preview now includes
-the independent Printing Price Calculator as a responsive portal tab plus the
-canonical Labs wordmark and favicon. The retained `/3dp/price` route has a
-staged redirect to `index.html#calculator` for coordinated Production
-activation. Production and FTPS remain separate guarded default-No actions.
+The coordinated public website is live with the independent Printing Price
+Calculator, canonical Labs wordmark and favicon. `/3dp/price/` redirects to
+`index.html#calculator`. The current roadmap increment is research-first
+v58.0 — Governed Custom Document Branding.
 
 The clean-install profile contains no material dataset or private FTPS
 identity. SQLite is never restored automatically by application update

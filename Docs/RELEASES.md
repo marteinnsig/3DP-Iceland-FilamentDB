@@ -10,9 +10,9 @@ MaterialID, reports and generated website DATA.
 
 Canonical Labs logo/favicon assets are staged through exact publication plans.
 The logo replaces the top textual brand, the database title remains adjacent
-and navigation wraps at narrow widths. The governed `/price` redirect artifact
-is ready for a later coordinated Production activation; Production and FTPS
-remain separately unauthorized.
+and navigation wraps at narrow widths. The owner-published coordinated website
+and governed `/price` redirect are live; main, redirect, favicon and logo return
+HTTPS 200 and the expected calculator/branding markers are present.
 
 Owner visual and calculation acceptance pass. Full Data Verification passes
 407/407 with zero FAIL under aligned v57.0.5 release identity. Parent v57 is

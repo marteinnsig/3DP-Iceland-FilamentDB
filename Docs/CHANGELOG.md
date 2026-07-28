@@ -10,8 +10,8 @@
   owner calculation, PDF and usability review pass.
 - Stages the canonical Labs header logo and favicon through exact Preview and
   Production plans, with responsive wrapped navigation and relative routes.
-- Retains `/price/index.html` as a noindex redirect artifact for later
-  coordinated Production activation; no Production or FTPS action is included.
+- Publishes the coordinated main page and noindex `/price` redirect after owner
+  authorization; main, redirect, logo and favicon pass independent HTTPS checks.
 - Owner visual/runtime acceptance and Full Data Verification pass 407/407 with
   release identity, calculator, branding and v57.0.5 closure gates PASS.
 

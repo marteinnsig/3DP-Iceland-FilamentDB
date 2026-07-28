@@ -8,8 +8,8 @@
 Delivers the accepted main-site Printing Price Calculator, corrected material
 and uptime calculations, printable quote, canonical Labs header logo/favicon
 and responsive navigation. Owner visual/runtime acceptance and Full Data
-Verification pass 407/407. Production activation remains a separate guarded
-workflow. Parent v57 is complete.
+Verification pass 407/407. The owner-published coordinated website, redirect,
+logo and favicon pass independent HTTPS checks. Parent v57 is complete.
 
 # v57.0.2 - Current Windows Installer and Demo Compatibility
 

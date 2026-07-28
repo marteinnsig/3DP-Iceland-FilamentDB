@@ -8,7 +8,7 @@ Current canonical application release: **v57.0.5 — Public Website Experience a
 
 Current roadmap increment: **v58.0 — Governed Custom Document Branding research**
 
-Current acceptance note: v57.0.5 website calculator and canonical branding pass owner review and Verification 407/407.
+Current acceptance note: v57.0.5 passes owner review and Verification 407/407; the coordinated website is live over HTTPS.
 
 Next note: research renderer and asset ownership before any v58.0 implementation.
 
@@ -2495,13 +2495,14 @@ to unstarted authoritative planning slots.
   - Preserve existing main-site tabs, generated routes, report branding and narrow/mobile behavior.
   - Require local Preview and owner visual inspection; Production and FTPS remain separately authorized and default-No.
   - Completion condition: calculator parity, canonical branding and desktop/mobile navigation are accepted without route regression.
+  - Publication evidence: owner published the coordinated site on 2026-07-28; main, redirect, logo and favicon return HTTPS 200.
   - **v57.0.3 — Standalone Calculator Portal Integration**
     - State: Complete and runtime accepted; calculator totals, quote print and Full Data Verification pass.
     - Reuse the accepted calculator fields, wording, formulas and client-side behavior inside `portalPageCalculator`.
     - Redirect `/3dp/price` to `index.html#calculator` after owner approval; do not retain a second calculator implementation.
     - Keep calculator state and calculations independent from SQLite, Materials, reports and generated website DATA.
     - Extend deterministic portal, renderer and release-readiness contracts without weakening existing tab or route coverage.
-    - Owner accepted the corrected Qty 1 total-material contract and retained `/price` redirect for coordinated Production activation.
+    - Owner accepted the corrected Qty 1 total-material contract; the coordinated `/price` redirect is live and verified.
     - Completion condition met: local gates and owner calculator, quote-print and usability acceptance pass.
   - **v57.0.4 — Canonical Website Branding Assets**
     - State: Complete and owner-visual accepted; final parent Verification passed in v57.0.5.
@@ -2511,7 +2512,7 @@ to unstarted authoritative planning slots.
   - **v57.0.5 — Parent Acceptance and Release Closure**
     - State: Complete, canonical and runtime accepted; Full Data Verification passes 407/407.
     - Run final Debug/Release, static, security, documentation, Help, Verification and local Preview gates.
-    - Review README release identity and stable public links before parent closure; Production and FTPS require separate authority.
+    - Review README release identity and stable public links before parent closure; publication required separate owner authority.
     - Completion condition met: calculator parity, branding, route regression and owner acceptance pass; v57.0 is closed.
   - **v57.0.1 — Governed Public Demo Download and Lifecycle Guidance**
     - State: Complete and runtime accepted; guarded publication, remote verification and Full Data Verification pass.

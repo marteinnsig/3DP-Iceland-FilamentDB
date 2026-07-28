@@ -13,12 +13,16 @@ and percentage-based uptime calculation.
 The canonical Labs wordmark replaces the text brand in the top header, the
 database title remains large and adjacent, the favicon is staged, and portal
 navigation wraps without horizontal overflow. Exact Preview/Production plans
-own both assets, but Production and FTPS were not run.
+own both assets. The owner later published the coordinated website.
 
 Debug and Release builds pass with zero warnings/errors. Help coverage and
 release-documentation audits pass. Owner Full Data Verification report
 `3DPIceland_FilamentDB_Verification_20260728_204858.txt` confirms 407/407
 applicable PASS, zero FAIL and aligned v57.0.5 identity. Parent v57 is closed.
+Post-publication HTTPS checks return 200 for the main page, `/price/`, favicon
+and PNG logo; the expected calculator, hash-route and branding markers are
+present. No additional in-app Help change is required because v57.0.5 already
+documents the user-visible calculator and website workflow.
 
 ## v57.0.2 - Current Windows Installer and Demo Compatibility
 

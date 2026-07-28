@@ -498,7 +498,7 @@ Resolution: v57.0.3 candidate adds a scoped Printing Price Calculator portal tab
 The accepted fields, defaults, formulas, reset and quote-print behavior are retained. After owner approval, `/3dp/price` becomes a
 small noindex redirect to `../index.html#calculator`, avoiding two calculator implementations that could drift apart.
 Verification evidence: Debug/Release builds, documentation audit, NuGet scan and deterministic website contracts pass. Owner accepted
-the calculator tab, corrected total-material result, quote print and Full Data Verification; coordinated Production remains pending.
+the calculator, totals, quote print and Verification; coordinated main/redirect/logo/favicon HTTPS publication now passes.
 
 Date: 2026-07-28
 Area: Public website / Printing Price Calculator / Materials and quote print
@@ -515,7 +515,7 @@ Screenshot / export / report attached: Owner screenshot of an empty one-page bro
 Resolution: v57.0.3 candidate defaults the calculated filament line to Qty 1 and uses visibility-scoped print CSS that preserves the
 nested quote document while hiding the surrounding website.
 Verification evidence: Deterministic Verification requires Qty 1 plus the nested quote visibility contract. Debug/Release and owner
-runtime acceptance pass. The live standalone `/price` page remains unchanged until authorized coordinated Production publication.
+runtime acceptance pass. The authorized live `/price` route now redirects to the accepted main-site calculator.
 
 Date: 2026-07-28
 Area: Public website / Canonical branding / Responsive navigation
