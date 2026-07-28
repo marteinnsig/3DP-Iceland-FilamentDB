@@ -2546,13 +2546,51 @@ to unstarted authoritative planning slots.
       - Demo backup: `/backups/public_demo/release_2026-07-28_192806_443`; stable/versioned HTTPS PASS.
 
 - **v58.0 — Governed Custom Document Branding**
-  - State: Current research; define one renderer/asset ownership contract before implementation.
+  - State: Current; research is complete and the recorded implementation sequence is authoritative.
   - Add an optional user-owned PNG logo for generated HTML/PDF reports, website documents and Print Job Quote output only.
   - Validate signature, decoded dimensions, size and transparency; copy accepted content into a governed per-user location.
   - Provide preview plus explicit Remove/Restore Default with honest missing/corrupt fallback.
   - Never alter application icon, splash, desktop chrome or canonical public-site branding and never embed local source paths.
   - Extend deterministic validation/selection/fallback coverage while retaining visual layout acceptance as owner-manual.
   - Completion condition: owner accepts default/custom output across every governed renderer with compatibility preserved.
+  - **v58.0.1 — Renderer, Asset and Persistence Contract**
+    - State: Research complete; one immutable `DocumentBrandingSnapshot` owns renderer selection and provenance.
+    - Preserve canonical website/app branding, stable report asset routes and saved quote calculation snapshots.
+    - Use a dedicated SQLite singleton for normalized PNG bytes and metadata; a governed cache is materialized output only.
+    - Completion condition met: callers, fallback, backup/restore, Help, Verification and acceptance boundaries are mapped.
+  - **v58.0.2 — Governed PNG Validation and Persistence Foundation**
+    - State: Complete; local gates and two disposable 409/409 Verification smokes pass with exact state recovery.
+    - Validate signature, full decode, encoded bytes, dimensions, decoded pixels and alpha; normalize to metadata-free PNG.
+    - Persist bytes, SHA-256, dimensions and updated time transactionally; never persist the source path.
+    - Materialize atomically to a fixed contained cache path and verify written bytes; source files remain unchanged.
+    - Completion condition: default/custom/fallback snapshots round-trip across restart, backup, restore and migration.
+    - Accepted seed: schema v39 SHA-256 `C56963156E2CC660E088AF1F07D54B9ACA5C439A0532B7BBA0FFFBC45B25E5E6`.
+    - Preserved fixture: schema v38 SHA-256 `7DC91C93456F612B93B0E9A15D353ABABF2C93323E7E30F78C5B10620C6FB16F`.
+    - Completion condition met: validation, restart, migration, cache, fallback and exact business-state recovery pass.
+  - **v58.0.3 — Document Branding Settings Workflow and Help**
+    - State: Current next increment after accepted v58.0.2 foundation.
+    - Add Select PNG, Preview, Remove Custom Logo and Restore Default with stable AutomationIds and honest status.
+    - Keep the workflow separate from free-text Fast Settings and generic Restore Built-in Defaults behavior.
+    - Document exact limits, save timing, governed copy, fallback and output-only scope in Help and its coverage ledger.
+    - Completion condition: keyboard/mouse workflow, restart state, Help navigation and default-No boundaries are accepted.
+  - **v58.0.4 — Canonical Renderer Integration**
+    - State: Planned after v58.0.3.
+    - Pass one resolved snapshot into report packages, website documents and Print Job Quote HTML/PDF generation.
+    - Preserve the HTML-to-WebView2-to-PDF path, stable relative asset names, manifests, routes and public-data allowlists.
+    - Normalize a compatible derivative for native PDF evidence; do not inject PNG bytes into a JPEG PDF object.
+    - Completion condition: every governed renderer selects identical provenance/hash with canonical default compatibility.
+  - **v58.0.5 — Disposable Acceptance, Migration and Recovery**
+    - State: Planned after v58.0.4.
+    - Update schema fixture/seed only if required; prove old databases default safely and backups retain branding state.
+    - Test valid/invalid/oversize assets, source immutability, restart, missing/corrupt fallback and Remove/Restore.
+    - Keep owner database, Production and FTPS blocked; preserve exact baseline/final business-state equality.
+    - Completion condition: deterministic Verification and the bounded disposable scenario pass with retained evidence.
+  - **v58.0.6 — Visual Acceptance and Parent Closure**
+    - State: Planned after v58.0.5.
+    - Review default plus wide, tall, square and transparent custom logos across HTML, PDF and customer quote output.
+    - Confirm aspect ratio, alpha, scale, pagination and no change to app chrome or canonical public-site branding.
+    - Run final build, security, Help, documentation and Verification gates; review README before parent closure.
+    - Completion condition: owner runtime/visual acceptance passes and every recorded v58 increment can close.
 
 - **v59.0 — Application Navigation Finalization**
   - State: Planned last, after every earlier roadmap item and open implementation finding is completed or explicitly dispositioned.

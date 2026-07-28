@@ -1526,6 +1526,18 @@ CREATE UNIQUE INDEX IF NOT EXISTS UX_PrintJobQuotes_QuoteNumber
 CREATE INDEX IF NOT EXISTS IX_PrintJobQuotes_CreatedAtUtc
     ON PrintJobQuotes(CreatedAtUtc);
 
+CREATE TABLE IF NOT EXISTS DocumentBrandingSettings (
+    SettingsId INTEGER PRIMARY KEY CHECK (SettingsId = 1),
+    CustomLogoEnabled INTEGER NOT NULL,
+    NormalizedPng BLOB NOT NULL,
+    Sha256 TEXT NOT NULL,
+    PixelWidth INTEGER NOT NULL,
+    PixelHeight INTEGER NOT NULL,
+    ByteLength INTEGER NOT NULL,
+    HasTransparency INTEGER NOT NULL,
+    UpdatedAtUtc TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS PurchaseOrders (
     PurchaseOrderId TEXT PRIMARY KEY, Supplier TEXT, OrderNumber TEXT, PurchaseDate TEXT, Currency TEXT, ExchangeRate TEXT,
     ExchangeRateSource TEXT, ExchangeRateObservationDate TEXT, ExchangeRateFetchedAtUtc TEXT,
@@ -2008,7 +2020,7 @@ DROP TABLE IF EXISTS MaterialsImport;";
             return new LandedCostCurrencyMigrationContractVerification(
                 passed,
                 passed
-                    ? "Schema v37 fixture migrated to v38 with exact monetary values and explicit 1:1 legacy metadata."
+                    ? $"Schema v37 fixture migrated to v{SchemaVersion} with exact monetary values and explicit 1:1 legacy metadata."
                     : "Schema version, exact monetary values or legacy landed-cost metadata did not reconcile.");
         }
         finally

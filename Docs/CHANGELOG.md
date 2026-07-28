@@ -2,6 +2,21 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v58.0.2 - Governed Custom Document Branding Foundation
+
+- Advances the canonical SQLite schema to v39 with one optional document
+  branding singleton that stores normalized PNG bytes and governed metadata.
+- Validates PNG signature, full decode, encoded size, dimensions, decoded
+  pixels and transparency before metadata-free re-encoding and SHA-256 storage.
+- Materializes a fixed contained cache atomically and verifies written bytes;
+  the selected source remains unchanged and its path is never persisted.
+- Adds deterministic Default/Custom/Fallback, restart, corruption and reset
+  contracts without changing any visible Settings control or renderer.
+- Retains canonical website/app branding and accepted report/quote output until
+  their separately recorded replacement increments pass runtime acceptance.
+- Preserves the accepted v38 seed as an explicit migration fixture and promotes
+  the validated v39 derivative after two disposable 409/409 PASS smokes.
+
 ## v57.0.5 - Public Website Experience and Canonical Branding
 
 - Adds the accepted standalone printing-price workflow as a responsive

@@ -2,6 +2,25 @@
 
 Use this during the usage-mode period.
 
+## Status review — 2026-07-28
+
+This review preserves every original description and lifecycle status.
+`Solved` is used only where an accepted release or direct runtime evidence can
+be identified. `Solved and runtime accepted` identifies the subset whose exact
+status records explicit owner/runtime acceptance. `Deferred` records a
+deliberate boundary rather than silently discarding the idea.
+
+| Status | Items |
+|---|---:|
+| Open | 1 |
+| In progress | 1 |
+| Partially solved | 0 |
+| Solved | 89 |
+| Solved and runtime accepted | 6 |
+| Deferred | 4 |
+| Duplicate | 1 |
+| Not planned | 1 |
+| **Total tracked findings** | **103** |
 
 ## Triage categories
 
@@ -263,25 +282,6 @@ seven requests, 13,461 tokens and USD 0.37. The owner accepts `gpt-5.6-sol` as P
 local fallback remain available. Disposable smoke `20260727182043-ab84a0eb` passes 385/385 with exact state. Parent v52 is
 complete.
 
-## Status review — 2026-07-27
-
-This review preserves every original description and adds lifecycle metadata.
-`Solved` is used only where an accepted release or direct runtime evidence can
-be identified. `Partially solved` keeps the undelivered remainder visible.
-`Deferred` records a deliberate boundary rather than silently discarding the
-idea. Historical free-form entries remain in their original language and order.
-
-| Status | Items |
-|---|---:|
-| Open | 11 |
-| In progress | 1 |
-| Partially solved | 0 |
-| Solved | 72 |
-| Deferred | 3 |
-| Duplicate | 1 |
-| Not planned | 0 |
-| **Total tracked findings** | **88** |
-
 ## Tracked findings
 
 Date: 2026-07-27
@@ -486,7 +486,7 @@ Date: 2026-07-26
 Area: Public website / Navigation / Printing Price Calculator
 Type: Website idea / Workflow improvement
 Severity: Important
-Status: Open
+Status: Solved
 What happened: The standalone Printing Price Calculator at `https://iskort.is/3dp/price` is separate from the main
 `https://iskort.is/3dp/` website experience.
 Expected behavior: Add the existing price-calculator HTML to the main 3DPIceland website as a dedicated tab. Preserve the calculator
@@ -623,7 +623,7 @@ Date: 2026-07-26
 Area: Materials filters / AI Assistant collections / Video planning
 Type: Workflow improvement
 Severity: Important
-Status: In progress
+Status: Solved
 What happened: Materials filters allow only one selected value per category. Building a comparison collection therefore requires
 repeated filtering or manual collection work, while the website already supports multi-select Base Material, Variant / Finish,
 Reinforcement, Color, Manufacturer and Product Line filters.
@@ -1390,13 +1390,16 @@ Date: Historical feedback (date not recorded)
 Area: Materials editing / stability
 Type: Bug / crash
 Severity: Critical
-Status: Open
+Status: Not planned
 What happened: Historical long-running-session crash while editing Variant
 Expected behavior: Resolve the bounded requirement described in Resolution after ownership and compatibility review.
 Steps to reproduce: Historical feedback; no additional reproduction steps were retained.
 Screenshot / export / report attached: None retained with the original note.
-Resolution: Retained as an unresolved historical crash report. The log has no stack trace or exact accepted fix that can safely be tied to this one-day runtime/Variant edit crash.
-Verification evidence: See the cited accepted release and canonical build/Verification documentation.
+Resolution: Closed as stale and non-reproducible after many subsequent accepted builds without recurrence. Do not spend additional
+time attempting to reconstruct this historical one-day Variant-edit crash. If the behavior returns, create a new finding with current
+build identity, exact steps, stack trace and runtime diagnostics.
+Verification evidence: No recurrence has been observed across the subsequent accepted build and Verification history. This is an
+explicit owner disposition, not evidence that one historical fix was identified.
 
 Date: Historical feedback (date not recorded)
 Area: AI integration
@@ -1804,28 +1807,24 @@ Date: 2026-07-26
 Area: Public website / Canonical branding / Favicon
 Type: Website idea / UI polish
 Severity: Normal
-Status: Open
+Status: Solved
 What happened: The main public 3DPIceland website does not consistently expose the canonical 3DPIceland logo in its page header or
 the small application-icon artwork as the browser favicon.
 Expected behavior: Add the canonical 3DPIceland logo to the main public website and use the approved small 3DPIceland icon artwork
 for favicon output. Preserve the accepted website layout, responsive behavior and report branding contracts.
 Steps to reproduce: Open the main website, inspect the visible header branding, browser tab icon and generated page metadata.
 Screenshot / export / report attached: Capture desktop, narrow/mobile and browser-tab presentation during implementation.
-Resolution: Planned with the public calculator/navigation work in v57.0 — Public Website Experience and Canonical Branding. Audit the
-active SQLite-governed website template, preview/Production renderers, static assets, relative
-paths and every generated route before changing branding. Reuse the approved canonical logo/icon sources rather than recreating
-them. Generate appropriate favicon formats/sizes, include explicit HTML metadata and retain an honest fallback when an asset is
-missing. Do not couple website branding to user-configurable document logos or permit it to alter desktop app icon/header/splash
-ownership. Preview and visually inspect locally before any separately authorized Production or FTPS action.
-Verification evidence: Future deterministic checks should verify branded asset presence, valid favicon references, generated-route
-path resolution and unchanged template/render parity. Logo scale, whitespace, responsive placement and browser favicon appearance
-remain owner-manual acceptance.
+Resolution: v57.0.3 stages the approved canonical website logo and favicon through exact Preview and Production publish-plan
+allowlists. The main header, favicon metadata, calculator portal and standalone redirect share governed relative asset routes without
+changing desktop application or custom document-logo ownership.
+Verification evidence: Debug/Release, deterministic website contracts and owner visual review pass. Coordinated publication completed
+on 2026-07-28; the main page, calculator redirect, PNG logo and favicon independently return HTTPS 200 with the expected markers.
 
 Date: 2026-07-26
 Area: Export branding / Reports / Website documents / Print-job quotes
 Type: Feature idea / Branding workflow
 Severity: Normal
-Status: Open
+Status: In progress
 What happened: Exported reports and future print-job quotes currently use only the built-in 3DPIceland branding contract.
 Expected behavior: Allow users to configure their own PNG logo for generated HTML/PDF website documents, reports and print-job
 quotes. Custom branding must be confined to generated document output. It must never replace or alter the Windows application icon,
@@ -1839,9 +1838,15 @@ Store or copy the accepted asset into a controlled per-user location without mod
 Remove/Restore default branding, honest missing/corrupt fallback and consistent aspect-ratio sizing without stretching or clipping.
 Preserve the built-in 3DPIceland logo as the default. Do not embed local source paths, owner data or unintended metadata in public
 output. Existing report routes and standalone generated artifacts must remain compatible.
-Verification evidence: Future deterministic coverage should verify PNG validation, governed persistence, default fallback and exact
-renderer selection without using Production or FTPS. Visual logo scale, transparency, clipping and HTML/PDF/quote presentation remain
-owner-manual acceptance.
+Research result: one immutable `DocumentBrandingSnapshot` will own normalized bytes, hash and fallback provenance. A dedicated SQLite
+singleton retains backup/restore consistency; renderer cache files are governed materializations only. Public-site/app branding stays
+separate, and stable report asset names remain compatibility aliases. v58.0.1-v58.0.6 now define the authoritative delivery order.
+v58.0.2 candidate adds schema-v39 transactional normalized PNG storage, full decode/dimension/pixel/size validation, metadata-free
+re-encoding, SHA-256 verification, contained atomic cache materialization and explicit Default/Custom/Fallback provenance. No visible
+control or renderer consumes it yet, so Help and AutomationRunner UI changes correctly remain owned by v58.0.3-v58.0.5.
+Verification evidence: v58.0.2 disposable profiles `20260728215136-14b9769c` and `20260728215405-332dd301` pass 409/409 with exact
+state recovery. Schema v38 is retained as a migration fixture and the validated v39 seed is canonical. Renderer selection remains
+owned by v58.0.4; visual scale, transparency, clipping and HTML/PDF/quote presentation remain owner-manual acceptance.
 
 Date: 2026-07-26
 Area: Main application navigation / Tab ordering

@@ -2,6 +2,33 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v58.0.2 - Governed Custom Document Branding Foundation
+
+The candidate introduces schema v39 and one dedicated
+`DocumentBrandingSettings` singleton. Normalized PNG bytes, SHA-256, decoded
+dimensions, byte count, alpha status and update time are transactionally owned
+by SQLite; no original source path is retained.
+
+`DocumentBrandingService` requires a real PNG signature and full WPF decode,
+bounds encoded and decoded resource use, converts to BGRA32, strips metadata by
+re-encoding and atomically materializes a fixed cache below the database
+folder. Missing or corrupt custom state reports Fallback rather than silently
+claiming custom branding. The built-in default remains renderer-owned until
+v58.0.4.
+
+No user-visible controls or renderer output changed, so Help UI and
+AutomationRunner changes are deliberately deferred to their recorded v58
+increments. Disposable profiles `20260728215136-14b9769c` and
+`20260728215405-332dd301` pass 409/409 Verification with exact business-state
+recovery. The second run uses the accepted schema-v39 canonical tester seed.
+
+The prior schema-v38 seed is retained as
+`filamentdb-schema38-migration.sqlite`, SHA-256
+`7DC91C93456F612B93B0E9A15D353ABABF2C93323E7E30F78C5B10620C6FB16F`.
+The canonical v39 seed SHA-256 is
+`C56963156E2CC660E088AF1F07D54B9ACA5C439A0532B7BBA0FFFBC45B25E5E6`;
+integrity, foreign keys, exact counts and zero automation residue pass.
+
 ## v57.0.5 - Public Website Experience and Canonical Branding
 
 The main generated website now owns one scoped Printing Price Calculator tab.

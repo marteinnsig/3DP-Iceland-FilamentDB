@@ -17893,6 +17893,24 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             officialReferenceReady && excelRecoveryReady && releaseIdentityReady
                 ? "Schema v37; deterministic ECB EUR cross-rate parser; Purchase Order provenance recovery; loaded orders are excluded from reference refresh"
                 : "ECB parser, new-order-only ownership, Purchase Order provenance recovery, UI diagnostics or release identity failed"));
+        var documentBrandingFoundation = _database.RunDocumentBrandingFoundationContractVerification();
+        checks.Add(new VerificationCheck(
+            "v58 document branding validation and persistence foundation",
+            documentBrandingFoundation.Passed,
+            documentBrandingFoundation.Detail));
+        var v5802FoundationReady =
+            BuildInfo.Version == "58.0.2" &&
+            BuildInfo.ReleaseCode == "DOCUMENT-BRANDING-FOUNDATION" &&
+            BuildInfo.ReleaseTitle == "Governed Custom Document Branding Foundation" &&
+            BuildInfo.CurrentDatabaseSchema == 39 &&
+            documentBrandingFoundation.Passed &&
+            releaseIdentityReady;
+        checks.Add(new VerificationCheck(
+            "v58.0.2 Document branding foundation release gate",
+            v5802FoundationReady,
+            v5802FoundationReady
+                ? "Schema v39, release identity and governed PNG validation/persistence foundation align"
+                : "v58.0.2 identity, schema, validation/persistence or generic assembly alignment failed"));
         var inventoryRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "InventorySpoolItems");
         var landedCostMigration = _database.RunLandedCostCurrencyMigrationContractVerification();
@@ -18292,20 +18310,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 "hash-reviewed apply",
                 StringComparison.Ordinal);
         var v5705OperationalSafetyReady =
-            BuildInfo.Version == "57.0.5" &&
-            BuildInfo.ReleaseCode == "WEBSITE-CALCULATOR-BRANDING" &&
-            BuildInfo.ReleaseTitle == "Public Website Experience and Canonical Branding" &&
             !v55ReleaseDeletePrompt.DefaultResult &&
             !BaseMaterialDeleteConfirmed(false) &&
             !BaseMaterialDeleteConfirmed(null) &&
             BaseMaterialDeleteConfirmed(true) &&
             (ownerCleanupOwnershipReady || disposableCleanupOwnershipReady);
         checks.Add(new VerificationCheck(
-            "v57.0.5 Website calculator and branding release gate",
-            v5705OperationalSafetyReady && releaseIdentityReady,
-            v5705OperationalSafetyReady && releaseIdentityReady
-                ? "Current identity retains default-No deletion, reviewed cleanup ownership and generic assembly alignment"
-                : "v57.0.5 identity, delete safety, cleanup ownership or generic assembly alignment failed"));
+            "v57.0.5 Website calculator and branding retained contract",
+            v5705OperationalSafetyReady,
+            v5705OperationalSafetyReady
+                ? "Accepted default-No deletion and reviewed cleanup ownership remain intact"
+                : "v57 retained delete safety or cleanup ownership failed"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {
