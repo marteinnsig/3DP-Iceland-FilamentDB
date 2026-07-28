@@ -59,7 +59,7 @@ internal static class DemoDatasetInspector
             ["AppMeta"] = Set("Key", "Value"),
             ["Manufacturers"] = Set("ManufacturerId", "Name"),
             ["BaseMaterialCatalog"] = Set(
-                "BaseMaterialId", "BaseMaterial", "Category"),
+                "BaseMaterialId", "BaseMaterial", "Category", "SortOrder"),
             ["NativeMaterialManagerRows"] = Set(
                 "MaterialId", "Manufacturer", "ProductLine", "MarketingName",
                 "BaseMaterial", "MaterialCategory", "VariantFinish",
@@ -427,7 +427,9 @@ internal static class DemoDatasetInspector
         IReadOnlySet<string> sourceIds)
     {
         if (mode == "EMPTY") return 0;
-        if (table is "AppMeta") return 1;
+        // SchemaVersion alone would let first startup mutate the demo.
+        // The builder owns four fixed post-retirement readiness markers.
+        if (table is "AppMeta") return 4;
         if (table is "Manufacturers")
             return CountDistinctParents(connection, sourceIds, "ManufacturerId");
         if (table is "BaseMaterialCatalog")

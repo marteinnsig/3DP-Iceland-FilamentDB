@@ -2,6 +2,29 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v56.0.4 - Deterministic SQLite Builder and Privacy Gates
+
+- Adds fresh-build `DemoDatasetTool build` generation with immutable,
+  query-only source access and create-new contained outputs.
+- Generates exact schema v38 with 25 tables, 17 indexes and 6 triggers.
+- Rewrites 36 Materials into the accepted fictional identity graph and retains
+  only approved tensile, impact and stiffness measurements.
+- Recomputes tensile results and derives app-parity status, category,
+  SortOrder, SourcePriority, display name and MaterialKey.
+- Keeps 17 operational/private domains empty, public flags false, notes/URLs/
+  prices absent, and `sqlite_sequence` empty.
+- Requires A/B byte equality, per-table counts/hashes, aggregate logical
+  equality, integrity/FK/schema/relationship/privacy gates and unchanged source.
+- Independently reloads source/contracts for A and B, checks all 36 recomputed
+  tensile results against accepted app-calculated rows and uses typed,
+  primary-key-ordered table hashing.
+- A second Release process reproduces both outputs; all four generated SQLite
+  files are byte-identical.
+- Release candidate SQLite SHA-256 is
+  `8D68E8B8E03F5714565D1258EB9D79D9BBDD851D4E8A5FB8B4A10ED024C082D9`.
+- AutomationRunner and Help remain owned by v56.0.5 runtime acceptance.
+- v56.0.4 is complete; v56.0.5 disposable runtime acceptance is current.
+
 ## v56.0.3 - Fictional Identity and Transformation
 
 - Adds a public-safe 36-row transformation spec with fictional Manufacturer,

@@ -1,4 +1,4 @@
-# Current Build Notes - v56.0.4 Development
+# Current Build Notes - v56.0.5 Development
 
 ## Governed Public Demo Dataset
 
@@ -73,6 +73,42 @@ ownership is recorded in the governed contract. Owner profile collections,
 cached outputs, URLs, notes, pricing, public flags and source fingerprints are
 never copied. The owner accepted v56.0.3; it is complete and v56.0.4
 deterministic SQLite builder/privacy-gate work is current.
+
+v56.0.4 adds a create-new deterministic builder. It opens the approved source
+immutable/query-only, validates pinned source, allowlist, transformation and
+schema hashes, then creates two fresh outputs. It reads only allowlisted native
+tensile, impact and stiffness projections.
+
+The schema contains 25 tables, 17 indexes and 6 triggers. Four fixed path-free
+`AppMeta` markers prevent first-start retirement mutation. The candidate has
+36 fictional Materials, 10 Manufacturers, 11 generic Base Materials, 712
+tensile samples, 36 recomputed tensile results, 718 impact samples and 36
+stiffness rows. All 17 private/operational domains are empty.
+
+Final Release A/B files are byte-identical at 458,752 bytes with SHA-256
+`8D68E8B8E03F5714565D1258EB9D79D9BBDD851D4E8A5FB8B4A10ED024C082D9`.
+The aggregate 25-table logical ledger SHA-256 is
+`BAD88B1D8F6E424D8E0C94A4075DB45920A44DFAC0A384BB115EEB121B482032`;
+manifest SHA-256 is
+`EECC41AD4AB79B5CFE311868367EB6EE6F31109FD552C3D613BF0C68546C7C9D`.
+Integrity, foreign keys, per-table hashes/counts, relationship parity, privacy,
+source preservation and negative containment probes pass.
+Independent hardening then required each A/B path to reload and revalidate the
+contracts and source separately. Tensile results match all 36 accepted
+source/app-calculated result rows after invariant formatting. Logical hashes
+encode column and row boundaries, NULL and SQLite storage types in primary-key
+order. The manifest records SQLite 3.53.3, page size 4096, UTF-8, no
+auto-vacuum and DELETE journaling; no sidecar exists.
+An independent second Release process repeats both builds. All four fresh
+SQLite files are byte-identical at the same accepted SHA-256.
+
+AutomationRunner and Help do not change because v56.0.4 exposes no app runtime
+surface. v56.0.5 owns disposable startup/restart, filters, rankings,
+collections, reports, Help and Full Data Verification. Production, FTPS and
+the canonical tester seed remain untouched.
+
+v56.0.4 is complete. Its deterministic builder and privacy gates pass;
+v56.0.5 disposable runtime, Verification, Help and report acceptance is current.
 
 ## Operational Safety and Disposable Hygiene
 

@@ -603,12 +603,17 @@ Verification evidence: v56 research and the fictional-identity/real-measurement 
 publication contract. v56.0.1 is complete: the owner accepted the exact private 36-Material allowlist and re-identification risk.
 Schema v38 integrity, relationships, uniqueness and measurement coverage pass; the gitignored registry is hash-bound.
 v56.0.2 is complete: the owner accepted the isolated read-only inspector, deterministic privacy-safe manifest and fail-closed
-source, private-registry and schema-drift evidence. v56.0.3 is complete and v56.0.4 deterministic SQLite builder work is current.
+source, private-registry and schema-drift evidence. v56.0.3 and v56.0.4 are complete; v56.0.5 runtime acceptance is current.
 v56.0.3 fictionalizes Manufacturer, Product Line, Marketing Name, Color and Variant while retaining approved generic Base
 Material and CF/GF taxonomy. Public spec/private parity, identity uniqueness and deterministic graph hashes pass; no SQLite is built.
 Two final Release validations are byte-identical with logical manifest SHA-256
 `82C62984153513CD78797FDBE71839BE4B4F4E805F009234105CF5A3EE30F621`; Debug/Release and governed static gates pass.
 The owner accepted the fictional identity/transformation contract.
+v56.0.4 fresh-builds two byte-identical schema-v38 SQLite files.
+SQLite SHA-256 is
+`8D68E8B8E03F5714565D1258EB9D79D9BBDD851D4E8A5FB8B4A10ED024C082D9`;
+all 25 table ledgers, exact counts, integrity/FK/privacy and 17 empty-domain
+gates pass. Runtime and Full Data Verification remain owned by v56.0.5.
 What happened: Trial users or evaluators currently lack a safe populated database that demonstrates Materials, measurements, filters,
 rankings, reports and same-family/manufacturer comparisons without exposing the owner database or commercial product identities.
 Expected behavior: Offer an optional downloadable demo SQLite backup with real 3DPIceland measurement evidence under fictional,

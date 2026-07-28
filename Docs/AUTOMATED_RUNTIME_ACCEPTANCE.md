@@ -1,5 +1,21 @@
 # Automated Runtime Acceptance
 
+## v56.0.4 - Deterministic builder accepted
+
+- No AutomationRunner scenario is added because the builder is an operator-only
+  CLI requiring the private allowlist and approved source copy; it has no app
+  profile, UI, Production, FTPS or canonical-seed authority.
+- Release generation creates two fresh databases and requires exact file,
+  logical and per-table equality before emitting a manifest.
+- Integrity, foreign keys, 25/17/6 schema objects, exact counts, identity
+  parity, 17 empty domains, all-TEXT privacy scan, empty `sqlite_sequence` and
+  unchanged source bytes fail closed.
+- Output-alias and transformation-location probes fail before creating output.
+- v56.0.5 owns disposable app runtime, Help, AutomationRunner and Full Data
+  Verification.
+- Deterministic generation and privacy acceptance are complete; v56.0.5 is
+  current.
+
 ## v56.0.3 - Fictional transformation accepted
 
 - No AutomationRunner scenario is added because this increment generates no

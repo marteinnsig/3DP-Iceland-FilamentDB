@@ -3,7 +3,7 @@
 ## Status and ownership
 
 - Increment: v56.0.1.
-- State: accepted through v56.0.3; v56.0.4 deterministic SQLite builder is current.
+- State: accepted through v56.0.4; v56.0.5 disposable runtime acceptance is current.
 - Canonical application release: v55.0.6.
 - Database schema: v38.
 - Public demo ownership is independent from the canonical tester seed.
@@ -77,9 +77,10 @@ Only positively classified fields may contain rows or values:
 - `NativeMaterialManagerRows` with fictional identities, public material
   classification, tested flags and governed print settings;
 - approved native tensile, impact and stiffness samples/results;
-- required `TestSummaryValues` derived from the approved demo measurements;
-- seeded lookup or experiment definitions required for runtime compatibility;
-- explicitly approved synthetic experiment fixtures, if later required.
+- runtime summaries recomputed from native measurements without legacy
+  `TestSummaryValues`;
+- no experiment definitions or fixtures unless a later increment separately
+  approves a synthetic runtime example.
 
 Generic engineering labels such as PLA or PETG may remain only when the owner
 approves them and they do not disclose a commercial identity.
@@ -92,6 +93,9 @@ approves them and they do not disclose a commercial identity.
 - Use fixed demo timestamps and invariant, normalized numeric strings.
 - Replace provenance with controlled public-demo wording.
 - Replace free-form validation text with governed stock text or omit it.
+- Seed only four fixed `AppMeta` rows: `SchemaVersion`,
+  `NativeMeasurementsCanonicalV1`, `LegacyWorkbookTablesRetiredV1` and
+  `LegacyWorkbookPostRetirementBackupV1`. Never persist a backup path.
 - Default public-report and public-test-detail flags to false.
 - Default archived state to active unless an archived case is explicitly
   approved for a bounded runtime test.
@@ -374,3 +378,38 @@ the tracked public transformation spec SHA-256 is
 No SQLite output, report, collection, website or publication artifact is
 created in v56.0.3. The owner accepted this fictional identity and
 transformation contract; v56.0.3 is complete.
+
+## v56.0.4 deterministic builder accepted
+
+The builder creates a new SQLite file and executes schema objects only after
+the complete source file and normalized accepted v38 schema hashes pass. No
+source table is attached, copied wholesale or modified.
+
+Only explicit allowlisted projections from native tensile, impact and stiffness
+tables are read. Material, Manufacturer and Base Material output identities
+come from the accepted public transformation contract. Tensile results are
+recomputed from retained samples with the audited 6.5016 mm² fallback.
+
+`SortOrder` uses the accepted Base Material order plus the final stable
+base-order/DEMO-ID row index. `SourcePriority` is `Materials master`.
+`TestedStatus`, coverage flags, category, display name and MaterialKey follow
+the current application helpers.
+
+Each build produces two independent create-new candidates. Acceptance requires
+equal whole-file SHA-256, equal aggregate logical hashes and exact per-table
+row/hash ledgers. The builder also requires:
+
+- 25 tables, 17 indexes, 6 relationship/delete triggers and schema v38;
+- four fixed path-free startup markers and empty `sqlite_sequence`;
+- exact 36/10/11 identity counts and 712/36/718/36 measurement counts;
+- `integrity_check=ok`, zero foreign-key violations and label/ID parity;
+- zero rows across all 17 excluded operational/private domains;
+- no source MaterialID, URL, email, path or private value in any TEXT row;
+- unchanged source bytes and no SQLite sidecars.
+
+The candidate hash is not publication authorization. v56.0.5 must still prove
+runtime/restart, filters, rankings, collections, reports, Help and Full Data
+Verification without changing candidate bytes.
+
+Deterministic generation and privacy acceptance are complete. v56.0.5 is
+current.

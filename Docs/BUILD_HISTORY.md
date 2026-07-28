@@ -2,6 +2,36 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v56.0.4 - Deterministic SQLite Builder and Privacy Gates
+
+`DemoDatasetTool build` creates two fresh schema-v38 SQLite candidates from
+hash-pinned schema metadata, the accepted private allowlist and the tracked
+fictional identity contract. It never copies the owner database and deletes
+private rows afterward; the source is immutable/query-only and only
+allowlisted tensile, impact and stiffness projections are read.
+
+Both candidates contain 25 tables, 17 indexes and 6 triggers. They contain 36
+Materials, 10 fictional Manufacturers, 11 generic Base Materials, 712 tensile
+samples, 36 recomputed tensile results, 718 impact samples and 36 stiffness
+rows. Seventeen denied operational domains are empty. Four fixed `AppMeta`
+markers prevent first-start legacy-retirement mutation without storing a path.
+
+Release A/B outputs are byte-identical with SQLite SHA-256
+`8D68E8B8E03F5714565D1258EB9D79D9BBDD851D4E8A5FB8B4A10ED024C082D9`.
+The 25-table logical ledger SHA-256 is
+`BAD88B1D8F6E424D8E0C94A4075DB45920A44DFAC0A384BB115EEB121B482032`;
+manifest SHA-256 is
+`EECC41AD4AB79B5CFE311868367EB6EE6F31109FD552C3D613BF0C68546C7C9D`.
+Integrity, foreign keys, schema counts, relationship parity, privacy scans,
+empty domains and source-byte preservation pass. Runtime remains owned by
+v56.0.5; Production, FTPS and the canonical tester seed are untouched.
+Each A/B path independently reloads source/contracts. Stored tensile results
+match the accepted app-calculated source results for all 36 Materials.
+Per-table hashes use typed NULL/value and row/column boundaries in primary-key
+order. Runtime pragma/version and no-sidecar evidence are retained.
+An independent second Release process reproduces the same A/B pair; all four
+fresh SQLite files are byte-identical.
+
 ## v56.0.3 - Fictional Identity and Transformation
 
 The candidate adds a tracked public-safe transformation spec containing only
