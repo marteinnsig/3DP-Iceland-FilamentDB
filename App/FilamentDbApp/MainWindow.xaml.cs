@@ -7349,6 +7349,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             }
 
             var reportStage = _publicReportWebsiteIntegrationService.Stage(GetPublicReportPackageRoot(), folder, isProduction);
+            var websiteBrandingStage = new WebsiteBrandingAssetService().Stage(folder);
             SafeFileOperations.WriteAllTextAtomic(htmlPath, BuildWebsitePreviewHtml(visibleRows, allRows, generatedAt, templatePath, isProduction), Encoding.UTF8);
             Directory.CreateDirectory(manufacturersFolder);
             SafeFileOperations.WriteAllTextAtomic(manufacturerRedirectPath, BuildManufacturerRedirectHtml(isProduction), Encoding.UTF8);
@@ -7380,6 +7381,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                 validation.ToPlainText() + "\n\n" +
                 summary + "\n" +
                 $"Created files:\n- {htmlPath}\n- {manufacturerRedirectPath}\n- {reportStage.PortalPath}\n- {whitepaperPath}\n- {manifestPath}\n- {logPath}\n" +
+                $"- {websiteBrandingStage.LogoPath}\n- {websiteBrandingStage.FaviconPath}\n" +
                 (publishPlan is null ? string.Empty : $"- {publishPlanPath}\nProduction publish readiness: {publishPlan.Files.Count} exact catalog-derived files, {publishPlan.TotalBytes:N0} bytes, SHA-256 recorded; /index.html last.\n") +
                 $"Public report package prerequisite: {reportPackageEnsure.PublicMaterials} MaterialIDs, {reportPackageEnsure.CatalogEntries} catalog entries; source data changed: {(reportPackageEnsure.SourceDataChanged ? "yes" : "no")}; rebuilt types: {reportPackageEnsure.RebuiltTypesLabel}.\n" +
                 $"Public report website stage: {reportStage.PublicMaterials} MaterialIDs, {reportStage.CatalogEntries} catalog entries, {reportStage.CopiedFiles} files copied or refreshed.\n" +
@@ -7732,7 +7734,8 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         // The Manufacturers portal consumes the same canonical active material rows
         // supplied to the website DATA pipeline for this render.
         var canonical = ApplyWebsiteTerminologyCleanup(ApplyConsistencyCalibrationToWebsite(ApplyPublicReportLinksToWebsite(ApplyNativeWebsitePortalNavigation(InjectExperimentalWebsiteSection(rendered), allRows))));
-        return _publicReportWebsiteIntegrationService.ApplyPortalNavigation(canonical, isProduction);
+        var withReports = _publicReportWebsiteIntegrationService.ApplyPortalNavigation(canonical, isProduction);
+        return new WebsiteBrandingAssetService().Apply(withReports);
     }
 
     private string GetPublicReportPackageRoot()
@@ -7980,6 +7983,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         portalBody.AppendLine("    <button type=\"button\" class=\"portal-tab\" data-portal-target=\"pricing\" aria-controls=\"portalPagePricing\" aria-selected=\"false\">Pricing &amp; Value</button>");
         portalBody.AppendLine("    <button type=\"button\" class=\"portal-tab\" data-portal-target=\"experimental\" aria-controls=\"portalPageExperimental\" aria-selected=\"false\">Experimental Lab</button>");
         portalBody.AppendLine("    <button type=\"button\" class=\"portal-tab\" data-portal-target=\"manufacturers\" aria-controls=\"portalPageManufacturers\" aria-selected=\"false\">Manufacturers</button>");
+        portalBody.AppendLine("    <button type=\"button\" class=\"portal-tab\" data-portal-target=\"calculator\" aria-controls=\"portalPageCalculator\" aria-selected=\"false\">Printing Price Calculator</button>");
         portalBody.AppendLine("    <button type=\"button\" class=\"portal-tab\" data-portal-target=\"methodology\" aria-controls=\"portalPageMethodology\" aria-selected=\"false\">Methodology</button>");
         portalBody.AppendLine("  </div>");
         portalBody.AppendLine("</nav>");
@@ -7999,6 +8003,10 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         portalBody.AppendLine("</section>");
         portalBody.AppendLine("<section id=\"portalPageManufacturers\" class=\"portal-page\" data-portal-page=\"manufacturers\" hidden>");
         portalBody.AppendLine(BuildNativeManufacturerPortalHtml(manufacturerRows ?? Array.Empty<DataRow>()));
+        portalBody.AppendLine("</section>");
+        var printingPriceCalculator = new PrintingPriceCalculatorPortalService();
+        portalBody.AppendLine("<section id=\"portalPageCalculator\" class=\"portal-page\" data-portal-page=\"calculator\" hidden>");
+        portalBody.AppendLine(printingPriceCalculator.BuildHtml());
         portalBody.AppendLine("</section>");
         portalBody.AppendLine("<section id=\"portalPageMethodology\" class=\"portal-page\" data-portal-page=\"methodology\" hidden>");
         portalBody.AppendLine(BuildMethodologyPortalHtml());
@@ -8028,12 +8036,13 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 @media(max-width:700px){.portal-navigation-inner{padding:8px 12px}.portal-tab{padding:9px 13px}.portal-page-heading,.portal-placeholder{margin:18px 12px;padding:20px}}
 </style>";
         var headClose = html.IndexOf("</head>", StringComparison.OrdinalIgnoreCase);
-        html = headClose >= 0 ? html.Insert(headClose, portalCss + Environment.NewLine) : portalCss + html;
+        var combinedPortalCss = portalCss + Environment.NewLine + printingPriceCalculator.BuildCss();
+        html = headClose >= 0 ? html.Insert(headClose, combinedPortalCss + Environment.NewLine) : combinedPortalCss + html;
 
         const string portalScript = @"
 <script id=""nativePortalNavigationScript"">
 (function(){
-  const valid=['database','pricing','experimental','manufacturers','methodology'];
+  const valid=['database','pricing','experimental','manufacturers','calculator','methodology'];
   const tabs=Array.from(document.querySelectorAll('[data-portal-target]'));
   const pages=Array.from(document.querySelectorAll('[data-portal-page]'));
   function routeFromHash(){
@@ -8171,7 +8180,8 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 })();
 </script>";
         var bodyClose = html.LastIndexOf("</body>", StringComparison.OrdinalIgnoreCase);
-        return bodyClose >= 0 ? html.Insert(bodyClose, portalScript + Environment.NewLine) : html + portalScript;
+        var combinedPortalScript = portalScript + Environment.NewLine + printingPriceCalculator.BuildScript();
+        return bodyClose >= 0 ? html.Insert(bodyClose, combinedPortalScript + Environment.NewLine) : html + combinedPortalScript;
     }
 
 
@@ -17127,10 +17137,47 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var portalProbe = ApplyNativeWebsitePortalNavigation(experimentalWebsiteProbe);
         checks.Add(new VerificationCheck("Native website portal navigation", portalProbe.Contains("3DP-NATIVE-PORTAL-START", StringComparison.Ordinal) && portalProbe.Contains("nativePortalNavigationScript", StringComparison.Ordinal),
             "Single-file portal navigation is injected into preview and production exports"));
-        checks.Add(new VerificationCheck("Website portal page foundation", new[] { "portalPageDatabase", "portalPagePricing", "portalPageExperimental", "portalPageManufacturers", "portalPageMethodology" }.All(id => portalProbe.Contains(id, StringComparison.Ordinal)),
-            "Filament Database, Pricing & Value, Experimental Lab, Manufacturers and Methodology page surfaces are present"));
-        checks.Add(new VerificationCheck("Website hash navigation", new[] { "database", "pricing", "experimental", "manufacturers", "methodology" }.All(route => portalProbe.Contains("'" + route + "'", StringComparison.Ordinal)),
+        checks.Add(new VerificationCheck("Website portal page foundation", new[] { "portalPageDatabase", "portalPagePricing", "portalPageExperimental", "portalPageManufacturers", "portalPageCalculator", "portalPageMethodology" }.All(id => portalProbe.Contains(id, StringComparison.Ordinal)),
+            "Filament Database, Pricing & Value, Experimental Lab, Manufacturers, calculator and Methodology surfaces are present"));
+        checks.Add(new VerificationCheck("Website hash navigation", new[] { "database", "pricing", "experimental", "manufacturers", "calculator", "methodology" }.All(route => portalProbe.Contains("'" + route + "'", StringComparison.Ordinal)),
             "Direct hash links and browser Back/Forward routing are available"));
+        checks.Add(new VerificationCheck("Printing price calculator parity contract",
+            new[]
+            {
+                PrintingPriceCalculatorPortalService.PortalMarker,
+                "data-pc=\"filamentCost\"",
+                "data-pc=\"targetMargin\"",
+                "const uptimeFraction=Math.min(Math.max(num('uptime'),0),100)/100",
+                "const availableLifetimeHours=8760*uptimeFraction*num('lifeYears')",
+                "const capital=availableLifetimeHours?lifetime/availableLifetimeHours:0",
+                "const electric=(num('powerW')/1000)*num('electricity')",
+                "const labor=((num('laborMinutes')+num('commMinutes')+num('designMinutes'))/60)*num('laborRate')",
+                "margin<1?landed/(1-margin):landed",
+                "qty=index===0&&id==='materialsTable'?1:0",
+                "uptime:50",
+                "Printing time exceeds the",
+                "body.price-calculator-print .price-calculator-quote *{visibility:visible!important}",
+                "Pricing calculator methodology credited to Print Farm Academy."
+            }.All(marker => portalProbe.Contains(marker, StringComparison.Ordinal)) &&
+            !portalProbe.Contains("DATA.priceCalculator", StringComparison.Ordinal) &&
+            !portalProbe.Contains("Direct calculator route:", StringComparison.Ordinal),
+            "The scoped calculator retains fields/formulas/quote attribution, omits route clutter and consumes no website DATA"));
+        const string brandingSourceProbe =
+            "<html><head></head><body><header><h1>3DPIceland Labs – Filament Testing Database</h1>" +
+            "<p>Verification probe</p></header><main><div class=\"portal-navigation-inner\"></div></main></body></html>";
+        var brandedPortalProbe = new WebsiteBrandingAssetService().Apply(brandingSourceProbe);
+        checks.Add(new VerificationCheck("Canonical website branding contract",
+            new[]
+            {
+                WebsiteBrandingAssetService.Marker,
+                "class=\"website-canonical-header\"",
+                "class=\"website-canonical-title\"",
+                $"src=\"{WebsiteBrandingAssetService.LogoRelativePath}\"",
+                $"rel=\"icon\" href=\"{WebsiteBrandingAssetService.FaviconRelativePath}\"",
+                "canonicalWebsiteBrandingStyles",
+                ".portal-navigation-inner{flex-wrap:wrap;overflow-x:visible}"
+            }.All(marker => brandedPortalProbe.Contains(marker, StringComparison.Ordinal)),
+            "Canonical Labs wordmark replaces the header brand text; favicon and wrapping navigation use governed relative styling"));
         const string pricingPortalSourceProbe = "<html><body><main><section class=\"filters\"></section><section class=\"card\" id=\"pricingExplorerCard\">Pricing</section><section class=\"card\" id=\"pricePerformanceCard\">Performance</section><section class=\"card\" id=\"valueRankingsCard\">Rankings</section><section class=\"card methodology-box\"><h2>About the methodology</h2></section><section id=\"databaseSentinel\">Database</section></main></body></html>";
         var pricingPortalProbe = ApplyNativeWebsitePortalNavigation(pricingPortalSourceProbe);
         var pricingPageStart = pricingPortalProbe.IndexOf("id=\"portalPagePricing\"", StringComparison.Ordinal);
@@ -18244,21 +18291,21 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             runtimeProfile.CleanupOwnership.Contains(
                 "hash-reviewed apply",
                 StringComparison.Ordinal);
-        var v5505OperationalSafetyReady =
-            BuildInfo.Version == "57.0.2" &&
-            BuildInfo.ReleaseCode == "INSTALLER-DEMO-COMPATIBILITY" &&
-            BuildInfo.ReleaseTitle == "Current Windows Installer and Demo Compatibility" &&
+        var v5705OperationalSafetyReady =
+            BuildInfo.Version == "57.0.5" &&
+            BuildInfo.ReleaseCode == "WEBSITE-CALCULATOR-BRANDING" &&
+            BuildInfo.ReleaseTitle == "Public Website Experience and Canonical Branding" &&
             !v55ReleaseDeletePrompt.DefaultResult &&
             !BaseMaterialDeleteConfirmed(false) &&
             !BaseMaterialDeleteConfirmed(null) &&
             BaseMaterialDeleteConfirmed(true) &&
             (ownerCleanupOwnershipReady || disposableCleanupOwnershipReady);
         checks.Add(new VerificationCheck(
-            "v57.0.2 Installer and demo compatibility release gate",
-            v5505OperationalSafetyReady && releaseIdentityReady,
-            v5505OperationalSafetyReady && releaseIdentityReady
-                ? "Default-No bounded Base Material deletion and runner-owned reviewed cleanup identity are aligned"
-                : "v57.0.2 identity, delete safety, cleanup ownership or generic assembly alignment failed"));
+            "v57.0.5 Website calculator and branding release gate",
+            v5705OperationalSafetyReady && releaseIdentityReady,
+            v5705OperationalSafetyReady && releaseIdentityReady
+                ? "Current identity retains default-No deletion, reviewed cleanup ownership and generic assembly alignment"
+                : "v57.0.5 identity, delete safety, cleanup ownership or generic assembly alignment failed"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {

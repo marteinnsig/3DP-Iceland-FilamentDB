@@ -371,7 +371,7 @@ Date: 2026-07-27
 Area: Application menu / Navigation and command discovery
 Type: Workflow friction / UI polish
 Severity: Idea
-Status: Open
+Status: Solved and runtime accepted
 What happened: The application menu has not received a complete usefulness review against the current tab structure and workflows.
 Useful navigation shortcuts may be missing, while retained items may now be redundant, stale or lower value.
 Expected behavior: Inventory every menu item and destination, propose high-value commands that select and focus the correct tab, and
@@ -494,10 +494,91 @@ as-is, including its current fields, formulas, wording and client-side behavior.
 SQLite, MaterialID, reports, website export data or any other application data. The change is website navigation/presentation only.
 Steps to reproduce: Open the main public website and confirm that no dedicated tab currently exposes the standalone price calculator.
 Screenshot / export / report attached: Capture desktop and narrow/mobile tab navigation during implementation.
-Resolution: Planned in v57.0 — Public Website Experience and Canonical Branding. Research main-template navigation, standalone
-calculator assets, relative paths and responsive behavior. Keep `/3dp/price` working unless a redirect is separately approved.
-Verification evidence: Future acceptance must prove calculator output parity with the current standalone page, no Materials/database
-payload or network dependency, working tab navigation at desktop and narrow widths, and unchanged existing main-site tabs/routes.
+Resolution: v57.0.3 candidate adds a scoped Printing Price Calculator portal tab without iframe or external runtime dependency.
+The accepted fields, defaults, formulas, reset and quote-print behavior are retained. After owner approval, `/3dp/price` becomes a
+small noindex redirect to `../index.html#calculator`, avoiding two calculator implementations that could drift apart.
+Verification evidence: Debug/Release builds, documentation audit, NuGet scan and deterministic website contracts pass. Owner accepted
+the calculator tab, corrected total-material result, quote print and Full Data Verification; coordinated Production remains pending.
+
+Date: 2026-07-28
+Area: Public website / Printing Price Calculator / Materials and quote print
+Type: Calculation and print correction
+Severity: Critical
+Status: Solved and runtime accepted
+What happened: Total Filament Required already represented the full job grams, but the generated first Materials row defaulted to Qty 4.
+At 1,000 g, 5,000 ISK/kg and efficiency 1.1 this incorrectly produced 22,000 ISK instead of 5,500 ISK. Quote print also hid the
+calculator page parent containing the quote document, so browser print preview was nearly empty.
+Expected behavior: The calculated filament line defaults to Qty 1 because grams already represent the job total. Quote print shows the
+prepared quote, line items and final price.
+Steps to reproduce: Enter 1,000 g, 5,000 ISK/kg and efficiency 1.1, then inspect Materials and export the official quote.
+Screenshot / export / report attached: Owner screenshot of an empty one-page browser print preview, 2026-07-28.
+Resolution: v57.0.3 candidate defaults the calculated filament line to Qty 1 and uses visibility-scoped print CSS that preserves the
+nested quote document while hiding the surrounding website.
+Verification evidence: Deterministic Verification requires Qty 1 plus the nested quote visibility contract. Debug/Release and owner
+runtime acceptance pass. The live standalone `/price` page remains unchanged until authorized coordinated Production publication.
+
+Date: 2026-07-28
+Area: Public website / Canonical branding / Responsive navigation
+Type: Visual correction
+Severity: Important
+Status: Solved and runtime accepted
+What happened: The first v57.0.4 Preview placed the Labs wordmark as a separate item inside the portal tabs. It consumed navigation
+width, produced a horizontal scrollbar below the tabs and left the duplicate `3DPIceland Labs` text in the large page heading.
+Expected behavior: Replace only the `3DPIceland Labs` portion of the top header with the canonical wordmark, retain
+`Filament Testing Database` as the large adjacent title and let navigation tabs wrap without a horizontal scrollbar.
+Steps to reproduce: Generate Preview, inspect the top header and narrow the browser while watching the portal navigation.
+Screenshot / export / report attached: Owner Preview screenshot, 2026-07-28.
+Resolution: v57.0.4 moves the wordmark into a responsive top-header grid, retains the large database title and changes portal
+navigation from horizontal overflow to wrapping rows.
+Verification evidence: Deterministic branding contract requires the header classes, relative logo/favicon routes and wrapping CSS.
+Debug/Release, regenerated Preview, owner desktop/narrow visual acceptance and final Verification 407/407 pass.
+
+Date: 2026-07-28
+Area: Verification Center / Canonical website branding
+Type: False-negative Verification correction
+Severity: Blocking
+Status: Solved and runtime accepted
+What happened: Owner accepted the regenerated logo/favicon Preview, but Full Data Verification passed 406/407 because the branding
+probe applied the renderer to synthetic portal HTML that contained no top-level website header. It then required header classes that
+could only be produced when the actual canonical header exists.
+Expected behavior: The deterministic probe supplies the accepted SQLite-template header shape and validates replacement, relative
+assets, favicon and wrapping navigation independently from owner data.
+Steps to reproduce: Run Full Data Verification on the accepted v57.0.4 Preview build.
+Screenshot / export / report attached: `3DPIceland_FilamentDB_Verification_20260728_202853.txt`; branding only FAIL.
+Resolution: The probe now includes `3DPIceland Labs – Filament Testing Database` in a bounded synthetic header before applying the
+branding renderer. Production output and accepted visual layout are unchanged.
+Verification evidence: Calculator contract, Debug/Release and owner Full Data Verification 407/407 pass.
+
+Date: 2026-07-28
+Area: Public website / Printing Price Calculator / Uptime percentage
+Type: Calculation correction
+Severity: Critical
+Status: Solved and runtime accepted
+What happened: Estimated Uptime was labelled `%` but defaulted to 0.5 and was consumed as a fraction. Entering 100 for 100% made
+available hours one hundred times too large, nearly removing printer capital and maintenance from Machine Time.
+Expected behavior: Enter percentages as 0-100; 50 means 50% and 100 means 100%. Machine Time includes amortized printer/upfront/lifetime
+maintenance, electricity and the configured buffer. Warn when requested print hours exceed available lifetime uptime.
+Steps to reproduce: Use printer cost 300,000, maintenance 10,000/year, life 2 years, uptime 100%, 17,088 print hours and buffer 1.3.
+Screenshot / export / report attached: Owner runtime calculation report, 2026-07-28.
+Resolution: v57.0.3 calculator contract now normalizes uptime by 100, defaults to 50, bounds the input to 0-100 and exposes a capacity
+warning. No Materials, SQLite or report data is consumed.
+Verification evidence: Deterministic Verification requires percent normalization, available lifetime hours, default 50 and warning.
+Debug/Release, owner calculation acceptance and Full Data Verification 407/407 pass.
+
+Date: 2026-07-28
+Area: Verification Center / v57 release identity
+Type: False-negative Verification correction
+Severity: Blocking
+Status: Solved and runtime accepted
+What happened: Final v57.0.5 Verification passed release identity, calculator and branding checks but failed 406/407 because an older
+release gate still required the exact v57.0.2 version, code and title.
+Expected behavior: The current release gate requires v57.0.5 identity while retaining default-No delete safety, owner/disposable cleanup
+ownership and generic assembly alignment.
+Steps to reproduce: Run Full Data Verification under v57.0.5 WEBSITE-CALCULATOR-BRANDING.
+Screenshot / export / report attached: `3DPIceland_FilamentDB_Verification_20260728_204413.txt`; stale identity gate only FAIL.
+Resolution: Rename and align the gate with v57.0.5; no delete, cleanup, installer/demo compatibility or assembly safety condition is
+weakened.
+Verification evidence: Final report `3DPIceland_FilamentDB_Verification_20260728_204858.txt` confirms 407/407 PASS.
 
 Date: 2026-07-26
 Area: Recommendation Detail / MSRP context

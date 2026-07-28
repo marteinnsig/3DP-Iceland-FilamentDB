@@ -1557,13 +1557,23 @@ internal static class HelpContentCatalog
             Main Website DATA includes every active, non-archived MaterialID; public-report checkboxes control linked report artifacts.
 
             Preview does not replace index.html, use Production paths or perform FTPS. Open index-test.html and inspect navigation,
-            material counts, representative cards, report links and browser layout. Missing public artifacts or validation failures must
-            be resolved before Production.
+            material counts, representative cards, report links and browser layout. Open Printing Price Calculator in the website
+            navigation and confirm its live totals, Reset Defaults and quote-print preview. It is an independent browser calculator:
+            it never reads Materials, SQLite, MaterialID, reports or Website DATA. The relative `price/` route redirects to the
+            calculator tab after coordinated Production activation. Confirm the Labs wordmark is readable in desktop and narrow
+            navigation and that the browser shows the canonical favicon. Missing branding assets or validation failures must be
+            resolved before Production.
+
+            Estimated Uptime is a percentage from 0 to 100: enter 50 for 50%, not 0.5. Capital cost per hour spreads printer purchase,
+            upfront cost and lifetime maintenance across available lifetime uptime hours. Electrical cost per hour is then added and
+            Printer Cost Buffer Factor applies to that combined hourly cost. A warning appears when job hours exceed available
+            lifetime uptime hours.
 
             Preview success is local evidence only. Retain its manifest/log when diagnosing differences, but do not describe the live
             website as updated until a separately authorized Production transfer and independent live check succeed.
             """,
-            "preview", "index-test.html", "export-manifest.txt", "ExportLogs", "public reports"),
+            "preview", "index-test.html", "export-manifest.txt", "ExportLogs", "public reports", "price calculator", "price/",
+            "wordmark", "favicon"),
         new(
             "website.production-generate", "Website Export", "Generate Production reference",
             "Create guarded local Production with preflight validation, backup and publish plan.",

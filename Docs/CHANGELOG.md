@@ -2,6 +2,19 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v57.0.5 - Public Website Experience and Canonical Branding
+
+- Adds the accepted standalone printing-price workflow as a responsive
+  `#calculator` portal tab without SQLite, Materials or website DATA coupling.
+- Corrects total-material Qty, quote printing and 0-100 uptime normalization;
+  owner calculation, PDF and usability review pass.
+- Stages the canonical Labs header logo and favicon through exact Preview and
+  Production plans, with responsive wrapped navigation and relative routes.
+- Retains `/price/index.html` as a noindex redirect artifact for later
+  coordinated Production activation; no Production or FTPS action is included.
+- Owner visual/runtime acceptance and Full Data Verification pass 407/407 with
+  release identity, calculator, branding and v57.0.5 closure gates PASS.
+
 ## v57.0.2 - Current Windows Installer and Demo Compatibility
 
 - Gives the current schema-v38 application a new release identity and builds

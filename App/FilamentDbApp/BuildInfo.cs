@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "INSTALLER-DEMO-COMPATIBILITY";
-    public const string ReleaseTitle = "Current Windows Installer and Demo Compatibility";
+    public const string ReleaseCode = "WEBSITE-CALCULATOR-BRANDING";
+    public const string ReleaseTitle = "Public Website Experience and Canonical Branding";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 38;
 

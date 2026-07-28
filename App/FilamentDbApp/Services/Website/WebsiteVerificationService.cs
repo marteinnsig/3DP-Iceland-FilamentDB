@@ -173,7 +173,12 @@ public sealed class WebsiteVerificationService
             "portalPagePricing",
             "portalPageExperimental",
             "portalPageManufacturers",
+            PrintingPriceCalculatorPortalService.PortalPageId,
             "portalPageMethodology",
+            PrintingPriceCalculatorPortalService.PortalMarker,
+            WebsiteBrandingAssetService.Marker,
+            WebsiteBrandingAssetService.LogoRelativePath,
+            WebsiteBrandingAssetService.FaviconRelativePath,
             PublicReportWebsiteIntegrationService.WebsitePortalMarker,
             "nativePortalNavigationScript"
         }.All(marker => html.Contains(marker, StringComparison.Ordinal));

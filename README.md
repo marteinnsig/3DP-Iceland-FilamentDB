@@ -4,9 +4,9 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v57.0.2 — Current Windows Installer and Demo Compatibility
+- **Current runtime-accepted release:** v57.0.5 — Public Website Experience and Canonical Branding
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v57.0 — Public Website Experience and Canonical Branding research
+- **Current development focus:** v58.0 — Governed Custom Document Branding research
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Download the Windows application
@@ -167,9 +167,11 @@ local publish-ready package remains separate from the owner database and the
 canonical tester seed. Application and corrected-demo publication remain
 separate guarded default-No actions.
 
-The current roadmap increment is v57.0 research. It maps the public website
-templates, standalone calculator route and canonical branding assets before
-any HTML, asset, Production or FTPS change.
+The current roadmap increment is v57.0 acceptance. Local Preview now includes
+the independent Printing Price Calculator as a responsive portal tab plus the
+canonical Labs wordmark and favicon. The retained `/3dp/price` route has a
+staged redirect to `index.html#calculator` for coordinated Production
+activation. Production and FTPS remain separate guarded default-No actions.
 
 The clean-install profile contains no material dataset or private FTPS
 identity. SQLite is never restored automatically by application update

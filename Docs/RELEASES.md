@@ -1,6 +1,23 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v57.0.5 - Public Website Experience and Canonical Branding
+
+The generated public website gains a responsive Printing Price Calculator tab
+with accepted formulas, corrected total-material quantity, printable quote and
+percentage-based uptime. It remains independent from SQLite, Materials,
+MaterialID, reports and generated website DATA.
+
+Canonical Labs logo/favicon assets are staged through exact publication plans.
+The logo replaces the top textual brand, the database title remains adjacent
+and navigation wraps at narrow widths. The governed `/price` redirect artifact
+is ready for a later coordinated Production activation; Production and FTPS
+remain separately unauthorized.
+
+Owner visual and calculation acceptance pass. Full Data Verification passes
+407/407 with zero FAIL under aligned v57.0.5 release identity. Parent v57 is
+complete and v58.0 research becomes authoritative.
+
 ## v57.0.2 - Current Windows Installer and Demo Compatibility
 
 The schema-v38 signed Candidate installs cleanly, restores corrected public

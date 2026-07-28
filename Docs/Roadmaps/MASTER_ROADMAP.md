@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v57.0.2 — Current Windows Installer and Demo Compatibility**
+Current canonical release: **v57.0.5 — Public Website Experience and Canonical Branding**
 
-Last runtime-accepted baseline: **v57.0.2 — Current Windows Installer and Demo Compatibility**
+Last runtime-accepted baseline: **v57.0.5 — Public Website Experience and Canonical Branding**
 
-Current canonical application release: **v57.0.2 — Current Windows Installer and Demo Compatibility**
+Current canonical application release: **v57.0.5 — Public Website Experience and Canonical Branding**
 
-Current roadmap increment: **v57.0 — Public Website Experience and Canonical Branding research**
+Current roadmap increment: **v58.0 — Governed Custom Document Branding research**
 
-Current acceptance note: v57.0.2 installer and v56.0.6.1 demo pass clean-VM Public Demo Verification 393/393.
+Current acceptance note: v57.0.5 website calculator and canonical branding pass owner review and Verification 407/407.
 
-Next note: v57.0 research resumes after the accepted installer/demo compatibility correction is published.
+Next note: research renderer and asset ownership before any v58.0 implementation.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -42,9 +42,9 @@ This file is the canonical strategic roadmap. Completed build details belong in
 
 | v54 | Materials Scope and Collection Workflow | ★★★★☆ | Complete — canonical v54.0.6 runtime accepted |
 | v55 | Operational Safety and Disposable Hygiene | ★★★★☆ | Complete — canonical v55.0.6 runtime accepted |
-| v56 | Governed Public Demo Dataset | ★★★☆☆ | Current — research before implementation |
-| v57 | Public Website Experience and Canonical Branding | ★★★★☆ | Planned |
-| v58 | Governed Custom Document Branding | ★★★☆☆ | Planned |
+| v56 | Governed Public Demo Dataset | ★★★☆☆ | Complete — canonical v56.0.6 dataset accepted |
+| v57 | Public Website Experience and Canonical Branding | ★★★★☆ | Complete — canonical v57.0.5 runtime accepted |
+| v58 | Governed Custom Document Branding | ★★★☆☆ | Current — research before implementation |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Planned last |
 
 ## Reconciliation of the older plans
@@ -2488,13 +2488,31 @@ to unstarted authoritative planning slots.
     - Local ZIP SHA-256: `B38F3173CBAE4E95D4EF589D460BC820AEB9040FF9CC59EB0E7CA4077EE191F4`.
 
 - **v57.0 — Public Website Experience and Canonical Branding**
-  - State: Current research; inspect website templates, calculator routing and canonical assets before HTML or asset changes.
-  - Add a responsive main-site navigation entry for the existing standalone `/3dp/price` calculator without changing its formulas.
-  - Preserve the standalone route and keep calculator data independent from SQLite, Materials, reports and desktop export payloads.
+  - State: Complete; canonical v57.0.5 is runtime accepted with Full Data Verification 407/407.
+  - Add the existing `/3dp/price` calculator as a responsive main-site portal tab without changing its formulas or behavior.
+  - Preserve `/3dp/price` as a redirect to `index.html#calculator`; keep calculator data independent from application payloads.
   - Add the approved canonical website logo and favicon assets with valid relative routes and honest missing-asset fallback.
   - Preserve existing main-site tabs, generated routes, report branding and narrow/mobile behavior.
   - Require local Preview and owner visual inspection; Production and FTPS remain separately authorized and default-No.
   - Completion condition: calculator parity, canonical branding and desktop/mobile navigation are accepted without route regression.
+  - **v57.0.3 — Standalone Calculator Portal Integration**
+    - State: Complete and runtime accepted; calculator totals, quote print and Full Data Verification pass.
+    - Reuse the accepted calculator fields, wording, formulas and client-side behavior inside `portalPageCalculator`.
+    - Redirect `/3dp/price` to `index.html#calculator` after owner approval; do not retain a second calculator implementation.
+    - Keep calculator state and calculations independent from SQLite, Materials, reports and generated website DATA.
+    - Extend deterministic portal, renderer and release-readiness contracts without weakening existing tab or route coverage.
+    - Owner accepted the corrected Qty 1 total-material contract and retained `/price` redirect for coordinated Production activation.
+    - Completion condition met: local gates and owner calculator, quote-print and usability acceptance pass.
+  - **v57.0.4 — Canonical Website Branding Assets**
+    - State: Complete and owner-visual accepted; final parent Verification passed in v57.0.5.
+    - Stage approved website logo and favicon assets through exact Preview and Production publish-plan allowlists.
+    - Use valid relative routes with honest missing-asset validation; do not change report, desktop or custom-document branding.
+    - Completion condition met: local asset/hash gates and owner desktop/mobile header, navigation and browser-icon acceptance pass.
+  - **v57.0.5 — Parent Acceptance and Release Closure**
+    - State: Complete, canonical and runtime accepted; Full Data Verification passes 407/407.
+    - Run final Debug/Release, static, security, documentation, Help, Verification and local Preview gates.
+    - Review README release identity and stable public links before parent closure; Production and FTPS require separate authority.
+    - Completion condition met: calculator parity, branding, route regression and owner acceptance pass; v57.0 is closed.
   - **v57.0.1 — Governed Public Demo Download and Lifecycle Guidance**
     - State: Complete and runtime accepted; guarded publication, remote verification and Full Data Verification pass.
     - Publish the accepted v56.0.6 ZIP through a separate exact-allowlist demo plan; do not widen app- or website-release plans.
@@ -2527,7 +2545,7 @@ to unstarted authoritative planning slots.
       - Demo backup: `/backups/public_demo/release_2026-07-28_192806_443`; stable/versioned HTTPS PASS.
 
 - **v58.0 — Governed Custom Document Branding**
-  - State: Planned after v57; one renderer/asset ownership contract before implementation.
+  - State: Current research; define one renderer/asset ownership contract before implementation.
   - Add an optional user-owned PNG logo for generated HTML/PDF reports, website documents and Print Job Quote output only.
   - Validate signature, decoded dimensions, size and transparency; copy accepted content into a governed per-user location.
   - Provide preview plus explicit Remove/Restore Default with honest missing/corrupt fallback.

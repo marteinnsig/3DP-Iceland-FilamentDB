@@ -2,6 +2,24 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v57.0.5 - Public Website Experience and Canonical Branding
+
+The main generated website now owns one scoped Printing Price Calculator tab.
+It preserves the accepted standalone fields and calculations while remaining
+independent from canonical SQLite, MaterialID, reports and website DATA. Owner
+review accepted the corrected Qty 1 total-material rule, populated quote print
+and percentage-based uptime calculation.
+
+The canonical Labs wordmark replaces the text brand in the top header, the
+database title remains large and adjacent, the favicon is staged, and portal
+navigation wraps without horizontal overflow. Exact Preview/Production plans
+own both assets, but Production and FTPS were not run.
+
+Debug and Release builds pass with zero warnings/errors. Help coverage and
+release-documentation audits pass. Owner Full Data Verification report
+`3DPIceland_FilamentDB_Verification_20260728_204858.txt` confirms 407/407
+applicable PASS, zero FAIL and aligned v57.0.5 identity. Parent v57 is closed.
+
 ## v57.0.2 - Current Windows Installer and Demo Compatibility
 
 The first signed Candidate installed and restored the schema-v38 public demo,
