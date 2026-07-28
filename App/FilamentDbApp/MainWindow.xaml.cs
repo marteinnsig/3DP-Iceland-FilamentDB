@@ -14295,7 +14295,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var runtimeProfile = RuntimeProfileContext.Current;
         var hasCanonicalMaterials = _nativeMaterialRows.Any(row => !row.IsArchived);
         var isPublicDemo =
-            AutomationRuntimeProfile.Current?.PublicDemoDataset == true;
+            AutomationRuntimeProfile.Current?.PublicDemoDataset == true ||
+            _database.IsGovernedPublicDemoDataset();
         var profileName = isPublicDemo
             ? "Public Demo Verification"
             : hasCanonicalMaterials ? "Full Data Verification" : "Application Readiness";
@@ -18244,20 +18245,20 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 "hash-reviewed apply",
                 StringComparison.Ordinal);
         var v5505OperationalSafetyReady =
-            BuildInfo.Version == "55.0.6" &&
-            BuildInfo.ReleaseCode == "OPERATIONAL-SAFETY-ACCEPTED" &&
-            BuildInfo.ReleaseTitle == "Operational Safety and Disposable Hygiene" &&
+            BuildInfo.Version == "57.0.2" &&
+            BuildInfo.ReleaseCode == "INSTALLER-DEMO-COMPATIBILITY" &&
+            BuildInfo.ReleaseTitle == "Current Windows Installer and Demo Compatibility" &&
             !v55ReleaseDeletePrompt.DefaultResult &&
             !BaseMaterialDeleteConfirmed(false) &&
             !BaseMaterialDeleteConfirmed(null) &&
             BaseMaterialDeleteConfirmed(true) &&
             (ownerCleanupOwnershipReady || disposableCleanupOwnershipReady);
         checks.Add(new VerificationCheck(
-            "v55.0.6 Operational safety accepted release gate",
+            "v57.0.2 Installer and demo compatibility release gate",
             v5505OperationalSafetyReady && releaseIdentityReady,
             v5505OperationalSafetyReady && releaseIdentityReady
                 ? "Default-No bounded Base Material deletion and runner-owned reviewed cleanup identity are aligned"
-                : "v55.0.6 identity, delete safety, cleanup ownership or generic assembly alignment failed"));
+                : "v57.0.2 identity, delete safety, cleanup ownership or generic assembly alignment failed"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {
@@ -18580,6 +18581,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? publicDemoDeploymentVerification.Detail +
                   " Guarded owner UI and install/remove Help are present; Production remains explicit and default-No."
                 : publicDemoDeploymentVerification.Detail));
+        var restoredDemoProfileContract =
+            LocalDatabase.RunPublicDemoMarkerContractVerification() &&
+            PublicDemoPrivacyExcludedCheckNames.Count == 12 &&
+            PublicDemoPrivacyExcludedCheckNames.All(name =>
+                CanonicalDataDependentCheckNames.Contains(name));
+        checks.Add(new VerificationCheck(
+            "v57.0.2.1 Restored Public Demo profile classification contract",
+            restoredDemoProfileContract,
+            restoredDemoProfileContract
+                ? "Only the exact governed AppMeta marker enables the existing 12 website-publication N/A checks; every other check remains mandatory."
+                : "Public-demo marker detection or the exact website-publication exclusion allowlist drifted."));
         var compiledProductionMaterialSeedExcluded = GetDefaultNativeMaterialRows().Count == 0;
         var cleanDeploymentDefaults = new DeploymentSettingsRecord();
         var privateDeploymentIdentityExcluded = string.IsNullOrWhiteSpace(cleanDeploymentDefaults.FtpsHost) &&

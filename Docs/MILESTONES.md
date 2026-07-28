@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v57.0.2 - Current Windows Installer and Demo Compatibility
+
+Delivers a current schema-v38 Windows installer and portable package plus
+corrected public demo v56.0.6.1. Clean-VM installation, guarded demo restore,
+restart and Public Demo Verification pass 393/393 with the intentional 12
+Website-publication checks N/A and all mandatory checks applicable.
+
 # v56.0.6 - Governed Public Demo Dataset
 
 Delivers a deterministic schema-v38 SQLite demo with 36 fictional identities,

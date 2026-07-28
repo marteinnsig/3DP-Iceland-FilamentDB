@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v55.0.6 — Operational Safety and Disposable Hygiene**
+Current canonical release: **v57.0.2 — Current Windows Installer and Demo Compatibility**
 
-Last runtime-accepted baseline: **v55.0.6 — Operational Safety and Disposable Hygiene**
+Last runtime-accepted baseline: **v57.0.2 — Current Windows Installer and Demo Compatibility**
 
-Current canonical application release: **v55.0.6 — Operational Safety and Disposable Hygiene**
+Current canonical application release: **v57.0.2 — Current Windows Installer and Demo Compatibility**
 
 Current roadmap increment: **v57.0 — Public Website Experience and Canonical Branding research**
 
-Current acceptance note: v56.0.6 demo dataset is owner accepted with Public Demo Verification 391/391 PASS.
+Current acceptance note: v57.0.2 installer and v56.0.6.1 demo pass clean-VM Public Demo Verification 393/393.
 
-Next note: parent v56 is complete; v57.0 research is current before website or asset changes.
+Next note: v57.0 research resumes after the accepted installer/demo compatibility correction is published.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2506,6 +2506,20 @@ to unstarted authoritative planning slots.
     - Published ZIP: 45,098 bytes; SHA-256 `FA36B9D668292FC9567EB58AA27D7760321BC4325BD3DD43F2D6AD702738E640`.
     - Remote evidence: stable/versioned HTTPS PASS; backup `/backups/public_demo/release_2026-07-28_183853_587`.
     - Owner evidence: guarded publish dialog, FTP inventory and Full Data Verification PASS accepted.
+  - **v57.0.2 — Current Windows Installer and Demo Compatibility**
+    - State: Runtime accepted; clean-VM install, demo restore and Public Demo Verification 393/393 pass.
+    - Give the post-v55 application code a new release identity; never publish changed binaries again as v55.0.6.
+    - Build signed Candidate package, installer and portable ZIP from one governed byte-identical payload.
+    - Require Candidate gates plus clean-VM install, schema-v38 demo restore, restart and uninstall/data-preservation acceptance.
+    - Promote accepted Candidate bytes to Production and publish versioned routes before stable installer/portable routes.
+    - Independently verify both stable HTTPS downloads and retain remote backup/rollback evidence.
+    - Completion condition: clean install can restore the public demo, Full Data Verification passes and owner accepts the release.
+    - **v57.0.2.1 — Restored Demo Profile Classification Correction**
+      - State: Runtime accepted; exact marker yields 12 canonical-data N/A, zero mandatory N/A and zero FAIL.
+      - Add one explicit public AppMeta marker in deterministic A/B builds and detect only that exact marker at runtime.
+      - Keep security, paths, recovery, installer and every non-website check mandatory; retain the exact 12-check N/A allowlist.
+      - Rebuild and republish the corrected demo only after privacy, integrity, counts, runtime and owner acceptance pass.
+      - Corrected SQLite SHA-256: `542EDF90072B2536B928D123767EE8955D90E06BDC8F6074D5B2DAD42D087B02`.
 
 - **v58.0 — Governed Custom Document Branding**
   - State: Planned after v57; one renderer/asset ownership contract before implementation.
@@ -2525,6 +2539,12 @@ to unstarted authoritative planning slots.
   - Preserve AutomationIds, keyboard access, focus restoration, lazy loading, saved layout and every guarded-action boundary.
   - Extend deterministic tester navigation for changed commands/order; keep visual ordering acceptance owner-manual.
   - Completion condition: owner accepts the final menu and tab structure with no orphaned action, regression or state mutation.
+  - **v59.0.1 — Final Demo Dataset Compatibility Rebuild**
+    - State: Planned after v59.0 navigation acceptance as the final item in the current roadmap.
+    - Follow `Docs/PUBLIC_DEMO_REBUILD_RUNBOOK.md`; reuse accepted v56 contracts unless a pinned input or rule changed.
+    - Rebuild the governed demo dataset and ZIP against the final accepted v59 application and installer bytes.
+    - Reverify clean restore, restart, Full Data Verification, package contents and SHA-256 before closing the roadmap.
+    - Publish the accepted ZIP by guarded FTPS, versioned route first and stable route last, then verify both HTTPS hashes.
 
 ### Intentionally unscheduled
 

@@ -1,6 +1,20 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v57.0.2 - Current Windows Installer and Demo Compatibility
+
+The schema-v38 signed Candidate installs cleanly, restores corrected public
+demo v56.0.6.1 and restarts with 36 fictional Materials. The exact public
+AppMeta marker classifies only the 12 intentionally absent owner Website
+publication checks as canonical-data N/A; security, paths, recovery, installer
+and every other check remain mandatory.
+
+Owner clean-VM evidence passes 393/393 applicable checks, 12 canonical-data
+N/A, zero mandatory N/A and zero FAIL. Candidate 1 is rejected and never
+promoted; Candidate 2 owns the accepted installer, portable and signed update
+bytes. Production promotion and guarded publication retain exact-byte,
+versioned-first, stable-last, backup and independent HTTPS verification.
+
 ## v56.0.6 - Governed Public Demo Dataset
 
 Owner accepts privacy, usefulness, runtime, reports and all 36 corrected Impact

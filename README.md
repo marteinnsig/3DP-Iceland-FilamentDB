@@ -4,7 +4,7 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v55.0.6 — Operational Safety and Disposable Hygiene
+- **Current runtime-accepted release:** v57.0.2 — Current Windows Installer and Demo Compatibility
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
 - **Current development focus:** v57.0 — Public Website Experience and Canonical Branding research
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
@@ -30,7 +30,7 @@ datasheets or accredited testing.
 To install it:
 
 1. Download the [public demo ZIP](https://www.iskort.is/3dp/downloads/3DPIceland-Public-Demo.zip)
-   and extract `3DPIceland-Public-Demo-v56.0.6.sqlite`.
+   and extract `3DPIceland-Public-Demo-v56.0.6.1.sqlite`.
 2. In the application, open **File → Backup and Recovery Center…**.
 3. Choose **Restore SQLite Backup** and select the extracted `.sqlite` file.
 4. Confirm the exact file and the default-No restore prompt. The application
@@ -156,15 +156,16 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 55.0.6 is the current runtime-accepted application release. It
-completes the operational-safety and disposable-hygiene workflow, including
-consistent cancellable confirmation dialogs, guarded tester-profile cleanup
-and Full Data Verification 403/403 PASS.
+Version 57.0.2 is the current runtime-accepted application release. Its
+schema-v38 installer and portable payload restore the governed public demo on
+a clean VM. Corrected demo v56.0.6.1 produces Public Demo Verification 393/393
+PASS, 12 declared website-publication N/A and zero mandatory N/A.
 
-The v56.0.6 governed public-demo dataset is complete and owner accepted. Its
+The v56.0.6.1 governed public-demo dataset is complete and owner accepted. Its
 36 fictional identities retain approved real comparative measurements; the
 local publish-ready package remains separate from the owner database and the
-canonical tester seed. Production and FTPS publication remain unauthorized.
+canonical tester seed. Application and corrected-demo publication remain
+separate guarded default-No actions.
 
 The current roadmap increment is v57.0 research. It maps the public website
 templates, standalone calculator route and canonical branding assets before

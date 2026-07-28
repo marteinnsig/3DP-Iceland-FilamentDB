@@ -428,8 +428,8 @@ internal static class DemoDatasetInspector
     {
         if (mode == "EMPTY") return 0;
         // SchemaVersion alone would let first startup mutate the demo.
-        // The builder owns four fixed post-retirement readiness markers.
-        if (table is "AppMeta") return 4;
+        // The builder owns four readiness markers plus one explicit public-demo marker.
+        if (table is "AppMeta") return 5;
         if (table is "Manufacturers")
             return CountDistinctParents(connection, sourceIds, "ManufacturerId");
         if (table is "BaseMaterialCatalog")

@@ -529,7 +529,8 @@ internal static class DemoDatasetBuilder
             ("SchemaVersion", "38"),
             ("NativeMeasurementsCanonicalV1", "complete"),
             ("LegacyWorkbookTablesRetiredV1", "complete"),
-            ("LegacyWorkbookPostRetirementBackupV1", "complete")
+            ("LegacyWorkbookPostRetirementBackupV1", "complete"),
+            ("PublicDemoDatasetV1", "governed-v56.0.6")
         })
             Insert(db, tx, "INSERT INTO AppMeta(Key,Value) VALUES($a,$b);",
                 row.Item1, row.Item2);
@@ -693,7 +694,7 @@ internal static class DemoDatasetBuilder
             if (Convert.ToInt64(Scalar(db, $"SELECT COUNT(*) FROM {table};"),
                     CultureInfo.InvariantCulture) != 0)
                 throw new InvalidDataException("EMPTY_DOMAIN");
-        if (Scalar(db, "SELECT COUNT(*) FROM AppMeta;") != "4" ||
+        if (Scalar(db, "SELECT COUNT(*) FROM AppMeta;") != "5" ||
             Scalar(db, "SELECT COUNT(*) FROM NativeMaterialManagerRows;") != "36" ||
             Scalar(db, "SELECT COUNT(*) FROM Manufacturers;") != "10" ||
             Scalar(db, "SELECT COUNT(*) FROM BaseMaterialCatalog;") != "11" ||
@@ -707,8 +708,9 @@ internal static class DemoDatasetBuilder
                 WHERE (Key='SchemaVersion' AND Value='38')
                    OR (Key='NativeMeasurementsCanonicalV1' AND Value='complete')
                    OR (Key='LegacyWorkbookTablesRetiredV1' AND Value='complete')
-                   OR (Key='LegacyWorkbookPostRetirementBackupV1' AND Value='complete');
-                """), CultureInfo.InvariantCulture) != 4)
+                   OR (Key='LegacyWorkbookPostRetirementBackupV1' AND Value='complete')
+                   OR (Key='PublicDemoDatasetV1' AND Value='governed-v56.0.6');
+                """), CultureInfo.InvariantCulture) != 5)
             throw new InvalidDataException("APPMETA_CONTRACT");
         if (Convert.ToInt64(Scalar(db, """
                 SELECT COUNT(*) FROM NativeMaterialManagerRows m

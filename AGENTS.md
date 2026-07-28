@@ -164,14 +164,50 @@
 - Align its current runtime-accepted release and development-focus text with
   `Docs/Roadmaps/MASTER_ROADMAP.md`; never advertise an unaccepted candidate as
   canonical.
-- Keep stable public links for the downloads page, latest Windows installer and
-  latest portable ZIP visible near the top of the README.
+- Keep stable public links for the latest Windows installer and latest portable
+  ZIP visible near the top of the README.
+- Include a downloads-page link only while its public route is independently
+  verified accessible; a route returning 403 must not be advertised.
 - Use the governed stable routes rather than a version-specific artifact URL:
-  `https://www.iskort.is/3dp/downloads/`,
   `https://www.iskort.is/3dp/downloads/3DPIceland-Setup-x64.exe` and
   `https://www.iskort.is/3dp/downloads/3DPIceland-Portable-x64.zip`.
 - Verify README links and release identity during major-version documentation
   closure. README drift blocks closing the parent major milestone.
+
+## Major-release standing FTPS authorization
+
+- The owner grants standing authorization to complete the guarded application
+  FTPS publication after each fully accepted major version. A separate repeated
+  FTPS confirmation is not required when every condition below is satisfied.
+- This authorization activates only after every recorded increment in the major
+  is complete, owner runtime acceptance is recorded, Full Data Verification is
+  PASS and all required build, security, documentation and package gates pass.
+- Require a clean committed release state and exact accepted Production bytes.
+  Never rebuild or substitute artifacts between runtime acceptance and publish.
+- The standing scope is limited to the approved Windows installer, portable
+  ZIP, signed application update package and update feed for that major release.
+- At final v59 closure, the standing scope also includes the accepted
+  `v59.0.1` governed public-demo ZIP containing the SQLite demo database plus
+  its governed public manifest/checksum artifacts. Publish only the exact
+  rebuilt and runtime-accepted demo bytes.
+- Publish immutable versioned installer/portable/update routes first. Activate
+  stable installer/portable routes and `/updates/latest.json` only after their
+  exact predecessor uploads verify.
+- Take a remote backup before stable-route mutation, retain rollback evidence
+  and independently download every stable HTTPS artifact after activation.
+  Require exact bytes, size, release identity and SHA-256 parity.
+- Stop fail-closed on local drift, remote inventory drift, backup failure,
+  upload failure, hash mismatch or HTTPS verification failure. Preserve the
+  prior stable routes or execute the governed rollback; never continue partly.
+- Except for the exact accepted v59.0.1 public-demo package above, this standing
+  authorization does not include website content, public reports, raw SQLite
+  files, owner data, FTPS credential changes or artifacts outside the governed
+  release plans. Those remain separately authorized.
+- Keep credentials and private remote details out of logs and documentation.
+  Record secret-safe plans, hashes, backups, transfers, remote verification and
+  final route identity in the accepted major-release evidence.
+- If major-version completion or owner runtime acceptance is ambiguous, do not
+  infer authorization. Stop before Production promotion or FTPS mutation.
 
 ## In-application Help maintenance
 

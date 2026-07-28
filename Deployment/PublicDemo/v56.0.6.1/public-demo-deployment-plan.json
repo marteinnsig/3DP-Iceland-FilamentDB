@@ -1,0 +1,9 @@
+{
+  "schema": "3dpiceland.public-demo-deployment-plan.v1",
+  "release": "v56.0.6.1",
+  "localFile": "3DPIceland-Public-Demo-v56.0.6.1.zip",
+  "versionedRemotePath": "/downloads/3DPIceland-Public-Demo-v56.0.6.1.zip",
+  "stableRemotePath": "/downloads/3DPIceland-Public-Demo.zip",
+  "bytes": 45277,
+  "sha256": "EE474531BAB2730A12EFFF1F753ADC66A081FDECB2E8FB16448CD7B67C6510AA"
+}

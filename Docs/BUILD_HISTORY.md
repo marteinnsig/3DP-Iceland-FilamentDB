@@ -2,6 +2,24 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v57.0.2 - Current Windows Installer and Demo Compatibility
+
+The first signed Candidate installed and restored the schema-v38 public demo,
+but owner Verification failed 12 Website checks because an ordinary owner
+runtime could not identify the intentionally website-empty demo profile. That
+Candidate was rejected and never promoted.
+
+The bounded correction adds `PublicDemoDatasetV1=governed-v56.0.6` to AppMeta
+through deterministic A/B output. Runtime detection accepts only that exact
+marker and reuses the existing exact 12-check website-publication exclusion
+allowlist. All other checks remain mandatory.
+
+Corrected SQLite A/B outputs are byte-identical at 458,752 bytes and SHA-256
+`542EDF90072B2536B928D123767EE8955D90E06BDC8F6074D5B2DAD42D087B02`;
+integrity, foreign keys, row counts and empty private/operational domains pass.
+Clean-VM Candidate 2 install, restore and restart produce Public Demo
+Verification 393/393, 12 canonical-data N/A, zero mandatory N/A and zero FAIL.
+
 ## v56.0.6 - Governed Public Demo Dataset
 
 The owner accepts privacy, usefulness, runtime, reports and all 36 corrected

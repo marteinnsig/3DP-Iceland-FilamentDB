@@ -31,6 +31,28 @@ Verification evidence:
 ```
 
 Date: 2026-07-28
+Area: Clean installer / restored public demo Verification
+Type: Bug
+Severity: Important
+Status: Solved
+What happened: Candidate 1 installed and restored schema-v38 demo data, but
+Full Data Verification failed 12 Website checks.
+Expected behavior: A governed restored demo must declare the intentional
+absence of owner Website publication configuration without weakening any
+mandatory safety or evidence check.
+Steps to reproduce: Clean-install Candidate 1, restore demo v56.0.6 and run
+Verification from an owner runtime.
+Screenshot / export / report attached:
+`3DPIceland_FilamentDB_Verification_20260728_190337.txt`.
+Resolution: v57.0.2.1 adds one exact public AppMeta marker in deterministic A/B
+output and recognizes only that marker for the existing closed 12-check
+Website-publication N/A allowlist. Candidate 1 was rejected.
+Verification evidence: Candidate 2 clean-VM install, corrected v56.0.6.1
+restore and restart pass 393/393 applicable checks, 12 canonical-data N/A,
+zero mandatory N/A and zero FAIL in
+`3DPIceland_FilamentDB_Verification_20260728_191916.txt`.
+
+Date: 2026-07-28
 Area: Distribution / public demo download
 Type: Workflow friction / Website idea
 Severity: Important

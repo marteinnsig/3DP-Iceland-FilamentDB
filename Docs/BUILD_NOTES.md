@@ -1,5 +1,20 @@
 # Current Build Notes - v57.0 Research
 
+## v57.0.2 Current Windows Installer and Demo Compatibility
+
+Candidate 1 installed and restored schema-v38 demo data successfully but failed
+12 Website-only checks because restored owner runtime lacked the disposable
+automation profile flag. It was rejected and never promoted.
+
+Candidate 2 detects only the explicit governed AppMeta marker. The existing
+12-name Website-publication exclusion remains closed; security, paths,
+recovery, installer and every other check stay mandatory. Demo v56.0.6.1
+changes no identity, measurement or relationship data.
+
+Owner clean-VM evidence
+`3DPIceland_FilamentDB_Verification_20260728_191916.txt` passes 393/393
+applicable checks, 12 canonical-data N/A, zero mandatory N/A and zero FAIL.
+
 ## v57.0.1 Governed Public Demo Download and Lifecycle Guidance
 
 The accepted v56.0.6 demo remains a separate SQLite dataset. A dedicated

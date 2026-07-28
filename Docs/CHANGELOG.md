@@ -2,6 +2,17 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v57.0.2 - Current Windows Installer and Demo Compatibility
+
+- Gives the current schema-v38 application a new release identity and builds
+  signed installer/portable Candidate bytes from one governed payload.
+- Corrects restored public-demo Verification classification with one explicit
+  AppMeta marker and the existing exact 12-check website exclusion allowlist.
+- Produces immutable demo v56.0.6.1 without changing fictional identities,
+  measurements, relationships or excluded private/operational domains.
+- Clean-VM install, demo restore and Public Demo Verification pass 393/393
+  applicable checks with 12 canonical-data N/A and zero mandatory N/A.
+
 ## v57.0.1 - Governed Public Demo Download and Lifecycle Guidance
 
 - Adds a separate exact-one-ZIP public-demo deployment plan and guarded owner

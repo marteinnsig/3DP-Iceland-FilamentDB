@@ -2057,6 +2057,10 @@ internal static class HelpContentCatalog
             review the default-No confirmation and choose Yes only for that exact backup. It restores the prior owner data, or the
             healthy zero-Material profile when the demo was installed into a new empty profile, and restarts.
 
+            The current governed demo is v56.0.6.1. Its explicit public AppMeta marker lets Verification classify only the 12
+            intentionally excluded owner Website-publication checks as Not applicable. Security, paths, recovery, installer and every
+            other check remain mandatory.
+
             Never overwrite or delete the active filamentdb.sqlite manually. Choose Storage Folder moves the current canonical database;
             it does not switch between demo and owner datasets.
             """,

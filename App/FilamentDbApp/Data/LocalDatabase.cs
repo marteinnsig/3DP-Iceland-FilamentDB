@@ -74,6 +74,75 @@ public sealed partial class LocalDatabase
 
     public string DatabaseFolder => Path.GetDirectoryName(DatabasePath) ?? string.Empty;
 
+    public bool IsGovernedPublicDemoDataset() =>
+        IsGovernedPublicDemoDataset(DatabasePath);
+
+    public static bool RunPublicDemoMarkerContractVerification()
+    {
+        var root = IOPath.Combine(
+            IOPath.GetTempPath(),
+            "3DPIceland-PublicDemoMarker-" + Guid.NewGuid().ToString("N"));
+        IODirectory.CreateDirectory(root);
+        try
+        {
+            var databasePath = IOPath.Combine(root, "marker.sqlite");
+            using (var connection = new SqliteConnection($"Data Source={databasePath};Pooling=False"))
+            {
+                connection.Open();
+                using var command = connection.CreateCommand();
+                command.CommandText = """
+                    CREATE TABLE AppMeta (Key TEXT PRIMARY KEY, Value TEXT NOT NULL);
+                    INSERT INTO AppMeta(Key, Value) VALUES ('PublicDemoDatasetV1', 'not-governed');
+                    """;
+                command.ExecuteNonQuery();
+            }
+            if (IsGovernedPublicDemoDataset(databasePath)) return false;
+            using (var connection = new SqliteConnection($"Data Source={databasePath};Pooling=False"))
+            {
+                connection.Open();
+                using var command = connection.CreateCommand();
+                command.CommandText = """
+                    UPDATE AppMeta
+                    SET Value='governed-v56.0.6'
+                    WHERE Key='PublicDemoDatasetV1';
+                    """;
+                command.ExecuteNonQuery();
+            }
+            SqliteConnection.ClearAllPools();
+            return IsGovernedPublicDemoDataset(databasePath);
+        }
+        catch
+        {
+            return false;
+        }
+        finally
+        {
+            SqliteConnection.ClearAllPools();
+            try { IODirectory.Delete(root, true); } catch { }
+        }
+    }
+
+    private static bool IsGovernedPublicDemoDataset(string databasePath)
+    {
+        try
+        {
+            using var connection = new SqliteConnection(
+                $"Data Source={IOPath.GetFullPath(databasePath)};Mode=ReadOnly;Pooling=False");
+            connection.Open();
+            using var command = connection.CreateCommand();
+            command.CommandText =
+                "SELECT Value FROM AppMeta WHERE Key='PublicDemoDatasetV1' LIMIT 1;";
+            return string.Equals(
+                command.ExecuteScalar()?.ToString(),
+                "governed-v56.0.6",
+                StringComparison.Ordinal);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public static string DefaultDatabaseFolder =>
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "3DPIceland Labs", "FilamentDB");
 

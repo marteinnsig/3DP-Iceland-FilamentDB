@@ -96,6 +96,39 @@ feed. The application release publisher activates versioned installer/portable
 routes before their stable `/downloads` routes. The update publisher transfers
 the signed ZIP before activating `/updates/latest.json`.
 
+## Standing major-release FTPS workflow
+
+The owner grants standing authorization for guarded application publication at
+the end of each fully accepted major version. No repeated FTPS confirmation is
+required after all major increments are complete, owner runtime acceptance and
+Full Data Verification PASS are recorded, the release state is clean and every
+build, security, documentation, signature and package gate passes.
+
+The standing authorization covers only the exact accepted Production installer,
+portable ZIP, signed application update package and update feed. Publish and
+verify immutable versioned routes first, then stable installer/portable routes,
+then `/updates/latest.json` last. Never rebuild accepted bytes during promotion.
+
+At final v59 closure, the authorization also covers the exact accepted
+`v59.0.1` governed public-demo ZIP containing the rebuilt SQLite demo database,
+plus its public manifest/checksum artifacts. Publish its immutable versioned
+route before the stable demo route, retain the prior remote demo backup and
+independently download/hash both routes after activation. Do not publish the
+private registry, source backup, raw owner identities or a loose SQLite file.
+
+Before stable mutation, retain the governed remote backup and rollback plan.
+After activation, independently download every stable HTTPS artifact and require
+exact release identity, byte count and SHA-256 parity. Stop fail-closed and
+preserve or restore the prior stable routes after any drift, backup, transfer,
+hash or remote-verification failure.
+
+Except for the exact accepted v59.0.1 public-demo package, website content,
+public reports, raw SQLite, owner data, credentials and artifacts outside the
+governed release plans are not covered by this standing authorization. Their
+Production/FTPS actions remain separately authorized. Evidence must remain
+secret-safe and record the exact plan, hashes, backup, transfers, remote
+downloads and final route identity.
+
 Authenticode remains deferred while distribution is private. The internal
 package is protected by the trusted ECDSA signature, but Windows can still show
 **Unknown publisher** for the Setup EXE or executable. Users must obtain packages
