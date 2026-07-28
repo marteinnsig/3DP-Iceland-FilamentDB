@@ -2507,19 +2507,24 @@ to unstarted authoritative planning slots.
     - Remote evidence: stable/versioned HTTPS PASS; backup `/backups/public_demo/release_2026-07-28_183853_587`.
     - Owner evidence: guarded publish dialog, FTP inventory and Full Data Verification PASS accepted.
   - **v57.0.2 — Current Windows Installer and Demo Compatibility**
-    - State: Runtime accepted; clean-VM install, demo restore and Public Demo Verification 393/393 pass.
+    - State: Complete, canonical, runtime accepted and published.
     - Give the post-v55 application code a new release identity; never publish changed binaries again as v55.0.6.
     - Build signed Candidate package, installer and portable ZIP from one governed byte-identical payload.
     - Require Candidate gates plus clean-VM install, schema-v38 demo restore, restart and uninstall/data-preservation acceptance.
     - Promote accepted Candidate bytes to Production and publish versioned routes before stable installer/portable routes.
     - Independently verify both stable HTTPS downloads and retain remote backup/rollback evidence.
     - Completion condition: clean install can restore the public demo, Full Data Verification passes and owner accepts the release.
+    - Application backup: `/backups/application_releases/release_2026-07-28_192732_560`.
+    - Installer SHA-256: `20E27873C9CCB4938226433251FB02B0E778C1CF5D02E5ABF5787A68D8E88C03`.
+    - Portable SHA-256: `A1CA7150006656E8D1FD0587D8F823023E632AA76F29BB5FF863BCB20679BAFF`.
     - **v57.0.2.1 — Restored Demo Profile Classification Correction**
       - State: Runtime accepted; exact marker yields 12 canonical-data N/A, zero mandatory N/A and zero FAIL.
       - Add one explicit public AppMeta marker in deterministic A/B builds and detect only that exact marker at runtime.
       - Keep security, paths, recovery, installer and every non-website check mandatory; retain the exact 12-check N/A allowlist.
       - Rebuild and republish the corrected demo only after privacy, integrity, counts, runtime and owner acceptance pass.
       - Corrected SQLite SHA-256: `542EDF90072B2536B928D123767EE8955D90E06BDC8F6074D5B2DAD42D087B02`.
+      - Demo ZIP: 45,277 bytes; SHA-256 `EE474531BAB2730A12EFFF1F753ADC66A081FDECB2E8FB16448CD7B67C6510AA`.
+      - Demo backup: `/backups/public_demo/release_2026-07-28_192806_443`; stable/versioned HTTPS PASS.
 
 - **v58.0 — Governed Custom Document Branding**
   - State: Planned after v57; one renderer/asset ownership contract before implementation.

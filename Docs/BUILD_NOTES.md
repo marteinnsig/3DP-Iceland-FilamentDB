@@ -15,6 +15,21 @@ Owner clean-VM evidence
 `3DPIceland_FilamentDB_Verification_20260728_191916.txt` passes 393/393
 applicable checks, 12 canonical-data N/A, zero mandatory N/A and zero FAIL.
 
+Byte-identical Production promotion and guarded publication pass. Application
+backup is `/backups/application_releases/release_2026-07-28_192732_560`;
+installer SHA-256 is
+`20E27873C9CCB4938226433251FB02B0E778C1CF5D02E5ABF5787A68D8E88C03`
+and portable SHA-256 is
+`A1CA7150006656E8D1FD0587D8F823023E632AA76F29BB5FF863BCB20679BAFF`.
+
+Corrected demo backup is
+`/backups/public_demo/release_2026-07-28_192806_443`. Both stable/versioned
+HTTPS pairs independently reproduce their exact bytes and hashes. The stable
+portable reports file version `57.0.2.0`; downloaded demo manifest reports
+v56.0.6.1, schema 38, 36 Materials and the governed marker. Demo ZIP is 45,277
+bytes with SHA-256
+`EE474531BAB2730A12EFFF1F753ADC66A081FDECB2E8FB16448CD7B67C6510AA`.
+
 ## v57.0.1 Governed Public Demo Download and Lifecycle Guidance
 
 The accepted v56.0.6 demo remains a separate SQLite dataset. A dedicated

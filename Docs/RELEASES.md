@@ -15,6 +15,15 @@ promoted; Candidate 2 owns the accepted installer, portable and signed update
 bytes. Production promotion and guarded publication retain exact-byte,
 versioned-first, stable-last, backup and independent HTTPS verification.
 
+Published installer and portable stable/versioned pairs pass independent HTTPS
+byte/hash verification. Installer SHA-256 is
+`20E27873C9CCB4938226433251FB02B0E778C1CF5D02E5ABF5787A68D8E88C03`;
+portable SHA-256 is
+`A1CA7150006656E8D1FD0587D8F823023E632AA76F29BB5FF863BCB20679BAFF`.
+Corrected demo v56.0.6.1 is also published and independently verified at
+45,277 bytes and SHA-256
+`EE474531BAB2730A12EFFF1F753ADC66A081FDECB2E8FB16448CD7B67C6510AA`.
+
 ## v56.0.6 - Governed Public Demo Dataset
 
 Owner accepts privacy, usefulness, runtime, reports and all 36 corrected Impact

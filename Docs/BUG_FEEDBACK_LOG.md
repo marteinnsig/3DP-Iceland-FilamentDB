@@ -51,6 +51,9 @@ Verification evidence: Candidate 2 clean-VM install, corrected v56.0.6.1
 restore and restart pass 393/393 applicable checks, 12 canonical-data N/A,
 zero mandatory N/A and zero FAIL in
 `3DPIceland_FilamentDB_Verification_20260728_191916.txt`.
+Stable/versioned installer, portable and demo HTTPS downloads independently
+match the accepted Production bytes and SHA-256 values; remote backups are
+retained under the governed application-release and public-demo backup roots.
 
 Date: 2026-07-28
 Area: Distribution / public demo download
