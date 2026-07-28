@@ -1,6 +1,15 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v55.0.6 - Operational Safety and Disposable Hygiene
+
+Material and Base Material deletion share one named default-No dialog. Enter,
+Escape and close cancel; only explicit Yes mutates. Disposable cleanup defaults
+to a retained dry-run plan; apply requires its reviewed SHA-256 plus containment,
+full-tree drift and reparse checks. Owner runtime and Verification pass. Schema
+remains v38. Final profile `20260728135719-4ac326ab` passes 403/403 with exact
+state; v55.0.6 is canonical and parent v55 is complete.
+
 ## v54.0.6 - Materials Scope and Collection Workflow
 
 Owner runtime acceptance passes for no-modifier six-facet filtering, OR/AND

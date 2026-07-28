@@ -515,8 +515,15 @@ public partial class MainWindow : Window
         foreach (var baseMaterial in _nativeBaseMaterialRows.Where(item =>
                      string.Equals(item.BaseMaterial, automationBaseMaterialName, StringComparison.Ordinal) ||
                      string.Equals(item.BaseMaterial, automationBaseMaterialCopyName, StringComparison.Ordinal)).ToList())
+        {
+            if (!_database.DeleteUnreferencedBaseMaterial(baseMaterial.BaseMaterialId))
+                throw new InvalidOperationException(
+                    $"Authorized bounded Base Material delete failed for {baseMaterial.BaseMaterialId}.");
+            if (_database.DeleteUnreferencedBaseMaterial(baseMaterial.BaseMaterialId))
+                throw new InvalidOperationException(
+                    $"Authorized missing Base Material delete was not a no-op for {baseMaterial.BaseMaterialId}.");
             _nativeBaseMaterialRows.Remove(baseMaterial);
-        SaveBaseMaterialCatalogToDatabase();
+        }
         _printerRows.Remove(automationPrinter);
         SavePrinters();
         var sequenceText = canonicalManufacturer.Notes["AUTOMATION-ORIGINAL-SEQUENCE:".Length..];
@@ -18070,8 +18077,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "v54 identity, OR/AND persistence Help and honest AI scope-limit markers are aligned"
                 : "v54 release identity, Help markers or generic assembly alignment failed"));
         var v5406LegacyRetirementReady =
-            BuildInfo.Version == "54.0.6" &&
-            BuildInfo.ReleaseCode == "MATERIALS-SCOPE-ACCEPTED" &&
             FindName("NativeMaterialManufacturerFilter") is null &&
             FindName("NativeMaterialBaseMaterialFilter") is null &&
             FindName("NativeMaterialReinforcementFilter") is null &&
@@ -18084,7 +18089,36 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             v5406LegacyRetirementReady && releaseIdentityReady,
             v5406LegacyRetirementReady && releaseIdentityReady
                 ? "Owner-accepted six-facet workflow is canonical and hidden scalar filter controls/matcher are absent"
-                : "v54.0.6 identity, legacy retirement or generic assembly alignment failed"));
+                : "v54.0.6 legacy retirement or generic assembly alignment failed"));
+        var v55ReleaseDeletePrompt = BuildBaseMaterialDeletePrompt("Verification Base Material");
+        var ownerCleanupOwnershipReady =
+            runtimeProfile.Kind == RuntimeProfileKind.OwnerProduction &&
+            runtimeProfile.CleanupOwnership.Contains(
+                "explicit governed cleanup",
+                StringComparison.Ordinal);
+        var disposableCleanupOwnershipReady =
+            runtimeProfile.Kind != RuntimeProfileKind.OwnerProduction &&
+            runtimeProfile.CleanupOwnership.Contains(
+                "dry-run plan",
+                StringComparison.Ordinal) &&
+            runtimeProfile.CleanupOwnership.Contains(
+                "hash-reviewed apply",
+                StringComparison.Ordinal);
+        var v5505OperationalSafetyReady =
+            BuildInfo.Version == "55.0.6" &&
+            BuildInfo.ReleaseCode == "OPERATIONAL-SAFETY-ACCEPTED" &&
+            BuildInfo.ReleaseTitle == "Operational Safety and Disposable Hygiene" &&
+            !v55ReleaseDeletePrompt.DefaultResult &&
+            !BaseMaterialDeleteConfirmed(false) &&
+            !BaseMaterialDeleteConfirmed(null) &&
+            BaseMaterialDeleteConfirmed(true) &&
+            (ownerCleanupOwnershipReady || disposableCleanupOwnershipReady);
+        checks.Add(new VerificationCheck(
+            "v55.0.6 Operational safety accepted release gate",
+            v5505OperationalSafetyReady && releaseIdentityReady,
+            v5505OperationalSafetyReady && releaseIdentityReady
+                ? "Default-No bounded Base Material deletion and runner-owned reviewed cleanup identity are aligned"
+                : "v55.0.6 identity, delete safety, cleanup ownership or generic assembly alignment failed"));
         var duplicateRunProbe = CreateExperimentalRunDuplicate(
             new ExperimentalRunRecord
             {
@@ -19324,6 +19358,49 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             baseMaterialsWorkspaceReady && fastSettingsContractsReady && releaseIdentityReady
                 ? "Dedicated Base Materials tab owns Add, Duplicate, Delete, editable Fast catalog and independent layout reset"
                 : "Base Materials tab, CRUD controls, Fast catalog, independent layout or release identity failed"));
+        const string verificationBaseMaterialName = "Verification Base Material";
+        var baseMaterialDeletePrompt = BuildBaseMaterialDeletePrompt(verificationBaseMaterialName);
+        var baseMaterialDeleteSafetyReady =
+            !baseMaterialDeletePrompt.DefaultResult &&
+            baseMaterialDeletePrompt.Caption == "Delete Base Material?" &&
+            baseMaterialDeletePrompt.Message.Contains(
+                verificationBaseMaterialName,
+                StringComparison.Ordinal) &&
+            baseMaterialDeletePrompt.Message.Contains(
+                "selection unchanged",
+                StringComparison.OrdinalIgnoreCase) &&
+            !BaseMaterialDeleteConfirmed(false) &&
+            !BaseMaterialDeleteConfirmed(null) &&
+            BaseMaterialDeleteConfirmed(true) &&
+            typeof(SafeDeleteConfirmationWindow).GetMethod(
+                nameof(SafeDeleteConfirmationWindow.ShowDialog)) is not null &&
+            typeof(LocalDatabase).GetMethod(
+                nameof(LocalDatabase.DeleteUnreferencedBaseMaterial)) is not null;
+        checks.Add(new VerificationCheck("v55.0.2 default-No Base Material delete contract",
+            baseMaterialDeleteSafetyReady,
+            baseMaterialDeleteSafetyReady
+                ? "Named Yes/No warning defaults to No; every non-Yes result preserves state and deletion is bounded by BaseMaterialID"
+                : "Base Material delete prompt, default-No decision or bounded persistence contract failed"));
+        var materialDeletePrompt = BuildMaterialDeletePrompt(
+            "VERIFY-MATERIAL",
+            "Verification Material");
+        var sharedDeleteDialogReady =
+            !materialDeletePrompt.DefaultResult &&
+            materialDeletePrompt.Caption == "Delete Material?" &&
+            materialDeletePrompt.Message.Contains("VERIFY-MATERIAL", StringComparison.Ordinal) &&
+            materialDeletePrompt.Message.Contains("press Escape", StringComparison.Ordinal) &&
+            materialDeletePrompt.Message.Contains("close this warning", StringComparison.Ordinal) &&
+            typeof(MainWindow).GetMethod(
+                nameof(ShowSafeDeleteConfirmation),
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(SafeDeleteConfirmationWindow).GetMethod(
+                nameof(SafeDeleteConfirmationWindow.ShowDialog)) is not null;
+        checks.Add(new VerificationCheck("v55.0.5.1 shared safe-delete dialog contract",
+            sharedDeleteDialogReady,
+            sharedDeleteDialogReady
+                ? "Material and Base Material use one named default-No dialog with Escape and close mapped to safe cancellation"
+                : "Shared Material/Base Material safe-delete prompt, Escape, close or dialog ownership failed"));
         var baseMaterialColumn = fastMaterialsContractColumns.SingleOrDefault(column =>
             string.Equals(column.PropertyName, nameof(NativeMaterialRow.BaseMaterial), StringComparison.Ordinal));
         var baseMaterialCatalogById = _nativeBaseMaterialRows.ToDictionary(row => row.BaseMaterialId);
@@ -25303,29 +25380,126 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         if (IsAutomationActionBlocked("Base Material deletion")) return;
         var row = _selectedFastBaseMaterialRow;
-        if (row is not null)
+        if (row is null) return;
+
+        if (_nativeMaterialRows.Any(material =>
+                material.BaseMaterialId == row.BaseMaterialId))
         {
-            if (_nativeMaterialRows.Any(material =>
-                    material.BaseMaterialId == row.BaseMaterialId))
+            MessageBox.Show(
+                this,
+                $"{row.BaseMaterial} is referenced by Materials and cannot be deleted.",
+                "Base Material In Use",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return;
+        }
+
+        var prompt = BuildBaseMaterialDeletePrompt(row.BaseMaterial);
+        if (!ShowSafeDeleteConfirmation(prompt.Caption, prompt.Message)) return;
+
+        try
+        {
+            if (!_database.DeleteUnreferencedBaseMaterial(row.BaseMaterialId))
             {
                 MessageBox.Show(
                     this,
-                    $"{row.BaseMaterial} is referenced by Materials and cannot be deleted.",
-                    "Base Material In Use",
+                    $"{row.BaseMaterial} was not deleted. It may have become referenced or no longer exists.",
+                    "Base Material Not Deleted",
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
                 return;
             }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                this,
+                $"Could not delete {row.BaseMaterial}. No in-memory catalog or selection change was made.\n\n{ex.Message}",
+                "Base Material Delete Failed",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            return;
+        }
+
+        try
+        {
+        try
+        {
             _nativeBaseMaterialRows.Remove(row);
             _selectedFastBaseMaterialRow = null;
-            SaveBaseMaterialCatalogToDatabase();
             ApplyNativeMaterialComputedFieldsToAllRows();
             RefreshNativeMaterialGridValidation();
             RefreshNativeInputModulesFromMaterialManager(markDirty: false);
             RefreshFastSettingsViews();
             ShowTransientStatus($"{row.BaseMaterial} deleted from the canonical Base Material Catalog.");
         }
+        catch (Exception ex)
+        {
+            _nativeBaseMaterialRows.Clear();
+            foreach (var persisted in _database.LoadBaseMaterialCatalog())
+                _nativeBaseMaterialRows.Add(FromBaseMaterialRecord(persisted));
+            _selectedFastBaseMaterialRow = null;
+            RefreshFastSettingsViews();
+            MessageBox.Show(
+                this,
+                $"{row.BaseMaterial} was deleted from SQLite, but the view refresh failed and was reloaded from the canonical catalog.\n\n{ex.Message}",
+                "Base Material Deleted — View Reloaded",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+        }
+        catch (Exception ex)
+        {
+            _nativeBaseMaterialRows.Clear();
+            foreach (var persisted in _database.LoadBaseMaterialCatalog())
+                _nativeBaseMaterialRows.Add(FromBaseMaterialRecord(persisted));
+            _selectedFastBaseMaterialRow = null;
+            RefreshFastSettingsViews();
+            MessageBox.Show(
+                this,
+                $"{row.BaseMaterial} was deleted from SQLite, but the view refresh failed and was reloaded from the canonical catalog.\n\n{ex.Message}",
+                "Base Material Deleted — View Reloaded",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
     }
+
+    private static BaseMaterialDeletePrompt BuildBaseMaterialDeletePrompt(string baseMaterialName) =>
+        new(
+            $"Delete Base Material \"{baseMaterialName}\"?\n\n" +
+            "This permanently removes only this unreferenced canonical catalog entry. " +
+            "Materials, measurements and calculated results are not changed.\n\n" +
+            "Choose No, press Escape or close this warning to keep the catalog and current selection unchanged.",
+            "Delete Base Material?",
+            false);
+
+    private static BaseMaterialDeletePrompt BuildMaterialDeletePrompt(
+        string materialId,
+        string displayName) =>
+        new(
+            $"Delete material {materialId} – {displayName}?\n\n" +
+            "This permanently removes the material from the native database. " +
+            "A backup will be created first.\n\n" +
+            "Choose No, press Escape or close this warning to keep the material and current selection unchanged.",
+            "Delete Material?",
+            false);
+
+    private static bool BaseMaterialDeleteConfirmed(bool? result) =>
+        result == true;
+
+    private bool ShowSafeDeleteConfirmation(string caption, string message)
+    {
+        var confirmation = new SafeDeleteConfirmationWindow(caption, message)
+        {
+            Owner = this
+        };
+        return BaseMaterialDeleteConfirmed(confirmation.ShowDialog());
+    }
+
+    private sealed record BaseMaterialDeletePrompt(
+        string Message,
+        string Caption,
+        bool DefaultResult);
 
     private string NextUniqueBaseMaterialName(string preferred)
     {
@@ -30105,11 +30279,9 @@ private List<string> GetVisibleAiMaterialLabels()
             return;
         }
 
-        var result = MessageBox.Show(this, $"Delete material {selected.MaterialID} – {selected.WebsiteDisplayName}?\n\nThis permanently removes the material from the native database. A backup will be created first.", "Delete Material?", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
-        if (result != MessageBoxResult.Yes)
-        {
+        var prompt = BuildMaterialDeletePrompt(selected.MaterialID, selected.WebsiteDisplayName);
+        if (!ShowSafeDeleteConfirmation(prompt.Caption, prompt.Message))
             return;
-        }
 
         CreateDatabaseBackupBeforeMajorMaterialChange("deleting material");
 

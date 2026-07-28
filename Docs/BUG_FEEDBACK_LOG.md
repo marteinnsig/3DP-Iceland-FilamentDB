@@ -30,6 +30,47 @@ Resolution:
 Verification evidence:
 ```
 
+Date: 2026-07-28
+Area: Materials / Base Materials delete confirmation
+Type: Bug / UI consistency
+Severity: Important
+What happened: Standard Material `MessageBox YesNo` ignored Escape and disabled
+the window close button. The first Base Material custom dialog fixed those
+actions but looked materially different from the earlier Windows dialog.
+Expected behavior: Material and Base Material use one consistent Windows-like
+named warning. No is focused/default; Enter, Escape and window close cancel
+without mutation; only explicit Yes deletes.
+Steps to reproduce: Select a Material or unreferenced Base Material, click
+Delete and compare Enter, Escape, close and appearance.
+Screenshot / export / report attached: Owner runtime feedback on 2026-07-28.
+Status: Solved
+Resolution: v55.0.5.1 introduces one shared DPI-safe WPF safe-delete window for
+both workflows with consistent sizing, vector warning icon and button layout.
+Verification evidence: Owner accepts consistent appearance, Enter/No, Escape,
+close and explicit Yes for both workflows. Final profile
+`20260728135719-4ac326ab` passes 403/403 with exact state.
+
+Date: 2026-07-28
+Area: Verification Center / disposable Base Material delete probe
+Type: Bug
+Severity: Important
+What happened: Owner Debug runtime showed `Verification Center Error` because
+the temporary `probe.sqlite` remained locked while the in-process Verification
+gate tried to recursively delete its probe folder.
+Expected behavior: Verification Center opens without temporary-file cleanup
+errors and never changes application files or canonical SQLite.
+Steps to reproduce: Run the stale v55.0.5 Debug build, open Help and select
+Verification Center.
+Screenshot / export / report attached: Owner screenshot
+`codex-clipboard-2637604c-7fe3-4a05-a96a-96300e2c47ea.png`.
+Status: Solved
+Resolution: Removed the disposable schema probe from the UI Verification path.
+The actual bounded SQLite delete, referenced block and missing-ID no-op now run
+inside the authorized disposable CRUD scenario. Debug was rebuilt after the
+correction.
+Verification evidence: Corrected Debug smoke `20260728132704-f9f0b973` opens
+Verification Center, passes 402/402 and preserves exact database/business state.
+
 Date: 2026-07-27
 Area: AutomationRunner / Historical Verification and cleanup
 Type: Bug
@@ -570,13 +611,12 @@ Date: 2026-07-25
 Area: Disposable automation / evidence retention
 Type: Workflow friction
 Severity: Minor
-Status: Open
-Resolution: Planned in v55.0 — Operational Safety and Disposable Hygiene. After Codex has reviewed a completed disposable tester run
-and retained the evidence still needed for the current
-increment, Codex should remove obsolete profile folders below `%TEMP%\3DPIceland-Automation`. Keep the latest accepted PASS evidence
-for each scenario and every unresolved FAIL, aborted run or runtime-acceptance dependency. Never delete the automation root itself,
-follow reparse points or touch owner, Production, FTPS or unresolved paths. Record which profile IDs were removed and retained.
-Verification evidence: Pending a bounded cleanup implementation and dry-run/path-containment review.
+Status: Solved
+Resolution: v55.0.6 adds runner-owned dry-run inventory and a separately hash-reviewed apply path. It preserves the latest
+valid PASS per scenario plus every FAIL, aborted, malformed or pinned dependency. Full-tree hashes, preflight validation, reparse
+rejection and same-root quarantine protect the exact reviewed removals. Real apply remains owner-acceptance-gated.
+Verification evidence: Synthetic classifier, dry-run byte preservation, plan SHA-256 and bounded apply pass. Final pinned dry-run
+`0EC0B8565A655B116F8B50F295975B6E13B64E0035B93150DF39A1FE4F04748B` retains four required profiles and removes zero.
 What happened: Completed disposable tester profiles can remain below the temporary automation root after their results have been
 reviewed and are no longer needed, causing old databases, reports, screenshots and transaction evidence to accumulate.
 Expected behavior: Codex should perform a deliberate post-review cleanup when obsolete disposable evidence is no longer needed,
@@ -789,13 +829,12 @@ Date: 2026-07-24
 Area: Settings Manager / Base Material Catalog
 Type: Workflow friction / Data issue
 Severity: Important
-Status: Open
-Resolution: Planned in v55.0 — Operational Safety and Disposable Hygiene. Add an explicit destructive-action confirmation before
-`Delete Selected Base Material` executes, with `No` as the
-default focused response. Identify the selected Base Material in the warning and make cancellation leave canonical SQLite, selection
-and dependent calculations unchanged.
-Verification evidence: Requires Yes/No/default-focus, keyboard dismissal, cancellation, confirmed deletion, restart and Full Data
-Verification runtime tests.
+Status: Solved
+Resolution: v55.0.6 adds a warning naming the selected unreferenced Base Material, Yes/No buttons and explicit default No
+before any mutation. Every non-Yes response preserves SQLite, selection and calculations. Explicit Yes uses one transactional
+BaseMaterialID delete; referenced rows remain blocked before confirmation. Owner runtime acceptance passed.
+Verification evidence: Deterministic prompt/default/cancellation contract and disposable SQLite unreferenced/referenced/missing-ID
+probe pass. Owner Enter/Escape/close/Yes/restart acceptance and final Full Data Verification pass.
 What happened: `Delete Selected Base Material` can delete the selected catalog entry without a warning or default-No confirmation.
 Expected behavior: Show a clear warning naming the selected Base Material and perform no mutation unless the user explicitly selects
 `Yes`; pressing Enter, Escape or closing the dialog must follow the safe default-No path.

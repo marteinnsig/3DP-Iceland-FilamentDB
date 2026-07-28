@@ -1,5 +1,29 @@
 # Automated Runtime Acceptance
 
+## v55.0.6 - Operational safety accepted
+
+- Normal Base Material deletion remains automation-blocked; deterministic
+  Verification owns prompt/default/cancellation semantics and a disposable
+  SQLite delete-by-ID probe.
+- Existing CRUD authorization retains generated-record persistence and exact
+  business-state cleanup without broadening to arbitrary catalog IDs.
+- `--cleanup-profiles` is dry-run only and emits JSON/TXT plan evidence.
+- `--apply-cleanup-plan` requires the exact reviewed `--plan-sha256`.
+- `--cleanup-self-test` creates only synthetic profiles and proves classifier,
+  dry-run byte preservation, retention, plan hash and bounded apply.
+- Real cleanup apply remains acceptance-gated. Owner database, canonical seed,
+  Production and FTPS stay blocked.
+- Release smoke `20260728132054-713375ea` passes 402/402 with exact state.
+- CRUD `20260728132200-3f006c6b` passes bounded delete, restart and exact
+  business-state recovery.
+- Reviewed real dry-run plan SHA-256
+  `0EC0B8565A655B116F8B50F295975B6E13B64E0035B93150DF39A1FE4F04748B`
+  retains four required profiles and removes zero.
+- Owner runtime accepts both shared delete dialogs and Full Data Verification
+  PASS. v55.0.6 is canonical and parent v55 is complete.
+- Final profile `20260728135719-4ac326ab` passes 403/403 with exact
+  database/business-state equality.
+
 ## v54.0.6 - Materials scope accepted
 
 - Owner runtime acceptance passes for the complete v54 workflow.

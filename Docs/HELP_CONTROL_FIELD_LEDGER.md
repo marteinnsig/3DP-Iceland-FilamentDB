@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v54.0.6 Materials scope closure
+Version: v55.0.6 Operational safety accepted
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted
@@ -35,7 +35,7 @@ AutomationId presence, a click-handler count or a tab overview is not coverage.
 
 ## Discovery baseline
 
-Source snapshot: canonical runtime-accepted v54.0.6 on 2026-07-28.
+Source snapshot: canonical runtime-accepted v55.0.6 on 2026-07-28.
 
 | Source | Discovered candidates | Reconciliation requirement |
 |---|---:|---|
@@ -169,6 +169,10 @@ not misclassified as a user-editable XAML field.
 | v53.0.5 | v51-v53 Help, owner and runtime-surface reconciliation | Zero unexplained post-v50 gaps |
 | v54.0.5 | Six Materials facets, persisted scope, exact AI/collection evidence | Owner runtime accepted |
 | v54.0.6 | Hidden scalar filter retirement and final Help inventory | Canonical; 661/661 Help audit |
+| v55.0.2 | Named default-No Base Material deletion and cancellation safety | Candidate Help and Verification |
+| v55.0.5 | Runner-owned reviewed cleanup and diagnostics ownership | Candidate Help and Verification |
+| v55.0.5.1 | Shared safe-delete dialog for Material and Base Material | Owner runtime feedback correction |
+| v55.0.6 | Operational safety runtime acceptance and closure | Canonical; Verification PASS |
 
 ## Initial findings and risks
 

@@ -2330,6 +2330,34 @@ ProfileKind=excluded.ProfileKind,UpdatedAtUtc=excluded.UpdatedAtUtc;";
         transaction.Commit();
     }
 
+    public bool DeleteUnreferencedBaseMaterial(long baseMaterialId)
+    {
+        if (baseMaterialId <= 0)
+            throw new ArgumentOutOfRangeException(nameof(baseMaterialId));
+
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var transaction = connection.BeginTransaction();
+        using var delete = connection.CreateCommand();
+        delete.Transaction = transaction;
+        delete.CommandText = """
+            DELETE FROM BaseMaterialCatalog
+            WHERE BaseMaterialId = $id
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM NativeMaterialManagerRows
+                  WHERE BaseMaterialId = $id
+              );
+            """;
+        delete.Parameters.AddWithValue("$id", baseMaterialId);
+        var affected = delete.ExecuteNonQuery();
+        if (affected is < 0 or > 1)
+            throw new InvalidOperationException(
+                $"Unexpected Base Material delete count for ID {baseMaterialId}: {affected}.");
+        transaction.Commit();
+        return affected == 1;
+    }
+
     public void ReplaceNativeMaterialManagerRows(IEnumerable<NativeMaterialRecord> materials)
     {
         CreateThrottledAutomaticBackupBeforeWrite();

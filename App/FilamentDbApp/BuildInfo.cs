@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "MATERIALS-SCOPE-ACCEPTED";
-    public const string ReleaseTitle = "Materials Scope and Collection Workflow";
+    public const string ReleaseCode = "OPERATIONAL-SAFETY-ACCEPTED";
+    public const string ReleaseTitle = "Operational Safety and Disposable Hygiene";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 38;
 

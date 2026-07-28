@@ -1,6 +1,6 @@
 {
   "Schema": "3dpiceland.help-control-coverage.v1",
-  "Release": "v54.0.6",
+  "Release": "v55.0.6",
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
   "XamlCounts": {
     "Button": 150,
@@ -37,7 +37,11 @@
     "v53.0.4.4",
     "v53.0.5",
     "v54.0.5",
-    "v54.0.6"
+    "v54.0.6",
+    "v55.0.2",
+    "v55.0.5",
+    "v55.0.5.1",
+    "v55.0.6"
   ],
   "CustomColumnRegistries": [
     {
@@ -208,6 +212,34 @@
       "Status": "unsupported",
       "Controls": [
         "internal.webview"
+      ]
+    },
+    {
+      "Key": "runtime.base-material-delete-confirmation",
+      "EntryPoint": "DeleteBaseMaterialRow_Click",
+      "OwnerIncrement": "v55.0.2",
+      "HelpDestination": "base-materials.controls-fields",
+      "Status": "covered",
+      "Controls": [
+        "output.named-warning",
+        "action.confirm-yes",
+        "action.default-no",
+        "action.escape-no",
+        "action.close-no"
+      ]
+    },
+    {
+      "Key": "runtime.material-delete-confirmation",
+      "EntryPoint": "DeleteNativeMaterial_Click",
+      "OwnerIncrement": "v55.0.5.1",
+      "HelpDestination": "materials.controls-fields",
+      "Status": "covered",
+      "Controls": [
+        "output.named-warning",
+        "action.confirm-yes",
+        "action.default-no",
+        "action.escape-no",
+        "action.close-no"
       ]
     }
   ],

@@ -2,6 +2,23 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v55.0.6 - Operational Safety and Disposable Hygiene
+
+The candidate separates normal Base Material deletion from automation and
+profile cleanup authority. Default-No confirmation precedes every unreferenced
+delete mutation, while SQLite performs one ID-bounded transactional delete.
+AutomationRunner owns a default dry-run retention plan and a separately
+hash-reviewed apply path. Full-tree hashes, plan preflight, reparse rejection,
+same-root quarantine and synthetic fixtures keep cleanup bounded. Release smoke
+`20260728132054-713375ea` passes
+402/402 with exact state; CRUD `20260728132200-3f006c6b` passes bounded delete,
+restart and exact business-state recovery. Schema stays v38.
+
+Owner follow-up accepted the shared Material/Base Material dialog appearance,
+Enter/No, Escape, close, explicit Yes and Full Data Verification. v55.0.6 is
+canonical and parent v55 is complete. Final profile
+`20260728135719-4ac326ab` passes 403/403 with exact state equality.
+
 ## v54.0.6 - Materials Scope and Collection Workflow
 
 Owner runtime acceptance passes for the complete multi-select, restart,

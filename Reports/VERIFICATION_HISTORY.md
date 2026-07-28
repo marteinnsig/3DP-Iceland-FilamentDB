@@ -1,3 +1,40 @@
+# v55.0.6 - Operational Safety and Disposable Hygiene
+
+Date: 2026-07-28
+
+- Debug compile probes pass with zero warnings/errors for the application and
+  AutomationRunner.
+- Disposable SQLite proves unreferenced delete, missing-ID no-op and referenced
+  preservation through the bounded BaseMaterialID contract.
+- Synthetic cleanup proves dry-run byte preservation, per-scenario retention,
+  plan SHA-256 validation and one reviewed bounded apply.
+- Release smoke `20260728132054-713375ea` passes Full Data Verification 402/402
+  with exact database/business-state equality.
+- CRUD `20260728132200-3f006c6b` passes bounded delete, restart and exact
+  business-state recovery.
+- Owner Debug testing exposed a locked temporary `probe.sqlite` cleanup error
+  in Verification Center. The probe was removed from the UI gate and retained
+  in the authorized CRUD boundary.
+- Corrected Debug smoke `20260728132704-f9f0b973` opens Verification Center,
+  passes 402/402 and preserves exact database/business-state equality.
+- Owner then confirmed Base Material/Verification behavior but found Material
+  Escape/window close blocked and delete-dialog appearance inconsistent.
+- v55.0.5.1 shares one Windows-like safe-delete dialog across both workflows;
+  Debug/Release and Help gates pass. Smoke `20260728135016-dbb4acef` passes
+  403/403 with exact database/business-state equality; owner visual/keyboard
+  retest passes.
+- Owner accepts both dialog appearances, Enter/No, Escape, close, explicit Yes
+  and Full Data Verification PASS. v55.0.6 is canonical and parent v55 is
+  complete.
+- Final profile `20260728135719-4ac326ab` passes 403/403 with database hash
+  `EB7F061819316D988CA72D11835BAD003D6BFAC764812C0CF8BDF6B7EDFBD0A8`
+  and business-state hash
+  `225265A099D4A409D97383CF12FD054834F2794F1E9CF9260B264E4490C91CD5`.
+- Real dry-run plan SHA-256
+  `0EC0B8565A655B116F8B50F295975B6E13B64E0035B93150DF39A1FE4F04748B`
+  retains four required profiles and removes zero.
+- Schema remains v38; v55.0.6 is canonical and parent v55 is complete.
+
 # v54.0.6 - Materials Scope and Collection Workflow
 
 Date: 2026-07-28

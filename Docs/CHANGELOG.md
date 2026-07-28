@@ -2,6 +2,32 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v55.0.6 - Operational Safety and Disposable Hygiene
+
+- v55.0.5.1 unifies Material and Base Material deletion on one Windows-like
+  safe-delete dialog after owner feedback exposed blocked Escape/window close
+  and inconsistent appearance.
+- No is focused/default; Enter, Escape and close cancel. Only explicit Yes
+  reaches either mutation path.
+- Owner runtime accepts both dialog workflows, consistent appearance and Full
+  Data Verification PASS. v55.0.6 is canonical and parent v55 is complete.
+- Final profile `20260728135719-4ac326ab` passes 403/403 with exact
+  database/business-state equality.
+- Adds a named Yes/No Base Material delete warning with No as the explicit
+  default and no mutation for any non-Yes response.
+- Uses one transactional BaseMaterialID delete with referenced-row protection
+  and canonical reload containment after an unexpected view-refresh failure.
+- Adds runner-owned cleanup inventory with latest-PASS-per-scenario, FAIL,
+  aborted, malformed and explicit-pin retention.
+- Keeps cleanup dry-run by default; apply requires an exact reviewed plan hash,
+  full-tree drift checks, reparse/path containment and same-root quarantine.
+- Adds disposable SQLite and synthetic cleanup contract probes plus synchronized
+  Help and read-only Diagnostics ownership. Schema remains v38.
+- Release smoke `20260728132054-713375ea` passes 402/402 with exact state.
+- CRUD `20260728132200-3f006c6b` passes restart and exact business-state
+  recovery. Final reviewed cleanup dry-run retains four and removes zero.
+- Owner dialog/runtime acceptance remains pending.
+
 ## v54.0.6 - Materials Scope and Collection Workflow
 
 - Owner accepts six-facet mouse/keyboard interaction, wrapping, restart,

@@ -138,9 +138,11 @@ internal static class HelpContentCatalog
             Add Material creates a Manual Backup first, assigns a new read-only Material ID and inserts a default draft. Duplicate
             Material copies the selected product, profile and price facts but deliberately clears review URL and resets test, video and
             archive state. Archive Material removes the selected row from active/output scope without deleting history; Unarchive
-            restores that scope. Delete Material is permanent, default-No and removes associated native measurement references only
-            after backup. Manual Backup creates evidence but does not save pending editor text. Reset Columns confirms before restoring
-            default column order/width only. Normal committed cell edits auto-save; there is no separate Save requirement.
+            restores that scope. Delete Material is permanent and uses the same named default-No warning as Base Materials. Enter on No,
+            Escape or closing the warning preserves the Material and current selection; only explicit Yes creates a backup and removes
+            the Material plus associated native measurement references. Manual Backup creates evidence but does not save pending editor
+            text. Reset Columns confirms before restoring default column order/width only. Normal committed cell edits auto-save; there
+            is no separate Save requirement.
 
             Search and filter controls
             Search searches displayed identity/content. Manufacturer, Base Material, Variant / Finish, Reinforcement, Color and Product
@@ -590,8 +592,9 @@ internal static class HelpContentCatalog
 
             Binding and deletion
             Bind Exact Material Names previews unique exact unlinked names and requires explicit confirmation before adding
-            BaseMaterialID relationships. Delete is automation-blocked and refused while any Material references the ID; an unreferenced
-            deletion is immediate, so verify the selected row first.
+            BaseMaterialID relationships. Delete is automation-blocked and refused before confirmation while any Material references
+            the ID. An unreferenced row opens a named Yes/No warning with No focused by default. Choose No, press Escape or close the
+            warning to preserve the catalog, current selection and dependent calculations. Only explicit Yes deletes that one ID.
 
             Downstream meaning
             Profiles are controlled 3DPIceland test-print baselines consumed by Material Detail and testing workflow, not manufacturer
@@ -607,9 +610,10 @@ internal static class HelpContentCatalog
             """
             Commands
             Add Base Material creates and immediately saves a unique draft family. Duplicate copies the selected profile under a new
-            identity. Bind Exact Material Names previews only unique exact unlinked names and requires confirmation. Delete is
-            permanent, automation-blocked and refused while any Material references the BaseMaterialID. Reset Columns confirms before
-            restoring local order/width only. Valid grid edits auto-save.
+            identity. Bind Exact Material Names previews only unique exact unlinked names and requires confirmation. Delete is permanent
+            and automation-blocked. Referenced IDs are refused before any destructive prompt. An unreferenced row requires a named
+            Yes/No warning with No as the default; No, Escape or closing the warning preserves SQLite, selection and calculations.
+            Reset Columns confirms before restoring local order/width only. Valid grid edits auto-save.
 
             Identity fields
             Base Material is the required unique canonical family name. Category is the governed grouping. Sort Order is numeric display
@@ -1371,7 +1375,10 @@ internal static class HelpContentCatalog
             Verification always shows runtime identity separately from the data profile. Mandatory checks can never become Not applicable;
             only explicitly classified CanonicalDataDependent checks may do so when no canonical Materials exist.
             Disposable profiles never read owner credentials or owner update-transaction history. Their database, preferences, output,
-            evidence and cleanup ownership remain manifest/runner-contained until governed post-workflow cleanup.
+            evidence and cleanup ownership remain manifest/runner-contained. Cleanup is runner-owned and defaults to a reviewable
+            dry-run plan. Apply requires that exact plan SHA-256 and removes only older valid unpinned PASS profiles. The latest required
+            PASS per scenario plus every FAIL, aborted, malformed or pinned acceptance dependency is retained. Reparse points, path
+            drift and the automation root itself are always blocked.
             Profile identity never grants an action by itself and never weakens crash, recovery, security or support evidence.
 
             File, update and publishing commands

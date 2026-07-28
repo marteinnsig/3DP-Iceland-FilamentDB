@@ -1,4 +1,46 @@
-# Current Build Notes - v54.0.6
+# Current Build Notes - v55.0.6
+
+## Operational Safety and Disposable Hygiene
+
+v55.0.5 adds a named Base Material delete warning with Yes/No controls and No
+focused by default. Referenced rows remain blocked before confirmation. No,
+Escape, closing the warning and every other non-Yes result leave SQLite,
+selection and dependent calculations unchanged. Explicit Yes uses one bounded
+transactional BaseMaterialID delete instead of catalog-wide replacement.
+
+AutomationRunner now inventories disposable profiles with dry-run as the
+default. It retains the latest valid PASS per scenario plus every FAIL,
+aborted, malformed or explicitly pinned dependency. Apply requires the exact
+reviewed plan SHA-256, validates the entire plan and full profile-tree hashes,
+rejects reparse points/path drift and moves one reviewed candidate through a
+same-root quarantine before deletion. Synthetic classifier, byte-preservation,
+plan-hash and bounded-apply tests pass. Schema remains v38. Runtime acceptance
+remains pending. Release smoke `20260728132054-713375ea` passes Full Data
+Verification 402/402 with exact database/business-state equality. CRUD profile
+`20260728132200-3f006c6b` passes bounded delete, restart and exact business-state
+recovery. Reviewed dry-run plan
+`0EC0B8565A655B116F8B50F295975B6E13B64E0035B93150DF39A1FE4F04748B`
+retains four required profiles and removes zero.
+
+Owner Debug testing then exposed a stale in-process SQLite probe whose temp
+file remained locked while Verification tried to remove its folder. The probe
+was removed from the UI gate and actual delete coverage remains in disposable
+CRUD. Corrected Debug smoke `20260728132704-f9f0b973` opens Verification
+Center, passes 402/402 and preserves exact state.
+
+Owner follow-up found that the standard Material Yes/No MessageBox also blocked
+Escape/window close and that the first Base Material custom dialog was visually
+inconsistent. v55.0.5.1 now routes both workflows through one compact
+Windows-like WPF safe-delete window with a DPI-safe vector warning icon, No
+focused/default, Escape/close cancellation and explicit-Yes-only mutation.
+Release smoke `20260728135016-dbb4acef` passes 403/403 with exact
+database/business-state equality.
+
+Owner runtime accepts both Material and Base Material dialog appearance,
+Enter/No, Escape, window close, explicit Yes and Full Data Verification PASS.
+Final profile `20260728135719-4ac326ab` passes 403/403 with exact
+database/business-state equality. v55.0.6 is canonical and parent v55 is
+complete.
 
 ## Materials Scope and Collection Workflow
 

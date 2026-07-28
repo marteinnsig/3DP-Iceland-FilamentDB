@@ -79,7 +79,7 @@ public static class RuntimeProfileContext
             CredentialOwnership: "Owner credentials inaccessible",
             UpdateTransactionOwnership: "Disposable runner/profile transaction evidence only",
             EvidenceOwnership: "Disposable manifest evidence folder",
-            CleanupOwnership: "Runner evidence retained until governed post-workflow cleanup");
+            CleanupOwnership: "Runner-owned dry-run plan; hash-reviewed apply removes only obsolete unpinned PASS profiles");
 
     public static RuntimeProfileDescriptor DescribeCleanReadiness(
         AutomationRuntimeProfile automation) =>
@@ -97,5 +97,5 @@ public static class RuntimeProfileContext
             CredentialOwnership: "Owner credentials inaccessible",
             UpdateTransactionOwnership: "No owner history; disposable runner/profile evidence only",
             EvidenceOwnership: "Seedless disposable manifest evidence folder",
-            CleanupOwnership: "Runner evidence retained until governed post-workflow cleanup");
+            CleanupOwnership: "Runner-owned dry-run plan; hash-reviewed apply removes only obsolete unpinned PASS profiles");
 }

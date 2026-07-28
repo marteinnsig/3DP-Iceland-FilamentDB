@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v54.0.6 — Materials Scope and Collection Workflow**
+Current canonical release: **v55.0.6 — Operational Safety and Disposable Hygiene**
 
-Last runtime-accepted baseline: **v54.0.6 — Materials Scope and Collection Workflow**
+Last runtime-accepted baseline: **v55.0.6 — Operational Safety and Disposable Hygiene**
 
-Current canonical application release: **v54.0.6 — Materials Scope and Collection Workflow**
+Current canonical application release: **v55.0.6 — Operational Safety and Disposable Hygiene**
 
-Current roadmap increment: **v55.0 — Operational Safety and Disposable Hygiene research**
+Current roadmap increment: **v56.0 — Governed Public Demo Dataset research**
 
-Current acceptance note: v54.0.6 is runtime accepted with Full Data Verification 400/400 PASS.
+Current acceptance note: v55.0.6 is runtime accepted with Full Data Verification 403/403 PASS.
 
-Next note: parent v54 is complete; v55.0 research is current before any implementation.
+Next note: parent v55 is complete; v56.0 research is current before any implementation.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -41,8 +41,8 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v53 | Governed Landed-cost Currency | ★★★★☆ | Complete — canonical v53.0.5 runtime accepted |
 
 | v54 | Materials Scope and Collection Workflow | ★★★★☆ | Complete — canonical v54.0.6 runtime accepted |
-| v55 | Operational Safety and Disposable Hygiene | ★★★★☆ | Current — research before implementation |
-| v56 | Governed Public Demo Dataset | ★★★☆☆ | Planned |
+| v55 | Operational Safety and Disposable Hygiene | ★★★★☆ | Complete — canonical v55.0.6 runtime accepted |
+| v56 | Governed Public Demo Dataset | ★★★☆☆ | Current — research before implementation |
 | v57 | Public Website Experience and Canonical Branding | ★★★★☆ | Planned |
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Planned |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Planned last |
@@ -2402,16 +2402,56 @@ to unstarted authoritative planning slots.
     - Final evidence: profile `20260728124401-5f1d1f99` passes 400/400 with exact database/business-state equality.
 
 - **v55.0 — Operational Safety and Disposable Hygiene**
-  - State: Current research; bounded safety fixes and cleanup ownership only.
+  - State: Complete, canonical and runtime accepted at v55.0.6.
   - Add a named, default-No confirmation before deleting an unreferenced canonical Base Material.
   - Prove cancellation preserves SQLite, selection and dependent calculations; retain referenced-delete blocking.
   - Define a path-contained post-acceptance cleanup operation for obsolete successful profiles below the tester temp root.
   - Preserve the latest required PASS evidence plus every unresolved FAIL, aborted run and current acceptance dependency.
   - Never follow reparse points or touch the temp root, owner data, canonical seeds, Production, FTPS or external evidence.
   - Completion condition: owner accepts destructive-action safety and cleanup evidence with no required artifact loss.
+  - **v55.0.1 — Safety and Retention Contract**
+    - State: Complete; owner-approved contracts and delivery sequence are recorded.
+    - Define default-No, named-target and non-Yes cancellation behavior without changing selection, SQLite or calculations.
+    - Classify PASS, FAIL, aborted, malformed and pinned profiles per scenario using retained machine-readable evidence.
+    - Completion condition: owner-approved contracts and increments are authoritative before implementation starts.
+  - **v55.0.2 — Default-No Base Material Delete**
+    - State: Complete and owner runtime accepted.
+    - Block referenced rows before confirmation; require explicit Yes for one named unreferenced BaseMaterialID.
+    - Use bounded transactional persistence and restore selection/state if persistence fails.
+    - Completion condition: cancel, confirm, failure and restart contracts preserve all unrelated canonical/business state.
+  - **v55.0.3 — Cleanup Inventory and Dry-run**
+    - State: Complete and owner runtime accepted.
+    - Inventory direct-child profiles and retain the latest required PASS per scenario plus unresolved or pinned evidence.
+    - Emit deterministic JSON/TXT plans; dry-run is the default and never removes a profile.
+    - Completion condition: synthetic classification and byte-preservation probes pass with reviewable evidence.
+  - **v55.0.4 — Hash-bound Cleanup Apply**
+    - State: Complete; synthetic apply accepted and real apply remains plan-gated.
+    - Apply only an unchanged reviewed plan hash with exact profile IDs, containment, reparse, lease and pin guards.
+    - Stop on plan drift; never delete the root or follow paths into owner data, seeds, Production, FTPS or external evidence.
+    - Completion condition: synthetic apply removes only planned obsolete PASS profiles and retains every protected profile.
+  - **v55.0.5 — Help, Automation and Verification**
+    - State: Complete and owner runtime accepted.
+    - Reconcile Help, control ledger, diagnostics ownership, tester authorization and deterministic Verification contracts.
+    - Keep dialog focus/readability owner-manual; test delete persistence and cleanup only in disposable bounded fixtures.
+    - Completion condition: Debug/Release, Help/static/security/docs, disposable tester and Full Verification pass.
+    - Candidate evidence: smoke `20260728132054-713375ea` passes 402/402 with exact state.
+    - CRUD `20260728132200-3f006c6b` passes bounded delete, restart and exact business-state recovery.
+  - **v55.0.5.1 — Safe-delete Dialog Consistency**
+    - State: Complete and owner runtime accepted.
+    - Use one Windows-like named default-No dialog for Material and Base Material deletion.
+    - Map Enter to No, Escape to No and window close to No; only explicit Yes may mutate data.
+    - Completion condition: owner accepts consistent appearance and all four keyboard/mouse cancellation paths.
+    - Evidence: smoke `20260728135016-dbb4acef` passes 403/403 with exact database/business-state equality.
+  - **v55.0.6 — Runtime Acceptance and Closure**
+    - State: Complete, canonical and runtime accepted.
+    - Require owner acceptance of No/Enter, Escape, close, explicit Yes, restart and referenced-delete blocking.
+    - Review a real cleanup dry-run before any apply and retain every required acceptance dependency.
+    - Completion condition: owner accepts v55, exact business state is preserved and all release gates pass.
+    - Owner evidence: both delete dialogs, Enter/No, Escape, close, explicit Yes and Verification PASS accepted.
+    - Final evidence: profile `20260728135719-4ac326ab` passes 403/403 with exact database/business-state equality.
 
 - **v56.0 — Governed Public Demo Dataset**
-  - State: Planned after v55; privacy/data contract before generating or publishing a demo database.
+  - State: Current research; privacy/data contract before generating or publishing a demo database.
   - Build a deterministic, versioned SQLite demo from an explicit owner-approved allowlist of representative measured materials.
   - Use disclosed fictional identities while preserving useful measurement and relationship patterns.
   - Exclude purchasing, Inventory, notes, URLs, paths, credentials, deployment and Production identity.

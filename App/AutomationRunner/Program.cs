@@ -23,6 +23,21 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        if (args.Contains("--cleanup-profiles", StringComparer.Ordinal))
+        {
+            var pins = ReadRepeatedArguments(args, "--pin-profile");
+            return DisposableProfileCleanupService.CreateDryRun(
+                pins.ToHashSet(StringComparer.Ordinal));
+        }
+        if (args.Contains("--cleanup-self-test", StringComparer.Ordinal))
+            return DisposableProfileCleanupService.RunSyntheticSelfTest();
+        if (args.Contains("--apply-cleanup-plan", StringComparer.Ordinal))
+        {
+            return DisposableProfileCleanupService.Apply(
+                ReadRequiredArgument(args, "--apply-cleanup-plan"),
+                ReadRequiredArgument(args, "--plan-sha256"));
+        }
+
         Process? application = null;
         string? root = null;
         string executable = string.Empty;
@@ -2602,5 +2617,29 @@ internal static class Program
         start.ArgumentList.Add(name);
         start.ArgumentList.Add(value);
         return start;
+    }
+
+    private static string ReadRequiredArgument(string[] args, string name)
+    {
+        var index = Array.IndexOf(args, name);
+        if (index < 0 || index + 1 >= args.Length ||
+            args[index + 1].StartsWith("--", StringComparison.Ordinal))
+            throw new ArgumentException($"Required argument missing: {name}");
+        var value = args[index + 1];
+        if (name == "--plan-sha256" &&
+            (value.Length != 64 || !value.All(char.IsAsciiHexDigit)))
+            throw new ArgumentException("--plan-sha256 must be exactly 64 hexadecimal characters.");
+        return value;
+    }
+
+    private static IEnumerable<string> ReadRepeatedArguments(string[] args, string name)
+    {
+        for (var index = 0; index < args.Length - 1; index++)
+            if (string.Equals(args[index], name, StringComparison.Ordinal))
+            {
+                if (args[index + 1].StartsWith("--", StringComparison.Ordinal))
+                    throw new ArgumentException($"Argument value missing: {name}");
+                yield return args[index + 1];
+            }
     }
 }

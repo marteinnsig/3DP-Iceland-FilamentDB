@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v55.0.6 - Operational Safety and Disposable Hygiene
+
+Delivers shared default-No Material/Base Material deletion and runner-owned,
+evidence-backed disposable profile cleanup. Owner accepts consistent dialog
+appearance, safe keyboard/window cancellation and Verification PASS. v55.0.6
+is canonical and parent v55 is complete.
+
 # v54.0.6 - Materials Scope and Collection Workflow
 
 Owner runtime acceptance confirms the six-facet OR/AND workflow, persisted
