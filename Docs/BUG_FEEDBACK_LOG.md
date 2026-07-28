@@ -31,6 +31,28 @@ Verification evidence:
 ```
 
 Date: 2026-07-28
+Area: Distribution / public demo download
+Type: Workflow friction / Website idea
+Severity: Important
+Status: Solved
+What happened: The accepted public demo package had no public stable download
+route or exact user workflow for installing and later removing the demo.
+Expected behavior: Publish the governed ZIP under versioned and stable download
+routes and document guarded install/removal without manual SQLite replacement.
+Steps to reproduce: Open the root README and public downloads area; no governed
+demo link or lifecycle instructions are available.
+Screenshot / export / report attached: Package manifest, checksums, deployment
+plan and retained guarded transfer evidence.
+Resolution: v57.0.1 adds an exact-one-ZIP guarded publisher, stable-last
+activation, remote backup/rollback, HTTPS hash verification and README/Help
+guidance using Restore SQLite Backup and matching pre-restore recovery.
+Verification evidence: Debug/Release builds pass with zero warnings/errors.
+Both 45,098-byte HTTPS routes independently reproduce SHA-256
+`FA36B9D668292FC9567EB58AA27D7760321BC4325BD3DD43F2D6AD702738E640`;
+remote backup is `/backups/public_demo/release_2026-07-28_183853_587`.
+Owner Full Data Verification PASS completes runtime acceptance.
+
+Date: 2026-07-28
 Area: Materials / Base Materials delete confirmation
 Type: Bug / UI consistency
 Severity: Important

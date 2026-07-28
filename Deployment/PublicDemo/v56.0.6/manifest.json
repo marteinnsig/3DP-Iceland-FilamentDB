@@ -14,6 +14,6 @@
   "fullyTestedMaterials": 36,
   "fictionalIdentity": true,
   "realOwnerApprovedMeasurements": true,
-  "productionPublished": false,
-  "ftpsTransferred": false
+  "productionPublished": true,
+  "ftpsTransferred": true
 }

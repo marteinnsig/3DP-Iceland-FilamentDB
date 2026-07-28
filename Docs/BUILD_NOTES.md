@@ -1,5 +1,36 @@
 # Current Build Notes - v57.0 Research
 
+## v57.0.1 Governed Public Demo Download and Lifecycle Guidance
+
+The accepted v56.0.6 demo remains a separate SQLite dataset. A dedicated
+public-demo deployment contract owns exactly one ZIP, its immutable versioned
+route and the stable `3DPIceland-Public-Demo.zip` route. It preserves the
+closed installer/portable and website deployment allowlists.
+
+Publishing is owner-only, credential-scoped and default-No. It retains remote
+originals, stages and verifies byte size, activates versioned before stable,
+rolls back partial activation and independently downloads both HTTPS routes
+for exact byte/hash comparison. Credentials are never written to evidence.
+
+README, package README and in-app Help use the existing guarded Recovery Center
+workflow. Restore SQLite Backup creates the pre-restore evidence automatically.
+Removing the demo means verifying and restoring that exact matching row; users
+must never overwrite/delete active SQLite or use Choose Storage Folder as a
+dataset switch.
+
+Automation assessment: deterministic plan identity, route rejection, local
+bytes/hash and Help ownership are covered by Full Data Verification. The live
+FTPS action remains blocked in automation, so no runner scenario gains network
+or owner-credential authority.
+
+Owner runtime published the final 45,098-byte ZIP through the default-No action.
+Remote originals were retained at
+`/backups/public_demo/release_2026-07-28_183853_587`. Independent HTTPS
+downloads of both versioned and stable routes reproduce SHA-256
+`FA36B9D668292FC9567EB58AA27D7760321BC4325BD3DD43F2D6AD702738E640`.
+The downloaded manifest reports schema 38, 36 Materials and truthful
+Production/FTPS status. Owner Full Data Verification PASS closes v57.0.1.
+
 ## v56.0.6 Owner Acceptance and Guarded Artifact Closure
 
 The owner accepts privacy, usefulness, runtime, reports and all 36 corrected

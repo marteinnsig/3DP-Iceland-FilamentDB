@@ -200,6 +200,8 @@
                           AutomationProperties.AutomationId="CheckForUpdates" />
                 <MenuItem Header="Publish Application Release..." Click="PublishApplicationRelease_Click"
                           AutomationProperties.AutomationId="PublishApplicationRelease" />
+                <MenuItem Header="Publish Public Demo Download..." Click="PublishPublicDemoDownload_Click"
+                          AutomationProperties.AutomationId="PublishPublicDemoDownload" />
                 <MenuItem Header="Publish Application Update..." Click="PublishApplicationUpdate_Click"
                           AutomationProperties.AutomationId="PublishApplicationUpdate" />
                 <MenuItem Header="Open Storage Folder" Click="OpenStorageFolder_Click"

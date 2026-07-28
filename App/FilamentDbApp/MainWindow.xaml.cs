@@ -13287,6 +13287,51 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         finally { Mouse.OverrideCursor = null; }
     }
 
+    private async void PublishPublicDemoDownload_Click(object sender, RoutedEventArgs e)
+    {
+        if (IsAutomationActionBlocked("Public demo download publishing")) return;
+        var dialog = new OpenFileDialog
+        {
+            Title = "Select Governed Public Demo Deployment Plan",
+            Filter = "Public demo deployment plan (public-demo-deployment-plan.json)|public-demo-deployment-plan.json",
+            CheckFileExists = true,
+            Multiselect = false
+        };
+        if (dialog.ShowDialog(this) != true) return;
+        try
+        {
+            var deployment = _database.LoadDeploymentSettings();
+            var service = new PublicDemoDeploymentService(deployment);
+            var plan = service.LoadAndVerify(dialog.FileName);
+            var answer = MessageBox.Show(this,
+                $"Publish the governed {plan.Release} public demo ZIP ({plan.Bytes:N0} bytes) over explicit FTPS?\n\n" +
+                $"{plan.VersionedRemotePath}\n{plan.StableRemotePath}\n\n" +
+                "The immutable versioned route activates first and the stable route last. Existing remote files are backed up. " +
+                "Both public HTTPS downloads must reproduce the exact governed SHA-256.\n\nContinue?",
+                "Confirm Public Demo Download Publish", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+            if (answer != MessageBoxResult.Yes) return;
+            var password = WindowsCredentialService.ReadPassword(deployment.FtpsHost, deployment.FtpsUserName);
+            if (string.IsNullOrWhiteSpace(password))
+                throw new InvalidOperationException(
+                    "No FTPS password is stored for the governed host/user identity. Run the existing FTPS connection test first.");
+            Mouse.OverrideCursor = Cursors.Wait;
+            var result = await service.PublishAndVerifyAsync(password, dialog.FileName);
+            MessageBox.Show(this,
+                $"Public demo download published and independently verified over HTTPS.\n\n" +
+                $"Release: {plan.Release}\nSHA-256: {plan.Sha256}\nBackup: {result.BackupFolder}\n\n" +
+                string.Join("\n", result.VerifiedUrls),
+                "Public Demo Download Published", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message, "Public Demo Download Publish Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            Mouse.OverrideCursor = null;
+        }
+    }
+
     private void StartGuardedApplicationUpdate(string packagePath, ApplicationUpdateManifest manifest)
     {
         if (IsAutomationActionBlocked("Guarded application update")) return;
@@ -18524,6 +18569,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Read-only durable history, startup detection and default-No external recovery cover Prepared, SnapshotReady, Installed, RollingBack and RollbackFailed; evidence/backups retained; SQLite restore prohibited"
                 : "Interrupted-state diagnostics, guarded external recovery, prior updater contract or release identity failed: " + updaterTransactionVerification.Detail));
         var deploymentVerification = ApplicationDeploymentService.RunContractVerification();
+        var publicDemoDeploymentVerification = PublicDemoDeploymentService.RunContractVerification();
+        checks.Add(new VerificationCheck("v57.0.1 Public Demo Download deployment contract",
+            publicDemoDeploymentVerification.Passed &&
+            typeof(MainWindow).GetMethod("PublishPublicDemoDownload_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            HelpContentCatalog.Sections.Count(section =>
+                section.Id == "recovery.public-demo-install-and-remove") == 1,
+            publicDemoDeploymentVerification.Passed
+                ? publicDemoDeploymentVerification.Detail +
+                  " Guarded owner UI and install/remove Help are present; Production remains explicit and default-No."
+                : publicDemoDeploymentVerification.Detail));
         var compiledProductionMaterialSeedExcluded = GetDefaultNativeMaterialRows().Count == 0;
         var cleanDeploymentDefaults = new DeploymentSettingsRecord();
         var privateDeploymentIdentityExcluded = string.IsNullOrWhiteSpace(cleanDeploymentDefaults.FtpsHost) &&

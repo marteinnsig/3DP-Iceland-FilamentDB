@@ -13,10 +13,43 @@ Private Windows deployment supports a per-user Setup EXE and a portable ZIP buil
 
 - [Download the latest Windows installer](https://www.iskort.is/3dp/downloads/3DPIceland-Setup-x64.exe)
 - [Download the latest portable ZIP](https://www.iskort.is/3dp/downloads/3DPIceland-Portable-x64.zip)
+- [Download the governed public demo database](https://www.iskort.is/3dp/downloads/3DPIceland-Public-Demo.zip)
 
 The stable installer and portable links always point to the latest explicitly
 published application release. Application publishing remains a separate,
 guarded, default-No workflow.
+
+## Try the public demo database
+
+The optional demo contains 36 fictional material identities with real,
+owner-approved comparative measurements. Pseudonymization is not anonymization:
+distinctive measurement patterns may still support re-identification. The demo
+is for evaluation and workflow exploration, not a replacement for manufacturer
+datasheets or accredited testing.
+
+To install it:
+
+1. Download the [public demo ZIP](https://www.iskort.is/3dp/downloads/3DPIceland-Public-Demo.zip)
+   and extract `3DPIceland-Public-Demo-v56.0.6.sqlite`.
+2. In the application, open **File → Backup and Recovery Center…**.
+3. Choose **Restore SQLite Backup** and select the extracted `.sqlite` file.
+4. Confirm the exact file and the default-No restore prompt. The application
+   verifies the database, saves the current profile as a pre-restore recovery
+   backup, restores the demo and restarts.
+
+To remove the demo and return to your own data:
+
+1. Open **File → Backup and Recovery Center…** and choose **Refresh**.
+2. Select the **Pre-SQLite restore recovery** row created when the demo was
+   installed. Match its timestamp, full path and row counts carefully.
+3. Choose **Verify Selected**, then **Restore Selected**.
+4. Confirm the default-No prompt only for that exact backup. The application
+   restores your previous data—or the original healthy empty profile for a new
+   installation—and restarts.
+
+Never overwrite or delete the active `filamentdb.sqlite` manually. **Choose
+Storage Folder** moves the current canonical database; it is not a demo-data
+switch.
 
 ## What this project is
 

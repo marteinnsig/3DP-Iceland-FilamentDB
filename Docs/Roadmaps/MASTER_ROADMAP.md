@@ -2495,6 +2495,17 @@ to unstarted authoritative planning slots.
   - Preserve existing main-site tabs, generated routes, report branding and narrow/mobile behavior.
   - Require local Preview and owner visual inspection; Production and FTPS remain separately authorized and default-No.
   - Completion condition: calculator parity, canonical branding and desktop/mobile navigation are accepted without route regression.
+  - **v57.0.1 — Governed Public Demo Download and Lifecycle Guidance**
+    - State: Complete and runtime accepted; guarded publication, remote verification and Full Data Verification pass.
+    - Publish the accepted v56.0.6 ZIP through a separate exact-allowlist demo plan; do not widen app- or website-release plans.
+    - Activate the immutable versioned route before the stable route, with remote backup, rollback and retained byte/hash evidence.
+    - Independently download and verify both HTTPS routes after FTPS activation; never retain credentials in evidence.
+    - Add root/package README and in-app Help steps for Restore SQLite Backup and verified pre-restore recovery.
+    - Never instruct users to overwrite/delete the active SQLite file or use Choose Storage Folder to switch datasets.
+    - Completion condition: local gates, guarded publish, remote HTTPS hashes and owner install/remove acceptance pass.
+    - Published ZIP: 45,098 bytes; SHA-256 `FA36B9D668292FC9567EB58AA27D7760321BC4325BD3DD43F2D6AD702738E640`.
+    - Remote evidence: stable/versioned HTTPS PASS; backup `/backups/public_demo/release_2026-07-28_183853_587`.
+    - Owner evidence: guarded publish dialog, FTP inventory and Full Data Verification PASS accepted.
 
 - **v58.0 — Governed Custom Document Branding**
   - State: Planned after v57; one renderer/asset ownership contract before implementation.

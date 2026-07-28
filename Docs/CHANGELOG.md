@@ -2,6 +2,17 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v57.0.1 - Governed Public Demo Download and Lifecycle Guidance
+
+- Adds a separate exact-one-ZIP public-demo deployment plan and guarded owner
+  action without widening installer/portable or website allowlists.
+- Activates the immutable versioned route before the stable download route,
+  retaining remote backups and rolling back partial activation.
+- Requires both public HTTPS downloads to reproduce the governed byte count
+  and SHA-256 after FTPS activation.
+- Adds root/package README and in-app Help instructions for guarded demo
+  install and removal through verified pre-restore recovery.
+
 ## v56.0.6 - Governed Public Demo Dataset
 
 - Records owner acceptance of privacy, usefulness, runtime, reports and the

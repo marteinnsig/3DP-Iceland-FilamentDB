@@ -2044,6 +2044,24 @@ internal static class HelpContentCatalog
             """,
             "SQLite backup", "Restore Selected", "pre-restore", "post-restore", "empty profile"),
         new(
+            "recovery.public-demo-install-and-remove", "Safety and support", "Public demo install and removal",
+            "Evaluate the public demo through guarded SQLite restore and return safely to the exact prior profile.",
+            """
+            Download the governed public demo ZIP from https://www.iskort.is/3dp/downloads/3DPIceland-Public-Demo.zip and extract its
+            versioned .sqlite member. Open File > Backup and Recovery Center, choose Restore SQLite Backup and select that extracted
+            file. Review the default-No confirmation carefully. A successful restore verifies the database, creates a pre-restore
+            recovery backup, replaces the active database and restarts with 36 fictional demo Materials and real disclosed measurements.
+
+            To remove the demo, reopen Backup and Recovery Center and choose Refresh. Select the Pre-SQLite restore recovery row whose
+            timestamp, full path and row counts match the restore that installed the demo. Choose Verify Selected, then Restore Selected,
+            review the default-No confirmation and choose Yes only for that exact backup. It restores the prior owner data, or the
+            healthy zero-Material profile when the demo was installed into a new empty profile, and restarts.
+
+            Never overwrite or delete the active filamentdb.sqlite manually. Choose Storage Folder moves the current canonical database;
+            it does not switch between demo and owner datasets.
+            """,
+            "public demo", "Restore SQLite Backup", "Pre-SQLite restore recovery", "remove demo", "36 Materials"),
+        new(
             "recovery.excel-disaster-recovery", "Safety and support", "Excel disaster-recovery reference",
             "Use governed Excel packages only as explicit disaster recovery, never as the live source of truth.",
             """
