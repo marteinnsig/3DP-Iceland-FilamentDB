@@ -6,7 +6,7 @@ Private Windows deployment supports a per-user Setup EXE and a portable ZIP buil
 
 - **Current runtime-accepted release:** v55.0.6 — Operational Safety and Disposable Hygiene
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v56.0 — Governed Public Demo Dataset research
+- **Current development focus:** v56.0.3 — Fictional Identity and Transformation Contract
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Download the Windows application

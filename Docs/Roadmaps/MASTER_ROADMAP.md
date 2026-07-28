@@ -2451,13 +2451,31 @@ to unstarted authoritative planning slots.
     - Final evidence: profile `20260728135719-4ac326ab` passes 403/403 with exact database/business-state equality.
 
 - **v56.0 — Governed Public Demo Dataset**
-  - State: Current research; privacy/data contract before generating or publishing a demo database.
+  - State: In progress; v56.0.1-v56.0.2 are complete and v56.0.3 fictional identity/transformation is current.
   - Build a deterministic, versioned SQLite demo from an explicit owner-approved allowlist of representative measured materials.
-  - Use disclosed fictional identities while preserving useful measurement and relationship patterns.
+  - Use disclosed fictional identities with real owner-approved measurements and useful relationship patterns.
   - Exclude purchasing, Inventory, notes, URLs, paths, credentials, deployment and Production identity.
   - Keep the public demo separate from the canonical tester seed and require privacy scans, integrity, Verification and runtime review.
   - Publish only through a separately authorized guarded download workflow with retained provenance and SHA-256 evidence.
   - Completion condition: owner accepts privacy, usefulness, deterministic regeneration and the guarded downloadable artifact.
+  - **v56.0.1 — Dataset, Privacy and Provenance Contract**
+    - State: Complete; owner accepted the contract, exact 36-Material allowlist and real-measurement re-identification risk.
+    - Source schema v38, integrity and relationship checks pass; raw identities remain in a gitignored private registry.
+  - **v56.0.2 — Read-only Input Inspection and Dependency Closure**
+    - State: Complete; owner accepted the hardened inspector and privacy-safe deterministic dry-run evidence.
+    - Do not generate SQLite; reject missing links, duplicates, unknown schema and any unclassified table, column or value.
+  - **v56.0.3 — Fictional Identity and Transformation Contract**
+    - State: Current; add stable mappings for materials, manufacturers and product relationships.
+    - Rewrite every governed relationship consistently with fixed timestamps and provenance; never ship the private mapping registry.
+  - **v56.0.4 — Deterministic SQLite Builder and Privacy Gates**
+    - State: Planned after v56.0.3; build only in disposable output with schema, privacy, integrity and relationship gates.
+    - Generate twice and require byte-identical SHA-256 plus stable logical/table hashes and an exact governed manifest.
+  - **v56.0.5 — Disposable Runtime, Verification, Help and Reports**
+    - State: Planned after v56.0.4; keep the canonical tester seed unchanged and add bounded demo acceptance.
+    - Require restart, filters, rankings, collections, local reports and Full Verification without changing the demo artifact.
+  - **v56.0.6 — Owner Acceptance and Guarded Artifact Closure**
+    - State: Planned after v56.0.5; require owner privacy, usefulness, runtime and report acceptance plus final release gates.
+    - Produce a publish-ready governed download; Production and FTPS remain default-No and require separate authority.
 
 - **v57.0 — Public Website Experience and Canonical Branding**
   - State: Planned after v56; website-template and standalone-calculator research before HTML or asset changes.

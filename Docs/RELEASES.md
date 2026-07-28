@@ -1,6 +1,15 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v56.0.2 - Read-only Input Inspection
+
+The accepted operator-only CLI validates the approved private 36-Material
+registry against an explicit disposable schema-v38 source. Immutable,
+read-only, query-only inspection pins source, registry and schema hashes,
+requires exact relationship/measurement coverage and emits only deterministic
+counts, classifications, hashes and failure codes. Owner accepts the hardened
+dry-run and drift evidence. The canonical application remains v55.0.6.
+
 ## v55.0.6 - Operational Safety and Disposable Hygiene
 
 Material and Base Material deletion share one named default-No dialog. Enter,

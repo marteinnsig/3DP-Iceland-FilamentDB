@@ -2,6 +2,24 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v56.0.2 - Read-only Input Inspection
+
+- Adds a separate explicit-path `DemoDatasetTool` with no WPF/profile,
+  migration, generation, Production or FTPS ownership.
+- Opens only immutable/read-only/query-only SQLite and binds the approved
+  private registry, source SHA-256, schema v38 and exact schema-object hash.
+- Validates integrity, foreign keys, 36-Material dependency closure and
+  measurement coverage.
+- Emits a deterministic counts/hashes/failure-codes-only dry-run manifest with
+  no source paths, raw MaterialIDs or private product identities.
+- Debug/Release builds and self-test pass. Two Release manifests are
+  byte-identical; disposable schema/source drift fixtures fail closed.
+- AutomationRunner and in-app Help are unchanged because runtime demo
+  acceptance remains owned by v56.0.5.
+- Owner accepts the hardened deterministic inspector, privacy-safe manifest
+  and fail-closed source, registry and schema drift evidence. v56.0.2 is
+  complete.
+
 ## v55.0.6 - Operational Safety and Disposable Hygiene
 
 - v55.0.5.1 unifies Material and Base Material deletion on one Windows-like

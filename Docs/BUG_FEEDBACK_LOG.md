@@ -590,7 +590,7 @@ Date: 2026-07-25
 Area: Distribution / public demo dataset
 Type: Workflow improvement / Data issue
 Severity: Idea
-Status: Open
+Status: In progress
 Resolution: Planned in v56.0 — Governed Public Demo Dataset. Build a versioned, distributable SQLite demo backup from an allowlist of
 roughly 30–40 owner-measured materials, with stable pseudonymous Manufacturer, Product Line, Marketing Name and demo MaterialID
 identities. Preserve real measurement values and useful same-manufacturer/base-material relationships, but remove or replace private
@@ -598,7 +598,12 @@ purchasing, inventory, notes, URLs, local paths, credentials, deployment and pro
 from the internal canonical acceptance seed. Require deterministic regeneration, provenance, privacy/static scans, SQLite integrity,
 Full Data Verification, runtime/report review, package SHA-256 and explicit guarded publication under
 `https://www.iskort.is/3dp/downloads/`. Production and FTPS remain default-No until separately authorized.
-Verification evidence: Pending dataset contract, pseudonym mapping, privacy allowlist/denylist, runtime acceptance and guarded publish.
+Verification evidence: v56 research and the fictional-identity/real-measurement strategy are owner-approved.
+`Docs/PUBLIC_DEMO_DATASET_CONTRACT.md` records the candidate threat model, source boundary, allowlist, denylist, acceptance and
+publication contract. v56.0.1 is complete: the owner accepted the exact private 36-Material allowlist and re-identification risk.
+Schema v38 integrity, relationships, uniqueness and measurement coverage pass; the gitignored registry is hash-bound.
+v56.0.2 is complete: the owner accepted the isolated read-only inspector, deterministic privacy-safe manifest and fail-closed
+source, private-registry and schema-drift evidence. v56.0.3 fictional identity/transformation work is current.
 What happened: Trial users or evaluators currently lack a safe populated database that demonstrates Materials, measurements, filters,
 rankings, reports and same-family/manufacturer comparisons without exposing the owner database or commercial product identities.
 Expected behavior: Offer an optional downloadable demo SQLite backup with real 3DPIceland measurement evidence under fictional,

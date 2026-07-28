@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateCore", "UpdateCore\Up
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomationRunner", "AutomationRunner\AutomationRunner.csproj", "{2B15F551-ED9D-4CFA-9CB0-37D7D86BE1B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoDatasetTool", "DemoDatasetTool\DemoDatasetTool.csproj", "{E70199A7-312D-4F70-989A-8477A4A5F2F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{2B15F551-ED9D-4CFA-9CB0-37D7D86BE1B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B15F551-ED9D-4CFA-9CB0-37D7D86BE1B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B15F551-ED9D-4CFA-9CB0-37D7D86BE1B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E70199A7-312D-4F70-989A-8477A4A5F2F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E70199A7-312D-4F70-989A-8477A4A5F2F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E70199A7-312D-4F70-989A-8477A4A5F2F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E70199A7-312D-4F70-989A-8477A4A5F2F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

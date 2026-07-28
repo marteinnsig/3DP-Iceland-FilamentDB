@@ -1,5 +1,21 @@
 # Automated Runtime Acceptance
 
+## v56.0.2 - Read-only inspector accepted
+
+- No AutomationRunner scenario is added. The inspector accepts private
+  operator-supplied input and must not inherit canonical-seed/profile authority.
+- `DemoDatasetTool self-test` covers deterministic serialization and strict
+  private-contract JSON parsing without opening a database.
+- Disposable positive and schema/source-drift probes verify immutable,
+  read-only, query-only operation, source-byte preservation, no SQLite sidecars
+  and fail-closed hash binding.
+- The dry-run manifest exposes only classifications, counts, hashes and ordered
+  failure codes. It contains no paths, source IDs or private names.
+- v56.0.5 remains the owner of bounded disposable demo runtime, reports,
+  restart, Help and Full Data Verification.
+- Owner accepts deterministic dry-run, privacy-safe output, exact closure and
+  fail-closed source, registry and schema drift evidence.
+
 ## v55.0.6 - Operational safety accepted
 
 - Normal Base Material deletion remains automation-blocked; deterministic

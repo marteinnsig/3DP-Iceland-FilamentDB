@@ -2,6 +2,28 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v56.0.2 - Read-only Input Inspection
+
+The new isolated `DemoDatasetTool` accepts only explicit source, private
+allowlist and create-new manifest paths. It binds the approved schema-v38
+source and registry hashes, opens SQLite immutable/read-only/query-only and
+checks integrity, foreign keys, exact schema objects, dependency closure and
+measurement coverage. Output contains only classifications, counts, hashes and
+failure codes.
+
+Isolated Debug and Release solution builds pass with zero warnings and zero
+errors. Synthetic self-test passes. Two approved-source inspections are
+byte-identical and report 36 Materials, 10 manufacturer groups, 11 base
+materials, 712 tensile samples, 36 tensile results, 718 impact samples and 36
+stiffness rows. A disposable unexpected-column fixture fails the schema hash;
+its changed source also fails private-registry binding. The accepted source
+hash remains unchanged and no SQLite sidecars are created.
+
+AutomationRunner and in-application Help are deliberately unchanged because
+this increment adds no application runtime or end-user surface. v56.0.5 owns
+future disposable runtime acceptance. Owner accepts the hardened inspector and
+dry-run evidence; v56.0.2 is complete.
+
 ## v55.0.6 - Operational Safety and Disposable Hygiene
 
 The candidate separates normal Base Material deletion from automation and

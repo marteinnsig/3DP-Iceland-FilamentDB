@@ -1,4 +1,48 @@
-# Current Build Notes - v55.0.6
+# Current Build Notes - v56.0.1 Research
+
+## Governed Public Demo Dataset
+
+v56 research maps the schema-v38 privacy surface, deterministic generation
+boundary and guarded runtime/publication contract without reading an owner
+database or changing code. The owner approves real measurements under
+disclosed fictional identities. Six bounded v56 increments are now
+authoritative in the Master Roadmap.
+
+`Docs/PUBLIC_DEMO_DATASET_CONTRACT.md` defines a fresh allowlist-built demo,
+never an in-place redaction of owner data. Purchasing, Inventory, Usage, quotes,
+suppliers, documents, notes, URLs, paths, credentials, deployment and
+Production identity are default-deny. The future inspector must fail closed on
+unknown schema or content and may emit only a private-value-free dry-run
+manifest. The canonical tester seed remains separate and Production/FTPS remain
+unauthorized.
+
+The owner-created Manual Backup is schema v38 with SQLite integrity `ok`, zero
+foreign-key violations and stable source/copy SHA-256. The owner accepts the
+privacy-balanced 36-Material allowlist and real-measurement re-identification
+risk. It covers 10 manufacturer groups, 11 base-material classes, 712 tensile,
+718 impact and 36 stiffness rows with no archived or missing linked records.
+The exact raw mapping is gitignored; tracked documentation records only its
+SHA-256.
+
+v56.0.1 is complete and v56.0.2 read-only inspection/dependency closure is
+current. `App/DemoDatasetTool` is now a candidate isolated CLI with explicit
+source, private allowlist and new-output arguments. It opens only immutable,
+read-only, query-only SQLite, pins source/registry/schema hashes and emits a
+counts-only deterministic manifest. It has no generation, apply, migration,
+profile discovery, Production or FTPS action.
+
+Debug and Release solution builds pass with zero warnings/errors. The synthetic
+self-test passes. Two Release inspections produce byte-identical manifests
+with logical SHA-256
+`EFEE8B31960CAA960696421A5E9D3ED4F60A396D60A0AFF752DBD28147F739AA`.
+Schema drift and source-binding drift fail closed with their exact codes.
+Source SHA-256 remains unchanged and no SQLite sidecars are created.
+
+AutomationRunner and in-application Help do not change in v56.0.2. This
+operator-only dry-run has no app runtime contract; bounded demo runtime
+automation and Help ownership remain planned for v56.0.5. Owner accepts the
+hardened inspector and dry-run evidence. v56.0.2 is complete and v56.0.3
+fictional identity/transformation work is current.
 
 ## Operational Safety and Disposable Hygiene
 
