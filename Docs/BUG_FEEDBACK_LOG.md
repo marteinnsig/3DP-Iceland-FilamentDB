@@ -68,6 +68,21 @@ Verification evidence:
   Website replacement work correctly; Full Data Verification passes.
 - **Status:** v59.0.2 complete and runtime accepted. The v59.0.3 retirement
   condition is met.
+- **v59.0.3 implementation:** The one-command Website menu and its handler are
+  removed after replacement acceptance. The snapshot-only prototype menu,
+  window handler, tester step, runtime registry and stale Help ownership are
+  also removed.
+- **Preserved rendering:** The shared owner-drawn renderer and its direct
+  canonical callers in Materials, measurement, Settings and Base Materials
+  remain. Navigate > Publishing > Website Export owns supported menu access.
+- **v59.0.3 evidence:** Debug/Release and smoke
+  `20260729005051-359d2f59` pass 417/417. The retirement contract, all 22
+  Navigate destinations, embedded Fast rendering contracts and exact
+  logical/business-state recovery pass.
+- **Owner acceptance:** Retired menu entries are absent; Materials,
+  measurement, Settings and Base Materials rendering remains normal; Full Data
+  Verification passes.
+- **Status:** v59.0.3 complete and runtime accepted.
 - **Runtime defect found 2026-07-29:** Leaving an edited Inventory cell could
   terminate the process without an app dialog.
 - **Evidence:** Windows .NET Runtime event 1026 records SQLite error 19 at

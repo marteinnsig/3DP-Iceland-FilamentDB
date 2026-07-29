@@ -2,6 +2,21 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v59.0.3 - Redundant Navigation and Prototype Retirement
+
+- Removes the accepted-replaced one-command Website menu and its retired
+  header-based handler.
+- Removes the snapshot-only Materials Rendering Prototype menu/window
+  entrypoint after tracing its callers and replacement condition.
+- Preserves Navigate > Publishing > Website Export and the shared embedded
+  renderer used by Materials, measurements, Settings and Base Materials.
+- Reconciles AutomationRunner, Verification, Help catalog/matrix, runtime
+  registry and generated control inventory.
+- Debug/Release and smoke `20260729005051-359d2f59` pass 417/417 with exact
+  logical and business state.
+- Owner confirms retired entries are absent, supported rendering is normal and
+  Full Data Verification passes.
+
 ## v59.0.2 - Grouped Navigate Menu
 
 - Adds six ordered workflow groups with 22 stable commands covering every

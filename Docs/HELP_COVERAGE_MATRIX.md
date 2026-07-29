@@ -223,7 +223,7 @@ Required leaf destinations:
 | File menu / Storage | `menu.file-recovery`, `menu.storage` | Recovery Center, Choose Storage Folder, Exit and storage mutation boundary | v50.3 |
 | Materials menu | `menu.materials` | Lifecycle commands plus Clear Search/Filters; same owners as Materials tab | v50.2.1; v54 global Clear wording |
 | Navigate menu | `menu-runtime.controls-fields` | Six read-only groups map 22 commands to stable top-level tab destinations | v59.0.2 |
-| Tools validation | `menu.tools-validation` | Validate Materials, Rebuild Computed Fields and rendering prototype | v50.2.4 candidate implemented |
+| Tools validation | `menu.tools-validation` | Validate Materials and mutating Rebuild Computed Fields; prototype retired | v59.0.3 |
 | Tools updates/releases | `menu.updates`, `menu.release-publishing` | Update readiness/check/apply and application release/update publishing, distinct from Website FTPS | v50.3 |
 | Help menu | `menu.help` | Documentation/F1, whitepaper, Changelog, Verification, Diagnostics and About | v50.2.4 candidate implemented |
 | Recovery Center | `recovery.overview` | Catalog, verify, guarded restore, SQLite/Excel backup/restore and storage | v50.3 |

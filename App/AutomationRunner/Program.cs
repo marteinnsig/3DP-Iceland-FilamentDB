@@ -247,10 +247,6 @@ internal static class Program
             Record("nested-tab-navigation", true,
                 $"Visited {nestedTabIds.Length}/16 unique nested tabs by AutomationId");
 
-            InvokeWebsiteMenuNavigation(main, application.Id);
-            Record("website-menu-navigation", true,
-                "Supported Website menu action selected Website Export; disabled dead-end is retired");
-
             SelectTab(main, "RankingsDashboardTab", application.Id);
             OpenContextHelpAndRequireTitle(main, application.Id, "Rankings Dashboard reference");
             SelectTab(main, "ExperimentalTestingTab", application.Id);
@@ -1835,19 +1831,6 @@ internal static class Program
                 $"{itemName} does not expose SelectionItemPattern.");
         ((SelectionItemPattern)pattern).Select();
         Thread.Sleep(100);
-        AssertNoUnexpectedWindows(processId, "MainWindow");
-    }
-
-    private static void InvokeWebsiteMenuNavigation(AutomationElement main, int processId)
-    {
-        Expand(FindById(main, "WebsiteMenu"), processId);
-        Invoke(FindById(main, "OpenWebsiteExportTab"), processId);
-        Thread.Sleep(100);
-        var websiteTab = FindById(main, "WebsiteExportTab");
-        Require(
-            websiteTab.TryGetCurrentPattern(SelectionItemPattern.Pattern, out var selectionPattern) &&
-            ((SelectionItemPattern)selectionPattern).Current.IsSelected,
-            "Website menu action did not select the supported Website Export tab.");
         AssertNoUnexpectedWindows(processId, "MainWindow");
     }
 

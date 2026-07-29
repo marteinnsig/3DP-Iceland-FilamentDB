@@ -4,7 +4,7 @@
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
   "XamlCounts": {
     "Button": 154,
-    "MenuItem": 61,
+    "MenuItem": 58,
     "TextBox": 36,
     "PasswordBox": 2,
     "ComboBox": 46,
@@ -198,20 +198,6 @@
         "input.version",
         "action.jump-to-version",
         "output.document-text"
-      ]
-    },
-    {
-      "Key": "runtime.materials-prototype",
-      "EntryPoint": "ShowMaterialsRenderingPrototype_Click",
-      "OwnerIncrement": "v50.4.1",
-      "HelpDestination": "menu.tools-validation",
-      "Status": "covered",
-      "Controls": [
-        "grid.snapshot-materials",
-        "action.apply",
-        "action.reload",
-        "editor.text",
-        "editor.choice"
       ]
     },
     {

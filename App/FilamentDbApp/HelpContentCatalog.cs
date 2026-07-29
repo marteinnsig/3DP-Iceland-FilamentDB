@@ -1402,15 +1402,14 @@ internal static class HelpContentCatalog
             "Menu command destinations plus Recovery, Verification, Diagnostics, updater and document-viewer runtime controls.",
             """
             Menu containers and ordinary commands
-            File, Materials, Navigate, Tools, Website and Help are menu containers, not invoked actions. Navigate contains six workflow
+            File, Materials, Navigate, Tools and Help are menu containers, not invoked actions. Navigate contains six workflow
             groups and 22 commands that select and focus existing top-level tabs. Navigate never saves, recalculates, restores, exports,
             publishes or changes filters by itself. Opening a destination can run the same read/refresh or lazy-load behavior as clicking
             its visible tab.
 
             Materials Add/Duplicate/Archive/Unarchive/Delete/Clear Search/Clear Filters invoke the same governed tab workflows and
-            confirmations described in Materials Help. Open Website Export only selects that tab and never generates or publishes.
-            Validate Materials is read-only validation; Rebuild Computed Fields is mutating. The rendering prototype is a snapshot-only
-            diagnostic surface.
+            confirmations described in Materials Help. Navigate > Publishing > Website Export only selects that tab and never generates
+            or publishes. Validate Materials is read-only validation; Rebuild Computed Fields is mutating.
 
             Runtime profile identity
             The main header always names the active ownership contract. OWNER / PRODUCTION uses the configured owner database and
@@ -1977,17 +1976,17 @@ internal static class HelpContentCatalog
             "about", "version", "SQLite", "license", "third-party notices"),
         new(
             "menu.tools-validation", "Menus and support", "Tools validation reference",
-            "Validate Materials, rebuild computed display fields and inspect the rendering prototype.",
+            "Validate Materials and rebuild computed display fields through distinct read-only and mutating commands.",
             """
             Validate Materials checks the current Material records and reports missing or invalid governed identity without silently
             repairing rows. Rebuild Computed Fields is different: after confirmation it recalculates persisted computed Material display
             fields from their canonical inputs. Create a backup and review the validation result before using that mutating command.
 
-            Materials Rendering Prototype opens the supported diagnostic/prototype view for rendering inspection; it is not another
-            Materials editor and does not replace the accepted owner-drawn grid. Update, release-publishing and storage commands in the
-            Tools menu have separate safety ownership and are documented in v50.3.
+            The former snapshot-only Materials Rendering Prototype command is retired. Supported owner-drawn rendering remains embedded
+            in Materials, measurement, Settings and Base Materials tabs. Update, release-publishing and storage commands in the Tools
+            menu have separate safety ownership and are documented in v50.3.
             """,
-            "Tools", "Validate Materials", "Rebuild Computed Fields", "rendering prototype", "mutating"),
+            "Tools", "Validate Materials", "Rebuild Computed Fields", "retired prototype", "mutating"),
         new(
             "menu.help", "Menus and support", "Help menu reference",
             "Choose whole-system, contextual, evidence and packaged support destinations.",

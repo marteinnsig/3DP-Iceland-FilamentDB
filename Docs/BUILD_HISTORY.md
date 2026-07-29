@@ -2,6 +2,24 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v59.0.3 - Redundant Navigation and Prototype Retirement
+
+After owner acceptance of the grouped Navigate replacement, the one-command
+Website menu and `OpenWebsiteExportTab_Click` are removed. Supported menu
+access remains `Navigate > Publishing > Website Export`.
+
+The snapshot-only Materials Rendering Prototype command and window handler are
+also removed. The shared owner-drawn implementation is retained because
+Materials, Tensile, Impact, Stiffness, Settings and Base Materials still have
+supported direct callers. Reflection/static retirement checks distinguish the
+removed entrypoints from this required embedded renderer.
+
+Help discovery now passes with 58/58 MenuItems and 10 runtime surfaces.
+AutomationRunner no longer searches for the retired Website menu and continues
+to invoke all 22 Navigate destinations. Debug/Release and smoke
+`20260729005051-359d2f59` pass 417/417 with exact state. Owner confirms the
+retirement and all supported rendering surfaces; Full Data Verification passes.
+
 ## v59.0.2 - Grouped Navigate Menu
 
 The application menu now exposes Materials & Setup, Measurements & Testing,

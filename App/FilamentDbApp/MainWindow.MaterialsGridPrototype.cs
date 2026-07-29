@@ -143,30 +143,6 @@ public partial class MainWindow
         }
     }
 
-    private void ShowMaterialsRenderingPrototype_Click(object sender, RoutedEventArgs e)
-    {
-        var view = CreateMaterialsRenderingPrototypeView(directCanonicalEditing: false);
-        var window = new Window
-        {
-            Title = "Materials Rendering Prototype — snapshot-only editing",
-            Width = 1500,
-            Height = 850,
-            MinWidth = 900,
-            MinHeight = 500,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            Owner = this,
-            Content = view
-        };
-        window.Closing += (_, args) =>
-        {
-            if (!view.ConfirmCanClose())
-            {
-                args.Cancel = true;
-            }
-        };
-        window.Show();
-    }
-
     private MaterialsRenderingPrototypeView CreateMaterialsRenderingPrototypeView(bool directCanonicalEditing)
     {
         var columns = BuildFastMaterialsColumns();

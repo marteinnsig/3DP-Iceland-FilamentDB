@@ -14892,6 +14892,26 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             navigateMenuReady
                 ? "Six ordered groups map 22 unique menu commands to 22 stable top-level tab AutomationIds"
                 : "Navigate groups, menu AutomationIds or tab destination tags are incomplete"));
+        var retiredNavigationSurfacesReady =
+            typeof(MainWindow).GetMethod(
+                "OpenWebsiteExportTab_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "ShowMaterialsRenderingPrototype_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod(
+                "NavigateWorkspaceTab_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                "CreateMaterialsRenderingPrototypeView",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            NavigateMenuDestinations.Any(item =>
+                string.Equals(item.TabAutomationId, "WebsiteExportTab", StringComparison.Ordinal));
+        checks.Add(new VerificationCheck("v59.0.3 redundant navigation and prototype retirement contract",
+            retiredNavigationSurfacesReady,
+            retiredNavigationSurfacesReady
+                ? "Legacy Website/prototype handlers are absent; Navigate and embedded rendering ownership remain"
+                : "A retired handler remains or supported Navigate/embedded rendering ownership is missing"));
         var inventoryReferencedSpoolSaveReady =
             LocalDatabase.RunInventoryReferencedSpoolSaveContractVerification();
         checks.Add(new VerificationCheck(
@@ -19152,7 +19172,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 "ContextHelp_Click",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
             typeof(MainWindow).GetMethod(
-                "OpenWebsiteExportTab_Click",
+                "NavigateWorkspaceTab_Click",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         var v5024ContextualHelpReady =
             helpContractReady &&
@@ -21041,11 +21061,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
     private void ContextHelp_Click(object sender, RoutedEventArgs e)
     {
         OpenHelpForCurrentContext();
-    }
-
-    private void OpenWebsiteExportTab_Click(object sender, RoutedEventArgs e)
-    {
-        SelectWorkspaceTabByAutomationId("WebsiteExportTab");
     }
 
     private void NavigateWorkspaceTab_Click(object sender, RoutedEventArgs e)

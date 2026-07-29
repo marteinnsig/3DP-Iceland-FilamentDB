@@ -2637,11 +2637,16 @@ to unstarted authoritative planning slots.
     - Evidence: Debug/Release and smoke `20260729004027-cb36e901` pass 416/416 with exact state.
     - Completion condition met: owner accepts mouse, keyboard and Website replacement navigation.
   - **v59.0.3 — Redundant Navigation and Prototype Retirement**
-    - State: Planned after the v59.0.2 replacement is runtime accepted.
+    - State: Complete and owner runtime accepted; Full Data Verification passes 417/417.
     - Retire the one-command Website menu and the snapshot-only Materials Rendering Prototype menu/window entry point.
     - Retain the shared rendering implementation used by supported Materials, measurement, Settings and Base Materials views.
     - Trace and reconcile callers, handlers, Help, coverage registries, Verification and documentation before deletion.
     - Completion condition: no orphaned caller or stale Help remains and the supported rendering surfaces still pass.
+    - Implementation: legacy Website menu/handler and snapshot prototype menu/window handler are removed.
+    - Preserved: Navigate > Publishing > Website Export and all embedded owner-drawn rendering callers remain supported.
+    - Reconciliation: tester, Verification, Help catalog/matrix, runtime registry and generated inventory are updated.
+    - Evidence: Debug/Release and smoke `20260729005051-359d2f59` pass 417/417 with exact state.
+    - Completion condition met: retired entries are absent and all supported embedded rendering surfaces remain normal.
   - **v59.0.4 — Navigation Help, Automation and Verification Reconciliation**
     - State: Planned after v59.0.3.
     - Document the Navigate groups, exact destinations, keyboard behavior and the distinction from mutating commands.

@@ -258,14 +258,9 @@
                               AutomationProperties.AutomationId="NavigateSettingsManagerTab" />
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="_Website" AutomationProperties.AutomationId="WebsiteMenu">
-                <MenuItem Header="Open Website Export" Click="OpenWebsiteExportTab_Click"
-                          AutomationProperties.AutomationId="OpenWebsiteExportTab" />
-            </MenuItem>
             <MenuItem Header="_Tools" AutomationProperties.AutomationId="ToolsMenu">
                 <MenuItem Header="Validate Materials" Click="ValidateNativeMaterials_Click" />
                 <MenuItem Header="Rebuild Computed Fields" Click="RebuildNativeMaterialDisplayNames_Click" />
-                <MenuItem Header="Materials Rendering Prototype..." Click="ShowMaterialsRenderingPrototype_Click" />
                 <MenuItem Header="Update Readiness..." Click="UpdateReadiness_Click"
                           AutomationProperties.AutomationId="UpdateReadiness" />
                 <MenuItem Header="Check for Updates..." Click="CheckForUpdates_Click"
