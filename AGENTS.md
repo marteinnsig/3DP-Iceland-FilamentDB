@@ -247,3 +247,36 @@
 - Keep read-only inspection steps separate from mutating runtime acceptance.
 - Never ask the owner to infer whether Restore, Recalculate, Update, Production,
   FTPS, Delete or another guarded action is authorized.
+
+## Cross-chat continuity and autonomous increment flow
+
+- Treat owner changes from another Codex chat, side chat or manual edit as
+  legitimate workspace changes. Preserve and reconcile them, especially in
+  `README.md`, roadmap, feedback and release documentation; never remove or
+  overwrite them merely because they were not created in the current chat.
+- If an external/side-chat change conflicts with canonical data, accepted
+  release identity or another owner decision, show the exact conflict and
+  resolve it with the owner instead of silently choosing one version.
+- After the owner approves a recorded sequence of related sub-increments, Codex
+  may continue from one sub-increment to the next without requesting repeated
+  approval when no new owner decision, runtime/visual test, destructive action,
+  external publication or expanded authority is required.
+- Pause autonomous progression whenever runtime acceptance is required, a new
+  choice would materially change scope, or Production, FTPS, owner data,
+  credentials, deletion or another guarded boundary needs fresh authority.
+- During autonomous multi-increment work, provide concise progress updates that
+  state what is complete, what is being worked on and what comes next. Do not
+  leave the owner to infer whether work stopped or timed out.
+- When an implementation batch is complete, all required gates pass, Full Data
+  Verification passes where applicable and owner runtime acceptance has been
+  received, Codex is authorized to commit and push at the next sensible clean
+  completion point. Verify branch, worktree and origin alignment first and
+  report the resulting commit/push status.
+- Documentation-only owner-approved changes may be committed and pushed after
+  their applicable documentation/static gates pass and branch/worktree/origin
+  state has been verified; do not require unrelated runtime testing.
+- Preserve
+  `C:\3DPIceland-App-Codex\App\FilamentDbApp\bin\Release\net9.0-windows`
+  as the owner's continuing runnable application directory. An intentional
+  accepted Release build may update it, but cleanup must never delete or empty
+  it.
