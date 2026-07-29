@@ -2739,6 +2739,12 @@ to unstarted authoritative planning slots.
 
 ### Intentionally unscheduled
 
+- The Public Manufacturer Report product-level table can overflow the report
+  frame in screen HTML and is the next bounded report-layout defect candidate.
+  - Add a responsive, accessible containment contract without removing columns,
+    links or data and without weakening the separate compact print/PDF layout.
+  - Completion condition: owner accepts representative desktop, narrow-window
+    and PDF output with no clipping, overlap or unreadable forced compression.
 - The unresolved one-day Variant-edit crash remains an immediate defect
   investigation, not a feature version. If reproduced with diagnostics it takes
   priority as the next bounded patch; it is not marked solved by similarity to

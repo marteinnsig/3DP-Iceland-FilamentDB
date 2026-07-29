@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 1 |
+| Open | 2 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 101 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
-| **Total tracked findings** | **107** |
+| **Total tracked findings** | **108** |
 
 ## Triage categories
 
@@ -165,6 +165,26 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-07-29
+Area: Public Manufacturer Report / product-level engineering table
+Type: Bug / UI polish
+Severity: Important
+Status: Open
+What happened: The wide `Product-level engineering context` table extends beyond the right edge of the report frame. Its final
+columns and row content render outside the governed page surface instead of remaining contained and readable.
+Expected behavior: Keep the complete table inside the visual report contract through a responsive wrapper, readable column sizing,
+natural wrapping and narrow-window horizontal scrolling where necessary. Preserve a separate print/PDF layout that fits every column
+without clipping, overlap or lost content.
+Steps to reproduce: Open a public Manufacturer Report containing product-level rows and scroll to
+`Product-level engineering context`; inspect the rightmost MSRP, Product and Video columns.
+Screenshot / export / report attached:
+`codex-clipboard-a7f4753b-15c8-439a-8c16-d36110c9b8ef.png`; owner website review on 2026-07-29.
+Resolution: Initial source review finds that the 17-column table is emitted directly inside `main` without a screen overflow wrapper;
+the existing compact wrapping rule applies only to print media. Research the smallest shared HTML/CSS correction before
+implementation and visually inspect representative short/long manufacturer and material names.
+Verification evidence: Not yet implemented. Future acceptance must cover desktop and narrow HTML containment, keyboard-accessible
+horizontal scrolling where used, natural wrapping, unchanged cells/links and a visually inspected unclipped PDF.
 
 Date: 2026-07-29
 Area: Public Printing Guidance / Base Material Catalog settings
