@@ -1,6 +1,18 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v59.0.9 - Spool Restricted-removal Recovery
+
+Corrects the reproducible process exit after a Usage-referenced spool deletion
+was correctly rejected and rolled back. Explicit deletion now uses one save
+path, canonical reload cannot reenter active collection notification and the
+warning identifies the blocked Spool ID and MaterialID.
+
+SQLite `ON DELETE RESTRICT`, immutable Usage history, schema v40 and all public
+output boundaries remain unchanged. Debug/Release and Help/docs/security gates
+pass; disposable smoke passes 419/419 with exact state recovery. The owner
+confirms the blocked deletion no longer crashes and Full Verification passes.
+
 ## v59.0.7 - Canonical Navigation and Materials Layout
 
 Delivers the owner-approved 22-tab application order, grouped Navigate menu,

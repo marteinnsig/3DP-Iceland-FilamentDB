@@ -4,9 +4,9 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v59.0.7 — Canonical Navigation and Materials Layout
+- **Current runtime-accepted release:** v59.0.9 — Spool Restricted-removal Recovery
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** Post-v59 roadmap planning — next major theme pending owner decision
+- **Current development focus:** Bounded Usage-history cleanup for explicit development/test data
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Your data stays yours

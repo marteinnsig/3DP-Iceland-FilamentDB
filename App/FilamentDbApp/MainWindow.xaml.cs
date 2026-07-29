@@ -130,6 +130,7 @@ public partial class MainWindow : Window
     private readonly EngineeringIntelligenceHandoffService _engineeringIntelligenceHandoffService = new();
     private readonly ObservableCollection<InventorySpoolRecord> _inventorySpoolRows = new();
     private bool _isReloadingInventorySpools;
+    private bool _isHandlingInventorySpoolCollectionChanged;
     private readonly ObservableCollection<MaterialExperimentRecord> _materialExperimentRows = new();
     private readonly ObservableCollection<ExperimentalRunRecord> _experimentalRunRows = new();
     private readonly ObservableCollection<ExperimentalMeasurementRecord> _experimentalMeasurementRows = new();
@@ -14920,6 +14921,26 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             inventoryReferencedSpoolSaveReady
                 ? "Referenced spools update without delete/reinsert; restricted deletion rolls back atomically"
                 : "Inventory save cannot safely update a Usage-referenced spool or reject its deletion"));
+        var inventoryRestrictedDeleteRecoveryReady =
+            typeof(MainWindow).GetField(
+                "_isHandlingInventorySpoolCollectionChanged",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                "SaveInventorySpools",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic,
+                null,
+                [typeof(string), typeof(string)],
+                null) is not null &&
+            !_isHandlingInventorySpoolCollectionChanged &&
+            !_isReloadingInventorySpools;
+        checks.Add(new VerificationCheck(
+            "v59.0.9 Inventory restricted-delete recovery coordination contract",
+            inventoryRestrictedDeleteRecoveryReady,
+            inventoryRestrictedDeleteRecoveryReady
+                ? "Collection-change saves and canonical reloads have distinct guarded phases"
+                : "Inventory collection-change/reload coordination is missing or active during Verification"));
         var canonicalActiveRows = GetCanonicalActiveMaterialRows();
         var canonicalVisibleRows = GetCanonicalVisibleMaterialRows();
         var canonicalActiveIds = canonicalActiveRows
@@ -30158,9 +30179,17 @@ private List<string> GetVisibleAiMaterialLabels()
         _inventorySpoolRows.CollectionChanged += (_, _) =>
         {
             if (_isReloadingInventorySpools) return;
-            SaveInventorySpools();
-            SyncMaterialInventoryQuantityFromSpools(persist: true);
-            RefreshInventorySummary();
+            _isHandlingInventorySpoolCollectionChanged = true;
+            try
+            {
+                if (!SaveInventorySpools()) return;
+                SyncMaterialInventoryQuantityFromSpools(persist: true);
+                RefreshInventorySummary();
+            }
+            finally
+            {
+                _isHandlingInventorySpoolCollectionChanged = false;
+            }
         };
         SyncMaterialInventoryQuantityFromSpools(persist: false);
         RefreshInventorySummary();
@@ -30186,7 +30215,9 @@ private List<string> GetVisibleAiMaterialLabels()
         _inventorySpoolView?.Refresh();
     }
 
-    private bool SaveInventorySpools()
+    private bool SaveInventorySpools(
+        string? blockedInventoryItemId = null,
+        string? blockedMaterialId = null)
     {
         try
         {
@@ -30195,17 +30226,37 @@ private List<string> GetVisibleAiMaterialLabels()
         }
         catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 19)
         {
+            var blockedIdentity = string.IsNullOrWhiteSpace(blockedInventoryItemId)
+                ? string.Empty
+                : $"""
+
+                   Blocked spool: {blockedInventoryItemId}
+                   MaterialID: {blockedMaterialId}
+                   """;
             MessageBox.Show(
                 this,
-                """
+                $"""
                 Inventory changes could not be saved because a spool or Material link is still used by canonical Usage history.
+                {blockedIdentity}
 
                 The database transaction was rolled back. Inventory will reload its last saved state.
+
+                Usage is an immutable ledger and cannot be cleared. In the Usage tab, select the MaterialID above to view its
+                history; the ledger only shows rows for the currently selected Material.
                 """,
                 "Inventory Save Blocked",
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
-            ReloadInventorySpoolsFromCanonicalDatabase();
+            if (_isHandlingInventorySpoolCollectionChanged)
+            {
+                Dispatcher.BeginInvoke(
+                    new Action(ReloadInventorySpoolsFromCanonicalDatabase),
+                    DispatcherPriority.DataBind);
+            }
+            else
+            {
+                ReloadInventorySpoolsFromCanonicalDatabase();
+            }
             return false;
         }
     }
@@ -30320,8 +30371,17 @@ private List<string> GetVisibleAiMaterialLabels()
             ?? _inventorySpoolRows.ToList();
         var index = visibleRows.IndexOf(x);
 
-        _inventorySpoolRows.Remove(x);
-        if (!SaveInventorySpools()) return;
+        _isReloadingInventorySpools = true;
+        try
+        {
+            _inventorySpoolRows.Remove(x);
+        }
+        finally
+        {
+            _isReloadingInventorySpools = false;
+        }
+
+        if (!SaveInventorySpools(x.InventoryItemId, x.MaterialId)) return;
         SyncMaterialInventoryQuantityFromSpools(persist: true);
         RefreshInventorySummary();
 

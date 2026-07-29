@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 98 |
+| Solved | 99 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
-| **Total tracked findings** | **103** |
+| **Total tracked findings** | **104** |
 
 ## Triage categories
 
@@ -163,6 +163,32 @@ Verification evidence:
   and editing; the owner completes the earlier full-tab checklist and confirms
   Full Data Verification PASS.
 - **Status:** Resolved and runtime accepted in v59.0.1.
+
+## Open findings
+
+Date: 2026-07-29
+Area: Inventory / Usage history / blocked spool deletion recovery
+Type: Bug
+Severity: Blocker
+Status: Solved
+What happened: Deleting an Inventory spool already referenced by canonical Usage history correctly showed `Inventory Save Blocked`.
+After the owner clicked OK, the application terminated without another application error dialog.
+Expected behavior: The restricted deletion must roll back, close the warning normally, reload the last saved Inventory state and keep
+the application running. The referenced spool and Usage history must remain unchanged.
+Steps to reproduce: Open Inventory, select a spool referenced by Usage history, click Delete, confirm Yes and click OK in
+`Inventory Save Blocked`.
+Screenshot / export / report attached: Owner screenshot
+`codex-clipboard-8e00dc8f-fba2-4d4a-a3d2-8c47bcd82b57.png`; Windows .NET Runtime event 1026 at 2026-07-29 14:45:49.
+Resolution: v59.0.9 candidate. Read-only diagnosis confirms that the SQLite constraint and transaction rollback work as intended. The
+collection-change save handler calls `ReloadInventorySpoolsFromCanonicalDatabase`, which clears `_inventorySpoolRows` while its
+`CollectionChanged` event is still active. `ObservableCollection.CheckReentrancy` then throws an unhandled
+`InvalidOperationException`. The correction gives explicit deletion one save path, prevents reload during active collection
+notification and retains the Usage-history restriction. The warning identifies Spool ID and MaterialID and explains the Usage filter.
+Verification evidence: Event 1026 terminates in `ObservableCollection.ClearItems` from
+`ReloadInventorySpoolsFromCanonicalDatabase` line 30218, called by `SaveInventorySpools` line 30208 and the collection handler at
+line 30161 after `DeleteInventorySpool_Click` removes the row at line 30323. Corrected Debug/Release builds and Help/docs/NuGet gates
+pass. Disposable smoke `20260729150254-6fd9ba36` passes 419/419 with exact state recovery.
+Owner acceptance: The restricted deletion no longer crashes and owner Full Data Verification passes.
 
 ## Deferred findings
 

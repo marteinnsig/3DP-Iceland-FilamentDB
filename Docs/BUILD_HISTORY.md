@@ -2,6 +2,26 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v59.0.9 - Spool Restricted-removal Recovery
+
+Windows .NET Runtime event 1026 identified the post-rollback process exit:
+`ReloadInventorySpoolsFromCanonicalDatabase` called
+`ObservableCollection.Clear` while the delete-triggered `CollectionChanged`
+event was still active. SQLite error 19 and transaction rollback were correct;
+the UI recovery path was reentrant.
+
+The bounded correction suppresses the automatic collection-save callback while
+the explicit delete removes its row, performs one guarded save and reloads
+canonical state only after collection notification has completed. The warning
+now includes Spool ID and MaterialID and documents the selected-Material Usage
+filter. Immutable Usage history and `ON DELETE RESTRICT` remain unchanged.
+
+Debug and Release isolated builds pass with zero warnings and errors. Help,
+documentation and NuGet vulnerability gates pass. Disposable smoke
+`20260729150254-6fd9ba36` passes Full Data Verification 419/419 and restores
+exact logical and business state. Owner runtime acceptance confirms the blocked
+deletion keeps the application open and Full Data Verification passes.
+
 ## v59.0.7 - Canonical Navigation and Materials Layout
 
 The owner-approved final release identity is v59.0.7

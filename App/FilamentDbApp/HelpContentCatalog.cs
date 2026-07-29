@@ -392,8 +392,10 @@ internal static class HelpContentCatalog
             Add Spool creates one new record and uses Material defaults only when that Material has no existing spool. Duplicate copies
             the selected spool into a new identity for explicit review. Delete Spool is permanent/default-No for that Inventory record
             but does not delete its Material or Usage history. A spool referenced by canonical Usage history cannot be deleted; the
-            database rolls back, Inventory reloads and the app remains open. Refresh Inventory commits valid pending edits, recalculates
-            summaries and synchronizes Materials quantity projection. Clear Filters restores the normal scope and changes no data.
+            database rolls back, Inventory reloads and the app remains open. The warning identifies its Spool ID and MaterialID. Usage
+            is an immutable ledger rather than a deletable log: open Usage and select that MaterialID to see its rows because the ledger
+            shows only the currently selected Material. Refresh Inventory commits valid pending edits, recalculates summaries and
+            synchronizes Materials quantity projection. Clear Filters restores the normal scope and changes no data.
 
             Search and filter controls
             Find searches Material, Spool ID, supplier, storage, batch and order. Show Empty defaults on and includes Empty rows. Only

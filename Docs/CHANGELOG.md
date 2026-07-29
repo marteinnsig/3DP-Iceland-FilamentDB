@@ -2,6 +2,21 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v59.0.9 - Spool Restricted-removal Recovery
+
+- Prevents a Usage-referenced spool deletion from reloading the same
+  `ObservableCollection` during its active `CollectionChanged` event.
+- Runs the user-confirmed delete through one save path, so a restricted
+  deletion produces one warning, one rollback and one canonical reload.
+- Identifies the blocked Spool ID and MaterialID and explains that Usage is an
+  immutable ledger filtered by its currently selected Material.
+- Keeps SQLite `ON DELETE RESTRICT`, canonical Usage history, report, website,
+  publication and schema-v40 contracts unchanged.
+- Adds deterministic recovery coordination Verification; disposable smoke
+  `20260729150254-6fd9ba36` passes 419/419 with exact state recovery.
+- Owner runtime acceptance confirms the blocked deletion no longer crashes and
+  Full Data Verification passes; v59.0.9 is canonical.
+
 ## v59.0.7 - Canonical Navigation and Materials Layout
 
 - Freezes the final v59 application-byte identity for installer, portable and

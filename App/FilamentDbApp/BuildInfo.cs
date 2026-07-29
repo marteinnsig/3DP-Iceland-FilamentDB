@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "NAVIGATION-LAYOUT-CLOSURE";
-    public const string ReleaseTitle = "Canonical Navigation and Materials Layout";
+    public const string ReleaseCode = "SPOOL-RESTRICTED-REMOVAL-RECOVERY";
+    public const string ReleaseTitle = "Spool Restricted-removal Recovery";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 40;
 

@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v58.0.6 — Governed Document Branding Closure**
+Current canonical release: **v59.0.9 — Spool Restricted-removal Recovery**
 
-Last runtime-accepted baseline: **v58.0.6 — Governed Document Branding Closure**
+Last runtime-accepted baseline: **v59.0.9 — Spool Restricted-removal Recovery**
 
-Current canonical application release: **v58.0.6 — Governed Document Branding Closure**
+Current canonical application release: **v59.0.9 — Spool Restricted-removal Recovery**
 
-Current roadmap increment: **v59.0 — Application Navigation Finalization**
+Current roadmap increment: **v59.0.9 — Inventory Restricted-delete Recovery**
 
-Current acceptance note: v58.0.6 passes owner multi-aspect review and Full Data Verification 414/414.
+Current acceptance note: v59.0.9 blocked-delete recovery is owner accepted; Full Data Verification passes 419/419.
 
-Next note: research every menu/tab command and preserve accepted navigation before v59 implementation.
+Next note: correct the reproducible Inventory restricted-delete crash without deleting immutable Usage history.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2697,6 +2697,16 @@ to unstarted authoritative planning slots.
     - Evidence: all v59 increments complete; README identity/links align; final Help/docs/static/release gates pass.
     - Completion condition met: parent v59 is canonical and runtime accepted at v59.0.7.
     - Completion condition: owner accepts the final structure and every recorded v59 increment is dispositioned.
+  - **v59.0.9 — Inventory Restricted-delete Recovery**
+    - State: Complete and owner runtime accepted; Full Data Verification passes 419/419.
+    - Preserve immutable Usage history and SQLite `ON DELETE RESTRICT`; do not add destructive ledger cleanup.
+    - Prevent canonical Inventory reload while `_inventorySpoolRows.CollectionChanged` is active.
+    - Ensure one blocked-delete warning, rollback, canonical reload and continued application operation.
+    - Identify the blocked spool and MaterialID and explain that Usage is filtered by its selected Material.
+    - Update Help and deterministic regression ownership for the changed runtime recovery contract.
+    - Evidence: Debug/Release, Help/docs and NuGet gates pass; disposable smoke passes 419/419 with exact state.
+    - Owner acceptance: blocked deletion keeps the app open, reloads canonical state and Verification passes.
+    - Completion condition met: one warning/rollback/reload path is accepted with immutable Usage preserved.
 
 ### Intentionally unscheduled
 
