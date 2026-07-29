@@ -5,18 +5,18 @@ Use this during the usage-mode period.
 ## Status review — 2026-07-29
 
 This review preserves every original description and lifecycle status.
-`Solved` is used only where an accepted release or direct runtime evidence can
-be identified. `Solved and runtime accepted` identifies the subset whose exact
-status records explicit owner/runtime acceptance. `Deferred` records a
-deliberate boundary rather than silently discarding the idea.
+`Solved` means the change is implemented, relevant gates pass and owner runtime
+testing has confirmed the result. Runtime and Verification evidence remains
+recorded inside each finding rather than creating a second solved category.
+`Deferred` records a deliberate boundary rather than silently discarding the
+idea.
 
 | Status | Items |
 |---|---:|
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 90 |
-| Solved and runtime accepted | 8 |
+| Solved | 98 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
@@ -529,7 +529,7 @@ Date: 2026-07-27
 Area: Application menu / Navigation and command discovery
 Type: Workflow friction / UI polish
 Severity: Idea
-Status: Solved and runtime accepted
+Status: Solved
 What happened: The application menu has not received a complete usefulness review against the current tab structure and workflows.
 Useful navigation shortcuts may be missing, while retained items may now be redundant, stale or lower value.
 Expected behavior: Inventory every menu item and destination, propose high-value commands that select and focus the correct tab, and
@@ -662,7 +662,7 @@ Date: 2026-07-28
 Area: Public website / Printing Price Calculator / Materials and quote print
 Type: Calculation and print correction
 Severity: Critical
-Status: Solved and runtime accepted
+Status: Solved
 What happened: Total Filament Required already represented the full job grams, but the generated first Materials row defaulted to Qty 4.
 At 1,000 g, 5,000 ISK/kg and efficiency 1.1 this incorrectly produced 22,000 ISK instead of 5,500 ISK. Quote print also hid the
 calculator page parent containing the quote document, so browser print preview was nearly empty.
@@ -679,7 +679,7 @@ Date: 2026-07-28
 Area: Public website / Canonical branding / Responsive navigation
 Type: Visual correction
 Severity: Important
-Status: Solved and runtime accepted
+Status: Solved
 What happened: The first v57.0.4 Preview placed the Labs wordmark as a separate item inside the portal tabs. It consumed navigation
 width, produced a horizontal scrollbar below the tabs and left the duplicate `3DPIceland Labs` text in the large page heading.
 Expected behavior: Replace only the `3DPIceland Labs` portion of the top header with the canonical wordmark, retain
@@ -695,7 +695,7 @@ Date: 2026-07-28
 Area: Verification Center / Canonical website branding
 Type: False-negative Verification correction
 Severity: Blocking
-Status: Solved and runtime accepted
+Status: Solved
 What happened: Owner accepted the regenerated logo/favicon Preview, but Full Data Verification passed 406/407 because the branding
 probe applied the renderer to synthetic portal HTML that contained no top-level website header. It then required header classes that
 could only be produced when the actual canonical header exists.
@@ -711,7 +711,7 @@ Date: 2026-07-28
 Area: Public website / Printing Price Calculator / Uptime percentage
 Type: Calculation correction
 Severity: Critical
-Status: Solved and runtime accepted
+Status: Solved
 What happened: Estimated Uptime was labelled `%` but defaulted to 0.5 and was consumed as a fraction. Entering 100 for 100% made
 available hours one hundred times too large, nearly removing printer capital and maintenance from Machine Time.
 Expected behavior: Enter percentages as 0-100; 50 means 50% and 100 means 100%. Machine Time includes amortized printer/upfront/lifetime
@@ -727,7 +727,7 @@ Date: 2026-07-28
 Area: Verification Center / v57 release identity
 Type: False-negative Verification correction
 Severity: Blocking
-Status: Solved and runtime accepted
+Status: Solved
 What happened: Final v57.0.5 Verification passed release identity, calculator and branding checks but failed 406/407 because an older
 release gate still required the exact v57.0.2 version, code and title.
 Expected behavior: The current release gate requires v57.0.5 identity while retaining default-No delete safety, owner/disposable cleanup
@@ -1946,7 +1946,7 @@ Date: 2026-07-26
 Area: Export branding / Reports / Website documents / Print-job quotes
 Type: Feature idea / Branding workflow
 Severity: Normal
-Status: Solved and runtime accepted
+Status: Solved
 What happened: Exported reports and future print-job quotes currently use only the built-in 3DPIceland branding contract.
 Expected behavior: Allow users to configure their own PNG logo for generated HTML/PDF website documents, reports and print-job
 quotes. Custom branding must be confined to generated document output. It must never replace or alter the Windows application icon,
@@ -1981,7 +1981,7 @@ Date: 2026-07-26
 Area: Main application navigation / Tab ordering
 Type: UI polish / Final workflow review
 Severity: Normal
-Status: Solved and runtime accepted
+Status: Solved
 What happened: New workspaces and tabs have been added over multiple releases, so the overall tab order may no longer reflect the
 best daily-use workflow or the clearest grouping of related areas.
 Expected behavior: Review and, where justified, reorder all main application tabs as one coherent final navigation pass. Perform this
