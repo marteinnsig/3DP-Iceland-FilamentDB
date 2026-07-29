@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 1 |
+| Open | 2 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 100 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
-| **Total tracked findings** | **106** |
+| **Total tracked findings** | **107** |
 
 ## Triage categories
 
@@ -165,6 +165,27 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-07-29
+Area: Public Printing Guidance / Base Material Catalog settings
+Type: Report idea / Data issue
+Severity: Important
+Status: Open
+What happened: Public Printing Guidance shows `Not recorded` for every canonical printing setting even when the MaterialID is linked
+to a Base Material Catalog row containing nozzle, bed, speed, cooling, drying, enclosure and printer/slicer guidance.
+Expected behavior: Resolve each eligible MaterialID through its canonical `BaseMaterialId` and show the matching Base Material Catalog
+values as an explicitly labelled base-material baseline. Preserve min/recommended/max values and units; show `Not recorded` for each
+empty field or when no valid catalog link exists. Do not present generic material-type guidance as manufacturer- or spool-specific
+validated settings.
+Steps to reproduce: Open a public Printing Guidance report for a MaterialID whose linked Base Material Catalog row has printing
+settings; inspect the `Canonical printing settings` table.
+Screenshot / export / report attached:
+`codex-clipboard-9ffab59a-a298-4a0c-915d-61b04934ff69.png`; owner report review on 2026-07-29.
+Resolution: Research and approve a bounded public allowlist and presentation contract before implementation. Prefer stable
+`BaseMaterialId` matching over text inference; retain the catalog as the single source instead of copying values into every Material.
+Keep a later path for genuinely per-MaterialID or printer/nozzle-specific profiles and provenance.
+Verification evidence: Not yet implemented. Future coverage must prove correct linked/unlinked behavior, units and partial-field
+fallback; HTML/PDF parity; public metadata/manifest allowlisting; stale-package rebuild; and no change to canonical source data.
 
 Date: 2026-07-29
 Area: Public website / Engineering Reports navigation

@@ -2730,6 +2730,17 @@ to unstarted authoritative planning slots.
 - Optional destructive clean uninstall remains deferred. Normal uninstall stays
   data-preserving; no evidence, backups, SQLite or credentials may be deleted
   automatically.
+- Populate public Printing Guidance from linked Base Material Catalog baselines.
+  - Resolve by stable `BaseMaterialId`; do not infer relationships from display
+    text or copy shared catalog values into every MaterialID.
+  - Publicly allowlist reviewed nozzle, bed, speed, cooling, drying, enclosure
+    and profile-reference fields with explicit units and per-field fallback.
+  - Label values as base-material guidance, not manufacturer-, spool- or
+    printer-specific validated settings.
+  - Preserve `Not recorded` for missing/unlinked values and keep a later path
+    for governed per-MaterialID and printer/nozzle profile variants.
+  - Completion condition: owner accepts HTML/PDF presentation and deterministic
+    linked, unlinked, partial-value, manifest and stale-rebuild contracts pass.
 - Align Engineering Reports with the main public website tab experience.
   - Replace the current separate-page navigation feel with an approved in-page
     tab or shared-shell design after renderer and deep-link research.
