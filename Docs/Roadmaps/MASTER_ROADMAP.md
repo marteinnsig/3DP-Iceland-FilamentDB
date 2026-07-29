@@ -2730,6 +2730,14 @@ to unstarted authoritative planning slots.
 - Optional destructive clean uninstall remains deferred. Normal uninstall stays
   data-preserving; no evidence, backups, SQLite or credentials may be deleted
   automatically.
+- Align Engineering Reports with the main public website tab experience.
+  - Replace the current separate-page navigation feel with an approved in-page
+    tab or shared-shell design after renderer and deep-link research.
+  - Preserve stable report URLs, direct links, browser history, accessibility,
+    responsive behavior, public allowlists and Preview/Production parity.
+  - Do not duplicate report rendering or weaken per-material publication scope.
+  - Completion condition: owner approves the bounded design and runtime/visual
+    acceptance proves tab, direct-link and back/forward behavior.
 - Enrich the public Manufacturers website surface from canonical `Manufacturers`
   records so each manufacturer can carry a fuller governed profile.
   - Research current profile fields, completeness, public suitability and the

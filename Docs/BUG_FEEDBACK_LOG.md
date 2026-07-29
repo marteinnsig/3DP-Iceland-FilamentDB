@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 0 |
+| Open | 1 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 100 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
-| **Total tracked findings** | **105** |
+| **Total tracked findings** | **106** |
 
 ## Triage categories
 
@@ -165,6 +165,24 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-07-29
+Area: Public website / Engineering Reports navigation
+Type: Website idea / Workflow friction
+Severity: Important
+Status: Open
+What happened: `Engineering Reports` appears alongside the main website tabs, but it is an ordinary link that opens the separate
+`reports/index.html` portal instead of behaving as an in-page tab like the other main website destinations.
+Expected behavior: Integrate Engineering Reports as a consistent main-site tab and in-page portal section. Preserve stable report
+routes, direct report links, public allowlists, responsive behavior and Preview/Production parity; do not duplicate report rendering
+or weaken per-material publication controls.
+Steps to reproduce: Open the main public website and select `Engineering Reports`; compare its full-page navigation with Database,
+Manufacturers, Experimental, Printing Price Calculator and Methodology tabs.
+Screenshot / export / report attached: None; owner workflow observation on 2026-07-29.
+Resolution: Research the current report-portal renderer, back-navigation, deep links, browser history and mobile tab behavior before
+choosing an embedded-section or shared-shell design. Require owner approval of the bounded design before implementation.
+Verification evidence: Not yet implemented. Future acceptance should cover direct/deep report URLs, tab switching, back/forward,
+responsive layout, accessibility, Preview/Production HTML parity and unchanged report publication scope.
 
 Date: 2026-07-29
 Area: Inventory / Usage history / blocked spool deletion recovery
