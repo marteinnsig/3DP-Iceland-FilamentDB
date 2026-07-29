@@ -2,7 +2,7 @@
 
 Use this during the usage-mode period.
 
-## Status review — 2026-07-28
+## Status review — 2026-07-29
 
 This review preserves every original description and lifecycle status.
 `Solved` is used only where an accepted release or direct runtime evidence can
@@ -12,11 +12,11 @@ deliberate boundary rather than silently discarding the idea.
 
 | Status | Items |
 |---|---:|
-| Open | 1 |
-| In progress | 1 |
+| Open | 0 |
+| In progress | 0 |
 | Partially solved | 0 |
 | Solved | 90 |
-| Solved and runtime accepted | 6 |
+| Solved and runtime accepted | 8 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
@@ -1946,7 +1946,7 @@ Date: 2026-07-26
 Area: Export branding / Reports / Website documents / Print-job quotes
 Type: Feature idea / Branding workflow
 Severity: Normal
-Status: In progress
+Status: Solved and runtime accepted
 What happened: Exported reports and future print-job quotes currently use only the built-in 3DPIceland branding contract.
 Expected behavior: Allow users to configure their own PNG logo for generated HTML/PDF website documents, reports and print-job
 quotes. Custom branding must be confined to generated document output. It must never replace or alter the Windows application icon,
@@ -1969,12 +1969,19 @@ control or renderer consumes it yet, so Help and AutomationRunner UI changes cor
 Verification evidence: v58.0.2 disposable profiles `20260728215136-14b9769c` and `20260728215405-332dd301` pass 409/409 with exact
 state recovery. Schema v38 is retained as a migration fixture and the validated v39 seed is canonical. Renderer selection remains
 owned by v58.0.4; visual scale, transparency, clipping and HTML/PDF/quote presentation remain owner-manual acceptance.
+Final resolution: Solved in v58.0.6 — 2026-07-28. Schema v40 owns the governed
+custom PNG and Brand / Organization Name. Reports, website documents and
+print-job quotes render accepted custom/default branding while application
+chrome and canonical public-site branding remain unchanged.
+Final verification evidence: Owner accepts default, wide, tall, square and
+transparent logo output, combined Restore Default and brand identity across
+HTML/PDF/quote paths. Full Data Verification passes 414/414.
 
 Date: 2026-07-26
 Area: Main application navigation / Tab ordering
 Type: UI polish / Final workflow review
 Severity: Normal
-Status: Open
+Status: Solved and runtime accepted
 What happened: New workspaces and tabs have been added over multiple releases, so the overall tab order may no longer reflect the
 best daily-use workflow or the clearest grouping of related areas.
 Expected behavior: Review and, where justified, reorder all main application tabs as one coherent final navigation pass. Perform this
@@ -1988,6 +1995,15 @@ introduced. Preserve tab content, AutomationIds, keyboard navigation, lazy-load 
 tester and Verification navigation contracts in the same final increment, while keeping visual ordering acceptance owner-manual.
 Verification evidence: None; blocked until the authoritative Master Roadmap is complete and all earlier open, partially solved and
 deferred feedback has been resolved, retired or explicitly dispositioned.
+Final resolution: Solved in v59.0.8 — 2026-07-29. The owner-approved 22-tab
+order is canonical, six grouped Navigate menus cover every top-level
+destination and replaced Website/prototype entrypoints are retired. Materials
+also uses the accepted exact 52-column default order with preserved user
+layouts and safe persistent reset behavior.
+Final verification evidence: Owner accepts every tab, menu, Materials order,
+restart/reset and retirement behavior. Disposable Verification passes 418/418,
+clean-VM/demo compatibility passes and parent v59 is closed and published at
+canonical application release v59.0.7.
 
 2026-07-26 v48.1.1 runtime feedback: owner accepted the initial Printer
 workspace and Verification 362/362, but requested governed currency selection.
