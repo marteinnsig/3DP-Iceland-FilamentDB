@@ -18158,9 +18158,6 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? documentBrandingFoundation.Detail
                 : "Asset limits, backup/restart parity or fallback/default failed"));
         var v5806ClosureReady =
-            BuildInfo.Version == "58.0.6" &&
-            BuildInfo.ReleaseCode == "DOCUMENT-BRANDING-CLOSURE" &&
-            BuildInfo.ReleaseTitle == "Governed Document Branding Closure" &&
             v5805AcceptanceReady &&
             rendererBrandingReady &&
             v58041BrandIdentityReady;

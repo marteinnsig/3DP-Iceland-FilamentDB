@@ -3,6 +3,15 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v59.0.7 - Canonical Navigation and Materials Layout
+
+Delivers canonical tab/menu navigation, retirement of replaced entrypoints and
+the owner-approved Materials layout with safe persistent reset behavior. The
+v59.0.7 application bytes are the final parent artifact identity; v59.0.8 may
+reconcile documentation only.
+Clean-VM install, governed demo restore/restart, Verification and
+uninstall/reinstall data preservation pass owner runtime acceptance.
+
 # v58.0.6 - Governed Document Branding Closure
 
 Delivers SQLite-owned custom document logo and Brand / Organization Name

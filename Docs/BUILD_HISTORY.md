@@ -2,6 +2,30 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v59.0.7 - Canonical Navigation and Materials Layout
+
+The owner-approved final release identity is v59.0.7
+`NAVIGATION-LAYOUT-CLOSURE`. It freezes the accepted navigation and Materials
+layout implementation before installer, portable and public-demo compatibility
+rebuild. Schema remains v40. v59.0.8 is docs-only closure and may not change
+accepted binaries.
+
+Pinned source, private registry and transformation hashes match v56 exactly.
+The fast compatibility builder produces byte-identical A/B SQLite files:
+`874027BCAEEFE8B32A8BADCC9F5159A4C54A5D317C3029D84260107B8AE634C4`.
+Fixed-timestamp four-file A/B ZIPs are byte-identical at
+`85DC95E96DF6F43903A0A9E108F555B1CDA3912E7A407B156B54AE2736D81500`.
+
+Disposable v59.0.7 application smoke passes 418/418. Demo profile
+`20260729014916-de8d1b9b` passes 406/406 applicable checks, exactly 12 governed
+Website N/A checks, restart/filter/AI/report scope and exact state recovery.
+Clean-VM installer/restore/uninstall acceptance remains before byte freeze.
+
+Owner clean-VM acceptance passes: the v59.0.7 candidate installs, restores the
+schema-v38 demo through the supported workflow, restarts, passes Full
+Verification and preserves restored user data through uninstall/reinstall.
+Production/FTPS remain outside this acceptance.
+
 ## v59.0.6 - Materials Column Order Implementation and Acceptance
 
 The explicit 52-column Fast Materials builder now follows the exact

@@ -2,6 +2,22 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v59.0.7 - Canonical Navigation and Materials Layout
+
+- Freezes the final v59 application-byte identity for installer, portable and
+  public-demo compatibility acceptance.
+- Carries forward the runtime-accepted 22-tab/grouped-menu navigation and exact
+  52-column Materials layout contracts.
+- Keeps schema v40 and all v58 document-branding behavior unchanged.
+- Candidate v59.0.7 installer and portable artifacts pass governed package
+  verification. No Production or FTPS action is performed.
+- Deterministic demo A/B SQLite and ZIP generation passes with schema v38,
+  36 fully tested Materials, 718 valid Impact samples and empty private domains.
+- Disposable application smoke passes 418/418; demo scenario passes 406/406
+  applicable checks with exactly 12 governed Website N/A checks.
+- Owner clean-VM acceptance confirms install, demo restore/restart, Full
+  Verification and uninstall/reinstall user-data preservation.
+
 ## v59.0.6 - Materials Column Order Implementation and Acceptance
 
 - Applies the owner-approved exact 52-column default order to clean profiles and

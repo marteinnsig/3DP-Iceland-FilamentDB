@@ -1,6 +1,19 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v59.0.7 - Canonical Navigation and Materials Layout
+
+Delivers the owner-approved 22-tab application order, grouped Navigate menu,
+retirement of replaced navigation/prototype entrypoints and the exact
+52-column Materials default sequence. Saved layouts remain authoritative until
+explicit reset; No, Escape and window close preserve layout.
+
+Debug/Release, Help/documentation and disposable Full Data Verification pass.
+The final application identity is frozen at v59.0.7 for installer, portable and
+public-demo compatibility rebuilding. v59.0.8 is docs-only parent closure.
+Clean-VM installation, demo restore/restart, Verification and
+uninstall/reinstall data preservation are owner accepted.
+
 ## v58.0.6 - Governed Document Branding Closure
 
 Generated reports, report website documents and customer quotes now support

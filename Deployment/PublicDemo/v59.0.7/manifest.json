@@ -1,0 +1,19 @@
+{
+  "schema": "3dpiceland-public-demo-package-v1",
+  "release": "v59.0.7",
+  "compatibleApplicationRelease": "v59.0.7",
+  "databaseSchema": 38,
+  "artifact": "3DPIceland-Public-Demo-v59.0.7.sqlite",
+  "sqliteSha256": "874027BCAEEFE8B32A8BADCC9F5159A4C54A5D317C3029D84260107B8AE634C4",
+  "materials": 36,
+  "manufacturers": 10,
+  "baseMaterials": 11,
+  "tensileSamples": 712,
+  "tensileResults": 36,
+  "impactSamples": 718,
+  "stiffnessRows": 36,
+  "fullyTestedMaterials": 36,
+  "fictionalIdentity": true,
+  "realOwnerApprovedMeasurements": true,
+  "publicDemoDatasetMarker": "governed-v56.0.6"
+}

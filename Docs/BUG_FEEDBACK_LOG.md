@@ -2188,3 +2188,26 @@ and runtime accepted.
   exact business-state equality. Canonical Release smoke
   `20260727172502-e8736f1b` repeats 385/385 with exact state.
   Final owner Full Data Verification passes 385/385.
+- **v59.0.7 sequencing decision:** The owner approved v59.0.7 as the final
+  canonical application-byte identity. v59.0.8 is docs-only parent closure and
+  must not change accepted app, installer, portable or demo bytes.
+- **Pinned demo inputs:** Source, private allowlist and public transformation
+  SHA-256 values match the accepted v56 contracts; the fast compatibility path
+  is authorized without reopening privacy selection.
+- **v59.0.7 local evidence:** Debug/Release and vulnerability/Help/docs gates
+  pass. Disposable application smoke passes 418/418 with exact state.
+- **Demo evidence:** A/B SQLite SHA-256 is
+  `874027BCAEEFE8B32A8BADCC9F5159A4C54A5D317C3029D84260107B8AE634C4`;
+  A/B ZIP SHA-256 is
+  `85DC95E96DF6F43903A0A9E108F555B1CDA3912E7A407B156B54AE2736D81500`.
+- **Runtime evidence:** Disposable demo scenario
+  `20260729014916-de8d1b9b` passes 406/406 applicable checks with exactly 12
+  governed Website N/A checks, restart, 36-ID scope, local reports and exact
+  state recovery.
+- **Remaining:** Clean-VM installer/restore/uninstall compatibility and owner
+  acceptance precede final Production artifact freeze and guarded FTPS.
+- **Clean-VM acceptance:** v59.0.7 installs cleanly; schema-v38 demo restore and
+  restart pass, Full Verification passes and uninstall/reinstall preserves the
+  restored user database.
+- **Remaining boundary:** Freeze clean-worktree Production bytes locally.
+  Production/FTPS publication still requires separate explicit live authority.

@@ -2678,15 +2678,20 @@ to unstarted authoritative planning slots.
     - Owner acceptance: exact order, saved/reset restart behavior, No/Escape/close safety and Full Verification pass.
     - Completion condition met: the approved 52-column contract is runtime accepted with no export or canonical-data change.
   - **v59.0.7 — Final Demo Dataset Compatibility Rebuild**
-    - State: Planned after navigation and approved column-order acceptance, immediately before parent closure.
+    - State: Clean-VM runtime accepted; final Production-byte freeze and guarded publication remain.
+    - Canonical application-byte identity is v59.0.7; freeze its installer and portable artifacts before rebuilding demo data.
     - Follow `Docs/PUBLIC_DEMO_REBUILD_RUNBOOK.md`; reuse accepted v56 contracts unless a pinned input or rule changed.
     - Rebuild the governed demo dataset and ZIP against the final accepted v59 application and installer bytes.
     - Reverify clean restore, restart, Full Data Verification, package contents and SHA-256 before closing the roadmap.
     - Publish the accepted ZIP by guarded FTPS, versioned route first and stable route last, then verify both HTTPS hashes.
+    - Evidence: v59.0.7 smoke passes 418/418; demo scenario passes 406/406 plus the exact 12 governed N/A checks.
+    - Determinism: A/B SQLite and A/B ZIP outputs are byte-identical; privacy, schema, relationships and checksums pass.
+    - Owner acceptance: clean install, demo restore/restart, Verification and uninstall/reinstall data preservation pass.
   - **v59.0.8 — Navigation Parent Closure**
-    - State: Planned after the final demo dataset compatibility rebuild is accepted.
-    - Run final Debug/Release, static, security, Help, documentation, tester and Full Data Verification gates.
+    - State: Planned docs-only closure after the final demo dataset compatibility rebuild is accepted.
+    - Reconcile final static, security, Help, documentation, tester and Full Data Verification evidence without changing app bytes.
     - Review README release identity and development focus before closing the parent milestone.
+    - Preserve the exact accepted v59.0.7 application, installer, portable and demo bytes.
     - Completion condition: owner accepts the final structure and every recorded v59 increment is dispositioned.
 
 ### Intentionally unscheduled

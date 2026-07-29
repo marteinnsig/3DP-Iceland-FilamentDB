@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Use this runbook for `v59.0.1` after the final v59 application and installer
+Use this runbook for `v59.0.7` after the final v59 application and installer
 bytes are accepted. The goal is to rebuild and revalidate the governed demo
 dataset without repeating the full v56 privacy research when its approved
 inputs and contracts have not changed.
@@ -68,7 +68,7 @@ identities, a loose SQLite file or other website/report artifacts.
 
 ## Completion condition
 
-`v59.0.1` closes only when the rebuilt A/B SQLite and ZIP artifacts are
+`v59.0.7` closes only when the rebuilt A/B SQLite and ZIP artifacts are
 deterministic, the exact v59 installer/portable restore path passes, Full Data
 Verification passes, privacy/report review passes and the owner accepts the
 new governed hashes. Final closure also requires guarded FTPS publication and
