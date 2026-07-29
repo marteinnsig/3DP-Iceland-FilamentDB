@@ -51,6 +51,23 @@ Verification evidence:
 
 # 2026-07-28 - v59.0 navigation inventory and tab-order ownership
 
+- **v59.0.2 implementation:** A grouped Navigate menu now exposes six ordered
+  workflow groups and all 22 top-level destinations through stable menu
+  AutomationIds.
+- **Boundary:** Commands only select, bring into view and focus their target
+  tab. They do not save, recalculate, restore, export, publish or change
+  filters; normal tab selection lazy-load/read behavior remains unchanged.
+- **Transition:** The accepted Website menu remains callable until Navigate >
+  Publishing > Website Export passes owner runtime acceptance. The prototype
+  command also remains pending its bounded v59.0.3 retirement.
+- **v59.0.2 evidence:** Debug/Release and disposable smoke
+  `20260729004027-cb36e901` pass. Automation invokes all 22 Navigate commands,
+  verifies their selected stable tab destinations, passes Verification 416/416
+  and restores exact logical/business state.
+- **Owner acceptance:** All six groups, mouse and keyboard navigation and the
+  Website replacement work correctly; Full Data Verification passes.
+- **Status:** v59.0.2 complete and runtime accepted. The v59.0.3 retirement
+  condition is met.
 - **Runtime defect found 2026-07-29:** Leaving an edited Inventory cell could
   terminate the process without an app dialog.
 - **Evidence:** Windows .NET Runtime event 1026 records SQLite error 19 at

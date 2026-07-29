@@ -1402,11 +1402,15 @@ internal static class HelpContentCatalog
             "Menu command destinations plus Recovery, Verification, Diagnostics, updater and document-viewer runtime controls.",
             """
             Menu containers and ordinary commands
-            File, Materials, Tools, Website and Help are menu containers, not invoked actions. Exit closes the app through normal
-            save/close guards. Materials Add/Duplicate/Archive/Unarchive/Delete/Clear Search/Clear Filters invoke the same governed
-            tab workflows and confirmations described in Materials Help. Open Website Export only selects that tab and never generates
-            or publishes. Validate Materials is read-only validation; Rebuild Computed Fields is mutating. The rendering prototype is a
-            snapshot-only diagnostic surface.
+            File, Materials, Navigate, Tools, Website and Help are menu containers, not invoked actions. Navigate contains six workflow
+            groups and 22 commands that select and focus existing top-level tabs. Navigate never saves, recalculates, restores, exports,
+            publishes or changes filters by itself. Opening a destination can run the same read/refresh or lazy-load behavior as clicking
+            its visible tab.
+
+            Materials Add/Duplicate/Archive/Unarchive/Delete/Clear Search/Clear Filters invoke the same governed tab workflows and
+            confirmations described in Materials Help. Open Website Export only selects that tab and never generates or publishes.
+            Validate Materials is read-only validation; Rebuild Computed Fields is mutating. The rendering prototype is a snapshot-only
+            diagnostic surface.
 
             Runtime profile identity
             The main header always names the active ownership contract. OWNER / PRODUCTION uses the configured owner database and

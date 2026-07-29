@@ -2,6 +2,24 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v59.0.2 - Grouped Navigate Menu
+
+The application menu now exposes Materials & Setup, Measurements & Testing,
+Operations, Publishing, Analysis & Research and Configuration. Their 22 leaf
+commands map one-to-one to the stable AutomationIds of all top-level tabs.
+
+The common selector performs no save, calculation, restore, export, publish or
+filter mutation. It selects the destination, brings it into view and schedules
+keyboard focus while retaining each tab's accepted lazy-load/read behavior.
+The old Website command temporarily uses the same selector and remains present
+until v59.0.3 retirement.
+
+Help control discovery grows from 32 to 61 MenuItems and passes with v59.0.2
+ownership. AutomationRunner invokes all 22 grouped commands and verifies the
+selected tab after each one. Debug/Release and disposable smoke
+`20260729004027-cb36e901` pass 416/416 with exact state. Owner accepts mouse,
+keyboard and Website replacement navigation; Full Data Verification passes.
+
 ## v59.0.1 - Canonical Top-level Tab Order
 
 The complete owner-approved 22-tab sequence is now authoritative in XAML.

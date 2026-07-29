@@ -4,7 +4,7 @@
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
   "XamlCounts": {
     "Button": 154,
-    "MenuItem": 32,
+    "MenuItem": 61,
     "TextBox": 36,
     "PasswordBox": 2,
     "ComboBox": 46,
@@ -50,7 +50,8 @@
     "v58.0.4",
     "v58.0.4.1",
     "v58.0.5",
-    "v58.0.6"
+    "v58.0.6",
+    "v59.0.2"
   ],
   "CustomColumnRegistries": [
     {

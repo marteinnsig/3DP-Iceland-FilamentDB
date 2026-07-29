@@ -51,6 +51,31 @@ public partial class MainWindow : Window
     {
         "Transaction state", "Health acknowledgement", "Application rollback snapshot", "SQLite backup evidence"
     };
+    private static readonly (string MenuAutomationId, string TabAutomationId)[] NavigateMenuDestinations =
+    [
+        ("NavigateMaterialsTab", "MaterialsTab"),
+        ("NavigateMaterialDetailTab", "MaterialDetailTab"),
+        ("NavigateManufacturersTab", "ManufacturersTab"),
+        ("NavigateBaseMaterialsTab", "BaseMaterialsTab"),
+        ("NavigatePrintersTab", "PrintersTab"),
+        ("NavigateTensileMeasurementsTab", "TensileMeasurementsTab"),
+        ("NavigateImpactMeasurementsTab", "ImpactMeasurementsTab"),
+        ("NavigateStiffnessMeasurementsTab", "StiffnessMeasurementsTab"),
+        ("NavigateExperimentalTestingTab", "ExperimentalTestingTab"),
+        ("NavigatePurchaseOrdersTab", "PurchaseOrdersTab"),
+        ("NavigateInventoryTab", "InventoryTab"),
+        ("NavigateUsageTab", "UsageTab"),
+        ("NavigatePrintJobQuotesTab", "PrintJobQuotesTab"),
+        ("NavigateWebsiteExportTab", "WebsiteExportTab"),
+        ("NavigateReportsTab", "ReportsTab"),
+        ("NavigateAiAssistantTab", "AiAssistantTab"),
+        ("NavigateRankingsDashboardTab", "RankingsDashboardTab"),
+        ("NavigateCategoryRankingsTab", "CategoryRankingsTab"),
+        ("NavigateAwardsWinnersTab", "AwardsWinnersTab"),
+        ("NavigateDashboardInsightsTab", "DashboardInsightsTab"),
+        ("NavigateYouTubeResearchTab", "YouTubeResearchTab"),
+        ("NavigateSettingsManagerTab", "SettingsManagerTab")
+    ];
     private LocalDatabase _database = new();
     private readonly MaterialDetailService _detailService = new();
     private readonly EngineeringScoringService _scoringService = new();
@@ -14835,6 +14860,38 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             workspaceTabOrderReady
                 ? "All 22 top-level tabs match the owner-approved canonical sequence"
                 : $"Expected: {string.Join(" > ", canonicalWorkspaceTabHeaders)}"));
+        string[] canonicalNavigateGroupHeaders =
+        [
+            "Materials & Setup",
+            "Measurements & Testing",
+            "Operations",
+            "Publishing",
+            "Analysis & Research",
+            "Configuration"
+        ];
+        var navigateGroups = NavigateMenu.Items.OfType<MenuItem>().ToList();
+        var navigateLeaves = navigateGroups
+            .SelectMany(EnumerateDescendantMenuItems)
+            .Where(item => item.Tag is string)
+            .ToList();
+        var navigateMenuReady =
+            navigateGroups.Select(item => item.Header?.ToString() ?? string.Empty)
+                .SequenceEqual(canonicalNavigateGroupHeaders, StringComparer.Ordinal) &&
+            navigateLeaves.Count == NavigateMenuDestinations.Length &&
+            NavigateMenuDestinations.All(expected => navigateLeaves.Any(item =>
+                string.Equals(
+                    AutomationProperties.GetAutomationId(item),
+                    expected.MenuAutomationId,
+                    StringComparison.Ordinal) &&
+                string.Equals(item.Tag?.ToString(), expected.TabAutomationId, StringComparison.Ordinal))) &&
+            NavigateMenuDestinations.Select(item => item.MenuAutomationId)
+                .Distinct(StringComparer.Ordinal).Count() == NavigateMenuDestinations.Length &&
+            NavigateMenuDestinations.Select(item => item.TabAutomationId)
+                .Distinct(StringComparer.Ordinal).Count() == NavigateMenuDestinations.Length;
+        checks.Add(new VerificationCheck("v59.0.2 grouped Navigate menu destination contract", navigateMenuReady,
+            navigateMenuReady
+                ? "Six ordered groups map 22 unique menu commands to 22 stable top-level tab AutomationIds"
+                : "Navigate groups, menu AutomationIds or tab destination tags are incomplete"));
         var inventoryReferencedSpoolSaveReady =
             LocalDatabase.RunInventoryReferencedSpoolSaveContractVerification();
         checks.Add(new VerificationCheck(
@@ -20988,12 +21045,47 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private void OpenWebsiteExportTab_Click(object sender, RoutedEventArgs e)
     {
-        var websiteTab = WorkspaceTabs.Items.OfType<TabItem>().FirstOrDefault(tab =>
-            string.Equals(tab.Header?.ToString(), "Website Export", StringComparison.Ordinal));
-        if (websiteTab is not null)
+        SelectWorkspaceTabByAutomationId("WebsiteExportTab");
+    }
+
+    private void NavigateWorkspaceTab_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem { Tag: string targetAutomationId })
         {
-            WorkspaceTabs.SelectedItem = websiteTab;
-            websiteTab.BringIntoView();
+            SelectWorkspaceTabByAutomationId(targetAutomationId);
+        }
+    }
+
+    private bool SelectWorkspaceTabByAutomationId(string automationId)
+    {
+        var targetTab = WorkspaceTabs.Items.OfType<TabItem>().FirstOrDefault(tab =>
+            string.Equals(
+                AutomationProperties.GetAutomationId(tab),
+                automationId,
+                StringComparison.Ordinal));
+        if (targetTab is null)
+        {
+            ShowTransientStatus($"Navigation destination is unavailable: {automationId}");
+            return false;
+        }
+
+        WorkspaceTabs.SelectedItem = targetTab;
+        targetTab.BringIntoView();
+        Dispatcher.BeginInvoke(
+            new Action(() => targetTab.Focus()),
+            DispatcherPriority.Input);
+        return true;
+    }
+
+    private static IEnumerable<MenuItem> EnumerateDescendantMenuItems(MenuItem parent)
+    {
+        foreach (var child in parent.Items.OfType<MenuItem>())
+        {
+            yield return child;
+            foreach (var descendant in EnumerateDescendantMenuItems(child))
+            {
+                yield return descendant;
+            }
         }
     }
 

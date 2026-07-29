@@ -140,6 +140,10 @@ internal static class Program
             Record("top-level-tab-navigation", true,
                 $"Visited {topLevelTabIds.Length}/22 unique top-level tabs by AutomationId");
 
+            InvokeNavigateMenuNavigation(main, application.Id);
+            Record("navigate-menu-navigation", true,
+                "Invoked 22/22 grouped Navigate commands and verified each stable tab destination");
+
             SelectTab(main, "MaterialsTab", application.Id);
             var materialFacetIds = new[]
             {
@@ -1845,6 +1849,82 @@ internal static class Program
             ((SelectionItemPattern)selectionPattern).Current.IsSelected,
             "Website menu action did not select the supported Website Export tab.");
         AssertNoUnexpectedWindows(processId, "MainWindow");
+    }
+
+    private static void InvokeNavigateMenuNavigation(AutomationElement main, int processId)
+    {
+        var groups = new[]
+        {
+            (
+                GroupId: "NavigateMaterialsSetupMenu",
+                Destinations: new[]
+                {
+                    ("NavigateMaterialsTab", "MaterialsTab"),
+                    ("NavigateMaterialDetailTab", "MaterialDetailTab"),
+                    ("NavigateManufacturersTab", "ManufacturersTab"),
+                    ("NavigateBaseMaterialsTab", "BaseMaterialsTab"),
+                    ("NavigatePrintersTab", "PrintersTab")
+                }),
+            (
+                GroupId: "NavigateMeasurementsTestingMenu",
+                Destinations: new[]
+                {
+                    ("NavigateTensileMeasurementsTab", "TensileMeasurementsTab"),
+                    ("NavigateImpactMeasurementsTab", "ImpactMeasurementsTab"),
+                    ("NavigateStiffnessMeasurementsTab", "StiffnessMeasurementsTab"),
+                    ("NavigateExperimentalTestingTab", "ExperimentalTestingTab")
+                }),
+            (
+                GroupId: "NavigateOperationsMenu",
+                Destinations: new[]
+                {
+                    ("NavigatePurchaseOrdersTab", "PurchaseOrdersTab"),
+                    ("NavigateInventoryTab", "InventoryTab"),
+                    ("NavigateUsageTab", "UsageTab"),
+                    ("NavigatePrintJobQuotesTab", "PrintJobQuotesTab")
+                }),
+            (
+                GroupId: "NavigatePublishingMenu",
+                Destinations: new[]
+                {
+                    ("NavigateWebsiteExportTab", "WebsiteExportTab"),
+                    ("NavigateReportsTab", "ReportsTab")
+                }),
+            (
+                GroupId: "NavigateAnalysisResearchMenu",
+                Destinations: new[]
+                {
+                    ("NavigateAiAssistantTab", "AiAssistantTab"),
+                    ("NavigateRankingsDashboardTab", "RankingsDashboardTab"),
+                    ("NavigateCategoryRankingsTab", "CategoryRankingsTab"),
+                    ("NavigateAwardsWinnersTab", "AwardsWinnersTab"),
+                    ("NavigateDashboardInsightsTab", "DashboardInsightsTab"),
+                    ("NavigateYouTubeResearchTab", "YouTubeResearchTab")
+                }),
+            (
+                GroupId: "NavigateConfigurationMenu",
+                Destinations: new[]
+                {
+                    ("NavigateSettingsManagerTab", "SettingsManagerTab")
+                })
+        };
+
+        foreach (var group in groups)
+        {
+            foreach (var (commandId, tabId) in group.Destinations)
+            {
+                Expand(FindById(main, "NavigateMenu"), processId);
+                Expand(FindById(main, group.GroupId), processId);
+                Invoke(FindById(main, commandId), processId);
+                Thread.Sleep(100);
+                var tab = FindById(main, tabId);
+                Require(
+                    tab.TryGetCurrentPattern(SelectionItemPattern.Pattern, out var selectionPattern) &&
+                    ((SelectionItemPattern)selectionPattern).Current.IsSelected,
+                    $"{commandId} did not select {tabId}.");
+                AssertNoUnexpectedWindows(processId, "MainWindow");
+            }
+        }
     }
 
     private static void OpenContextHelpAndRequireTitle(

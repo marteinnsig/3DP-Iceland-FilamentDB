@@ -2,6 +2,21 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v59.0.2 - Grouped Navigate Menu
+
+- Adds six ordered workflow groups with 22 stable commands covering every
+  supported top-level tab.
+- Routes every command through one non-mutating AutomationId selector that
+  selects, brings into view and focuses the existing tab.
+- Preserves legacy Website navigation and the snapshot prototype command until
+  their separate post-acceptance retirement increment.
+- Updates menu Help, control inventory, coverage ownership, Verification and
+  AutomationRunner.
+- Debug/Release and smoke `20260729004027-cb36e901` pass 416/416 with exact
+  logical and business state.
+- Owner accepts mouse and keyboard navigation plus the Website replacement;
+  Full Data Verification passes.
+
 ## v59.0.1 - Canonical Top-level Tab Order
 
 - Makes the owner-approved 22-tab sequence authoritative in XAML and retires

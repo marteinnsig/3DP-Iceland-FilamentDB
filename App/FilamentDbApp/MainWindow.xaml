@@ -186,6 +186,78 @@
                 <MenuItem Header="Clear Search" Click="ClearSearch_Click" />
                 <MenuItem Header="Clear Filters" Click="ClearNativeMaterialFilters_Click" />
             </MenuItem>
+            <MenuItem x:Name="NavigateMenu" Header="_Navigate"
+                      AutomationProperties.AutomationId="NavigateMenu">
+                <MenuItem Header="Materials &amp; Setup"
+                          AutomationProperties.AutomationId="NavigateMaterialsSetupMenu">
+                    <MenuItem Header="Materials" Tag="MaterialsTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateMaterialsTab" />
+                    <MenuItem Header="Material Detail" Tag="MaterialDetailTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateMaterialDetailTab" />
+                    <MenuItem Header="Manufacturers" Tag="ManufacturersTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateManufacturersTab" />
+                    <MenuItem Header="Base Materials" Tag="BaseMaterialsTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateBaseMaterialsTab" />
+                    <MenuItem Header="Printers" Tag="PrintersTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigatePrintersTab" />
+                </MenuItem>
+                <MenuItem Header="Measurements &amp; Testing"
+                          AutomationProperties.AutomationId="NavigateMeasurementsTestingMenu">
+                    <MenuItem Header="Tensile Measurements" Tag="TensileMeasurementsTab"
+                              Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateTensileMeasurementsTab" />
+                    <MenuItem Header="Impact Measurements" Tag="ImpactMeasurementsTab"
+                              Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateImpactMeasurementsTab" />
+                    <MenuItem Header="Stiffness Measurements" Tag="StiffnessMeasurementsTab"
+                              Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateStiffnessMeasurementsTab" />
+                    <MenuItem Header="Experimental Testing" Tag="ExperimentalTestingTab"
+                              Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateExperimentalTestingTab" />
+                </MenuItem>
+                <MenuItem Header="Operations" AutomationProperties.AutomationId="NavigateOperationsMenu">
+                    <MenuItem Header="Purchase Orders" Tag="PurchaseOrdersTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigatePurchaseOrdersTab" />
+                    <MenuItem Header="Inventory" Tag="InventoryTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateInventoryTab" />
+                    <MenuItem Header="Usage" Tag="UsageTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateUsageTab" />
+                    <MenuItem Header="Print Job Quotes" Tag="PrintJobQuotesTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigatePrintJobQuotesTab" />
+                </MenuItem>
+                <MenuItem Header="Publishing" AutomationProperties.AutomationId="NavigatePublishingMenu">
+                    <MenuItem Header="Website Export" Tag="WebsiteExportTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateWebsiteExportTab" />
+                    <MenuItem Header="Reports / PDF Export" Tag="ReportsTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateReportsTab" />
+                </MenuItem>
+                <MenuItem Header="Analysis &amp; Research"
+                          AutomationProperties.AutomationId="NavigateAnalysisResearchMenu">
+                    <MenuItem Header="AI Assistant" Tag="AiAssistantTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateAiAssistantTab" />
+                    <MenuItem Header="Rankings Dashboard" Tag="RankingsDashboardTab"
+                              Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateRankingsDashboardTab" />
+                    <MenuItem Header="Category Rankings" Tag="CategoryRankingsTab"
+                              Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateCategoryRankingsTab" />
+                    <MenuItem Header="Awards &amp; Winners" Tag="AwardsWinnersTab"
+                              Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateAwardsWinnersTab" />
+                    <MenuItem Header="Dashboard Insights" Tag="DashboardInsightsTab"
+                              Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateDashboardInsightsTab" />
+                    <MenuItem Header="YouTube Research" Tag="YouTubeResearchTab"
+                              Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateYouTubeResearchTab" />
+                </MenuItem>
+                <MenuItem Header="Configuration" AutomationProperties.AutomationId="NavigateConfigurationMenu">
+                    <MenuItem Header="Settings Manager" Tag="SettingsManagerTab"
+                              Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateSettingsManagerTab" />
+                </MenuItem>
+            </MenuItem>
             <MenuItem Header="_Website" AutomationProperties.AutomationId="WebsiteMenu">
                 <MenuItem Header="Open Website Export" Click="OpenWebsiteExportTab_Click"
                           AutomationProperties.AutomationId="OpenWebsiteExportTab" />

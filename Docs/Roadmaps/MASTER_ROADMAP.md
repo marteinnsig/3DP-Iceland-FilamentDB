@@ -2626,11 +2626,16 @@ to unstarted authoritative planning slots.
     - Help: tab labels/F1 ownership are unchanged; Inventory save-blocked and Usage-history boundaries are updated.
     - Completion condition met: owner accepts all 22 tabs, stable Inventory editing/navigation and Verification PASS.
   - **v59.0.2 — Grouped Navigate Menu**
-    - State: Planned after v59.0.1 acceptance.
+    - State: Complete and owner runtime accepted; Full Data Verification passes 416/416.
     - Add Materials & Setup, Measurements & Testing, Operations, Publishing, Analysis & Research and Configuration groups.
     - Route every command to one of the 22 existing tabs by stable AutomationId without data mutation.
     - Preserve the existing Materials, File, Tools and Help command ownership and guarded-action boundaries.
     - Completion condition: keyboard/mouse navigation and deterministic command-to-tab coverage pass.
+    - Implementation: six groups expose 22 stable menu AutomationIds and route through one non-mutating selector.
+    - Transition: the Website menu and rendering-prototype command remain until replacement runtime acceptance.
+    - Help/automation: control inventory and menu Help are updated; smoke invokes and verifies all 22 destinations.
+    - Evidence: Debug/Release and smoke `20260729004027-cb36e901` pass 416/416 with exact state.
+    - Completion condition met: owner accepts mouse, keyboard and Website replacement navigation.
   - **v59.0.3 — Redundant Navigation and Prototype Retirement**
     - State: Planned after the v59.0.2 replacement is runtime accepted.
     - Retire the one-command Website menu and the snapshot-only Materials Rendering Prototype menu/window entry point.
