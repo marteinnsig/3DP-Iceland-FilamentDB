@@ -17,6 +17,18 @@
   applicable checks with exactly 12 governed Website N/A checks.
 - Owner clean-VM acceptance confirms install, demo restore/restart, Full
   Verification and uninstall/reinstall user-data preservation.
+- Guarded application, demo and signed-update publication completes with remote
+  backup and stable-route-last activation.
+- Independent HTTPS downloads reproduce every frozen installer, portable,
+  demo and update hash; `latest.json` identifies v59.0.7 exactly.
+
+## v59.0.8 - Navigation Parent Closure
+
+- Closes parent v59 as a documentation-only reconciliation.
+- Confirms every recorded increment is complete and README release identity,
+  development focus and stable download routes align.
+- Preserves accepted v59.0.7 application, installer, portable, demo and updater
+  bytes unchanged.
 
 ## v59.0.6 - Materials Column Order Implementation and Acceptance
 

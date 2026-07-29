@@ -13,6 +13,8 @@ The final application identity is frozen at v59.0.7 for installer, portable and
 public-demo compatibility rebuilding. v59.0.8 is docs-only parent closure.
 Clean-VM installation, demo restore/restart, Verification and
 uninstall/reinstall data preservation are owner accepted.
+Guarded installer, portable, demo and signed updater publication is live.
+Independent HTTPS hashes match every frozen local Production artifact.
 
 ## v58.0.6 - Governed Document Branding Closure
 

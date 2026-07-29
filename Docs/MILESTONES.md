@@ -11,6 +11,8 @@ v59.0.7 application bytes are the final parent artifact identity; v59.0.8 may
 reconcile documentation only.
 Clean-VM install, governed demo restore/restart, Verification and
 uninstall/reinstall data preservation pass owner runtime acceptance.
+Guarded Production publication and independent HTTPS hash verification pass;
+parent v59 closes without changing the accepted v59.0.7 bytes.
 
 # v58.0.6 - Governed Document Branding Closure
 

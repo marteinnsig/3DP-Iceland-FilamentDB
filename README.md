@@ -6,7 +6,7 @@ Private Windows deployment supports a per-user Setup EXE and a portable ZIP buil
 
 - **Current runtime-accepted release:** v59.0.7 — Canonical Navigation and Materials Layout
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v59.0.8 — Documentation-only parent closure
+- **Current development focus:** Post-v59 roadmap planning — next major theme pending owner decision
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Your data stays yours

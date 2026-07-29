@@ -2211,3 +2211,11 @@ and runtime accepted.
   restored user database.
 - **Remaining boundary:** Freeze clean-worktree Production bytes locally.
   Production/FTPS publication still requires separate explicit live authority.
+- **Publication accepted:** Guarded application release, public demo and signed
+  updater workflows completed. Application backup:
+  `/backups/application_releases/release_2026-07-29_122745_402`; demo backup:
+  `/backups/public_demo/release_2026-07-29_122815_902`.
+- **Independent HTTPS evidence:** Stable and versioned installer, portable and
+  demo hashes reproduce the frozen local files. Signed update hash matches and
+  live `latest.json` identifies v59.0.7 `NAVIGATION-LAYOUT-CLOSURE`.
+- **Status:** v59.0.7 and docs-only v59.0.8 parent closure complete.

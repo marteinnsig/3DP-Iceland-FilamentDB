@@ -26,6 +26,22 @@ schema-v38 demo through the supported workflow, restarts, passes Full
 Verification and preserves restored user data through uninstall/reinstall.
 Production/FTPS remain outside this acceptance.
 
+Guarded application release publishing retains
+`/backups/application_releases/release_2026-07-29_122745_402`; public-demo
+publishing retains `/backups/public_demo/release_2026-07-29_122815_902`.
+Versioned routes activate before stable routes and the signed update package
+activates before `latest.json`.
+
+Independent HTTPS downloads reproduce the frozen installer, portable, demo and
+signed-update bytes. Live `latest.json` identifies v59.0.7 and the exact
+`NAVIGATION-LAYOUT-CLOSURE` package hash.
+
+## v59.0.8 - Navigation Parent Closure
+
+The parent closes through documentation-only reconciliation. All planned v59
+increments are complete, README aligns with the canonical release and stable
+routes, and no accepted v59.0.7 binary or demo byte changes.
+
 ## v59.0.6 - Materials Column Order Implementation and Acceptance
 
 The explicit 52-column Fast Materials builder now follows the exact
