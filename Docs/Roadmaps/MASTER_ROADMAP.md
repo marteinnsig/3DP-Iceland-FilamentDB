@@ -2730,6 +2730,17 @@ to unstarted authoritative planning slots.
 - Optional destructive clean uninstall remains deferred. Normal uninstall stays
   data-preserving; no evidence, backups, SQLite or credentials may be deleted
   automatically.
+- Enrich the public Manufacturers website surface from canonical `Manufacturers`
+  records so each manufacturer can carry a fuller governed profile.
+  - Research current profile fields, completeness, public suitability and the
+    existing manufacturer-page renderer before expanding the allowlist.
+  - Define public-safe identity, description, location, website/contact,
+    specialties, product-line and submission/update ownership; omit empty or
+    private values honestly.
+  - Preserve stable manufacturer routes, canonical Material relationships,
+    publication scope, HTML/PDF parity and explicit Production/FTPS approval.
+  - Completion condition: owner approves the public field allowlist, fallback
+    behavior, page design and a bounded implementation increment.
 - Bilingual website, manufacturer/API integrations, cloud sync, plugins,
   general scripting and broad exchange platforms remain demand-only or retired
   under the dispositions above.
