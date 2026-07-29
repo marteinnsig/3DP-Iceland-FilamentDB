@@ -592,6 +592,7 @@ xaml.stiffness-measurements.button.resetfaststiffnesscolumns-click	Stiffness Mea
 xaml.tensile-measurements.button.resetfasttensilecolumns-click	Tensile Measurements	Button	ResetFastTensileColumns_Click	action	v50.4.2	measurements.controls-fields	covered
 xaml.usage.button.beginusagecorrection	Usage	Button	BeginUsageCorrection	action	v50.4.1	usage.controls-fields	covered
 xaml.usage.button.cancelusagecorrectionbutton	Usage	Button	CancelUsageCorrectionButton	action	v50.4.1	usage.controls-fields	covered
+xaml.usage.button.deletematerialusagehistory	Usage	Button	DeleteMaterialUsageHistory	action	v50.4.1	usage.controls-fields	covered
 xaml.usage.button.saveusageevent	Usage	Button	SaveUsageEvent	action	v50.4.1	usage.controls-fields	covered
 xaml.usage.combobox.usageeventtypeselector	Usage	ComboBox	UsageEventTypeSelector	choice	v50.4.1	usage.controls-fields	covered
 xaml.usage.combobox.usageinventoryselector	Usage	ComboBox	UsageInventorySelector	choice	v50.4.1	usage.controls-fields	covered

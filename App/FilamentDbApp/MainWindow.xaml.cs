@@ -14941,6 +14941,25 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             inventoryRestrictedDeleteRecoveryReady
                 ? "Collection-change saves and canonical reloads have distinct guarded phases"
                 : "Inventory collection-change/reload coordination is missing or active during Verification"));
+        var usageHistoryMaintenanceDeletionReady =
+            LocalDatabase.RunUsageHistoryMaintenanceDeletionContractVerification() &&
+            FindName("DeleteMaterialUsageHistoryButton") is Button usageCleanupButton &&
+            AutomationProperties.GetAutomationId(usageCleanupButton) ==
+            "DeleteMaterialUsageHistory" &&
+            typeof(MainWindow).GetMethod(
+                "DeleteMaterialUsageHistory_Click",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod(
+                "ShowSafeDeleteConfirmation",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck(
+            "v59.0.10 selected-Material Usage history cleanup contract",
+            usageHistoryMaintenanceDeletionReady,
+            usageHistoryMaintenanceDeletionReady
+                ? "Scoped chain deletion preserves other Materials, spools and remaining weight; default-No UI is present"
+                : "Usage cleanup scope, preservation, UI identity or default-No ownership failed"));
         var canonicalActiveRows = GetCanonicalActiveMaterialRows();
         var canonicalVisibleRows = GetCanonicalVisibleMaterialRows();
         var canonicalActiveIds = canonicalActiveRows
@@ -30078,6 +30097,75 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void CancelUsageCorrection_Click(object sender, RoutedEventArgs e) =>
         EndUsageCorrection(clearInputs: false);
+
+    private void DeleteMaterialUsageHistory_Click(object sender, RoutedEventArgs e)
+    {
+        if (IsAutomationActionBlocked("Usage history deletion")) return;
+        var materialId = UsageMaterialSelector.SelectedValue?.ToString()?.Trim();
+        if (string.IsNullOrWhiteSpace(materialId))
+        {
+            MessageBox.Show(
+                this,
+                "Select one Material before deleting Usage history.",
+                "Usage History Cleanup",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        var events = _database.LoadUsageEvents()
+            .Where(item => item.MaterialId.Equals(
+                materialId,
+                StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        if (events.Count == 0)
+        {
+            MessageBox.Show(
+                this,
+                $"MaterialID {materialId} has no Usage history to delete.",
+                "Usage History Cleanup",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return;
+        }
+
+        var linkedSpoolCount = events
+            .Select(item => item.InventoryItemId)
+            .Where(item => !string.IsNullOrWhiteSpace(item))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Count();
+        var message =
+            $"Permanently delete all {events.Count:N0} Usage ledger row(s) for MaterialID {materialId}?\n\n" +
+            $"Linked inventory spools released: {linkedSpoolCount:N0}.\n\n" +
+            "A database backup is created first. No Material or spool is deleted. Current Inventory remaining weight is not changed; " +
+            "review it manually if these rows previously changed test stock.\n\n" +
+            "This maintenance action cannot be undone inside the application.\n\n" +
+            "Choose No, press Escape or close this warning to keep all Usage history unchanged.";
+        if (!ShowSafeDeleteConfirmation("Delete Material Usage History?", message))
+            return;
+
+        try
+        {
+            CreateDatabaseBackupBeforeMajorMaterialChange(
+                $"deleting Usage history for {materialId}");
+            var deleted = _database.DeleteUsageEventsForMaterialMaintenance(materialId);
+            EndUsageCorrection(clearInputs: true);
+            ReloadInventorySpoolsFromCanonicalDatabase();
+            RefreshUsageMaterialContext(materialId);
+            UsageStatusText.Text =
+                $"Deleted {deleted:N0} Usage ledger row(s) for {materialId}. Inventory remaining weight was not changed.";
+        }
+        catch (Exception ex)
+        {
+            UsageStatusText.Text = "Usage history cleanup blocked: " + ex.Message;
+            MessageBox.Show(
+                this,
+                ex.Message,
+                "Usage History Cleanup Blocked",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+        }
+    }
 
     private void EndUsageCorrection(bool clearInputs)
     {

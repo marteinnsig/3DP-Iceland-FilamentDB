@@ -1,6 +1,20 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v59.0.10 - Usage History Cleanup
+
+Adds an explicit backup-first maintenance exception for owner-identified
+development/test Usage data. The action deletes only the currently selected
+MaterialID ledger chain after a default-No warning showing exact row and linked
+spool counts.
+
+Correction/reversal rows are removed before originals in one transaction.
+Materials, spools and Inventory remaining weight remain unchanged. Help,
+Debug/Release, documentation and security gates pass; disposable smoke passes
+420/420 and CRUD proves automation blocking plus exact recovery. The owner
+accepts cancel/delete behavior, released spool/Material cleanup and Full
+Verification PASS.
+
 ## v59.0.9 - Spool Restricted-removal Recovery
 
 Corrects the reproducible process exit after a Usage-referenced spool deletion

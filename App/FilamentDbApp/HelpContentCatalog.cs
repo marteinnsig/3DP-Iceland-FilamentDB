@@ -447,8 +447,14 @@ internal static class HelpContentCatalog
             Corrections
             Correct Selected prepares a replacement but never edits the accepted row. Commit appends an exact reversal and replacement
             transaction; MaterialID cannot change and a reversal cannot be reversed again. Cancel Correction abandons the draft only.
+
+            Explicit development/test cleanup
+            Delete Material Usage History is a backup-first maintenance exception for owner-identified development or test data. It
+            shows the exact selected MaterialID, ledger-row and linked-spool counts in a default-No warning. Only that MaterialID ledger
+            chain is deleted. Materials, spools and current Inventory remaining weight are unchanged; review test stock manually.
             """,
-            "usage", "record usage", "correct selected", "cancel correction", "filament grams", "provenance",
+            "usage", "record usage", "correct selected", "cancel correction", "delete material usage history",
+            "usage cleanup", "filament grams", "provenance",
             "inventory spool", "ledger", "accepted event", "reversal", "replacement"),
         new(
             "usage.controls-fields",
@@ -472,6 +478,11 @@ internal static class HelpContentCatalog
             Correct Selected loads an accepted ledger event into correction mode. The original remains read-only. Committing creates
             an exact reversal plus replacement; MaterialID cannot change and an already reversed event cannot be reversed again.
             Cancel Correction abandons only the correction draft and changes no accepted data.
+
+            Maintenance cleanup
+            Delete Material Usage History permanently removes every original, reversal and replacement row for the currently selected
+            MaterialID after a database backup and a default-No confirmation showing exact row/spool counts. No global purge exists.
+            Materials and spools remain; Inventory remaining weight is deliberately not inferred or rewritten.
 
             Totals and ledger columns
             Effective event count, net filament grams, print/hands-on time, produced/accepted/rejected totals and evidence coverage are

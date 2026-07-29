@@ -84,9 +84,50 @@ public sealed partial class LocalDatabase
     public void DeleteUsageEventsForAuthorizedAutomation(string materialId)
     {
         AutomationRuntimeProfile.DemandMaterialCrudAuthorized(materialId);
+        DeleteUsageEventsForMaterialMaintenance(materialId);
+    }
+
+    public int DeleteUsageEventsForMaterialMaintenance(string materialId)
+    {
+        var normalizedMaterialId = materialId?.Trim();
+        if (string.IsNullOrWhiteSpace(normalizedMaterialId))
+            throw new ArgumentException("MaterialID is required.", nameof(materialId));
+
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
         using var transaction = connection.BeginTransaction();
+        int Count(string sql)
+        {
+            using var command = connection.CreateCommand();
+            command.Transaction = transaction;
+            command.CommandText = sql;
+            command.Parameters.AddWithValue("$material", normalizedMaterialId);
+            return Convert.ToInt32(command.ExecuteScalar() ?? 0, CultureInfo.InvariantCulture);
+        }
+
+        var eventCount = Count(
+            "SELECT COUNT(*) FROM UsageEvents WHERE MaterialId=$material;");
+        if (eventCount == 0)
+        {
+            transaction.Commit();
+            return 0;
+        }
+
+        var externalReferenceCount = Count("""
+            SELECT COUNT(*)
+            FROM UsageEvents AS child
+            WHERE child.MaterialId <> $material
+              AND (
+                    child.ReversesUsageEventId IN (
+                        SELECT UsageEventId FROM UsageEvents WHERE MaterialId=$material)
+                 OR child.CorrectsUsageEventId IN (
+                        SELECT UsageEventId FROM UsageEvents WHERE MaterialId=$material)
+              );
+            """);
+        if (externalReferenceCount != 0)
+            throw new InvalidOperationException(
+                "Usage cleanup was blocked because another MaterialID references this ledger chain.");
+
         using (var corrections = connection.CreateCommand())
         {
             corrections.Transaction = transaction;
@@ -96,7 +137,7 @@ public sealed partial class LocalDatabase
                                         AND (ReversesUsageEventId IS NOT NULL
                                              OR CorrectsUsageEventId IS NOT NULL);
                                       """;
-            corrections.Parameters.AddWithValue("$material", materialId);
+            corrections.Parameters.AddWithValue("$material", normalizedMaterialId);
             corrections.ExecuteNonQuery();
         }
         using (var originals = connection.CreateCommand())
@@ -104,10 +145,91 @@ public sealed partial class LocalDatabase
             originals.Transaction = transaction;
             originals.CommandText =
                 "DELETE FROM UsageEvents WHERE MaterialId=$material;";
-            originals.Parameters.AddWithValue("$material", materialId);
+            originals.Parameters.AddWithValue("$material", normalizedMaterialId);
             originals.ExecuteNonQuery();
         }
+
+        if (Count("SELECT COUNT(*) FROM UsageEvents WHERE MaterialId=$material;") != 0)
+            throw new InvalidOperationException(
+                "Usage cleanup did not remove the exact selected MaterialID scope.");
         transaction.Commit();
+        return eventCount;
+    }
+
+    public static bool RunUsageHistoryMaintenanceDeletionContractVerification()
+    {
+        var root = IOPath.Combine(
+            IOPath.GetTempPath(),
+            "3DPIceland-UsageCleanup-" + Guid.NewGuid().ToString("N"));
+        IODirectory.CreateDirectory(root);
+        try
+        {
+            var database = new LocalDatabase(IOPath.Combine(root, "usage-cleanup.sqlite"));
+            using (var connection = new SqliteConnection(database.ConnectionString))
+            {
+                connection.Open();
+                using var command = connection.CreateCommand();
+                command.CommandText = """
+                    INSERT INTO NativeMaterialManagerRows(MaterialId, UpdatedAtUtc)
+                    VALUES
+                        ('VERIFY-USAGE-CLEANUP', '2026-07-29T00:00:00Z'),
+                        ('VERIFY-USAGE-KEEP', '2026-07-29T00:00:00Z');
+                    INSERT INTO InventorySpoolItems
+                        (InventoryItemId, MaterialId, Status, Quantity, RemainingWeightG, UpdatedAtUtc)
+                    VALUES
+                        ('VERIFY-USAGE-SPOOL', 'VERIFY-USAGE-CLEANUP', 'Opened', '1', '900',
+                         '2026-07-29T00:00:00Z');
+                    INSERT INTO UsageEvents
+                        (UsageEventId, MaterialId, EventType, EntryKind, OccurredAtUtc, CreatedAtUtc,
+                         InventoryItemId, FilamentUsedGrams, FilamentProvenance,
+                         ReversesUsageEventId, CorrectsUsageEventId)
+                    VALUES
+                        ('VERIFY-USAGE-ORIGINAL', 'VERIFY-USAGE-CLEANUP', 'Print', 'Original',
+                         '2026-07-29T00:00:00Z', '2026-07-29T00:00:00Z',
+                         'VERIFY-USAGE-SPOOL', '100', 'Measured', NULL, NULL),
+                        ('VERIFY-USAGE-REVERSAL', 'VERIFY-USAGE-CLEANUP', 'Print', 'Reversal',
+                         '2026-07-29T00:01:00Z', '2026-07-29T00:01:00Z',
+                         'VERIFY-USAGE-SPOOL', '-100', 'Measured', 'VERIFY-USAGE-ORIGINAL', NULL),
+                        ('VERIFY-USAGE-REPLACEMENT', 'VERIFY-USAGE-CLEANUP', 'Print', 'Replacement',
+                         '2026-07-29T00:02:00Z', '2026-07-29T00:02:00Z',
+                         'VERIFY-USAGE-SPOOL', '80', 'Measured', NULL, 'VERIFY-USAGE-ORIGINAL'),
+                        ('VERIFY-USAGE-OTHER', 'VERIFY-USAGE-KEEP', 'Print', 'Original',
+                         '2026-07-29T00:03:00Z', '2026-07-29T00:03:00Z',
+                         NULL, NULL, 'NotRecorded', NULL, NULL);
+                    """;
+                command.ExecuteNonQuery();
+            }
+
+            if (database.DeleteUsageEventsForMaterialMaintenance(
+                    "VERIFY-USAGE-CLEANUP") != 3)
+                return false;
+
+            using var verifyConnection = new SqliteConnection(database.ConnectionString);
+            verifyConnection.Open();
+            using var verify = verifyConnection.CreateCommand();
+            verify.CommandText = """
+                SELECT
+                    (SELECT COUNT(*) FROM UsageEvents
+                     WHERE MaterialId='VERIFY-USAGE-CLEANUP') || '|' ||
+                    (SELECT COUNT(*) FROM UsageEvents
+                     WHERE MaterialId='VERIFY-USAGE-KEEP') || '|' ||
+                    (SELECT RemainingWeightG FROM InventorySpoolItems
+                     WHERE InventoryItemId='VERIFY-USAGE-SPOOL');
+                """;
+            return string.Equals(
+                verify.ExecuteScalar()?.ToString(),
+                "0|1|900",
+                StringComparison.Ordinal);
+        }
+        catch
+        {
+            return false;
+        }
+        finally
+        {
+            SqliteConnection.ClearAllPools();
+            try { IODirectory.Delete(root, true); } catch { }
+        }
     }
 
     private void PersistUsageEventsAtomic(IReadOnlyList<UsageEventRecord> newEvents)

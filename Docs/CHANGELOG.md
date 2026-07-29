@@ -2,6 +2,24 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v59.0.10 - Usage History Cleanup
+
+- Adds a backup-first `Delete Material Usage History...` maintenance action for
+  owner-identified development/test ledger data.
+- Scopes deletion to the currently selected exact MaterialID and shows ledger
+  row plus linked-spool counts in the accepted default-No dialog.
+- Deletes correction/reversal rows before originals in one SQLite transaction
+  and rejects cross-Material correction references.
+- Preserves Materials, spools, Inventory remaining weight, measurements,
+  purchasing and all private/public output data outside the selected ledger.
+- Adds Help/control coverage, a synthetic SQLite preservation contract and
+  disposable automation blocking for the destructive action.
+- Debug/Release and Help/docs/NuGet gates pass. Smoke
+  `20260729152013-913df565` passes 420/420; CRUD
+  `20260729152131-1cc71adc` passes cleanup blocking and exact recovery.
+- Owner acceptance confirms cancel safety, selected cleanup, released linked
+  spool/Material deletion and Full Data Verification PASS; v59.0.10 is canonical.
+
 ## v59.0.9 - Spool Restricted-removal Recovery
 
 - Prevents a Usage-referenced spool deletion from reloading the same

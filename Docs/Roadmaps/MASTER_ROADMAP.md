@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v59.0.9 — Spool Restricted-removal Recovery**
+Current canonical release: **v59.0.10 — Usage History Cleanup**
 
-Last runtime-accepted baseline: **v59.0.9 — Spool Restricted-removal Recovery**
+Last runtime-accepted baseline: **v59.0.10 — Usage History Cleanup**
 
-Current canonical application release: **v59.0.9 — Spool Restricted-removal Recovery**
+Current canonical application release: **v59.0.10 — Usage History Cleanup**
 
-Current roadmap increment: **v59.0.9 — Inventory Restricted-delete Recovery**
+Current roadmap increment: **v59.0.10 — Explicit Test Usage-history Cleanup**
 
-Current acceptance note: v59.0.9 blocked-delete recovery is owner accepted; Full Data Verification passes 419/419.
+Current acceptance note: v59.0.10 Usage cleanup is owner accepted; Full Data Verification passes 420/420.
 
-Next note: correct the reproducible Inventory restricted-delete crash without deleting immutable Usage history.
+Next note: add an explicit, backup-first purge for owner-identified development/test Usage rows.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2707,6 +2707,18 @@ to unstarted authoritative planning slots.
     - Evidence: Debug/Release, Help/docs and NuGet gates pass; disposable smoke passes 419/419 with exact state.
     - Owner acceptance: blocked deletion keeps the app open, reloads canonical state and Verification passes.
     - Completion condition met: one warning/rollback/reload path is accepted with immutable Usage preserved.
+  - **v59.0.10 — Explicit Test Usage-history Cleanup**
+    - State: Complete and owner runtime accepted; Full Data Verification passes 420/420.
+    - Add a selected-MaterialID maintenance action; never expose an unscoped or global purge.
+    - Show exact ledger-row and linked-spool counts in the accepted default-No dialog before mutation.
+    - Create a governed database backup before deletion and remove correction/reversal rows before originals in one transaction.
+    - Reject cross-Material correction references; delete no Material, spool, measurement, purchase, report or public data.
+    - Preserve current Inventory remaining weight; the purge releases historical FK links but does not infer stock restoration.
+    - Keep owner database and purge action blocked in automation; use a synthetic disposable SQLite contract for deterministic proof.
+    - Update Help and release evidence; require owner runtime acceptance before completion.
+    - Evidence: gates and smoke pass 420/420; CRUD proves cleanup is automation-blocked with exact recovery.
+    - Owner acceptance: cancel, selected cleanup, linked Material deletion and Full Verification pass.
+    - Completion condition met: selected scope, backup, cancel safety, link release and Verification all pass.
 
 ### Intentionally unscheduled
 

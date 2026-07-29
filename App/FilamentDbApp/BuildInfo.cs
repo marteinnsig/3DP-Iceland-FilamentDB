@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "SPOOL-RESTRICTED-REMOVAL-RECOVERY";
-    public const string ReleaseTitle = "Spool Restricted-removal Recovery";
+    public const string ReleaseCode = "USAGE-HISTORY-CLEANUP";
+    public const string ReleaseTitle = "Usage History Cleanup";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 40;
 

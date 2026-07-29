@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 99 |
+| Solved | 100 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
-| **Total tracked findings** | **104** |
+| **Total tracked findings** | **105** |
 
 ## Triage categories
 
@@ -189,6 +189,24 @@ Verification evidence: Event 1026 terminates in `ObservableCollection.ClearItems
 line 30161 after `DeleteInventorySpool_Click` removes the row at line 30323. Corrected Debug/Release builds and Help/docs/NuGet gates
 pass. Disposable smoke `20260729150254-6fd9ba36` passes 419/419 with exact state recovery.
 Owner acceptance: The restricted deletion no longer crashes and owner Full Data Verification passes.
+
+Date: 2026-07-29
+Area: Usage / explicit development-test data cleanup
+Type: Workflow friction / Data issue
+Severity: Important
+Status: Solved
+What happened: Usage rows created while developing the workspace do not represent real owner usage. Immutable correction keeps those
+rows and their spool foreign-key relationships, so it cannot return the owner database to a clean real-usage baseline.
+Expected behavior: Provide an explicit backup-first maintenance exception that permanently deletes only the selected MaterialID ledger
+chain after an exact default-No confirmation, without deleting its Material/spools or inferring Inventory weight restoration.
+Steps to reproduce: Select a Material with development Usage rows; observe that correction/reversal cannot remove the historical rows
+or release the linked spool relationship.
+Screenshot / export / report attached: Owner runtime finding and accepted v59.0.9 blocked-delete evidence on 2026-07-29.
+Resolution: v59.0.10 candidate adds `Delete Material Usage History...`, selected-Material scoping, row/spool counts, backup-first
+execution, correction-first transactional deletion, cross-Material reference rejection and unchanged Inventory remaining weight.
+Verification evidence: Debug/Release and Help/docs/NuGet gates pass. Smoke `20260729152013-913df565` passes 420/420; CRUD
+`20260729152131-1cc71adc` proves cleanup is blocked by automation and exact business state recovers.
+Owner acceptance: Cancel safety, selected test-data cleanup, subsequent Material deletion and Full Data Verification all pass.
 
 ## Deferred findings
 

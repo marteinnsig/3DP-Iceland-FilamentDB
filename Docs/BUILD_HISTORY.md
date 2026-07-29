@@ -2,6 +2,26 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v59.0.10 - Usage History Cleanup
+
+The accepted immutable Usage ledger had no owner path for removing development
+or test rows. Correction/reversal preserves audit history and therefore cannot
+release an Inventory spool foreign-key relationship.
+
+The bounded maintenance exception targets one selected MaterialID, reports its
+exact row and linked-spool counts, creates a backup and uses the accepted
+default-No dialog. One transaction deletes correction/reversal rows before
+originals and rejects external correction-chain references. It does not delete
+Materials or spools and deliberately leaves current Inventory remaining weight
+unchanged rather than inferring a historical stock restoration.
+
+Debug/Release and Help/docs/NuGet gates pass. Disposable smoke
+`20260729152013-913df565` passes 420/420 with exact state. CRUD
+`20260729152131-1cc71adc` proves the action is present but blocked by automation
+at one-row and three-row ledger states, then restores exact business state.
+Owner runtime acceptance confirms safe cancellation, selected cleanup and
+subsequent deletion of test-linked Materials. Full Data Verification passes.
+
 ## v59.0.9 - Spool Restricted-removal Recovery
 
 Windows .NET Runtime event 1026 identified the post-rollback process exit:

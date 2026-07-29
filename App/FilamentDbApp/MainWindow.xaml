@@ -2268,6 +2268,10 @@
                     Content="Record Usage" Click="SaveUsageEvent_Click" Padding="10,4" Margin="0,0,8,8"/>
             <Button x:Name="BeginUsageCorrectionButton" AutomationProperties.AutomationId="BeginUsageCorrection"
                     Content="Correct Selected" Click="BeginUsageCorrection_Click" Padding="10,4" Margin="0,0,8,8"/>
+            <Button x:Name="DeleteMaterialUsageHistoryButton"
+                    AutomationProperties.AutomationId="DeleteMaterialUsageHistory"
+                    Content="Delete Material Usage History..." Click="DeleteMaterialUsageHistory_Click"
+                    Padding="10,4" Margin="0,0,8,8"/>
             <Button x:Name="CancelUsageCorrectionButton" Content="Cancel Correction"
                     Click="CancelUsageCorrection_Click" Padding="10,4" Visibility="Collapsed" Margin="0,0,8,8"/>
         </WrapPanel>

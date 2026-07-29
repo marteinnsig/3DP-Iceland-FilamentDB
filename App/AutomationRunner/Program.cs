@@ -2401,6 +2401,7 @@ internal static class Program
         _ = FindById(main, "UsageInventorySelector");
         _ = FindById(main, "SaveUsageEvent");
         _ = FindById(main, "BeginUsageCorrection");
+        var deleteHistory = FindById(main, "DeleteMaterialUsageHistory");
         _ = FindById(main, "UsageLedgerGrid");
         var status = FindById(main, "UsageStatus")
             .GetCurrentPropertyValue(AutomationElement.NameProperty)?
@@ -2411,10 +2412,19 @@ internal static class Program
                 StringComparison.Ordinal) &&
             status.Contains("private", StringComparison.OrdinalIgnoreCase),
             $"Usage UI did not expose the expected private ledger state for {materialId}: {status}");
+        Invoke(deleteHistory, processId);
+        var applicationStatus = FindById(main, "ApplicationStatus")
+            .GetCurrentPropertyValue(AutomationElement.NameProperty)?
+            .ToString() ?? string.Empty;
+        Require(
+            applicationStatus.Contains(
+                "Usage history deletion — BLOCKED BY AUTOMATION SAFETY POLICY",
+                StringComparison.Ordinal),
+            "Disposable automation did not block the Usage history deletion action.");
         Record(
             "usage-workspace-" + expectedEvents.ToString(CultureInfo.InvariantCulture),
             true,
-            $"{materialId}: bounded controls present; {status}");
+            $"{materialId}: bounded controls present; cleanup blocked by automation; {status}");
     }
 
     private static void ValidateUsageAnalytics(
