@@ -123,13 +123,13 @@ internal static class Program
 
             var topLevelTabIds = new[]
             {
-                "MaterialsTab", "ManufacturersTab", "PurchaseOrdersTab", "PrintersTab",
-                "PrintJobQuotesTab", "InventoryTab", "UsageTab", "ExperimentalTestingTab",
-                "MaterialDetailTab", "TensileMeasurementsTab", "ImpactMeasurementsTab",
-                "StiffnessMeasurementsTab", "WebsiteExportTab", "BaseMaterialsTab",
-                "SettingsManagerTab", "AiAssistantTab", "ReportsTab", "RankingsDashboardTab",
+                "MaterialsTab", "MaterialDetailTab", "TensileMeasurementsTab",
+                "ImpactMeasurementsTab", "StiffnessMeasurementsTab", "ExperimentalTestingTab",
+                "WebsiteExportTab", "ManufacturersTab", "BaseMaterialsTab", "PrintersTab",
+                "PurchaseOrdersTab", "InventoryTab", "UsageTab", "ReportsTab",
+                "PrintJobQuotesTab", "AiAssistantTab", "RankingsDashboardTab",
                 "CategoryRankingsTab", "AwardsWinnersTab", "DashboardInsightsTab",
-                "YouTubeResearchTab"
+                "YouTubeResearchTab", "SettingsManagerTab"
             };
             foreach (var tabId in topLevelTabIds)
             {

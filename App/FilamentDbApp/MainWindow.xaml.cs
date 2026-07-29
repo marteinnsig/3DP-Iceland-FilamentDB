@@ -168,7 +168,6 @@ public partial class MainWindow : Window
     {
         RunStartupPhase("MainWindow.InitializeComponent", InitializeComponent);
         ApplyRuntimeProfile();
-        RunStartupPhase("Workspace tab ordering", ApplyWorkspaceTabPriorityOrder);
         RunStartupPhase("Website template manager", RefreshWebsiteTemplateManager);
         _nativeMaterialSearchDebounceTimer.Tick += NativeMaterialSearchDebounceTimer_Tick;
         _nativeMaterialEditDebounceTimer.Tick += NativeMaterialEditDebounceTimer_Tick;
@@ -1021,32 +1020,6 @@ public partial class MainWindow : Window
         using var phase = App.StartupPerformance.Measure(phaseName);
         action();
     }
-
-    private void ApplyWorkspaceTabPriorityOrder()
-    {
-        MoveWorkspaceTabAfter("Material Detail", "Materials");
-
-        var anchorHeader = "Website Export";
-        foreach (var header in new[] { "Manufacturers", "Purchase Orders", "Inventory", "Experimental Testing" })
-        {
-            MoveWorkspaceTabAfter(header, anchorHeader);
-            anchorHeader = header;
-        }
-    }
-
-    private void MoveWorkspaceTabAfter(string header, string anchorHeader)
-    {
-        var tab = WorkspaceTabs.Items.OfType<TabItem>()
-            .FirstOrDefault(item => string.Equals(item.Header?.ToString(), header, StringComparison.Ordinal));
-        var anchor = WorkspaceTabs.Items.OfType<TabItem>()
-            .FirstOrDefault(item => string.Equals(item.Header?.ToString(), anchorHeader, StringComparison.Ordinal));
-        if (tab is null || anchor is null || ReferenceEquals(tab, anchor)) return;
-
-        WorkspaceTabs.Items.Remove(tab);
-        var anchorIndex = WorkspaceTabs.Items.IndexOf(anchor);
-        WorkspaceTabs.Items.Insert(anchorIndex + 1, tab);
-    }
-
 
     private static readonly string[] WorkflowGridNames =
     {
@@ -14830,17 +14803,46 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var workspaceTabHeaders = WorkspaceTabs.Items.OfType<TabItem>()
             .Select(item => item.Header?.ToString() ?? string.Empty)
             .ToList();
-        var websiteExportTabIndex = workspaceTabHeaders.IndexOf("Website Export");
-        var workspaceTabOrderReady =
-            workspaceTabHeaders.IndexOf("Materials") == 0 &&
-            workspaceTabHeaders.IndexOf("Material Detail") == 1 &&
-            websiteExportTabIndex >= 0 &&
-            workspaceTabHeaders.IndexOf("Manufacturers") == websiteExportTabIndex + 1 &&
-            workspaceTabHeaders.IndexOf("Purchase Orders") == websiteExportTabIndex + 2 &&
-            workspaceTabHeaders.IndexOf("Inventory") == websiteExportTabIndex + 3 &&
-            workspaceTabHeaders.IndexOf("Experimental Testing") == websiteExportTabIndex + 4;
-        checks.Add(new VerificationCheck("Workspace tab priority order", workspaceTabOrderReady,
-            "Materials and Material Detail stay together; secondary workflow tabs follow Website Export"));
+        string[] canonicalWorkspaceTabHeaders =
+        [
+            "Materials",
+            "Material Detail",
+            "Tensile Measurements",
+            "Impact Measurements",
+            "Stiffness Measurements",
+            "Experimental Testing",
+            "Website Export",
+            "Manufacturers",
+            "Base Materials",
+            "Printers",
+            "Purchase Orders",
+            "Inventory",
+            "Usage",
+            "Reports / PDF Export",
+            "Print Job Quotes",
+            "AI Assistant",
+            "Rankings Dashboard",
+            "Category Rankings",
+            "Awards & Winners",
+            "Dashboard Insights",
+            "YouTube Research",
+            "Settings Manager"
+        ];
+        var workspaceTabOrderReady = workspaceTabHeaders.SequenceEqual(
+            canonicalWorkspaceTabHeaders,
+            StringComparer.Ordinal);
+        checks.Add(new VerificationCheck("v59.0.1 canonical workspace tab order", workspaceTabOrderReady,
+            workspaceTabOrderReady
+                ? "All 22 top-level tabs match the owner-approved canonical sequence"
+                : $"Expected: {string.Join(" > ", canonicalWorkspaceTabHeaders)}"));
+        var inventoryReferencedSpoolSaveReady =
+            LocalDatabase.RunInventoryReferencedSpoolSaveContractVerification();
+        checks.Add(new VerificationCheck(
+            "v59.0.1 Inventory referenced-spool save and restricted-delete contract",
+            inventoryReferencedSpoolSaveReady,
+            inventoryReferencedSpoolSaveReady
+                ? "Referenced spools update without delete/reinsert; restricted deletion rolls back atomically"
+                : "Inventory save cannot safely update a Usage-referenced spool or reject its deletion"));
         var canonicalActiveRows = GetCanonicalActiveMaterialRows();
         var canonicalVisibleRows = GetCanonicalVisibleMaterialRows();
         var canonicalActiveIds = canonicalActiveRows
@@ -30041,7 +30043,29 @@ private List<string> GetVisibleAiMaterialLabels()
         _inventorySpoolView?.Refresh();
     }
 
-    private void SaveInventorySpools() => _database.ReplaceInventorySpoolItems(_inventorySpoolRows);
+    private bool SaveInventorySpools()
+    {
+        try
+        {
+            _database.ReplaceInventorySpoolItems(_inventorySpoolRows);
+            return true;
+        }
+        catch (Microsoft.Data.Sqlite.SqliteException ex) when (ex.SqliteErrorCode == 19)
+        {
+            MessageBox.Show(
+                this,
+                """
+                Inventory changes could not be saved because a spool or Material link is still used by canonical Usage history.
+
+                The database transaction was rolled back. Inventory will reload its last saved state.
+                """,
+                "Inventory Save Blocked",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            ReloadInventorySpoolsFromCanonicalDatabase();
+            return false;
+        }
+    }
 
     private void ReloadInventorySpoolsFromCanonicalDatabase()
     {
@@ -30154,7 +30178,7 @@ private List<string> GetVisibleAiMaterialLabels()
         var index = visibleRows.IndexOf(x);
 
         _inventorySpoolRows.Remove(x);
-        SaveInventorySpools();
+        if (!SaveInventorySpools()) return;
         SyncMaterialInventoryQuantityFromSpools(persist: true);
         RefreshInventorySummary();
 
@@ -30175,7 +30199,7 @@ private List<string> GetVisibleAiMaterialLabels()
         // throw InvalidOperationException ("Refresh is not allowed during an edit transaction").
         Dispatcher.BeginInvoke(new Action(() =>
         {
-            SaveInventorySpools();
+            if (!SaveInventorySpools()) return;
             SyncMaterialInventoryQuantityFromSpools(persist: true);
             RefreshInventorySummary();
         }), DispatcherPriority.ContextIdle);

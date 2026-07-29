@@ -368,7 +368,8 @@ internal static class HelpContentCatalog
             Save, validation and handoff
             Add, Duplicate and committed cell edits persist. Validation reviews quantity, weights, remaining range, storage and cost
             evidence; OK means no issues. Purchase receiving can create spool rows. Usage can select a same-MaterialID spool and
-            atomically reduce remaining weight.
+            atomically reduce remaining weight. Editing a spool that is already referenced by Usage updates that same stable spool
+            identity. Deleting a referenced spool is blocked, rolls back the transaction and reloads the last saved Inventory state.
             """,
             "inventory", "add spool", "duplicate", "delete", "refresh inventory", "show empty", "only opened",
             "low stock", "archived", "remaining", "estimated value", "validation", "usage"),
@@ -381,8 +382,9 @@ internal static class HelpContentCatalog
             Commands
             Add Spool creates one new record and uses Material defaults only when that Material has no existing spool. Duplicate copies
             the selected spool into a new identity for explicit review. Delete Spool is permanent/default-No for that Inventory record
-            but does not delete its Material or Usage history. Refresh Inventory commits valid pending edits, recalculates summaries
-            and synchronizes Materials quantity projection. Clear Filters restores the normal scope and changes no data.
+            but does not delete its Material or Usage history. A spool referenced by canonical Usage history cannot be deleted; the
+            database rolls back, Inventory reloads and the app remains open. Refresh Inventory commits valid pending edits, recalculates
+            summaries and synchronizes Materials quantity projection. Clear Filters restores the normal scope and changes no data.
 
             Search and filter controls
             Find searches Material, Spool ID, supplier, storage, batch and order. Show Empty defaults on and includes Empty rows. Only

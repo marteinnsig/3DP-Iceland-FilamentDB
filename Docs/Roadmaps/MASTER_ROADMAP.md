@@ -1,6 +1,6 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v57.0.5 — Public Website Experience and Canonical Branding**
+Current canonical release: **v58.0.6 — Governed Document Branding Closure**
 
 Last runtime-accepted baseline: **v58.0.6 — Governed Document Branding Closure**
 
@@ -2608,7 +2608,7 @@ to unstarted authoritative planning slots.
     - Completion condition met: multi-aspect report/website-document/quote output and final release gates pass.
 
 - **v59.0 — Application Navigation Finalization**
-  - State: Planned last, after every earlier roadmap item and open implementation finding is completed or explicitly dispositioned.
+  - State: Current; owner approved the canonical tab sequence, grouped Navigate menu and bounded retirement plan.
   - Inventory every menu item, command target, shortcut, Help link and supported top-level or nested tab destination.
   - Add high-value commands that select and focus the correct tab; identify redundant, stale, duplicated or low-value actions.
   - Do not retire accepted paths until callers, discoverability and replacement ownership are mapped and runtime accepted.
@@ -2616,12 +2616,55 @@ to unstarted authoritative planning slots.
   - Preserve AutomationIds, keyboard access, focus restoration, lazy loading, saved layout and every guarded-action boundary.
   - Extend deterministic tester navigation for changed commands/order; keep visual ordering acceptance owner-manual.
   - Completion condition: owner accepts the final menu and tab structure with no orphaned action, regression or state mutation.
-  - **v59.0.1 — Final Demo Dataset Compatibility Rebuild**
-    - State: Planned after v59.0 navigation acceptance as the final item in the current roadmap.
+  - **v59.0.1 — Canonical Top-level Tab Order**
+    - State: Complete and owner runtime accepted; Full Data Verification passes 415/415.
+    - Make the approved sequence authoritative in XAML and remove startup mutation by `ApplyWorkspaceTabPriorityOrder`.
+    - Preserve every tab AutomationId, selection refresh, lazy activation, F1 destination and nested-tab order.
+    - Completion condition: Debug/Release and deterministic order contracts pass before owner visual acceptance.
+    - Evidence: Debug/Release pass; corrected smoke `20260729002614-0f7d20d1` passes 415/415 with exact state.
+    - Runtime correction: Inventory saves upsert stable spools; Usage-referenced deletion rolls back instead of crashing.
+    - Help: tab labels/F1 ownership are unchanged; Inventory save-blocked and Usage-history boundaries are updated.
+    - Completion condition met: owner accepts all 22 tabs, stable Inventory editing/navigation and Verification PASS.
+  - **v59.0.2 — Grouped Navigate Menu**
+    - State: Planned after v59.0.1 acceptance.
+    - Add Materials & Setup, Measurements & Testing, Operations, Publishing, Analysis & Research and Configuration groups.
+    - Route every command to one of the 22 existing tabs by stable AutomationId without data mutation.
+    - Preserve the existing Materials, File, Tools and Help command ownership and guarded-action boundaries.
+    - Completion condition: keyboard/mouse navigation and deterministic command-to-tab coverage pass.
+  - **v59.0.3 — Redundant Navigation and Prototype Retirement**
+    - State: Planned after the v59.0.2 replacement is runtime accepted.
+    - Retire the one-command Website menu and the snapshot-only Materials Rendering Prototype menu/window entry point.
+    - Retain the shared rendering implementation used by supported Materials, measurement, Settings and Base Materials views.
+    - Trace and reconcile callers, handlers, Help, coverage registries, Verification and documentation before deletion.
+    - Completion condition: no orphaned caller or stale Help remains and the supported rendering surfaces still pass.
+  - **v59.0.4 — Navigation Help, Automation and Verification Reconciliation**
+    - State: Planned after v59.0.3.
+    - Document the Navigate groups, exact destinations, keyboard behavior and the distinction from mutating commands.
+    - Add ordered top-level registry and menu-destination contracts while continuing runtime selection by stable AutomationId.
+    - Reconcile Help coverage, control inventory, tester evidence, release notes and feedback records.
+    - Completion condition: Help/static/documentation gates and disposable Full Data Verification pass.
+  - **v59.0.5 — Materials Column-order Research and Decision**
+    - State: Planned after navigation reconciliation; research and owner decision precede implementation.
+    - Inventory visible, hidden, frozen, persisted and export/report Material column ownership and current saved-layout behavior.
+    - Present the current order, workflow risks, compatibility options and a proposed canonical order before changing code.
+    - Preserve saved user layouts until an explicit migration/reset contract is owner approved.
+    - Completion condition: owner approves a bounded column-order contract and its implementation increment or deferral.
+  - **v59.0.6 — Materials Column-order Implementation and Acceptance**
+    - State: Conditional on owner approval in v59.0.5.
+    - Apply only the approved default-order and persistence contract; do not rewrite unrelated saved layouts or exports.
+    - Update Help and deterministic contracts where behavior changes; keep visual usability acceptance owner-manual.
+    - Completion condition: owner accepts default/restart/reset behavior and all relevant release gates pass.
+  - **v59.0.7 — Final Demo Dataset Compatibility Rebuild**
+    - State: Planned after navigation and approved column-order acceptance, immediately before parent closure.
     - Follow `Docs/PUBLIC_DEMO_REBUILD_RUNBOOK.md`; reuse accepted v56 contracts unless a pinned input or rule changed.
     - Rebuild the governed demo dataset and ZIP against the final accepted v59 application and installer bytes.
     - Reverify clean restore, restart, Full Data Verification, package contents and SHA-256 before closing the roadmap.
     - Publish the accepted ZIP by guarded FTPS, versioned route first and stable route last, then verify both HTTPS hashes.
+  - **v59.0.8 — Navigation Parent Closure**
+    - State: Planned after the final demo dataset compatibility rebuild is accepted.
+    - Run final Debug/Release, static, security, Help, documentation, tester and Full Data Verification gates.
+    - Review README release identity and development focus before closing the parent milestone.
+    - Completion condition: owner accepts the final structure and every recorded v59 increment is dispositioned.
 
 ### Intentionally unscheduled
 

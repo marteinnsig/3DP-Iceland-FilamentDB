@@ -122,6 +122,76 @@ public sealed partial class LocalDatabase
         }
     }
 
+    public static bool RunInventoryReferencedSpoolSaveContractVerification()
+    {
+        var root = IOPath.Combine(
+            IOPath.GetTempPath(),
+            "3DPIceland-InventorySave-" + Guid.NewGuid().ToString("N"));
+        IODirectory.CreateDirectory(root);
+        try
+        {
+            var database = new LocalDatabase(IOPath.Combine(root, "inventory.sqlite"));
+            using (var connection = new SqliteConnection(database.ConnectionString))
+            {
+                connection.Open();
+                using var command = connection.CreateCommand();
+                command.CommandText = """
+                    INSERT INTO NativeMaterialManagerRows(MaterialId, UpdatedAtUtc)
+                    VALUES ('VERIFY-INVENTORY-MATERIAL', '2026-07-29T00:00:00Z');
+                    INSERT INTO InventorySpoolItems
+                        (InventoryItemId, MaterialId, Status, Quantity, UpdatedAtUtc)
+                    VALUES
+                        ('VERIFY-INVENTORY-SPOOL', 'VERIFY-INVENTORY-MATERIAL', 'Unopened', '1',
+                         '2026-07-29T00:00:00Z');
+                    INSERT INTO UsageEvents
+                        (UsageEventId, MaterialId, EventType, EntryKind, OccurredAtUtc, CreatedAtUtc,
+                         InventoryItemId, FilamentProvenance)
+                    VALUES
+                        ('VERIFY-INVENTORY-USAGE', 'VERIFY-INVENTORY-MATERIAL', 'Print', 'Original',
+                         '2026-07-29T00:00:00Z', '2026-07-29T00:00:00Z',
+                         'VERIFY-INVENTORY-SPOOL', 'Measured');
+                    """;
+                command.ExecuteNonQuery();
+            }
+
+            var snapshot = database.LoadInventorySpoolItems();
+            snapshot.Single().Status = "Opened";
+            database.ReplaceInventorySpoolItems(snapshot);
+
+            var restrictedDeleteBlocked = false;
+            try
+            {
+                database.ReplaceInventorySpoolItems([]);
+            }
+            catch (SqliteException ex) when (ex.SqliteErrorCode == 19)
+            {
+                restrictedDeleteBlocked = true;
+            }
+
+            using var verifyConnection = new SqliteConnection(database.ConnectionString);
+            verifyConnection.Open();
+            using var verify = verifyConnection.CreateCommand();
+            verify.CommandText = """
+                SELECT
+                    (SELECT Status FROM InventorySpoolItems
+                     WHERE InventoryItemId='VERIFY-INVENTORY-SPOOL') || '|' ||
+                    (SELECT COUNT(*) FROM UsageEvents
+                     WHERE InventoryItemId='VERIFY-INVENTORY-SPOOL');
+                """;
+            return restrictedDeleteBlocked &&
+                   string.Equals(verify.ExecuteScalar()?.ToString(), "Opened|1", StringComparison.Ordinal);
+        }
+        catch
+        {
+            return false;
+        }
+        finally
+        {
+            SqliteConnection.ClearAllPools();
+            try { IODirectory.Delete(root, true); } catch { }
+        }
+    }
+
     private static bool IsGovernedPublicDemoDataset(string databasePath)
     {
         try
@@ -2903,10 +2973,10 @@ ORDER BY
 
     public void ReplaceInventorySpoolItems(IEnumerable<InventorySpoolRecord> items)
     {
+        var snapshot = items.ToList();
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
         using var transaction = connection.BeginTransaction();
-        using (var clear = connection.CreateCommand()) { clear.Transaction = transaction; clear.CommandText = "DELETE FROM InventorySpoolItems;"; clear.ExecuteNonQuery(); }
         using var insert = connection.CreateCommand(); insert.Transaction = transaction;
         insert.CommandText = """
             INSERT INTO InventorySpoolItems
@@ -2918,13 +2988,48 @@ ORDER BY
             VALUES
                 ($id,$material,$status,$qty,$weight,$remaining,$storage,$batch,$purchase,$line,$supplier,$date,$order,
                  $price,$currency,$shipping,$vat,$customs,$fees,$landed,$landedCurrency,$landedRate,$landedSource,
-                 $landedDate,$landedFetched,$landedCalculated,$landedVersion,$notes,$updated);
+                 $landedDate,$landedFetched,$landedCalculated,$landedVersion,$notes,$updated)
+            ON CONFLICT(InventoryItemId) DO UPDATE SET
+                MaterialId=excluded.MaterialId,
+                Status=excluded.Status,
+                Quantity=excluded.Quantity,
+                SpoolWeightG=excluded.SpoolWeightG,
+                RemainingWeightG=excluded.RemainingWeightG,
+                StorageLocation=excluded.StorageLocation,
+                BatchNumber=excluded.BatchNumber,
+                PurchaseId=excluded.PurchaseId,
+                PurchaseOrderLineId=excluded.PurchaseOrderLineId,
+                PurchasedFrom=excluded.PurchasedFrom,
+                PurchaseDate=excluded.PurchaseDate,
+                OrderNumber=excluded.OrderNumber,
+                PurchasePriceAmount=excluded.PurchasePriceAmount,
+                PurchaseCurrency=excluded.PurchaseCurrency,
+                ShippingAmount=excluded.ShippingAmount,
+                VatAmount=excluded.VatAmount,
+                CustomsAmount=excluded.CustomsAmount,
+                OtherFeesAmount=excluded.OtherFeesAmount,
+                LandedCostAmount=excluded.LandedCostAmount,
+                LandedCostCurrency=excluded.LandedCostCurrency,
+                LandedCostConversionRate=excluded.LandedCostConversionRate,
+                LandedCostRateSource=excluded.LandedCostRateSource,
+                LandedCostRateObservationDate=excluded.LandedCostRateObservationDate,
+                LandedCostRateFetchedAtUtc=excluded.LandedCostRateFetchedAtUtc,
+                LandedCostCalculatedAtUtc=excluded.LandedCostCalculatedAtUtc,
+                LandedCostCalculationVersion=excluded.LandedCostCalculationVersion,
+                Notes=excluded.Notes,
+                UpdatedAtUtc=excluded.UpdatedAtUtc;
             """;
-        foreach (var x in items)
+        foreach (var x in snapshot)
         {
             insert.Parameters.Clear(); insert.Parameters.AddWithValue("$id", x.InventoryItemId); insert.Parameters.AddWithValue("$material", x.MaterialId); insert.Parameters.AddWithValue("$status", x.Status); insert.Parameters.AddWithValue("$qty", x.Quantity); insert.Parameters.AddWithValue("$weight", x.SpoolWeightG); insert.Parameters.AddWithValue("$remaining", x.RemainingWeightG); insert.Parameters.AddWithValue("$storage", x.StorageLocation); insert.Parameters.AddWithValue("$batch", x.BatchNumber); insert.Parameters.AddWithValue("$purchase", x.PurchaseId); insert.Parameters.AddWithValue("$line", x.PurchaseOrderLineId); insert.Parameters.AddWithValue("$supplier", x.PurchasedFrom); insert.Parameters.AddWithValue("$date", x.PurchaseDate); insert.Parameters.AddWithValue("$order", x.OrderNumber); insert.Parameters.AddWithValue("$price", x.PurchasePriceAmount); insert.Parameters.AddWithValue("$currency", x.PurchaseCurrency); insert.Parameters.AddWithValue("$shipping", x.ShippingAmount); insert.Parameters.AddWithValue("$vat", x.VatAmount); insert.Parameters.AddWithValue("$customs", x.CustomsAmount); insert.Parameters.AddWithValue("$fees", x.OtherFeesAmount); insert.Parameters.AddWithValue("$landed", x.LandedCostAmount);
             insert.Parameters.AddWithValue("$landedCurrency", string.IsNullOrWhiteSpace(x.LandedCostCurrency) ? x.PurchaseCurrency : x.LandedCostCurrency); insert.Parameters.AddWithValue("$landedRate", string.IsNullOrWhiteSpace(x.LandedCostConversionRate) ? "1" : x.LandedCostConversionRate); insert.Parameters.AddWithValue("$landedSource", string.IsNullOrWhiteSpace(x.LandedCostRateSource) ? "Legacy transaction-currency landed cost" : x.LandedCostRateSource); insert.Parameters.AddWithValue("$landedDate", x.LandedCostRateObservationDate); insert.Parameters.AddWithValue("$landedFetched", x.LandedCostRateFetchedAtUtc); insert.Parameters.AddWithValue("$landedCalculated", x.LandedCostCalculatedAtUtc); insert.Parameters.AddWithValue("$landedVersion", string.IsNullOrWhiteSpace(x.LandedCostCalculationVersion) ? "legacy-v1" : x.LandedCostCalculationVersion); insert.Parameters.AddWithValue("$notes", x.Notes); insert.Parameters.AddWithValue("$updated", DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture)); insert.ExecuteNonQuery();
         }
+        DeleteRowsMissingFromSnapshot(
+            connection,
+            transaction,
+            "InventorySpoolItems",
+            "InventoryItemId",
+            snapshot.Select(item => item.InventoryItemId));
         transaction.Commit();
     }
 

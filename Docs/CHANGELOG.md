@@ -2,6 +2,22 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v59.0.1 - Canonical Top-level Tab Order
+
+- Makes the owner-approved 22-tab sequence authoritative in XAML and retires
+  startup tab mutation.
+- Preserves all stable AutomationIds, nested tabs, F1 destinations, lazy
+  activation and guarded-action boundaries.
+- Updates AutomationRunner to visit the same ordered registry while continuing
+  to select every destination by stable AutomationId.
+- Replaces Inventory delete-and-reinsert autosave with stable-identity upserts.
+  Usage-referenced spool deletion now rolls back and reloads instead of
+  terminating the process.
+- Debug/Release and corrected disposable smoke
+  `20260729002614-0f7d20d1` pass 415/415 with exact logical and business state.
+- Owner accepts all tabs, stable Inventory navigation/editing and Full Data
+  Verification PASS.
+
 ## v58.0.6 - Governed Document Branding Closure
 
 - Advances the final v58 parent-closure candidate after schema-v40 migration,

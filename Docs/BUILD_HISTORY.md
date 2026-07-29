@@ -2,6 +2,28 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v59.0.1 - Canonical Top-level Tab Order
+
+The complete owner-approved 22-tab sequence is now authoritative in XAML.
+`ApplyWorkspaceTabPriorityOrder` and its header-based move helper are retired.
+AutomationRunner retains stable-ID selection but visits the same canonical
+order. All 22 top-level and 16 nested destinations remain covered.
+
+Owner runtime testing exposed an Inventory autosave crash when leaving an
+edited cell. Windows .NET Runtime event 1026 proved that the old snapshot save
+deleted every spool before reinsertion; canonical Usage rows correctly blocked
+that temporary deletion through `ON DELETE RESTRICT`.
+
+Inventory persistence now upserts stable spool identities and deletes only rows
+absent from the snapshot. Referenced deletion rolls back, displays
+`Inventory Save Blocked` and reloads canonical state. A disposable SQLite
+contract proves referenced edits, restricted deletion and rollback integrity.
+
+Debug and Release pass with zero warnings/errors. Corrected disposable smoke
+`20260729002614-0f7d20d1` passes 415/415 with exact logical database and
+business-state equality. Owner accepts the complete tab pass, stable Inventory
+editing/navigation and Full Data Verification PASS.
+
 ## v58.0.6 - Governed Document Branding Closure
 
 The parent-closure candidate advances to v58.0.6 without changing schema v40.

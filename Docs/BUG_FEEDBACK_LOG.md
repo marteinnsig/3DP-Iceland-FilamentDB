@@ -49,6 +49,51 @@ Resolution:
 Verification evidence:
 ```
 
+# 2026-07-28 - v59.0 navigation inventory and tab-order ownership
+
+- **Runtime defect found 2026-07-29:** Leaving an edited Inventory cell could
+  terminate the process without an app dialog.
+- **Evidence:** Windows .NET Runtime event 1026 records SQLite error 19 at
+  `ReplaceInventorySpoolItems` during deferred `InventorySpoolGrid_CellEditEnding`.
+- **Root cause:** Inventory save deleted every spool before reinserting the
+  snapshot. Canonical Usage rows use `ON DELETE RESTRICT`, so even an ordinary
+  edit failed when any saved spool was referenced by Usage history.
+- **Correction:** Save now upserts stable spool identities and deletes only
+  records absent from the snapshot. A genuinely referenced deletion rolls back,
+  shows `Inventory Save Blocked` and reloads canonical Inventory state.
+- **Regression contract:** A disposable SQLite fixture must prove that an
+  Usage-referenced spool can be edited, its deletion is rejected and both
+  spool/Usage rows survive the rejected transaction.
+- **Correction evidence:** Debug/Release pass. Disposable smoke
+  `20260729002614-0f7d20d1` passes 415/415; both the canonical tab-order and
+  referenced-spool save/restricted-delete checks pass with exact logical and
+  business-state recovery.
+- **Finding:** XAML source order is not the visible runtime order.
+  `ApplyWorkspaceTabPriorityOrder` moves Material Detail after Materials, then
+  moves Manufacturers, Purchase Orders, Inventory and Experimental Testing
+  after Website Export during startup.
+- **Risk:** Reordering XAML alone would be partially overridden and could make
+  tests, Help ownership and future maintenance disagree with the visible UI.
+- **Decision:** The owner approved the complete 22-tab order, a grouped
+  Navigate menu and retirement of the redundant Website menu plus snapshot-only
+  prototype command after replacement runtime acceptance.
+- **Follow-up:** Review Materials default column order later in v59 through a
+  separate research and owner-decision increment before any implementation.
+- **Preserved:** All 22 top-level and 16 nested AutomationIds, F1 Help mapping,
+  selection-triggered refresh/lazy loading and guarded actions remain unchanged
+  during research.
+- **Implementation:** The complete owner-approved sequence is canonical in XAML;
+  the startup reorder helper is retired and the tester registry matches the
+  same stable AutomationId order.
+- **Evidence:** Debug and Release pass. Disposable smoke
+  `20260729001518-51116653` visits 22/22 top-level and 16/16 nested tabs,
+  passes Full Data Verification 414/414 and restores exact logical/business
+  state.
+- **Owner acceptance:** Inventory remains stable after repeated tab navigation
+  and editing; the owner completes the earlier full-tab checklist and confirms
+  Full Data Verification PASS.
+- **Status:** Resolved and runtime accepted in v59.0.1.
+
 ## Deferred findings
 
 Date: 2026-07-27
