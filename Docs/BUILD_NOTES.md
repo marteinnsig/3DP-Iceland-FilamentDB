@@ -1,5 +1,18 @@
 # Current Build Notes - v57.0 Research
 
+## v59.0.11 Public Base-material Printing Guidance
+
+Canonical Base Material Catalog guidance is now resolved strictly by
+`BaseMaterialId` for local public Printing Recommendation HTML/PDF. The public
+allowlist covers nozzle, bed, speed, cooling, drying, enclosure and profile
+references; missing values stay exactly `Not recorded`.
+
+Debug/Release pass. Disposable reports profile
+`20260729173741-50c1c3bb` passes Verification 420/420 and validates 627 artifacts
+with exact state recovery. The owner accepted full-data HTML/PDF presentation
+and Full Verification PASS. Partial/unlinked cases remain deterministic because
+the owner catalog is complete. No Production or FTPS action occurred.
+
 ## v57.0.2 Current Windows Installer and Demo Compatibility
 
 Candidate 1 installed and restored schema-v38 demo data successfully but failed

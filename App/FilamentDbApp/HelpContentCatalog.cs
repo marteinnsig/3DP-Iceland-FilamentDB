@@ -1122,8 +1122,10 @@ internal static class HelpContentCatalog
             "Controlled Base Material test-print/G-code baseline and Not recorded meaning.",
             """
             The profile resolves through the Base Material relationship and shows the controlled 3DPIceland test-print/G-code baseline.
-            It is not a manufacturer recommendation and publishes nothing. Not recorded means the catalog has no value; edit Base
-            Materials rather than this read-only view.
+            It is not a manufacturer recommendation, and this read-only view publishes nothing. Eligible public Printing
+            Recommendations may consume the same shared baseline only through canonical BaseMaterialId and label it base-material
+            guidance, never manufacturer-, spool-, printer- or nozzle-specific validated settings. Not recorded means the catalog has
+            no value; edit Base Materials rather than this read-only view.
             """, "printing profile", "base material", "G-code", "not recorded"),
         new(
             "material-detail.mechanical", "Material detail", "Material Detail — Mechanical reference",
@@ -1286,7 +1288,9 @@ internal static class HelpContentCatalog
             Build Public Material, Comparison, Manufacturer, Test Session, Printing Recommendation and Material Summary Reports each
             use their own explicit MaterialID/publication rules; Report template/scope do not control them. Public Test Sessions may
             expose eligible raw detail only when Public test details allows it. Build Public Report Package verifies/ensures all six
-            eligible families and creates the local canonical portfolio handoff. Building locally uploads nothing.
+            eligible families and creates the local canonical portfolio handoff. Printing Recommendations resolve shared printing
+            guidance only through the Material row's canonical BaseMaterialId. Each value is labelled base-material guidance, and
+            missing fields remain Not recorded. Building locally uploads nothing.
 
             Preview and status output
             Report Preview/Log and the blue summary/status line are read-only. They identify model validation, scope, output paths and
@@ -1528,6 +1532,12 @@ internal static class HelpContentCatalog
             Build Public Report Package ensures missing or stale eligible reports, verifies the six public report families and creates
             the canonical portfolio index, manifest and catalog. Main Website DATA is different: Website Export includes every active,
             non-archived MaterialID while the public-report flags govern linked report artifacts.
+
+            Printing Recommendations resolve their shared nozzle, bed, speed, cooling, drying, enclosure and profile-reference
+            guidance only through canonical BaseMaterialId. They do not match display text or copy values into Materials. Published
+            values are labelled base-material guidance, not manufacturer-, spool-, printer- or nozzle-specific validated settings.
+            Every empty field is Not recorded; an absent or invalid link makes every guidance field Not recorded. Catalog or link
+            changes make an existing package stale so the local package action rebuilds its canonical HTML and PDF.
 
             These actions write local public artifacts only. They do not upload or make a Material public by themselves. Inspect the
             generated pages and exclusions before Website Preview or any separately guarded FTPS action.

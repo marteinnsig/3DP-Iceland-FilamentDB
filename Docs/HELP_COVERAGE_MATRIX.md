@@ -91,7 +91,7 @@ Nested tabs (16):
 | Usage | `usage.overview` | Accepted Usage ledger + atomic Inventory transaction | Event inputs, Record, Correct, Cancel, fixed units, spool decrement, totals, ledger and append-only history | Good core IDs; several inputs, Cancel and totals missing |
 | Printers | `printers.overview` | SQLite Printers + `PrinterRateService` | Rate fields, Add, Duplicate, Archive/Restore, Delete, Save, auto-save and quote handoff | Strong ID coverage |
 | Print Job Quotes | `print-job-quotes.overview` | SQLite saved quote snapshots | Customer/currency, Material evidence, Printer/time/labor inputs, calculation, Save, history, PDF and explicit Delete | Key paths covered; most numeric inputs/evidence/status missing |
-| Base Materials | `base-materials.overview` | SQLite Base Material Catalog | Profile fields, Add, Duplicate, Delete, Reset Columns, exact-name binding, rename propagation and relationship blocks | Tab/key actions covered; grid, Reset and status missing |
+| Base Materials | `base-materials.overview` | SQLite Base Material Catalog | Profile fields, public base-material guidance source, Add, Duplicate, Delete, Reset Columns, binding, rename propagation and relationship blocks | Tab/key actions covered; grid, Reset and status missing |
 | Settings Manager | `settings.overview` | SQLite settings and document branding | Settings fields, prospective effects, document PNG limits/save/fallback, commands and safety boundaries | Branding layout remains owner-manual |
 
 Required leaf destinations:
@@ -152,7 +152,7 @@ Required leaf destinations:
 | Experimental Results Table | `experimental.results.table` | Selected Series comparison | Rank, metrics, delta-to-baseline, CV and baseline highlighting | Nested tab ID covered |
 | Experimental Results Charts | `experimental.results.charts` | Selected Series comparison | Metric charts, baseline-normalized chart and baseline prerequisite | Nested tab ID covered |
 | Material Detail General | `material-detail.general` | Selected Material + `MaterialDetailService` | Identity and dynamically grouped read-only fields | Parent/nested tab IDs covered |
-| Material Detail Printing Profile | `material-detail.printing-profile` | Base Material Catalog | Controlled test/G-code baseline, Not recorded meaning and non-manufacturer boundary | Nested tab ID covered |
+| Material Detail Printing Profile | `material-detail.printing-profile` | Base Material Catalog | Controlled baseline, public BaseMaterialId consumption, per-field Not recorded and non-manufacturer boundary | Nested tab ID covered |
 | Material Detail Mechanical | `material-detail.mechanical` | Canonical calculated results | Test/publication status, tensile/impact/stiffness, reliability and expanded data | Nested tab ID covered |
 | Material Detail Charts | `material-detail.charts` | Canonical normalized metrics | Five-axis profile, score meaning and scientific-rating limitation | Nested tab ID covered |
 | Material Detail Analytics | `material-detail.analytics` | Visible canonical results | Chart mode, multi-select results, radar selection and Clear | Nested tab ID covered; action controls remain outside navigation sweep |
@@ -181,7 +181,7 @@ runtime/visual acceptance pass.
 
 | Surface | Stable Help ID | Owner / source of truth | Required reference coverage | Automation / current gap |
 |---|---|---|---|---|
-| Reports / PDF Export | `reports.overview` | Reporting pipeline/services | 12 templates, folder, Selected/Visible scope, preview/export, engineering package, public builds, logs/evidence | Only tab, folder/status/log and public package have IDs |
+| Reports / PDF Export | `reports.overview` | Reporting pipeline/services | 12 templates, scope, preview/export, packages, BaseMaterialId guidance, per-field fallback and local-only evidence | Only tab, folder/status/log and public package have IDs |
 | Website Export | `website.overview` | SQLite template + website/report/publish services | Folder, templates, Preview, Production generation, FTPS Test/Production, restore, credential and evidence boundaries | Only top tab has ID |
 | AI Assistant | `ai.overview` | Local deterministic scoped analysis | Visible MaterialID scope, briefs, sessions, collections, coverage status, dashboards and read-only output | Partial automation coverage |
 | YouTube Research | `youtube.overview` | Local generated creator research | Generate, seven clipboard actions, thumbnails, comparisons, gaps, calendar, playlists and candidates | Entire tab/actions lack IDs |

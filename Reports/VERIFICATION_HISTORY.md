@@ -1,3 +1,22 @@
+# v59.0.11 - Public Base-material Printing Guidance
+
+Date: 2026-07-29
+
+- Debug and Release app builds plus Debug/Release AutomationRunner builds pass
+  with zero warnings/errors.
+- Full Verification adds `Public Printing Recommendation BaseMaterialId
+  guidance`: linked stale-name resolution, null/orphan fail-closed behavior,
+  partial `Not recorded`, units, escaping, manifest and metadata pass.
+- Source fingerprint includes the canonical relationship and all consumed Base
+  Material Catalog fields, making existing HTML/PDF stale after source edits.
+- Reports profile `20260729173741-50c1c3bb` passes 420/420 with 627 artifacts
+  verified/hashed and exact database/business-state recovery.
+- Linked MAT0071 and all-missing MAT0001 PDF renders show clean tables, labels,
+  pagination and exact fallback values. The owner accepted full-data HTML/PDF
+  presentation and Full Verification PASS; partial/unlinked cases remain
+  deterministic because the owner Base Material Catalog is complete.
+- Production and FTPS remained blocked and untouched.
+
 # v56.0.6 - Governed Public Demo Dataset
 
 Date: 2026-07-28

@@ -13,10 +13,10 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 2 |
+| Open | 1 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 100 |
+| Solved | 101 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
@@ -170,7 +170,7 @@ Date: 2026-07-29
 Area: Public Printing Guidance / Base Material Catalog settings
 Type: Report idea / Data issue
 Severity: Important
-Status: Open
+Status: Solved in v59.0.11
 What happened: Public Printing Guidance shows `Not recorded` for every canonical printing setting even when the MaterialID is linked
 to a Base Material Catalog row containing nozzle, bed, speed, cooling, drying, enclosure and printer/slicer guidance.
 Expected behavior: Resolve each eligible MaterialID through its canonical `BaseMaterialId` and show the matching Base Material Catalog
@@ -184,8 +184,10 @@ Screenshot / export / report attached:
 Resolution: Research and approve a bounded public allowlist and presentation contract before implementation. Prefer stable
 `BaseMaterialId` matching over text inference; retain the catalog as the single source instead of copying values into every Material.
 Keep a later path for genuinely per-MaterialID or printer/nozzle-specific profiles and provenance.
-Verification evidence: Not yet implemented. Future coverage must prove correct linked/unlinked behavior, units and partial-field
-fallback; HTML/PDF parity; public metadata/manifest allowlisting; stale-package rebuild; and no change to canonical source data.
+Verification evidence: Candidate profile `20260729173741-50c1c3bb` passes Full Verification 420/420 and validates/hashes 627 report
+artifacts with exact database/business-state recovery. Deterministic coverage proves linked/unlinked/orphan/partial behavior, units,
+metadata/manifest allowlisting, escaping and catalog-aware stale rebuild. Owner accepted the full-data HTML/PDF presentation and
+confirmed Full Verification PASS; the unavailable partial/unlinked cases remain covered deterministically without altering owner data.
 
 Date: 2026-07-29
 Area: Public website / Engineering Reports navigation

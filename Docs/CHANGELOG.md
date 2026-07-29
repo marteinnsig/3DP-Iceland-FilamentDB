@@ -2,6 +2,25 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v59.0.11 - Public Base-material Printing Guidance
+
+- Resolves public Printing Recommendation guidance only through canonical
+  `BaseMaterialId`; unlinked and invalid links fail closed without text matching.
+- Publishes reviewed Base Material Catalog nozzle, bed, speed, cooling, drying,
+  enclosure and profile-reference fields with explicit units.
+- Labels the values base-material guidance and preserves exact per-field
+  `Not recorded` rather than claiming manufacturer-, spool- or printer settings.
+- Adds metadata/manifest allowlisting, catalog-aware stale-package fingerprinting,
+  synchronized Help and disposable reports automation checks.
+- Debug/Release builds pass with zero warnings/errors. Disposable reports profile
+  `20260729173741-50c1c3bb` passes Verification 420/420, validates and hashes 627
+  report artifacts and restores exact database/business state.
+- Representative linked and all-missing PDFs passed Codex layout review. The
+  owner accepted the full-data HTML/PDF presentation and Verification PASS.
+- Partial, unlinked and orphan behavior remains deterministically covered
+  because the owner catalog already has complete guidance data.
+- Production and FTPS were not touched.
+
 ## v59.0.10 - Usage History Cleanup
 
 - Adds a backup-first `Delete Material Usage History...` maintenance action for

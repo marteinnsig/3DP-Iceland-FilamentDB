@@ -254,6 +254,28 @@ public sealed class PublicPrintingRecommendationReportModel
     public string MaterialId { get; init; } = string.Empty; public string MaterialName { get; init; } = string.Empty; public string Manufacturer { get; init; } = string.Empty; public string BaseMaterial { get; init; } = string.Empty; public string TestCoverage { get; init; } = string.Empty; public int EngineeringAxes { get; init; }
     public string OverallScore { get; init; } = "n/a"; public string TensileScore { get; init; } = "n/a"; public string ImpactScore { get; init; } = "n/a"; public string StiffnessScore { get; init; } = "n/a"; public string ConsistencyScore { get; init; } = "n/a"; public string LayerAdhesionScore { get; init; } = "n/a"; public string OverallRank { get; init; } = string.Empty; public string MsrpUsdPerKg { get; init; } = string.Empty;
     public IReadOnlyList<string> RecommendedApplications { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> Strengths { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> Limitations { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> Tradeoffs { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> WorkflowChecks { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> DecisionGuidance { get; init; } = Array.Empty<string>(); public IReadOnlyList<PublicAlternativeModel> Alternatives { get; init; } = Array.Empty<PublicAlternativeModel>(); public string ManufacturerWebsite { get; init; } = string.Empty;
+    public PublicBaseMaterialPrintingGuidanceModel BaseMaterialGuidance { get; init; } = new();
+}
+public sealed class PublicBaseMaterialPrintingGuidanceModel
+{
+    public string NozzleTemperatureMinC { get; init; } = "Not recorded";
+    public string NozzleTemperatureRecommendedC { get; init; } = "Not recorded";
+    public string NozzleTemperatureMaxC { get; init; } = "Not recorded";
+    public string BedTemperatureMinC { get; init; } = "Not recorded";
+    public string BedTemperatureRecommendedC { get; init; } = "Not recorded";
+    public string BedTemperatureMaxC { get; init; } = "Not recorded";
+    public string PrintSpeedMinMmPerS { get; init; } = "Not recorded";
+    public string PrintSpeedRecommendedMmPerS { get; init; } = "Not recorded";
+    public string PrintSpeedMaxMmPerS { get; init; } = "Not recorded";
+    public string CoolingMinPercent { get; init; } = "Not recorded";
+    public string CoolingRecommendedPercent { get; init; } = "Not recorded";
+    public string CoolingMaxPercent { get; init; } = "Not recorded";
+    public string CoolingGuidance { get; init; } = "Not recorded";
+    public string DryingTemperatureC { get; init; } = "Not recorded";
+    public string DryingTimeHours { get; init; } = "Not recorded";
+    public string EnclosureRequirement { get; init; } = "Not recorded";
+    public string PrinterProfileReference { get; init; } = "Not recorded";
+    public string SlicerProfileReference { get; init; } = "Not recorded";
 }
 public sealed class PublicPrintingRecommendationPublicationResult { public string RelativeDirectory { get; init; } = string.Empty; public string Html { get; init; } = string.Empty; public string Manifest { get; init; } = string.Empty; public string MetadataJson { get; init; } = string.Empty; }
 

@@ -2229,6 +2229,47 @@ internal static class Program
             artifacts.Add(new ArtifactEvidence(relative, info.Length, Sha256(fullPath)));
         }
 
+        var printingReports = reports
+            .Where(report =>
+                string.Equals(
+                    report.GetProperty("ReportType").GetString(),
+                    "printing-recommendation",
+                    StringComparison.Ordinal))
+            .ToList();
+        Require(printingReports.Count > 0, "No public Printing Recommendation report was generated.");
+        var recordedGuidanceFound = false;
+        var missingGuidanceFound = false;
+        foreach (var report in printingReports)
+        {
+            var htmlRelative = report.GetProperty("Html").GetString() ?? string.Empty;
+            var metadataRelative = report.GetProperty("Metadata").GetString() ?? string.Empty;
+            var html = IOFile.ReadAllText(IOPath.Combine(
+                root, htmlRelative.Replace('/', IOPath.DirectorySeparatorChar)));
+            Require(
+                html.Contains("Base-material printing guidance", StringComparison.Ordinal) &&
+                html.Contains("canonical BaseMaterialId link", StringComparison.Ordinal) &&
+                html.Contains("not manufacturer-, spool- or printer-specific validated settings", StringComparison.Ordinal) &&
+                html.Contains("°C", StringComparison.Ordinal) &&
+                html.Contains("mm/s", StringComparison.Ordinal) &&
+                html.Contains("%", StringComparison.Ordinal) &&
+                html.Contains("hours", StringComparison.Ordinal),
+                $"Printing guidance label, boundary or units are missing: {htmlRelative}");
+
+            using var metadata = JsonDocument.Parse(IOFile.ReadAllText(IOPath.Combine(
+                root, metadataRelative.Replace('/', IOPath.DirectorySeparatorChar))));
+            var guidance = metadata.RootElement.GetProperty("publicData").GetProperty("BaseMaterialGuidance");
+            foreach (var property in guidance.EnumerateObject())
+            {
+                var value = property.Value.GetString() ?? string.Empty;
+                if (string.Equals(value, "Not recorded", StringComparison.Ordinal))
+                    missingGuidanceFound = true;
+                else if (!string.IsNullOrWhiteSpace(value))
+                    recordedGuidanceFound = true;
+            }
+        }
+        Require(recordedGuidanceFound, "No linked Base Material Catalog guidance value was published.");
+        Require(missingGuidanceFound, "No per-field Not recorded guidance fallback was preserved.");
+
         var evidenceFolder = IOPath.Combine(profileRoot, "evidence");
         var representative = reports
             .Where(report =>

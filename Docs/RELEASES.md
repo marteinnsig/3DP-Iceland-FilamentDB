@@ -1,6 +1,22 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v59.0.11 - Public Base-material Printing Guidance
+
+Public Printing Recommendation HTML/PDF now resolves the reviewed shared
+printing baseline strictly through canonical `BaseMaterialId`. The public
+allowlist covers nozzle, bed, speed, cooling, drying, enclosure and profile
+references with explicit units and exact per-field `Not recorded`.
+
+The reports label every value as base-material guidance rather than
+manufacturer-, spool- or printer-specific validated settings. Metadata,
+manifest, Help, stale-package fingerprinting and disposable reports automation
+share the same contract. Debug/Release pass; reports profile
+`20260729173741-50c1c3bb` passes Full Verification 420/420, verifies 627
+artifacts and restores exact state. The owner accepts the full-data HTML/PDF
+presentation; partial/unlinked behavior remains deterministically covered.
+Production and FTPS were untouched.
+
 ## v59.0.10 - Usage History Cleanup
 
 Adds an explicit backup-first maintenance exception for owner-identified

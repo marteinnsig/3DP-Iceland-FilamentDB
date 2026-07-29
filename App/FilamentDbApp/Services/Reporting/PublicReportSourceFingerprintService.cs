@@ -15,13 +15,23 @@ public sealed class PublicReportSourceFingerprintService
     private static readonly (string Name, string Sql)[] CanonicalQueries =
     {
         ("NativeMaterialManagerRows", """
-            SELECT MaterialId, Manufacturer, ProductLine, MarketingName, BaseMaterial, MaterialCategory,
+            SELECT MaterialId, Manufacturer, ProductLine, MarketingName, BaseMaterialId, BaseMaterial, MaterialCategory,
                    VariantFinish, Reinforcement, Color, DiameterMm, SpoolWeightG, MsrpUsdPerKg,
                    ManufacturerWebsite, YouTubeReviewUrl, TestedStatus, InTensile, InImpact, InStiffness,
                    SortOrder, WebsiteDisplayName, MaterialKey, PublishPublicReports,
                    PublishPublicTestDetails, IsArchived
             FROM NativeMaterialManagerRows
             ORDER BY MaterialId COLLATE NOCASE
+            """),
+        ("BaseMaterialCatalog", """
+            SELECT BaseMaterialId, NozzleTemperatureMinC, NozzleTemperatureRecommendedC,
+                   NozzleTemperatureMaxC, BedTemperatureMinC, BedTemperatureRecommendedC,
+                   BedTemperatureMaxC, PrintSpeedMinMmPerS, PrintSpeedRecommendedMmPerS,
+                   PrintSpeedMaxMmPerS, CoolingMinPercent, CoolingRecommendedPercent,
+                   CoolingMaxPercent, CoolingGuidance, DryingTemperatureC, DryingTimeHours,
+                   EnclosureRequirement, PrinterProfileReference, SlicerProfileReference
+            FROM BaseMaterialCatalog
+            ORDER BY BaseMaterialId
             """),
         ("NativeTensileResults", "SELECT * FROM NativeTensileResults ORDER BY MaterialId COLLATE NOCASE"),
         ("NativeTensileSamples", """
@@ -43,7 +53,9 @@ public sealed class PublicReportSourceFingerprintService
     };
 
     public static bool CanonicalQueriesUseNativeTables() =>
-        CanonicalQueries.All(query => query.Name.StartsWith("Native", StringComparison.Ordinal));
+        CanonicalQueries.All(query =>
+            query.Name.StartsWith("Native", StringComparison.Ordinal) ||
+            string.Equals(query.Name, "BaseMaterialCatalog", StringComparison.Ordinal));
 
     public string Compute(string databasePath, IEnumerable<string> publicMaterialIds, string canonicalReportProjection)
     {

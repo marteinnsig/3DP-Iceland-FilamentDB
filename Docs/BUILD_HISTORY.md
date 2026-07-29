@@ -2,6 +2,28 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v59.0.11 - Public Base-material Printing Guidance
+
+The public Printing Recommendation renderer now projects a reviewed Base
+Material Catalog allowlist through the Material row's stable `BaseMaterialId`.
+It never matches display text or copies shared values into MaterialID rows.
+Unlinked/orphan links produce all `Not recorded`; partial catalog rows preserve
+that fallback independently for each field.
+
+HTML and PDF label the section Base-material printing guidance and separate
+values from explicit °C, mm/s, %, and hours units. Metadata and manifest retain
+the same public contract. The canonical source fingerprint now includes
+`BaseMaterialId` plus every consumed catalog field, so catalog/link changes
+force stale package rebuilds.
+
+Debug/Release app and AutomationRunner builds pass with zero warnings/errors.
+Disposable reports profile `20260729173741-50c1c3bb` passes Full Data
+Verification 420/420, hashes 627 artifacts and restores exact database and
+business state. Linked and all-missing PDFs are visually clean. The owner
+accepted full-data HTML/PDF presentation and Full Verification PASS; partial
+and unlinked cases remain deterministically proven without changing owner data.
+Production and FTPS were untouched.
+
 ## v59.0.10 - Usage History Cleanup
 
 The accepted immutable Usage ledger had no owner path for removing development

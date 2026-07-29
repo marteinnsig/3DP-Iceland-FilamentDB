@@ -1,16 +1,16 @@
 # 3DPIceland Engineering Platform — Master Roadmap
 
-Current canonical release: **v59.0.10 — Usage History Cleanup**
+Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v59.0.10 — Usage History Cleanup**
+Last runtime-accepted baseline: **v59.0.11 — Public Base-material Printing Guidance**
 
-Current canonical application release: **v59.0.10 — Usage History Cleanup**
+Current canonical application release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Current roadmap increment: **v59.0.10 — Explicit Test Usage-history Cleanup**
+Current roadmap increment: **v59.0.11 — Public Base-material Printing Guidance (Complete)**
 
-Current acceptance note: v59.0.10 Usage cleanup is owner accepted; Full Data Verification passes 420/420.
+Current acceptance note: v59.0.11 is owner accepted; Full Data Verification passes 420/420.
 
-Next note: add an explicit, backup-first purge for owner-identified development/test Usage rows.
+Next note: select the next bounded roadmap item; Production and FTPS remain unchanged.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2720,6 +2720,23 @@ to unstarted authoritative planning slots.
     - Owner acceptance: cancel, selected cleanup, linked Material deletion and Full Verification pass.
     - Completion condition met: selected scope, backup, cancel safety, link release and Verification all pass.
 
+### Current - v59.0.11 Public Base-material Printing Guidance
+
+- **v59.0.11 — Public Base-material Printing Guidance**
+  - State: Complete, canonical and owner runtime/visual accepted on 2026-07-29.
+  - Resolve public Printing Recommendation guidance only through the Material row's stable `BaseMaterialId`.
+  - Keep the SQLite Base Material Catalog as the single source; do not copy shared values into MaterialID rows or infer by text.
+  - Publicly allowlist nozzle, bed, speed, cooling, drying, enclosure and profile-reference guidance with explicit units.
+  - Label every value as base-material guidance, not manufacturer-, spool- or printer-specific validated settings.
+  - Preserve per-field `Not recorded` for missing values and all fields when the canonical link is absent or invalid.
+  - Preserve the later path for governed per-MaterialID and printer/nozzle-specific profile variants.
+  - Update canonical HTML/PDF, Help, Verification, deterministic automation and release evidence without Production or FTPS.
+  - Rollback: revert the additive report-model/presentation contract; canonical SQLite data and publication scope stay unchanged.
+  - Completion condition: owner accepts HTML/PDF presentation after linked, unlinked, partial-value, allowlist/manifest,
+    stale-rebuild, Help, Debug/Release, automation and Full Data Verification contracts pass.
+  - Completion condition met: owner accepted full-data HTML/PDF presentation and Verification 420/420; deterministic
+    linked, unlinked, orphan and partial-value contracts pass.
+
 ### Intentionally unscheduled
 
 - The unresolved one-day Variant-edit crash remains an immediate defect
@@ -2730,17 +2747,6 @@ to unstarted authoritative planning slots.
 - Optional destructive clean uninstall remains deferred. Normal uninstall stays
   data-preserving; no evidence, backups, SQLite or credentials may be deleted
   automatically.
-- Populate public Printing Guidance from linked Base Material Catalog baselines.
-  - Resolve by stable `BaseMaterialId`; do not infer relationships from display
-    text or copy shared catalog values into every MaterialID.
-  - Publicly allowlist reviewed nozzle, bed, speed, cooling, drying, enclosure
-    and profile-reference fields with explicit units and per-field fallback.
-  - Label values as base-material guidance, not manufacturer-, spool- or
-    printer-specific validated settings.
-  - Preserve `Not recorded` for missing/unlinked values and keep a later path
-    for governed per-MaterialID and printer/nozzle profile variants.
-  - Completion condition: owner accepts HTML/PDF presentation and deterministic
-    linked, unlinked, partial-value, manifest and stale-rebuild contracts pass.
 - Align Engineering Reports with the main public website tab experience.
   - Replace the current separate-page navigation feel with an approved in-page
     tab or shared-shell design after renderer and deep-link research.

@@ -1,5 +1,21 @@
 # Automated Runtime Acceptance
 
+## v59.0.11 - Public Base-material guidance accepted
+
+- The existing `reports` scenario remains the bounded owner; no new mutation,
+  Production, FTPS, update or owner-database authorization was added.
+- It now requires the base-material label/boundary, explicit units, metadata
+  guidance allowlist, at least one linked recorded value and per-field
+  `Not recorded` evidence.
+- Full Verification proves linked stale-name, null-link, orphan-link, partial
+  value, escaping, manifest and metadata contracts deterministically.
+- Source fingerprinting includes `NativeMaterialManagerRows.BaseMaterialId` and
+  every consumed `BaseMaterialCatalog` guidance field for stale rebuilds.
+- Final profile `20260729173741-50c1c3bb` passes 420/420, validates/hashes 627
+  artifacts and retains exact database/business-state equality.
+- Owner full-data HTML/PDF review and Full Verification PASS are accepted.
+  Partial/unlinked coverage remains deterministic without owner-data mutation.
+
 ## v58.0.5 - Document branding migration and recovery accepted
 
 - Existing smoke remains the bounded runtime owner; no new file-dialog or

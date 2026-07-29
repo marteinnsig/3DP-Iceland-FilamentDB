@@ -9277,9 +9277,155 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         await BuildPublicPrintingRecommendationPreviewAsync();
     }
 
+    private static PublicBaseMaterialPrintingGuidanceModel BuildPublicBaseMaterialPrintingGuidance(
+        NativeMaterialRow material,
+        IEnumerable<NativeBaseMaterialRow> catalogRows)
+    {
+        static string PublicValue(string? value) =>
+            string.IsNullOrWhiteSpace(value) ? "Not recorded" : value.Trim();
+
+        var catalog = material.BaseMaterialId is long baseMaterialId
+            ? catalogRows.FirstOrDefault(row => row.BaseMaterialId == baseMaterialId)
+            : null;
+        if (catalog is null) return new PublicBaseMaterialPrintingGuidanceModel();
+
+        return new PublicBaseMaterialPrintingGuidanceModel
+        {
+            NozzleTemperatureMinC = PublicValue(catalog.NozzleTemperatureMinC),
+            NozzleTemperatureRecommendedC = PublicValue(catalog.NozzleTemperatureRecommendedC),
+            NozzleTemperatureMaxC = PublicValue(catalog.NozzleTemperatureMaxC),
+            BedTemperatureMinC = PublicValue(catalog.BedTemperatureMinC),
+            BedTemperatureRecommendedC = PublicValue(catalog.BedTemperatureRecommendedC),
+            BedTemperatureMaxC = PublicValue(catalog.BedTemperatureMaxC),
+            PrintSpeedMinMmPerS = PublicValue(catalog.PrintSpeedMinMmPerS),
+            PrintSpeedRecommendedMmPerS = PublicValue(catalog.PrintSpeedRecommendedMmPerS),
+            PrintSpeedMaxMmPerS = PublicValue(catalog.PrintSpeedMaxMmPerS),
+            CoolingMinPercent = PublicValue(catalog.CoolingMinPercent),
+            CoolingRecommendedPercent = PublicValue(catalog.CoolingRecommendedPercent),
+            CoolingMaxPercent = PublicValue(catalog.CoolingMaxPercent),
+            CoolingGuidance = PublicValue(catalog.CoolingGuidance),
+            DryingTemperatureC = PublicValue(catalog.DryingTemperatureC),
+            DryingTimeHours = PublicValue(catalog.DryingTimeHours),
+            EnclosureRequirement = PublicValue(catalog.EnclosureRequirement),
+            PrinterProfileReference = PublicValue(catalog.PrinterProfileReference),
+            SlicerProfileReference = PublicValue(catalog.SlicerProfileReference)
+        };
+    }
+
     private async Task BuildPublicPrintingRecommendationPreviewAsync()
     {
-        if(BuildPublicPrintingRecommendationPreviewButton is not null)BuildPublicPrintingRecommendationPreviewButton.IsEnabled=false;try{AutomationRuntimeProfile.DemandReportGenerationAuthorized();var rows=_nativeMaterialRows.Where(x=>!x.IsArchived&&x.PublishPublicReports&&!string.IsNullOrWhiteSpace(x.MaterialID)).Select(BuildNativeMaterialDataRow).ToList();var summaries=GetCanonicalVerifiedSummaryMap();var publicRankings=rows.Select(row=>BuildRankingRow(BuildVideoPlannerRow(row,summaries),"Overall")).ToList();var models=rows.Select(row=>{var source=BuildPublicMaterialEngineeringReportModel(row);var ranking=BuildRankingRow(BuildVideoPlannerRow(row,summaries),"Overall");var alternatives=BuildBetterAlternativeRows(ranking,publicRankings).Select(item=>new PublicAlternativeModel{MaterialId=item.MaterialId,MaterialName=item.Label,Manufacturer=item.Manufacturer,OverallScore=item.OverallText,TensileScore=item.TensileText,ImpactScore=item.ImpactText}).ToList();return new PublicPrintingRecommendationReportModel{MaterialId=source.MaterialId,MaterialName=source.MaterialName,Manufacturer=source.Manufacturer,BaseMaterial=source.BaseMaterial,TestCoverage=source.TestCoverage,EngineeringAxes=source.VerifiedEngineeringAxes,OverallScore=source.OverallScore,TensileScore=source.TensileScore,ImpactScore=source.ImpactScore,StiffnessScore=source.StiffnessScore,ConsistencyScore=source.ConsistencyScore,LayerAdhesionScore=source.LayerAdhesionScore,OverallRank=source.OverallRank,MsrpUsdPerKg=source.MsrpUsdPerKg,RecommendedApplications=source.RecommendedApplications,Strengths=source.Strengths,Limitations=source.Limitations,Tradeoffs=source.Tradeoffs,WorkflowChecks=BuildPrintingWorkflowChecks(row,ranking),DecisionGuidance=BuildDecisionGuidanceItems(ranking,alternatives.Count),Alternatives=alternatives,ManufacturerWebsite=source.ManufacturerWebsite};}).OrderBy(x=>x.MaterialName).ToList();if(models.Count==0){ReportPreviewLog.Text="Select one or more active MaterialIDs with Public reports.";return;}var at=DateTime.Now;var output=string.IsNullOrWhiteSpace(ReportOutputFolderBox.Text)?GetDefaultReportOutputFolder():ReportOutputFolderBox.Text.Trim();var root=System.IO.Path.Combine(output,PublicReportPublishingService.PreviewRootFolderName);foreach(var model in models){var result=_publicPrintingRecommendationReportPublishingService.Build(model,at,BuildInfo.ShortLabel,BuildInfo.ReleaseTitle);var verify=_publicPrintingRecommendationReportPublishingService.Verify(model,result);if(!verify.Passed)throw new InvalidOperationException(verify.Detail);var folder=result.RelativeDirectory.Split('/',StringSplitOptions.RemoveEmptyEntries).Aggregate(root,System.IO.Path.Combine);var assets=System.IO.Path.Combine(folder,"assets");Directory.CreateDirectory(assets);CopyReportPackageAssets(assets);var html=System.IO.Path.Combine(folder,"index.html");SafeFileOperations.WriteAllTextAtomic(html,result.Html,Encoding.UTF8);SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder,"manifest.txt"),result.Manifest,Encoding.UTF8);SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder,"report-metadata.json"),result.MetadataJson,Encoding.UTF8);await WriteReportPdfFromCanonicalHtmlAsync(System.IO.Path.Combine(folder,"report.pdf"),html);}Directory.CreateDirectory(root);var index=System.IO.Path.Combine(root,"printing-recommendations.html");SafeFileOperations.WriteAllTextAtomic(index,PublicPrintingRecommendationReportPublishingService.BuildPreviewIndex(models,at),Encoding.UTF8);ReportExportSummaryText.Text=$"Public printing recommendations built: {models.Count}";ReportPreviewLog.Text=$"Built {models.Count} full public Printing Recommendation reports. Alternatives are selected from public MaterialIDs.\n\nIndex: {index}\n\nLocal preview only. Nothing was uploaded.";}catch(Exception ex){ReportExportSummaryText.Text="Public printing recommendation failed";ReportPreviewLog.Text+="\n\n"+ex.Message;}finally{if(BuildPublicPrintingRecommendationPreviewButton is not null)BuildPublicPrintingRecommendationPreviewButton.IsEnabled=true;}
+        if (BuildPublicPrintingRecommendationPreviewButton is not null)
+            BuildPublicPrintingRecommendationPreviewButton.IsEnabled = false;
+        try
+        {
+            AutomationRuntimeProfile.DemandReportGenerationAuthorized();
+            var materialRows = _nativeMaterialRows
+                .Where(row => !row.IsArchived &&
+                              row.PublishPublicReports &&
+                              !string.IsNullOrWhiteSpace(row.MaterialID))
+                .ToList();
+            var reportRows = materialRows.ToDictionary(
+                row => row,
+                BuildNativeMaterialDataRow);
+            var summaries = GetCanonicalVerifiedSummaryMap();
+            var publicRankings = reportRows.Values
+                .Select(row => BuildRankingRow(BuildVideoPlannerRow(row, summaries), "Overall"))
+                .ToList();
+            var models = materialRows.Select(material =>
+            {
+                var row = reportRows[material];
+                var source = BuildPublicMaterialEngineeringReportModel(row);
+                var ranking = BuildRankingRow(BuildVideoPlannerRow(row, summaries), "Overall");
+                var alternatives = BuildBetterAlternativeRows(ranking, publicRankings)
+                    .Select(item => new PublicAlternativeModel
+                    {
+                        MaterialId = item.MaterialId,
+                        MaterialName = item.Label,
+                        Manufacturer = item.Manufacturer,
+                        OverallScore = item.OverallText,
+                        TensileScore = item.TensileText,
+                        ImpactScore = item.ImpactText
+                    })
+                    .ToList();
+                return new PublicPrintingRecommendationReportModel
+                {
+                    MaterialId = source.MaterialId,
+                    MaterialName = source.MaterialName,
+                    Manufacturer = source.Manufacturer,
+                    BaseMaterial = source.BaseMaterial,
+                    TestCoverage = source.TestCoverage,
+                    EngineeringAxes = source.VerifiedEngineeringAxes,
+                    OverallScore = source.OverallScore,
+                    TensileScore = source.TensileScore,
+                    ImpactScore = source.ImpactScore,
+                    StiffnessScore = source.StiffnessScore,
+                    ConsistencyScore = source.ConsistencyScore,
+                    LayerAdhesionScore = source.LayerAdhesionScore,
+                    OverallRank = source.OverallRank,
+                    MsrpUsdPerKg = source.MsrpUsdPerKg,
+                    RecommendedApplications = source.RecommendedApplications,
+                    Strengths = source.Strengths,
+                    Limitations = source.Limitations,
+                    Tradeoffs = source.Tradeoffs,
+                    WorkflowChecks = BuildPrintingWorkflowChecks(row, ranking),
+                    DecisionGuidance = BuildDecisionGuidanceItems(ranking, alternatives.Count),
+                    Alternatives = alternatives,
+                    ManufacturerWebsite = source.ManufacturerWebsite,
+                    BaseMaterialGuidance = BuildPublicBaseMaterialPrintingGuidance(material, _nativeBaseMaterialRows)
+                };
+            }).OrderBy(model => model.MaterialName).ToList();
+            if (models.Count == 0)
+            {
+                ReportPreviewLog.Text = "Select one or more active MaterialIDs with Public reports.";
+                return;
+            }
+
+            var at = DateTime.Now;
+            var output = string.IsNullOrWhiteSpace(ReportOutputFolderBox.Text)
+                ? GetDefaultReportOutputFolder()
+                : ReportOutputFolderBox.Text.Trim();
+            var root = System.IO.Path.Combine(output, PublicReportPublishingService.PreviewRootFolderName);
+            foreach (var model in models)
+            {
+                var result = _publicPrintingRecommendationReportPublishingService.Build(
+                    model, at, BuildInfo.ShortLabel, BuildInfo.ReleaseTitle);
+                var verify = _publicPrintingRecommendationReportPublishingService.Verify(model, result);
+                if (!verify.Passed) throw new InvalidOperationException(verify.Detail);
+                var folder = result.RelativeDirectory.Split('/', StringSplitOptions.RemoveEmptyEntries)
+                    .Aggregate(root, System.IO.Path.Combine);
+                var assets = System.IO.Path.Combine(folder, "assets");
+                Directory.CreateDirectory(assets);
+                CopyReportPackageAssets(assets);
+                var html = System.IO.Path.Combine(folder, "index.html");
+                SafeFileOperations.WriteAllTextAtomic(html, result.Html, Encoding.UTF8);
+                SafeFileOperations.WriteAllTextAtomic(
+                    System.IO.Path.Combine(folder, "manifest.txt"), result.Manifest, Encoding.UTF8);
+                SafeFileOperations.WriteAllTextAtomic(
+                    System.IO.Path.Combine(folder, "report-metadata.json"), result.MetadataJson, Encoding.UTF8);
+                await WriteReportPdfFromCanonicalHtmlAsync(System.IO.Path.Combine(folder, "report.pdf"), html);
+            }
+
+            Directory.CreateDirectory(root);
+            var index = System.IO.Path.Combine(root, "printing-recommendations.html");
+            SafeFileOperations.WriteAllTextAtomic(
+                index,
+                PublicPrintingRecommendationReportPublishingService.BuildPreviewIndex(models, at),
+                Encoding.UTF8);
+            ReportExportSummaryText.Text = $"Public printing recommendations built: {models.Count}";
+            ReportPreviewLog.Text =
+                $"Built {models.Count} full public Printing Recommendation reports with canonical BaseMaterialId guidance.\n\n" +
+                $"Index: {index}\n\nLocal preview only. Nothing was uploaded.";
+        }
+        catch (Exception ex)
+        {
+            ReportExportSummaryText.Text = "Public printing recommendation failed";
+            ReportPreviewLog.Text += "\n\n" + ex.Message;
+        }
+        finally
+        {
+            if (BuildPublicPrintingRecommendationPreviewButton is not null)
+                BuildPublicPrintingRecommendationPreviewButton.IsEnabled = true;
+        }
     }
 
     private async void BuildPublicMaterialSummaryPreview_Click(object sender, RoutedEventArgs e)
@@ -15718,11 +15864,53 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var publicTestSessionReady = publicTestVerification.Passed && _publicTestSessionReportPublishingService.Verify(approvedTestProbe, approvedTestPublication).Passed && !publicTestProbe.Html.Contains("Recorded native inputs", StringComparison.Ordinal) && approvedTestPublication.Html.Contains("Recorded native inputs", StringComparison.Ordinal) && FindName("BuildPublicTestSessionReportPreviewButton") is Button;
         checks.Add(new VerificationCheck("Public Test Session detail approval boundary", publicTestSessionReady,
             publicTestSessionReady ? "Aggregate traceability is public; raw inputs and approved notes require the separate SQLite-backed detail approval" : publicTestVerification.Detail));
-        var publicRecommendationProbeModel = new PublicPrintingRecommendationReportModel { MaterialId="MAT-PUBLIC-001", MaterialName="Public PLA Blue", Manufacturer="Verification Manufacturer", BaseMaterial="PLA", TestCoverage="Complete", EngineeringAxes=5, OverallScore="82/100", TensileScore="78/100", ImpactScore="75/100", StiffnessScore="88/100", ConsistencyScore="84/100", LayerAdhesionScore="80/100", OverallRank="1 of 2", MsrpUsdPerKg="29.95", RecommendedApplications=new[]{"Rigid functional parts"}, Strengths=new[]{"Strong stiffness"}, Limitations=new[]{"Review impact loading"}, Tradeoffs=new[]{"Rigidity versus impact"}, WorkflowChecks=new[]{"Confirm manufacturer settings"}, DecisionGuidance=new[]{"Validate against application"} };
+        var guidanceCatalogProbe = new NativeBaseMaterialRow
+        {
+            BaseMaterialId = 91001,
+            BaseMaterial = "Canonical PLA",
+            NozzleTemperatureMinC = "205",
+            NozzleTemperatureRecommendedC = "215",
+            NozzleTemperatureMaxC = "225",
+            BedTemperatureMinC = "55",
+            BedTemperatureRecommendedC = "60",
+            PrintSpeedMinMmPerS = "35",
+            PrintSpeedRecommendedMmPerS = "50",
+            PrintSpeedMaxMmPerS = "70",
+            CoolingMinPercent = "50",
+            CoolingRecommendedPercent = "80",
+            CoolingMaxPercent = "100",
+            CoolingGuidance = "High after layer 3",
+            DryingTemperatureC = "45",
+            DryingTimeHours = "4",
+            EnclosureRequirement = "Not required",
+            PrinterProfileReference = "3DPIceland PLA baseline",
+            SlicerProfileReference = "<PLA & quality>"
+        };
+        var linkedGuidanceProbe = BuildPublicBaseMaterialPrintingGuidance(
+            new NativeMaterialRow { BaseMaterialId = 91001, BaseMaterial = "Stale display text" },
+            new[] { guidanceCatalogProbe });
+        var unlinkedGuidanceProbe = BuildPublicBaseMaterialPrintingGuidance(
+            new NativeMaterialRow { BaseMaterial = "Canonical PLA" },
+            new[] { guidanceCatalogProbe });
+        var orphanGuidanceProbe = BuildPublicBaseMaterialPrintingGuidance(
+            new NativeMaterialRow { BaseMaterialId = 99999, BaseMaterial = "Canonical PLA" },
+            new[] { guidanceCatalogProbe });
+        var publicRecommendationProbeModel = new PublicPrintingRecommendationReportModel { MaterialId="MAT-PUBLIC-001", MaterialName="Public PLA Blue", Manufacturer="Verification Manufacturer", BaseMaterial="PLA", TestCoverage="Complete", EngineeringAxes=5, OverallScore="82/100", TensileScore="78/100", ImpactScore="75/100", StiffnessScore="88/100", ConsistencyScore="84/100", LayerAdhesionScore="80/100", OverallRank="1 of 2", MsrpUsdPerKg="29.95", RecommendedApplications=new[]{"Rigid functional parts"}, Strengths=new[]{"Strong stiffness"}, Limitations=new[]{"Review impact loading"}, Tradeoffs=new[]{"Rigidity versus impact"}, WorkflowChecks=new[]{"Confirm manufacturer settings"}, DecisionGuidance=new[]{"Validate against application"}, BaseMaterialGuidance=linkedGuidanceProbe };
         var publicRecommendationProbe = _publicPrintingRecommendationReportPublishingService.Build(publicRecommendationProbeModel,new DateTime(2026,7,22,12,0,0,DateTimeKind.Local),BuildInfo.ShortLabel,BuildInfo.ReleaseTitle);
         var publicRecommendationVerification = _publicPrintingRecommendationReportPublishingService.Verify(publicRecommendationProbeModel,publicRecommendationProbe);
-        var publicRecommendationReady = publicRecommendationVerification.Passed && FindName("BuildPublicPrintingRecommendationPreviewButton") is Button;
-        checks.Add(new VerificationCheck("Public Printing Recommendation parity and settings honesty",publicRecommendationReady,publicRecommendationReady?"Full REPORT-150 guidance retained; alternatives are public-only and unrecorded exact settings remain explicit":"Public recommendation parity, route or settings boundary failed"));
+        var publicRecommendationReady = publicRecommendationVerification.Passed &&
+                                        linkedGuidanceProbe.NozzleTemperatureRecommendedC == "215" &&
+                                        linkedGuidanceProbe.BedTemperatureMaxC == "Not recorded" &&
+                                        unlinkedGuidanceProbe.NozzleTemperatureRecommendedC == "Not recorded" &&
+                                        orphanGuidanceProbe.NozzleTemperatureRecommendedC == "Not recorded" &&
+                                        publicRecommendationProbe.Html.Contains("<td>205</td><td>215</td><td>225</td><td>°C</td>", StringComparison.Ordinal) &&
+                                        publicRecommendationProbe.Html.Contains("<td>55</td><td>60</td><td>Not recorded</td><td>°C</td>", StringComparison.Ordinal) &&
+                                        publicRecommendationProbe.Html.Contains("&lt;PLA &amp; quality&gt;", StringComparison.Ordinal) &&
+                                        publicRecommendationProbe.Manifest.Contains("BaseMaterialId-linked Base Material Catalog", StringComparison.Ordinal) &&
+                                        publicRecommendationProbe.MetadataJson.Contains("\"BedTemperatureMaxC\": \"Not recorded\"", StringComparison.Ordinal) &&
+                                        publicRecommendationProbe.MetadataJson.Contains("\"NozzleTemperatureRecommendedC\": \"215\"", StringComparison.Ordinal) &&
+                                        FindName("BuildPublicPrintingRecommendationPreviewButton") is Button;
+        checks.Add(new VerificationCheck("Public Printing Recommendation BaseMaterialId guidance",publicRecommendationReady,publicRecommendationReady?"Linked base-material values, explicit units, partial Not recorded fallback, escaped references, manifest and metadata allowlist pass":"Public recommendation BaseMaterialId guidance, fallback or allowlist contract failed"));
         var publicSummaryProbeModel = new PublicMaterialSummaryReportModel
         {
             PublicMaterials = 1,

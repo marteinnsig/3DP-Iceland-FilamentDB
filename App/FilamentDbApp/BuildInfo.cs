@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "USAGE-HISTORY-CLEANUP";
-    public const string ReleaseTitle = "Usage History Cleanup";
+    public const string ReleaseCode = "PUBLIC-BASE-MATERIAL-GUIDANCE";
+    public const string ReleaseTitle = "Public Base-material Printing Guidance";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 40;
 
