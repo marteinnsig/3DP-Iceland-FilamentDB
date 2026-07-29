@@ -2,6 +2,19 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v59.0.4 - Navigation Help, Automation and Verification Reconciliation
+
+- Confirms all 22 Navigate commands have covered Help inventory ownership and
+  map to 22 unique stable top-level tab AutomationIds.
+- Confirms 22 top-level and 16 nested tabs remain covered while retired
+  Website/prototype names survive only in explicit absence assertions.
+- Passes Help coverage, release-documentation, roadmap line-length and
+  whitespace/static audits.
+- Reuses accepted smoke `20260729005051-359d2f59`, which passes 417/417 with
+  exact logical and business state.
+- Adds no tester scenario because v59.0.2 already invokes all menu destinations
+  and v59.0.3 already owns deterministic retirement evidence.
+
 ## v59.0.3 - Redundant Navigation and Prototype Retirement
 
 - Removes the accepted-replaced one-command Website menu and its retired

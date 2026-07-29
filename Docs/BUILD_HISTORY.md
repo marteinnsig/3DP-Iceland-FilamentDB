@@ -2,6 +2,23 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v59.0.4 - Navigation Help, Automation and Verification Reconciliation
+
+The post-retirement audit finds no orphaned navigation contract. Help discovery
+contains 58/58 MenuItems, 693 individual XAML candidates and 10 supported
+runtime surfaces. All 29 Navigate root/group/leaf controls are owned by
+v59.0.2 and resolve to `menu-runtime.controls-fields`.
+
+Verification retains exact contracts for the owner-approved 22-tab sequence,
+six-group/22-destination Navigate map and legacy Website/prototype absence.
+AutomationRunner selects all 22 top-level and 16 nested tabs and invokes all 22
+Navigate commands. Retired Website automation is absent.
+
+No runtime code changes in this reconciliation increment, so no new scenario or
+repeat visual acceptance adds value. The immediately preceding accepted smoke
+`20260729005051-359d2f59` passes 417/417 with exact logical and business state.
+Help, release-documentation, roadmap line-length and static audits pass.
+
 ## v59.0.3 - Redundant Navigation and Prototype Retirement
 
 After owner acceptance of the grouped Navigate replacement, the one-command

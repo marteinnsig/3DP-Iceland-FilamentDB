@@ -2648,11 +2648,14 @@ to unstarted authoritative planning slots.
     - Evidence: Debug/Release and smoke `20260729005051-359d2f59` pass 417/417 with exact state.
     - Completion condition met: retired entries are absent and all supported embedded rendering surfaces remain normal.
   - **v59.0.4 — Navigation Help, Automation and Verification Reconciliation**
-    - State: Planned after v59.0.3.
+    - State: Complete; documentation/audit-only reconciliation after accepted v59.0.3 runtime evidence.
     - Document the Navigate groups, exact destinations, keyboard behavior and the distinction from mutating commands.
     - Add ordered top-level registry and menu-destination contracts while continuing runtime selection by stable AutomationId.
     - Reconcile Help coverage, control inventory, tester evidence, release notes and feedback records.
     - Completion condition: Help/static/documentation gates and disposable Full Data Verification pass.
+    - Evidence: Help, documentation, roadmap and static gates pass; accepted smoke remains 417/417 with exact state.
+    - Automation: no new scenario; existing smoke owns all 22 menu destinations and deterministic retirement evidence.
+    - Completion condition met: no orphaned, stale, uncovered or duplicate navigation contract remains.
   - **v59.0.5 — Materials Column-order Research and Decision**
     - State: Planned after navigation reconciliation; research and owner decision precede implementation.
     - Inventory visible, hidden, frozen, persisted and export/report Material column ownership and current saved-layout behavior.

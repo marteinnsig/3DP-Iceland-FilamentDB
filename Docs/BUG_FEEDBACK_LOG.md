@@ -83,6 +83,14 @@ Verification evidence:
   measurement, Settings and Base Materials rendering remains normal; Full Data
   Verification passes.
 - **Status:** v59.0.3 complete and runtime accepted.
+- **v59.0.4 reconciliation:** Help inventory, coverage registry, matrix,
+  AutomationRunner, Verification, release chronology and feedback records agree
+  on 22 top-level, 16 nested and 22 grouped Navigate destinations.
+- **Automation assessment:** No new scenario is warranted. Existing smoke
+  already invokes every Navigate leaf and proves retired surfaces absent while
+  preserving exact state.
+- **Status:** v59.0.4 complete; no runtime behavior changed after the accepted
+  417/417 v59.0.3 evidence.
 - **Runtime defect found 2026-07-29:** Leaving an edited Inventory cell could
   terminate the process without an app dialog.
 - **Evidence:** Windows .NET Runtime event 1026 records SQLite error 19 at
