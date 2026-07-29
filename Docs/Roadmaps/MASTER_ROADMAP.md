@@ -2657,16 +2657,26 @@ to unstarted authoritative planning slots.
     - Automation: no new scenario; existing smoke owns all 22 menu destinations and deterministic retirement evidence.
     - Completion condition met: no orphaned, stale, uncovered or duplicate navigation contract remains.
   - **v59.0.5 — Materials Column-order Research and Decision**
-    - State: Planned after navigation reconciliation; research and owner decision precede implementation.
+    - State: Complete; owner approved the exact 52-column default order and saved-layout preservation contract.
     - Inventory visible, hidden, frozen, persisted and export/report Material column ownership and current saved-layout behavior.
     - Present the current order, workflow risks, compatibility options and a proposed canonical order before changing code.
     - Preserve saved user layouts until an explicit migration/reset contract is owner approved.
     - Completion condition: owner approves a bounded column-order contract and its implementation increment or deferral.
+    - Decision: group identity, test status, notes, website identity, pricing, inventory, purchasing, publication and metadata.
+    - Persistence: existing saved user layouts remain authoritative; the approved order applies to clean profiles and explicit reset.
+    - Boundary: all 52 columns remain visible/unfrozen and report, PDF, website and canonical-data contracts remain unchanged.
+    - Completion condition met: owner supplied and approved the exact ordered 52-column list for v59.0.6.
   - **v59.0.6 — Materials Column-order Implementation and Acceptance**
-    - State: Conditional on owner approval in v59.0.5.
+    - State: Complete and owner runtime accepted.
     - Apply only the approved default-order and persistence contract; do not rewrite unrelated saved layouts or exports.
+    - Correct Reset Columns so both current and compatibility Materials layout stores remain cleared across restart.
+    - Use the accepted default-No dialog: No, Escape and window close preserve layout; only explicit Yes resets.
+    - Keep Purchase Currency immediately after Purchase Price in the approved exact default sequence.
     - Update Help and deterministic contracts where behavior changes; keep visual usability acceptance owner-manual.
+    - Evidence: corrected Debug/Release and Help/docs gates pass; disposable smoke passes 418/418 with exact state.
     - Completion condition: owner accepts default/restart/reset behavior and all relevant release gates pass.
+    - Owner acceptance: exact order, saved/reset restart behavior, No/Escape/close safety and Full Verification pass.
+    - Completion condition met: the approved 52-column contract is runtime accepted with no export or canonical-data change.
   - **v59.0.7 — Final Demo Dataset Compatibility Rebuild**
     - State: Planned after navigation and approved column-order acceptance, immediately before parent closure.
     - Follow `Docs/PUBLIC_DEMO_REBUILD_RUNBOOK.md`; reuse accepted v56 contracts unless a pinned input or rule changed.

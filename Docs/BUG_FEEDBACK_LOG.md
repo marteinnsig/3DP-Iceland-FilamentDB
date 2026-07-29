@@ -119,6 +119,36 @@ Verification evidence:
   prototype command after replacement runtime acceptance.
 - **Follow-up:** Review Materials default column order later in v59 through a
   separate research and owner-decision increment before any implementation.
+- **v59.0.5 finding:** Materials owns 52 visible, unfrozen columns. Saved
+  width/order preferences override defaults and remain isolated from canonical
+  data, reports, PDF and website exports.
+- **v59.0.5 defect:** Reset Columns clears only the legacy compatibility list;
+  the current `FastGridLayouts["Materials"]` entry can restore the old layout
+  after restart.
+- **v59.0.5 decision:** The owner approved an exact 52-column default order.
+  Existing saved layouts remain untouched; clean profiles and explicit reset
+  receive the new order. All columns remain visible and unfrozen.
+- **v59.0.6 correction scope:** Reorder only the default builder, clear both
+  Materials layout stores during reset and add deterministic order/restart
+  contracts without changing exports or canonical data.
+- **v59.0.6 implementation evidence:** Debug/Release pass with zero warnings;
+  Help and release-documentation gates pass. Disposable Release smoke
+  `20260729011614-ee93c65e` passes 417/417 with exact logical/business state.
+- **Runtime acceptance remaining:** Confirm saved-layout preservation, explicit
+  reset order and reset persistence after restart in the owner application.
+- **Owner runtime finding:** The first v59.0.6 candidate passed Verification and
+  layout persistence, but Reset Columns did not map window close or Escape to
+  No. Purchase Currency also belonged directly after Purchase Price.
+- **Correction:** Reset Columns now uses the accepted named default-No dialog
+  shared with safe Material lifecycle warnings. No, Escape and window close
+  preserve layout; the exact default order places Currency after Purchase Price.
+- **Correction evidence:** Debug/Release and Help/docs gates pass. Disposable
+  smoke `20260729012749-9dc37e1a` passes 418/418 with exact logical/business
+  state; focused owner dialog/order retest remains.
+- **Owner acceptance:** Exact default order, Purchase Price/Currency adjacency,
+  saved/reset restart behavior and Reset Columns No/Escape/window-close safety
+  all pass. Owner Full Data Verification reports PASS.
+- **Status:** v59.0.6 complete and runtime accepted.
 - **Preserved:** All 22 top-level and 16 nested AutomationIds, F1 Help mapping,
   selection-triggered refresh/lazy loading and guarded actions remain unchanged
   during research.

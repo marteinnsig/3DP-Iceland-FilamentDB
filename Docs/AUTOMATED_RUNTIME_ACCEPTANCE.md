@@ -1060,3 +1060,19 @@ equality on that state. Schema-v32 is preserved as
 `65BD03F668768F0AAEBF937BAFC628559A168EA1A07E586CECADC7431AF7BB84`.
 Final canonical-path profile `20260726105756-ce0811c4` repeats the same PASS and
 business-state hash `4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`.
+## v59.0.6 Materials column order
+
+- The existing read-only smoke remains the bounded automation owner; no new
+  scenario or mutation authorization is added for a local layout preference.
+- Full Data Verification requires the exact approved 52-column default order
+  and a synthetic reset contract that clears both Materials preference stores
+  while preserving an unrelated grid layout.
+- Corrected disposable Release smoke `20260729012749-9dc37e1a` passes 418/418
+  with exact logical and business-state recovery, including the new default-No
+  Materials reset contract.
+- Visual order, manual drag persistence and Reset Columns across application
+  restart remain owner-manual because UI Automation would add low-value
+  preference mutation beyond the established read-only smoke boundary.
+- Owner runtime acceptance confirms exact order, saved/reset restart behavior,
+  Purchase Price/Currency adjacency and No/Escape/window-close cancellation.
+  Owner Full Data Verification passes.

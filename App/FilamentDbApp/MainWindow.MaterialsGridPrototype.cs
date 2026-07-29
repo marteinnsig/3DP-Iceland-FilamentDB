@@ -120,14 +120,11 @@ public partial class MainWindow
 
     private void ResetFastMaterialsColumns_Click(object sender, RoutedEventArgs e)
     {
-        var confirmation = MessageBox.Show(
-            this,
-            "Reset Materials column widths and order to the application defaults?",
-            "Reset Materials Columns",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question,
-            MessageBoxResult.No);
-        if (confirmation != MessageBoxResult.Yes) return;
+        var prompt = BuildResetMaterialsColumnsPrompt();
+        var confirmed = ShowSafeDeleteConfirmation(
+            prompt.Caption,
+            prompt.Message);
+        if (!confirmed) return;
 
         _workflowPreferencesService.ClearFastMaterialsGridLayout();
         _embeddedMaterialsPrototypeView?.ResetLayout(BuildFastMaterialsColumns());
@@ -168,8 +165,6 @@ public partial class MainWindow
         AssignStablePrototypeLayoutKeys(
         [
             FastMaterialsColumn("Material ID", 90, "MaterialID", true),
-            FastMaterialsColumn("Public reports", 95, "PublishPublicReports", false, MaterialsPrototypeEditorKind.CheckBox),
-            FastMaterialsColumn("Public test details", 115, "PublishPublicTestDetails", false, MaterialsPrototypeEditorKind.CheckBox),
             FastMaterialsColumn("Manufacturer", 170, "Manufacturer", false,
                 MaterialsPrototypeEditorKind.ComboBox, _fastManufacturerChoices),
             FastMaterialsColumn("Product Line", 140, "ProductLine", false),
@@ -180,50 +175,52 @@ public partial class MainWindow
             FastMaterialsColumn("Variant / Finish", 130, "VariantFinish", false),
             FastMaterialsColumn("Reinforcement", 120, "Reinforcement", false),
             FastMaterialsColumn("Color", 100, "Color", false),
-            FastMaterialsColumn("Manufacturer Website", 260, "ManufacturerWebsite", false),
-            FastMaterialsColumn("YouTube Review URL", 260, "YouTubeReviewUrl", false),
-            FastMaterialsColumn("Video", 80, "Video", true),
             FastMaterialsColumn("Tested Status", 120, "TestedStatus", true),
             FastMaterialsColumn("In Tensile", 90, "InTensile", true),
             FastMaterialsColumn("In Impact", 90, "InImpact", true),
             FastMaterialsColumn("In Stiffness", 95, "InStiffness", true),
             FastMaterialsColumn("Notes", 220, "Notes", false),
+            FastMaterialsColumn("Website Display Name", 240, "WebsiteDisplayName", true),
+            FastMaterialsColumn("Manufacturer Website", 260, "ManufacturerWebsite", false),
+            FastMaterialsColumn("YouTube Review URL", 260, "YouTubeReviewUrl", false),
+            FastMaterialsColumn("Video", 80, "Video", true),
             FastMaterialsColumn("Spool Weight g / spool", 110, "SpoolWeightG", false),
-            FastMaterialsColumn("Manufacturer SKU", 140, "ManufacturerSku", false),
-            FastMaterialsColumn("Inventory ID", 120, "InventoryId", false),
-            FastMaterialsColumn("Purchase ID", 120, "PurchaseId", false),
-            FastMaterialsColumn("Purchased From", 150, "PurchasedFrom", false),
-            FastMaterialsColumn("Supplier URL", 190, "SupplierUrl", false),
-            FastMaterialsColumn("Purchase Date", 110, "PurchaseDate", false),
-            FastMaterialsColumn("Order Number", 130, "OrderNumber", false),
-            FastMaterialsColumn("Batch Number", 120, "BatchNumber", false),
-            FastMaterialsColumn("Storage Location", 140, "StorageLocation", false),
-            FastMaterialsColumn("Inventory Status", 120, "InventoryStatus", false, MaterialsPrototypeEditorKind.ComboBox,
-                ["Unopened", "Opened", "Empty"]),
-            FastMaterialsColumn("Inventory Qty", 90, "Quantity", true),
-            FastMaterialsColumn("Remaining Weight g / spool", 130, "RemainingWeightG", false),
             FastMaterialsColumn("Purchase Price", 110, "PurchasePriceAmount", false),
             FastMaterialsColumn("Currency", 90, "PurchaseCurrency", false, MaterialsPrototypeEditorKind.ComboBox,
                 ["ISK", "USD", "EUR", "GBP", "DKK", "SEK", "NOK"]),
-            FastMaterialsColumn("Shipping", 100, "ShippingAmount", false),
-            FastMaterialsColumn("VAT", 90, "VatAmount", false),
             FastMaterialsColumn("MSRP Amount", 105, "MsrpAmount", false),
             FastMaterialsColumn("MSRP Currency", 105, "MsrpCurrency", false, MaterialsPrototypeEditorKind.ComboBox,
                 ["USD", "ISK", "EUR", "GBP"]),
             FastMaterialsColumn("MSRP USD", 95, "MsrpUsd", true),
+            FastMaterialsColumn("MSRP USD/kg", 105, "MsrpUsdPerKg", true),
             FastMaterialsColumn("Landed Cost", 105, "LandedCostAmount", false),
             FastMaterialsColumn("Landed Currency", 115, "LandedCostCurrency", false, MaterialsPrototypeEditorKind.ComboBox,
                 ["USD", "ISK", "EUR", "GBP"]),
             FastMaterialsColumn("Landed USD", 95, "LandedCostUsd", true),
-            FastMaterialsColumn("MSRP USD/kg", 105, "MsrpUsdPerKg", true),
             FastMaterialsColumn("Landed USD/kg", 115, "LandedCostUsdPerKg", true),
+            FastMaterialsColumn("Inventory ID", 120, "InventoryId", false),
+            FastMaterialsColumn("Inventory Status", 120, "InventoryStatus", false, MaterialsPrototypeEditorKind.ComboBox,
+                ["Unopened", "Opened", "Empty"]),
+            FastMaterialsColumn("Inventory Qty", 90, "Quantity", true),
+            FastMaterialsColumn("Remaining Weight g / spool", 130, "RemainingWeightG", false),
+            FastMaterialsColumn("Storage Location", 140, "StorageLocation", false),
+            FastMaterialsColumn("Purchase ID", 120, "PurchaseId", false),
+            FastMaterialsColumn("Purchased From", 150, "PurchasedFrom", false),
+            FastMaterialsColumn("Supplier URL", 190, "SupplierUrl", false),
+            FastMaterialsColumn("Manufacturer SKU", 140, "ManufacturerSku", false),
+            FastMaterialsColumn("Batch Number", 120, "BatchNumber", false),
+            FastMaterialsColumn("Purchase Date", 110, "PurchaseDate", false),
+            FastMaterialsColumn("Order Number", 130, "OrderNumber", false),
+            FastMaterialsColumn("Shipping", 100, "ShippingAmount", false),
+            FastMaterialsColumn("VAT", 90, "VatAmount", false),
             FastMaterialsColumn("Price Checked", 110, "PriceCheckedDate", false),
+            FastMaterialsColumn("Public reports", 95, "PublishPublicReports", false, MaterialsPrototypeEditorKind.CheckBox),
+            FastMaterialsColumn("Public test details", 115, "PublishPublicTestDetails", false, MaterialsPrototypeEditorKind.CheckBox),
+            FastMaterialsColumn("Archived / exclude from website export", 190, "IsArchived", false,
+                MaterialsPrototypeEditorKind.CheckBox),
             FastMaterialsColumn("Thumbnail Filename", 170, "ThumbnailFilename", false),
             FastMaterialsColumn("Sort Order", 90, "SortOrder", true),
             FastMaterialsColumn("Source Priority", 130, "SourcePriority", true),
-            FastMaterialsColumn("Archived / exclude from website export", 190, "IsArchived", false,
-                MaterialsPrototypeEditorKind.CheckBox),
-            FastMaterialsColumn("Website Display Name", 240, "WebsiteDisplayName", true),
             FastMaterialsColumn("Material Key", 260, "MaterialKey", true),
             FastMaterialsColumn("Validation", 180, "ValidationSummary", true)
         ]);

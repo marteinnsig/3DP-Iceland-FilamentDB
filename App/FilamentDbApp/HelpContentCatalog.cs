@@ -141,8 +141,10 @@ internal static class HelpContentCatalog
             restores that scope. Delete Material is permanent and uses the same named default-No warning as Base Materials. Enter on No,
             Escape or closing the warning preserves the Material and current selection; only explicit Yes creates a backup and removes
             the Material plus associated native measurement references. Manual Backup creates evidence but does not save pending editor
-            text. Reset Columns confirms before restoring default column order/width only. Normal committed cell edits auto-save; there
-            is no separate Save requirement.
+            text. Reset Columns uses a named default-No warning; No, Escape or closing it preserves the current layout. Explicit Yes
+            restores the current application default column order/width only and persists across restart. An existing saved user
+            layout otherwise remains authoritative across application upgrades. Normal committed cell edits auto-save; there is no
+            separate Save requirement.
 
             Search and filter controls
             Search searches displayed identity/content. Manufacturer, Base Material, Variant / Finish, Reinforcement, Color and Product
@@ -164,13 +166,20 @@ internal static class HelpContentCatalog
             Stiffness are read-only state. Notes is editable multiline content. Website Display Name, Material Key and Validation are
             read-only derived output.
 
+            Default column order
+            The default begins with identity and test status, then Notes, website identity/media, spool and price facts, inventory,
+            purchase evidence, publication choices and internal metadata. Existing saved user layouts keep their own width/order until
+            Reset Columns is explicitly accepted. All 52 Materials columns remain visible and unfrozen; layout never changes canonical
+            data, report/PDF fields or website-export fields.
+
             Inventory and purchase-evidence cells
             Spool Weight g / spool and Remaining Weight g / spool are grams; Remaining cannot exceed spool weight. Manufacturer SKU,
             Inventory ID, Purchase ID, Purchased From, Supplier URL, Order Number, Batch Number and Storage Location are editable
             references. Purchase Date and Price Checked are dates. Inventory Status is Unopened, Opened or Empty. Inventory Qty is
-            calculated/read-only. Purchase Price, Shipping, VAT, MSRP Amount and Landed Cost are non-negative monetary inputs in their
-            adjacent currency. Currency choices are governed; normalized MSRP USD, Landed USD and both USD/kg columns are calculated
-            read-only. Thumbnail Filename is a local/public asset reference. Sort Order and Source Priority are read-only.
+            calculated/read-only. Purchase Price, Shipping, VAT, MSRP Amount and Landed Cost are non-negative monetary inputs. Purchase
+            Currency is directly beside Purchase Price; MSRP and Landed Cost have their own adjacent currencies. Currency choices are
+            governed; normalized MSRP USD, Landed USD and both USD/kg columns are calculated read-only. Thumbnail Filename is a
+            local/public asset reference. Sort Order and Source Priority are read-only.
 
             Archive and validation cells
             Archived / exclude from website export is the grid equivalent of Archive/Unarchive and auto-saves after confirmation-safe

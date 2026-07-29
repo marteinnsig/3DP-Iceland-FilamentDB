@@ -219,8 +219,34 @@ public sealed class WorkflowPreferencesService
 
     public void ClearFastMaterialsGridLayout()
     {
-        _preferences.FastMaterialsGridLayout.Clear();
+        ClearFastMaterialsGridLayout(_preferences);
         Save();
+    }
+
+    public static bool VerifyFastMaterialsGridLayoutResetContract()
+    {
+        var preferences = new WorkflowPreferences
+        {
+            FastMaterialsGridLayout = [new WorkflowColumnLayout("legacy", 90, 0)],
+            FastGridLayouts = new Dictionary<string, List<WorkflowColumnLayout>>(StringComparer.Ordinal)
+            {
+                ["Materials"] = [new WorkflowColumnLayout("current", 100, 0)],
+                ["Tensile"] = [new WorkflowColumnLayout("preserved", 110, 0)]
+            }
+        };
+
+        ClearFastMaterialsGridLayout(preferences);
+        return preferences.FastMaterialsGridLayout.Count == 0 &&
+               !preferences.FastGridLayouts.ContainsKey("Materials") &&
+               preferences.FastGridLayouts.TryGetValue("Tensile", out var retained) &&
+               retained.Count == 1 &&
+               string.Equals(retained[0].Key, "preserved", StringComparison.Ordinal);
+    }
+
+    private static void ClearFastMaterialsGridLayout(WorkflowPreferences preferences)
+    {
+        preferences.FastMaterialsGridLayout.Clear();
+        preferences.FastGridLayouts.Remove("Materials");
     }
 
     public bool HasSavedGridWidths(DataGrid grid) =>

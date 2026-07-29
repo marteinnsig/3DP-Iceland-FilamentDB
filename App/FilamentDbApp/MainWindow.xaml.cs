@@ -19727,11 +19727,28 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 : "A measurement Fast schema, stable key, canonical visible-row source, UI retirement or release identity failed"));
         var fastMaterialsContractColumns = BuildFastMaterialsColumns();
         var fastMaterialsContractRows = BuildMaterialsPrototypeRows(fastMaterialsContractColumns);
+        var approvedFastMaterialsColumnOrder = new[]
+        {
+            "Material ID", "Manufacturer", "Product Line", "Marketing Name", "Base Material", "Category",
+            "Variant / Finish", "Reinforcement", "Color", "Tested Status", "In Tensile", "In Impact",
+            "In Stiffness", "Notes", "Website Display Name", "Manufacturer Website", "YouTube Review URL",
+            "Video", "Spool Weight g / spool", "Purchase Price", "Currency", "MSRP Amount", "MSRP Currency",
+            "MSRP USD", "MSRP USD/kg", "Landed Cost", "Landed Currency", "Landed USD", "Landed USD/kg", "Inventory ID",
+            "Inventory Status", "Inventory Qty", "Remaining Weight g / spool", "Storage Location", "Purchase ID",
+            "Purchased From", "Supplier URL", "Manufacturer SKU", "Batch Number", "Purchase Date", "Order Number",
+            "Shipping", "VAT", "Price Checked", "Public reports", "Public test details",
+            "Archived / exclude from website export", "Thumbnail Filename", "Sort Order", "Source Priority",
+            "Material Key", "Validation"
+        };
         var fastMaterialsContractReady =
             fastMaterialsContractColumns.Count == 52 &&
+            fastMaterialsContractColumns.Select(column => column.Header).SequenceEqual(
+                approvedFastMaterialsColumnOrder,
+                StringComparer.Ordinal) &&
             fastMaterialsContractColumns.Select(PrototypeColumnKey).Distinct(StringComparer.Ordinal).Count() == 52 &&
             fastMaterialsContractColumns.Count(column => column.EditorKind == MaterialsPrototypeEditorKind.CheckBox) == 3 &&
             fastMaterialsContractColumns.Count(column => column.EditorKind == MaterialsPrototypeEditorKind.ComboBox) == 6 &&
+            WorkflowPreferencesService.VerifyFastMaterialsGridLayoutResetContract() &&
             fastMaterialsContractRows.Count == visibleMeasurementMaterialIds.Count &&
             fastMaterialsContractRows.All(row => row.Source is NativeMaterialRow source &&
                                                  _nativeMaterialRows.Contains(source)) &&
@@ -19747,7 +19764,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             fastMaterialsContractReady && measurementFastContractsReady &&
             legacyGridRetirementUiReady && releaseIdentityReady
                 ? "Materials Fast schema and visible rows come from an explicit contract and the canonical filtered collection"
-                : "Materials schema, editors, stable keys, canonical visible-row source, prior stage or release identity failed"));
+                : "Materials order, reset, schema, editors, stable keys, canonical visible-row source, prior stage or release identity failed"));
         var manufacturerColumn = fastMaterialsContractColumns.SingleOrDefault(column =>
             string.Equals(column.PropertyName, nameof(NativeMaterialRow.Manufacturer), StringComparison.Ordinal));
         var activeManufacturerNames = _database.LoadManufacturers()
@@ -19884,6 +19901,21 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             sharedDeleteDialogReady
                 ? "Material and Base Material use one named default-No dialog with Escape and close mapped to safe cancellation"
                 : "Shared Material/Base Material safe-delete prompt, Escape, close or dialog ownership failed"));
+        var resetMaterialsColumnsPrompt = BuildResetMaterialsColumnsPrompt();
+        var resetMaterialsColumnsDialogReady =
+            !resetMaterialsColumnsPrompt.DefaultResult &&
+            resetMaterialsColumnsPrompt.Caption == "Reset Materials Columns?" &&
+            resetMaterialsColumnsPrompt.Message.Contains("press Escape", StringComparison.Ordinal) &&
+            resetMaterialsColumnsPrompt.Message.Contains("close this warning", StringComparison.Ordinal) &&
+            resetMaterialsColumnsPrompt.Message.Contains("layout unchanged", StringComparison.Ordinal) &&
+            !BaseMaterialDeleteConfirmed(false) &&
+            !BaseMaterialDeleteConfirmed(null) &&
+            BaseMaterialDeleteConfirmed(true);
+        checks.Add(new VerificationCheck("v59.0.6 default-No Materials column reset contract",
+            resetMaterialsColumnsDialogReady,
+            resetMaterialsColumnsDialogReady
+                ? "Reset Columns uses the shared named warning; No, Escape and close preserve layout and only Yes resets"
+                : "Materials Reset Columns prompt, default-No, Escape, close or explicit-Yes contract failed"));
         var baseMaterialColumn = fastMaterialsContractColumns.SingleOrDefault(column =>
             string.Equals(column.PropertyName, nameof(NativeMaterialRow.BaseMaterial), StringComparison.Ordinal));
         var baseMaterialCatalogById = _nativeBaseMaterialRows.ToDictionary(row => row.BaseMaterialId);
@@ -25998,6 +26030,13 @@ private List<string> GetVisibleAiMaterialLabels()
             "A backup will be created first.\n\n" +
             "Choose No, press Escape or close this warning to keep the material and current selection unchanged.",
             "Delete Material?",
+            false);
+
+    private static BaseMaterialDeletePrompt BuildResetMaterialsColumnsPrompt() =>
+        new(
+            "Reset Materials column widths and order to the application defaults?\n\n" +
+            "Choose No, press Escape or close this warning to keep the current layout unchanged.",
+            "Reset Materials Columns?",
             false);
 
     private static bool BaseMaterialDeleteConfirmed(bool? result) =>

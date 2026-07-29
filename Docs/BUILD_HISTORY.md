@@ -2,6 +2,54 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v59.0.6 - Materials Column Order Implementation and Acceptance
+
+The explicit 52-column Fast Materials builder now follows the exact
+owner-approved default sequence. Existing profile layouts still override the
+default and are not migrated, so only clean profiles and explicit Reset Columns
+receive the new sequence.
+
+Reset previously cleared only `FastMaterialsGridLayout`, while current writes
+also populate `FastGridLayouts["Materials"]`. The keyed entry could therefore
+restore an old order after restart. Reset now clears both Materials stores,
+preserves every unrelated workspace layout and immediately saves the canonical
+default layout through the existing renderer path.
+
+Help explains default versus saved ownership. Full Data Verification requires
+the exact 52 headers and a synthetic reset probe proving both Materials stores
+clear while an unrelated Tensile layout remains intact. No tester expansion is
+required: the accepted smoke already owns Materials layout interaction, while
+the changed restart behavior receives exact owner-manual acceptance.
+
+Debug and Release builds complete with zero warnings. Help coverage and release
+documentation audits pass. Disposable Release smoke
+`20260729011614-ee93c65e` passes 417/417 and restores exact logical and
+business-state hashes. Owner runtime acceptance remains the closure gate.
+
+The first owner runtime pass confirmed the layout and Verification but exposed
+two bounded corrections. Reset Columns still used the native Yes/No message box,
+whose close button and Escape did not produce the accepted cancellation
+behavior. It now uses the shared named default-No confirmation window: only
+explicit Yes mutates layout. Purchase Currency moves directly after Purchase
+Price; every other approved column position remains unchanged.
+
+Corrected Debug/Release builds and Help/documentation gates pass. Disposable
+smoke `20260729012749-9dc37e1a` passes 418/418, including the new prompt
+contract, and restores exact logical and business-state hashes.
+
+Owner runtime acceptance confirms the exact 52-column sequence, preservation of
+saved layouts, reset persistence across restart, Purchase Price/Currency
+adjacency and safe No/Escape/window-close behavior. Owner Full Data
+Verification passes; v59.0.6 is complete.
+
+## v59.0.5 - Materials Column-order Research and Decision
+
+Research confirms all 52 Materials columns are visible and unfrozen. Width and
+order persist locally in `workflow-preferences.json`; saved layouts override
+builder defaults without affecting canonical data, reports, PDFs or website
+exports. The owner approved an exact default sequence and preservation of all
+existing saved layouts.
+
 ## v59.0.4 - Navigation Help, Automation and Verification Reconciliation
 
 The post-retirement audit finds no orphaned navigation contract. Help discovery

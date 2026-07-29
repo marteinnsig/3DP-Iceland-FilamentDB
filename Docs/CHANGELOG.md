@@ -2,6 +2,36 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v59.0.6 - Materials Column Order Implementation and Acceptance
+
+- Applies the owner-approved exact 52-column default order to clean profiles and
+  explicit Materials Reset Columns only.
+- Preserves existing saved Materials layouts across upgrade and leaves all
+  columns visible and unfrozen.
+- Corrects Reset Columns to clear both current and compatibility Materials
+  layout stores so the reset remains effective after restart.
+- Runtime follow-up maps Reset Columns No, Escape and window close to unchanged
+  layout through the accepted named default-No dialog.
+- Places Purchase Currency directly after Purchase Price in the exact default
+  sequence.
+- Adds exact default-order and isolated reset contracts to Full Data
+  Verification; report, PDF, website and canonical-data contracts are unchanged.
+- Corrected Debug/Release and Help/documentation gates pass. Disposable smoke
+  `20260729012749-9dc37e1a` passes 418/418 with exact state; focused owner
+  dialog/order acceptance passes.
+- Owner confirms exact order, saved/reset restart behavior, Purchase
+  Price/Currency adjacency, No/Escape/window-close safety and Full Data
+  Verification PASS. v59.0.6 is runtime accepted.
+
+## v59.0.5 - Materials Column-order Research and Decision
+
+- Maps all 52 visible/unfrozen Materials columns, editability, persistence and
+  export/report ownership before implementation.
+- Records the owner-approved exact default order and the decision to preserve
+  existing saved user layouts.
+- Identifies a restart defect where Reset Columns left the current keyed
+  Materials layout store populated.
+
 ## v59.0.4 - Navigation Help, Automation and Verification Reconciliation
 
 - Confirms all 22 Navigate commands have covered Help inventory ownership and
