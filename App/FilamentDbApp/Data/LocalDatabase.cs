@@ -192,6 +192,131 @@ public sealed partial class LocalDatabase
         }
     }
 
+    public static bool RunPurchaseMaterialLinkTransactionContractVerification()
+    {
+        var root = IOPath.Combine(
+            IOPath.GetTempPath(),
+            "3DPIceland-PurchaseMaterialLink-" + Guid.NewGuid().ToString("N"));
+        IODirectory.CreateDirectory(root);
+        try
+        {
+            var database = new LocalDatabase(IOPath.Combine(root, "purchase-material.sqlite"));
+            var baselineMaterial = new NativeMaterialRecord
+            {
+                MaterialID = "VERIFY-PO-BASE",
+                Manufacturer = "Verification",
+                MarketingName = "Baseline"
+            };
+            var order = new PurchaseOrderRecord
+            {
+                PurchaseOrderId = "VERIFY-PO",
+                Supplier = "Verification Supplier",
+                LandedCostCurrency = "ISK",
+                LandedCostCalculatedAtUtc = "2026-07-30T12:00:00.0000000Z",
+                LandedCostCalculationVersion = "verification-snapshot"
+            };
+            var line = new PurchaseOrderLineRecord
+            {
+                PurchaseOrderLineId = "VERIFY-PO-LINE",
+                PurchaseOrderId = order.PurchaseOrderId,
+                MaterialId = baselineMaterial.MaterialID,
+                Description = "Verification line",
+                LandedUnitCost = "123.45"
+            };
+            database.ReplaceNativeMaterialsAndPurchaseOrders(
+                [baselineMaterial],
+                [order],
+                [line]);
+
+            var candidateMaterial = new NativeMaterialRecord
+            {
+                MaterialID = "VERIFY-PO-CANDIDATE",
+                Manufacturer = "Verification",
+                MarketingName = "Candidate"
+            };
+            var secondCandidateMaterial = new NativeMaterialRecord
+            {
+                MaterialID = "VERIFY-PO-CANDIDATE-2",
+                Manufacturer = "Verification",
+                MarketingName = "Candidate 2"
+            };
+            var secondLine = new PurchaseOrderLineRecord
+            {
+                PurchaseOrderLineId = "VERIFY-PO-LINE-2",
+                PurchaseOrderId = order.PurchaseOrderId,
+                MaterialId = "VERIFY-PO-MISSING",
+                Description = "Second verification line",
+                LandedUnitCost = "67.89"
+            };
+            line.MaterialId = candidateMaterial.MaterialID;
+            order.LandedCostCalculatedAtUtc = "CHANGED-BUT-ROLLED-BACK";
+            var failureRolledBack = false;
+            try
+            {
+                database.ReplaceNativeMaterialsAndPurchaseOrders(
+                    [baselineMaterial, candidateMaterial, secondCandidateMaterial],
+                    [order],
+                    [line, secondLine]);
+            }
+            catch (SqliteException ex) when (ex.SqliteErrorCode == 19)
+            {
+                failureRolledBack = true;
+            }
+
+            var afterFailureOrder = database.LoadPurchaseOrders().Single();
+            var afterFailureLine = database.LoadPurchaseOrderLines().Single();
+            var afterFailureMaterials = database.LoadNativeMaterialManagerRows();
+            var failureStateExact =
+                afterFailureOrder.LandedCostCalculatedAtUtc == "2026-07-30T12:00:00.0000000Z" &&
+                afterFailureOrder.LandedCostCalculationVersion == "verification-snapshot" &&
+                afterFailureLine.MaterialId == baselineMaterial.MaterialID &&
+                afterFailureLine.LandedUnitCost == "123.45" &&
+                afterFailureMaterials.Count == 1 &&
+                afterFailureMaterials.All(material =>
+                    material.MaterialID != candidateMaterial.MaterialID &&
+                    material.MaterialID != secondCandidateMaterial.MaterialID);
+
+            order.LandedCostCalculatedAtUtc = afterFailureOrder.LandedCostCalculatedAtUtc;
+            line.MaterialId = candidateMaterial.MaterialID;
+            secondLine.MaterialId = secondCandidateMaterial.MaterialID;
+            database.ReplaceNativeMaterialsAndPurchaseOrders(
+                [baselineMaterial, candidateMaterial, secondCandidateMaterial],
+                [order],
+                [line, secondLine]);
+
+            var afterRetryMaterials = database.LoadNativeMaterialManagerRows();
+            var afterRetryLines = database.LoadPurchaseOrderLines();
+            var retryStateExact =
+                afterRetryMaterials.Count == 3 &&
+                afterRetryMaterials.Count(material =>
+                    material.MaterialID == candidateMaterial.MaterialID) == 1 &&
+                afterRetryMaterials.Count(material =>
+                    material.MaterialID == secondCandidateMaterial.MaterialID) == 1 &&
+                afterRetryLines.Count == 2 &&
+                afterRetryLines.Single(item =>
+                    item.PurchaseOrderLineId == line.PurchaseOrderLineId).MaterialId ==
+                    candidateMaterial.MaterialID &&
+                afterRetryLines.Single(item =>
+                    item.PurchaseOrderLineId == secondLine.PurchaseOrderLineId).MaterialId ==
+                    secondCandidateMaterial.MaterialID &&
+                afterRetryLines.Single(item =>
+                    item.PurchaseOrderLineId == line.PurchaseOrderLineId).LandedUnitCost == "123.45" &&
+                afterRetryLines.Single(item =>
+                    item.PurchaseOrderLineId == secondLine.PurchaseOrderLineId).LandedUnitCost == "67.89";
+
+            return failureRolledBack && failureStateExact && retryStateExact;
+        }
+        catch
+        {
+            return false;
+        }
+        finally
+        {
+            SqliteConnection.ClearAllPools();
+            try { IODirectory.Delete(root, true); } catch { }
+        }
+    }
+
     private static bool IsGovernedPublicDemoDataset(string databasePath)
     {
         try
@@ -2522,7 +2647,15 @@ ProfileKind=excluded.ProfileKind,UpdatedAtUtc=excluded.UpdatedAtUtc;";
         connection.Open();
         Initialize();
         using var transaction = connection.BeginTransaction();
+        ReplaceNativeMaterialManagerRows(connection, transaction, materials);
+        transaction.Commit();
+    }
 
+    private static void ReplaceNativeMaterialManagerRows(
+        SqliteConnection connection,
+        SqliteTransaction transaction,
+        IEnumerable<NativeMaterialRecord> materials)
+    {
         using var insert = connection.CreateCommand();
         insert.Transaction = transaction;
         insert.CommandText = @"
@@ -2820,8 +2953,6 @@ ON CONFLICT(MaterialId) DO UPDATE SET
                 delete.ExecuteNonQuery();
             }
         }
-
-        transaction.Commit();
     }
 
     public List<NativeMaterialRecord> LoadNativeMaterialManagerRows()
@@ -3338,15 +3469,45 @@ ORDER BY
         return rows;
     }
 
-    public void ReplacePurchaseOrders(IEnumerable<PurchaseOrderRecord> orders, IEnumerable<PurchaseOrderLineRecord> lines)
+    public void ReplacePurchaseOrders(
+        IEnumerable<PurchaseOrderRecord> orders,
+        IEnumerable<PurchaseOrderLineRecord> lines)
     {
-        using var connection=new SqliteConnection(ConnectionString); connection.Open(); using var tx=connection.BeginTransaction();
-        using(var clear=connection.CreateCommand()){clear.Transaction=tx; clear.CommandText="DELETE FROM PurchaseOrderLines; DELETE FROM PurchaseOrders;"; clear.ExecuteNonQuery();}
-        using var io=connection.CreateCommand(); io.Transaction=tx; io.CommandText=@"INSERT INTO PurchaseOrders (PurchaseOrderId,Supplier,OrderNumber,PurchaseDate,Currency,ExchangeRate,ExchangeRateSource,ExchangeRateObservationDate,ExchangeRateFetchedAtUtc,LandedCostCurrency,LandedCostConversionRate,LandedCostRateSource,LandedCostRateObservationDate,LandedCostRateFetchedAtUtc,LandedCostCalculatedAtUtc,LandedCostCalculationVersion,TaxTreatment,ShippingMethod,TrackingNumber,SupplierItemsTotal,SupplierShipping,SupplierTax,SupplierInvoiceTotal,ImportVat,CustomsDuty,ClearanceFee,OtherFees,ShippingAllocationMethod,TaxAllocationMethod,CustomsAllocationMethod,FeeAllocationMethod,CostStatus,LifecycleStatus,ReceivedDate,InvoiceFile,Notes,UpdatedAtUtc) VALUES ($id,$supplier,$number,$date,$currency,$rate,$rateSource,$rateDate,$rateFetched,$landedCurrency,$landedRate,$landedSource,$landedDate,$landedFetched,$landedCalculated,$landedVersion,$tax,$shipmethod,$tracking,$items,$shipping,$suppliertax,$total,$importvat,$customs,$clearance,$other,$shipalloc,$taxalloc,$customsalloc,$feealloc,$status,$lifecycle,$receiveddate,$invoice,$notes,$updated)";
-        foreach(var x in orders){io.Parameters.Clear(); io.Parameters.AddWithValue("$id",x.PurchaseOrderId);io.Parameters.AddWithValue("$supplier",x.Supplier);io.Parameters.AddWithValue("$number",x.OrderNumber);io.Parameters.AddWithValue("$date",x.PurchaseDate);io.Parameters.AddWithValue("$currency",x.Currency);io.Parameters.AddWithValue("$rate",x.ExchangeRate);io.Parameters.AddWithValue("$rateSource",x.ExchangeRateSource);io.Parameters.AddWithValue("$rateDate",x.ExchangeRateObservationDate);io.Parameters.AddWithValue("$rateFetched",x.ExchangeRateFetchedAtUtc);io.Parameters.AddWithValue("$landedCurrency",string.IsNullOrWhiteSpace(x.LandedCostCurrency)?x.Currency:x.LandedCostCurrency);io.Parameters.AddWithValue("$landedRate",string.IsNullOrWhiteSpace(x.LandedCostConversionRate)?"1":x.LandedCostConversionRate);io.Parameters.AddWithValue("$landedSource",string.IsNullOrWhiteSpace(x.LandedCostRateSource)?"Legacy transaction-currency landed cost":x.LandedCostRateSource);io.Parameters.AddWithValue("$landedDate",x.LandedCostRateObservationDate);io.Parameters.AddWithValue("$landedFetched",x.LandedCostRateFetchedAtUtc);io.Parameters.AddWithValue("$landedCalculated",x.LandedCostCalculatedAtUtc);io.Parameters.AddWithValue("$landedVersion",x.LandedCostCalculationVersion);io.Parameters.AddWithValue("$tax",x.TaxTreatment);io.Parameters.AddWithValue("$shipmethod",x.ShippingMethod);io.Parameters.AddWithValue("$tracking",x.TrackingNumber);io.Parameters.AddWithValue("$items",x.SupplierItemsTotal);io.Parameters.AddWithValue("$shipping",x.SupplierShipping);io.Parameters.AddWithValue("$suppliertax",x.SupplierTax);io.Parameters.AddWithValue("$total",x.SupplierInvoiceTotal);io.Parameters.AddWithValue("$importvat",x.ImportVat);io.Parameters.AddWithValue("$customs",x.CustomsDuty);io.Parameters.AddWithValue("$clearance",x.ClearanceFee);io.Parameters.AddWithValue("$other",x.OtherFees);io.Parameters.AddWithValue("$shipalloc",x.ShippingAllocationMethod);io.Parameters.AddWithValue("$taxalloc",x.TaxAllocationMethod);io.Parameters.AddWithValue("$customsalloc",x.CustomsAllocationMethod);io.Parameters.AddWithValue("$feealloc",x.FeeAllocationMethod);io.Parameters.AddWithValue("$status",x.CostStatus);io.Parameters.AddWithValue("$lifecycle",x.LifecycleStatus);io.Parameters.AddWithValue("$receiveddate",x.ReceivedDate);io.Parameters.AddWithValue("$invoice",x.InvoiceFile);io.Parameters.AddWithValue("$notes",x.Notes);io.Parameters.AddWithValue("$updated",DateTime.UtcNow.ToString("O",CultureInfo.InvariantCulture));io.ExecuteNonQuery();}
-        using var il=connection.CreateCommand(); il.Transaction=tx; il.CommandText=@"INSERT INTO PurchaseOrderLines (PurchaseOrderLineId,PurchaseOrderId,MaterialId,InventoryCategory,Description,Sku,Quantity,ReceivedQuantity,ReceivingStatus,StorageLocation,UnitPrice,DiscountAmount,UnitWeightG,IncludeInCostAllocation,ManualShippingAllocation,ManualTaxAllocation,ManualCustomsAllocation,ManualFeesAllocation,NetLineCost,AllocatedShipping,AllocatedTax,AllocatedCustoms,AllocatedFees,LandedLineCost,LandedUnitCost,LandedCostPerKg,AllocationStatus,Notes,UpdatedAtUtc) VALUES ($id,$order,$material,$category,$description,$sku,$qty,$receivedqty,$receivingstatus,$storage,$price,$discount,$weight,$include,$manualshipping,$manualtax,$manualcustoms,$manualfees,$netline,$allocatedshipping,$allocatedtax,$allocatedcustoms,$allocatedfees,$landedline,$landedunit,$landedkg,$allocationstatus,$notes,$updated)";
-        foreach(var x in lines.Where(x=>orders.Any(o=>o.PurchaseOrderId==x.PurchaseOrderId))){il.Parameters.Clear();il.Parameters.AddWithValue("$id",x.PurchaseOrderLineId);il.Parameters.AddWithValue("$order",x.PurchaseOrderId);il.Parameters.AddWithValue("$material",string.IsNullOrWhiteSpace(x.MaterialId)?DBNull.Value:x.MaterialId);il.Parameters.AddWithValue("$category",string.IsNullOrWhiteSpace(x.InventoryCategory)?"Filament":x.InventoryCategory);il.Parameters.AddWithValue("$description",x.Description);il.Parameters.AddWithValue("$sku",x.Sku);il.Parameters.AddWithValue("$qty",x.Quantity);il.Parameters.AddWithValue("$receivedqty",x.ReceivedQuantity);il.Parameters.AddWithValue("$receivingstatus",x.ReceivingStatus);il.Parameters.AddWithValue("$storage",x.StorageLocation);il.Parameters.AddWithValue("$price",x.UnitPrice);il.Parameters.AddWithValue("$discount",x.DiscountAmount);il.Parameters.AddWithValue("$weight",x.UnitWeightG);il.Parameters.AddWithValue("$include",x.IncludeInCostAllocation?1:0);il.Parameters.AddWithValue("$manualshipping",x.ManualShippingAllocation);il.Parameters.AddWithValue("$manualtax",x.ManualTaxAllocation);il.Parameters.AddWithValue("$manualcustoms",x.ManualCustomsAllocation);il.Parameters.AddWithValue("$manualfees",x.ManualFeesAllocation);il.Parameters.AddWithValue("$netline",x.NetLineCost);il.Parameters.AddWithValue("$allocatedshipping",x.AllocatedShipping);il.Parameters.AddWithValue("$allocatedtax",x.AllocatedTax);il.Parameters.AddWithValue("$allocatedcustoms",x.AllocatedCustoms);il.Parameters.AddWithValue("$allocatedfees",x.AllocatedFees);il.Parameters.AddWithValue("$landedline",x.LandedLineCost);il.Parameters.AddWithValue("$landedunit",x.LandedUnitCost);il.Parameters.AddWithValue("$landedkg",x.LandedCostPerKg);il.Parameters.AddWithValue("$allocationstatus",x.AllocationStatus);il.Parameters.AddWithValue("$notes",x.Notes);il.Parameters.AddWithValue("$updated",DateTime.UtcNow.ToString("O",CultureInfo.InvariantCulture));il.ExecuteNonQuery();}
-        tx.Commit();
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        Initialize();
+        using var transaction = connection.BeginTransaction();
+        ReplacePurchaseOrders(connection, transaction, orders, lines);
+        transaction.Commit();
+    }
+
+    public void ReplaceNativeMaterialsAndPurchaseOrders(
+        IEnumerable<NativeMaterialRecord> materials,
+        IEnumerable<PurchaseOrderRecord> orders,
+        IEnumerable<PurchaseOrderLineRecord> lines)
+    {
+        CreateThrottledAutomaticBackupBeforeWrite();
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        Initialize();
+        using var transaction = connection.BeginTransaction();
+        ReplaceNativeMaterialManagerRows(connection, transaction, materials);
+        ReplacePurchaseOrders(connection, transaction, orders, lines);
+        transaction.Commit();
+    }
+
+    private static void ReplacePurchaseOrders(
+        SqliteConnection connection,
+        SqliteTransaction transaction,
+        IEnumerable<PurchaseOrderRecord> orders,
+        IEnumerable<PurchaseOrderLineRecord> lines)
+    {
+        var orderList = orders.ToList();
+        using(var clear=connection.CreateCommand()){clear.Transaction=transaction; clear.CommandText="DELETE FROM PurchaseOrderLines; DELETE FROM PurchaseOrders;"; clear.ExecuteNonQuery();}
+        using var io=connection.CreateCommand(); io.Transaction=transaction; io.CommandText=@"INSERT INTO PurchaseOrders (PurchaseOrderId,Supplier,OrderNumber,PurchaseDate,Currency,ExchangeRate,ExchangeRateSource,ExchangeRateObservationDate,ExchangeRateFetchedAtUtc,LandedCostCurrency,LandedCostConversionRate,LandedCostRateSource,LandedCostRateObservationDate,LandedCostRateFetchedAtUtc,LandedCostCalculatedAtUtc,LandedCostCalculationVersion,TaxTreatment,ShippingMethod,TrackingNumber,SupplierItemsTotal,SupplierShipping,SupplierTax,SupplierInvoiceTotal,ImportVat,CustomsDuty,ClearanceFee,OtherFees,ShippingAllocationMethod,TaxAllocationMethod,CustomsAllocationMethod,FeeAllocationMethod,CostStatus,LifecycleStatus,ReceivedDate,InvoiceFile,Notes,UpdatedAtUtc) VALUES ($id,$supplier,$number,$date,$currency,$rate,$rateSource,$rateDate,$rateFetched,$landedCurrency,$landedRate,$landedSource,$landedDate,$landedFetched,$landedCalculated,$landedVersion,$tax,$shipmethod,$tracking,$items,$shipping,$suppliertax,$total,$importvat,$customs,$clearance,$other,$shipalloc,$taxalloc,$customsalloc,$feealloc,$status,$lifecycle,$receiveddate,$invoice,$notes,$updated)";
+        foreach(var x in orderList){io.Parameters.Clear(); io.Parameters.AddWithValue("$id",x.PurchaseOrderId);io.Parameters.AddWithValue("$supplier",x.Supplier);io.Parameters.AddWithValue("$number",x.OrderNumber);io.Parameters.AddWithValue("$date",x.PurchaseDate);io.Parameters.AddWithValue("$currency",x.Currency);io.Parameters.AddWithValue("$rate",x.ExchangeRate);io.Parameters.AddWithValue("$rateSource",x.ExchangeRateSource);io.Parameters.AddWithValue("$rateDate",x.ExchangeRateObservationDate);io.Parameters.AddWithValue("$rateFetched",x.ExchangeRateFetchedAtUtc);io.Parameters.AddWithValue("$landedCurrency",string.IsNullOrWhiteSpace(x.LandedCostCurrency)?x.Currency:x.LandedCostCurrency);io.Parameters.AddWithValue("$landedRate",string.IsNullOrWhiteSpace(x.LandedCostConversionRate)?"1":x.LandedCostConversionRate);io.Parameters.AddWithValue("$landedSource",string.IsNullOrWhiteSpace(x.LandedCostRateSource)?"Legacy transaction-currency landed cost":x.LandedCostRateSource);io.Parameters.AddWithValue("$landedDate",x.LandedCostRateObservationDate);io.Parameters.AddWithValue("$landedFetched",x.LandedCostRateFetchedAtUtc);io.Parameters.AddWithValue("$landedCalculated",x.LandedCostCalculatedAtUtc);io.Parameters.AddWithValue("$landedVersion",x.LandedCostCalculationVersion);io.Parameters.AddWithValue("$tax",x.TaxTreatment);io.Parameters.AddWithValue("$shipmethod",x.ShippingMethod);io.Parameters.AddWithValue("$tracking",x.TrackingNumber);io.Parameters.AddWithValue("$items",x.SupplierItemsTotal);io.Parameters.AddWithValue("$shipping",x.SupplierShipping);io.Parameters.AddWithValue("$suppliertax",x.SupplierTax);io.Parameters.AddWithValue("$total",x.SupplierInvoiceTotal);io.Parameters.AddWithValue("$importvat",x.ImportVat);io.Parameters.AddWithValue("$customs",x.CustomsDuty);io.Parameters.AddWithValue("$clearance",x.ClearanceFee);io.Parameters.AddWithValue("$other",x.OtherFees);io.Parameters.AddWithValue("$shipalloc",x.ShippingAllocationMethod);io.Parameters.AddWithValue("$taxalloc",x.TaxAllocationMethod);io.Parameters.AddWithValue("$customsalloc",x.CustomsAllocationMethod);io.Parameters.AddWithValue("$feealloc",x.FeeAllocationMethod);io.Parameters.AddWithValue("$status",x.CostStatus);io.Parameters.AddWithValue("$lifecycle",x.LifecycleStatus);io.Parameters.AddWithValue("$receiveddate",x.ReceivedDate);io.Parameters.AddWithValue("$invoice",x.InvoiceFile);io.Parameters.AddWithValue("$notes",x.Notes);io.Parameters.AddWithValue("$updated",DateTime.UtcNow.ToString("O",CultureInfo.InvariantCulture));io.ExecuteNonQuery();}
+        using var il=connection.CreateCommand(); il.Transaction=transaction; il.CommandText=@"INSERT INTO PurchaseOrderLines (PurchaseOrderLineId,PurchaseOrderId,MaterialId,InventoryCategory,Description,Sku,Quantity,ReceivedQuantity,ReceivingStatus,StorageLocation,UnitPrice,DiscountAmount,UnitWeightG,IncludeInCostAllocation,ManualShippingAllocation,ManualTaxAllocation,ManualCustomsAllocation,ManualFeesAllocation,NetLineCost,AllocatedShipping,AllocatedTax,AllocatedCustoms,AllocatedFees,LandedLineCost,LandedUnitCost,LandedCostPerKg,AllocationStatus,Notes,UpdatedAtUtc) VALUES ($id,$order,$material,$category,$description,$sku,$qty,$receivedqty,$receivingstatus,$storage,$price,$discount,$weight,$include,$manualshipping,$manualtax,$manualcustoms,$manualfees,$netline,$allocatedshipping,$allocatedtax,$allocatedcustoms,$allocatedfees,$landedline,$landedunit,$landedkg,$allocationstatus,$notes,$updated)";
+        foreach(var x in lines.Where(x=>orderList.Any(o=>o.PurchaseOrderId==x.PurchaseOrderId))){il.Parameters.Clear();il.Parameters.AddWithValue("$id",x.PurchaseOrderLineId);il.Parameters.AddWithValue("$order",x.PurchaseOrderId);il.Parameters.AddWithValue("$material",string.IsNullOrWhiteSpace(x.MaterialId)?DBNull.Value:x.MaterialId);il.Parameters.AddWithValue("$category",string.IsNullOrWhiteSpace(x.InventoryCategory)?"Filament":x.InventoryCategory);il.Parameters.AddWithValue("$description",x.Description);il.Parameters.AddWithValue("$sku",x.Sku);il.Parameters.AddWithValue("$qty",x.Quantity);il.Parameters.AddWithValue("$receivedqty",x.ReceivedQuantity);il.Parameters.AddWithValue("$receivingstatus",x.ReceivingStatus);il.Parameters.AddWithValue("$storage",x.StorageLocation);il.Parameters.AddWithValue("$price",x.UnitPrice);il.Parameters.AddWithValue("$discount",x.DiscountAmount);il.Parameters.AddWithValue("$weight",x.UnitWeightG);il.Parameters.AddWithValue("$include",x.IncludeInCostAllocation?1:0);il.Parameters.AddWithValue("$manualshipping",x.ManualShippingAllocation);il.Parameters.AddWithValue("$manualtax",x.ManualTaxAllocation);il.Parameters.AddWithValue("$manualcustoms",x.ManualCustomsAllocation);il.Parameters.AddWithValue("$manualfees",x.ManualFeesAllocation);il.Parameters.AddWithValue("$netline",x.NetLineCost);il.Parameters.AddWithValue("$allocatedshipping",x.AllocatedShipping);il.Parameters.AddWithValue("$allocatedtax",x.AllocatedTax);il.Parameters.AddWithValue("$allocatedcustoms",x.AllocatedCustoms);il.Parameters.AddWithValue("$allocatedfees",x.AllocatedFees);il.Parameters.AddWithValue("$landedline",x.LandedLineCost);il.Parameters.AddWithValue("$landedunit",x.LandedUnitCost);il.Parameters.AddWithValue("$landedkg",x.LandedCostPerKg);il.Parameters.AddWithValue("$allocationstatus",x.AllocationStatus);il.Parameters.AddWithValue("$notes",x.Notes);il.Parameters.AddWithValue("$updated",DateTime.UtcNow.ToString("O",CultureInfo.InvariantCulture));il.ExecuteNonQuery();}
     }
 
     public List<VideoIdeaRecord> LoadVideoIdeas()

@@ -1,5 +1,27 @@
 # Automated Runtime Acceptance
 
+## v60.0.1 - Purchase-order Material Creation Integrity
+
+- Existing read-only smoke remains the bounded scenario owner; no Purchase
+  Order UI mutation was added to the general smoke.
+- Full Verification adds a disposable SQLite contract for the shared selected
+  and bulk parent/link transaction.
+- The contract proves single- and multi-line success, forced foreign-key
+  failure, complete rollback, immutable landed-cost retention and
+  duplicate-free retry.
+- Final corrected Release smoke `20260730144248-13602dab` passes 421/421 with exact
+  logical and business-state recovery.
+- Owner runtime passes selected, bulk and duplicate-free retry behavior. The
+  first owner Verification passed v60.0.1 but exposed a false v53.0.1 failure
+  for valid versioned cross-currency Inventory rates. Deterministic v53 probes
+  now accept positive versioned provenance, reject zero and retain exact
+  `legacy-v1` 1:1 ownership.
+- Owner rerun confirms corrected Full Data Verification PASS; v60.0.1 runtime
+  acceptance is complete.
+- Failed diagnostic profile `20260730142418-86598ce2` is retained pending
+  evidence review; it exposed and bounded the corrected transaction-placement
+  regression before acceptance.
+
 ## v59.0.11 - Public Base-material guidance accepted
 
 - The existing `reports` scenario remains the bounded owner; no new mutation,

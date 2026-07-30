@@ -40,7 +40,10 @@ internal static class HelpContentCatalog
             4. Create Materials and received spools
             Click Create Materials + Received Spools. Only Filament lines with positive Received quantity participate. Linked materials
             are reused; otherwise the app can create a draft Material and one Unopened Inventory spool per received unit. Other
-            categories remain recorded on the Purchase Order. The action is repeat-safe and only fills a missing spool deficit.
+            categories remain recorded on the Purchase Order. New parent Materials and their Purchase Order links save in one
+            transaction before Inventory creation starts. If Material validation or persistence fails, no new parent or link remains,
+            the landed-cost snapshot is unchanged and the app shows Material Creation Blocked. Correct the fields and retry. The
+            action is repeat-safe and only fills a missing spool deficit.
 
             5. Govern material identity
             Review every created or linked row in Materials. Auto-created rows contain draft supplier/base-material defaults, not a
@@ -313,7 +316,9 @@ internal static class HelpContentCatalog
             legacy order cannot be recalculated. Receive / Reconcile
             records received quantities/check state and does not create Inventory. Create Materials + Received Spools is repeat-safe
             and processes only positively received Filament lines. Create Material from Selected Item creates and links one draft
-            Material for the selected described Filament line.
+            Material for the selected described Filament line. Both creation paths validate and save the parent Material and line
+            link atomically. Material Creation Blocked means neither change was retained; the order, landed-cost snapshot and existing
+            links remain available for correction and retry.
 
             Order header columns
             PO ID is generated/read-only. Supplier and Order # are editable references; Order date and Received date are dates.

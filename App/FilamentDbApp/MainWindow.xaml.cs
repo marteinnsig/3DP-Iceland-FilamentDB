@@ -15067,6 +15067,18 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             inventoryReferencedSpoolSaveReady
                 ? "Referenced spools update without delete/reinsert; restricted deletion rolls back atomically"
                 : "Inventory save cannot safely update a Usage-referenced spool or reject its deletion"));
+        var purchaseMaterialLinkTransactionReady =
+            LocalDatabase.RunPurchaseMaterialLinkTransactionContractVerification() &&
+            typeof(MainWindow).GetMethod(
+                "TryPersistPurchaseMaterialLinks",
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck(
+            "v60.0.1 Purchase Material parent/link transaction and rollback contract",
+            purchaseMaterialLinkTransactionReady,
+            purchaseMaterialLinkTransactionReady
+                ? "Parent Material and Purchase Order link commit atomically; rejected links preserve landed cost and retry cleanly"
+                : "Parent/link atomic commit, rollback, landed-cost preservation or duplicate-free retry failed"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",
@@ -18418,11 +18430,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 (!string.IsNullOrWhiteSpace(order.LandedCostCalculationVersion) ||
                  (string.Equals(order.CostStatus, "Draft", StringComparison.OrdinalIgnoreCase) &&
                   string.IsNullOrWhiteSpace(order.LandedCostCalculatedAtUtc)))) &&
-            _database.LoadInventorySpoolItems().All(item =>
-                !string.IsNullOrWhiteSpace(item.LandedCostCurrency) &&
-                item.LandedCostConversionRate == "1" &&
-                !string.IsNullOrWhiteSpace(item.LandedCostRateSource) &&
-                !string.IsNullOrWhiteSpace(item.LandedCostCalculationVersion)) &&
+            _database.LoadInventorySpoolItems().All(HasValidInventoryLandedCostMetadata) &&
             landedCostMigration.Passed;
         checks.Add(new VerificationCheck(
             "v53.0.1 Governed Landed-cost Currency additive schema release gate",
@@ -18581,6 +18589,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             landedInventoryProbe.LandedCostCurrency == "USD" &&
             landedInventoryProbe.LandedCostConversionRate == "0.5" &&
             landedInventoryProbe.LandedCostCalculationVersion == LandedCostCalculationVersion &&
+            HasValidInventoryLandedCostMetadata(landedInventoryProbe) &&
+            HasValidInventoryLandedCostMetadata(new InventorySpoolRecord
+            {
+                LandedCostCurrency = "ISK",
+                LandedCostConversionRate = "1",
+                LandedCostRateSource = "Legacy transaction-currency landed cost",
+                LandedCostCalculationVersion = "legacy-v1"
+            }) &&
+            !HasValidInventoryLandedCostMetadata(new InventorySpoolRecord
+            {
+                LandedCostCurrency = "ISK",
+                LandedCostConversionRate = "0",
+                LandedCostRateSource = "Invalid verification probe",
+                LandedCostCalculationVersion = LandedCostCalculationVersion,
+                LandedCostCalculatedAtUtc = "2026-07-30T00:00:00Z"
+            }) &&
             landedInventoryReportProbe.Text.Contains("- USD:", StringComparison.Ordinal) &&
             landedInventoryReportProbe.Html.Contains(">USD<", StringComparison.Ordinal) &&
             !nonDestructiveFailure.IsValid &&
@@ -18609,6 +18633,28 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                   $"reportTextUsd={landedInventoryReportProbe.Text.Contains("- USD:", StringComparison.Ordinal)}; " +
                   $"reportHtmlUsd={landedInventoryReportProbe.Html.Contains(">USD<", StringComparison.Ordinal)}; " +
                   $"failureValid={nonDestructiveFailure.IsValid}; preserved={nonDestructiveFailureLine.LandedLineCost}"));
+
+        static bool HasValidInventoryLandedCostMetadata(InventorySpoolRecord item)
+    {
+        if (string.IsNullOrWhiteSpace(item.LandedCostCurrency) ||
+            !TryParseDecimalAware(item.LandedCostConversionRate, out var conversionRate) ||
+            conversionRate <= 0 ||
+            string.IsNullOrWhiteSpace(item.LandedCostRateSource) ||
+            string.IsNullOrWhiteSpace(item.LandedCostCalculationVersion))
+        {
+            return false;
+        }
+
+        if (string.Equals(
+                item.LandedCostCalculationVersion,
+                "legacy-v1",
+                StringComparison.Ordinal))
+        {
+            return conversionRate == 1d;
+        }
+
+        return !string.IsNullOrWhiteSpace(item.LandedCostCalculatedAtUtc);
+    }
         var landedCostAuthorizationProbe = new AutomationRuntimeProfile
         {
             LandedCostWorkflowAuthorized = true,
@@ -28737,11 +28783,27 @@ private List<string> GetVisibleAiMaterialLabels()
         }
 
         var order = _purchaseOrders.FirstOrDefault(x => x.PurchaseOrderId == line.PurchaseOrderId);
+        var wasNativeMaterialDirty = _nativeMaterialDirty;
         var material = CreateMaterialFromPurchaseLine(line, order, showValidationMessages: true);
         if (material is null) return;
 
-        SaveNativeMaterialsSilent();
-        SavePurchaseOrders();
+        if (!TryPersistPurchaseMaterialLinks(
+                [(line, material)],
+                wasNativeMaterialDirty,
+                out var error))
+        {
+            RefreshPurchaseMaterialChoices();
+            grid.Items.Refresh();
+            RefreshPurchaseOrderSummary();
+            MessageBox.Show(
+                this,
+                error,
+                "Material Creation Blocked",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return;
+        }
+
         RefreshPurchaseMaterialChoices();
         grid.Items.Refresh();
         RefreshPurchaseOrderSummary();
@@ -28826,20 +28888,36 @@ private List<string> GetVisibleAiMaterialLabels()
             if (result != MessageBoxResult.Yes) return;
         }
 
-        var createdMaterials = 0;
+        var wasNativeMaterialDirty = _nativeMaterialDirty;
+        var createdMaterialLinks = new List<(PurchaseOrderLineRecord Line, NativeMaterialRow Material)>();
         foreach (var line in autoCreateLines)
         {
-            if (CreateMaterialFromPurchaseLine(line, order, showValidationMessages: false) is not null)
-                createdMaterials++;
+            var material = CreateMaterialFromPurchaseLine(line, order, showValidationMessages: false);
+            if (material is not null)
+                createdMaterialLinks.Add((line, material));
         }
 
-        // Persist and refresh material links before generating inventory records.
-        if (createdMaterials > 0)
+        var createdMaterials = createdMaterialLinks.Count;
+        if (createdMaterials > 0 &&
+            !TryPersistPurchaseMaterialLinks(
+                createdMaterialLinks,
+                wasNativeMaterialDirty,
+                out var error))
         {
-            SaveNativeMaterialsSilent();
-            SavePurchaseOrders();
             RefreshPurchaseMaterialChoices();
+            grid.Items.Refresh();
+            if (FindName("PurchaseOrderLinesGrid") is DataGrid failedLineGrid)
+                failedLineGrid.Items.Refresh();
+            RefreshPurchaseOrderSummary();
+            MessageBox.Show(
+                this,
+                error,
+                "Material Creation Blocked",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            return;
         }
+        if (createdMaterials > 0) RefreshPurchaseMaterialChoices();
 
         var createdSpools = 0;
         foreach (var line in filamentLines)
@@ -28871,6 +28949,72 @@ private List<string> GetVisibleAiMaterialLabels()
             ? $"Created {createdMaterials} new material record(s) and {createdSpools} received inventory spool record(s).\n\nStorage locations were copied to the individual Inventory Spools.{deferredNote}"
             : "No new filament materials or spools were needed." + deferredNote;
         MessageBox.Show(this, message, "Purchase Orders", MessageBoxButton.OK, MessageBoxImage.Information);
+    }
+
+    private bool TryPersistPurchaseMaterialLinks(
+        IReadOnlyList<(PurchaseOrderLineRecord Line, NativeMaterialRow Material)> createdMaterialLinks,
+        bool wasNativeMaterialDirty,
+        out string error)
+    {
+        error = string.Empty;
+        if (createdMaterialLinks.Count == 0) return true;
+
+        if (!NativeMaterialIdsAreSqliteSafe() || NativeMaterialHasBlockingValidationIssues())
+        {
+            RollBackCreatedPurchaseMaterialLinks(createdMaterialLinks, wasNativeMaterialDirty);
+            error =
+                "Material creation was not saved because Material validation failed. " +
+                "The Purchase Order remains unchanged. Correct missing or duplicate Material fields, then retry.";
+            ShowNativeSaveBlockedStatus("Materials", "SQLite save blocked: validation issues");
+            return false;
+        }
+
+        try
+        {
+            ShowNativeSavingStatus("Materials");
+            _database.ReplaceNativeMaterialsAndPurchaseOrders(
+                _nativeMaterialRows.Select(NativeMaterialRecordFromRow),
+                _purchaseOrders,
+                _purchaseOrderLines);
+            SetNativeMaterialsDirty(false);
+            ShowNativeSavedStatus("Materials");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            RollBackCreatedPurchaseMaterialLinks(createdMaterialLinks, wasNativeMaterialDirty);
+            ShowNativeSaveBlockedStatus("Materials", ex.Message);
+            error =
+                "Material creation and Purchase Order linking were rolled back. " +
+                "No parent Material or line link was saved. Review the Material fields and retry.\n\n" +
+                ex.Message;
+            return false;
+        }
+    }
+
+    private void RollBackCreatedPurchaseMaterialLinks(
+        IReadOnlyList<(PurchaseOrderLineRecord Line, NativeMaterialRow Material)> createdMaterialLinks,
+        bool wasNativeMaterialDirty)
+    {
+        var previousSuppress = _suppressNativeMaterialDirty;
+        _suppressNativeMaterialDirty = true;
+        try
+        {
+            foreach (var (line, material) in createdMaterialLinks)
+            {
+                if (string.Equals(line.MaterialId, material.MaterialID, StringComparison.OrdinalIgnoreCase))
+                    line.MaterialId = string.Empty;
+                _nativeMaterialRows.Remove(material);
+            }
+        }
+        finally
+        {
+            _suppressNativeMaterialDirty = previousSuppress;
+        }
+
+        QueueNativeMaterialCollectionRefresh();
+        QueueNativeMaterialDependentIntelligenceRefresh();
+        SetNativeMaterialsDirty(wasNativeMaterialDirty);
     }
 
     private static InventorySpoolRecord BuildInventorySpoolFromPurchaseLine(

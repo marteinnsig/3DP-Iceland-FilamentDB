@@ -2,6 +2,32 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v60.0.1 - Purchase-order Material Creation Integrity
+
+Both Purchase Order Material-creation actions now use the same guarded UI
+helper and the same LocalDatabase transaction. The transaction upserts and
+validates the complete canonical Material snapshot before replacing Purchase
+Order headers/lines, so no child link can commit without its parent.
+
+UI validation or persistence failure removes only the newly created candidate
+rows and links from memory, retains the order and immutable landed-cost
+snapshot, and reports `Material Creation Blocked` without terminating the app.
+Bulk Inventory creation starts only after this parent/link transaction commits.
+
+Debug and Release builds pass with zero warnings/errors. Help and release
+documentation gates pass. Disposable Release smoke
+`20260730144248-13602dab` passes Full Data Verification 421/421 and restores
+exact logical/business-state hashes. The synthetic SQLite contract proves
+single/multi-line success, forced foreign-key rollback and duplicate-free
+retry. Owner runtime passes the selected, bulk and retry workflows.
+
+The first owner Verification export passed v60.0.1 but failed v53.0.1 because
+14 legitimate versioned cross-currency Inventory rows did not equal the
+legacy-only 1:1 rate. The corrected gate accepts positive versioned rates only
+with source/version/calculation provenance and still requires `legacy-v1` to be
+exactly 1:1. Owner rerun confirms corrected Full Data Verification PASS;
+v60.0.1 is runtime accepted and complete on 2026-07-30.
+
 ## v59.0.11 - Public Base-material Printing Guidance
 
 The public Printing Recommendation renderer now projects a reviewed Base

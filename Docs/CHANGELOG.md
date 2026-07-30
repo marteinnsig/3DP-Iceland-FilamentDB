@@ -2,6 +2,31 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v60.0.1 - Purchase-order Material Creation Integrity
+
+- Routes `Create Material from Selected Item` and `Create Materials + Received
+  Spools` through one fail-closed parent-Material/Purchase-link workflow.
+- Persists the complete canonical Material snapshot and Purchase Order
+  headers/lines in one SQLite transaction; foreign keys remain enforced.
+- Rolls back candidate Materials and links in memory when validation or SQLite
+  persistence fails, keeps the application running and shows one actionable
+  `Material Creation Blocked` warning.
+- Preserves immutable landed-cost snapshot fields and makes retry
+  duplicate-free. Inventory creation begins only after parent/link commit.
+- Updates Purchase Orders Help and Full Verification. The disposable contract
+  covers selected and multi-line success, forced foreign-key rollback,
+  landed-cost retention and retry.
+- Debug/Release and Help/documentation gates pass. Release smoke
+  `20260730144248-13602dab` passes Full Data Verification 421/421 with exact
+  logical/business-state recovery.
+- Owner selected-item, bulk and retry behavior pass. The first owner Verification
+  exposed and bounded a false v53.0.1 failure: legitimate versioned
+  cross-currency Inventory rates were incorrectly required to equal legacy 1:1.
+  The gate now accepts positive versioned rates with calculation provenance and
+  retains exact 1:1 validation for `legacy-v1`.
+- Owner rerun confirms corrected Full Data Verification PASS. v60.0.1 is
+  runtime accepted and complete on 2026-07-30.
+
 ## v59.0.11 - Public Base-material Printing Guidance
 
 - Resolves public Printing Recommendation guidance only through canonical

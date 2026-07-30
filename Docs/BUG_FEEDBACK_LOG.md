@@ -13,10 +13,10 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 5 |
+| Open | 4 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 101 |
+| Solved | 102 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
@@ -170,7 +170,7 @@ Date: 2026-07-30
 Area: Fast Materials / editable-cell keyboard navigation and focus
 Type: Bug / Workflow friction
 Severity: Important
-Status: Open
+Status: In progress
 What happened: After entering a value such as `GF` in Reinforcement and pressing an arrow key, focus initially moves toward the
 adjacent cell but then jumps back or closes. Clicking another editable cell can also lose focus or activate a nearby cell without an
 obvious pattern. The behavior occurs across editable Materials fields, not only Reinforcement.
@@ -180,9 +180,10 @@ background auto-save/refresh must never steal or redirect focus.
 Steps to reproduce: Edit Reinforcement, enter `GF`, press Down to edit the row below, and begin typing. Repeat with Left/Right/Up or
 click another editable cell while the prior edit's deferred auto-save is pending.
 Screenshot / export / report attached: None; owner runtime reproduction on 2026-07-30.
-Resolution: Read-only diagnosis confirms a focus race. Arrow navigation closes the current editor and schedules the adjacent editor
-at Input priority. The Materials auto-save timer then rebuilds filters and invokes canonical synchronization more than once; each
-synchronization calls `CloseEditor(commit: true)` and can close the newly activated cell. Preserve auto-save, filters, viewport and
+Resolution: Scheduled as v60.0.2. Read-only diagnosis confirms a focus race. Arrow navigation closes the current editor and
+schedules the adjacent editor at Input priority. The Materials auto-save timer then rebuilds filters and invokes canonical
+synchronization more than once; each synchronization calls `CloseEditor(commit: true)` and can close the newly activated cell.
+Preserve auto-save, filters, viewport and
 canonical refresh while preventing background synchronization from closing or relocating an intentional active editor.
 Verification evidence: Not yet implemented. Future deterministic coverage must prove all four arrow directions, Tab/Shift+Tab,
 mouse activation, rapid repeated edits, one-field auto-save and unchanged row/column/viewport selection after deferred refresh.
@@ -211,7 +212,7 @@ Date: 2026-07-30
 Area: Purchase Orders / Create Material from Selected Item
 Type: Bug / Data issue
 Severity: Blocker
-Status: Open
+Status: Solved
 What happened: After creating a Purchase Order with several lines and calculating landed cost, clicking
 `Create Material from Selected Item` terminated the application.
 Expected behavior: Validate and persist the new parent Material before assigning its MaterialID to the Purchase Order line. If the
@@ -221,13 +222,24 @@ Steps to reproduce: Create a Purchase Order, add several item lines, calculate l
 `Create Material from Selected Item`.
 Screenshot / export / report attached: Windows Application events at 2026-07-30 13:50:44; .NET Runtime event 1026, Application Error
 1000 and WER report `4d4e4004-1f39-47a8-9dad-a1562ee87812`.
-Resolution: Read-only diagnosis confirms unhandled SQLite error 19 in `ReplacePurchaseOrders`, called by
+Resolution: Scheduled first as v60.0.1. Read-only diagnosis confirms unhandled SQLite error 19 in `ReplacePurchaseOrders`, called by
 `CreateMaterialFromPurchaseLine_Click` line 28744. The handler assigns the generated MaterialID to the line, ignores the Boolean
 result of `SaveNativeMaterialsSilent()` and then saves the foreign-key child link. The bulk inventory/material path has the same
 unchecked parent-save sequence. Correct both paths through one fail-closed parent/link workflow; do not weaken the foreign key.
 Verification evidence: Not yet implemented. Future disposable coverage must exercise selected and multi-line creation, parent
 validation/save rejection, landed-cost retention, exact rollback/retry behavior, no orphan/duplicate rows, continued app operation
 and exact final business-state recovery.
+Candidate evidence: v60.0.1 now persists canonical Materials and Purchase Order links in one SQLite transaction shared by the
+selected-item and received-order bulk paths. Validation or persistence failure removes the candidate rows/links from memory, keeps
+the app running and shows `Material Creation Blocked`. Debug/Release and Help/docs gates pass. Disposable Release smoke
+`20260730143243-0f8ff11b` passes Full Data Verification 421/421 with exact logical/business-state recovery. The synthetic contract
+proves single- and multi-line commit, forced foreign-key rollback, landed-cost retention and duplicate-free retry. Owner runtime
+acceptance confirms selected-item creation, bulk Materials/spools and duplicate-free retry. The first owner Verification export
+passed v60.0.1 but exposed a false v53.0.1 failure: 14 valid versioned cross-currency Inventory rows were incorrectly required to
+have a legacy 1:1 rate. Verification now accepts positive versioned rates with calculation provenance while retaining exact 1:1
+requirements for `legacy-v1`. Corrected smoke `20260730144248-13602dab` passes 421/421; owner Verification rerun remains required.
+Final resolution: Solved in v60.0.1 — 2026-07-30. Owner runtime accepts selected-item creation, bulk Materials/spools,
+duplicate-free retry and corrected Full Data Verification PASS.
 
 Date: 2026-07-30
 Area: Materials / Tensile / Impact / Stiffness identity synchronization
@@ -244,9 +256,9 @@ Steps to reproduce: Create or select `MAT0207`; set Marketing Name and Color to 
 measurement views; change Color back to `Black`. If they remain Yellow, change only Marketing Name to `test1` and observe Color
 refresh to Black in all three views.
 Screenshot / export / report attached: None; owner runtime reproduction on 2026-07-30.
-Resolution: Read-only source review confirms canonical Materials persistence and all three MaterialID-based copy methods include
-Color. Investigate the Fast measurement snapshot/invalidation trigger and any display-identity equality shortcut; do not rewrite
-measurement samples or make identity fields measurement-owned.
+Resolution: Scheduled as v60.0.3. Read-only source review confirms canonical Materials persistence and all three MaterialID-based
+copy methods include Color. Investigate the Fast measurement snapshot/invalidation trigger and any display-identity equality
+shortcut; do not rewrite measurement samples or make identity fields measurement-owned.
 Verification evidence: Not yet implemented. Future deterministic coverage must exercise Color-only changes in both directions when
 Marketing Name equals Color, prove immediate three-view refresh and restart persistence, and preserve samples, dates and notes.
 
@@ -264,9 +276,9 @@ Steps to reproduce: Open a public Manufacturer Report containing product-level r
 `Product-level engineering context`; inspect the rightmost MSRP, Product and Video columns.
 Screenshot / export / report attached:
 `codex-clipboard-a7f4753b-15c8-439a-8c16-d36110c9b8ef.png`; owner website review on 2026-07-29.
-Resolution: Initial source review finds that the 17-column table is emitted directly inside `main` without a screen overflow wrapper;
-the existing compact wrapping rule applies only to print media. Research the smallest shared HTML/CSS correction before
-implementation and visually inspect representative short/long manufacturer and material names.
+Resolution: Scheduled as v60.0.4. Initial source review finds that the 17-column table is emitted directly inside `main` without a
+screen overflow wrapper; the existing compact wrapping rule applies only to print media. Research the smallest shared HTML/CSS
+correction before implementation and visually inspect representative short/long manufacturer and material names.
 Verification evidence: Not yet implemented. Future acceptance must cover desktop and narrow HTML containment, keyboard-accessible
 horizontal scrolling where used, natural wrapping, unchanged cells/links and a visually inspected unclipped PDF.
 
@@ -306,8 +318,9 @@ or weaken per-material publication controls.
 Steps to reproduce: Open the main public website and select `Engineering Reports`; compare its full-page navigation with Database,
 Manufacturers, Experimental, Printing Price Calculator and Methodology tabs.
 Screenshot / export / report attached: None; owner workflow observation on 2026-07-29.
-Resolution: Research the current report-portal renderer, back-navigation, deep links, browser history and mobile tab behavior before
-choosing an embedded-section or shared-shell design. Require owner approval of the bounded design before implementation.
+Resolution: Scheduled as v60.0.5. Research the current report-portal renderer, back-navigation, deep links, browser history and
+mobile tab behavior before choosing an embedded-section or shared-shell design. Require owner approval of the bounded design before
+implementation.
 Verification evidence: Not yet implemented. Future acceptance should cover direct/deep report URLs, tab switching, back/forward,
 responsive layout, accessibility, Preview/Production HTML parity and unchanged report publication scope.
 

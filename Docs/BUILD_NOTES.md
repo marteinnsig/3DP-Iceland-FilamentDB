@@ -1,5 +1,20 @@
 # Current Build Notes - v57.0 Research
 
+## v60.0.1 Purchase-order Material Creation Integrity
+
+The selected-line and received-order bulk paths now commit canonical parent
+Materials and Purchase Order links in one SQLite transaction. Material
+validation or persistence failure rolls back database and in-memory candidates,
+preserves landed-cost snapshot fields and reports `Material Creation Blocked`.
+Inventory creation starts only after parent/link success.
+
+Debug/Release, Help and documentation gates pass. Disposable Release smoke
+`20260730144248-13602dab` passes Full Data Verification 421/421 with exact
+logical/business-state recovery. Owner selected, bulk and retry workflows pass.
+The first owner Verification exposed a false legacy-only 1:1 requirement for
+valid versioned cross-currency Inventory provenance; that gate is corrected and
+the owner rerun confirms Full Data Verification PASS. v60.0.1 is complete.
+
 ## v59.0.11 Public Base-material Printing Guidance
 
 Canonical Base Material Catalog guidance is now resolved strictly by

@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v59.0.11 — Public Base-material Printing Gui
 
 Current canonical application release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Current roadmap increment: **v59.0.11 — Public Base-material Printing Guidance (Complete)**
+Current roadmap increment: **v60.0.2 — Fast Materials Editor Focus and Keyboard Navigation (Planned)**
 
 Current acceptance note: v59.0.11 is owner accepted; Full Data Verification passes 420/420.
 
-Next note: select the next bounded roadmap item; Production and FTPS remain unchanged.
+Next note: v60.0.1 is complete; v60.0.2 is next. Production and FTPS remain unchanged.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -45,7 +45,8 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v56 | Governed Public Demo Dataset | ★★★☆☆ | Complete — canonical v56.0.6 dataset accepted |
 | v57 | Public Website Experience and Canonical Branding | ★★★★☆ | Complete — canonical v57.0.5 runtime accepted |
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
-| v59 | Application Navigation Finalization | ★★★☆☆ | Current — research before implementation |
+| v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
+| v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Planned — five open findings scheduled |
 
 ## Reconciliation of the older plans
 
@@ -2608,7 +2609,7 @@ to unstarted authoritative planning slots.
     - Completion condition met: multi-aspect report/website-document/quote output and final release gates pass.
 
 - **v59.0 — Application Navigation Finalization**
-  - State: Current; owner approved the canonical tab sequence, grouped Navigate menu and bounded retirement plan.
+  - State: Complete; canonical v59.0.11 is owner runtime/visual accepted and Full Data Verification passes 420/420.
   - Inventory every menu item, command target, shortcut, Help link and supported top-level or nested tab destination.
   - Add high-value commands that select and focus the correct tab; identify redundant, stale, duplicated or low-value actions.
   - Do not retire accepted paths until callers, discoverability and replacement ownership are mapped and runtime accepted.
@@ -2737,35 +2738,62 @@ to unstarted authoritative planning slots.
   - Completion condition met: owner accepted full-data HTML/PDF presentation and Verification 420/420; deterministic
     linked, unlinked, orphan and partial-value contracts pass.
 
+## Planned — v60 Bug Fixes and Workflow Reliability
+
+The five findings reviewed from `Docs/BUG_FEEDBACK_LOG.md` are scheduled below. v60.0.1 is solved and four remain `Open`.
+A finding becomes `Solved` only after implementation, required gates and owner runtime or visual acceptance. New reproducible
+blockers may change the order, but must be recorded here before implementation.
+
+- **v60.0.1 — Purchase-order Material Creation Integrity**
+  - State: Complete and owner runtime accepted; corrected Full Data Verification passes.
+  - Make selected-item and bulk creation persist and validate each parent Material before linking a Purchase Order line.
+  - Use one fail-closed workflow with explicit rollback, retry and actionable error ownership; never weaken the SQLite foreign key.
+  - Preserve immutable landed-cost snapshots and prevent orphan Materials, partial links and duplicate retry results.
+  - Update Help and deterministic automation for both creation paths; keep owner database and unrelated purchase data unchanged.
+  - Completion condition: disposable selected/multi-line success and rejection cases prove continued app operation, exact rollback,
+    landed-cost retention, no orphan/duplicate/partial state and exact final business-state recovery.
+  - Implementation: one SQLite transaction persists canonical parent Materials before Purchase Order links for both UI paths.
+  - Failure behavior: validation/SQLite failure rolls back database and in-memory candidates and shows `Material Creation Blocked`.
+  - Automation: Full Verification owns a disposable single/multi-line success, forced-FK rollback and duplicate-free retry contract.
+  - Owner runtime: selected, bulk and duplicate-free retry behavior pass; first owner Verification exposed an unrelated false gate.
+  - Correction: v53.0.1 now accepts governed positive versioned Inventory rates and retains legacy-v1 exact 1:1 validation.
+  - Evidence: Debug/Release and Help/docs gates pass; smoke `20260730144248-13602dab` passes 421/421 with exact state recovery.
+  - Completion condition met: owner accepts both creation paths, retry safety and corrected Full Data Verification PASS.
+- **v60.0.2 — Fast Materials Editor Focus and Keyboard Navigation**
+  - State: Planned; follows the blocker correction.
+  - Preserve intentional mouse or keyboard editor activation while deferred auto-save, filter and canonical refresh work completes.
+  - Keep one-field auto-save, filters, selection and viewport behavior; do not suppress canonical synchronization.
+  - Extend deterministic coverage for four arrow directions, Tab/Shift+Tab, mouse activation and rapid repeated edits.
+  - Completion condition: owner accepts stable one-cell navigation and continued typing with no focus jump, editor loss or viewport
+    movement through deferred save/refresh, and exact saved values persist after restart.
+- **v60.0.3 — Material Identity Refresh Across Measurement Views**
+  - State: Planned; bounded MaterialID-based synchronization correction.
+  - Correct the Fast Tensile, Impact and Stiffness snapshot invalidation or named-field comparison contract.
+  - Keep Materials as identity owner; do not rewrite measurement samples, dates or notes and do not compare only a combined label.
+  - Completion condition: Black/Yellow/Black Color-only changes propagate immediately to all three views when Marketing Name also
+    equals Black, persist after restart and leave every measurement-owned value unchanged.
+- **v60.0.4 — Manufacturer Report Table Containment**
+  - State: Planned; bounded public report-layout correction.
+  - Add responsive, keyboard-accessible screen containment for the complete product-level engineering table.
+  - Preserve every column, cell and link plus the separate compact print/PDF contract; do not change public data or allowlists.
+  - Keep visual HTML/PDF usability acceptance manual; deterministic checks should cover structure, escaping and retained content.
+  - Completion condition: representative short/long data is readable and contained in desktop and narrow HTML, and the visually
+    inspected PDF has no clipping, overlap, missing column or forced unreadable compression.
+- **v60.0.5 — Engineering Reports Main-site Navigation**
+  - State: Planned; research and owner design approval precede implementation.
+  - Map the report portal renderer, stable/deep routes, browser history, back navigation, mobile behavior and shared-shell options.
+  - Integrate an approved in-page tab or shared-shell experience without duplicating rendering or weakening publication controls.
+  - Preserve accessibility, responsive behavior, public allowlists and Preview/Production parity; Production and FTPS stay blocked.
+  - Completion condition: owner approves the bounded design and accepts tab switching, direct/deep links, back/forward navigation,
+    responsive output and unchanged report publication scope after applicable deterministic and visual gates pass.
+- **v60 parent closure**
+  - State: Planned; no separate implementation begins until v60.0.1 through v60.0.5 are complete or formally dispositioned.
+  - Re-read the feedback ledger, reconcile Help, automation, Verification, release evidence and README, then run final release gates.
+  - Completion condition: all recorded v60 increments are owner accepted, all five ledger items have canonical dispositions and the
+    parent release passes Debug/Release, applicable security/static gates and Full Data Verification.
+
 ### Intentionally unscheduled
 
-- The Purchase Orders `Create Material from Selected Item` foreign-key crash is
-  the highest-priority immediate defect.
-  - Preserve the SQLite foreign key and immutable landed-cost snapshot; require
-    parent Material persistence before linking any Purchase Order line.
-  - Unify selected-item and bulk material/inventory creation behind fail-closed
-    validation, rollback, retry and visible-error ownership.
-  - Completion condition: disposable selected/multi-line workflows prove no
-    crash, orphan, duplicate or partial link and exact business-state recovery.
-- The reproducible Fast Materials arrow/mouse editor focus race is an immediate
-  bounded daily-workflow defect after the Purchase Orders crash.
-  - Preserve auto-save, filters, selection and viewport while preventing
-    deferred canonical synchronization from closing the new active editor.
-  - Completion condition: owner accepts four-direction, Tab/Shift+Tab, mouse
-    and rapid-edit behavior with stable focus through deferred save/refresh.
-- The reproducible MAT0207 Color synchronization defect is an immediate bounded
-  Materials/measurement-view investigation.
-  - Preserve canonical MaterialID ownership and measurement samples; correct
-    only the Fast-view refresh/invalidation or field-comparison contract.
-  - Completion condition: Color-only Black/Yellow/Black changes propagate
-    immediately to Tensile, Impact and Stiffness even when Marketing Name is
-    also Black, persist after restart and leave measurements unchanged.
-- The Public Manufacturer Report product-level table can overflow the report
-  frame in screen HTML and is the next bounded report-layout defect candidate.
-  - Add a responsive, accessible containment contract without removing columns,
-    links or data and without weakening the separate compact print/PDF layout.
-  - Completion condition: owner accepts representative desktop, narrow-window
-    and PDF output with no clipping, overlap or unreadable forced compression.
 - The unresolved one-day Variant-edit crash remains an immediate defect
   investigation, not a feature version. If reproduced with diagnostics it takes
   priority as the next bounded patch; it is not marked solved by similarity to
@@ -2774,14 +2802,6 @@ to unstarted authoritative planning slots.
 - Optional destructive clean uninstall remains deferred. Normal uninstall stays
   data-preserving; no evidence, backups, SQLite or credentials may be deleted
   automatically.
-- Align Engineering Reports with the main public website tab experience.
-  - Replace the current separate-page navigation feel with an approved in-page
-    tab or shared-shell design after renderer and deep-link research.
-  - Preserve stable report URLs, direct links, browser history, accessibility,
-    responsive behavior, public allowlists and Preview/Production parity.
-  - Do not duplicate report rendering or weaken per-material publication scope.
-  - Completion condition: owner approves the bounded design and runtime/visual
-    acceptance proves tab, direct-link and back/forward behavior.
 - Enrich the public Manufacturers website surface from canonical `Manufacturers`
   records so each manufacturer can carry a fuller governed profile.
   - Research current profile fields, completeness, public suitability and the
