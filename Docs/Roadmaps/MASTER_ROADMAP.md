@@ -2747,6 +2747,12 @@ to unstarted authoritative planning slots.
     validation, rollback, retry and visible-error ownership.
   - Completion condition: disposable selected/multi-line workflows prove no
     crash, orphan, duplicate or partial link and exact business-state recovery.
+- The reproducible Fast Materials arrow/mouse editor focus race is an immediate
+  bounded daily-workflow defect after the Purchase Orders crash.
+  - Preserve auto-save, filters, selection and viewport while preventing
+    deferred canonical synchronization from closing the new active editor.
+  - Completion condition: owner accepts four-direction, Tab/Shift+Tab, mouse
+    and rapid-edit behavior with stable focus through deferred save/refresh.
 - The reproducible MAT0207 Color synchronization defect is an immediate bounded
   Materials/measurement-view investigation.
   - Preserve canonical MaterialID ownership and measurement samples; correct

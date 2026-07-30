@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 4 |
+| Open | 5 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 101 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **111** |
+| **Total tracked findings** | **112** |
 
 ## Triage categories
 
@@ -165,6 +165,27 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-07-30
+Area: Fast Materials / editable-cell keyboard navigation and focus
+Type: Bug / Workflow friction
+Severity: Important
+Status: Open
+What happened: After entering a value such as `GF` in Reinforcement and pressing an arrow key, focus initially moves toward the
+adjacent cell but then jumps back or closes. Clicking another editable cell can also lose focus or activate a nearby cell without an
+obvious pattern. The behavior occurs across editable Materials fields, not only Reinforcement.
+Expected behavior: Arrow keys commit the current value and move exactly one row/column to the requested editable cell, which remains
+active for continued typing. A mouse-selected cell must retain its editor until the user commits, cancels or deliberately navigates;
+background auto-save/refresh must never steal or redirect focus.
+Steps to reproduce: Edit Reinforcement, enter `GF`, press Down to edit the row below, and begin typing. Repeat with Left/Right/Up or
+click another editable cell while the prior edit's deferred auto-save is pending.
+Screenshot / export / report attached: None; owner runtime reproduction on 2026-07-30.
+Resolution: Read-only diagnosis confirms a focus race. Arrow navigation closes the current editor and schedules the adjacent editor
+at Input priority. The Materials auto-save timer then rebuilds filters and invokes canonical synchronization more than once; each
+synchronization calls `CloseEditor(commit: true)` and can close the newly activated cell. Preserve auto-save, filters, viewport and
+canonical refresh while preventing background synchronization from closing or relocating an intentional active editor.
+Verification evidence: Not yet implemented. Future deterministic coverage must prove all four arrow directions, Tab/Shift+Tab,
+mouse activation, rapid repeated edits, one-field auto-save and unchanged row/column/viewport selection after deferred refresh.
 
 Date: 2026-07-30
 Area: Purchase Orders / bulk Material creation
