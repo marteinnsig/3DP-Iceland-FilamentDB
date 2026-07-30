@@ -2747,14 +2747,6 @@ to unstarted authoritative planning slots.
     validation, rollback, retry and visible-error ownership.
   - Completion condition: disposable selected/multi-line workflows prove no
     crash, orphan, duplicate or partial link and exact business-state recovery.
-- After that crash contract is accepted, add a separate selected-order
-  material-only bulk action for all unlinked Filament lines.
-  - Preserve the singular selected-item action and the received-spool workflow;
-    skip linked/non-Filament lines and create no Inventory.
-  - Require exact default-No create/skip/error counts, missing-description
-    blocking and the same retry-safe parent/link transaction.
-  - Completion condition: owner accepts mixed-order behavior and deterministic
-    cancel, uniqueness, partial-input and exact-recovery contracts pass.
 - The reproducible MAT0207 Color synchronization defect is an immediate bounded
   Materials/measurement-view investigation.
   - Preserve canonical MaterialID ownership and measurement samples; correct
