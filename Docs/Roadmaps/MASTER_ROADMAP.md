@@ -46,7 +46,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v57 | Public Website Experience and Canonical Branding | ★★★★☆ | Complete — canonical v57.0.5 runtime accepted |
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
-| v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Planned — five open findings scheduled |
+| v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Planned — six findings scheduled |
 
 ## Reconciliation of the older plans
 
@@ -2740,7 +2740,8 @@ to unstarted authoritative planning slots.
 
 ## Planned — v60 Bug Fixes and Workflow Reliability
 
-The five findings reviewed from `Docs/BUG_FEEDBACK_LOG.md` are scheduled below. v60.0.1 is solved and four remain `Open`.
+The six findings reviewed from `Docs/BUG_FEEDBACK_LOG.md` are scheduled below. v60.0.1 through v60.0.3 are solved and three
+remain `Open`.
 A finding becomes `Solved` only after implementation, required gates and owner runtime or visual acceptance. New reproducible
 blockers may change the order, but must be recorded here before implementation.
 
@@ -2796,10 +2797,19 @@ blockers may change the order, but must be recorded here before implementation.
   - Preserve accessibility, responsive behavior, public allowlists and Preview/Production parity; Production and FTPS stay blocked.
   - Completion condition: owner approves the bounded design and accepts tab switching, direct/deep links, back/forward navigation,
     responsive output and unchanged report publication scope after applicable deterministic and visual gates pass.
+- **v60.0.6 — Locale-aware Application Date Presentation**
+  - State: Planned; research and approve the date-field inventory and compatibility contract before implementation.
+  - Parse and display user-facing calendar dates through the active Windows locale, including Icelandic day-month-year formatting.
+  - Persist canonical calendar dates as ISO `yyyy-MM-dd`; do not store locale-dependent text or rewrite immutable saved snapshots.
+  - Keep UTC timestamps, IDs, file names, manifests, logs and deterministic interchange/evidence in their governed ISO formats.
+  - Normalize Purchase Order-to-Materials date propagation at the UI/storage boundary and retain valid legacy date compatibility.
+  - Assess Help plus deterministic coverage for parsing, culture changes, invalid input, sorting, restart and import/export behavior.
+  - Completion condition: owner accepts consistent dates under `is-IS` and another culture with unambiguous canonical persistence,
+    exact round trips, clear invalid-input handling and unchanged immutable history and deterministic evidence.
 - **v60 parent closure**
-  - State: Planned; no separate implementation begins until v60.0.1 through v60.0.5 are complete or formally dispositioned.
+  - State: Planned; no separate implementation begins until v60.0.1 through v60.0.6 are complete or formally dispositioned.
   - Re-read the feedback ledger, reconcile Help, automation, Verification, release evidence and README, then run final release gates.
-  - Completion condition: all recorded v60 increments are owner accepted, all five ledger items have canonical dispositions and the
+  - Completion condition: all recorded v60 increments are owner accepted, all six ledger items have canonical dispositions and the
     parent release passes Debug/Release, applicable security/static gates and Full Data Verification.
 
 ### Intentionally unscheduled

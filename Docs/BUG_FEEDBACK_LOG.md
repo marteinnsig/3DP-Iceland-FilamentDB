@@ -2,7 +2,7 @@
 
 Use this during the usage-mode period.
 
-## Status review — 2026-07-29
+## Status review — 2026-07-30
 
 This review preserves every original description and lifecycle status.
 `Solved` means the change is implemented, relevant gates pass and owner runtime
@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 2 |
+| Open | 3 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 104 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **112** |
+| **Total tracked findings** | **113** |
 
 ## Triage categories
 
@@ -165,6 +165,30 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-07-30
+Area: Application date entry and display / Purchase Orders / Materials
+Type: Workflow friction / Data issue
+Severity: Important
+Status: Open
+What happened: Dates entered manually are understood in Icelandic day-month-year order, while a Purchase Order created by the
+application receives `yyyy-MM-dd`. That value is copied unchanged into Materials `Purchase Date` and `Price Checked`, so equivalent
+user-facing date fields show different formats depending on their source.
+Expected behavior: User-editable date fields should parse and display according to the active Windows system locale; for example,
+an Icelandic locale should use its configured day-month-year short-date format consistently. Persist an unambiguous canonical
+`yyyy-MM-dd` date in SQLite and localize only the UI boundary, rather than storing locale-dependent text that becomes ambiguous when
+the database moves between computers or the system locale changes. Keep UTC timestamps, manifests, machine evidence and other
+deterministic interchange values in their governed ISO formats, and do not silently rewrite immutable historical snapshots.
+Steps to reproduce: Create a Purchase Order and inspect its `Purchase Date`; create Materials from its Filament lines and compare
+the resulting Materials `Purchase Date` and `Price Checked` values with a date entered manually under an Icelandic Windows locale.
+Screenshot / export / report attached: None; owner workflow observation on 2026-07-30.
+Resolution: Scheduled as v60.0.6. Inventory every editable/displayed application date and classify it as a calendar date, UTC
+timestamp, immutable snapshot or interchange/export value before implementation. Define one locale-aware parse/display boundary
+with canonical ISO persistence and explicit legacy-input compatibility; do not apply locale formatting blindly to public reports,
+file names, IDs, logs or signed/deterministic evidence.
+Verification evidence: Not yet implemented. Future acceptance must cover `is-IS` and a contrasting Windows culture, valid and
+ambiguous input, restart and locale-change round trips, sorting/filtering, Purchase Order-to-Materials propagation, import/export
+compatibility, invalid-date feedback, immutable history and unchanged deterministic report/evidence contracts.
 
 Date: 2026-07-30
 Area: Fast Materials / editable-cell keyboard navigation and focus
