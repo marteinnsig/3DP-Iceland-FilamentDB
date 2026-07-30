@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 3 |
+| Open | 4 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 101 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
-| **Total tracked findings** | **109** |
+| **Total tracked findings** | **110** |
 
 ## Triage categories
 
@@ -165,6 +165,28 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-07-30
+Area: Purchase Orders / Create Material from Selected Item
+Type: Bug / Data issue
+Severity: Blocker
+Status: Open
+What happened: After creating a Purchase Order with several lines and calculating landed cost, clicking
+`Create Material from Selected Item` terminated the application.
+Expected behavior: Validate and persist the new parent Material before assigning its MaterialID to the Purchase Order line. If the
+Material save or link save fails, roll back both in-memory changes, keep the app running, preserve the order/landed-cost snapshot and
+show one actionable error without creating an orphan, partial link or duplicate retry.
+Steps to reproduce: Create a Purchase Order, add several item lines, calculate landed cost, select an unlinked Filament line and click
+`Create Material from Selected Item`.
+Screenshot / export / report attached: Windows Application events at 2026-07-30 13:50:44; .NET Runtime event 1026, Application Error
+1000 and WER report `4d4e4004-1f39-47a8-9dad-a1562ee87812`.
+Resolution: Read-only diagnosis confirms unhandled SQLite error 19 in `ReplacePurchaseOrders`, called by
+`CreateMaterialFromPurchaseLine_Click` line 28744. The handler assigns the generated MaterialID to the line, ignores the Boolean
+result of `SaveNativeMaterialsSilent()` and then saves the foreign-key child link. The bulk inventory/material path has the same
+unchecked parent-save sequence. Correct both paths through one fail-closed parent/link workflow; do not weaken the foreign key.
+Verification evidence: Not yet implemented. Future disposable coverage must exercise selected and multi-line creation, parent
+validation/save rejection, landed-cost retention, exact rollback/retry behavior, no orphan/duplicate rows, continued app operation
+and exact final business-state recovery.
 
 Date: 2026-07-30
 Area: Materials / Tensile / Impact / Stiffness identity synchronization

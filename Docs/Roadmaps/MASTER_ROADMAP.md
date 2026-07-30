@@ -2739,6 +2739,14 @@ to unstarted authoritative planning slots.
 
 ### Intentionally unscheduled
 
+- The Purchase Orders `Create Material from Selected Item` foreign-key crash is
+  the highest-priority immediate defect.
+  - Preserve the SQLite foreign key and immutable landed-cost snapshot; require
+    parent Material persistence before linking any Purchase Order line.
+  - Unify selected-item and bulk material/inventory creation behind fail-closed
+    validation, rollback, retry and visible-error ownership.
+  - Completion condition: disposable selected/multi-line workflows prove no
+    crash, orphan, duplicate or partial link and exact business-state recovery.
 - The reproducible MAT0207 Color synchronization defect is an immediate bounded
   Materials/measurement-view investigation.
   - Preserve canonical MaterialID ownership and measurement samples; correct
