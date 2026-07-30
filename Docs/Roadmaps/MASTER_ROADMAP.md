@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v59.0.11 — Public Base-material Printing Gui
 
 Current canonical application release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Current roadmap increment: **v60.0.3 — Material Identity Refresh Across Measurement Views (Planned)**
+Current roadmap increment: **v60.0.4 — Manufacturer Report Table Containment (Planned)**
 
-Current acceptance note: v60.0.2 is owner accepted; Full Data Verification passes 422/422.
+Current acceptance note: v60.0.3 is owner accepted; Full Data Verification passes 423/423.
 
-Next note: v60.0.2 is complete; v60.0.3 is next. Production and FTPS remain unchanged.
+Next note: v60.0.3 is complete; v60.0.4 is next. Production and FTPS remain unchanged.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2771,11 +2771,17 @@ blockers may change the order, but must be recorded here before implementation.
   - Evidence: Debug/Release and Help pass; smoke `20260730145422-31f69821` passes 422/422 with exact state recovery.
   - Completion condition met: owner accepts arrows, Tab/Shift+Tab, mouse transfer, rapid edits, restart and Verification PASS.
 - **v60.0.3 — Material Identity Refresh Across Measurement Views**
-  - State: Planned; bounded MaterialID-based synchronization correction.
+  - State: Complete; implementation, automated gates and owner runtime acceptance pass.
   - Correct the Fast Tensile, Impact and Stiffness snapshot invalidation or named-field comparison contract.
   - Keep Materials as identity owner; do not rewrite measurement samples, dates or notes and do not compare only a combined label.
   - Completion condition: Black/Yellow/Black Color-only changes propagate immediately to all three views when Marketing Name also
     equals Black, persist after restart and leave every measurement-owned value unchanged.
+  - Implementation: compare eight named identity fields independently, copy all three row models, then reload Fast views once.
+  - Runtime correction: duplicate display names stay advisory under MaterialID; auto-save and close persist child identity.
+  - Preserved: stable MaterialID ownership plus measurement samples, dates, notes, calculations, filters and viewport behavior.
+  - Evidence: Debug/Release and Help pass; smoke `20260730151123-a5098658` passes 423/423 with exact state recovery.
+  - Correction evidence: smoke `20260730162359-1eaaead1` passes 423/423 with exact state recovery.
+  - Completion condition met: owner accepts Black/Yellow/Black, close without warning, restart persistence and Verification PASS.
 - **v60.0.4 — Manufacturer Report Table Containment**
   - State: Planned; bounded public report-layout correction.
   - Add responsive, keyboard-accessible screen containment for the complete product-level engineering table.

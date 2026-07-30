@@ -15087,6 +15087,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             fastMaterialsEditorFocusReady
                 ? "Stale focus events cannot close the active editor; background canonical refresh defers only while editing"
                 : "Editor event ownership or active-editor background refresh deferral failed"));
+        var materialIdentityMeasurementRefreshReady =
+            RunMaterialIdentityMeasurementRefreshContractVerification();
+        checks.Add(new VerificationCheck(
+            "v60.0.3 Material identity field-independent measurement refresh contract",
+            materialIdentityMeasurementRefreshReady,
+            materialIdentityMeasurementRefreshReady
+                ? "Black/Yellow/Black Color-only changes reach all measurement rows by MaterialID without changing samples or notes"
+                : "A named identity field failed to refresh independently or measurement-owned evidence changed"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",
@@ -27560,7 +27568,21 @@ private List<string> GetVisibleAiMaterialLabels()
         RefreshInventorySummary();
         if (SaveNativeMaterialsSilent())
         {
-            RefreshNativeInputModulesFromMaterialManager(markDirty: false);
+            RefreshNativeInputModulesFromMaterialManager(markDirty: true);
+            if (_nativeTensileDirty || _nativeImpactDirty || _nativeStiffnessDirty)
+            {
+                try
+                {
+                    SaveNativeMeasurementsToSqlite();
+                    SetNativeTensileDirty(false);
+                    SetNativeImpactDirty(false);
+                    SetNativeStiffnessDirty(false);
+                }
+                catch (Exception ex)
+                {
+                    ShowNativeSaveBlockedStatus("Measurements", ex.Message);
+                }
+            }
         }
         QueueNativeMaterialDependentIntelligenceRefresh();
     }
@@ -27570,6 +27592,11 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         // Measurement/input modules reference MaterialID and display current identity
         // from Material Manager. Identity fields should never be owned by measurement rows.
+        SyncNativeMeasurementRowsWithMaterialManager(markDirty);
+    }
+
+    private void SyncNativeMeasurementRowsWithMaterialManager(bool markDirty)
+    {
         SyncNativeTensileRowsWithMaterialManager(markDirty);
         SyncNativeImpactRowsWithMaterialManager(markDirty);
         SyncNativeStiffnessRowsWithMaterialManager(markDirty);
@@ -27621,6 +27648,11 @@ private List<string> GetVisibleAiMaterialLabels()
                 }
                 return;
             }
+
+            // CommitActiveEditor can apply the final identity edit after the
+            // normal debounce timer has stopped. Refresh the child rows now so
+            // the measurement transaction below persists that final value.
+            RefreshNativeInputModulesFromMaterialManager(markDirty: true);
         }
 
         if (_nativeTensileDirty || _nativeImpactDirty || _nativeStiffnessDirty)
@@ -31071,18 +31103,15 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private bool NativeMaterialHasBlockingValidationIssues()
     {
-        var hasInvalidRows = _nativeMaterialRows.Any(row => !row.IsRowValid);
-        var hasDuplicateIds = _nativeMaterialRows
-            .Where(row => !string.IsNullOrWhiteSpace(row.MaterialID))
-            .GroupBy(row => row.MaterialID.Trim(), StringComparer.OrdinalIgnoreCase)
-            .Any(group => group.Count() > 1);
-        var hasDuplicateDisplayNames = _nativeMaterialRows
-            .Where(row => !string.IsNullOrWhiteSpace(row.WebsiteDisplayName))
-            .GroupBy(row => row.WebsiteDisplayName.Trim(), StringComparer.OrdinalIgnoreCase)
-            .Any(group => group.Count() > 1);
-
-        return hasInvalidRows || hasDuplicateIds || hasDuplicateDisplayNames;
+        // Website display names are advisory labels, not relational identity.
+        // Legitimate materials can share one; stable MaterialID remains the
+        // SQLite and measurement relationship key.
+        return NativeMaterialRowsHaveBlockingValidationIssues(_nativeMaterialRows);
     }
+
+    private static bool NativeMaterialRowsHaveBlockingValidationIssues(
+        IEnumerable<NativeMaterialRow> rows) =>
+        rows.Any(row => !row.IsRowValid);
 
     private bool NativeMaterialIdsAreSqliteSafe()
     {
@@ -31122,7 +31151,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
         if (NativeMaterialHasBlockingValidationIssues())
         {
-            var result = MessageBox.Show("Material Manager validation found missing required fields, duplicate Material IDs, or duplicate display names. Save anyway?", "Material Manager Validation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            var result = MessageBox.Show("Material Manager validation found missing required fields. Save anyway?", "Material Manager Validation", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result != MessageBoxResult.Yes)
             {
                 return;
@@ -31131,7 +31160,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
         CreateDatabaseBackupBeforeMajorMaterialChange("manual Material Manager backup");
         _database.ReplaceNativeMaterialManagerRows(_nativeMaterialRows.Select(NativeMaterialRecordFromRow));
-        SyncNativeTensileRowsWithMaterialManager(markDirty: true);
+        SyncNativeMeasurementRowsWithMaterialManager(markDirty: true);
         SetNativeMaterialsDirty(false);
         RefreshNativeMaterialGridValidation();
         RefreshInventorySummary();
@@ -31352,7 +31381,7 @@ private List<string> GetVisibleAiMaterialLabels()
         _nativeMaterialRows.Remove(selected);
         RefreshFastManufacturerChoices();
         if (ReferenceEquals(_lastSelectedNativeMaterial, selected)) _lastSelectedNativeMaterial = null;
-        SyncNativeTensileRowsWithMaterialManager(markDirty: true);
+        SyncNativeMeasurementRowsWithMaterialManager(markDirty: true);
         MarkNativeMaterialsDirty();
         RefreshNativeMaterialGridValidation();
         _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
@@ -31386,7 +31415,7 @@ private List<string> GetVisibleAiMaterialLabels()
         _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
             "recalculated canonical Materials");
 
-        SyncNativeTensileRowsWithMaterialManager(markDirty: true);
+        SyncNativeMeasurementRowsWithMaterialManager(markDirty: true);
         MarkNativeMaterialsDirty();
         RefreshNativeMaterialSummary();
         ShowTransientStatus("Material fields recalculated successfully.");
@@ -31650,8 +31679,20 @@ private List<string> GetVisibleAiMaterialLabels()
         };
     }
 
-    private static void CopyNativeMaterialIdentityToTensileRow(NativeMaterialRow material, NativeTensileMeasurementRow tensileRow)
+    private static bool CopyNativeMaterialIdentityToTensileRow(
+        NativeMaterialRow material,
+        NativeTensileMeasurementRow tensileRow)
     {
+        var changed =
+            !string.Equals(tensileRow.MaterialID, material.MaterialID, StringComparison.Ordinal) ||
+            !string.Equals(tensileRow.Manufacturer, material.Manufacturer, StringComparison.Ordinal) ||
+            !string.Equals(tensileRow.ProductLine, material.ProductLine, StringComparison.Ordinal) ||
+            !string.Equals(tensileRow.MarketingName, material.MarketingName, StringComparison.Ordinal) ||
+            !string.Equals(tensileRow.BaseMaterial, material.BaseMaterial, StringComparison.Ordinal) ||
+            !string.Equals(tensileRow.MaterialCategory, material.MaterialCategory, StringComparison.Ordinal) ||
+            !string.Equals(tensileRow.VariantFinish, material.VariantFinish, StringComparison.Ordinal) ||
+            !string.Equals(tensileRow.Reinforcement, material.Reinforcement, StringComparison.Ordinal) ||
+            !string.Equals(tensileRow.Color, material.Color, StringComparison.Ordinal);
         tensileRow.MaterialID = material.MaterialID;
         tensileRow.Manufacturer = material.Manufacturer;
         tensileRow.ProductLine = material.ProductLine;
@@ -31661,6 +31702,7 @@ private List<string> GetVisibleAiMaterialLabels()
         tensileRow.VariantFinish = material.VariantFinish;
         tensileRow.Reinforcement = material.Reinforcement;
         tensileRow.Color = material.Color;
+        return changed;
     }
 
     private void SyncNativeTensileRowsWithMaterialManager(bool markDirty)
@@ -31699,10 +31741,8 @@ private List<string> GetVisibleAiMaterialLabels()
             var key = material.MaterialID.Trim();
             if (tensileById.TryGetValue(key, out var existing))
             {
-                var before = string.Join("|", existing.Manufacturer, existing.ProductLine, existing.MarketingName, existing.BaseMaterial, existing.MaterialCategory, existing.VariantFinish, existing.Reinforcement, existing.Color);
-                CopyNativeMaterialIdentityToTensileRow(material, existing);
-                var after = string.Join("|", existing.Manufacturer, existing.ProductLine, existing.MarketingName, existing.BaseMaterial, existing.MaterialCategory, existing.VariantFinish, existing.Reinforcement, existing.Color);
-                if (!string.Equals(before, after, StringComparison.Ordinal)) changed = true;
+                if (CopyNativeMaterialIdentityToTensileRow(material, existing))
+                    changed = true;
             }
             else
             {
@@ -31715,9 +31755,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
         ApplyNativeTensileComputedFields(_nativeTensileRows);
         RefreshNativeTensileSummary();
-        ApplyNativeMeasurementFilters();
         if (markDirty) MarkNativeTensileDirty();
-        SyncNativeImpactRowsWithMaterialManager(markDirty);
     }
 
     private List<NativeTensileMeasurementRow> BuildNativeTensileRowsFromCanonicalStorage()
@@ -32083,8 +32121,20 @@ private List<string> GetVisibleAiMaterialLabels()
         Color = material.Color
     };
 
-    private static void CopyNativeMaterialIdentityToImpactRow(NativeMaterialRow material, NativeImpactMeasurementRow impactRow)
+    private static bool CopyNativeMaterialIdentityToImpactRow(
+        NativeMaterialRow material,
+        NativeImpactMeasurementRow impactRow)
     {
+        var changed =
+            !string.Equals(impactRow.MaterialID, material.MaterialID, StringComparison.Ordinal) ||
+            !string.Equals(impactRow.Manufacturer, material.Manufacturer, StringComparison.Ordinal) ||
+            !string.Equals(impactRow.ProductLine, material.ProductLine, StringComparison.Ordinal) ||
+            !string.Equals(impactRow.MarketingName, material.MarketingName, StringComparison.Ordinal) ||
+            !string.Equals(impactRow.BaseMaterial, material.BaseMaterial, StringComparison.Ordinal) ||
+            !string.Equals(impactRow.MaterialCategory, material.MaterialCategory, StringComparison.Ordinal) ||
+            !string.Equals(impactRow.VariantFinish, material.VariantFinish, StringComparison.Ordinal) ||
+            !string.Equals(impactRow.Reinforcement, material.Reinforcement, StringComparison.Ordinal) ||
+            !string.Equals(impactRow.Color, material.Color, StringComparison.Ordinal);
         impactRow.MaterialID = material.MaterialID;
         impactRow.Manufacturer = material.Manufacturer;
         impactRow.ProductLine = material.ProductLine;
@@ -32094,6 +32144,7 @@ private List<string> GetVisibleAiMaterialLabels()
         impactRow.VariantFinish = material.VariantFinish;
         impactRow.Reinforcement = material.Reinforcement;
         impactRow.Color = material.Color;
+        return changed;
     }
 
     private void SyncNativeImpactRowsWithMaterialManager(bool markDirty)
@@ -32107,11 +32158,13 @@ private List<string> GetVisibleAiMaterialLabels()
             .ToList();
 
         var validMaterialIds = materialRows.Select(m => m.MaterialID.Trim()).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var changed = false;
         for (var i = _nativeImpactRows.Count - 1; i >= 0; i--)
         {
             if (string.IsNullOrWhiteSpace(_nativeImpactRows[i].MaterialID) || !validMaterialIds.Contains(_nativeImpactRows[i].MaterialID.Trim()))
             {
                 _nativeImpactRows.RemoveAt(i);
+                changed = true;
             }
         }
 
@@ -32123,13 +32176,21 @@ private List<string> GetVisibleAiMaterialLabels()
         foreach (var material in materialRows)
         {
             var key = material.MaterialID.Trim();
-            if (impactById.TryGetValue(key, out var existing)) CopyNativeMaterialIdentityToImpactRow(material, existing);
-            else _nativeImpactRows.Add(NativeImpactRowFromMaterial(material));
+            if (impactById.TryGetValue(key, out var existing))
+            {
+                if (CopyNativeMaterialIdentityToImpactRow(material, existing))
+                    changed = true;
+            }
+            else
+            {
+                _nativeImpactRows.Add(NativeImpactRowFromMaterial(material));
+                changed = true;
+            }
         }
 
+        if (!changed) return;
         ApplyNativeImpactComputedFields(_nativeImpactRows);
         RefreshNativeImpactSummary();
-        ApplyNativeMeasurementFilters();
         if (markDirty) MarkNativeImpactDirty();
     }
 
@@ -32355,8 +32416,20 @@ private List<string> GetVisibleAiMaterialLabels()
         Color = material.Color
     };
 
-    private static void CopyNativeMaterialIdentityToStiffnessRow(NativeMaterialRow material, NativeStiffnessMeasurementRow row)
+    private static bool CopyNativeMaterialIdentityToStiffnessRow(
+        NativeMaterialRow material,
+        NativeStiffnessMeasurementRow row)
     {
+        var changed =
+            !string.Equals(row.MaterialID, material.MaterialID, StringComparison.Ordinal) ||
+            !string.Equals(row.Manufacturer, material.Manufacturer, StringComparison.Ordinal) ||
+            !string.Equals(row.ProductLine, material.ProductLine, StringComparison.Ordinal) ||
+            !string.Equals(row.MarketingName, material.MarketingName, StringComparison.Ordinal) ||
+            !string.Equals(row.BaseMaterial, material.BaseMaterial, StringComparison.Ordinal) ||
+            !string.Equals(row.MaterialCategory, material.MaterialCategory, StringComparison.Ordinal) ||
+            !string.Equals(row.VariantFinish, material.VariantFinish, StringComparison.Ordinal) ||
+            !string.Equals(row.Reinforcement, material.Reinforcement, StringComparison.Ordinal) ||
+            !string.Equals(row.Color, material.Color, StringComparison.Ordinal);
         row.MaterialID = material.MaterialID;
         row.Manufacturer = material.Manufacturer;
         row.ProductLine = material.ProductLine;
@@ -32366,6 +32439,99 @@ private List<string> GetVisibleAiMaterialLabels()
         row.VariantFinish = material.VariantFinish;
         row.Reinforcement = material.Reinforcement;
         row.Color = material.Color;
+        return changed;
+    }
+
+    private static bool RunMaterialIdentityMeasurementRefreshContractVerification()
+    {
+        var material = new NativeMaterialRow
+        {
+            MaterialID = "VERIFY-V60-IDENTITY",
+            Manufacturer = "Verification",
+            ProductLine = "Identity",
+            MarketingName = "Black",
+            BaseMaterial = "PLA",
+            MaterialCategory = "Standard",
+            VariantFinish = "Matte",
+            Reinforcement = "None",
+            Color = "Black"
+        };
+        var tensile = NativeTensileRowFromMaterial(material);
+        tensile.Upright1 = "101";
+        tensile.TestNotes = "Tensile evidence";
+        var impact = NativeImpactRowFromMaterial(material);
+        impact.Upright1 = "42";
+        impact.TestNotes = "Impact evidence";
+        var stiffness = NativeStiffnessRowFromMaterial(material);
+        stiffness.Revolutions = "2";
+        stiffness.Degrees = "90";
+        stiffness.TestNotes = "Stiffness evidence";
+
+        material.Color = "Yellow";
+        var yellowChanged =
+            CopyNativeMaterialIdentityToTensileRow(material, tensile) &&
+            CopyNativeMaterialIdentityToImpactRow(material, impact) &&
+            CopyNativeMaterialIdentityToStiffnessRow(material, stiffness) &&
+            tensile.Color == "Yellow" &&
+            impact.Color == "Yellow" &&
+            stiffness.Color == "Yellow";
+
+        material.Color = "Black";
+        var blackChanged =
+            CopyNativeMaterialIdentityToTensileRow(material, tensile) &&
+            CopyNativeMaterialIdentityToImpactRow(material, impact) &&
+            CopyNativeMaterialIdentityToStiffnessRow(material, stiffness) &&
+            tensile.MarketingName == "Black" &&
+            impact.MarketingName == "Black" &&
+            stiffness.MarketingName == "Black" &&
+            tensile.Color == "Black" &&
+            impact.Color == "Black" &&
+            stiffness.Color == "Black";
+
+        material.MarketingName = "test1";
+        var marketingChanged =
+            CopyNativeMaterialIdentityToTensileRow(material, tensile) &&
+            CopyNativeMaterialIdentityToImpactRow(material, impact) &&
+            CopyNativeMaterialIdentityToStiffnessRow(material, stiffness) &&
+            tensile.MarketingName == "test1" &&
+            impact.MarketingName == "test1" &&
+            stiffness.MarketingName == "test1";
+
+        var evidencePreserved =
+            tensile.Upright1 == "101" &&
+            tensile.TestNotes == "Tensile evidence" &&
+            impact.Upright1 == "42" &&
+            impact.TestNotes == "Impact evidence" &&
+            stiffness.Revolutions == "2" &&
+            stiffness.Degrees == "90" &&
+            stiffness.TestNotes == "Stiffness evidence";
+
+        var duplicateDisplayNameIsAdvisory =
+            !NativeMaterialRowsHaveBlockingValidationIssues(
+            [
+                new NativeMaterialRow
+                {
+                    MaterialID = "VERIFY-V60-DISPLAY-1",
+                    Manufacturer = "Verification",
+                    ProductLine = "Identity",
+                    BaseMaterial = "PLA",
+                    WebsiteDisplayName = "Verification Identity Black"
+                },
+                new NativeMaterialRow
+                {
+                    MaterialID = "VERIFY-V60-DISPLAY-2",
+                    Manufacturer = "Verification",
+                    ProductLine = "Identity",
+                    BaseMaterial = "PLA",
+                    WebsiteDisplayName = "Verification Identity Black"
+                }
+            ]);
+
+        return yellowChanged &&
+               blackChanged &&
+               marketingChanged &&
+               evidencePreserved &&
+               duplicateDisplayNameIsAdvisory;
     }
 
     private List<NativeStiffnessMeasurementRow> BuildNativeStiffnessRowsFromCanonicalStorage()
@@ -32403,11 +32569,13 @@ private List<string> GetVisibleAiMaterialLabels()
             .Select(m => m.MaterialID.Trim())
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
+        var changed = false;
         for (var i = _nativeStiffnessRows.Count - 1; i >= 0; i--)
         {
             if (string.IsNullOrWhiteSpace(_nativeStiffnessRows[i].MaterialID) || !validMaterialIds.Contains(_nativeStiffnessRows[i].MaterialID.Trim()))
             {
                 _nativeStiffnessRows.RemoveAt(i);
+                changed = true;
             }
         }
 
@@ -32419,13 +32587,21 @@ private List<string> GetVisibleAiMaterialLabels()
         foreach (var material in materialRows)
         {
             var key = material.MaterialID.Trim();
-            if (stiffnessById.TryGetValue(key, out var existing)) CopyNativeMaterialIdentityToStiffnessRow(material, existing);
-            else _nativeStiffnessRows.Add(NativeStiffnessRowFromMaterial(material));
+            if (stiffnessById.TryGetValue(key, out var existing))
+            {
+                if (CopyNativeMaterialIdentityToStiffnessRow(material, existing))
+                    changed = true;
+            }
+            else
+            {
+                _nativeStiffnessRows.Add(NativeStiffnessRowFromMaterial(material));
+                changed = true;
+            }
         }
 
+        if (!changed) return;
         ApplyNativeStiffnessComputedFields(_nativeStiffnessRows);
         RefreshNativeStiffnessSummary();
-        ApplyNativeMeasurementFilters();
         if (markDirty) MarkNativeStiffnessDirty();
     }
 

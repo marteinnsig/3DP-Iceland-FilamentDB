@@ -13,10 +13,10 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 3 |
+| Open | 2 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 103 |
+| Solved | 104 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
@@ -252,7 +252,7 @@ Date: 2026-07-30
 Area: Materials / Tensile / Impact / Stiffness identity synchronization
 Type: Bug / Data issue
 Severity: Important
-Status: Open
+Status: Solved
 What happened: For `MAT0207`, a Color-only correction did not reliably update the visible Color in Tensile, Impact and Stiffness.
 Changing Color to `Yellow` propagated, but changing it back to `Black` did not. Changing Marketing Name from `Black` to `test1`
 then caused all three measurement views to display the already-saved `Black` Color.
@@ -268,6 +268,21 @@ copy methods include Color. Investigate the Fast measurement snapshot/invalidati
 shortcut; do not rewrite measurement samples or make identity fields measurement-owned.
 Verification evidence: Not yet implemented. Future deterministic coverage must exercise Color-only changes in both directions when
 Marketing Name equals Color, prove immediate three-view refresh and restart persistence, and preserve samples, dates and notes.
+Candidate evidence: v60.0.3 now compares every named identity field independently, copies identity by stable MaterialID into Tensile,
+Impact and Stiffness, then reloads the three Fast views once after all copies complete. Lifecycle callers use the same three-view path;
+samples, dates and notes remain measurement-owned. Debug/Release and Help pass. Disposable smoke
+`20260730151123-a5098658` passes Full Data Verification 423/423 with exact logical/business-state recovery. Deterministic coverage
+proves Black→Yellow→Black while Marketing Name is Black, a subsequent Marketing Name-only change and preserved measurement evidence.
+Owner retest on 2026-07-30 failed: Black did not replace Yellow in the three measurement views, close showed `Auto-Save Blocked`,
+and restart restored Materials Color Yellow. Root cause: duplicate Website Display Name was incorrectly a silent-save blocker even
+though MaterialID owns relationships, and close stopped the edit debounce before synchronizing a final committed identity edit.
+Follow-up candidate keeps duplicate display names as validation warnings, persists synchronized measurement identity after normal
+Materials auto-save, and synchronizes after the parent save before guarded measurement persistence during close. Debug/Release pass
+with zero warnings/errors. Corrected Release smoke `20260730162359-1eaaead1` passes 423/423 with exact logical/business-state
+recovery. Solved in v60.0.3 on 2026-07-30: owner confirms the corrected
+Black/Yellow/Black flow updates Materials, Tensile, Impact and Stiffness,
+closes without `Auto-Save Blocked`, persists after restart, preserves
+measurement evidence and passes Full Data Verification.
 
 Date: 2026-07-29
 Area: Public Manufacturer Report / product-level engineering table

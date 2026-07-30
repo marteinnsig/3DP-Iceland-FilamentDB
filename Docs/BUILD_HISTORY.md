@@ -2,6 +2,33 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v60.0.3 - Material Identity Refresh Across Measurement Views
+
+Materials identity propagation is now one coherent MaterialID-based operation.
+Tensile, Impact and Stiffness rows each compare and copy all named identity
+fields independently. The Fast views reload once only after all three row
+collections are synchronized, eliminating partial refresh ordering.
+
+The refactor removes Tensile-owned nested Impact synchronization and ensures
+add, duplicate, delete and normal auto-save lifecycle callers update all three
+views. Measurement samples, dates, notes and calculations remain owned by the
+measurement rows and are not rewritten by identity changes.
+
+Owner runtime testing then found that Color `Black` could create an advisory
+duplicate display name which the silent save path incorrectly treated as
+blocking. It also proved that application close could stop the debounce after
+committing the final editor but before identity synchronization. Duplicate
+display names now remain visible warnings while MaterialID owns relationships;
+normal auto-save persists synchronized measurement identity immediately, and
+close synchronizes after the parent Materials save before child persistence.
+
+Debug/Release pass with zero warnings/errors. Help is updated. Disposable smoke
+`20260730151123-a5098658` passes Full Data Verification 423/423 with exact
+logical/business-state recovery. The follow-up fix also builds Debug/Release
+cleanly. Corrected smoke `20260730162359-1eaaead1` passes 423/423 with exact
+state recovery. Owner accepts Black/Yellow/Black propagation, clean close,
+restart persistence and Verification PASS. v60.0.3 is complete.
+
 ## v60.0.2 - Fast Materials Editor Focus and Keyboard Navigation
 
 Fast Materials now verifies that a focus/dropdown-close event still belongs to

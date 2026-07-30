@@ -1,5 +1,24 @@
 # Current Build Notes - v57.0 Research
 
+## v60.0.3 Material Identity Refresh Across Measurement Views
+
+All eight editable Materials identity fields now refresh Tensile, Impact and
+Stiffness independently by MaterialID. All row copies complete before the Fast
+views reload once; measurement samples, dates, notes, calculations, filters and
+viewport remain unchanged.
+
+Owner retest found and the candidate now corrects the remaining save boundary:
+duplicate Website Display Name is advisory rather than a MaterialID/SQLite
+block, and both normal auto-save and application close persist synchronized
+Tensile, Impact and Stiffness identity after the parent Materials row.
+
+Debug/Release and Help pass. Disposable smoke
+`20260730151123-a5098658` passes Full Data Verification 423/423 with exact
+logical/business-state recovery. The follow-up fix builds Debug/Release cleanly;
+corrected smoke `20260730162359-1eaaead1` passes 423/423 with exact state
+recovery. Owner accepts Black/Yellow/Black propagation, clean close, restart
+persistence and Verification PASS. v60.0.3 is complete; v60.0.4 is next.
+
 ## v60.0.2 Fast Materials Editor Focus and Keyboard Navigation
 
 Delayed focus events now close only the editor that still owns them. Background

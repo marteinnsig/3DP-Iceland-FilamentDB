@@ -122,7 +122,8 @@ internal static class HelpContentCatalog
             Edit governed identity/catalog values, public choices, purchase/spool facts, MSRP/landed evidence, media, notes and archive
             state. MaterialID, derived category/test/video flags, normalized USD/per-kg values, sort/source priority, Website Display
             Name, Material Key and Validation are read-only/computed. Required identity includes MaterialID, Manufacturer, Product Line,
-            Base Material and Website Display Name.
+            Base Material and Website Display Name. A duplicate Website Display Name remains visible in validation as an advisory
+            warning but does not block save; stable MaterialID owns SQLite and measurement relationships.
 
             Publication boundaries
             Publish public reports controls linked public report artifacts. Publish public test details separately permits raw test
@@ -173,7 +174,10 @@ internal static class HelpContentCatalog
             details are independent checkboxes: the first controls linked public report artifacts, the second permits eligible raw test
             detail. Manufacturer Website and YouTube Review URL accept reviewed URLs. Video, Tested Status and In Tensile/Impact/
             Stiffness are read-only state. Notes is editable multiline content. Website Display Name, Material Key and Validation are
-            read-only derived output.
+            read-only derived output. Duplicate Website Display Name values are advisory because separate Materials can share public
+            wording; Material ID remains unique and owns measurement relationships. A committed identity edit auto-saves Materials,
+            then synchronizes Tensile, Impact and Stiffness. Closing the application commits the active editor and completes that same
+            parent-before-measurement save order.
 
             Default column order
             The default begins with identity and test status, then Notes, website identity/media, spool and price facts, inventory,
@@ -775,6 +779,9 @@ internal static class HelpContentCatalog
             """
             Complete the canonical Material first. Materials search/filter determines which MaterialID rows appear in all three native
             measurement grids; the test tabs have no separate MaterialID selector. Identity and computed fields are read-only.
+            Every committed Materials identity-field change refreshes all three views by stable MaterialID. Manufacturer, Product
+            Line, Marketing Name, Base Material, Category, Variant / Finish, Reinforcement and Color update independently; changing
+            identity never rewrites samples, measured dates or notes.
 
             Tensile accepts up to ten Upright N and ten Flat N samples, each from 0 through less than 505. Impact accepts up to ten
             Upright and Flat percentage samples from 0 through 100. Stiffness accepts Revolutions from 0 through 10 and Degrees from
@@ -827,7 +834,8 @@ internal static class HelpContentCatalog
             Shared scope and save behavior
             All three native grids show the MaterialIDs currently visible through Materials search and filters. Identity columns
             Material ID, Manufacturer, Product Line, Marketing Name, Base Material, Category, Variant / Finish, Reinforcement and Color
-            are read-only here. A valid committed source edit recalculates through ResultsService, updates test status and auto-saves
+            are read-only here and refresh independently from canonical Materials through stable MaterialID. Identity refresh never
+            changes measurement samples, dates or notes. A valid committed source edit recalculates through ResultsService, updates test status and auto-saves
             SQLite. The first source measurement assigns today only when Measured date is blank. Test Notes and Measured date are
             editable. Reset Columns confirms before restoring only that grid's local width/order; it changes no measurements.
 

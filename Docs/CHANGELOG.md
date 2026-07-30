@@ -2,6 +2,33 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v60.0.3 - Material Identity Refresh Across Measurement Views
+
+- Routes every Materials identity synchronization through one ordered
+  MaterialID-based Tensile, Impact and Stiffness pass.
+- Compares Material ID, Manufacturer, Product Line, Marketing Name, Base
+  Material, Category, Variant / Finish, Reinforcement and Color independently
+  rather than using a combined display identity.
+- Reloads all three Fast measurement views once after every row model has
+  received the new identity, preventing partial old/new snapshots.
+- Preserves samples, measured dates, notes, calculations, filters and viewport
+  ownership.
+- Adds deterministic Black/Yellow/Black Color-only coverage when Marketing Name
+  is also Black, Marketing Name-only follow-up and measurement-evidence
+  preservation.
+- Owner retest exposed two remaining save-path defects: duplicate advisory
+  display names blocked silent SQLite save, and close committed the final
+  Materials editor after stopping the identity-sync debounce. Duplicate display
+  names now remain validation warnings keyed safely by MaterialID; successful
+  auto-save and close synchronize and persist all three measurement identities.
+- Debug/Release pass with zero warnings/errors. Disposable Release smoke
+  `20260730151123-a5098658` passes Full Data Verification 423/423 with exact
+  logical/business-state recovery. The follow-up fix builds Debug/Release with
+  zero warnings/errors. Corrected smoke `20260730162359-1eaaead1` passes
+  423/423 with exact state recovery. Owner accepts Black/Yellow/Black across
+  Materials and all measurement views, clean close, restart persistence and
+  Verification PASS. v60.0.3 is complete.
+
 ## v60.0.2 - Fast Materials Editor Focus and Keyboard Navigation
 
 - Prevents delayed `LostKeyboardFocus` or ComboBox close events from closing a

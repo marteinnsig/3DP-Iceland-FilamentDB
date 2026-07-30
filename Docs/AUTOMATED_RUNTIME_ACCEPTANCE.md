@@ -1,5 +1,26 @@
 # Automated Runtime Acceptance
 
+## v60.0.3 - Material Identity Refresh Across Measurement Views
+
+- Existing read-only smoke remains the bounded scenario owner; owner Materials
+  and measurement evidence are not mutated.
+- Full Verification creates isolated Material/Tensile/Impact/Stiffness models
+  and proves Black/Yellow/Black Color-only propagation while Marketing Name is
+  Black, then a Marketing Name-only update.
+- The same contract proves tensile/impact samples, stiffness inputs and all
+  three notes remain unchanged during identity copying.
+- The contract also proves duplicate Website Display Name values are advisory:
+  stable MaterialID remains the relational key and silent save is not blocked.
+- Owner retest exposed the close/debounce persistence boundary; the candidate
+  now synchronizes child identities after the parent save and before the
+  existing guarded measurement transaction.
+- Release smoke `20260730151123-a5098658` passes 423/423 with exact logical and
+  business-state recovery.
+- Corrected Release smoke `20260730162359-1eaaead1` repeats 423/423 with exact
+  logical and business-state recovery after the save/close fix.
+- Owner accepts Black/Yellow/Black propagation, clean close, restart
+  persistence and Full Data Verification PASS.
+
 ## v60.0.2 - Fast Materials Editor Focus and Keyboard Navigation
 
 - Existing read-only smoke remains the bounded scenario owner; it does not
