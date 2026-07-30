@@ -2,6 +2,24 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v60.0.2 - Fast Materials Editor Focus and Keyboard Navigation
+
+Fast Materials now verifies that a focus/dropdown-close event still belongs to
+the current active editor before committing or closing it. This prevents a
+delayed event from the prior cell from terminating the newly activated editor.
+
+Background filter/validation canonical synchronization defers while an editor
+is active. Auto-save and dependent refresh continue, and the next inactive
+refresh reconciles the view. Explicit reload, reset and application-close paths
+retain their accepted commit behavior; selection, offsets and row ownership are
+not rebuilt by the guard.
+
+Debug/Release pass with zero warnings/errors. Help is updated. Disposable smoke
+`20260730145422-31f69821` passes Full Data Verification 422/422 with exact
+logical/business-state recovery. Owner accepts arrow, Tab/Shift+Tab, mouse,
+rapid-edit and restart behavior plus Full Data Verification PASS; v60.0.2 is
+complete on 2026-07-30.
+
 ## v60.0.1 - Purchase-order Material Creation Integrity
 
 Both Purchase Order Material-creation actions now use the same guarded UI

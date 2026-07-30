@@ -758,7 +758,8 @@ public partial class MainWindow
                     SelectedItem = _rows[e.RowIndex].Cells[e.ColumnIndex],
                     Padding = new Thickness(4, 0, 4, 0)
                 };
-                comboBox.DropDownClosed += (_, _) => CloseEditor(commit: true);
+                comboBox.DropDownClosed += (sender, _) =>
+                    CloseEditorFromEvent(sender, commit: true);
                 editor = comboBox;
             }
             else
@@ -778,7 +779,8 @@ public partial class MainWindow
             editor.Height = Math.Max(22, e.CellBounds.Height);
             if (editor is TextBox)
             {
-                editor.LostKeyboardFocus += (_, _) => CloseEditor(commit: true);
+                editor.LostKeyboardFocus += (sender, _) =>
+                    CloseEditorFromEvent(sender, commit: true);
             }
             editor.PreviewKeyDown += Editor_PreviewKeyDown;
             var editorPosition = _surface.TranslatePoint(
@@ -909,6 +911,42 @@ public partial class MainWindow
             HandleSnapshotChanged();
         }
 
+        private void CloseEditorFromEvent(object? eventSource, bool commit)
+        {
+            if (!ShouldCloseEditorForEvent(_activeEditor, eventSource)) return;
+            CloseEditor(commit);
+        }
+
+        private static bool ShouldCloseEditorForEvent(
+            Control? activeEditor,
+            object? eventSource) =>
+            activeEditor is not null &&
+            ReferenceEquals(activeEditor, eventSource);
+
+        private static bool ShouldDeferCanonicalSynchronization(
+            bool preserveActiveEditor,
+            Control? activeEditor) =>
+            preserveActiveEditor && activeEditor is not null;
+
+        public static bool RunEditorFocusContractVerification()
+        {
+            var previousEditor = new TextBox();
+            var activeEditor = new TextBox();
+            return
+                !ShouldCloseEditorForEvent(activeEditor, previousEditor) &&
+                ShouldCloseEditorForEvent(activeEditor, activeEditor) &&
+                !ShouldCloseEditorForEvent(null, activeEditor) &&
+                ShouldDeferCanonicalSynchronization(
+                    preserveActiveEditor: true,
+                    activeEditor) &&
+                !ShouldDeferCanonicalSynchronization(
+                    preserveActiveEditor: false,
+                    activeEditor) &&
+                !ShouldDeferCanonicalSynchronization(
+                    preserveActiveEditor: true,
+                    activeEditor: null);
+        }
+
         private void HandleSnapshotChanged()
         {
             if (!_directCanonicalEditing)
@@ -1004,8 +1042,18 @@ public partial class MainWindow
         public bool SynchronizeFromCanonical(
             string reason,
             object? preferredSelection = null,
-            bool resetVerticalOffset = false)
+            bool resetVerticalOffset = false,
+            bool preserveActiveEditor = false)
         {
+            if (ShouldDeferCanonicalSynchronization(
+                    preserveActiveEditor,
+                    _activeEditor))
+            {
+                _status.Text =
+                    "Canonical refresh queued while the active Materials editor retains focus.";
+                return true;
+            }
+
             CloseEditor(commit: true);
             var changes = GetChanges();
             if (changes.Count > 0)

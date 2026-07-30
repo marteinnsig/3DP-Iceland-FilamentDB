@@ -2,6 +2,24 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v60.0.2 - Fast Materials Editor Focus and Keyboard Navigation
+
+- Prevents delayed `LostKeyboardFocus` or ComboBox close events from closing a
+  newer active Fast Materials editor.
+- Defers only background canonical synchronization while an intentional editor
+  remains active; explicit reload, close and reset continue to commit normally.
+- Preserves auto-save, validation, filters, selected row/column, viewport and
+  canonical SQLite ownership.
+- Documents arrow, Tab/Shift+Tab, mouse transfer and Escape behavior in Help.
+- Adds deterministic stale/current editor-event and background-refresh
+  deferral contracts.
+- Debug/Release pass with zero warnings/errors. Disposable Release smoke
+  `20260730145422-31f69821` passes Full Data Verification 422/422 with exact
+  logical/business-state recovery.
+- Owner accepts four-direction arrows, Tab/Shift+Tab, mouse transfer, rapid
+  edits, restart persistence and Full Data Verification PASS. v60.0.2 is
+  complete on 2026-07-30.
+
 ## v60.0.1 - Purchase-order Material Creation Integrity
 
 - Routes `Create Material from Selected Item` and `Create Materials + Received

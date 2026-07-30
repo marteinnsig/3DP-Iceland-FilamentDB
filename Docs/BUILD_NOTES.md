@@ -1,5 +1,17 @@
 # Current Build Notes - v57.0 Research
 
+## v60.0.2 Fast Materials Editor Focus and Keyboard Navigation
+
+Delayed focus events now close only the editor that still owns them. Background
+canonical refresh defers while an intentional Fast Materials editor is active;
+auto-save, filters, selection, viewport and explicit reload/close/reset remain
+on their accepted paths.
+
+Debug/Release and Help pass. Disposable smoke
+`20260730145422-31f69821` passes Full Data Verification 422/422 with exact
+logical/business-state recovery. Owner accepts keyboard/mouse focus, rapid
+edits, restart persistence and Full Data Verification PASS. v60.0.2 is complete.
+
 ## v60.0.1 Purchase-order Material Creation Integrity
 
 The selected-line and received-order bulk paths now commit canonical parent

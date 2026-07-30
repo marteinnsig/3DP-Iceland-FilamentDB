@@ -149,6 +149,12 @@ internal static class HelpContentCatalog
             layout otherwise remains authoritative across application upgrades. Normal committed cell edits auto-save; there is no
             separate Save requirement.
 
+            Grid keyboard and focus
+            In an editable Fast Materials cell, Left/Right/Up/Down commit the current value and move one cell in that direction;
+            Tab and Shift+Tab move forward or backward. A newly activated editable cell keeps keyboard focus while canonical
+            auto-save, validation and filter refresh complete in the background. Clicking another editable cell transfers ownership
+            to that editor; delayed focus events from the previous cell cannot close it. Escape cancels the active cell edit.
+
             Search and filter controls
             Search searches displayed identity/content. Manufacturer, Base Material, Variant / Finish, Reinforcement, Color and Product
             Line are no-modifier multi-select filters: click each value or use keyboard activation without Ctrl/Shift. Values within one

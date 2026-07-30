@@ -13,10 +13,10 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 4 |
+| Open | 3 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 102 |
+| Solved | 103 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
@@ -170,7 +170,7 @@ Date: 2026-07-30
 Area: Fast Materials / editable-cell keyboard navigation and focus
 Type: Bug / Workflow friction
 Severity: Important
-Status: In progress
+Status: Solved
 What happened: After entering a value such as `GF` in Reinforcement and pressing an arrow key, focus initially moves toward the
 adjacent cell but then jumps back or closes. Clicking another editable cell can also lose focus or activate a nearby cell without an
 obvious pattern. The behavior occurs across editable Materials fields, not only Reinforcement.
@@ -187,6 +187,13 @@ Preserve auto-save, filters, viewport and
 canonical refresh while preventing background synchronization from closing or relocating an intentional active editor.
 Verification evidence: Not yet implemented. Future deterministic coverage must prove all four arrow directions, Tab/Shift+Tab,
 mouse activation, rapid repeated edits, one-field auto-save and unchanged row/column/viewport selection after deferred refresh.
+Candidate evidence: v60.0.2 ignores delayed focus-close events unless their source is still the active editor and defers only
+background canonical synchronization while an intentional editor remains active. Explicit reload/close/reset behavior is unchanged;
+auto-save, validation, filters, selection and viewport continue through the accepted paths. Debug/Release and Help pass. Disposable
+smoke `20260730145422-31f69821` passes Full Data Verification 422/422 with exact logical/business-state recovery. Deterministic
+coverage proves stale/current event ownership plus active/inactive background-refresh decisions. Owner runtime acceptance remains.
+Final resolution: Solved in v60.0.2 — 2026-07-30. Owner accepts four-direction arrows, Tab/Shift+Tab, mouse transfer, rapid edits,
+restart persistence and Full Data Verification PASS.
 
 Date: 2026-07-30
 Area: Purchase Orders / bulk Material creation

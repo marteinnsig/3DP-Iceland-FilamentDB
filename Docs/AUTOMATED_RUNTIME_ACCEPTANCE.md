@@ -1,5 +1,18 @@
 # Automated Runtime Acceptance
 
+## v60.0.2 - Fast Materials Editor Focus and Keyboard Navigation
+
+- Existing read-only smoke remains the bounded scenario owner; it does not
+  mutate owner Materials.
+- Full Verification proves stale editor events cannot close the current editor
+  and background canonical refresh defers only while an editor is active.
+- Arrow/Tab/mouse usability remains owner-manual because reliable UI Automation
+  typing would add low-value timing sensitivity.
+- Release smoke `20260730145422-31f69821` passes 422/422 with exact logical and
+  business-state recovery.
+- Owner accepts four-direction arrows, Tab/Shift+Tab, mouse transfer, rapid
+  edits, restart persistence and Full Data Verification PASS.
+
 ## v60.0.1 - Purchase-order Material Creation Integrity
 
 - Existing read-only smoke remains the bounded scenario owner; no Purchase

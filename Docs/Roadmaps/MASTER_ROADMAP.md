@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v59.0.11 — Public Base-material Printing Gui
 
 Current canonical application release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Current roadmap increment: **v60.0.2 — Fast Materials Editor Focus and Keyboard Navigation (Planned)**
+Current roadmap increment: **v60.0.3 — Material Identity Refresh Across Measurement Views (Planned)**
 
-Current acceptance note: v59.0.11 is owner accepted; Full Data Verification passes 420/420.
+Current acceptance note: v60.0.2 is owner accepted; Full Data Verification passes 422/422.
 
-Next note: v60.0.1 is complete; v60.0.2 is next. Production and FTPS remain unchanged.
+Next note: v60.0.2 is complete; v60.0.3 is next. Production and FTPS remain unchanged.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2760,12 +2760,16 @@ blockers may change the order, but must be recorded here before implementation.
   - Evidence: Debug/Release and Help/docs gates pass; smoke `20260730144248-13602dab` passes 421/421 with exact state recovery.
   - Completion condition met: owner accepts both creation paths, retry safety and corrected Full Data Verification PASS.
 - **v60.0.2 — Fast Materials Editor Focus and Keyboard Navigation**
-  - State: Planned; follows the blocker correction.
+  - State: Complete and owner runtime accepted; Full Data Verification passes.
   - Preserve intentional mouse or keyboard editor activation while deferred auto-save, filter and canonical refresh work completes.
   - Keep one-field auto-save, filters, selection and viewport behavior; do not suppress canonical synchronization.
   - Extend deterministic coverage for four arrow directions, Tab/Shift+Tab, mouse activation and rapid repeated edits.
   - Completion condition: owner accepts stable one-cell navigation and continued typing with no focus jump, editor loss or viewport
     movement through deferred save/refresh, and exact saved values persist after restart.
+  - Implementation: stale focus events close only their own active editor; background canonical sync defers while editing.
+  - Preserved: auto-save, filters, selection, viewport, explicit reload/close/reset and canonical refresh ownership are unchanged.
+  - Evidence: Debug/Release and Help pass; smoke `20260730145422-31f69821` passes 422/422 with exact state recovery.
+  - Completion condition met: owner accepts arrows, Tab/Shift+Tab, mouse transfer, rapid edits, restart and Verification PASS.
 - **v60.0.3 — Material Identity Refresh Across Measurement Views**
   - State: Planned; bounded MaterialID-based synchronization correction.
   - Correct the Fast Tensile, Impact and Stiffness snapshot invalidation or named-field comparison contract.

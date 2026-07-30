@@ -15079,6 +15079,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             purchaseMaterialLinkTransactionReady
                 ? "Parent Material and Purchase Order link commit atomically; rejected links preserve landed cost and retry cleanly"
                 : "Parent/link atomic commit, rollback, landed-cost preservation or duplicate-free retry failed"));
+        var fastMaterialsEditorFocusReady =
+            MaterialsRenderingPrototypeView.RunEditorFocusContractVerification();
+        checks.Add(new VerificationCheck(
+            "v60.0.2 Fast Materials editor ownership and deferred-refresh contract",
+            fastMaterialsEditorFocusReady,
+            fastMaterialsEditorFocusReady
+                ? "Stale focus events cannot close the active editor; background canonical refresh defers only while editing"
+                : "Editor event ownership or active-editor background refresh deferral failed"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",
@@ -27060,7 +27068,8 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         var visibleMaterialIds = GetVisibleNativeMaterialIdsFromCurrentFilters();
         _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
-            "the current Materials filter/search result");
+            "the current Materials filter/search result",
+            preserveActiveEditor: true);
         if (_lastSelectedNativeMaterial is not null &&
             !visibleMaterialIds.Contains(_lastSelectedNativeMaterial.MaterialID))
         {
@@ -27527,7 +27536,8 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         _embeddedMaterialsPrototypeView?.SynchronizeFromCanonical(
             "canonical Materials validation",
-            _lastSelectedNativeMaterial);
+            _lastSelectedNativeMaterial,
+            preserveActiveEditor: true);
     }
 
     private void QueueNativeMaterialEditRefresh()
