@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 4 |
+| Open | 5 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 101 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
-| **Total tracked findings** | **110** |
+| **Total tracked findings** | **111** |
 
 ## Triage categories
 
@@ -165,6 +165,26 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-07-30
+Area: Purchase Orders / bulk Material creation
+Type: Workflow friction
+Severity: Important
+Status: Open
+What happened: `Create Material from Selected Item` correctly creates only the selected line's Material, but an order containing
+several Filament lines requires repeating the action line by line. The existing order-level bulk path is coupled to positively
+received quantities and Inventory-spool creation.
+Expected behavior: Add an explicit selected-order action that creates and links one draft Material for every unlinked line whose
+Inventory Category is `Filament`, without creating Inventory spools. Skip already linked and non-Filament lines; block missing
+descriptions; preview exact create/skip/error counts in a default-No confirmation.
+Steps to reproduce: Select a Purchase Order containing several described, unlinked Filament lines and compare
+`Create Material from Selected Item` with the desired order-level material-only workflow.
+Screenshot / export / report attached: None; owner workflow request on 2026-07-30.
+Resolution: Preserve the existing singular action and `Create Materials + Received Spools` receiving contract. Add a distinctly
+labelled material-only bulk action after the foreign-key crash workflow is corrected. Reuse the same fail-closed parent/link
+transaction, generated MaterialID rules and retry-safe behavior; never infer received quantities or create Inventory.
+Verification evidence: Not yet implemented. Future coverage must prove mixed Filament/non-Filament orders, linked/unlinked lines,
+missing descriptions, cancel safety, generated-ID uniqueness, exact create/skip counts, retry safety and business-state recovery.
 
 Date: 2026-07-30
 Area: Purchase Orders / Create Material from Selected Item
