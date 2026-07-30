@@ -2739,6 +2739,13 @@ to unstarted authoritative planning slots.
 
 ### Intentionally unscheduled
 
+- The reproducible MAT0207 Color synchronization defect is an immediate bounded
+  Materials/measurement-view investigation.
+  - Preserve canonical MaterialID ownership and measurement samples; correct
+    only the Fast-view refresh/invalidation or field-comparison contract.
+  - Completion condition: Color-only Black/Yellow/Black changes propagate
+    immediately to Tensile, Impact and Stiffness even when Marketing Name is
+    also Black, persist after restart and leave measurements unchanged.
 - The Public Manufacturer Report product-level table can overflow the report
   frame in screen HTML and is the next bounded report-layout defect candidate.
   - Add a responsive, accessible containment contract without removing columns,

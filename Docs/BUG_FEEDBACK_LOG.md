@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 2 |
+| Open | 3 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 101 |
 | Deferred | 3 |
 | Duplicate | 1 |
 | Not planned | 1 |
-| **Total tracked findings** | **108** |
+| **Total tracked findings** | **109** |
 
 ## Triage categories
 
@@ -165,6 +165,27 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-07-30
+Area: Materials / Tensile / Impact / Stiffness identity synchronization
+Type: Bug / Data issue
+Severity: Important
+Status: Open
+What happened: For `MAT0207`, a Color-only correction did not reliably update the visible Color in Tensile, Impact and Stiffness.
+Changing Color to `Yellow` propagated, but changing it back to `Black` did not. Changing Marketing Name from `Black` to `test1`
+then caused all three measurement views to display the already-saved `Black` Color.
+Expected behavior: Every committed Materials identity-field change, including Color alone and values equal to Marketing Name, must
+refresh Tensile, Impact and Stiffness by stable MaterialID. Synchronization must compare each named field independently and must not
+depend on a combined display label changing.
+Steps to reproduce: Create or select `MAT0207`; set Marketing Name and Color to `Black`; change Color to `Yellow` and confirm all
+measurement views; change Color back to `Black`. If they remain Yellow, change only Marketing Name to `test1` and observe Color
+refresh to Black in all three views.
+Screenshot / export / report attached: None; owner runtime reproduction on 2026-07-30.
+Resolution: Read-only source review confirms canonical Materials persistence and all three MaterialID-based copy methods include
+Color. Investigate the Fast measurement snapshot/invalidation trigger and any display-identity equality shortcut; do not rewrite
+measurement samples or make identity fields measurement-owned.
+Verification evidence: Not yet implemented. Future deterministic coverage must exercise Color-only changes in both directions when
+Marketing Name equals Color, prove immediate three-view refresh and restart persistence, and preserve samples, dates and notes.
 
 Date: 2026-07-29
 Area: Public Manufacturer Report / product-level engineering table
