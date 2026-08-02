@@ -2820,8 +2820,10 @@ blockers may change the order, but must be recorded here before implementation.
   - Add a `Heat Deflection` tab with the accepted Fast Stiffness-style MaterialID-synchronized list and filtering behavior.
   - Expose one editable result per material: `Deflection temperature °C`; keep material identity and method metadata read-only.
   - Define the result as 3DPIceland fixture-specific, not ASTM D648 or ISO 75 HDT unless the standardized method is followed.
-  - Version and snapshot the method: 110 mm span, 2.00 mm endpoint, measured nut mass/load, specimen geometry/orientation,
-    heating medium/ramp, sensor/location/calibration, conditioning and repeat/aggregation policy.
+  - Snapshot a 127 x 12.7 x 3.2 mm specimen printed flat, supported over a 110 mm clear span with a 2.00 mm endpoint.
+  - Snapshot the centered 54 g M20 nut load, nominally 0.530 N; confirm whether any moving fixture mass adds to that load.
+  - Record oven heating and the digital grill probe immediately below the specimen beside the central bolt/nut assembly.
+  - Use one test and one result per material; define the heating ramp and sensor identification/calibration before implementation.
   - Add canonical SQLite ownership and schema migration with locale-aware numeric validation, auto-save and restart persistence.
   - Preserve stable MaterialID synchronization, archive/delete behavior and measurement evidence without altering existing tests.
   - Extend Excel import/export, Help, navigation, deterministic automation and Full Data Verification for the new native dataset.
