@@ -47,6 +47,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
 | v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Planned — six findings scheduled |
+| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Planned — fixture method and native result workflow |
 
 ## Reconciliation of the older plans
 
@@ -2811,6 +2812,23 @@ blockers may change the order, but must be recorded here before implementation.
   - Re-read the feedback ledger, reconcile Help, automation, Verification, release evidence and README, then run final release gates.
   - Completion condition: all recorded v60 increments are owner accepted, all six ledger items have canonical dispositions and the
     parent release passes Debug/Release, applicable security/static gates and Full Data Verification.
+
+## Future — v61 Thermal Deflection Measurement Foundation
+
+- **v61.0.0 — Fixture-specific Heat Deflection Measurement**
+  - State: Planned; begin only after the v60 sequence is complete or formally dispositioned.
+  - Add a `Heat Deflection` tab with the accepted Fast Stiffness-style MaterialID-synchronized list and filtering behavior.
+  - Expose one editable result per material: `Deflection temperature °C`; keep material identity and method metadata read-only.
+  - Define the result as 3DPIceland fixture-specific, not ASTM D648 or ISO 75 HDT unless the standardized method is followed.
+  - Version and snapshot the method: 110 mm span, 2.00 mm endpoint, measured nut mass/load, specimen geometry/orientation,
+    heating medium/ramp, sensor/location/calibration, conditioning and repeat/aggregation policy.
+  - Add canonical SQLite ownership and schema migration with locale-aware numeric validation, auto-save and restart persistence.
+  - Preserve stable MaterialID synchronization, archive/delete behavior and measurement evidence without altering existing tests.
+  - Extend Excel import/export, Help, navigation, deterministic automation and Full Data Verification for the new native dataset.
+  - Keep public reports, website publication and Engineering Score integration out of scope pending separate owner approval.
+  - Rollback: remove the additive tab and consumers while preserving supported database discovery/migration for any saved results.
+  - Completion condition: owner accepts entry, clearing, restart, filtering, method traceability and Excel round trip; Debug/Release,
+    Help, schema migration, deterministic disposable acceptance and Full Data Verification pass with exact state recovery.
 
 ### Intentionally unscheduled
 

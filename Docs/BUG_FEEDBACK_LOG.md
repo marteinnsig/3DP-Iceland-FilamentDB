@@ -2,7 +2,7 @@
 
 Use this during the usage-mode period.
 
-## Status review — 2026-07-30
+## Status review — 2026-08-02
 
 This review preserves every original description and lifecycle status.
 `Solved` means the change is implemented, relevant gates pass and owner runtime
@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 3 |
+| Open | 4 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 104 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **113** |
+| **Total tracked findings** | **114** |
 
 ## Triage categories
 
@@ -165,6 +165,33 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-08-02
+Area: Native measurements / fixture-specific heat deflection
+Type: Workflow friction / Data issue
+Severity: Important
+Status: Open
+What happened: The owner has built a thermal bend fixture but the application has no dedicated place to record the result for each
+MaterialID. The specimen spans 110 mm, an M20 nut applies a centered load, and the recorded endpoint is the temperature at which
+mid-span deflection reaches 2 mm.
+Expected behavior: Add a dedicated `Heat Deflection` measurement tab using the accepted Stiffness-style synchronized material list.
+Each material has one editable result cell, `Deflection temperature °C`, with material identity read-only and canonical auto-save.
+Identify the value as a 3DPIceland fixture-specific result rather than standardized ASTM D648 or ISO 75 HDT unless the complete
+standard method is actually followed. Preserve the exact method version behind every saved result.
+Steps to reproduce: Open the application measurement tabs; Tensile, Impact and Stiffness exist, but there is no MaterialID-linked
+surface for entering the temperature observed at 2 mm deflection in the owner's 110 mm-span/M20-nut fixture.
+Screenshot / export / report attached: None; owner fixture and workflow description on 2026-08-02.
+Resolution: Planned under v61.0.0 as a distinct Thermal Deflection Measurement Foundation after the current v60 sequence. Reuse
+stable MaterialID synchronization, Fast-grid editing, canonical SQLite ownership, locale-aware numeric input, auto-save, filtering,
+column reset, measured-date/notes evidence, Excel import/export, Help and Verification patterns from native Stiffness without
+coupling the new result to stiffness formulas or existing Engineering Scores. Before implementation, approve a versioned method
+contract covering the measured M20 nut mass or applied load in N, 110 mm span, 2.00 mm endpoint, specimen geometry and print
+orientation, heating medium/ramp, temperature sensor/location/calibration, conditioning and repeat/aggregation policy. Keep the grid
+to one editable temperature result per material; method metadata should be centrally governed and snapshotted automatically.
+Verification evidence: Not yet implemented. Future acceptance must prove add/edit/clear/restart, invalid/range and locale handling,
+MaterialID identity synchronization, delete/archive behavior, method-snapshot immutability, schema migration, Excel round trip,
+Help/navigation, disposable automation and Full Data Verification with exact business-state recovery. Public reports, website
+publication and Engineering Score use remain out of scope until separately designed and approved.
 
 Date: 2026-07-30
 Area: Application date entry and display / Purchase Orders / Materials
