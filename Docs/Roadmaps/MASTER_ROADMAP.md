@@ -2821,9 +2821,11 @@ blockers may change the order, but must be recorded here before implementation.
   - Expose one editable result per material: `Deflection temperature °C`; keep material identity and method metadata read-only.
   - Define the result as 3DPIceland fixture-specific, not ASTM D648 or ISO 75 HDT unless the standardized method is followed.
   - Snapshot a 127 x 12.7 x 3.2 mm specimen printed flat, supported over a 110 mm clear span with a 2.00 mm endpoint.
-  - Snapshot the centered 54 g M20 nut load, nominally 0.530 N; confirm whether any moving fixture mass adds to that load.
-  - Record oven heating and the digital grill probe immediately below the specimen beside the central bolt/nut assembly.
-  - Use one test and one result per material; define the heating ramp and sensor identification/calibration before implementation.
+  - Snapshot the centered 54 g M20 nut load, nominally 0.530 N; the central bolt adds no load to the specimen.
+  - Identify the nearby under-specimen sensor as BlueDOT, thermapen.co.uk, FCC ID `2A167 BlueDot`; it has no calibration option.
+  - Snapshot the observed 25 °C-start oven ramp: 50 °C 1:50, 100 °C 3:26, 150 °C 4:35, 200 °C 6:53, 250 °C 10:30.
+  - Treat the ramp as non-linear and the result as nearby probe-indicated temperature; disclose the calibration limitation.
+  - Use one test and one result per material.
   - Add canonical SQLite ownership and schema migration with locale-aware numeric validation, auto-save and restart persistence.
   - Preserve stable MaterialID synchronization, archive/delete behavior and measurement evidence without altering existing tests.
   - Extend Excel import/export, Help, navigation, deterministic automation and Full Data Verification for the new native dataset.

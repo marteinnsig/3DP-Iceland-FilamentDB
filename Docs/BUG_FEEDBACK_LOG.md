@@ -176,6 +176,7 @@ MaterialID. A 127 x 12.7 x 3.2 mm specimen is printed flat and supported on two 
 applies the centered load, and the recorded endpoint is the temperature at which mid-span deflection reaches 2 mm.
 Expected behavior: Add a dedicated `Heat Deflection` measurement tab using the accepted Stiffness-style synchronized material list.
 Each material has one editable result cell, `Deflection temperature °C`, with material identity read-only and canonical auto-save.
+Define it as the nearby BlueDOT probe-indicated temperature at the 2 mm endpoint, not internal specimen temperature.
 Identify the value as a 3DPIceland fixture-specific result rather than standardized ASTM D648 or ISO 75 HDT unless the complete
 standard method is actually followed. Preserve the exact method version behind every saved result.
 Steps to reproduce: Open the application measurement tabs; Tensile, Impact and Stiffness exist, but there is no MaterialID-linked
@@ -187,10 +188,12 @@ Resolution: Planned under v61.0.0 as a distinct Thermal Deflection Measurement F
 stable MaterialID synchronization, Fast-grid editing, canonical SQLite ownership, locale-aware numeric input, auto-save, filtering,
 column reset, measured-date/notes evidence, Excel import/export, Help and Verification patterns from native Stiffness without
 coupling the new result to stiffness formulas or existing Engineering Scores. The approved fixture baseline is a 54 g nominal
-moving load, approximately 0.530 N under standard gravity; 110 mm span; 2.00 mm endpoint; 127 x 12.7 x 3.2 mm flat-printed specimen;
-oven heating; a nearby under-specimen digital grill probe; and one test per material. Confirm before implementation whether any
-moving bolt/fixture mass adds to the specimen load, and define the heating ramp plus sensor identification/calibration contract.
-Keep the grid to one editable temperature result per material; centrally govern and automatically snapshot the method metadata.
+moving load, approximately 0.530 N under standard gravity; the central bolt adds no specimen load; 110 mm span; 2.00 mm endpoint;
+127 x 12.7 x 3.2 mm flat-printed specimen; oven heating; and one test per material. The nearby under-specimen sensor is a BlueDOT
+from thermapen.co.uk, FCC ID `2A167 BlueDot`, with no user calibration option. From a 25 °C ambient start, the observed checkpoints
+are 50 °C at 1:50, 100 °C at 3:26, 150 °C at 4:35, 200 °C at 6:53 and 250 °C at 10:30. Treat this as a non-linear observed oven
+ramp profile rather than one constant heating rate, and disclose the uncalibrated-probe limitation. Keep the grid to one editable
+temperature result per material; centrally govern and automatically snapshot the method metadata.
 Verification evidence: Not yet implemented. Future acceptance must prove add/edit/clear/restart, invalid/range and locale handling,
 MaterialID identity synchronization, delete/archive behavior, method-snapshot immutability, schema migration, Excel round trip,
 Help/navigation, disposable automation and Full Data Verification with exact business-state recovery. Public reports, website
