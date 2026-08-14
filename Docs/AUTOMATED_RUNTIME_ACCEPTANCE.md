@@ -1,5 +1,16 @@
 # Automated Runtime Acceptance
 
+## v60.0.6 - Locale-aware Application Date Presentation
+
+- The existing explicit `reports` scenario remains the bounded owner because it
+  visits the affected workspaces, exports Full Verification, builds reports and
+  proves exact logical/business-state recovery.
+- No new mutating scenario or AutomationId is warranted. Deterministic
+  Verification directly exercises `is-IS`, `en-US`, ISO persistence and
+  propagation, leap-day, invalid/implausible input and legacy Icelandic reading.
+- Disposable profile `20260814153636-06cea92b` passes 425/425 and hashes 627
+  report artifacts with exact state recovery. Production and FTPS stay blocked.
+
 ## v60.0.3 - Material Identity Refresh Across Measurement Views
 
 - Existing read-only smoke remains the bounded scenario owner; owner Materials

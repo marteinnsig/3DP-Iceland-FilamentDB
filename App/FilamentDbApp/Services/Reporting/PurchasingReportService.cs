@@ -60,6 +60,8 @@ public sealed class PurchasingReportService
     }
     private static string Money(decimal value) => value.ToString("N2", CultureInfo.CurrentCulture);
     private static string H(string? value) => WebUtility.HtmlEncode(value ?? string.Empty);
+    private static string D(string? value) => H(ApplicationDateCodec.FormatForDisplay(value));
+    private static string D(DateTime value) => H(ApplicationDateCodec.FormatForDisplay(value));
     private static decimal OrderLandedIsk(PurchaseOrderRecord order, IEnumerable<PurchaseOrderLineRecord> lines)
         => lines.Where(x => x.PurchaseOrderId == order.PurchaseOrderId).Sum(x => Num(x.LandedLineCost)) * LandedIskRate(order);
 
@@ -108,7 +110,7 @@ public sealed class PurchasingReportService
         var text=new StringBuilder(); Header(text,"Purchase Report",at); text.AppendLine($"Orders: {orders.Count}"); text.AppendLine($"Order lines: {lines.Count}"); text.AppendLine($"Total landed cost: {Money(landed)} ISK"); text.AppendLine($"Shipping: {Money(shipping)} ISK"); text.AppendLine($"Tax / VAT: {Money(vat)} ISK"); text.AppendLine($"Customs: {Money(customs)} ISK");
         var averageOrder = orders.Count == 0 ? 0m : landed / orders.Count;
         var largestOrder = orders.Select(o => OrderLandedIsk(o, lines)).DefaultIfEmpty(0m).Max();
-        var body=$"<div class='section-title'>Purchasing Overview</div><div class='cards'><div><b>Total orders</b><span>{orders.Count}</span></div><div><b>Total spend</b><span>{Money(landed)} ISK</span></div><div><b>Shipping</b><span>{Money(shipping)} ISK</span></div><div><b>Tax / VAT</b><span>{Money(vat)} ISK</span></div><div><b>Average order</b><span>{Money(averageOrder)} ISK</span></div><div><b>Largest order</b><span>{Money(largestOrder)} ISK</span></div></div><h2>Purchase totals</h2>{Table(new[]{"Metric","ISK"},new[]{new[]{"Shipping",Money(shipping)},new[]{"Tax / VAT",Money(vat)},new[]{"Customs",Money(customs)},new[]{"Total landed cost",Money(landed)}})}<h2>Orders</h2>{Table(new[]{"Date","Supplier","Order no.","Currency","Invoice total","Landed ISK","Status"},orders.OrderByDescending(x=>x.PurchaseDate).Select(o=>new[]{H(o.PurchaseDate),H(o.Supplier),H(o.OrderNumber),H(o.Currency),H(o.SupplierInvoiceTotal),Money(OrderLandedIsk(o,lines)),H(o.LifecycleStatus)}))}";
+        var body=$"<div class='section-title'>Purchasing Overview</div><div class='cards'><div><b>Total orders</b><span>{orders.Count}</span></div><div><b>Total spend</b><span>{Money(landed)} ISK</span></div><div><b>Shipping</b><span>{Money(shipping)} ISK</span></div><div><b>Tax / VAT</b><span>{Money(vat)} ISK</span></div><div><b>Average order</b><span>{Money(averageOrder)} ISK</span></div><div><b>Largest order</b><span>{Money(largestOrder)} ISK</span></div></div><h2>Purchase totals</h2>{Table(new[]{"Metric","ISK"},new[]{new[]{"Shipping",Money(shipping)},new[]{"Tax / VAT",Money(vat)},new[]{"Customs",Money(customs)},new[]{"Total landed cost",Money(landed)}})}<h2>Orders</h2>{Table(new[]{"Date","Supplier","Order no.","Currency","Invoice total","Landed ISK","Status"},orders.OrderByDescending(x=>x.PurchaseDate).Select(o=>new[]{D(o.PurchaseDate),H(o.Supplier),H(o.OrderNumber),H(o.Currency),H(o.SupplierInvoiceTotal),Money(OrderLandedIsk(o,lines)),H(o.LifecycleStatus)}))}";
         return Result("purchase-report","Purchase Report",text.ToString(),body,at,orders.Count);
     }
 
@@ -119,7 +121,7 @@ public sealed class PurchasingReportService
         var topSupplier = groups.FirstOrDefault();
         var totalSupplierSpend = groups.Sum(x => x.Landed);
         var supplierAverage = orders.Count == 0 ? 0m : totalSupplierSpend / orders.Count;
-        var body=$"<div class='section-title'>Supplier Overview</div><div class='cards'><div><b>Top supplier</b><span>{H(topSupplier?.Supplier ?? "—")}</span></div><div><b>Top supplier spend</b><span>{Money(topSupplier?.Landed ?? 0m)} ISK</span></div><div><b>Suppliers</b><span>{groups.Count}</span></div><div><b>Total orders</b><span>{orders.Count}</span></div><div><b>Total spend</b><span>{Money(totalSupplierSpend)} ISK</span></div><div><b>Average order</b><span>{Money(supplierAverage)} ISK</span></div></div><h2>Supplier performance</h2>{Table(new[]{"Supplier","Orders","Lines","First purchase","Last purchase","Shipping ISK","Landed ISK","Average order ISK"},groups.Select(g=>new[]{H(g.Supplier),g.Orders.ToString(),g.Lines.ToString(),H(g.First),H(g.Last),Money(g.Shipping),Money(g.Landed),Money(g.Orders==0?0:g.Landed/g.Orders)}))}";
+        var body=$"<div class='section-title'>Supplier Overview</div><div class='cards'><div><b>Top supplier</b><span>{H(topSupplier?.Supplier ?? "—")}</span></div><div><b>Top supplier spend</b><span>{Money(topSupplier?.Landed ?? 0m)} ISK</span></div><div><b>Suppliers</b><span>{groups.Count}</span></div><div><b>Total orders</b><span>{orders.Count}</span></div><div><b>Total spend</b><span>{Money(totalSupplierSpend)} ISK</span></div><div><b>Average order</b><span>{Money(supplierAverage)} ISK</span></div></div><h2>Supplier performance</h2>{Table(new[]{"Supplier","Orders","Lines","First purchase","Last purchase","Shipping ISK","Landed ISK","Average order ISK"},groups.Select(g=>new[]{H(g.Supplier),g.Orders.ToString(),g.Lines.ToString(),D(g.First),D(g.Last),Money(g.Shipping),Money(g.Landed),Money(g.Orders==0?0:g.Landed/g.Orders)}))}";
         return Result("supplier-report","Supplier Report",text.ToString(),body,at,groups.Count);
     }
 
@@ -127,7 +129,7 @@ public sealed class PurchasingReportService
     {
         var low=rows.Where(x=>string.Equals(x.Status,"Empty",StringComparison.OrdinalIgnoreCase)||Num(x.RemainingWeightG)<=250m||Num(x.Quantity)<=0m).OrderBy(x=>Num(x.RemainingWeightG)).ToList();
         var text=new StringBuilder(); Header(text,"Low Stock Report",at); text.AppendLine($"Items requiring review: {low.Count}"); text.AppendLine("Threshold: empty, quantity <= 0, or remaining weight <= 250 g."); foreach(var x in low) text.AppendLine($"- {x.MaterialDisplayName}: {x.Status}, {x.RemainingWeightG} g remaining");
-        var body=$"<div class='cards'><div><b>Needs review</b><span>{low.Count}</span></div><div><b>Out of stock</b><span>{low.Count(x=>string.Equals(x.Status,"Empty",StringComparison.OrdinalIgnoreCase)||Num(x.Quantity)<=0)}</span></div><div><b>Under 100 g</b><span>{low.Count(x=>Num(x.RemainingWeightG)<=100)}</span></div></div><div class='note'>Low-stock threshold: 250 g remaining, empty status, or zero quantity.</div><h2>Reorder review</h2>{Table(new[]{"Material","Status","Quantity","Remaining g","Location","Last supplier","Last purchase"},low.Select(x=>new[]{H(x.MaterialDisplayName),H(x.Status),H(x.Quantity),H(x.RemainingWeightG),H(x.StorageLocation),H(x.PurchasedFrom),H(x.PurchaseDate)}))}";
+        var body=$"<div class='cards'><div><b>Needs review</b><span>{low.Count}</span></div><div><b>Out of stock</b><span>{low.Count(x=>string.Equals(x.Status,"Empty",StringComparison.OrdinalIgnoreCase)||Num(x.Quantity)<=0)}</span></div><div><b>Under 100 g</b><span>{low.Count(x=>Num(x.RemainingWeightG)<=100)}</span></div></div><div class='note'>Low-stock threshold: 250 g remaining, empty status, or zero quantity.</div><h2>Reorder review</h2>{Table(new[]{"Material","Status","Quantity","Remaining g","Location","Last supplier","Last purchase"},low.Select(x=>new[]{H(x.MaterialDisplayName),H(x.Status),H(x.Quantity),H(x.RemainingWeightG),H(x.StorageLocation),H(x.PurchasedFrom),D(x.PurchaseDate)}))}";
         return Result("low-stock-report","Low Stock Report",text.ToString(),body,at,low.Count);
     }
 
@@ -233,10 +235,10 @@ public sealed class PurchasingReportService
         var body = $"<div class='section-title'>Purchasing Intelligence Overview</div>" +
             $"<div class='cards'><div><b>Total spend</b><span>{Money(totalSpend)} ISK</span></div><div><b>Average order</b><span>{Money(averageOrder)} ISK</span></div><div><b>Shipping share</b><span>{shippingShare:N1}%</span></div><div><b>Top supplier</b><span>{H(topSupplier?.Supplier ?? "—")}</span></div><div><b>Supplier share</b><span>{topSupplierShare:N1}%</span></div><div><b>Actions</b><span>{recommendations.Count}</span></div></div>" +
             $"<h2>Decision guidance</h2>{Table(new[] { "Priority", "Recommendation", "Reason" }, recommendations.Select(x => new[] { H(x.Priority), H(x.Recommendation), H(x.Reason) }))}" +
-            $"<h2>Supplier intelligence</h2>{Table(new[] { "Supplier", "Orders", "Landed spend ISK", "Shipping ISK", "Spend share", "Last purchase" }, supplierRows.Select(x => new[] { H(x.Supplier), x.Orders.ToString(), Money(x.Spend), Money(x.Shipping), totalSpend <= 0m ? "0.0%" : $"{x.Spend / totalSpend * 100m:N1}%", x.LastPurchase == default ? "" : x.LastPurchase.ToString("yyyy-MM-dd") }))}" +
+            $"<h2>Supplier intelligence</h2>{Table(new[] { "Supplier", "Orders", "Landed spend ISK", "Shipping ISK", "Spend share", "Last purchase" }, supplierRows.Select(x => new[] { H(x.Supplier), x.Orders.ToString(), Money(x.Spend), Money(x.Shipping), totalSpend <= 0m ? "0.0%" : $"{x.Spend / totalSpend * 100m:N1}%", x.LastPurchase == default ? "" : D(x.LastPurchase) }))}" +
             $"<h2>Monthly spend</h2>{Table(new[] { "Month", "Orders", "Landed spend ISK" }, monthlyRows.Select(x => new[] { H(x.Month), x.Orders.ToString(), Money(x.Spend) }))}" +
             $"<h2>Spend by category</h2>{Table(new[] { "Category", "Lines", "Landed spend ISK", "Spend share" }, categoryRows.Select(x => new[] { H(x.Category), x.Lines.ToString(), Money(x.Spend), totalSpend <= 0m ? "0.0%" : $"{x.Spend / totalSpend * 100m:N1}%" }))}" +
-            $"<h2>Material price history</h2>{Table(new[] { "Material", "Purchases", "Lowest unit ISK", "Average unit ISK", "Highest unit ISK", "Last supplier", "Last purchase" }, materialRows.Select(x => new[] { H(x.Material), x.Purchases.ToString(), Money(x.Lowest), Money(x.Average), Money(x.Highest), H(x.LastSupplier), H(x.LastDate) }))}";
+            $"<h2>Material price history</h2>{Table(new[] { "Material", "Purchases", "Lowest unit ISK", "Average unit ISK", "Highest unit ISK", "Last supplier", "Last purchase" }, materialRows.Select(x => new[] { H(x.Material), x.Purchases.ToString(), Money(x.Lowest), Money(x.Average), Money(x.Highest), H(x.LastSupplier), D(x.LastDate) }))}";
 
         return Result("purchasing-intelligence-report", "Purchasing Intelligence Report", text.ToString(), body, at, recommendations.Count);
     }
@@ -244,7 +246,7 @@ public sealed class PurchasingReportService
     private static DateTime? ParseDate(string? value)
     {
         if (string.IsNullOrWhiteSpace(value)) return null;
-        if (DateTime.TryParseExact(value.Trim(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var exact)) return exact;
+        if (ApplicationDateCodec.TryParseStored(value, out var exact)) return exact;
         if (DateTime.TryParse(value, CultureInfo.CurrentCulture, DateTimeStyles.None, out var current)) return current;
         if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out var invariant)) return invariant;
         return null;

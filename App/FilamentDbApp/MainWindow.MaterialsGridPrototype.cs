@@ -401,11 +401,29 @@ public partial class MainWindow
     private bool ApplyMaterialsPrototypeChanges(IReadOnlyList<MaterialsPrototypeChange> changes)
     {
         if (changes.Count == 0) return true;
+        var canonicalDateChanges = new Dictionary<MaterialsPrototypeChange, string>();
+        foreach (var change in changes.Where(change => IsFastMaterialsDateProperty(change.Column.PropertyName)))
+        {
+            if (ApplicationDateCodec.TryCanonicalizeUserInput(
+                    change.NewValue,
+                    CultureInfo.CurrentCulture,
+                    out var canonicalDate))
+            {
+                canonicalDateChanges[change] = canonicalDate;
+                continue;
+            }
+
+            ShowTransientStatus(
+                $"{change.Column.Header} was not saved. Enter {CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern} or yyyy-MM-dd.");
+            return false;
+        }
+
         foreach (var change in changes)
         {
+            var changedValue = canonicalDateChanges.GetValueOrDefault(change, change.NewValue);
             object value = change.Column.EditorKind == MaterialsPrototypeEditorKind.CheckBox
-                ? change.NewValue == "✓"
-                : change.NewValue;
+                ? changedValue == "✓"
+                : changedValue;
             SetPropertyValue(change.Row.Source, change.Column.PropertyName!, value);
             if (change.Row.Source is NativeMaterialRow material &&
                 string.Equals(
@@ -434,6 +452,8 @@ public partial class MainWindow
     {
         if (string.IsNullOrWhiteSpace(propertyName)) return string.Empty;
         var value = GetPropertyValue(row, propertyName);
+        if (IsFastMaterialsDateProperty(propertyName))
+            return ApplicationDateCodec.FormatForDisplay(value?.ToString());
         return value switch
         {
             null => string.Empty,
@@ -441,6 +461,11 @@ public partial class MainWindow
             _ => value.ToString() ?? string.Empty
         };
     }
+
+    private static bool IsFastMaterialsDateProperty(string? propertyName) =>
+        propertyName is nameof(NativeMaterialRow.PurchaseDate) or
+            nameof(NativeMaterialRow.PriceCheckedDate) or
+            nameof(NativeMaterialRow.PrintingSettingsCheckedDate);
 
     private enum MaterialsPrototypeEditorKind
     {

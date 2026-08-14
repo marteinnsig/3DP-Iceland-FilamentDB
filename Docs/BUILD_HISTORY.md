@@ -2,6 +2,32 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v60.0.6 - Locale-aware Application Date Presentation
+
+One shared application calendar-date codec now separates localized UI text
+from canonical persistence. Purchase Order Order/Received and read-only Rate,
+Inventory/Materials Purchase, Materials Price/Printing Settings Checked, Video
+Publish and native/Experimental Measured dates display through the active
+Windows short-date format. Valid edits canonicalize to ISO `yyyy-MM-dd` before
+save; invalid WPF edits retain correction feedback, and Fast Materials rejects
+the complete pending change set atomically.
+
+Purchase Order-to-Materials/Inventory propagation canonicalizes known ISO or
+legacy Icelandic source dates instead of copying display text. Internal
+purchasing reports localize calendar values while their generated evidence
+timestamps remain deterministic ISO. Excel/JSON, public reports, IDs, file
+names, logs, manifests, UTC evidence, schema, seed and immutable saved snapshots
+remain unchanged. Help documents the display/storage/invalid-input boundary.
+
+The existing reports AutomationRunner scenario remains the bounded owner; no
+new mutating scenario or AutomationId is warranted. Debug/Release app and
+AutomationRunner builds pass with zero warnings/errors. Disposable profile
+`20260814153636-06cea92b` passes Full Data Verification 425/425, the dedicated
+`is-IS`/`en-US`/ISO/leap-day/invalid/legacy gate, 627 artifact hashes and exact
+logical/business-state recovery. Owner runtime/readability acceptance is pending.
+Owner runtime review confirms the Icelandic date presentation looks correct
+across the inspected workspaces and Full Data Verification is PASS.
+
 ## v60.0.5 - Engineering Reports Main-site Navigation
 
 The main website now receives one additional `reports` route through its

@@ -5980,7 +5980,7 @@ Notes:
 {BlankDash(row.Notes)}
 
 Publish planning:
-Publish date: {BlankDash(row.PublishDate)}
+Publish date: {BlankDash(ApplicationDateCodec.FormatForDisplay(row.PublishDate))}
 Target week: {BlankDash(row.TargetWeek)}
 Series: {BlankDash(row.Series)}
 Episode order: {BlankDash(row.EpisodeOrder)}
@@ -16133,6 +16133,28 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             engineeringReportsMainTabReady
                 ? "Shared server-rendered portfolio content, #reports history routing, stable standalone routes and no iframe/client fetch passed"
                 : "Engineering Reports tab, shared-fragment, history, standalone-route or no-duplication contract failed"));
+        var isCulture = CultureInfo.GetCultureInfo("is-IS");
+        var usCulture = CultureInfo.GetCultureInfo("en-US");
+        var localeDateContractReady =
+            ApplicationDateCodec.FormatForDisplay("2026-08-14", isCulture) == new DateTime(2026, 8, 14).ToString("d", isCulture) &&
+            ApplicationDateCodec.FormatForDisplay("2026-08-14", usCulture) == new DateTime(2026, 8, 14).ToString("d", usCulture) &&
+            ApplicationDateCodec.TryCanonicalizeUserInput("14.8.2026", isCulture, out var isCanonical) &&
+            isCanonical == "2026-08-14" &&
+            ApplicationDateCodec.TryCanonicalizeUserInput("8/14/2026", usCulture, out var usCanonical) &&
+            usCanonical == "2026-08-14" &&
+            ApplicationDateCodec.TryCanonicalizeUserInput("2024-02-29", usCulture, out var leapCanonical) &&
+            leapCanonical == "2024-02-29" &&
+            !ApplicationDateCodec.TryCanonicalizeUserInput("2023-02-29", isCulture, out _) &&
+            !ApplicationDateCodec.TryCanonicalizeUserInput("1/1/0202", usCulture, out _) &&
+            !ApplicationDateCodec.TryCanonicalizeUserInput("31/12/2026", usCulture, out _) &&
+            ApplicationDateCodec.TryParseStored("14.8.2026", out var legacyIcelandic) &&
+            legacyIcelandic == new DateTime(2026, 8, 14) &&
+            CanonicalDateForPropagation("14.8.2026") == "2026-08-14" &&
+            typeof(ApplicationDateConverter).GetMethod(nameof(ApplicationDateConverter.ConvertBack)) is not null;
+        checks.Add(new VerificationCheck("v60.0.6 locale-aware application date contract", localeDateContractReady,
+            localeDateContractReady
+                ? "is-IS/en-US display and input, ISO persistence/propagation, leap-day, invalid-input and legacy Icelandic compatibility passed"
+                : "Locale display/input, ISO persistence/propagation, invalid-date or legacy compatibility failed"));
         var publicWebsiteReportPrerequisiteReady = typeof(MainWindow).GetMethod("EnsurePublicReportPackageAsync", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
                                                    typeof(MainWindow).GetMethod("GenerateWebsiteExportAsync", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
                                                    typeof(MainWindow).GetMethod("GenerateWebsiteExport", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null;
@@ -19863,11 +19885,12 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var nativeMetadataTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMeasurementNotes");
         var experimentalRunsTable = excelRecoverySnapshot.Tables.Single(table => table.TableName == "ExperimentalRuns");
         var measurementDateEditProbe = new NativeStiffnessMeasurementRow();
-        measurementDateEditProbe.MeasuredDateText = "01.";
-        var partialDateRetained = measurementDateEditProbe.MeasuredDateText == "01." && measurementDateEditProbe.MeasuredDate is null;
-        measurementDateEditProbe.MeasuredDateText = "01.01.2024";
+        measurementDateEditProbe.MeasuredDateText = "not-a-complete-date";
+        var invalidDateRetained = measurementDateEditProbe.MeasuredDateText == "not-a-complete-date" && measurementDateEditProbe.MeasuredDate is null;
+        var currentCultureDateText = new DateTime(2024, 1, 1).ToString("d", CultureInfo.CurrentCulture);
+        measurementDateEditProbe.MeasuredDateText = currentCultureDateText;
         var completedDateParsed = measurementDateEditProbe.MeasuredDate == new DateTime(2024, 1, 1) &&
-                                  measurementDateEditProbe.MeasuredDateText == "01.01.2024";
+                                  measurementDateEditProbe.MeasuredDateText == currentCultureDateText;
         measurementDateEditProbe.MeasuredDateText = "";
         var clearedDateAccepted = measurementDateEditProbe.MeasuredDate is null && measurementDateEditProbe.MeasuredDateText == "";
         var measurementDateReady =
@@ -19883,10 +19906,10 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             ToIsoMeasuredDate(new DateTime(2026, 7, 24)) == "2026-07-24" &&
             ParseIsoMeasuredDate("2026-07-24") == new DateTime(2026, 7, 24) &&
             ParseIsoMeasuredDate("24.7.2026") is null &&
-            FormatDisplayedMeasuredDate(new DateTime(2026, 7, 24)) == "24.07.2026" &&
-            TryParseDisplayedMeasuredDate("1.1.2024", out var displayedDate) && displayedDate == new DateTime(2024, 1, 1) &&
+            FormatDisplayedMeasuredDate(new DateTime(2026, 7, 24)) == new DateTime(2026, 7, 24).ToString("d", CultureInfo.CurrentCulture) &&
+            TryParseDisplayedMeasuredDate(currentCultureDateText, out var displayedDate) && displayedDate == new DateTime(2024, 1, 1) &&
             !TryParseDisplayedMeasuredDate("1/1/0202", out _) &&
-            partialDateRetained && completedDateParsed && clearedDateAccepted &&
+            invalidDateRetained && completedDateParsed && clearedDateAccepted &&
             ShouldAssignMeasuredDate(null, new[] { "1" }) &&
             !ShouldAssignMeasuredDate(null, Array.Empty<string>()) &&
             !ShouldAssignMeasuredDate(new DateTime(2026, 7, 23), new[] { "1" });
@@ -28742,6 +28765,16 @@ private List<string> GetVisibleAiMaterialLabels()
         return synced;
     }
 
+    private static string CanonicalDateForPropagation(string? source, string fallback = "")
+    {
+        if (string.IsNullOrWhiteSpace(source)) return fallback;
+        if (ApplicationDateCodec.TryParseStored(source, out var storedDate))
+            return storedDate.ToString(ApplicationDateCodec.CanonicalFormat, CultureInfo.InvariantCulture);
+        return ApplicationDateCodec.TryCanonicalizeUserInput(source, CultureInfo.CurrentCulture, out var canonical)
+            ? canonical
+            : fallback;
+    }
+
     private void SyncMaterialPricingFromPurchaseLine(NativeMaterialRow material, PurchaseOrderLineRecord line, PurchaseOrderRecord? order)
     {
         var currency = string.IsNullOrWhiteSpace(order?.Currency) ? "ISK" : order.Currency.Trim().ToUpperInvariant();
@@ -28752,7 +28785,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
         material.PurchaseId = order?.PurchaseOrderId ?? material.PurchaseId;
         material.PurchasedFrom = order?.Supplier ?? material.PurchasedFrom;
-        material.PurchaseDate = order?.PurchaseDate ?? material.PurchaseDate;
+        material.PurchaseDate = CanonicalDateForPropagation(order?.PurchaseDate, material.PurchaseDate);
         material.OrderNumber = order?.OrderNumber ?? material.OrderNumber;
         material.ManufacturerSku = string.IsNullOrWhiteSpace(line.Sku) ? material.ManufacturerSku : line.Sku;
         material.StorageLocation = string.IsNullOrWhiteSpace(line.StorageLocation) ? material.StorageLocation : line.StorageLocation.Trim();
@@ -28770,9 +28803,7 @@ private List<string> GetVisibleAiMaterialLabels()
         material.VatAmount = PerUnit(line.AllocatedTax, line.Quantity);
         material.LandedCostAmount = line.LandedUnitCost;
         material.LandedCostCurrency = landedCurrency;
-        material.PriceCheckedDate = string.IsNullOrWhiteSpace(order?.PurchaseDate)
-            ? material.PriceCheckedDate
-            : order.PurchaseDate;
+        material.PriceCheckedDate = CanonicalDateForPropagation(order?.PurchaseDate, material.PriceCheckedDate);
 
         ApplyNativeMaterialComputedFields(material, _nativeMaterialRows.IndexOf(material));
     }
@@ -28804,7 +28835,7 @@ private List<string> GetVisibleAiMaterialLabels()
             ManufacturerSku = line.Sku,
             StorageLocation = line.StorageLocation?.Trim() ?? "",
             PurchasedFrom = order?.Supplier ?? "",
-            PurchaseDate = order?.PurchaseDate ?? "",
+            PurchaseDate = CanonicalDateForPropagation(order?.PurchaseDate),
             OrderNumber = order?.OrderNumber ?? "",
             PurchasePriceAmount = line.UnitPrice,
             PurchaseCurrency = order?.Currency ?? "ISK",
@@ -28816,7 +28847,7 @@ private List<string> GetVisibleAiMaterialLabels()
             LandedCostCurrency = string.IsNullOrWhiteSpace(order?.LandedCostCurrency)
                 ? order?.Currency ?? "ISK"
                 : order.LandedCostCurrency,
-            PriceCheckedDate = order?.PurchaseDate ?? "",
+            PriceCheckedDate = CanonicalDateForPropagation(order?.PurchaseDate),
             PurchaseId = order?.PurchaseOrderId ?? "",
             InventoryStatus = "Unopened",
             Quantity = "0",
@@ -29099,7 +29130,7 @@ private List<string> GetVisibleAiMaterialLabels()
             PurchaseOrderLineId = line.PurchaseOrderLineId,
             PurchaseId = order.PurchaseOrderId,
             PurchasedFrom = order.Supplier,
-            PurchaseDate = order.PurchaseDate,
+            PurchaseDate = CanonicalDateForPropagation(order.PurchaseDate),
             OrderNumber = order.OrderNumber,
             PurchasePriceAmount = line.UnitPrice,
             PurchaseCurrency = order.Currency,
@@ -31651,10 +31682,14 @@ private List<string> GetVisibleAiMaterialLabels()
             : null;
 
     private static string FormatDisplayedMeasuredDate(DateTime? value) =>
-        value?.Date.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture) ?? "";
+        ApplicationDateCodec.FormatForDisplay(value);
 
-    private static bool TryParseDisplayedMeasuredDate(string value, out DateTime date) =>
-        DateTime.TryParseExact(value.Trim(), new[] { "d.M.yyyy", "dd.MM.yyyy" }, CultureInfo.InvariantCulture, DateTimeStyles.None, out date);
+    private static bool TryParseDisplayedMeasuredDate(string value, out DateTime date)
+    {
+        date = default;
+        return ApplicationDateCodec.TryCanonicalizeUserInput(value, CultureInfo.CurrentCulture, out var canonical) &&
+               ApplicationDateCodec.TryParseStored(canonical, out date);
+    }
 
     private static bool ShouldAssignMeasuredDate(DateTime? currentDate, IEnumerable<string> inputs) =>
         currentDate is null && inputs.Any(value => !string.IsNullOrWhiteSpace(value));

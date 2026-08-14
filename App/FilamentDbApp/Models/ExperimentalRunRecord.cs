@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using FilamentDbApp.Services;
 
 namespace FilamentDbApp.Models;
 
@@ -23,7 +24,7 @@ public sealed class ExperimentalRunRecord : INotifyPropertyChanged
         set
         {
             var date = value?.Date;
-            var text = date?.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture) ?? string.Empty;
+            var text = ApplicationDateCodec.FormatForDisplay(date);
             if (_measuredDate == date && _measuredDateText == text) return;
             _measuredDate = date;
             _measuredDateText = text;
@@ -44,10 +45,11 @@ public sealed class ExperimentalRunRecord : INotifyPropertyChanged
                 _measuredDate = null;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasuredDate)));
             }
-            else if (DateTime.TryParseExact(candidate.Trim(), new[] { "d.M.yyyy", "dd.MM.yyyy" }, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed))
+            else if (ApplicationDateCodec.TryCanonicalizeUserInput(candidate, CultureInfo.CurrentCulture, out var canonical) &&
+                     ApplicationDateCodec.TryParseStored(canonical, out var parsed))
             {
                 _measuredDate = parsed.Date;
-                _measuredDateText = _measuredDate.Value.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture);
+                _measuredDateText = ApplicationDateCodec.FormatForDisplay(_measuredDate);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasuredDate)));
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MeasuredDateText)));

@@ -203,7 +203,7 @@ Date: 2026-07-30
 Area: Application date entry and display / Purchase Orders / Materials
 Type: Workflow friction / Data issue
 Severity: Important
-Status: Open
+Status: Resolved
 What happened: Dates entered manually are understood in Icelandic day-month-year order, while a Purchase Order created by the
 application receives `yyyy-MM-dd`. That value is copied unchanged into Materials `Purchase Date` and `Price Checked`, so equivalent
 user-facing date fields show different formats depending on their source.
@@ -219,9 +219,21 @@ Resolution: Scheduled as v60.0.6. Inventory every editable/displayed application
 timestamp, immutable snapshot or interchange/export value before implementation. Define one locale-aware parse/display boundary
 with canonical ISO persistence and explicit legacy-input compatibility; do not apply locale formatting blindly to public reports,
 file names, IDs, logs or signed/deterministic evidence.
-Verification evidence: Not yet implemented. Future acceptance must cover `is-IS` and a contrasting Windows culture, valid and
-ambiguous input, restart and locale-change round trips, sorting/filtering, Purchase Order-to-Materials propagation, import/export
-compatibility, invalid-date feedback, immutable history and unchanged deterministic report/evidence contracts.
+Research evidence: editable calendar surfaces are Purchase Order Order/Received date, Inventory and Materials Purchase date,
+Materials Price/Printing Settings Checked date, Video Publish date, and native/Experimental Measured date. Rate dates are
+read-only snapshot provenance. The grids currently mix raw ISO strings with the native measurement path's fixed Icelandic display;
+PO creation stores ISO and copies that raw text into Materials. The bounded design uses one shared active-Windows-culture display
+and parse codec, canonicalizes successful edits/PO propagation to ISO before save, rejects invalid or ambiguous non-locale input,
+and never bulk-rewrites load-time legacy data or immutable snapshots. Excel/JSON, public reports, UTC evidence, file names, IDs,
+manifests and logs retain their governed formats. Owner approved this bounded design before implementation.
+Implementation evidence: the approved shared codec now localizes PO Order/Received/Rate, Inventory/Materials Purchase, Materials
+Price/Settings Checked, Video Publish and native/Experimental Measured dates at the UI boundary. Valid edits and PO downstream
+propagation use ISO; invalid grid edits do not persist. Internal purchasing reports localize only their calendar values while
+generated timestamps stay deterministic. Help and the existing measurement gate are updated. No schema, seed, immutable snapshot,
+public-report, Production or FTPS contract changed. Existing reports automation remains the correct bounded owner; no new mutating
+scenario or AutomationId is warranted. Disposable profile `20260814153636-06cea92b` passes Full Data Verification 425/425, the
+dedicated `is-IS`/`en-US`/ISO/leap-day/invalid/legacy gate, 627 artifact checks and exact logical/business-state recovery. Owner
+accepts the Icelandic runtime presentation and confirms Full Data Verification PASS.
 
 Date: 2026-07-30
 Area: Fast Materials / editable-cell keyboard navigation and focus

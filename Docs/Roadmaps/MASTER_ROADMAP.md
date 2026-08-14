@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v59.0.11 — Public Base-material Printing Gui
 
 Current canonical application release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Current roadmap increment: **v60.0.6 — Locale-aware Application Date Presentation (Research next)**
+Current roadmap increment: **v60 parent closure — Release reconciliation and final gates**
 
-Current acceptance note: v60.0.5 is owner accepted; Full Data Verification passes 424/424.
+Current acceptance note: v60.0.6 is owner accepted; Full Data Verification passes 425/425.
 
-Next note: v60.0.5 is complete; v60.0.6 research is next. Production and FTPS remain unchanged.
+Next note: v60.0.6 is complete; v60 parent closure is next. Production and FTPS remain unchanged.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2821,16 +2821,34 @@ blockers may change the order, but must be recorded here before implementation.
   - Owner acceptance: the main-site tab, navigation, responsive report output and final removal of redundant footer links/text pass.
   - Completion condition met: shared rendering, stable routes, navigation, responsive output and publication scope are accepted.
 - **v60.0.6 — Locale-aware Application Date Presentation**
-  - State: Planned; research and approve the date-field inventory and compatibility contract before implementation.
+  - State: Complete; automated gates and owner runtime/readability acceptance pass.
   - Parse and display user-facing calendar dates through the active Windows locale, including Icelandic day-month-year formatting.
   - Persist canonical calendar dates as ISO `yyyy-MM-dd`; do not store locale-dependent text or rewrite immutable saved snapshots.
   - Keep UTC timestamps, IDs, file names, manifests, logs and deterministic interchange/evidence in their governed ISO formats.
   - Normalize Purchase Order-to-Materials date propagation at the UI/storage boundary and retain valid legacy date compatibility.
   - Assess Help plus deterministic coverage for parsing, culture changes, invalid input, sorting, restart and import/export behavior.
+  - Inventory: editable calendar dates are PO Order/Received, Inventory/Materials Purchase, Materials Price/Settings Checked,
+    Video Publish and native/Experimental Measured date; exchange-rate observation dates are read-only saved provenance.
+  - UI boundary: one shared calendar-date codec displays `CurrentCulture.DateTimeFormat.ShortDatePattern` and accepts the active
+    culture plus exact ISO; known unambiguous legacy Icelandic values remain readable without changing stored history on load.
+  - Persistence boundary: successful new/edited values canonicalize to ISO before SQLite save and PO propagation. Invalid or
+    ambiguous non-locale input is not saved; the affected cell retains visible correction feedback.
+  - Compatibility: existing ISO ordering, Excel/JSON fields, snapshots, public reports, UTC timestamps and deterministic evidence
+    remain unchanged. Locale changes alter only display after restart and never bulk-rewrite canonical or immutable records.
+  - Proposed coverage: deterministic `is-IS`/`en-US` codec, invalid/leap-day probes, PO-to-Materials ISO propagation, restart and
+    culture-change round trips, canonical sorting/export plus existing native measurement persistence gates.
+  - Implementation: one shared codec and WPF binding boundary cover PO, Inventory, Fast Materials, Video Publish, native and
+    Experimental measured dates; internal purchasing-report calendar values localize while generated evidence timestamps stay ISO.
+  - Automation: the existing reports scenario owns UI discovery, Full Verification, report generation and exact-state recovery;
+    no new mutating scenario or AutomationId is required. Profile `20260814153636-06cea92b` passes 425/425 and 627 artifacts.
+  - Help: relevant Materials, Purchase Orders, Inventory, Video Planner and measurement topics explain Windows display, ISO storage
+    and invalid-input behavior. Production, FTPS, schema, canonical seed and immutable saved snapshots are unchanged.
   - Completion condition: owner accepts consistent dates under `is-IS` and another culture with unambiguous canonical persistence,
     exact round trips, clear invalid-input handling and unchanged immutable history and deterministic evidence.
+  - Owner acceptance: Icelandic date presentation is readable and consistent across the inspected workspaces; Verification passes.
+  - Completion condition met: locale display, ISO persistence, compatibility, propagation and deterministic evidence are accepted.
 - **v60 parent closure**
-  - State: Planned; no separate implementation begins until v60.0.1 through v60.0.6 are complete or formally dispositioned.
+  - State: Research next; v60.0.1 through v60.0.6 are complete and final reconciliation may begin.
   - Re-read the feedback ledger, reconcile Help, automation, Verification, release evidence and README, then run final release gates.
   - Completion condition: all recorded v60 increments are owner accepted, all six ledger items have canonical dispositions and the
     parent release passes Debug/Release, applicable security/static gates and Full Data Verification.

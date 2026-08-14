@@ -2,6 +2,25 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v60.0.6 - Locale-aware Application Date Presentation
+
+- Adds one shared active-Windows-culture calendar-date display/input codec with
+  canonical ISO `yyyy-MM-dd` persistence and known Icelandic legacy reading.
+- Applies it to PO, Inventory, Fast Materials, Video Publish and native/
+  Experimental measured dates, including read-only PO rate-date presentation.
+- Canonicalizes PO-to-Materials/Inventory propagation and rejects invalid WPF
+  or complete Fast Materials date edits without partial persistence.
+- Localizes internal purchasing-report calendar values while retaining ISO
+  generated timestamps and unchanged public/deterministic artifact contracts.
+- Leaves schema, seed, Excel/JSON interchange, immutable snapshots, UTC, IDs,
+  file names, logs, manifests, public reports, Production and FTPS unchanged.
+- Updates Help and deterministic Verification. Existing reports automation owns
+  runtime acceptance; no new mutating scenario or AutomationId is warranted.
+- Debug/Release app and AutomationRunner builds pass. Disposable profile
+  `20260814153636-06cea92b` passes 425/425, 627 artifacts and exact state recovery.
+- Owner accepts the Icelandic runtime presentation and confirms Full Data
+  Verification PASS.
+
 ## v60.0.5 - Engineering Reports Main-site Navigation
 
 - Removes the redundant standalone-directory link and technical catalog/manifest

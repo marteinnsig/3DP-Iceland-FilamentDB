@@ -12,6 +12,7 @@
         <SolidColorBrush x:Key="PanelBorderBrush" Color="#D7DBE3" />
         <local:TensileSampleValueBrushConverter x:Key="TensileSampleValueBrushConverter" />
         <local:ImpactSampleValueBrushConverter x:Key="ImpactSampleValueBrushConverter" />
+        <local:ApplicationDateConverter x:Key="ApplicationDateConverter" />
         <!-- UI-001: shared control rhythm and tooltip timing. Local margins remain in layout panels. -->
         <Style TargetType="ToolTip">
             <Setter Property="MaxWidth" Value="360" />
@@ -1079,7 +1080,7 @@
                                                     </x:Array>
                                                 </DataGridComboBoxColumn.ItemsSource>
                                             </DataGridComboBoxColumn>
-                                            <DataGridTextColumn Header="Publish date" Binding="{Binding PublishDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="115" />
+                                            <DataGridTextColumn Header="Publish date" Binding="{Binding PublishDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus, Converter={StaticResource ApplicationDateConverter}, ValidatesOnExceptions=True}" Width="115" />
                                             <DataGridTextColumn Header="Target week" Binding="{Binding TargetWeek, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="110" />
                                             <DataGridComboBoxColumn Header="Series" SelectedItemBinding="{Binding Series, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="110">
                                                 <DataGridComboBoxColumn.ItemsSource>
@@ -2041,13 +2042,13 @@
                 <DataGridTextColumn Header="PO ID" Binding="{Binding PurchaseOrderId}" Width="145" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Supplier" Binding="{Binding Supplier, UpdateSourceTrigger=PropertyChanged}" Width="150"/>
                 <DataGridTextColumn Header="Order #" Binding="{Binding OrderNumber, UpdateSourceTrigger=PropertyChanged}" Width="120"/>
-                <DataGridTextColumn Header="Order date" Binding="{Binding PurchaseDate, UpdateSourceTrigger=PropertyChanged}" Width="95"/>
+                <DataGridTextColumn Header="Order date" Binding="{Binding PurchaseDate, UpdateSourceTrigger=LostFocus, Converter={StaticResource ApplicationDateConverter}, ValidatesOnExceptions=True}" Width="105"/>
                 <DataGridComboBoxColumn Header="Workflow stage" SelectedItemBinding="{Binding LifecycleStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="165"><DataGridComboBoxColumn.ItemsSource><x:Array Type="{x:Type sys:String}"><sys:String>Draft</sys:String><sys:String>Ordered</sys:String><sys:String>Awaiting import charges</sys:String><sys:String>Awaiting delivery</sys:String><sys:String>Receiving</sys:String><sys:String>Verified</sys:String><sys:String>Inventory created</sys:String><sys:String>Complete</sys:String></x:Array></DataGridComboBoxColumn.ItemsSource></DataGridComboBoxColumn>
-                <DataGridTextColumn Header="Received date" Binding="{Binding ReceivedDate, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                <DataGridTextColumn Header="Received date" Binding="{Binding ReceivedDate, UpdateSourceTrigger=LostFocus, Converter={StaticResource ApplicationDateConverter}, ValidatesOnExceptions=True}" Width="105"/>
                 <DataGridComboBoxColumn Header="Currency" SelectedItemBinding="{Binding Currency, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="85"/>
                 <DataGridTextColumn Header="1 currency unit = ISK" Binding="{Binding ExchangeRate, UpdateSourceTrigger=PropertyChanged}" Width="125"/>
                 <DataGridTextColumn Header="Rate source" Binding="{Binding ExchangeRateSource}" Width="210" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Rate date" Binding="{Binding ExchangeRateObservationDate}" Width="95" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Rate date" Binding="{Binding ExchangeRateObservationDate, Converter={StaticResource ApplicationDateConverter}}" Width="105" IsReadOnly="True"/>
                 <DataGridComboBoxColumn Header="Tax treatment" SelectedItemBinding="{Binding TaxTreatment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="190"><DataGridComboBoxColumn.ItemsSource><x:Array Type="{x:Type sys:String}"><sys:String>VAT included in invoice</sys:String><sys:String>Import VAT paid separately</sys:String><sys:String>Tax exempt / none</sys:String></x:Array></DataGridComboBoxColumn.ItemsSource></DataGridComboBoxColumn>
                 <DataGridTextColumn Header="Items total" Binding="{Binding SupplierItemsTotal, UpdateSourceTrigger=PropertyChanged}" Width="90"/>
                 <DataGridTextColumn Header="Shipping" Binding="{Binding SupplierShipping, UpdateSourceTrigger=PropertyChanged}" Width="85"/>
@@ -2188,7 +2189,7 @@
                     <DataGridTextColumn Header="Price / spool" Binding="{Binding PurchasePriceAmount, UpdateSourceTrigger=PropertyChanged}" Width="95"/>
                     <DataGridTextColumn Header="Currency" Binding="{Binding PurchaseCurrency, UpdateSourceTrigger=PropertyChanged}" Width="75"/>
                     <DataGridTextColumn Header="Supplier" Binding="{Binding PurchasedFrom, UpdateSourceTrigger=PropertyChanged}" Width="125"/>
-                    <DataGridTextColumn Header="Purchase date" Binding="{Binding PurchaseDate, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                    <DataGridTextColumn Header="Purchase date" Binding="{Binding PurchaseDate, UpdateSourceTrigger=LostFocus, Converter={StaticResource ApplicationDateConverter}, ValidatesOnExceptions=True}" Width="105"/>
                     <DataGridTextColumn Header="Order" Binding="{Binding OrderNumber, UpdateSourceTrigger=PropertyChanged}" Width="105"/>
                     <DataGridTextColumn Header="Notes" Binding="{Binding Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="180"/>
                 </DataGrid.Columns>

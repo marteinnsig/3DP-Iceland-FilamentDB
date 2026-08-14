@@ -1,3 +1,18 @@
+# v60.0.6 - Locale-aware Application Date Presentation
+
+Date: 2026-08-14
+
+- Debug/Release app and AutomationRunner builds pass with zero warnings/errors.
+- Shared codec Verification covers `is-IS`, `en-US`, ISO persistence and PO
+  propagation, leap-day, invalid/implausible dates and legacy Icelandic input.
+- Disposable reports profile `20260814153636-06cea92b` passes Full Data
+  Verification 425/425, verifies/hashes 627 artifacts and preserves exact
+  logical and business-state hashes.
+- Existing reports automation remains the bounded runtime owner; no new
+  mutating scenario or AutomationId is warranted.
+- Schema, seed, immutable history, public reports, Production and FTPS are
+  unchanged. Owner accepts the Icelandic presentation and Verification PASS.
+
 # v60.0.5 - Engineering Reports Main-site Navigation
 
 Date: 2026-08-14

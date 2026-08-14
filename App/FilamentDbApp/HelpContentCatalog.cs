@@ -188,7 +188,8 @@ internal static class HelpContentCatalog
             Inventory and purchase-evidence cells
             Spool Weight g / spool and Remaining Weight g / spool are grams; Remaining cannot exceed spool weight. Manufacturer SKU,
             Inventory ID, Purchase ID, Purchased From, Supplier URL, Order Number, Batch Number and Storage Location are editable
-            references. Purchase Date and Price Checked are dates. Inventory Status is Unopened, Opened or Empty. Inventory Qty is
+            references. Purchase Date and Price Checked display in the active Windows short-date format; valid edits persist as
+            unambiguous ISO yyyy-MM-dd. Invalid dates remain unsaved for correction. Inventory Status is Unopened, Opened or Empty. Inventory Qty is
             calculated/read-only. Purchase Price, Shipping, VAT, MSRP Amount and Landed Cost are non-negative monetary inputs. Purchase
             Currency is directly beside Purchase Price; MSRP and Landed Cost have their own adjacent currencies. Currency choices are
             governed; normalized MSRP USD, Landed USD and both USD/kg columns are calculated read-only. Thumbnail Filename is a
@@ -277,6 +278,10 @@ internal static class HelpContentCatalog
             Cost status and Document are read-only. Stages are Draft, Ordered, Awaiting import charges, Awaiting delivery, Receiving,
             Verified, Inventory created and Complete.
 
+            Date format and storage
+            Order date, Received date and read-only Rate date display through the active Windows short-date format. Valid edits are
+            stored as ISO yyyy-MM-dd and copied to new Materials/Inventory in that canonical form. Invalid dates are not saved.
+
             Ordered-item fields
             Line ID is read-only. Edit description, Category, SKU, Expected/Received quantity, Check state, optional Material link,
             storage, unit price, discount, unit weight, allocation toggle/manual shipping and Notes. Net/allocated/landed values and
@@ -331,7 +336,8 @@ internal static class HelpContentCatalog
             links remain available for correction and retry.
 
             Order header columns
-            PO ID is generated/read-only. Supplier and Order # are editable references; Order date and Received date are dates.
+            PO ID is generated/read-only. Supplier and Order # are editable references; Order date and Received date use the active
+            Windows short-date format while SQLite keeps canonical ISO yyyy-MM-dd. Invalid dates are not saved.
             Workflow stage choices are Draft, Ordered, Awaiting import charges, Awaiting delivery, Receiving, Verified, Inventory
             created and Complete. Currency is the invoice currency. `1 currency unit = ISK` is the reviewed conversion input used by
             current calculations; it must be positive. Rate source and Rate date are read-only provenance and never silently refresh.
@@ -421,7 +427,8 @@ internal static class HelpContentCatalog
             Spool ID is generated/read-only. Material selects the canonical MaterialID. Status choices are Unopened, Opened and Empty.
             Qty is a positive whole-number spool/group count. Spool g and Remaining g / spool are grams; remaining must be from zero
             through spool weight. Storage, Batch, Supplier, Order and Notes are editable references. Price / spool is non-negative and
-            Currency is its governed currency code. Purchase date is optional date evidence. Valid committed cells auto-save.
+            Currency is its governed currency code. Purchase date is optional evidence displayed in the active Windows short-date
+            format and stored as ISO yyyy-MM-dd. Invalid dates are not saved. Valid committed cells auto-save.
 
             Calculated summary grid
             Material, Spool ID and Status identify the source record. Qty, Remaining and Remaining percent summarize stock. Estimated
@@ -836,7 +843,8 @@ internal static class HelpContentCatalog
             Material ID, Manufacturer, Product Line, Marketing Name, Base Material, Category, Variant / Finish, Reinforcement and Color
             are read-only here and refresh independently from canonical Materials through stable MaterialID. Identity refresh never
             changes measurement samples, dates or notes. A valid committed source edit recalculates through ResultsService, updates test status and auto-saves
-            SQLite. The first source measurement assigns today only when Measured date is blank. Test Notes and Measured date are
+            SQLite. The first source measurement assigns today only when Measured date is blank. Measured date displays and parses
+            through the active Windows short-date format while SQLite retains ISO yyyy-MM-dd. Test Notes and Measured date are
             editable. Reset Columns confirms before restoring only that grid's local width/order; it changes no measurements.
 
             Tensile columns
@@ -885,7 +893,8 @@ internal static class HelpContentCatalog
             Run actions and columns
             Add Run creates an Active, Planned, non-baseline row. Duplicate Run creates a clean Planned, non-baseline identity and
             clears Measured date. Delete Run is permanent/default-No for that Run graph. Run ID is read-only. Value and Unit describe
-            the controlled setting. Status is the governed lifecycle; Measured date records completion evidence. Baseline is unique:
+            the controlled setting. Status is the governed lifecycle; Measured date records completion evidence in the active
+            Windows short-date format while SQLite stores ISO yyyy-MM-dd. Invalid dates are not saved. Baseline is unique:
             selecting one Run clears another baseline in the same Series. Active preserves/hides history. Run Notes is editable.
 
             Include inactive history
@@ -933,7 +942,8 @@ internal static class HelpContentCatalog
 
             Editable Video Planner idea fields
             In the editable recommendation idea list, Suggested title, Hook / angle, Talking points, Series, Episode order, Target week,
-            Publish date, Status, Effort and Notes are local creator-planning values. Material and Reason remain read-only identity/
+            Publish date, Status, Effort and Notes are local creator-planning values. Publish date uses the active Windows short-date
+            format, persists as ISO yyyy-MM-dd and rejects invalid dates. Material and Reason remain read-only identity/
             evidence. Valid committed edits persist through the local Video Planner owner; they never alter engineering measurements.
             Copy Prompt copies the displayed local prompt to the Windows clipboard and makes no network request.
 
