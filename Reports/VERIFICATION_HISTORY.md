@@ -1,3 +1,17 @@
+# v60.0.5 - Engineering Reports Main-site Navigation
+
+Date: 2026-08-14
+
+- Debug/Release app and AutomationRunner builds pass with zero warnings/errors.
+- Help coverage, documentation audit and roadmap line-length gates pass.
+- Disposable reports profile `20260814142236-007cbc3a` passes Full Data
+  Verification 424/424, verifies/hashes 627 artifacts and preserves exact
+  logical and business-state hashes.
+- The dedicated v60.0.5 gate proves the shared server-rendered fragment,
+  `#reports` history route, stable standalone routes and no iframe/client fetch.
+- Production and FTPS remain blocked and untouched. Owner tab, navigation,
+  responsive output and final footer-removal acceptance pass.
+
 # v60.0.4 - Manufacturer Report Table Containment
 
 Date: 2026-08-14
@@ -6,7 +20,7 @@ Date: 2026-08-14
 - Help coverage and release-documentation audits pass; roadmap lines remain at
   or below 136 characters.
 - Disposable reports profile `20260814134142-7857ce51` passes Full Data
-  Verification 424/424, verifies/hashes 627 artifacts and preserves exact
+  Verification 423/423, verifies/hashes 627 artifacts and preserves exact
   logical and business-state hashes.
 - Public Manufacturer Report verification requires the keyboard-focusable
   screen region, accessibility label, 1680-pixel screen table and print reset.

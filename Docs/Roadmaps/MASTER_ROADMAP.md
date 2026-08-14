@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v59.0.11 — Public Base-material Printing Gui
 
 Current canonical application release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Current roadmap increment: **v60.0.5 — Engineering Reports Main-site Navigation (Research next)**
+Current roadmap increment: **v60.0.6 — Locale-aware Application Date Presentation (Research next)**
 
-Current acceptance note: v60.0.4 is owner accepted; Full Data Verification passes 424/424.
+Current acceptance note: v60.0.5 is owner accepted; Full Data Verification passes 424/424.
 
-Next note: v60.0.4 is complete; v60.0.5 research is next. Production and FTPS remain unchanged.
+Next note: v60.0.5 is complete; v60.0.6 research is next. Production and FTPS remain unchanged.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2785,7 +2785,7 @@ blockers may change the order, but must be recorded here before implementation.
   - Correction evidence: smoke `20260730162359-1eaaead1` passes 423/423 with exact state recovery.
   - Completion condition met: owner accepts Black/Yellow/Black, close without warning, restart persistence and Verification PASS.
 - **v60.0.4 — Manufacturer Report Table Containment**
-  - State: Complete and owner runtime/visual accepted; Full Data Verification passes 424/424.
+  - State: Complete and owner runtime/visual accepted; Full Data Verification passes 423/423.
   - Purpose: contain the complete product-level table on desktop and narrow screens while preserving readable access to every cell.
   - Canonical source: the existing typed public manufacturer model, allowlist and canonical HTML-to-PDF renderer remain unchanged.
   - Non-goals: no public-data, route, publication, report-navigation, measurement, scoring or shared-theme expansion.
@@ -2799,12 +2799,27 @@ blockers may change the order, but must be recorded here before implementation.
   - Owner acceptance: contained HTML table, horizontal access to rightmost columns, PDF presentation and Verification PASS.
   - Completion condition met: desktop containment, complete horizontal access and unclipped PDF presentation are accepted.
 - **v60.0.5 — Engineering Reports Main-site Navigation**
-  - State: Current research next; owner design approval must precede implementation.
+  - State: Complete; automated gates and owner runtime/visual acceptance pass.
+  - Purpose: make Engineering Reports a true `#reports` main-site tab while preserving every stable standalone and report route.
+  - Canonical source: the typed public report catalog and one shared server-rendered portfolio fragment remain the only directory.
+  - Approved-design candidate: reuse that fragment in both the main-site section and existing `reports/index*.html` shell.
+  - History contract: tab clicks push `#reports`; hash load and Back/Forward activate it; report links remain normal deep navigation.
+  - Stable routes: keep `reports/index.html`, `reports/index-test.html` and every existing report HTML/PDF/metadata URL working.
+  - Mobile/accessibility: retain the scrollable tab strip, button semantics, `aria-controls`, focus styles and responsive directory.
+  - Non-goals: no iframe, client-side catalog fetch, copied report renderer, report redesign, allowlist or publication-scope change.
+  - Preview/Production: inject the same fragment with mode-correct root links; keep current staging and exact parity checks.
+  - Rollback: remove the additive tab/page and shared-fragment handoff; stable standalone report routes remain the accepted fallback.
+  - Implementation: website generation embeds the identified content from the same canonical package index after strict validation.
+  - Automation: existing reports scenario owns package rebuild, website contracts, Full Verification and exact-state recovery.
+  - Help: Website Preview now explains `#reports`, Back/Forward and retained standalone/deep routes.
+  - Evidence: profile `20260814142236-007cbc3a` passes 424/424, 627 artifact checks and exact state recovery.
   - Map the report portal renderer, stable/deep routes, browser history, back navigation, mobile behavior and shared-shell options.
   - Integrate an approved in-page tab or shared-shell experience without duplicating rendering or weakening publication controls.
   - Preserve accessibility, responsive behavior, public allowlists and Preview/Production parity; Production and FTPS stay blocked.
   - Completion condition: owner approves the bounded design and accepts tab switching, direct/deep links, back/forward navigation,
     responsive output and unchanged report publication scope after applicable deterministic and visual gates pass.
+  - Owner acceptance: the main-site tab, navigation, responsive report output and final removal of redundant footer links/text pass.
+  - Completion condition met: shared rendering, stable routes, navigation, responsive output and publication scope are accepted.
 - **v60.0.6 — Locale-aware Application Date Presentation**
   - State: Planned; research and approve the date-field inventory and compatibility contract before implementation.
   - Parse and display user-facing calendar dates through the active Windows locale, including Icelandic day-month-year formatting.

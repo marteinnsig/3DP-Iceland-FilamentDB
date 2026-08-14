@@ -11,6 +11,8 @@ public sealed class PublicReportWebsiteIntegrationService
     public const string WebsitePortalMarker = "3DP-PUBLIC-WEBSITE-REPORT-PORTAL-v42.9";
     public const string ProductionPortalRoute = "reports/index.html";
     public const string PreviewPortalRoute = "reports/index-test.html";
+    public const string EmbeddedPortalMarker = "3DP-PUBLIC-WEBSITE-REPORT-TAB-v60.0.5";
+    private const string EmbeddedPortalStyle = "<style id=\"embeddedPublicReportPortfolioStyles\">#portalPageReports>.public-report-portfolio{max-width:1280px;margin:30px auto;padding:30px;border-radius:18px;background:#111827;color:#e5e7eb;box-shadow:0 20px 55px rgba(0,0,0,.34)}#portalPageReports header{display:grid;grid-template-columns:1fr auto;gap:20px;border-bottom:3px solid #3b82f6}#portalPageReports header img{width:180px}#portalPageReports .cards,#portalPageReports .directory{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:20px 0}#portalPageReports .card,#portalPageReports .entry,#portalPageReports .note{border:1px solid #334155;border-radius:12px;padding:15px;background:#0f172a;color:#e5e7eb}#portalPageReports .value{font-size:25px;font-weight:800}#portalPageReports .entry h3{margin-top:0}#portalPageReports .report-directory-wrap{max-width:100%;overflow-x:auto}#portalPageReports table{width:100%;min-width:720px;border-collapse:collapse;color:#e5e7eb}#portalPageReports th,#portalPageReports td{padding:9px;border-bottom:1px solid #334155;text-align:left}#portalPageReports .material-id{display:block;margin-top:3px;color:#94a3b8;font-size:12px;font-weight:500}#portalPageReports a{color:#60a5fa;font-weight:700}@media(max-width:800px){#portalPageReports>.public-report-portfolio{margin:0;padding:18px;border-radius:0}#portalPageReports header,#portalPageReports .cards,#portalPageReports .directory{grid-template-columns:1fr}}</style>";
 
     public PublicReportWebsitePackageValidation ValidatePackage(string packageRoot)
     {
@@ -108,16 +110,52 @@ public sealed class PublicReportWebsiteIntegrationService
 
     public string ApplyPortalNavigation(string html, bool isProduction)
     {
+        return ApplyPortalNavigation(html, isProduction, string.Empty);
+    }
+
+    public string ApplyPortalNavigation(string html, bool isProduction, string embeddedPortalSection)
+    {
         if (html.Contains(WebsitePortalMarker, StringComparison.Ordinal)) return html;
         var route = isProduction ? ProductionPortalRoute : PreviewPortalRoute;
         const string methodologyTab = "<button type=\"button\" class=\"portal-tab\" data-portal-target=\"methodology\" aria-controls=\"portalPageMethodology\" aria-selected=\"false\">Methodology</button>";
-        var reportsTab = $"    <a class=\"portal-tab\" href=\"{route}\">Engineering Reports</a>";
+        const string reportsTab = "    <button type=\"button\" class=\"portal-tab\" data-portal-target=\"reports\" aria-controls=\"portalPageReports\" aria-selected=\"false\">Engineering Reports</button>";
         html = html.Replace(methodologyTab, $"<!-- {WebsitePortalMarker} -->\n{reportsTab}\n{methodologyTab}", StringComparison.Ordinal);
+        if (!string.IsNullOrWhiteSpace(embeddedPortalSection))
+        {
+            const string methodologyPage = "<section id=\"portalPageMethodology\" class=\"portal-page\" data-portal-page=\"methodology\" hidden>";
+            html = html.Replace(methodologyPage, embeddedPortalSection + Environment.NewLine + methodologyPage, StringComparison.Ordinal);
+        }
         html = html.Replace(
             "<section class=\"card\" id=\"videoReviewCard\">",
-            $"<section class=\"card report-portal-cta\"><h2>Public engineering reports</h2><p>Explore the allowlisted MaterialID, comparison, manufacturer, test-session, printing-recommendation and dataset reports.</p><a class=\"product-link\" href=\"{route}\">Open Engineering Reports</a></section><section class=\"card\" id=\"videoReviewCard\">",
+            $"<section class=\"card report-portal-cta\"><h2>Public engineering reports</h2><p>Explore the allowlisted MaterialID, comparison, manufacturer, test-session, printing-recommendation and dataset reports.</p><a class=\"product-link\" href=\"#reports\">Open Engineering Reports tab</a> &middot; <a class=\"product-link\" href=\"{route}\">Standalone directory</a></section><section class=\"card\" id=\"videoReviewCard\">",
             StringComparison.Ordinal);
         return html;
+    }
+
+    public string BuildEmbeddedPortalSection(string packageRoot, bool isProduction)
+    {
+        var validation = ValidatePackage(packageRoot);
+        if (!validation.Passed) throw new InvalidOperationException(validation.Detail);
+
+        var indexPath = Path.Combine(Path.GetFullPath(packageRoot), "index.html");
+        var indexHtml = File.ReadAllText(indexPath, Encoding.UTF8);
+        var style = Extract(indexHtml, $"<style id=\"{PublicEngineeringReportPackageService.PortfolioStyleId}\">", "</style>");
+        var mainTag = $"<main class=\"{PublicEngineeringReportPackageService.PortfolioMainClass}\">";
+        var main = Extract(indexHtml, mainTag, "</main>");
+        if (string.IsNullOrWhiteSpace(style) || string.IsNullOrWhiteSpace(main))
+            throw new InvalidOperationException("The canonical public report portfolio does not expose its reusable style or content fragment.");
+
+        var content = main[mainTag.Length..(main.Length - "</main>".Length)];
+        content = content.Replace("<table>", "<div class=\"report-directory-wrap\" tabindex=\"0\" role=\"region\" aria-label=\"Scrollable material report directory\"><table>", StringComparison.Ordinal)
+            .Replace("</table>", "</table></div>", StringComparison.Ordinal)
+            .Replace($"<div class=\"note\">Every PDF is printed from the canonical HTML in its report directory. See <a href=\"{PublicEngineeringReportPackageService.CatalogFileName}\">public report catalog metadata</a> and <a href=\"{PublicEngineeringReportPackageService.ManifestFileName}\">package manifest</a>.</div>", string.Empty, StringComparison.Ordinal);
+        return $"<!-- {EmbeddedPortalMarker} -->{EmbeddedPortalStyle}<section id=\"portalPageReports\" class=\"portal-page\" data-portal-page=\"reports\" hidden><div class=\"{PublicEngineeringReportPackageService.PortfolioMainClass}\">{content}</div></section>";
+    }
+
+    public string BuildPortalContractPlaceholder(bool isProduction)
+    {
+        var route = isProduction ? ProductionPortalRoute : PreviewPortalRoute;
+        return $"<!-- {EmbeddedPortalMarker} -->{EmbeddedPortalStyle}<section id=\"portalPageReports\" class=\"portal-page\" data-portal-page=\"reports\" hidden><div class=\"{PublicEngineeringReportPackageService.PortfolioMainClass}\"><div class=\"note\">Engineering Reports are validated and embedded during website generation. <a href=\"{route}\">Open the standalone directory</a>.</div></div></section>";
     }
 
     private static int CopyDirectory(string source, string destination)
@@ -135,6 +173,15 @@ public sealed class PublicReportWebsiteIntegrationService
     }
 
     private static bool NonEmpty(string path) => File.Exists(path) && new FileInfo(path).Length > 0;
+
+    private static string Extract(string html, string openingTag, string closingTag)
+    {
+        var start = html.IndexOf(openingTag, StringComparison.Ordinal);
+        if (start < 0) return string.Empty;
+        var contentStart = start + openingTag.Length;
+        var end = html.IndexOf(closingTag, contentStart, StringComparison.Ordinal);
+        return end < 0 ? string.Empty : openingTag + html[contentStart..end] + closingTag;
+    }
 
     private static bool TryResolvePublicRoute(string root, string route, out string path)
     {

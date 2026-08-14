@@ -1645,7 +1645,9 @@ internal static class HelpContentCatalog
             Main Website DATA includes every active, non-archived MaterialID; public-report checkboxes control linked report artifacts.
 
             Preview does not replace index.html, use Production paths or perform FTPS. Open index-test.html and inspect navigation,
-            material counts, representative cards, report links and browser layout. Open Printing Price Calculator in the website
+            material counts, representative cards, report links and browser layout. Engineering Reports is a true `#reports` tab;
+            direct `index-test.html#reports`, tab clicks and browser Back/Forward return to the embedded catalog, while the separate
+            `reports/index-test.html` directory and every report HTML/PDF route remain available. Open Printing Price Calculator in the website
             navigation and confirm its live totals, Reset Defaults and quote-print preview. It is an independent browser calculator:
             it never reads Materials, SQLite, MaterialID, reports or Website DATA. The relative `price/` route redirects to the
             calculator tab after coordinated Production activation. Confirm the Labs wordmark is readable in desktop and narrow

@@ -2,6 +2,36 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v60.0.5 - Engineering Reports Main-site Navigation
+
+- Removes the redundant standalone-directory link and technical catalog/manifest
+  note from the bottom of the embedded page without removing their stable routes.
+- Converts Engineering Reports from an ordinary standalone link to a true
+  `#reports` main-site tab with the existing button, focus and hash semantics.
+- Embeds the exact identified content from the canonical generated report
+  package instead of duplicating its catalog renderer or fetching it in-browser.
+- Preserves `reports/index.html`, `reports/index-test.html` and every existing
+  report HTML/PDF/metadata deep route as supported standalone destinations.
+- Keeps tab clicks, direct hashes and browser Back/Forward under the existing
+  `pushState`/`hashchange` owner; individual report links remain normal navigation.
+- Removes the redundant standalone-directory link from the bottom of the
+  embedded page while preserving the stable standalone route contract.
+- Adds a responsive, keyboard-focusable material-directory wrapper and retains
+  the existing horizontally scrollable mobile tab strip.
+- Website generation requires the validated fragment and fails closed if it is
+  absent. Public allowlists, report content, staging scope, Production and FTPS
+  are unchanged.
+- Updates Website Preview Help and deterministic Preview/Production, embedded
+  fragment, no-iframe, route and history contracts. Existing reports automation
+  owns runtime generation and exact-state recovery.
+- Debug/Release app and AutomationRunner builds plus Help/docs gates pass with
+  zero warnings/errors. Disposable reports profile
+  `20260814142236-007cbc3a` passes Full Data Verification 424/424, verifies 627
+  artifacts and restores exact logical/business state.
+- The dedicated shared-renderer, `#reports`, stable-route and no-iframe/client-
+  fetch gate passes. Owner runtime/visual acceptance passes on the final Preview;
+  Production and FTPS remain untouched.
+
 ## v60.0.4 - Manufacturer Report Table Containment
 
 - Contains the complete 17-column public Manufacturer Report product table in
@@ -18,7 +48,7 @@
   user decision changed. Visual HTML/PDF acceptance remains owner-manual.
 - Debug/Release app and AutomationRunner builds, Help/docs gates and disposable
   reports profile `20260814134142-7857ce51` pass. Full Data Verification is
-  424/424; 627 artifacts and exact logical/business-state recovery pass.
+  423/423; 627 artifacts and exact logical/business-state recovery pass.
 - The four-page Prusa3D PDF retains all 17 columns and links without clipping
   or overlap. The owner accepts contained HTML with horizontal access to the
   rightmost columns, PDF presentation and Verification PASS. v60.0.4 is complete.

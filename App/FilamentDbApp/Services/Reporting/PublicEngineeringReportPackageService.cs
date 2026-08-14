@@ -14,6 +14,8 @@ public sealed class PublicEngineeringReportPackageService
     public const string CatalogFileName = "report-catalog.json";
     public const string ManifestFileName = "manifest.txt";
     public const string PortfolioMarker = "3DP-PUBLIC-REPORT-PORTFOLIO-v42.8";
+    public const string PortfolioStyleId = "publicReportPortfolioStyles";
+    public const string PortfolioMainClass = "public-report-portfolio";
 
     public static IReadOnlyList<string> RequiredReportTypes { get; } = new[]
     {
@@ -59,7 +61,9 @@ public sealed class PublicEngineeringReportPackageService
         {
             IndexHtml = DocumentBrandTextRendererService.ApplyToPublicReportHtml(
                 PublicReportScreenThemeService.Apply(
-                    BuildIndex(model, generatedAt, version, releaseTitle)),
+                    BuildIndex(model, generatedAt, version, releaseTitle)
+                        .Replace("<style>", $"<style id=\"{PortfolioStyleId}\">", StringComparison.Ordinal)
+                        .Replace("<body><main>", $"<body><main class=\"{PortfolioMainClass}\">", StringComparison.Ordinal)),
                 BrandDisplayName,
                 version,
                 releaseTitle),
@@ -88,6 +92,8 @@ public sealed class PublicEngineeringReportPackageService
                      result.IndexHtml.Contains("Manufacturer Reports", StringComparison.Ordinal) &&
                      result.IndexHtml.Contains("Test Session Evidence", StringComparison.Ordinal) &&
                      result.IndexHtml.Contains("Printing Recommendations", StringComparison.Ordinal) &&
+                     result.IndexHtml.Contains($"id=\"{PortfolioStyleId}\"", StringComparison.Ordinal) &&
+                     result.IndexHtml.Contains($"class=\"{PortfolioMainClass}\"", StringComparison.Ordinal) &&
                      result.IndexHtml.Contains("class=\"material-id\"", StringComparison.Ordinal) &&
                      model.Reports.Where(entry => entry.ReportType == "material-engineering").All(entry => result.IndexHtml.Contains(MaterialNameFromEngineeringTitle(entry.Title), StringComparison.Ordinal)) &&
                      result.IndexHtml.Contains("assets/3dp-iceland-labs-logo-pdf.jpg", StringComparison.Ordinal) &&

@@ -170,7 +170,7 @@ Date: 2026-08-02
 Area: Native measurements / fixture-specific heat deflection
 Type: Workflow friction / Data issue
 Severity: Important
-Status: Open
+Status: Resolved
 What happened: The owner has built a thermal bend fixture but the application has no dedicated place to record the result for each
 MaterialID. A 127 x 12.7 x 3.2 mm specimen is printed flat and supported on two end pillars with a 110 mm clear span. A 54 g M20 nut
 applies the centered load, and the recorded endpoint is the temperature at which mid-span deflection reaches 2 mm.
@@ -360,7 +360,7 @@ screen overflow wrapper; the existing compact wrapping rule applies only to prin
 correction before implementation and visually inspect representative short/long manufacturer and material names.
 Verification evidence: v60.0.4 candidate adds a keyboard-focusable responsive screen wrapper, visible focus, natural wrapping and
 a separate compact print override without changing cells, links or allowlists. Debug/Release pass with zero warnings/errors.
-Disposable reports profile `20260814134142-7857ce51` passes Full Data Verification 424/424, 627 artifact checks and exact recovery.
+Disposable reports profile `20260814134142-7857ce51` passes Full Data Verification 423/423, 627 artifact checks and exact recovery.
 The four-page Prusa3D PDF retains all 17 columns/links without clipping or overlap. Owner accepted the contained HTML table,
 horizontal access to the rightmost columns, Verification PASS and the unclipped PDF. Solved in version v60.0.4 — 2026-08-14.
 
@@ -403,8 +403,21 @@ Screenshot / export / report attached: None; owner workflow observation on 2026-
 Resolution: Scheduled as v60.0.5. Research the current report-portal renderer, back-navigation, deep links, browser history and
 mobile tab behavior before choosing an embedded-section or shared-shell design. Require owner approval of the bounded design before
 implementation.
-Verification evidence: Not yet implemented. Future acceptance should cover direct/deep report URLs, tab switching, back/forward,
-responsive layout, accessibility, Preview/Production HTML parity and unchanged report publication scope.
+Research evidence: current tabs already use hash routing, `pushState`, `hashchange`, horizontal mobile navigation and hidden
+`aria-controls` pages. The report package is one typed catalog-driven renderer, while staging preserves separate Preview/Production
+portal files and every deep artifact route. Proposed design reuses one server-rendered portfolio fragment in both shells, adds a true
+`#reports` tab and keeps all standalone routes; no iframe, client fetch or copied renderer. Owner design approval is pending.
+Future acceptance should cover direct/deep report URLs, tab switching, Back/Forward, responsive layout, accessibility,
+Preview/Production HTML parity and unchanged report publication scope.
+Implementation evidence: v60.0.5 candidate identifies the canonical package style/content, embeds that exact server-rendered content
+inside `portalPageReports`, converts Engineering Reports to a real hash-routed button and preserves the standalone directory link.
+Website generation fails closed if the validated fragment is absent; no iframe, browser fetch, allowlist or publication change exists.
+Debug/Release app and AutomationRunner builds pass with zero warnings/errors. Disposable reports profile
+`20260814142236-007cbc3a` passes Full Data Verification 424/424, 627 artifact checks and exact state recovery. The dedicated
+v60.0.5 shared-renderer, `#reports`, stable-route and no-iframe/client-fetch gate passes. Owner runtime/visual acceptance pending.
+Owner follow-up accepts the overall website and Verification PASS and requests removal of only the redundant standalone-directory
+link plus the technical catalog/manifest note at the bottom of the embedded page; stable standalone and deep routes remain
+supported. Owner confirms the final generated Preview looks correct and authorizes commit/push; Production and FTPS are untouched.
 
 Date: 2026-07-29
 Area: Inventory / Usage history / blocked spool deletion recovery

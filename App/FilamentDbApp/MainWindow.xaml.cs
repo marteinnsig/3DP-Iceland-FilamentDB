@@ -7349,7 +7349,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
             var reportStage = _publicReportWebsiteIntegrationService.Stage(GetPublicReportPackageRoot(), folder, isProduction);
             var websiteBrandingStage = new WebsiteBrandingAssetService().Stage(folder);
-            SafeFileOperations.WriteAllTextAtomic(htmlPath, BuildWebsitePreviewHtml(visibleRows, allRows, generatedAt, templatePath, isProduction), Encoding.UTF8);
+            SafeFileOperations.WriteAllTextAtomic(htmlPath, BuildWebsitePreviewHtml(visibleRows, allRows, generatedAt, templatePath, isProduction, requirePublicReportPackage: true), Encoding.UTF8);
             Directory.CreateDirectory(manufacturersFolder);
             SafeFileOperations.WriteAllTextAtomic(manufacturerRedirectPath, BuildManufacturerRedirectHtml(isProduction), Encoding.UTF8);
             var documentationEngine = new DocumentationEngineService();
@@ -7724,7 +7724,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         _workflowPreferencesService.Save();
     }
 
-    private string BuildWebsitePreviewHtml(IReadOnlyList<DataRow> visibleRows, IReadOnlyList<DataRow> allRows, DateTime generatedAt, string? templatePath, bool isProduction)
+    private string BuildWebsitePreviewHtml(IReadOnlyList<DataRow> visibleRows, IReadOnlyList<DataRow> allRows, DateTime generatedAt, string? templatePath, bool isProduction, bool requirePublicReportPackage = false)
     {
         var template = LoadWebsiteExportTemplate(templatePath);
         var dataJson = BuildWebsiteTemplateDataJson(visibleRows);
@@ -7733,7 +7733,16 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         // The Manufacturers portal consumes the same canonical active material rows
         // supplied to the website DATA pipeline for this render.
         var canonical = ApplyWebsiteTerminologyCleanup(ApplyConsistencyCalibrationToWebsite(ApplyPublicReportLinksToWebsite(ApplyNativeWebsitePortalNavigation(InjectExperimentalWebsiteSection(rendered), allRows))));
-        var withReports = _publicReportWebsiteIntegrationService.ApplyPortalNavigation(canonical, isProduction);
+        string embeddedReports;
+        try
+        {
+            embeddedReports = _publicReportWebsiteIntegrationService.BuildEmbeddedPortalSection(GetPublicReportPackageRoot(), isProduction);
+        }
+        catch (InvalidOperationException) when (!requirePublicReportPackage)
+        {
+            embeddedReports = _publicReportWebsiteIntegrationService.BuildPortalContractPlaceholder(isProduction);
+        }
+        var withReports = _publicReportWebsiteIntegrationService.ApplyPortalNavigation(canonical, isProduction, embeddedReports);
         return new WebsiteBrandingAssetService().Apply(withReports);
     }
 
@@ -8041,7 +8050,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         const string portalScript = @"
 <script id=""nativePortalNavigationScript"">
 (function(){
-  const valid=['database','pricing','experimental','manufacturers','calculator','methodology'];
+  const valid=['database','pricing','experimental','manufacturers','calculator','reports','methodology'];
   const tabs=Array.from(document.querySelectorAll('[data-portal-target]'));
   const pages=Array.from(document.querySelectorAll('[data-portal-page]'));
   function routeFromHash(){
@@ -16089,13 +16098,18 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             publicWebsiteLinkSelectionReady && publicWebsiteLinkRendererReady
                 ? "Only opted-in MaterialIDs receive stable canonical Engineering, Recommendation, Test and Manufacturer report links in the shared website renderer"
                 : "Public report links were emitted for an unselected MaterialID or the shared renderer contract failed"));
-        const string publicPortalRendererProbe = "<button type=\"button\" class=\"portal-tab\" data-portal-target=\"methodology\" aria-controls=\"portalPageMethodology\" aria-selected=\"false\">Methodology</button><section class=\"card\" id=\"videoReviewCard\"></section>";
-        var publicPortalPreviewProbe = _publicReportWebsiteIntegrationService.ApplyPortalNavigation(publicPortalRendererProbe, isProduction: false);
-        var publicPortalProductionProbe = _publicReportWebsiteIntegrationService.ApplyPortalNavigation(publicPortalRendererProbe, isProduction: true);
+        const string publicPortalRendererProbe = "<button type=\"button\" class=\"portal-tab\" data-portal-target=\"methodology\" aria-controls=\"portalPageMethodology\" aria-selected=\"false\">Methodology</button><section class=\"card\" id=\"videoReviewCard\"></section><section id=\"portalPageMethodology\" class=\"portal-page\" data-portal-page=\"methodology\" hidden></section>";
+        const string embeddedPortalProbe = "<!-- 3DP-PUBLIC-WEBSITE-REPORT-TAB-v60.0.5 --><section id=\"portalPageReports\" class=\"portal-page\" data-portal-page=\"reports\" hidden><p>Shared portfolio renderer probe</p></section>";
+        var publicPortalPreviewProbe = _publicReportWebsiteIntegrationService.ApplyPortalNavigation(publicPortalRendererProbe, isProduction: false, embeddedPortalProbe);
+        var publicPortalProductionProbe = _publicReportWebsiteIntegrationService.ApplyPortalNavigation(publicPortalRendererProbe, isProduction: true, embeddedPortalProbe);
         var publicWebsitePortalReady = publicPortalPreviewProbe.Contains(PublicReportWebsiteIntegrationService.WebsitePortalMarker, StringComparison.Ordinal) &&
                                        publicPortalPreviewProbe.Contains(PublicReportWebsiteIntegrationService.PreviewPortalRoute, StringComparison.Ordinal) &&
                                        !publicPortalPreviewProbe.Contains(PublicReportWebsiteIntegrationService.ProductionPortalRoute, StringComparison.Ordinal) &&
                                        publicPortalProductionProbe.Contains(PublicReportWebsiteIntegrationService.ProductionPortalRoute, StringComparison.Ordinal) &&
+                                       publicPortalPreviewProbe.Contains("data-portal-target=\"reports\"", StringComparison.Ordinal) &&
+                                       publicPortalPreviewProbe.Contains("id=\"portalPageReports\"", StringComparison.Ordinal) &&
+                                       publicPortalPreviewProbe.Contains("href=\"#reports\"", StringComparison.Ordinal) &&
+                                       !publicPortalPreviewProbe.Contains("<iframe", StringComparison.OrdinalIgnoreCase) &&
                                        publicPortalPreviewProbe.Replace(PublicReportWebsiteIntegrationService.PreviewPortalRoute, PublicReportWebsiteIntegrationService.ProductionPortalRoute, StringComparison.Ordinal) == publicPortalProductionProbe &&
                                        typeof(PublicReportWebsiteIntegrationService).GetMethod("Stage") is not null &&
                                        typeof(PublicReportWebsiteIntegrationService).GetMethod("ValidatePackage") is not null;
@@ -16103,6 +16117,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             publicWebsitePortalReady
                 ? "Preview and Production share one catalog-driven portal renderer; staging validates every linked HTML/PDF/metadata artifact"
                 : "Public report portal route parity, catalog staging or dead-link validation contract failed"));
+        var engineeringReportsMainTabReady =
+            publicPortalPreviewProbe.Contains(PublicReportWebsiteIntegrationService.EmbeddedPortalMarker, StringComparison.Ordinal) &&
+            publicPortalPreviewProbe.Contains("data-portal-target=\"reports\"", StringComparison.Ordinal) &&
+            publicPortalPreviewProbe.Contains("aria-controls=\"portalPageReports\"", StringComparison.Ordinal) &&
+            publicPortalPreviewProbe.Contains("data-portal-page=\"reports\"", StringComparison.Ordinal) &&
+            publicPortalPreviewProbe.Contains("href=\"#reports\"", StringComparison.Ordinal) &&
+            publicPortalPreviewProbe.Contains(PublicReportWebsiteIntegrationService.PreviewPortalRoute, StringComparison.Ordinal) &&
+            publicPortalProductionProbe.Contains(PublicReportWebsiteIntegrationService.ProductionPortalRoute, StringComparison.Ordinal) &&
+            !publicPortalPreviewProbe.Contains("<iframe", StringComparison.OrdinalIgnoreCase) &&
+            !publicPortalPreviewProbe.Contains("fetch(", StringComparison.Ordinal) &&
+            typeof(PublicReportWebsiteIntegrationService).GetMethod("BuildEmbeddedPortalSection") is not null &&
+            typeof(PublicReportWebsiteIntegrationService).GetMethod("BuildPortalContractPlaceholder") is not null;
+        checks.Add(new VerificationCheck("v60.0.5 Engineering Reports main-site navigation", engineeringReportsMainTabReady,
+            engineeringReportsMainTabReady
+                ? "Shared server-rendered portfolio content, #reports history routing, stable standalone routes and no iframe/client fetch passed"
+                : "Engineering Reports tab, shared-fragment, history, standalone-route or no-duplication contract failed"));
         var publicWebsiteReportPrerequisiteReady = typeof(MainWindow).GetMethod("EnsurePublicReportPackageAsync", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
                                                    typeof(MainWindow).GetMethod("GenerateWebsiteExportAsync", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
                                                    typeof(MainWindow).GetMethod("GenerateWebsiteExport", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null;
@@ -17525,7 +17555,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             "Single-file portal navigation is injected into preview and production exports"));
         checks.Add(new VerificationCheck("Website portal page foundation", new[] { "portalPageDatabase", "portalPagePricing", "portalPageExperimental", "portalPageManufacturers", "portalPageCalculator", "portalPageMethodology" }.All(id => portalProbe.Contains(id, StringComparison.Ordinal)),
             "Filament Database, Pricing & Value, Experimental Lab, Manufacturers, calculator and Methodology surfaces are present"));
-        checks.Add(new VerificationCheck("Website hash navigation", new[] { "database", "pricing", "experimental", "manufacturers", "calculator", "methodology" }.All(route => portalProbe.Contains("'" + route + "'", StringComparison.Ordinal)),
+        checks.Add(new VerificationCheck("Website hash navigation", new[] { "database", "pricing", "experimental", "manufacturers", "calculator", "reports", "methodology" }.All(route => portalProbe.Contains("'" + route + "'", StringComparison.Ordinal)),
             "Direct hash links and browser Back/Forward routing are available"));
         checks.Add(new VerificationCheck("Printing price calculator parity contract",
             new[]

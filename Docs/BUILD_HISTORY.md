@@ -2,6 +2,42 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v60.0.5 - Engineering Reports Main-site Navigation
+
+The main website now receives one additional `reports` route through its
+existing tab and hash-navigation engine. Engineering Reports is a real button
+with `aria-controls="portalPageReports"`; direct `#reports`, tab clicks and
+Back/Forward use the same activation path as the other main-site pages.
+
+No second portfolio renderer was added. The canonical package index identifies
+its style and content surface, website staging validates that package, and the
+main export embeds the exact server-rendered content. Stable standalone portal
+and individual HTML/PDF/metadata routes remain available. Owner review removed
+the redundant standalone-directory link at the bottom of the embedded page;
+the stable route remains supported through the existing entry/fallback surfaces.
+
+Website generation requires the validated fragment and stops on absence or
+drift. A non-publishing Verification-only render can use an inert contract
+placeholder when no output package exists. The embedded material directory is
+keyboard-focusable and horizontally contained on narrow screens. No iframe,
+browser catalog fetch, allowlist, report content, Production or FTPS change was
+introduced.
+
+Website Preview Help and deterministic portal/history/parity contracts are
+updated. The existing disposable reports scenario owns package generation,
+Full Verification and exact-state recovery. Debug/Release app and
+AutomationRunner builds pass with zero warnings/errors. Disposable reports
+profile `20260814142236-007cbc3a` passes Full Data Verification 424/424,
+verifies/hashes 627 artifacts and preserves exact logical/business state. Its
+dedicated v60.0.5 shared-renderer, `#reports`, stable-route and no-iframe/client-
+fetch gate passes.
+
+Owner visual follow-up removed the redundant bottom standalone-directory link
+and technical catalog/manifest note from only the embedded main-site page. The
+governed standalone directory and metadata/manifest routes remain unchanged.
+The owner confirmed the final generated Preview looks correct and authorized
+commit/push. Production and FTPS remained untouched.
+
 ## v60.0.4 - Manufacturer Report Table Containment
 
 The public Manufacturer Report now wraps only its complete product-level
@@ -20,7 +56,7 @@ minimum width and print override. Help does not change because no application
 surface or user decision changed; HTML and PDF usability remain manual visual
 acceptance. Debug/Release app and AutomationRunner builds plus Help/docs gates
 pass with zero warnings/errors. Disposable reports profile
-`20260814134142-7857ce51` passes Full Data Verification 424/424, hashes 627
+`20260814134142-7857ce51` passes Full Data Verification 423/423, hashes 627
 report artifacts and restores exact logical/business state.
 
 The representative four-page Prusa3D PDF contains 11 product rows. Visual
