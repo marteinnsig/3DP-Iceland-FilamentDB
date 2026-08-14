@@ -1,5 +1,22 @@
 # Automated Runtime Acceptance
 
+## v61.0.5 - App-wide Thermal Decision Surfaces Accepted
+
+- Existing smoke remains the safe read-only owner for Material Detail, Rankings,
+  Category Rankings, Awards, Insights and YouTube Research navigation.
+- No new mutating scenario or authorization is warranted.
+- Full Verification owns fixed 200 °C projection, clamping, missing-value,
+  minimum-peer and legacy Overall-invariance contracts plus required UI surfaces.
+- Release profile `20260814193047-3e01de23` passes 429/429, 23/23 tab/menu
+  navigation and exact logical/business-state recovery.
+- Owner review finds two visibility gaps after the first PASS: Compare lacked raw
+  °C and YouTube Research exposed thermal only conditionally. Verification now
+  requires the corrected Measured Properties row and explicit candidate column.
+- Replacement profile `20260814195816-dc8f3960` passes the hardened contract,
+  Full Verification 429/429 and exact logical/business-state recovery.
+- Owner accepts corrected Compare, YouTube evidence and all named thermal
+  decision surfaces on 2026-08-14.
+
 ## v61.0.3 - Thermal Population and Transition Retirement Accepted
 
 - Pre-retirement profile `20260814181952-48fb589d` passes 428/428 and exact recovery.

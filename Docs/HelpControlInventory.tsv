@@ -317,6 +317,7 @@ xaml.material-detail-analytics.datagridtextcolumn.layer-adhesion	Material Detail
 xaml.material-detail-analytics.datagridtextcolumn.overall-profile	Material Detail > Analytics	DataGridTextColumn	Overall Profile	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-analytics.datagridtextcolumn.stiffness	Material Detail > Analytics	DataGridTextColumn	Stiffness	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-analytics.datagridtextcolumn.tensile	Material Detail > Analytics	DataGridTextColumn	Tensile	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtextcolumn.thermal	Material Detail > Analytics	DataGridTextColumn	Thermal	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-compare.button.useselectedforcomparison-click	Material Detail > Compare	Button	UseSelectedForComparison_Click	action	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-compare.combobox.comparemateriala	Material Detail > Compare	ComboBox	CompareMaterialA	choice	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-compare.combobox.comparematerialb	Material Detail > Compare	ComboBox	CompareMaterialB	choice	v50.4.2	material-detail.controls-fields	covered
@@ -557,6 +558,7 @@ xaml.rankings-dashboard.datagridtextcolumn.reinforcement	Rankings Dashboard	Data
 xaml.rankings-dashboard.datagridtextcolumn.status	Rankings Dashboard	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.rankings-dashboard.datagridtextcolumn.stiffness	Rankings Dashboard	DataGridTextColumn	Stiffness	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.rankings-dashboard.datagridtextcolumn.tensile	Rankings Dashboard	DataGridTextColumn	Tensile	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.datagridtextcolumn.thermal	Rankings Dashboard	DataGridTextColumn	Thermal	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.rankings-dashboard.datagridtextcolumn.type	Rankings Dashboard	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.reports-pdf-export.button.buildpubliccomparisonreportpreviewbutton	Reports / PDF Export	Button	BuildPublicComparisonReportPreviewButton	action	v50.4.3	reports.controls-fields	covered
 xaml.reports-pdf-export.button.buildpublicmanufacturerreportpreviewbutton	Reports / PDF Export	Button	BuildPublicManufacturerReportPreviewButton	action	v50.4.3	reports.controls-fields	covered
@@ -677,6 +679,7 @@ xaml.youtube-research.datagridtextcolumn.reinforcement	YouTube Research	DataGrid
 xaml.youtube-research.datagridtextcolumn.score	YouTube Research	DataGridTextColumn	Score	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.datagridtextcolumn.score-2	YouTube Research	DataGridTextColumn	Score	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.datagridtextcolumn.score-3	YouTube Research	DataGridTextColumn	Score	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.datagridtextcolumn.thermal	YouTube Research	DataGridTextColumn	Thermal	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.datagridtextcolumn.thumbnail	YouTube Research	DataGridTextColumn	Thumbnail	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.datagridtextcolumn.thumbnail-2	YouTube Research	DataGridTextColumn	Thumbnail	editable-column-candidate	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.datagridtextcolumn.thumbnail-hook-angle	YouTube Research	DataGridTextColumn	Thumbnail / hook angle	editable-column-candidate	v50.4.3	youtube.controls-fields	covered

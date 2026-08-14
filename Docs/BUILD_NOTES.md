@@ -1,5 +1,18 @@
 # Current Build Notes - v60.0.6 Accepted Release
 
+## v61.0.5 app-wide thermal decision surfaces and radars
+
+Thermal Score now uses the accepted fixed 200 °C contract across in-app decision
+surfaces. Raw fixture °C remains primary evidence, missing remains unavailable and
+legacy Overall is unchanged. The radar has six axes; rankings, category winners,
+awards, Insights and YouTube planning share the same projection. Two measured
+peers are required before thermal rank/winner context is displayed.
+Owner review requires explicit raw °C in Compare Measured Properties and a
+visible Thermal column/status count in YouTube Research. The corrected candidate
+adds both and hardens Verification. Debug/Release, Help 699/699 and replacement
+profile `20260814195816-dc8f3960` pass 429/429 with exact recovery. Owner accepts
+the corrected Compare, YouTube evidence and all v61.0.5 surfaces on 2026-08-14.
+
 ## v61.0.3 thermal population and transition retirement accepted
 
 The one-time preview/apply path populated the accepted thermal source and passed

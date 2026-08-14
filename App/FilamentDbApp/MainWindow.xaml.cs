@@ -2627,7 +2627,7 @@ public partial class MainWindow : Window
             .ToList();
 
         RenderEngineeringDashboard(row, tensile, summaryMetrics);
-        RenderChartScores(tensile, summaryMetrics);
+        RenderChartScores(materialId, tensile, summaryMetrics);
         TensileSummaryList.ItemsSource = BuildTensileSummaryFields(tensile);
 
         var metrics = summaryMetrics
@@ -2719,15 +2719,18 @@ public partial class MainWindow : Window
     }
 
 
-    private void RenderChartScores(TensileTestResult? tensile, IReadOnlyList<TestSummaryMetric> metrics)
+    private void RenderChartScores(string materialId, TensileTestResult? tensile, IReadOnlyList<TestSummaryMetric> metrics)
     {
-        var profile = _scoringService.BuildProfile(tensile, metrics);
+        var thermalResults = _database.GetThermalDeflectionResults();
+        var thermalResult = thermalResults.TryGetValue(materialId, out var result) ? result : (double?)null;
+        var profile = _scoringService.BuildProfile(tensile, metrics, thermalResult);
 
         ChartTensileScoreText.Text = FormatScore(profile.TensileScore);
         ChartImpactScoreText.Text = FormatScore(profile.ImpactScore);
         ChartStiffnessScoreText.Text = FormatScore(profile.StiffnessScore);
         ChartLayerAdhesionScoreText.Text = FormatScore(profile.LayerAdhesionScore);
         ChartConsistencyScoreText.Text = FormatScore(profile.ConsistencyScore);
+        ChartThermalScoreText.Text = FormatScore(profile.ThermalScore);
         ChartOverallScoreText.Text = FormatScore(profile.OverallScore);
 
         ChartTensileSourceText.Text = profile.TensileSource;
@@ -2735,9 +2738,12 @@ public partial class MainWindow : Window
         ChartStiffnessSourceText.Text = profile.StiffnessSource;
         ChartLayerAdhesionSourceText.Text = profile.LayerAdhesionSource;
         ChartConsistencySourceText.Text = profile.ConsistencySource;
+        ChartThermalSourceText.Text = profile.ThermalResultTemperatureC.HasValue
+            ? $"{profile.ThermalResultTemperatureC.Value:0.#} °C fixture result / fixed 200 °C reference"
+            : profile.ThermalSource;
 
         ChartScoreNoteText.Text = profile.OverallScore.HasValue
-            ? "These are first-pass normalized 0–100 website-radar inputs. They are intended to feed the future radar chart and material comparison tools, not replace the raw measured values."
+            ? "The legacy Overall remains the average of the five mechanical axes. Thermal is an independent fixture-specific 0–100 axis and does not alter Overall."
             : "No score profile is available for this material yet. Import the workbook and select a material with mechanical summary values.";
     }
 
@@ -3363,12 +3369,14 @@ public partial class MainWindow : Window
         ChartStiffnessScoreText.Text = "—";
         ChartLayerAdhesionScoreText.Text = "—";
         ChartConsistencyScoreText.Text = "—";
+        ChartThermalScoreText.Text = "—";
         ChartOverallScoreText.Text = "—";
         ChartTensileSourceText.Text = "Average of flat/upright tensile MPa";
         ChartImpactSourceText.Text = "Impact flat/upright kJ/m²";
         ChartStiffnessSourceText.Text = "Stiffness modulus MPa";
         ChartLayerAdhesionSourceText.Text = "Upright tensile / flat tensile ratio";
         ChartConsistencySourceText.Text = "3DPIceland internal repeatability scale: 100 - average CV% - sample-count penalty";
+        ChartThermalSourceText.Text = "Fixture-specific probe temperature / fixed 200 °C reference";
         ChartScoreNoteText.Text = "Select a material to calculate score inputs.";
     }
 
@@ -3434,12 +3442,14 @@ public partial class MainWindow : Window
         public double? Stiffness { get; init; }
         public double? Consistency { get; init; }
         public double? LayerAdhesion { get; init; }
+        public double? Thermal { get; init; }
         public double? Overall { get; init; }
         public string TensileDisplay { get; init; } = "—";
         public string ImpactDisplay { get; init; } = "—";
         public string StiffnessDisplay { get; init; } = "—";
         public string ConsistencyDisplay { get; init; } = "—";
         public string LayerAdhesionDisplay { get; init; } = "—";
+        public string ThermalDisplay { get; init; } = "—";
         public string OverallDisplay { get; init; } = "—";
         public Brush RadarBrush { get; set; } = Brushes.Transparent;
         public Brush RadarRowBackground { get; set; } = Brushes.Transparent;
@@ -3470,9 +3480,10 @@ public partial class MainWindow : Window
         if (AnalyticsResultsList is null) return;
 
         var visibleRows = GetCanonicalVisibleMaterialRows();
+        var thermalResults = _database.GetThermalDeflectionResults();
         var mode = (AnalyticsChartMode.SelectedItem as AnalyticsChartModeOption)?.Key ?? "samples";
         var scores = visibleRows
-            .Select(BuildAnalyticsMaterialScore)
+            .Select(row => BuildAnalyticsMaterialScore(row, thermalResults))
             .Where(score => score.Profile.OverallScore.HasValue)
             .ToList();
 
@@ -3486,12 +3497,14 @@ public partial class MainWindow : Window
                 Stiffness = score.Profile.StiffnessScore,
                 Consistency = score.Profile.ConsistencyScore,
                 LayerAdhesion = score.Profile.LayerAdhesionScore,
+                Thermal = score.Profile.ThermalScore,
                 Overall = score.Profile.OverallScore,
                 TensileDisplay = FormatScore(score.Profile.TensileScore),
                 ImpactDisplay = FormatScore(score.Profile.ImpactScore),
                 StiffnessDisplay = FormatScore(score.Profile.StiffnessScore),
                 ConsistencyDisplay = FormatScore(score.Profile.ConsistencyScore),
                 LayerAdhesionDisplay = FormatScore(score.Profile.LayerAdhesionScore),
+                ThermalDisplay = FormatScore(score.Profile.ThermalScore),
                 OverallDisplay = FormatScore(score.Profile.OverallScore)
             })
             .OrderByDescending(row => ParseScoreForSorting(row.OverallDisplay))
@@ -3542,7 +3555,7 @@ public partial class MainWindow : Window
         const double size = 430;
         const double center = size / 2.0;
         const double radius = 150.0;
-        var axes = new[] { "Tensile", "Impact", "Stiffness", "Layer Adhesion", "Consistency" };
+        var axes = new[] { "Tensile", "Impact", "Stiffness", "Thermal", "Layer Adhesion", "Consistency" };
         var selectedRows = AnalyticsResultsList?.SelectedItems
             .OfType<AnalyticsDisplayRow>()
             .Where(row => row.Overall.HasValue)
@@ -3657,7 +3670,7 @@ public partial class MainWindow : Window
 
     private void DrawRadarProfile(AnalyticsDisplayRow row, double center, double radius, Color color)
     {
-        var values = new[] { row.Tensile, row.Impact, row.Stiffness, row.LayerAdhesion, row.Consistency };
+        var values = new[] { row.Tensile, row.Impact, row.Stiffness, row.Thermal, row.LayerAdhesion, row.Consistency };
         var points = RadarPoints(values, center, radius).ToList();
         var stroke = new SolidColorBrush(color);
         var fill = new SolidColorBrush(Color.FromArgb(48, color.R, color.G, color.B));
@@ -3721,7 +3734,9 @@ public partial class MainWindow : Window
         AnalyticsRadarCanvas.Children.Add(block);
     }
 
-    private AnalyticsMaterialScore BuildAnalyticsMaterialScore(DataRow row)
+    private AnalyticsMaterialScore BuildAnalyticsMaterialScore(
+        DataRow row,
+        IReadOnlyDictionary<string, double>? thermalResults = null)
     {
         var materialId = row.Table.Columns.Contains("Material ID")
             ? row["Material ID"]?.ToString()?.Trim() ?? string.Empty
@@ -3739,7 +3754,12 @@ public partial class MainWindow : Window
             BaseMaterial = DataTableHelpers.FirstValue(row, "Base Material", "Type", "Material Type") ?? "",
             Variant = DataTableHelpers.FirstValue(row, "Variant / Finish", "Variant", "Finish") ?? "",
             Reinforcement = DataTableHelpers.FirstValue(row, "Reinforcement", "Reinforment") ?? "",
-            Profile = _scoringService.BuildProfile(tensile, metrics)
+            Profile = _scoringService.BuildProfile(
+                tensile,
+                metrics,
+                (thermalResults ?? _database.GetThermalDeflectionResults()).TryGetValue(materialId, out var thermalResult)
+                    ? thermalResult
+                    : null)
         };
     }
 
@@ -3761,12 +3781,14 @@ public partial class MainWindow : Window
                     Stiffness = profile.StiffnessScore,
                     Consistency = profile.ConsistencyScore,
                     LayerAdhesion = profile.LayerAdhesionScore,
+                    Thermal = profile.ThermalScore,
                     Overall = profile.OverallScore,
                     TensileDisplay = FormatScore(profile.TensileScore),
                     ImpactDisplay = FormatScore(profile.ImpactScore),
                     StiffnessDisplay = FormatScore(profile.StiffnessScore),
                     ConsistencyDisplay = FormatScore(profile.ConsistencyScore),
                     LayerAdhesionDisplay = FormatScore(profile.LayerAdhesionScore),
+                    ThermalDisplay = FormatScore(profile.ThermalScore),
                     OverallDisplay = FormatScore(profile.OverallScore)
                 };
             })
@@ -3800,6 +3822,8 @@ public partial class MainWindow : Window
             StiffnessScore = AverageNullable(list.Select(p => p.StiffnessScore)),
             ConsistencyScore = AverageNullable(list.Select(p => p.ConsistencyScore)),
             LayerAdhesionScore = AverageNullable(list.Select(p => p.LayerAdhesionScore)),
+            ThermalScore = AverageNullable(list.Select(p => p.ThermalScore)),
+            ThermalResultTemperatureC = AverageNullable(list.Select(p => p.ThermalResultTemperatureC)),
             OverallScore = AverageNullable(list.Select(p => p.OverallScore))
         };
     }
@@ -3838,6 +3862,8 @@ public partial class MainWindow : Window
         public string ImpactUprightDisplay { get; init; } = "—";
         public double? Stiffness { get; init; }
         public string StiffnessDisplay { get; init; } = "—";
+        public double? ThermalResultTemperatureC { get; init; }
+        public string ThermalResultDisplay { get; init; } = "—";
         public EngineeringScoreProfile Profile { get; init; } = new();
     }
 
@@ -3952,7 +3978,14 @@ public partial class MainWindow : Window
         var metrics = GetCanonicalTestSummaryMetrics(materialId)
             .Where(m => m.TestType is "Tensile" or "Impact" or "Stiffness" or "Rating")
             .ToList();
-        var profile = _scoringService.BuildProfile(tensile, metrics);
+        var thermalResults = _database.GetThermalDeflectionResults();
+        double? thermalMeasurement = thermalResults.TryGetValue(materialId, out var thermalResult)
+            ? thermalResult
+            : null;
+        var profile = _scoringService.BuildProfile(
+            tensile,
+            metrics,
+            thermalMeasurement);
 
         var impactFlat = FindMetric(metrics, "Impact", "Flat", "kJ");
         var impactUpright = FindMetric(metrics, "Impact", "Upright", "kJ");
@@ -3972,6 +4005,10 @@ public partial class MainWindow : Window
             ImpactUprightDisplay = FormatSummaryMetric(impactUpright),
             Stiffness = ParseSampleCount(stiffness?.MetricValue),
             StiffnessDisplay = FormatSummaryMetric(stiffness),
+            ThermalResultTemperatureC = thermalMeasurement,
+            ThermalResultDisplay = thermalMeasurement.HasValue
+                ? $"{thermalMeasurement.Value:0.#} °C"
+                : "—",
             Profile = profile
         };
     }
@@ -3984,7 +4021,8 @@ public partial class MainWindow : Window
             BuildComparisonRow("Tensile Upright", snapshots, s => s?.TensileUprightDisplay, s => s?.TensileUpright),
             BuildComparisonRow("Impact Flat", snapshots, s => s?.ImpactFlatDisplay, s => s?.ImpactFlat),
             BuildComparisonRow("Impact Upright", snapshots, s => s?.ImpactUprightDisplay, s => s?.ImpactUpright),
-            BuildComparisonRow("Stiffness", snapshots, s => s?.StiffnessDisplay, s => s?.Stiffness)
+            BuildComparisonRow("Stiffness", snapshots, s => s?.StiffnessDisplay, s => s?.Stiffness),
+            BuildComparisonRow("Deflection temperature", snapshots, s => s?.ThermalResultDisplay, s => s?.ThermalResultTemperatureC)
         };
     }
 
@@ -3997,6 +4035,7 @@ public partial class MainWindow : Window
             BuildComparisonRow("Stiffness Score", snapshots, s => FormatScore(s?.Profile.StiffnessScore), s => s?.Profile.StiffnessScore),
             BuildComparisonRow("Consistency Score", snapshots, s => FormatScore(s?.Profile.ConsistencyScore), s => s?.Profile.ConsistencyScore),
             BuildComparisonRow("Layer Adhesion Score", snapshots, s => FormatScore(s?.Profile.LayerAdhesionScore), s => s?.Profile.LayerAdhesionScore),
+            BuildComparisonRow("Thermal Score", snapshots, s => FormatScore(s?.Profile.ThermalScore), s => s?.Profile.ThermalScore),
             BuildComparisonRow("Overall Profile", snapshots, s => FormatScore(s?.Profile.OverallScore), s => s?.Profile.OverallScore)
         };
     }
@@ -4141,6 +4180,7 @@ public partial class MainWindow : Window
         public double? Stiffness { get; init; }
         public double? Consistency { get; init; }
         public double? LayerAdhesion { get; init; }
+        public double? Thermal { get; init; }
         public double? PricePerKg { get; init; }
         public string RankScoreText => FormatScore(RankScore);
         public string OverallText => FormatScore(Overall);
@@ -4149,6 +4189,7 @@ public partial class MainWindow : Window
         public string StiffnessText => FormatScore(Stiffness);
         public string ConsistencyText => FormatScore(Consistency);
         public string LayerAdhesionText => FormatScore(LayerAdhesion);
+        public string ThermalText => FormatScore(Thermal);
         public string BestAxis { get; init; } = string.Empty;
     }
 
@@ -4213,6 +4254,14 @@ public partial class MainWindow : Window
             rows = rows.Where(row => ReinforcementFilterMatches(row.Reinforcement, reinforcement)).ToList();
         }
 
+        if (metric == "Thermal" && rows.Count < ThermalAnalyticsService.MinimumRankedPeerCount)
+        {
+            RankingsGrid.ItemsSource = null;
+            RankingSummaryText.Text = "Thermal rank unavailable";
+            RankingStatusText.Text = "Thermal score remains visible in Material Detail, but at least two measured peers are required to display a rank.";
+            return;
+        }
+
         rows = rows
             .OrderByDescending(row => row.RankScore ?? double.MinValue)
             .ThenByDescending(row => row.Overall ?? double.MinValue)
@@ -4246,6 +4295,7 @@ public partial class MainWindow : Window
             "Stiffness" => row.StiffnessScore,
             "Consistency" => row.ConsistencyScore,
             "Layer Adhesion" => row.LayerAdhesionScore,
+            "Thermal" => row.ThermalScore,
             _ => row.OverallScore
         };
 
@@ -4264,6 +4314,7 @@ public partial class MainWindow : Window
             Stiffness = row.StiffnessScore,
             Consistency = row.ConsistencyScore,
             LayerAdhesion = row.LayerAdhesionScore,
+            Thermal = row.ThermalScore,
             PricePerKg = row.PricePerKg,
             BestAxis = BestProfileDimension(new EngineeringScoreProfile
             {
@@ -4272,7 +4323,8 @@ public partial class MainWindow : Window
                 ImpactScore = row.ImpactScore,
                 StiffnessScore = row.StiffnessScore,
                 ConsistencyScore = row.ConsistencyScore,
-                LayerAdhesionScore = row.LayerAdhesionScore
+                LayerAdhesionScore = row.LayerAdhesionScore,
+                ThermalScore = row.ThermalScore
             })
         };
     }
@@ -4313,7 +4365,7 @@ public partial class MainWindow : Window
 
         var lines = new List<string>
         {
-            CsvLine("Rank", "Material", "Manufacturer", "Base Material", "Reinforcement", "Rank Score", "Overall", "Tensile", "Impact", "Stiffness", "Consistency", "Layer Adhesion", "Best Axis", "Status")
+            CsvLine("Rank", "Material", "Manufacturer", "Base Material", "Reinforcement", "Rank Score", "Overall", "Tensile", "Impact", "Stiffness", "Consistency", "Layer Adhesion", "Thermal", "Best Axis", "Status")
         };
 
         lines.AddRange(rows.Select(row => CsvLine(
@@ -4329,6 +4381,7 @@ public partial class MainWindow : Window
             row.StiffnessText,
             row.ConsistencyText,
             row.LayerAdhesionText,
+            row.ThermalText,
             row.BestAxis,
             row.Status)));
 
@@ -4376,7 +4429,8 @@ public partial class MainWindow : Window
         new CategoryMetricDefinition { Name = "Toughest Materials", ScoreSelector = row => row.Impact },
         new CategoryMetricDefinition { Name = "Stiffest Materials", ScoreSelector = row => row.Stiffness },
         new CategoryMetricDefinition { Name = "Most Consistent Materials", ScoreSelector = row => row.Consistency },
-        new CategoryMetricDefinition { Name = "Best Layer Adhesion", ScoreSelector = row => row.LayerAdhesion }
+        new CategoryMetricDefinition { Name = "Best Layer Adhesion", ScoreSelector = row => row.LayerAdhesion },
+        new CategoryMetricDefinition { Name = "Best Thermal Resistance", ScoreSelector = row => row.Thermal }
     };
 
     private void PopulateCategoryRankingFilters(DataTable table)
@@ -4475,6 +4529,11 @@ public partial class MainWindow : Window
 
             foreach (var group in groups.OrderBy(g => g.Key, StringComparer.CurrentCultureIgnoreCase))
             {
+                if (metric.Name == "Best Thermal Resistance" &&
+                    group.Count() < ThermalAnalyticsService.MinimumRankedPeerCount)
+                {
+                    continue;
+                }
                 var orderedWinners = group
                     .OrderByDescending(item => item.Score ?? double.MinValue)
                     .ThenByDescending(item => item.Row.Overall ?? double.MinValue)
@@ -4612,6 +4671,7 @@ public partial class MainWindow : Window
         new AwardDefinition { Name = "Stiffest Material", Set = "Performance awards", UseCase = "Rigidity comparisons", ScoreSelector = row => row.Stiffness },
         new AwardDefinition { Name = "Most Consistent Material", Set = "Performance awards", UseCase = "Reliability stories", ScoreSelector = row => row.Consistency },
         new AwardDefinition { Name = "Best Layer Adhesion", Set = "Performance awards", UseCase = "Layer strength stories", ScoreSelector = row => row.LayerAdhesion },
+        new AwardDefinition { Name = "Best Thermal Resistance", Set = "Performance awards", UseCase = "Heat-resistance comparisons", ScoreSelector = row => row.Thermal },
 
         new AwardDefinition { Name = "Best PLA", Set = "Material family awards", UseCase = "PLA roundups", AppliesTo = row => IsBaseMaterial(row, "PLA"), ScoreSelector = row => row.Overall },
         new AwardDefinition { Name = "Best PETG", Set = "Material family awards", UseCase = "PETG roundups", AppliesTo = row => IsBaseMaterial(row, "PETG"), ScoreSelector = row => row.Overall },
@@ -4720,6 +4780,12 @@ public partial class MainWindow : Window
                 .ThenBy(item => item.Row.Label, StringComparer.CurrentCultureIgnoreCase)
                 .ToList();
 
+            if (definition.Name == "Best Thermal Resistance" &&
+                candidates.Count < ThermalAnalyticsService.MinimumRankedPeerCount)
+            {
+                continue;
+            }
+
             if (candidates.Count == 0) continue;
 
             var winner = candidates[0];
@@ -4764,6 +4830,7 @@ public partial class MainWindow : Window
         if (definition.Name.Contains("Stiffest", StringComparison.OrdinalIgnoreCase)) return $"Highest stiffness score in this award set ({scoreText}).";
         if (definition.Name.Contains("Consistent", StringComparison.OrdinalIgnoreCase)) return $"Best consistency score in this award set ({scoreText}).";
         if (definition.Name.Contains("Layer", StringComparison.OrdinalIgnoreCase)) return $"Best layer adhesion score in this award set ({scoreText}).";
+        if (definition.Name.Contains("Thermal", StringComparison.OrdinalIgnoreCase)) return $"Highest fixture-specific thermal score in this award set ({scoreText}; fixed 200 °C reference).";
         return $"Best overall score in this award set ({scoreText}). Best axis: {row.BestAxis}.";
     }
 
@@ -4847,6 +4914,11 @@ public partial class MainWindow : Window
         public double? StiffnessScore { get; init; }
         public double? ConsistencyScore { get; init; }
         public double? LayerAdhesionScore { get; init; }
+        public double? ThermalScore { get; init; }
+        public double? ThermalResultTemperatureC { get; init; }
+        public string ThermalEvidence => ThermalResultTemperatureC.HasValue && ThermalScore.HasValue
+            ? $"{ThermalResultTemperatureC.Value:0.#} °C • {ThermalScore.Value:0}/100"
+            : "—";
         public double? PricePerKg { get; init; }
         public MaterialResults? VerifiedSummary { get; init; }
         public string ProductionStatus { get; set; } = "Idea";
@@ -5010,7 +5082,8 @@ public partial class MainWindow : Window
 
     private VideoPlannerRow BuildVideoPlannerRow(
         DataRow row,
-        IReadOnlyDictionary<string, MaterialResults>? verifiedSummaries = null)
+        IReadOnlyDictionary<string, MaterialResults>? verifiedSummaries = null,
+        IReadOnlyDictionary<string, double>? thermalResults = null)
     {
         var materialId = row.Table.Columns.Contains("Material ID")
             ? row["Material ID"]?.ToString()?.Trim() ?? string.Empty
@@ -5037,9 +5110,11 @@ public partial class MainWindow : Window
                 .Where(m => m.TestType is "Tensile" or "Impact" or "Stiffness" or "Rating")
                 .ToList()
             : new List<TestSummaryMetric>();
+        thermalResults ??= _database.GetThermalDeflectionResults();
+        var thermalResult = thermalResults.TryGetValue(materialId, out var result) ? result : (double?)null;
         var profile = verifiedSummary is not null
-            ? _scoringService.BuildProfile(verifiedSummary)
-            : _scoringService.BuildProfile(tensile, metrics);
+            ? _scoringService.BuildProfile(verifiedSummary, thermalResult)
+            : _scoringService.BuildProfile(tensile, metrics, thermalResult);
         var hasMechanical = verifiedSummary?.HasAnyResults == true || profile.OverallScore.HasValue || tensile?.HasAnyValue == true || metrics.Count > 0;
         var nativePricingRow = _nativeMaterialRows.FirstOrDefault(item =>
             item.MaterialID.Equals(materialId, StringComparison.OrdinalIgnoreCase));
@@ -5081,6 +5156,8 @@ public partial class MainWindow : Window
             StiffnessScore = profile.StiffnessScore,
             ConsistencyScore = profile.ConsistencyScore,
             LayerAdhesionScore = profile.LayerAdhesionScore,
+            ThermalScore = profile.ThermalScore,
+            ThermalResultTemperatureC = profile.ThermalResultTemperatureC,
             PricePerKg = pricePerKg,
             VerifiedSummary = verifiedSummary,
             Status = string.Join(" • ", statusParts),
@@ -5249,7 +5326,8 @@ public partial class MainWindow : Window
             (Name: "impact resistance", Score: profile.ImpactScore),
             (Name: "stiffness", Score: profile.StiffnessScore),
             (Name: "consistency", Score: profile.ConsistencyScore),
-            (Name: "layer adhesion", Score: profile.LayerAdhesionScore)
+            (Name: "layer adhesion", Score: profile.LayerAdhesionScore),
+            (Name: "thermal resistance", Score: profile.ThermalScore)
         }
         .Where(item => item.Score.HasValue)
         .OrderByDescending(item => item.Score)
@@ -5267,13 +5345,13 @@ public partial class MainWindow : Window
     private static string BuildSuggestedMaterialTitle(string label, string? manufacturer, string? baseMaterial, string? reinforcement, string? variant, EngineeringScoreProfile profile, string strongest)
     {
         return BuildSuggestedMaterialTitleFromScores(label, manufacturer, baseMaterial, reinforcement, variant,
-            profile.TensileScore, profile.ImpactScore, profile.StiffnessScore, profile.ConsistencyScore, profile.LayerAdhesionScore, profile.OverallScore, strongest);
+            profile.TensileScore, profile.ImpactScore, profile.StiffnessScore, profile.ConsistencyScore, profile.LayerAdhesionScore, profile.ThermalScore, profile.OverallScore, strongest);
     }
 
     private static string BuildSuggestedMaterialTitle(string label, string? manufacturer, string? baseMaterial, string? reinforcement, string? variant, VideoPlannerRow row, string strongest)
     {
         return BuildSuggestedMaterialTitleFromScores(label, manufacturer, baseMaterial, reinforcement, variant,
-            row.TensileScore, row.ImpactScore, row.StiffnessScore, row.ConsistencyScore, row.LayerAdhesionScore, row.OverallScore, strongest);
+            row.TensileScore, row.ImpactScore, row.StiffnessScore, row.ConsistencyScore, row.LayerAdhesionScore, row.ThermalScore, row.OverallScore, strongest);
     }
 
     private static string BuildSuggestedMaterialTitleFromScores(
@@ -5287,6 +5365,7 @@ public partial class MainWindow : Window
         double? stiffness,
         double? consistency,
         double? layerAdhesion,
+        double? thermal,
         double? overall,
         string strongest)
     {
@@ -5300,6 +5379,7 @@ public partial class MainWindow : Window
         if (tensile >= 75) return $"This {material}{reinforced} Is Stronger Than Expected | {brand}";
         if (layerAdhesion >= 75) return $"This {material}{variantText} Has Shockingly Good Layer Adhesion | {brand}";
         if (consistency >= 88) return $"The Most Repeatable {material}{variantText} Results So Far | {brand}";
+        if (thermal >= 70) return $"How Heat Resistant Is This {material}{reinforced}? | {brand}";
         if (!string.IsNullOrWhiteSpace(reinforcement)) return $"Is {reinforcement.Trim()} Worth It? | {brand} {material}";
         if (!string.IsNullOrWhiteSpace(variant)) return $"Is {variant.Trim()} {material} Actually Better? | {brand}";
         if (overall >= 65) return $"This {material} Surprised Me in the Lab | {brand}";
@@ -5308,15 +5388,15 @@ public partial class MainWindow : Window
 
     private static string BuildMaterialTalkingPoints(EngineeringScoreProfile profile, string strongest)
     {
-        return BuildTalkingPointsFromScores(profile.TensileScore, profile.ImpactScore, profile.StiffnessScore, profile.ConsistencyScore, profile.LayerAdhesionScore, profile.OverallScore, strongest);
+        return BuildTalkingPointsFromScores(profile.TensileScore, profile.ImpactScore, profile.StiffnessScore, profile.ConsistencyScore, profile.LayerAdhesionScore, profile.ThermalScore, profile.OverallScore, strongest);
     }
 
     private static string BuildMaterialTalkingPoints(VideoPlannerRow row, string strongest)
     {
-        return BuildTalkingPointsFromScores(row.TensileScore, row.ImpactScore, row.StiffnessScore, row.ConsistencyScore, row.LayerAdhesionScore, row.OverallScore, strongest);
+        return BuildTalkingPointsFromScores(row.TensileScore, row.ImpactScore, row.StiffnessScore, row.ConsistencyScore, row.LayerAdhesionScore, row.ThermalScore, row.OverallScore, strongest);
     }
 
-    private static string BuildTalkingPointsFromScores(double? tensile, double? impact, double? stiffness, double? consistency, double? layerAdhesion, double? overall, string strongest)
+    private static string BuildTalkingPointsFromScores(double? tensile, double? impact, double? stiffness, double? consistency, double? layerAdhesion, double? thermal, double? overall, string strongest)
     {
         var points = new List<string>();
         if (overall.HasValue) points.Add($"overall {overall.Value:0}/100");
@@ -5326,6 +5406,7 @@ public partial class MainWindow : Window
         if (stiffness >= 80) points.Add($"very stiff {stiffness.Value:0}/100");
         if (consistency >= 85) points.Add($"repeatable {consistency.Value:0}/100");
         if (layerAdhesion >= 65) points.Add($"layer adhesion {layerAdhesion.Value:0}/100");
+        if (thermal.HasValue) points.Add($"thermal {thermal.Value:0}/100 (fixed 200 °C reference)");
         return points.Count == 0 ? "Mechanical data imported, but no strong story axis yet." : string.Join(" • ", points);
     }
 
@@ -5337,7 +5418,8 @@ public partial class MainWindow : Window
             (Name: "impact resistance", Score: row.ImpactScore),
             (Name: "stiffness", Score: row.StiffnessScore),
             (Name: "consistency", Score: row.ConsistencyScore),
-            (Name: "layer adhesion", Score: row.LayerAdhesionScore)
+            (Name: "layer adhesion", Score: row.LayerAdhesionScore),
+            (Name: "thermal resistance", Score: row.ThermalScore)
         }
         .Where(item => item.Score.HasValue)
         .OrderByDescending(item => item.Score)
@@ -6191,6 +6273,8 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             StiffnessScore = material.StiffnessScore,
             ConsistencyScore = material.ConsistencyScore,
             LayerAdhesionScore = material.LayerAdhesionScore,
+            ThermalScore = material.ThermalScore,
+            ThermalResultTemperatureC = material.ThermalResultTemperatureC,
             OverallScore = material.OverallScore
         };
         var consistency = _engineeringConsistencyService.Analyze(material.VerifiedSummary, profile.ConsistencyScore);
@@ -6643,7 +6727,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
     private static string BuildContextRecommendationReason(string prefix, VideoPlannerRow row, double score)
     {
-        var components = $"Tensile {FormatScoreValue(row.TensileScore)}, impact {FormatScoreValue(row.ImpactScore)}, stiffness {FormatScoreValue(row.StiffnessScore)}, consistency {FormatScoreValue(row.ConsistencyScore)}, layer adhesion {FormatScoreValue(row.LayerAdhesionScore)}.";
+        var components = $"Tensile {FormatScoreValue(row.TensileScore)}, impact {FormatScoreValue(row.ImpactScore)}, stiffness {FormatScoreValue(row.StiffnessScore)}, consistency {FormatScoreValue(row.ConsistencyScore)}, layer adhesion {FormatScoreValue(row.LayerAdhesionScore)}, thermal {FormatScoreValue(row.ThermalScore)}.";
         var noVideo = row.HasVideo ? string.Empty : " No YouTube review yet.";
         return $"{prefix} Weighted score: {score:0}/100. {components}{noVideo}";
     }
@@ -6681,6 +6765,8 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                 StiffnessScore = row.StiffnessScore,
                 ConsistencyScore = row.ConsistencyScore,
                 LayerAdhesionScore = row.LayerAdhesionScore,
+                ThermalScore = row.ThermalScore,
+                ThermalResultTemperatureC = row.ThermalResultTemperatureC,
                 OverallScore = row.OverallScore
             }
         };
@@ -6780,7 +6866,8 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             $"Impact {FormatScoreValue(row.ImpactScore)}",
             $"Stiffness {FormatScoreValue(row.StiffnessScore)}",
             $"Consistency {FormatScoreValue(row.ConsistencyScore)}",
-            $"Layer adhesion {FormatScoreValue(row.LayerAdhesionScore)}"
+            $"Layer adhesion {FormatScoreValue(row.LayerAdhesionScore)}",
+            $"Thermal {FormatScoreValue(row.ThermalScore)}"
         };
 
         if (!row.HasVideo) points.Add("No YouTube review yet");
@@ -6807,7 +6894,8 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             ("impact", row.ImpactScore),
             ("stiffness", row.StiffnessScore),
             ("consistency", row.ConsistencyScore),
-            ("layer adhesion", row.LayerAdhesionScore)
+            ("layer adhesion", row.LayerAdhesionScore),
+            ("thermal resistance", row.ThermalScore)
         };
 
         var best = scores
@@ -10337,8 +10425,9 @@ private void OpenReportOutputFolder_Click(object sender, RoutedEventArgs e)
     private List<VideoPlannerRow> BuildCanonicalVisiblePlannerRows()
     {
         var verifiedSummaries = GetCanonicalVerifiedSummaryMap();
+        var thermalResults = _database.GetThermalDeflectionResults();
         return GetCanonicalVisibleMaterialRows()
-            .Select(row => BuildVideoPlannerRow(row, verifiedSummaries))
+            .Select(row => BuildVideoPlannerRow(row, verifiedSummaries, thermalResults))
             .ToList();
     }
 
@@ -15188,6 +15277,33 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             thermalDeflectionPopulationRetirementReady
                 ? "Accepted 191-row source population is intact; one-time import/export UI and service are retired"
                 : "Accepted source population drifted or one-time thermal workbook transition surfaces remain"));
+        var legacyProbe = new TensileTestResult { FlatMpa = "40", UprightMpa = "40" };
+        var legacyProfile = _scoringService.BuildProfile(legacyProbe, Array.Empty<TestSummaryMetric>());
+        var thermalProfile = _scoringService.BuildProfile(legacyProbe, Array.Empty<TestSummaryMetric>(), 171.0);
+        var thermalComparisonRows = BuildComparisonMetricRows(new ComparisonSnapshot?[]
+        {
+            new() { ThermalResultTemperatureC = 171.0, ThermalResultDisplay = "171 °C", Profile = thermalProfile }
+        });
+        var thermalAnalyticsReady =
+            ThermalAnalyticsService.VerifyContract() &&
+            legacyProfile.OverallScore == thermalProfile.OverallScore &&
+            thermalProfile.ThermalScore == 85.5 &&
+            FindName("ChartThermalScoreText") is TextBlock &&
+            FindName("DashboardHighestThermalText") is TextBlock &&
+            thermalComparisonRows.Any(row => row.Metric == "Deflection temperature" && row.A.Display == "171 °C") &&
+            YouTubeResearchTitleList.Columns.Any(column =>
+                string.Equals(column.Header?.ToString(), "Thermal", StringComparison.Ordinal)) &&
+            typeof(VideoPlannerRow).GetProperty(nameof(VideoPlannerRow.ThermalEvidence)) is not null &&
+            RankingMetricFilter.Items.OfType<ComboBoxItem>().Any(item =>
+                string.Equals(item.Content?.ToString(), "Thermal", StringComparison.Ordinal)) &&
+            CategoryMetricDefinitions().Any(item => item.Name == "Best Thermal Resistance") &&
+            AwardDefinitions().Any(item => item.Name == "Best Thermal Resistance");
+        checks.Add(new VerificationCheck(
+            "v61.0.5 Thermal analytics projection and legacy Overall invariance contract",
+            thermalAnalyticsReady,
+            thermalAnalyticsReady
+                ? "Fixed 200 °C thermal score, missing/saturation rules and independent app decision surfaces pass without changing legacy Overall"
+                : "Thermal projection, decision-surface binding or legacy Overall invariance failed"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",
@@ -22132,7 +22248,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             if (YouTubeResearchStatusText != null)
             {
                 var noVideo = candidates.Count(row => !row.HasVideo);
-                YouTubeResearchStatusText.Text = $"Generated {candidates.Count} title + thumbnail candidates, {comparisonCandidates.Count} comparison discoveries, {channelGaps.Count} channel gaps, {contentPlan.Count} calendar slots, and {playlists.Count} playlist discoveries ({noVideo} without video).";
+                var thermalCandidates = candidates.Count(row => row.ThermalScore.HasValue);
+                YouTubeResearchStatusText.Text = $"Generated {candidates.Count} title + thumbnail candidates, including {thermalCandidates} with fixture-specific thermal evidence; {comparisonCandidates.Count} comparison discoveries, {channelGaps.Count} channel gaps, {contentPlan.Count} calendar slots, and {playlists.Count} playlist discoveries ({noVideo} without video).";
             }
         }
         catch (Exception ex)
@@ -23065,10 +23182,9 @@ private void UpdateDashboardInsights()
             }
         }
 
-        var dashboardRows = visibleRows
-            .Select(row =>
+        var dashboardRows = BuildCanonicalVisiblePlannerRows()
+            .Select(video =>
             {
-                var video = BuildVideoPlannerRow(row);
                 var ranking = BuildRankingRow(video, "Overall");
                 var hasVideo = HasVideo(video);
                 var hiddenGemScore =
@@ -23112,6 +23228,12 @@ private void UpdateDashboardInsights()
             .ThenBy(x => x.Video.Label)
             .FirstOrDefault();
 
+        var bestThermal = dashboardRows
+            .Where(x => x.Ranking.Thermal.HasValue)
+            .OrderByDescending(x => x.Ranking.Thermal!.Value)
+            .ThenBy(x => x.Video.Label)
+            .FirstOrDefault();
+
         DashboardMaterialsText.Text = totalMaterials.ToString();
         DashboardManufacturersText.Text = manufacturers.Count.ToString();
         DashboardTypesText.Text = types.Count.ToString();
@@ -23121,6 +23243,7 @@ private void UpdateDashboardInsights()
         if (DashboardHighestTensileText != null) DashboardHighestTensileText.Text = bestTensile == null ? "N/A" : DisplayLeader(bestTensile.Video.Label, bestTensile.Ranking.Tensile);
         if (DashboardHighestImpactText != null) DashboardHighestImpactText.Text = bestImpact == null ? "N/A" : DisplayLeader(bestImpact.Video.Label, bestImpact.Ranking.Impact);
         if (DashboardHighestStiffnessText != null) DashboardHighestStiffnessText.Text = bestStiffness == null ? "N/A" : DisplayLeader(bestStiffness.Video.Label, bestStiffness.Ranking.Stiffness);
+        if (DashboardHighestThermalText != null) DashboardHighestThermalText.Text = bestThermal == null ? "N/A" : DisplayLeader(bestThermal.Video.Label, bestThermal.Ranking.Thermal);
 
         var topManufacturers = nativeAllRows.Count > 0
             ? nativeAllRows.GroupBy(row => row.Manufacturer?.Trim() ?? string.Empty, StringComparer.CurrentCultureIgnoreCase)

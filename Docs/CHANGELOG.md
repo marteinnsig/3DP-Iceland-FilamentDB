@@ -2,6 +2,22 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v61.0.5 - App-wide Thermal Decision Surfaces and Radars
+
+- Adds one versioned fixed-200 °C thermal analytics projection; missing results
+  remain unavailable and legacy five-axis Overall is unchanged.
+- Adds Thermal to Material Detail Charts, Compare, Analytics grouping and the
+  six-axis radar, Rankings Dashboard, Category Rankings, Awards and Insights.
+- Extends local YouTube planning with thermal strongest-axis, title and talking-
+  point context while retaining fixture-specific/non-standard interpretation.
+- Requires two measured peers before thermal rank or winner context is shown.
+- Adds deterministic formula, saturation, missing-value, surface and Overall-
+  invariance Verification. Existing smoke owns safe read-only surface traversal.
+- Owner review adds raw Deflection temperature °C to Compare Measured Properties
+  and an always-visible Thermal evidence column/status count to YouTube Research.
+- Owner accepts corrected Compare, YouTube Research, all named thermal surfaces
+  and Full Data Verification PASS on 2026-08-14.
+
 ## v61.0.3 - Thermal Canonical Population and Transition Retirement
 
 - Used a preview-first, source/state-verified transaction to populate the accepted

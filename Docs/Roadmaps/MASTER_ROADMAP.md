@@ -6,12 +6,12 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v61.0.5 — App-wide Thermal Decision Surfaces and Radars**
+Current roadmap increment: **v61.0.6 — AI Assistant Thermal Context and Safety Boundary**
 
 Current acceptance note: v61.0.2 native Heat Deflection workspace, Help and persistence are owner accepted;
 Verification passes 427/427.
 
-Next note: implement the approved 200 °C thermal score contract across the in-app decision surfaces and radars.
+Next note: add allowlisted thermal context and fixture-specific safety wording to local and provider-backed AI workflows.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -48,7 +48,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
 | v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Complete — canonical v60.0.6 runtime accepted |
-| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — v61.0.4 owner accepted |
+| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — v61.0.5 owner accepted |
 
 ## Reconciliation of the older plans
 
@@ -2926,16 +2926,19 @@ blockers may change the order, but must be recorded here before implementation.
   - No AutomationRunner or Help change is warranted until the approved runtime contract is implemented in v61.0.5.
   - Completion condition: owner accepts the normalization, weighting, missing-data and backwards-compatibility contract.
 - **v61.0.5 — App-wide Thermal Decision Surfaces and Radars**
-  - State: Current implementation increment after accepted v61.0.4.
+  - State: **Completed and owner accepted 2026-08-14.**
   - Add raw °C, normalized thermal score, coverage and rank/percentile context to Material Detail Mechanical and Analytics views.
   - Expand the Material Detail radar and legends to the approved thermal axis while preserving readable labels at all window sizes.
   - Integrate the same canonical axis into Rankings Dashboard, Category Rankings, Awards & Winners and Dashboard Insights.
   - Integrate thermal strengths, limitations, comparisons, content gaps and candidate context into YouTube Research.
   - Audit every analytics/report/export consumer so no eligible in-app surface silently remains on the prior five-axis profile.
+  - Candidate uses one `3dp-thermal-analytics-fixture-v1` projection with the accepted fixed 200 °C reference.
+  - Candidate keeps legacy Overall byte-for-byte formula compatible and enforces two measured peers before thermal rank/award context.
+  - Owner accepts all named surfaces plus corrected Compare raw °C and explicit YouTube thermal evidence; Verification passes 429/429.
   - Preserve the accepted Rankings `Top 25` and Category Rankings `10` scope/default contracts while extending their metrics.
   - Completion condition: calculations have parity across all named surfaces and owner accepts ranking, awards and radar behavior.
 - **v61.0.6 — AI Assistant Thermal Context and Safety Boundary**
-  - State: Planned after v61.0.5.
+  - State: Current implementation increment after accepted v61.0.5.
   - Add allowlisted thermal result, score, method version and limitation wording to local AI summaries and exact payload preview.
   - Extend briefs, comparisons, collections, recommendations and coverage diagnostics without exposing internal source paths/hashes.
   - Require AI wording to distinguish nearby probe-indicated fixture temperature from ASTM D648, ISO 75 and specimen temperature.

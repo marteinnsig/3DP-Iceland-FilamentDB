@@ -696,7 +696,7 @@
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="14">
                                     <TextBlock Text="Scoring Engine Foundation" FontSize="20" FontWeight="SemiBold" />
-                                    <TextBlock Text="Normalized 0–100 inputs aligned with the website radar profile: Tensile, Impact, Stiffness, Consistency, and Layer Adhesion." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,14" />
+                                    <TextBlock Text="Normalized 0–100 decision axes: Tensile, Impact, Stiffness, Consistency, Layer Adhesion and fixture-specific Thermal. Thermal uses a fixed 200 °C reference and does not alter legacy Overall." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,14" />
 
                                     <Border Padding="14" CornerRadius="6" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,14">
                                         <StackPanel>
@@ -746,6 +746,14 @@
                                                 <TextBlock x:Name="ChartLayerAdhesionSourceText" Text="Upright tensile / flat tensile ratio" Foreground="#64748B" TextWrapping="Wrap" />
                                             </StackPanel>
                                         </Border>
+
+                                        <Border Padding="12" CornerRadius="6" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Margin="8,8,0,8">
+                                            <StackPanel>
+                                                <TextBlock Text="Thermal Score" FontWeight="SemiBold" FontSize="15" />
+                                                <TextBlock x:Name="ChartThermalScoreText" Text="—" FontSize="24" FontWeight="SemiBold" Margin="0,8,0,0" />
+                                                <TextBlock x:Name="ChartThermalSourceText" Text="Fixture-specific probe temperature / fixed 200 °C reference" Foreground="#64748B" TextWrapping="Wrap" />
+                                            </StackPanel>
+                                        </Border>
                                     </UniformGrid>
 
                                     <Border Padding="12" CornerRadius="6" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" Margin="0,12,0,0">
@@ -759,7 +767,7 @@
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="14">
                                     <TextBlock Text="Analytics &amp; Radar Framework" FontSize="20" FontWeight="SemiBold" />
-                                    <TextBlock Text="Website-style chart mode and grouping foundation. Uses the same five radar axes: Tensile, Impact, Stiffness, Consistency, and Layer Adhesion. The rows below are the chart data that will feed the radar overlay in the next milestone." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,14" />
+                                    <TextBlock Text="Uses six decision axes: Tensile, Impact, Stiffness, Consistency, Layer Adhesion and fixture-specific Thermal. Thermal uses the fixed 200 °C contract; legacy Overall remains the five-axis score." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,14" />
 
                                     <Border Padding="12" CornerRadius="6" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,14">
                                         <Grid>
@@ -828,6 +836,7 @@
                                                     <DataGridTextColumn Header="Stiffness" Binding="{Binding StiffnessDisplay}" Width="90" />
                                                     <DataGridTextColumn Header="Consistency" Binding="{Binding ConsistencyDisplay}" Width="105" />
                                                     <DataGridTextColumn Header="Layer Adhesion" Binding="{Binding LayerAdhesionDisplay}" Width="120" />
+                                                    <DataGridTextColumn Header="Thermal" Binding="{Binding ThermalDisplay}" Width="90" />
                                                     <DataGridTextColumn Header="Overall Profile" Binding="{Binding OverallDisplay}" Width="120" />
                                                 </DataGrid.Columns>
                                             </DataGrid>
@@ -835,7 +844,7 @@
                                     </Grid>
 
                                     <Border Padding="12" CornerRadius="6" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" Margin="0,12,0,0">
-                                        <TextBlock Text="The radar preview uses the same five website axes: Tensile, Impact, Stiffness, Consistency and Layer Adhesion. It renders the highest-ranked visible rows from the selected chart mode. The left-side filters and search box also apply to these analytics rows." TextWrapping="Wrap" Foreground="#1E3A8A" />
+                                        <TextBlock Text="The radar preview uses six axes: Tensile, Impact, Stiffness, Consistency, Layer Adhesion and Thermal. Missing values remain unavailable and render at the center; they never become score evidence. Overall remains the legacy five-axis score." TextWrapping="Wrap" Foreground="#1E3A8A" />
                                     </Border>
                                 </StackPanel>
                             </ScrollViewer>
@@ -2841,7 +2850,7 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel>
                                     <TextBlock Text="Rankings Dashboard" FontSize="22" FontWeight="SemiBold" />
-                                    <TextBlock Text="Top material rankings from the currently visible dataset. Uses the same scoring profile as the analytics/recommendation engine: Overall, Tensile, Impact, Stiffness, Consistency, and Layer Adhesion." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
+                                    <TextBlock Text="Top material rankings from the currently visible dataset. Thermal is an independent fixture-specific axis; legacy Overall remains unchanged." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
                                 </StackPanel>
                                 <TextBlock Grid.Column="1" x:Name="RankingSummaryText" Text="Rankings use the current visible Materials scope." Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
                             </Grid>
@@ -2868,6 +2877,7 @@
                                         <ComboBoxItem Content="Stiffness" />
                                         <ComboBoxItem Content="Consistency" />
                                         <ComboBoxItem Content="Layer Adhesion" />
+                                        <ComboBoxItem Content="Thermal" />
                                     </ComboBox>
                                 </StackPanel>
 
@@ -2928,6 +2938,7 @@
                                 <DataGridTextColumn Header="Stiffness" Binding="{Binding StiffnessText}" Width="82" />
                                 <DataGridTextColumn Header="Consistency" Binding="{Binding ConsistencyText}" Width="95" />
                                 <DataGridTextColumn Header="Layer Adhesion" Binding="{Binding LayerAdhesionText}" Width="110" />
+                                <DataGridTextColumn Header="Thermal" Binding="{Binding ThermalText}" Width="82" />
                                 <DataGridTextColumn Header="Best Axis" Binding="{Binding BestAxis}" Width="150" />
                                 <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="190" />
                             </DataGrid.Columns>
@@ -2946,7 +2957,7 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel>
                                     <TextBlock Text="Category Rankings" FontSize="22" FontWeight="SemiBold" />
-                                    <TextBlock Text="Winner-focused rankings by performance category. Use this to quickly find strongest, toughest, stiffest, most consistent, and best layer-adhesion materials overall or within each material family." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
+                                    <TextBlock Text="Winner-focused rankings by performance category, including independent fixture-specific Thermal resistance. Legacy Overall remains unchanged." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
                                 </StackPanel>
                                 <TextBlock Grid.Column="1" x:Name="CategoryRankingSummaryText" Text="Category rankings use the current visible Materials scope." Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
                             </Grid>
@@ -2975,6 +2986,7 @@
                                         <ComboBoxItem Content="Stiffest Materials" />
                                         <ComboBoxItem Content="Most Consistent Materials" />
                                         <ComboBoxItem Content="Best Layer Adhesion" />
+                                        <ComboBoxItem Content="Best Thermal Resistance" />
                                     </ComboBox>
                                 </StackPanel>
 
@@ -3166,7 +3178,7 @@
             </Border>
         </UniformGrid>
 
-        <UniformGrid Grid.Row="2" Columns="4" Margin="0,0,0,12">
+        <UniformGrid Grid.Row="2" Columns="5" Margin="0,0,0,12">
             <Border BorderBrush="#D7DBE3" BorderThickness="1" Padding="10" Margin="0,0,8,0" Background="#FFFFFF">
                 <StackPanel><TextBlock Text="Highest Overall"/><TextBlock x:Name="DashboardHighestOverallText" Text="N/A" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel>
             </Border>
@@ -3178,6 +3190,9 @@
             </Border>
             <Border BorderBrush="#D7DBE3" BorderThickness="1" Padding="10" Background="#FFFFFF">
                 <StackPanel><TextBlock Text="Highest Stiffness"/><TextBlock x:Name="DashboardHighestStiffnessText" Text="N/A" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel>
+            </Border>
+            <Border BorderBrush="#D7DBE3" BorderThickness="1" Padding="10" Margin="8,0,0,0" Background="#FFFFFF">
+                <StackPanel><TextBlock Text="Highest Thermal"/><TextBlock x:Name="DashboardHighestThermalText" Text="N/A" FontWeight="SemiBold" TextWrapping="Wrap"/></StackPanel>
             </Border>
         </UniformGrid>
 
@@ -3242,7 +3257,7 @@
                 <Button Grid.Column="5" Content="Copy 12 Week Plan" Click="CopyContentCalendarPlan_Click" Padding="12,6" Margin="0,0,8,0"/>
                 <Button Grid.Column="6" Content="Copy Top Gaps" Click="CopyTopChannelGaps_Click" Padding="12,6" Margin="0,0,8,0"/>
                 <Button Grid.Column="7" Content="Copy Top Playlists" Click="CopyTopPlaylists_Click" Padding="12,6" Margin="0,0,8,0"/>
-                <TextBlock Grid.Column="8" Text="Uses no-video priority, score profile, reinforcement/variant hooks, comparison gaps, and data outliers. Filters from the Materials tab are respected." Foreground="#64748B" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="8" Text="Uses no-video priority, score profile, fixture-specific thermal °C/score evidence, reinforcement/variant hooks, comparison gaps and data outliers. Filters from Materials are respected." Foreground="#64748B" TextWrapping="Wrap" VerticalAlignment="Center"/>
             </Grid>
         </Border>
 
@@ -3508,6 +3523,7 @@
                 <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer}" Width="130"/>
                 <DataGridTextColumn Header="Type" Binding="{Binding BaseMaterial}" Width="95"/>
                 <DataGridTextColumn Header="Reinforcement" Binding="{Binding Reinforcement}" Width="110"/>
+                <DataGridTextColumn Header="Thermal" Binding="{Binding ThermalEvidence}" Width="145"/>
                 <DataGridTextColumn Header="Advanced title" Binding="{Binding SuggestedTitle}" Width="390"/>
                 <DataGridTextColumn Header="Thumbnail / hook angle" Binding="{Binding SuggestedAngle}" Width="300"/>
                 <DataGridTextColumn Header="Main text" Binding="{Binding ThumbnailMainText}" Width="190"/>

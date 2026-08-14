@@ -927,12 +927,14 @@ internal static class HelpContentCatalog
             Analytics
             Chart Mode chooses the visible-scope grouping. Select one row or Ctrl-click multiple Analytics Results rows to control the
             radar overlay. Clear radar selection clears local selection only. Group, Count, Tensile, Impact, Stiffness, Consistency,
-            Layer Adhesion, Overall Profile and Radar are read-only calculated display columns.
+            Layer Adhesion, Thermal, Overall Profile and Radar are read-only calculated display columns. Thermal is the fixture result
+            divided by the fixed 200 °C reference; it never changes legacy Overall.
 
             Compare
             Material A-D selectors choose up to four canonical Materials. Use Selected copies the current Materials selection into the
             intended comparison slot; it changes no source record. Metric/Score rows and the A-D value columns, winners and deltas are
-            read-only. Missing incomparable results remain blank/unavailable.
+            read-only. Measured Properties includes raw fixture-specific Deflection temperature °C; Scores includes its independent
+            Thermal Score. Missing incomparable results remain blank/unavailable.
 
             Video Planner filters and generated lists
             Manufacturer, Base Material and Category selectors combine with No YouTube video and Mechanical data only. Refresh rebuilds
@@ -970,7 +972,7 @@ internal static class HelpContentCatalog
             Rankings Dashboard
             Metric selects the rank basis. Manufacturer, Base Material and Reinforcement narrow scope. Rows defaults to Top 25 and also
             offers Top 10, 50, 100 and All. The read-only grid shows rank number, Material, Manufacturer, Type, Reinforcement, Tensile,
-            Impact, Stiffness, Consistency, Layer Adhesion, Overall, Rank Score, Best Axis and Status. Rows missing the selected metric
+            Impact, Stiffness, Consistency, Layer Adhesion, Thermal, Overall, Rank Score, Best Axis and Status. Rows missing the selected metric
             are omitted rather than assigned invented scores.
 
             Category Rankings
@@ -1175,24 +1177,25 @@ internal static class HelpContentCatalog
             "material-detail.mechanical", "Material detail", "Material Detail — Mechanical reference",
             "Canonical test status, calculated properties, reliability and expanded evidence.",
             """
-            Mechanical shows identity/status plus canonical Tensile, Impact and Stiffness outputs. Orientation metrics, consistency,
+            Mechanical shows identity/status plus canonical Tensile, Impact, Stiffness and fixture-specific Thermal outputs. Orientation metrics, consistency,
             counts and reliability come from native measurements and ResultsService. Expand Canonical mechanical data for source rows.
             Correct raw inputs on measurement tabs; this view never edits them.
             """, "mechanical", "tensile", "impact", "stiffness", "reliability"),
         new(
             "material-detail.charts", "Material detail", "Material Detail — Charts reference",
-            "Five normalized engineering axes and the limits of the overall profile.",
+            "Six normalized decision axes and the unchanged legacy overall profile.",
             """
-            Charts shows normalized 0–100 Tensile, Impact, Stiffness, Consistency and Layer Adhesion. Overall averages available radar
-            axes. This is comparative 3DPIceland chart input, not a certified scientific rating; missing results remain unavailable.
-            """, "charts", "0-100", "consistency", "layer adhesion", "scientific rating"),
+            Charts shows normalized 0–100 Tensile, Impact, Stiffness, Consistency, Layer Adhesion and Thermal. Thermal uses raw fixture
+            °C divided by the fixed 200 °C reference. Overall retains only the five legacy axes. Missing results remain unavailable.
+            """, "charts", "0-100", "consistency", "layer adhesion", "thermal", "200 °C"),
         new(
             "material-detail.analytics", "Material detail", "Material Detail — Analytics reference",
             "Visible-scope grouping, multi-select radar overlay and selection controls.",
             """
             Chart Mode groups visible Materials into radar rows. Select one or Ctrl-click multiple rows; Clear radar selection removes
-            local selection only. Materials search/filters define scope. Analytics uses the five normalized axes and changes no data.
-            """, "analytics", "chart mode", "radar", "multi-select", "clear"),
+            local selection only. Materials search/filters define scope. Analytics uses six axes; Thermal is independent of Overall.
+            Missing axes stay unavailable and render at the center rather than becoming evidence. This view changes no data.
+            """, "analytics", "chart mode", "radar", "multi-select", "thermal", "clear"),
         new(
             "material-detail.compare", "Material detail", "Material Detail — Compare reference",
             "A–D Material selectors, selected-Material handoff, winners and deltas.",
@@ -1227,7 +1230,7 @@ internal static class HelpContentCatalog
             "analysis.rankings", "Analysis and decisions", "Rankings Dashboard reference",
             "Visible-scope metric ranking, filters, Top 25 default, refresh and CSV.",
             """
-            Choose Overall, Tensile, Impact, Stiffness, Consistency or Layer Adhesion plus optional Base Material, Manufacturer and
+            Choose Overall, Tensile, Impact, Stiffness, Consistency, Layer Adhesion or Thermal plus optional Base Material, Manufacturer and
             Reinforcement filters. Rows defaults to Top 25; Top 10/50/100 and All ranked are available. Missing scores are omitted.
 
             Reset restores defaults, Refresh rebuilds read-only rows and Export CSV writes displayed scope. Clear Materials filters
@@ -1237,14 +1240,15 @@ internal static class HelpContentCatalog
             "analysis.category-rankings", "Analysis and decisions", "Category Rankings reference",
             "Winner-focused grouped rankings with 10 rows per group by default.",
             """
-            Choose a performance Category and Overall/Base Material/Manufacturer grouping, then optional scope filters. Rows per group
+            Choose a performance Category, including Best Thermal Resistance, and Overall/Base Material/Manufacturer grouping, then optional scope filters. Rows per group
             defaults to 10; 5, 50, 100 and All are available. Reset, Refresh and Export CSV operate on this read-only projection.
             """, "category rankings", "winner", "rows per group", "10", "CSV"),
         new(
             "analysis.awards", "Analysis and decisions", "Awards & Winners reference",
             "Governed award sets, visible-scope filters, winner reasoning and CSV.",
             """
-            Choose All, Performance, Material family or Reinforcement awards plus optional scope filters. Rows show Winner, score,
+            Choose All, Performance, Material family or Reinforcement awards plus optional scope filters. Performance includes the
+            fixture-specific Best Thermal Resistance award. Rows show Winner, score,
             Runner Up, Use Case, Why and Status. Reset/Refresh rebuild read-only awards and Export CSV writes them; this view does not
             publish.
             """, "awards", "winner", "runner up", "why", "CSV"),
@@ -1252,9 +1256,9 @@ internal static class HelpContentCatalog
             "analysis.dashboard-insights", "Analysis and decisions", "Dashboard Insights reference",
             "Current counts, highest verified metrics and read-only narrative insights.",
             """
-            Insights summarizes tested Materials, Manufacturers, Material/Reinforcement Types and highest Overall, Tensile, Impact and
-            Stiffness results. Narrative derives from canonical calculated results, edits nothing and has no separate Save.
-            """, "dashboard insights", "counts", "highest overall", "read-only"),
+            Insights summarizes tested Materials, Manufacturers, Material/Reinforcement Types and highest Overall, Tensile, Impact,
+            Stiffness and Thermal results. Narrative derives from canonical calculated results, edits nothing and has no separate Save.
+            """, "dashboard insights", "counts", "highest overall", "highest thermal", "read-only"),
         new(
             "reports-website",
             "Output and publishing",
@@ -1899,8 +1903,9 @@ internal static class HelpContentCatalog
             "Refresh every local title, thumbnail, comparison, calendar, gap and playlist projection.",
             """
             Generate YouTube Research rebuilds all creator-research sections from the current Materials filter projection and canonical
-            local analysis signals. Inputs include no-video priority, score profile, reinforcement/variant hooks, comparison gaps and
-            data outliers. The status line reports the resulting candidate state.
+            local analysis signals. Inputs include no-video priority, the independent fixture-specific Thermal score/raw °C context,
+            score profile, reinforcement/variant hooks, comparison gaps and data outliers. Thermal never changes legacy Overall. The
+            status line reports the resulting candidate state.
 
             Generation refreshes Top Thumbnail, Comparison Discovery, the 12-week Content Calendar, Channel Gap Analysis, Playlist
             Discovery and the ranked title-candidate table together. Review the visible Materials scope before generating; clearing or
@@ -2006,7 +2011,8 @@ internal static class HelpContentCatalog
             "Read the ranked per-material title, hook and comparison candidate table.",
             """
             The candidate table shows thumbnail score and grade, pattern, Material, manufacturer, type, reinforcement, advanced title,
-            hook angle, main thumbnail text, visual layout, face/reaction direction and comparison idea. Sort/read these as planning
+            fixture-specific Thermal °C/score evidence, hook angle, main thumbnail text, visual layout, face/reaction direction and
+            comparison idea. Sort/read these as planning
             attributes tied to the current generated scope.
 
             Candidate order combines local signals such as missing-video priority, score profile, variants and outliers. It is not an

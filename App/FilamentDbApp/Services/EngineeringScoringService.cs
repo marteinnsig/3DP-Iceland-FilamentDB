@@ -13,7 +13,10 @@ public sealed class EngineeringScoringService
     private const double ImpactReferenceKjM2 = 1000.0;
     private const double StiffnessReferenceMpa = 3000.0;
 
-    public EngineeringScoreProfile BuildProfile(TensileTestResult? tensile, IReadOnlyList<TestSummaryMetric> metrics)
+    public EngineeringScoreProfile BuildProfile(
+        TensileTestResult? tensile,
+        IReadOnlyList<TestSummaryMetric> metrics,
+        double? thermalResultTemperatureC = null)
     {
         var tensileFlat = ParseMetric(tensile?.FlatMpa);
         var tensileUpright = ParseMetric(tensile?.UprightMpa);
@@ -41,6 +44,7 @@ public sealed class EngineeringScoringService
         var layerAdhesionScore = LayerAdhesionScore(tensileUpright, tensileFlat);
 
         var overall = AverageAvailable(tensileScore, impactScore, stiffnessScore, consistencyScore, layerAdhesionScore);
+        var thermal = ThermalAnalyticsService.Project(thermalResultTemperatureC);
 
         return new EngineeringScoreProfile
         {
@@ -49,11 +53,13 @@ public sealed class EngineeringScoringService
             StiffnessScore = stiffnessScore,
             ConsistencyScore = consistencyScore,
             LayerAdhesionScore = layerAdhesionScore,
+            ThermalScore = thermal?.Score,
+            ThermalResultTemperatureC = thermal?.ResultTemperatureC,
             OverallScore = overall
         };
     }
 
-    public EngineeringScoreProfile BuildProfile(MaterialResults? summary)
+    public EngineeringScoreProfile BuildProfile(MaterialResults? summary, double? thermalResultTemperatureC = null)
     {
         if (summary is null) return new EngineeringScoreProfile();
 
@@ -83,6 +89,7 @@ public sealed class EngineeringScoringService
             });
         var layerAdhesionScore = LayerAdhesionScore(tensileUpright, tensileFlat);
         var overall = AverageAvailable(tensileScore, impactScore, stiffnessScore, consistencyScore, layerAdhesionScore);
+        var thermal = ThermalAnalyticsService.Project(thermalResultTemperatureC);
 
         return new EngineeringScoreProfile
         {
@@ -91,6 +98,8 @@ public sealed class EngineeringScoringService
             StiffnessScore = stiffnessScore,
             ConsistencyScore = consistencyScore,
             LayerAdhesionScore = layerAdhesionScore,
+            ThermalScore = thermal?.Score,
+            ThermalResultTemperatureC = thermal?.ResultTemperatureC,
             OverallScore = overall
         };
     }

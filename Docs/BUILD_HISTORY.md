@@ -2,6 +2,22 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v61.0.5 - App-wide Thermal Decision Surfaces and Radars
+
+The accepted increment centralizes `3dp-thermal-analytics-fixture-v1` at a fixed
+200 °C reference and projects the raw result into one nullable 0-100 axis. Overall
+retains its legacy five-axis calculation; missing thermal data never becomes zero.
+Material Detail, radar/group analytics, rankings, category winners, awards,
+Dashboard Insights and local YouTube research consume the same projection.
+
+Owner review found that the first candidate exposed only Thermal Score in Compare
+and relied on conditional YouTube narrative. The accepted correction adds raw °C
+to Compare Measured Properties and explicit per-candidate YouTube thermal evidence.
+Debug/Release, runner Release and Help 699/699 pass. Replacement profile
+`20260814195816-dc8f3960` passes 429/429, 23/23 navigation and exact recovery.
+Owner accepts all named surfaces, corrected Compare and YouTube visibility, and
+Full Data Verification PASS on 2026-08-14.
+
 ## v61.0.3 - Thermal Canonical Population and Transition Retirement
 
 The accepted one-time workbook transition populated canonical thermal rows through

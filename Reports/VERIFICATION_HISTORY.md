@@ -1,3 +1,22 @@
+# v61.0.5 - App-wide Thermal Decision Surfaces Accepted
+
+Date: 2026-08-14
+
+- Canonical analytics contract is `3dp-thermal-analytics-fixture-v1`, fixed at
+  200 °C with nullable clamped 0-100 output.
+- Legacy five-axis Overall is unchanged; two measured peers are required before
+  thermal rank/winner context.
+- Material Detail, six-axis radar, Rankings, Category Rankings, Awards, Insights
+  and local YouTube Research use the shared projection.
+- Debug/Release and runner Release builds pass with zero warnings/errors; Help
+  passes 698/698. Profile `20260814193047-3e01de23` passes 429/429, 23/23
+  tab/menu navigation and exact logical/business-state recovery.
+- Owner review finds Compare raw °C and explicit YouTube thermal evidence absent.
+  The corrected candidate adds both and expands the v61.0.5 deterministic gate;
+  profile `20260814195816-dc8f3960` passes 429/429 and exact recovery.
+- Owner accepts corrected Compare, explicit YouTube thermal evidence and all
+  named v61.0.5 surfaces on 2026-08-14.
+
 # v61.0.3 - Thermal Population and Transition Retirement Accepted
 
 Date: 2026-08-14

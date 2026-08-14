@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v61.0.3 thermal population and transition retirement accepted
+Version: v61.0.5 thermal decision surfaces and radar candidate
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted
@@ -48,7 +48,7 @@ Source snapshot: canonical runtime-accepted v55.0.6 on 2026-07-28.
 | XAML combo boxes | 49 | Record source, allowed choice, default and save timing |
 | XAML checkboxes | 10 | Record true/false effect, persistence and dependent states |
 | XAML data grids | 31 | Reconcile grid-level read-only state and runtime columns |
-| XAML grid-column declarations | 356 | Resolve binding, grid owner and actual editability |
+| XAML grid-column declarations | 359 | Resolve binding, grid owner and actual editability |
 | Runtime-built windows/dialogs | open | Inventory constructors, generated controls and confirmations |
 | Owner-drawn/custom grids | 6 known | Reconcile column builders and supported edit interactions |
 
