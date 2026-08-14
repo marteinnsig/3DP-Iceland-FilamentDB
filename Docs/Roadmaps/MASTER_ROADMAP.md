@@ -6,12 +6,12 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v61.0.6 — AI Assistant Thermal Context and Safety Boundary**
+Current roadmap increment: **v61.0.7 — Public Website, Reports and Thermal Radar Publication**
 
-Current acceptance note: v61.0.2 native Heat Deflection workspace, Help and persistence are owner accepted;
-Verification passes 427/427.
+Current acceptance note: v61.0.6 AI thermal context, exact payload privacy boundary and wording are owner accepted;
+Verification passes 429/429.
 
-Next note: add allowlisted thermal context and fixture-specific safety wording to local and provider-backed AI workflows.
+Next note: implement local governed website/report thermal fields and six-axis radar; Production/FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2938,14 +2938,14 @@ blockers may change the order, but must be recorded here before implementation.
   - Preserve the accepted Rankings `Top 25` and Category Rankings `10` scope/default contracts while extending their metrics.
   - Completion condition: calculations have parity across all named surfaces and owner accepts ranking, awards and radar behavior.
 - **v61.0.6 — AI Assistant Thermal Context and Safety Boundary**
-  - State: Current implementation increment after accepted v61.0.5.
+  - State: Completed and owner accepted on 2026-08-14; Verification passes 429/429.
   - Add allowlisted thermal result, score, method version and limitation wording to local AI summaries and exact payload preview.
   - Extend briefs, comparisons, collections, recommendations and coverage diagnostics without exposing internal source paths/hashes.
   - Require AI wording to distinguish nearby probe-indicated fixture temperature from ASTM D648, ISO 75 and specimen temperature.
   - Update deterministic fake-provider, payload, parser, evidence and cancellation contracts; keep live network consent unchanged.
   - Completion condition: owner accepts local/live-preview usefulness and exact privacy/methodology boundaries; AI gates pass.
 - **v61.0.7 — Public Website, Reports and Thermal Radar Publication**
-  - State: Planned after v61.0.6 and requires separate guarded public-output approval.
+  - State: Current implementation increment; local outputs only until separate guarded public-output approval.
   - Add governed public thermal fields to the home-page material data, detail presentation, comparisons and relevant report models.
   - Expand the website and public-report radar from five axes to the approved thermal profile with responsive and PDF-safe geometry.
   - Show raw °C, normalized score, method version and concise fixture/BlueDOT/non-standard limitations wherever interpretation occurs.

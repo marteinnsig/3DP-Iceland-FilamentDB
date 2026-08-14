@@ -15529,7 +15529,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                             "PETG",
                             "Engineering",
                             "Matte",
-                            "CF")
+                            "CF",
+                            88.0,
+                            44.0,
+                            ThermalDeflectionMethodContract.Version,
+                            BuildAiThermalLimitationText())
                     }));
             const string advisoryJson =
                 """{"summary":"Probe summary","findings":[{"title":"Probe","details":"Validated","evidenceMaterialIds":["MAT-ALLOW-1"]}],"uncertainties":[],"suggestedNextActions":["Review"]}""";
@@ -15604,10 +15608,19 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                     .GetProperty("effort")
                     .GetString() == "low" &&
                 pilotMaterial.GetProperty("materialID").GetString() == "MAT-ALLOW-1" &&
+                pilotMaterial.GetProperty("thermalResultTemperatureC").GetDouble() == 88.0 &&
+                pilotMaterial.GetProperty("thermalScore").GetDouble() == 44.0 &&
+                pilotMaterial.GetProperty("thermalMethodVersion").GetString() == ThermalDeflectionMethodContract.Version &&
+                pilotMaterial.GetProperty("thermalLimitation").GetString() == BuildAiThermalLimitationText() &&
+                pilotPreview.RequestBodyJson.Contains("never describe them as ASTM D648, ISO 75, specimen temperature", StringComparison.Ordinal) &&
                 evidenceIdSchemaEnum.SequenceEqual(new[] { "MAT-ALLOW-1" }, StringComparer.Ordinal) &&
                 !pilotMaterial.TryGetProperty("purchaseId", out _) &&
                 !pilotMaterial.TryGetProperty("inventoryId", out _) &&
                 !pilotMaterial.TryGetProperty("notes", out _) &&
+                !pilotMaterial.TryGetProperty("sourceFileName", out _) &&
+                !pilotMaterial.TryGetProperty("sourceSha256", out _) &&
+                !pilotMaterial.TryGetProperty("testNotes", out _) &&
+                !pilotMaterial.TryGetProperty("updatedAtUtc", out _) &&
                 parsed.Findings.Count == 1 &&
                 parsed.InputTokens == 12 &&
                 parsed.OutputTokens == 8 &&
@@ -15619,8 +15632,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         }
         checks.Add(new VerificationCheck("OpenAI read-only pilot contract", openAiPilotContractReady,
             openAiPilotContractReady
-                ? "Exact store=false/no-tools payload preview, allowlisted material fields, cancellation and unknown-MaterialID rejection pass"
-                : "OpenAI preview, allowlist, structured response validation or cancellation contract failed"));
+                ? "Exact store=false/no-tools payload preview, allowlisted thermal fields, privacy exclusions, cancellation and unknown-MaterialID rejection pass"
+                : "OpenAI preview, thermal allowlist/privacy, structured response validation or cancellation contract failed"));
         var openAiOperationalEvidenceReady = false;
         try
         {
@@ -23919,19 +23932,31 @@ private void UpdateDashboardInsights()
     private OpenAiPilotPreview BuildOpenAiPilotPreview()
     {
         var rows = GetCanonicalVisibleMaterialRows();
+        var thermalMeasurements = _database.GetThermalDeflectionMeasurements()
+            .ToDictionary(item => item.MaterialId, StringComparer.OrdinalIgnoreCase);
         string Value(DataRow row, params string[] names) =>
             DataTableHelpers.FirstValue(row, names)?.ToString()?.Trim() ?? string.Empty;
 
         var materials = rows
-            .Select(row => new OpenAiPilotMaterial(
-                BuildAiMaterialKey(row),
-                Value(row, "Manufacturer", "Brand"),
-                Value(row, "Product Line"),
-                Value(row, "Marketing Name"),
-                Value(row, "Base Material", "Type", "Material Type"),
-                Value(row, "Material Category", "Category"),
-                Value(row, "Variant / Finish", "Variant Finish"),
-                Value(row, "Reinforcement", "Reinforment")))
+            .Select(row =>
+            {
+                var materialId = BuildAiMaterialKey(row);
+                var measurement = thermalMeasurements.GetValueOrDefault(materialId);
+                var projection = ThermalAnalyticsService.Project(measurement?.ResultTemperatureC);
+                return new OpenAiPilotMaterial(
+                    materialId,
+                    Value(row, "Manufacturer", "Brand"),
+                    Value(row, "Product Line"),
+                    Value(row, "Marketing Name"),
+                    Value(row, "Base Material", "Type", "Material Type"),
+                    Value(row, "Material Category", "Category"),
+                    Value(row, "Variant / Finish", "Variant Finish"),
+                    Value(row, "Reinforcement", "Reinforment"),
+                    projection?.ResultTemperatureC,
+                    projection?.Score,
+                    measurement?.MethodVersion ?? string.Empty,
+                    projection is null ? string.Empty : BuildAiThermalLimitationText());
+            })
             .ToList();
         var configuration = _workflowPreferencesService.GetAiAssistantProviderConfiguration();
         return _openAiAssistantPilotService.BuildPreview(
@@ -24882,6 +24907,8 @@ private void UpdateDashboardInsights()
             lines.AddRange(collection.MaterialLabels.Take(80).Select(label => "- " + label));
         }
 
+        AppendAiCollectionThermalContext(lines, savedKeys);
+
         lines.Add("");
         lines.Add("NEXT ACTION");
         lines.Add("-----------");
@@ -24898,6 +24925,8 @@ private void UpdateDashboardInsights()
         public string BaseMaterial { get; set; } = "";
         public string Reinforcement { get; set; } = "";
         public string Category { get; set; } = "";
+        public double? ThermalResultTemperatureC { get; set; }
+        public double? ThermalScore { get; set; }
         public double Score { get; set; }
         public string Reason { get; set; } = "";
     }
@@ -25327,6 +25356,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
         var totalRows = 0;
         var totalPublished = 0;
+        var trackedMaterialIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var collection in collections.OrderBy(item => item.Title))
         {
@@ -25338,6 +25368,7 @@ private List<string> GetVisibleAiMaterialLabels()
             }
 
             totalRows += materials.Count;
+            foreach (var material in materials) trackedMaterialIds.Add(material.MaterialKey);
 
             string StatusFor(AiCollectionMaterialIdentity material)
             {
@@ -25395,6 +25426,8 @@ private List<string> GetVisibleAiMaterialLabels()
             $"Published / completed: {totalPublished}",
             $"Remaining: {Math.Max(0, totalRows - totalPublished)}",
             $"Overall coverage: {totalCoverage}%",
+            $"Fixture thermal evidence: {_database.GetThermalDeflectionResults().Keys.Count(trackedMaterialIds.Contains)}/{trackedMaterialIds.Count} unique tracked MaterialIDs",
+            BuildAiThermalLimitationText(),
             "",
             "PIPELINE STATUS SUMMARY",
             "-----------------------"
@@ -25587,8 +25620,9 @@ private List<string> GetVisibleAiMaterialLabels()
             .Take(250)
             .ToList();
 
+        var thermalResults = _database.GetThermalDeflectionResults();
         var insights = rows
-            .Select(row => BuildAiMaterialInsight(row))
+            .Select(row => BuildAiMaterialInsight(row, thermalResults))
             .Where(item => !string.IsNullOrWhiteSpace(item.Label))
             .OrderByDescending(item => item.Score)
             .ThenBy(item => item.Label)
@@ -25609,6 +25643,7 @@ private List<string> GetVisibleAiMaterialLabels()
             "Apply filters/search first if you want recommendations for one manufacturer, material family or video batch.",
             "Then generate this again and save the result as a research session."
         };
+        AppendAiThermalContext(lines, rows);
 
         if (mode == "next-video")
         {
@@ -25681,7 +25716,9 @@ private List<string> GetVisibleAiMaterialLabels()
         return string.Join("\r\n", lines);
     }
 
-    private AiMaterialInsight BuildAiMaterialInsight(DataRow row)
+    private AiMaterialInsight BuildAiMaterialInsight(
+        DataRow row,
+        IReadOnlyDictionary<string, double> thermalResults)
     {
         var manufacturer = AiCellValue(row, "Manufacturer", "Brand");
         var productLine = AiCellValue(row, "Product Line", "ProductLine", "Series");
@@ -25699,6 +25736,9 @@ private List<string> GetVisibleAiMaterialLabels()
 
         var score = 0.0;
         var reasonParts = new List<string>();
+        var materialId = BuildAiMaterialKey(row);
+        var thermal = ThermalAnalyticsService.Project(
+            thermalResults.TryGetValue(materialId, out var thermalResult) ? thermalResult : null);
 
         var numericScore = AiBestNumericValue(row,
             "Overall Score",
@@ -25713,6 +25753,12 @@ private List<string> GetVisibleAiMaterialLabels()
         {
             score += Math.Min(numericScore, 100);
             reasonParts.Add("has a usable score signal");
+        }
+
+        if (thermal is not null)
+        {
+            score += thermal.Score;
+            reasonParts.Add($"fixture thermal {thermal.ResultTemperatureC:0.#} °C ({thermal.Score:0}/100)");
         }
 
         if (!string.IsNullOrWhiteSpace(reinforcement) && reinforcement != "—")
@@ -25758,6 +25804,8 @@ private List<string> GetVisibleAiMaterialLabels()
             BaseMaterial = baseMaterial,
             Reinforcement = reinforcement,
             Category = category,
+            ThermalResultTemperatureC = thermal?.ResultTemperatureC,
+            ThermalScore = thermal?.Score,
             Score = score,
             Reason = string.Join(", ", reasonParts)
         };
@@ -25952,6 +26000,7 @@ private List<string> GetVisibleAiMaterialLabels()
             "----------------",
             sampleMaterials.Count > 0 ? string.Join("\r\n", sampleMaterials) : "No sample materials found."
         };
+        AppendAiThermalContext(lines, rows);
 
         if (mode is "video" or "full")
         {
@@ -26008,6 +26057,53 @@ private List<string> GetVisibleAiMaterialLabels()
 
     
 
+
+    private static string BuildAiThermalLimitationText() =>
+        "Nearby probe-indicated fixture temperature; non-standard comparative 3DPIceland method. " +
+        "Not ASTM D648, ISO 75, specimen temperature, certified HDT or a manufacturer limit.";
+
+    private void AppendAiCollectionThermalContext(List<string> lines, IReadOnlySet<string> materialIds)
+    {
+        var measurements = _database.GetThermalDeflectionMeasurements()
+            .Where(item => materialIds.Contains(item.MaterialId))
+            .Select(item => (Measurement: item, Projection: ThermalAnalyticsService.Project(item.ResultTemperatureC)!))
+            .OrderByDescending(item => item.Projection.Score)
+            .ToList();
+        lines.Add("");
+        lines.Add("THERMAL COVERAGE");
+        lines.Add("----------------");
+        lines.Add($"Measured: {measurements.Count}/{materialIds.Count} saved MaterialIDs");
+        lines.Add(BuildAiThermalLimitationText());
+        foreach (var item in measurements.Take(12))
+            lines.Add($"- {item.Measurement.MaterialId}: {item.Projection.ResultTemperatureC:0.#} °C; {item.Projection.Score:0}/100; method {item.Measurement.MethodVersion}");
+    }
+
+    private void AppendAiThermalContext(List<string> lines, IReadOnlyList<DataRow> rows)
+    {
+        var measurements = _database.GetThermalDeflectionMeasurements()
+            .ToDictionary(item => item.MaterialId, StringComparer.OrdinalIgnoreCase);
+        var evidence = rows
+            .Select(row =>
+            {
+                var id = BuildAiMaterialKey(row);
+                var measurement = measurements.GetValueOrDefault(id);
+                return (Id: id, Measurement: measurement,
+                    Projection: ThermalAnalyticsService.Project(measurement?.ResultTemperatureC));
+            })
+            .Where(item => item.Measurement is not null && item.Projection is not null)
+            .OrderByDescending(item => item.Projection!.Score)
+            .ToList();
+
+        lines.Add("");
+        lines.Add("THERMAL CONTEXT");
+        lines.Add("---------------");
+        lines.Add($"Measured materials in this processed scope: {evidence.Count}");
+        lines.Add($"Analytics contract: {ThermalAnalyticsService.ContractVersion}; fixed reference: {ThermalAnalyticsService.ReferenceTemperatureC:0} °C.");
+        lines.Add(BuildAiThermalLimitationText());
+        foreach (var item in evidence.Take(12))
+            lines.Add($"- {item.Id}: {item.Projection!.ResultTemperatureC:0.#} °C; {item.Projection.Score:0}/100; method {item.Measurement!.MethodVersion}");
+        if (evidence.Count == 0) lines.Add("- No fixture-specific thermal measurement is available; no value is inferred.");
+    }
 
     private sealed class NativeSettingRow
     {

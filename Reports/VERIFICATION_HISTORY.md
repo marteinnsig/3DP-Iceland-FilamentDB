@@ -1,3 +1,17 @@
+# v61.0.6 - AI Assistant Thermal Context Accepted
+
+Date: 2026-08-14
+
+- Full Verification extends the existing OpenAI read-only pilot contract with raw
+  88 °C, score 44/100, method-version and limitation allowlist assertions.
+- The same gate requires ASTM D648, ISO 75 and specimen-temperature distinction.
+- Source filename, source hash, test notes and update timestamp are prohibited.
+- Debug and Release builds pass with zero warnings/errors; Help passes 699/699.
+- Disposable profile `20260814202309-fa81cf8c` passes 429/429, 23/23 tabs,
+  23/23 Navigate, fake-provider/no-network isolation and exact database/business-
+  state recovery. Owner accepts visible output, exact payload preview, methodology/
+  privacy wording and Full Data Verification PASS on 2026-08-14.
+
 # v61.0.5 - App-wide Thermal Decision Surfaces Accepted
 
 Date: 2026-08-14

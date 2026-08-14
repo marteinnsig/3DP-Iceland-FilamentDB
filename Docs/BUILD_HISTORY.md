@@ -2,6 +2,19 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v61.0.6 - AI Assistant Thermal Context and Safety Boundary
+
+The candidate adds the canonical thermal projection to deterministic local briefs,
+material intelligence, recommendations, collection analysis, coverage diagnostics
+and the exact OpenAI payload preview. Only MaterialID, raw fixture °C, normalized
+score, method version and limitation wording are allowlisted. Internal provenance,
+notes, paths, hashes and timestamps remain excluded. Existing network consent,
+fake-provider, cancellation, structured response and read-only contracts remain.
+Debug/Release and runner Release pass with zero warnings/errors; Help passes
+699/699. Disposable profile `20260814202309-fa81cf8c` passes 429/429 and exact
+byte/business-state recovery. Owner accepts local output, exact payload preview,
+methodology/privacy wording and Full Data Verification PASS on 2026-08-14.
+
 ## v61.0.5 - App-wide Thermal Decision Surfaces and Radars
 
 The accepted increment centralizes `3dp-thermal-analytics-fixture-v1` at a fixed

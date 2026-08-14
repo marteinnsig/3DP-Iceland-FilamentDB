@@ -2601,7 +2601,7 @@
                                                Foreground="#1D4ED8"/>
                                 </Border>
                             </WrapPanel>
-                            <TextBlock Text="Local actions remain deterministic and offline. The optional OpenAI pilot sends only an exact reviewed material allowlist and never changes canonical data."
+                            <TextBlock Text="Local actions remain deterministic and offline. Thermal context is fixture-specific and never ASTM D648/ISO 75. The optional OpenAI pilot sends only the exact reviewed allowlist and never changes canonical data."
                                        Foreground="#475569"
                                        TextWrapping="Wrap"
                                        Margin="0,6,0,0"/>

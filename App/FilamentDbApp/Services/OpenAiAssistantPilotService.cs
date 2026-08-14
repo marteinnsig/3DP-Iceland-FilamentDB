@@ -15,7 +15,11 @@ public sealed record OpenAiPilotMaterial(
     string BaseMaterial,
     string MaterialCategory,
     string VariantFinish,
-    string Reinforcement);
+    string Reinforcement,
+    double? ThermalResultTemperatureC = null,
+    double? ThermalScore = null,
+    string ThermalMethodVersion = "",
+    string ThermalLimitation = "");
 
 public sealed record OpenAiPilotInput(
     string Template,
@@ -100,7 +104,7 @@ public sealed class OpenAiAssistantPilotService
 {
     public const string Endpoint = "https://api.openai.com/v1/responses";
     public const string PayloadSchema = "3dpiceland.openai-material-pilot.v1";
-    public const string PromptVersion = "v52.3-material-advisory-v2";
+    public const string PromptVersion = "v61.0.6-thermal-advisory-v3";
     public const int MaximumMaterials = 40;
     public const int MaximumPlanningNoteCharacters = 2000;
 
@@ -178,6 +182,8 @@ public sealed class OpenAiAssistantPilotService
             instructions =
                 "You are a read-only engineering and content-planning assistant for 3DPIceland. " +
                 "Use only the supplied material records. Never invent evidence IDs. Treat every recommendation as advisory. " +
+                "Thermal values are nearby probe-indicated fixture temperatures from a non-standard comparative method; " +
+                "never describe them as ASTM D648, ISO 75, specimen temperature, certified HDT or manufacturer limits. " +
                 "Do not request tools, files, URLs, purchasing, inventory, customer, quote, path or credential data.",
             input = governedInputJson,
             text = new
@@ -480,7 +486,11 @@ public sealed class OpenAiAssistantPilotService
         Limit(material.BaseMaterial, 120),
         Limit(material.MaterialCategory, 120),
         Limit(material.VariantFinish, 160),
-        Limit(material.Reinforcement, 120));
+        Limit(material.Reinforcement, 120),
+        material.ThermalResultTemperatureC,
+        material.ThermalScore,
+        Limit(material.ThermalMethodVersion, 120),
+        Limit(material.ThermalLimitation, 360));
 
     private static string Limit(string? value, int maximum) =>
         string.IsNullOrWhiteSpace(value)

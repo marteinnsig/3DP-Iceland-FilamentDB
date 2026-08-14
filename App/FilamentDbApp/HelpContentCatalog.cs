@@ -1781,6 +1781,8 @@ internal static class HelpContentCatalog
             Generated output is advisory/read-only. Existing Generate actions stay local. Preview OpenAI Payload performs no network
             request and shows the exact JSON body, allowlisted IDs and SHA-256. Generate with OpenAI requires an additional unchecked
             one-time consent, store=false, no tools/files/web search and strict structured output. It never saves output automatically.
+            Thermal context is allowlisted as raw fixture °C, normalized score, method version and limitation wording. Internal source
+            file names, hashes, notes, paths and timestamps are excluded from both preview and provider payload.
             Secret-safe operational evidence remains in memory until explicitly copied. Exact payload previews cannot be saved as
             sessions. Assistant output never replaces measurements or Verification.
             """, "AI Assistant", "visible scope", "sessions", "collections", "output"),
@@ -1814,6 +1816,10 @@ internal static class HelpContentCatalog
 
             The optional OpenAI pilot includes the selected template and planning note in its exact preview. Treat the note as outbound
             data: remove private information before approving the request.
+
+            Local briefs and material intelligence include available fixture thermal evidence. The wording always distinguishes nearby
+            probe-indicated fixture temperature from ASTM D648, ISO 75, specimen temperature, certified HDT and manufacturer limits.
+            Missing thermal results remain missing and are never inferred.
 
             Every action consumes the reviewed visible MaterialID scope and canonical local summaries. Results are deterministic
             advisory text in the read-only output box. Check cited materials, missing evidence and scope before reusing a recommendation.
@@ -1851,6 +1857,9 @@ internal static class HelpContentCatalog
             Materials. A collection stores stable MaterialID membership and an exact set hash rather than duplicate material records.
             Load Collection Brief reports active, archived and missing membership without rewriting the saved snapshot.
 
+            Collection briefs show thermal coverage plus allowlisted raw °C, score and method version for measured members. Dashboards
+            report measured thermal coverage without treating a workflow status as measurement evidence.
+
             Collection Dashboard and Video Pipeline Dashboard summarize local planning coverage. Review missing/legacy identity before
             treating their counts as complete, and re-preview visible rows before updating membership.
             """,
@@ -1870,6 +1879,9 @@ internal static class HelpContentCatalog
 
             Coverage identity status reports stable bindings, legacy rows and candidates. It is diagnostic evidence for planning
             ownership, not proof of measurements, video publication or Verification readiness.
+
+            Thermal coverage diagnostics count only canonical saved fixture results. They do not infer thermal evidence from Tested,
+            Published or another creator-workflow status.
             """,
             "coverage", "Apply Status", "Mark Collection Published", "Clear Selected Collection Status", "Bind Exact Legacy Coverage"),
         new(

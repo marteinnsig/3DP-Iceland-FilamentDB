@@ -1,5 +1,16 @@
 # Automated Runtime Acceptance
 
+## v61.0.6 - AI Assistant Thermal Context Accepted
+
+- Existing smoke owns read-only AI navigation and exact payload preview; live
+  OpenAI Generate remains prohibited in automation.
+- Full Verification owns thermal allowlist, methodology wording, privacy exclusion
+  and unchanged parsing/cancellation/fake-provider contracts.
+- No new mutating scenario or broader authorization is warranted.
+- Profile `20260814202309-fa81cf8c` passes Full Verification 429/429, 23/23 tabs,
+  23/23 Navigate, fake-provider/no-network isolation and exact byte/business-state
+  recovery. Owner accepts usefulness, wording and Full Verification on 2026-08-14.
+
 ## v61.0.5 - App-wide Thermal Decision Surfaces Accepted
 
 - Existing smoke remains the safe read-only owner for Material Detail, Rankings,

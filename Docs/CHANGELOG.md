@@ -2,6 +2,19 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v61.0.6 - AI Assistant Thermal Context and Safety Boundary
+
+- Adds allowlisted raw fixture °C, normalized score, method version and explicit
+  non-standard limitation to local AI briefs and exact provider payload preview.
+- Extends material intelligence, recommendations, comparisons, collection briefs
+  and pipeline coverage without inferring missing results.
+- Excludes source filenames, hashes, notes, paths and timestamps from provider data.
+- Preserves exact preview, one-time live consent, store=false, no-tools, cancellation
+  and deterministic fake-provider boundaries.
+- Full Verification asserts thermal fields, ASTM/ISO safety wording and privacy exclusions.
+- Owner accepts local output, exact payload preview, methodology/privacy wording
+  and Full Data Verification PASS on 2026-08-14.
+
 ## v61.0.5 - App-wide Thermal Decision Surfaces and Radars
 
 - Adds one versioned fixed-200 °C thermal analytics projection; missing results

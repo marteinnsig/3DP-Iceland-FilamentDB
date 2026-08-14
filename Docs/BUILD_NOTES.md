@@ -1,5 +1,16 @@
 # Current Build Notes - v60.0.6 Accepted Release
 
+## v61.0.6 AI Assistant thermal context accepted
+
+Local briefs, material intelligence, recommendations, collection briefs and
+coverage diagnostics now expose canonical fixture thermal context with explicit
+non-standard interpretation. Exact provider preview allowlists raw °C, score,
+method version and limitation wording while excluding internal provenance and
+notes. Live consent and network safety behavior are unchanged.
+Debug/Release, Help 699/699 and profile `20260814202309-fa81cf8c` pass; the
+profile records 429/429, fake provider/no network and exact state recovery.
+Owner accepts visible output, exact preview and Verification PASS on 2026-08-14.
+
 ## v61.0.5 app-wide thermal decision surfaces and radars
 
 Thermal Score now uses the accepted fixed 200 °C contract across in-app decision
