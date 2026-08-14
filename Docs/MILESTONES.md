@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v60.0.6 - Bug Fixes and Workflow Reliability
+
+Completes all six recorded v60 increments and reconciles feedback, Help,
+automation, Verification, README and release evidence. Final package, signature,
+security and documentation gates pass; exact portable Verification passes
+425/425 with 627 report artifacts and exact state recovery. The owner accepts
+the frozen installer and portable bytes; v60 closes without schema change.
+
 # v59.0.7 - Canonical Navigation and Materials Layout
 
 Delivers canonical tab/menu navigation, retirement of replaced entrypoints and

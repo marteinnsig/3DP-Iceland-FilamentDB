@@ -2,7 +2,23 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
-## v60.0.6 - Locale-aware Application Date Presentation
+## v60 Parent Closure - Bug Fixes and Workflow Reliability
+
+- Reconciles all six owner-accepted v60 feedback increments under the final
+  v60.0.6 `WORKFLOW-RELIABILITY` application identity.
+- Corrects the v60 roadmap and Engineering Reports feedback disposition drift.
+- Reconciles final README, Help, automation and Verification without changing
+  schema v40 or owner data. Profile `20260814155640-b34540e5` passes 425/425,
+  627 report artifacts and exact database/business-state recovery.
+- Help 694/694, documentation, dependency vulnerability and app/runner
+  Debug/Release gates pass with zero warnings/errors.
+- Owner runtime accepts the exact Candidate installer and portable bytes;
+  Production and FTPS remain unchanged until clean-tree promotion.
+- Candidate package gates pass. Exact-portable profile
+  `20260814160759-c1d6442f` passes Verification 425/425, 627 report artifacts
+  and exact state recovery; owner installer/portable acceptance passes.
+
+## v60.0.6 - Bug Fixes and Workflow Reliability
 
 - Adds one shared active-Windows-culture calendar-date display/input codec with
   canonical ISO `yyyy-MM-dd` persistence and known Icelandic legacy reading.

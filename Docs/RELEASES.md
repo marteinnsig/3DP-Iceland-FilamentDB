@@ -1,6 +1,20 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v60.0.6 - Bug Fixes and Workflow Reliability
+
+Closes six owner-reported workflow and presentation findings: guarded spool
+editing, complete material identity refresh, report layout clarity, integrated
+Engineering Reports navigation and locale-aware application dates. All accepted
+paths retain schema-v29 through schema-v40 update compatibility and owner-data
+boundaries.
+
+App/runner Debug and Release builds pass with zero warnings/errors. Help
+694/694, documentation, dependency vulnerability, signed-package and deployment
+gates pass. Exact portable profile `20260814160759-c1d6442f` passes Full Data
+Verification 425/425, verifies 627 report artifacts and restores exact state.
+The owner accepts the exact installer and portable runtime on 2026-08-14.
+
 ## v59.0.11 - Public Base-material Printing Guidance
 
 Public Printing Recommendation HTML/PDF now resolves the reviewed shared

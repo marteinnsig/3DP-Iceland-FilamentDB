@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "PUBLIC-BASE-MATERIAL-GUIDANCE";
-    public const string ReleaseTitle = "Public Base-material Printing Guidance";
+    public const string ReleaseCode = "WORKFLOW-RELIABILITY";
+    public const string ReleaseTitle = "Bug Fixes and Workflow Reliability";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 40;
 

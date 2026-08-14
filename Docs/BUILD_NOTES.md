@@ -1,4 +1,23 @@
-# Current Build Notes - v57.0 Research
+# Current Build Notes - v60.0.6 Accepted Release
+
+## v60 parent closure
+
+All six v60 feedback increments are implemented and owner accepted. Final
+identity profile `20260814155640-b34540e5` passes Full Data Verification 425/425,
+627 governed report artifacts and exact database/business-state recovery. The final application identity is v60.0.6
+`WORKFLOW-RELIABILITY` — Bug Fixes and Workflow Reliability, retaining schema
+compatibility v29-v40. README, feedback, Help, automation and release ledgers
+are reconciled; Help 694/694, documentation, vulnerability and app/runner
+Debug/Release gates pass with zero warnings/errors before Candidate generation.
+
+Production and FTPS remain unchanged until byte-preserving promotion from the
+clean accepted commit. Promotion must reuse the exact owner-accepted bytes.
+
+Candidate release gates pass for the signed six-file schema-v29-v40 update,
+BOM-less feed, ECDSA signature, governed inventory, installer, portable ZIP and
+stable-route-last plan. Exact-portable profile `20260814160759-c1d6442f` passes
+Verification 425/425, 627 report artifacts and exact state recovery. Owner
+installer/portable runtime acceptance passes on 2026-08-14.
 
 ## v60.0.3 Material Identity Refresh Across Measurement Views
 

@@ -403,7 +403,7 @@ Date: 2026-07-29
 Area: Public website / Engineering Reports navigation
 Type: Website idea / Workflow friction
 Severity: Important
-Status: Open
+Status: Solved
 What happened: `Engineering Reports` appears alongside the main website tabs, but it is an ordinary link that opens the separate
 `reports/index.html` portal instead of behaving as an in-page tab like the other main website destinations.
 Expected behavior: Integrate Engineering Reports as a consistent main-site tab and in-page portal section. Preserve stable report
@@ -418,7 +418,7 @@ implementation.
 Research evidence: current tabs already use hash routing, `pushState`, `hashchange`, horizontal mobile navigation and hidden
 `aria-controls` pages. The report package is one typed catalog-driven renderer, while staging preserves separate Preview/Production
 portal files and every deep artifact route. Proposed design reuses one server-rendered portfolio fragment in both shells, adds a true
-`#reports` tab and keeps all standalone routes; no iframe, client fetch or copied renderer. Owner design approval is pending.
+`#reports` tab and keeps all standalone routes; no iframe, client fetch or copied renderer. Owner approved the bounded design.
 Future acceptance should cover direct/deep report URLs, tab switching, Back/Forward, responsive layout, accessibility,
 Preview/Production HTML parity and unchanged report publication scope.
 Implementation evidence: v60.0.5 candidate identifies the canonical package style/content, embeds that exact server-rendered content
@@ -426,10 +426,11 @@ inside `portalPageReports`, converts Engineering Reports to a real hash-routed b
 Website generation fails closed if the validated fragment is absent; no iframe, browser fetch, allowlist or publication change exists.
 Debug/Release app and AutomationRunner builds pass with zero warnings/errors. Disposable reports profile
 `20260814142236-007cbc3a` passes Full Data Verification 424/424, 627 artifact checks and exact state recovery. The dedicated
-v60.0.5 shared-renderer, `#reports`, stable-route and no-iframe/client-fetch gate passes. Owner runtime/visual acceptance pending.
+v60.0.5 shared-renderer, `#reports`, stable-route and no-iframe/client-fetch gate passes.
 Owner follow-up accepts the overall website and Verification PASS and requests removal of only the redundant standalone-directory
 link plus the technical catalog/manifest note at the bottom of the embedded page; stable standalone and deep routes remain
 supported. Owner confirms the final generated Preview looks correct and authorizes commit/push; Production and FTPS are untouched.
+Solved in version v60.0.5 — 2026-08-14.
 
 Date: 2026-07-29
 Area: Inventory / Usage history / blocked spool deletion recovery

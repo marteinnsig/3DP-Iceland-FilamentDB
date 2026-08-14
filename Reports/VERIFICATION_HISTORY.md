@@ -1,3 +1,20 @@
+# v60 Parent Closure - Bug Fixes and Workflow Reliability
+
+Date: 2026-08-14
+
+- Final identity: v60.0.6 `WORKFLOW-RELIABILITY`; schema compatibility v29-v40.
+- All six v60 increments have owner runtime/visual/readability acceptance.
+- Help 694/694, documentation, vulnerability and app/runner Debug/Release gates
+  pass with zero warnings/errors.
+- Disposable reports profile `20260814155640-b34540e5` passes Full Data
+  Verification 425/425, 627 artifacts and exact database/business-state recovery.
+- Candidate package gates pass for the signed update, BOM-less feed, installer,
+  portable ZIP and stable-route-last deployment plan.
+- Exact-portable profile `20260814160759-c1d6442f` passes Verification 425/425,
+  627 report artifacts and exact database/business-state recovery.
+- Owner installer/portable runtime acceptance passes on 2026-08-14.
+- Production and FTPS remain unchanged.
+
 # v60.0.6 - Locale-aware Application Date Presentation
 
 Date: 2026-08-14

@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v59.0.11 — Public Base-material Printing Gui
 
 Current canonical application release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Current roadmap increment: **v60 parent closure — Release reconciliation and final gates**
+Current roadmap increment: **v61 — Thermal Deflection Measurement Foundation research**
 
-Current acceptance note: v60.0.6 is owner accepted; Full Data Verification passes 425/425.
+Current acceptance note: v60.0.6 parent release and exact installer/portable bytes are owner accepted; Verification passes 425/425.
 
-Next note: v60.0.6 is complete; v60 parent closure is next. Production and FTPS remain unchanged.
+Next note: v60 is complete; guarded Production promotion/publication is release closure, then v61 research begins.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -46,7 +46,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v57 | Public Website Experience and Canonical Branding | ★★★★☆ | Complete — canonical v57.0.5 runtime accepted |
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
-| v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Planned — six findings scheduled |
+| v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Complete — canonical v60.0.6 runtime accepted |
 | v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Planned — fixture method and native result workflow |
 
 ## Reconciliation of the older plans
@@ -2739,10 +2739,9 @@ to unstarted authoritative planning slots.
   - Completion condition met: owner accepted full-data HTML/PDF presentation and Verification 420/420; deterministic
     linked, unlinked, orphan and partial-value contracts pass.
 
-## Planned — v60 Bug Fixes and Workflow Reliability
+## Completed — v60 Bug Fixes and Workflow Reliability
 
-The six findings reviewed from `Docs/BUG_FEEDBACK_LOG.md` are scheduled below. v60.0.1 through v60.0.3 are solved and three
-remain `Open`.
+The six findings reviewed from `Docs/BUG_FEEDBACK_LOG.md` are scheduled below. v60.0.1 through v60.0.6 are solved and owner accepted.
 A finding becomes `Solved` only after implementation, required gates and owner runtime or visual acceptance. New reproducible
 blockers may change the order, but must be recorded here before implementation.
 
@@ -2848,8 +2847,12 @@ blockers may change the order, but must be recorded here before implementation.
   - Owner acceptance: Icelandic date presentation is readable and consistent across the inspected workspaces; Verification passes.
   - Completion condition met: locale display, ISO persistence, compatibility, propagation and deterministic evidence are accepted.
 - **v60 parent closure**
-  - State: Research next; v60.0.1 through v60.0.6 are complete and final reconciliation may begin.
+  - State: **Completed and runtime accepted 2026-08-14.**
   - Re-read the feedback ledger, reconcile Help, automation, Verification, release evidence and README, then run final release gates.
+  - Release identity: v60.0.6 `WORKFLOW-RELIABILITY` — Bug Fixes and Workflow Reliability; schema compatibility remains v29-v40.
+  - Byte boundary: owner acceptance must cover the final self-contained installer/portable/update bytes before clean promotion.
+  - Exact portable automation passes Verification 425/425 with 627 report artifacts and exact state recovery.
+  - Owner accepts the exact v60.0.6 installer and portable runtime; package, signature, documentation and security gates pass.
   - Completion condition: all recorded v60 increments are owner accepted, all six ledger items have canonical dispositions and the
     parent release passes Debug/Release, applicable security/static gates and Full Data Verification.
 

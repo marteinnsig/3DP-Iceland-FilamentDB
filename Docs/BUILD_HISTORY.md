@@ -2,7 +2,26 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
-## v60.0.6 - Locale-aware Application Date Presentation
+## v60 Parent Closure - Bug Fixes and Workflow Reliability
+
+All six v60 increments are implemented and owner accepted. The final candidate
+identity is v60.0.6 `WORKFLOW-RELIABILITY` — Bug Fixes and Workflow Reliability,
+with unchanged schema-v29 through schema-v40 update compatibility.
+
+The closure reconciles stale roadmap and feedback states, README development
+focus, Help, automation and release evidence. Help 694/694, documentation,
+vulnerability and app/runner Debug/Release gates pass with zero warnings/errors.
+Disposable profile `20260814155640-b34540e5` passes Verification 425/425, 627
+report artifacts and exact database/business-state recovery.
+Production and FTPS remain unchanged pending byte-preserving clean-tree
+promotion of the exact accepted artifacts.
+
+Candidate package gates pass for the signed update, BOM-less feed, installer,
+portable ZIP and deployment plan. Exact-portable profile
+`20260814160759-c1d6442f` passes Verification 425/425, 627 report artifacts and
+exact state recovery. Owner installer/portable acceptance passes on 2026-08-14.
+
+## v60.0.6 - Bug Fixes and Workflow Reliability
 
 One shared application calendar-date codec now separates localized UI text
 from canonical persistence. Purchase Order Order/Received and read-only Rate,
