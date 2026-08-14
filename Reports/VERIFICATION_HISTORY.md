@@ -1,3 +1,19 @@
+# v61.0.3 - Thermal Population and Transition Retirement Accepted
+
+Date: 2026-08-14
+
+- Owner confirms source workbook SHA-256 `5CC2742C...58CE` and accepts one-time
+  preview/apply, 191 populated rows, restart, export readability and Verification.
+- Canonical schema-v41 seed SHA-256 is `28741D5F...8E25`; 191 thermal rows span
+  44-171 °C with zero integrity, relationship, range or automation-residue issues.
+- Pre-retirement profile `20260814181952-48fb589d` passes 428/428 and exact recovery.
+- Import/export controls, handlers, service, verifier, Help and automation discovery
+  are retired. Direct entry and governed disaster recovery remain supported.
+- Isolated Release and Help 696/696 pass. Post-retirement profile
+  `20260814184446-a76801d2` passes 428/428 and exact logical/business-state recovery.
+- Owner accepts the final post-retirement UI and Full Data Verification PASS on
+  2026-08-14; v61.0.3 is closed.
+
 # v61.0.1 - Canonical Thermal Schema and Governed Workbook Import
 
 Date: 2026-08-14

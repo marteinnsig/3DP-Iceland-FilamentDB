@@ -13114,6 +13114,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         AddNativeStiffnessSheet(workbook);
         AddNativeSettingsSheet(workbook);
         AddBaseMaterialProfilesSheet(workbook);
+        AddNativeThermalDeflectionSheet(workbook);
         var recoverySnapshot = _database.CreateExcelRecoverySnapshot();
         new ExcelDisasterRecoveryService().AddRecoveryPackage(workbook, recoverySnapshot);
         workbook.SaveAs(fullPath);
@@ -13153,7 +13154,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         ws.Cell(4, 1).Value = "Source of truth";
         ws.Cell(4, 2).Value = "Material Manager rows are exported as the native material source of truth. Measurement sheets reference MaterialID.";
         ws.Cell(5, 1).Value = "Included sheets";
-        ws.Cell(5, 2).Value = "Readable sheets plus DR Manifest and 24 governed canonical recovery tables";
+        ws.Cell(5, 2).Value = "Readable sheets plus a hash-verified DR Manifest and all governed canonical recovery tables";
         ws.Range(1, 1, 1, 2).Style.Font.Bold = true;
         ws.Columns().AdjustToContents();
     }
@@ -13277,6 +13278,39 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             for (var c = 0; c < values.Length; c++) ws.Cell(r, c + 1).Value = values[c]?.ToString() ?? string.Empty;
             r++;
         }
+        FinishExportSheet(ws, headers.Length);
+    }
+
+    private void AddNativeThermalDeflectionSheet(XLWorkbook workbook)
+    {
+        var rows = _database.GetThermalDeflectionExportRows();
+        var ws = workbook.Worksheets.Add("06 Heat Deflection");
+        var headers = new[]
+        {
+            "MaterialID", "Deflection temperature °C", "Measured date", "Test notes", "Method version",
+            "Source file name", "Source SHA-256", "Imported UTC", "Updated UTC"
+        };
+        WriteHeader(ws, 1, headers);
+        var outputRow = 2;
+        foreach (var row in rows)
+        {
+            ws.Cell(outputRow, 1).Value = row.MaterialId;
+            if (row.TemperatureC.HasValue) ws.Cell(outputRow, 2).Value = row.TemperatureC.Value;
+            if (DateTime.TryParseExact(row.MeasuredDate, "yyyy-MM-dd", CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out var measuredDate))
+            {
+                ws.Cell(outputRow, 3).Value = measuredDate;
+                ws.Cell(outputRow, 3).Style.DateFormat.Format = "yyyy-mm-dd";
+            }
+            ws.Cell(outputRow, 4).Value = row.TestNotes ?? string.Empty;
+            ws.Cell(outputRow, 5).Value = row.MethodVersion ?? string.Empty;
+            ws.Cell(outputRow, 6).Value = row.SourceFileName ?? string.Empty;
+            ws.Cell(outputRow, 7).Value = row.SourceSha256 ?? string.Empty;
+            ws.Cell(outputRow, 8).Value = row.ImportedAtUtc ?? string.Empty;
+            ws.Cell(outputRow, 9).Value = row.UpdatedAtUtc ?? string.Empty;
+            outputRow++;
+        }
+        ws.Column(2).Style.NumberFormat.Format = "0.0";
         FinishExportSheet(ws, headers.Length);
     }
 
@@ -15110,13 +15144,13 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 : "A named identity field failed to refresh independently or measurement-owned evidence changed"));
         var thermalDeflectionImportFoundationReady =
             BuildInfo.CurrentDatabaseSchema == 41 &&
-            LocalDatabase.RunThermalDeflectionImportContractVerification();
+            LocalDatabase.RunThermalDeflectionPersistenceContractVerification();
         checks.Add(new VerificationCheck(
-            "v61.0.1 Thermal deflection schema and governed workbook import contract",
+            "v61.0.1 Thermal deflection schema, method and persistence contract",
             thermalDeflectionImportFoundationReady,
             thermalDeflectionImportFoundationReady
-                ? "Schema v41, immutable method v1, preview-first MaterialID binding, blank preservation and idempotent apply pass"
-                : "Thermal schema, immutable method, preview validation, blank preservation or idempotent apply failed"));
+                ? "Schema v41, immutable method v1 and manual add/update/clear persistence pass"
+                : "Thermal schema, immutable method or manual add/update/clear persistence failed"));
         var thermalDeflectionWorkspaceReady =
             thermalDeflectionImportFoundationReady &&
             WorkspaceTabs.Items.OfType<TabItem>().Any(tab =>
@@ -15134,6 +15168,26 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             thermalDeflectionWorkspaceReady
                 ? "23-tab navigation, 15-column Fast grid, 25-300 °C validation, manual auto-save/clear and method Help pass"
                 : "Heat Deflection navigation, Fast grid, validation, persistence, clear behavior or Help failed"));
+        var thermalDeflectionPopulationRetirementReady =
+            thermalDeflectionWorkspaceReady &&
+            _database.ThermalDeflectionPopulationMatchesAcceptedSource() &&
+            FindName("PreviewThermalDeflectionImport") is null &&
+            FindName("ExportThermalDeflectionResults") is null &&
+            typeof(MainWindow).GetMethod("PreviewThermalDeflectionImport_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).GetMethod("ExportThermalDeflectionResults_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null &&
+            typeof(MainWindow).Assembly.GetType(
+                "FilamentDbApp.Services.ThermalDeflectionWorkbookImportService") is null &&
+            typeof(LocalDatabase).GetMethod(nameof(LocalDatabase.GetThermalDeflectionExportRows)) is not null &&
+            typeof(MainWindow).GetMethod(nameof(AddNativeThermalDeflectionSheet),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        checks.Add(new VerificationCheck(
+            "v61.0.3 Accepted thermal population and retired transition UI contract",
+            thermalDeflectionPopulationRetirementReady,
+            thermalDeflectionPopulationRetirementReady
+                ? "Accepted 191-row source population is intact; one-time import/export UI and service are retired"
+                : "Accepted source population drifted or one-time thermal workbook transition surfaces remain"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",

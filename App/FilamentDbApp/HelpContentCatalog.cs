@@ -1038,7 +1038,8 @@ internal static class HelpContentCatalog
             bolt adds no specimen load. The oven starts near 25 °C and follows the governed non-linear observed ramp. This is a
             3DPIceland fixture-specific result, not ASTM D648 or ISO 75 HDT, and it is not internal specimen temperature. Method
             version is read-only and preserves the immutable v1 snapshot. Reset Columns changes layout only.
-            """, "heat deflection", "temperature", "BlueDOT", "2 mm", "method version", "auto-save", "clear"),
+            """, "heat deflection", "temperature", "BlueDOT", "2 mm", "method version", "auto-save", "clear",
+            "direct entry"),
         new(
             "experimental.series", "Experimental testing", "Experimental Series reference",
             "Material-linked definitions, filters, publication readiness and governed lifecycle.",

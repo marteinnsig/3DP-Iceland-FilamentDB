@@ -1,4 +1,3 @@
-using ClosedXML.Excel;
 using FilamentDbApp.Services;
 using Microsoft.Data.Sqlite;
 using System.Globalization;
@@ -12,7 +11,11 @@ public sealed partial class LocalDatabase
         double ResultTemperatureC,
         string? MeasuredDate,
         string? TestNotes,
-        string MethodVersion);
+        string MethodVersion,
+        string SourceFileName,
+        string SourceSha256,
+        string ImportedAtUtc,
+        string UpdatedAtUtc);
 
     private static void EnsureThermalDeflectionMethodV1(
         SqliteConnection connection,
@@ -77,7 +80,8 @@ public sealed partial class LocalDatabase
         connection.Open();
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT MaterialId, ResultTemperatureC, MeasuredDate, TestNotes, MethodVersion
+            SELECT MaterialId, ResultTemperatureC, MeasuredDate, TestNotes, MethodVersion,
+                   SourceFileName, SourceSha256, ImportedAtUtc, UpdatedAtUtc
             FROM NativeThermalDeflectionMeasurements
             ORDER BY MaterialId;
             """;
@@ -88,8 +92,24 @@ public sealed partial class LocalDatabase
                 reader.GetString(0), reader.GetDouble(1),
                 reader.IsDBNull(2) ? null : reader.GetString(2),
                 reader.IsDBNull(3) ? null : reader.GetString(3),
-                reader.GetString(4)));
+                reader.GetString(4), reader.GetString(5), reader.GetString(6),
+                reader.GetString(7), reader.GetString(8)));
         return rows;
+    }
+
+    public IReadOnlyList<ThermalDeflectionExportRow> GetThermalDeflectionExportRows()
+    {
+        var measurements = GetThermalDeflectionMeasurements()
+            .ToDictionary(row => row.MaterialId, StringComparer.OrdinalIgnoreCase);
+        return GetCanonicalThermalDeflectionMaterialIds()
+            .OrderBy(materialId => materialId, StringComparer.OrdinalIgnoreCase)
+            .Select(materialId => measurements.TryGetValue(materialId, out var row)
+                ? new ThermalDeflectionExportRow(
+                    materialId, row.ResultTemperatureC, row.MeasuredDate, row.TestNotes,
+                    row.MethodVersion, row.SourceFileName, row.SourceSha256,
+                    row.ImportedAtUtc, row.UpdatedAtUtc)
+                : new ThermalDeflectionExportRow(materialId, null, null, null, null, null, null, null, null))
+            .ToList();
     }
 
     public void SaveManualThermalDeflectionMeasurement(
@@ -148,62 +168,27 @@ public sealed partial class LocalDatabase
         transaction.Commit();
     }
 
-    public ThermalDeflectionImportApplyResult ApplyThermalDeflectionImport(ThermalDeflectionImportPreview preview)
+    public bool ThermalDeflectionPopulationMatchesAcceptedSource()
     {
-        if (!preview.CanApply) throw new InvalidOperationException("Thermal deflection preview contains blocking issues or no measured rows.");
-        var verifiedPreview = new ThermalDeflectionWorkbookImportService().Preview(
-            preview.SourcePath,
-            GetCanonicalThermalDeflectionMaterialIds(),
-            GetThermalDeflectionResults());
-        if (!verifiedPreview.CanApply ||
-            !string.Equals(verifiedPreview.SourceSha256, preview.SourceSha256, StringComparison.Ordinal) ||
-            verifiedPreview.BlankResults != preview.BlankResults ||
-            !verifiedPreview.Rows.SequenceEqual(preview.Rows))
-            throw new InvalidOperationException("Thermal deflection workbook or canonical state changed after preview; preview again before apply.");
-
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
-        using var transaction = connection.BeginTransaction();
-        EnsureThermalDeflectionMethodV1(connection, transaction);
-        var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
-        foreach (var row in verifiedPreview.Rows.Where(row => row.Action != "Unchanged"))
-        {
-            using var command = connection.CreateCommand();
-            command.Transaction = transaction;
-            command.CommandText = """
-                INSERT INTO NativeThermalDeflectionMeasurements
-                    (MaterialId, ResultTemperatureC, MeasuredDate, TestNotes, MethodVersion,
-                     SourceFileName, SourceSha256, ImportedAtUtc, UpdatedAtUtc)
-                VALUES ($id, $value, NULL, NULL, $method, $file, $sha, $now, $now)
-                ON CONFLICT(MaterialId) DO UPDATE SET
-                    ResultTemperatureC=excluded.ResultTemperatureC,
-                    MethodVersion=excluded.MethodVersion,
-                    SourceFileName=excluded.SourceFileName,
-                    SourceSha256=excluded.SourceSha256,
-                    ImportedAtUtc=excluded.ImportedAtUtc,
-                    UpdatedAtUtc=excluded.UpdatedAtUtc;
-                """;
-            command.Parameters.AddWithValue("$id", row.MaterialId);
-            command.Parameters.AddWithValue("$value", row.TemperatureC);
-            command.Parameters.AddWithValue("$method", ThermalDeflectionMethodContract.Version);
-            command.Parameters.AddWithValue("$file", preview.SourceFileName);
-            command.Parameters.AddWithValue("$sha", preview.SourceSha256);
-            command.Parameters.AddWithValue("$now", now);
-            command.ExecuteNonQuery();
-        }
-        transaction.Commit();
-        return new(
-            verifiedPreview.Inserts,
-            verifiedPreview.Updates,
-            verifiedPreview.Unchanged,
-            verifiedPreview.BlankResults,
-            ThermalDeflectionMethodContract.Version,
-            verifiedPreview.SourceSha256);
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT
+                SUM(CASE WHEN SourceSha256=$source AND MethodVersion=$method THEN 1 ELSE 0 END),
+                SUM(CASE WHEN ResultTemperatureC < 25 OR ResultTemperatureC > 300 THEN 1 ELSE 0 END),
+                SUM(CASE WHEN MaterialId NOT IN (SELECT MaterialId FROM NativeMaterialManagerRows) THEN 1 ELSE 0 END)
+            FROM NativeThermalDeflectionMeasurements;
+            """;
+        command.Parameters.AddWithValue("$source", "5CC2742C6DEA382CDCCC9D260135DB3377DFC9B754D9106230B6C8CCC3AE58CE");
+        command.Parameters.AddWithValue("$method", ThermalDeflectionMethodContract.Version);
+        using var reader = command.ExecuteReader();
+        return reader.Read() && reader.GetInt32(0) == 191 && reader.GetInt32(1) == 0 && reader.GetInt32(2) == 0;
     }
 
-    public static bool RunThermalDeflectionImportContractVerification()
+    public static bool RunThermalDeflectionPersistenceContractVerification()
     {
-        var root = IOPath.Combine(IOPath.GetTempPath(), "3DPIceland-ThermalImport-" + Guid.NewGuid().ToString("N"));
+        var root = IOPath.Combine(IOPath.GetTempPath(), "3DPIceland-ThermalPersistence-" + Guid.NewGuid().ToString("N"));
         IODirectory.CreateDirectory(root);
         try
         {
@@ -214,55 +199,9 @@ public sealed partial class LocalDatabase
                 using var command = connection.CreateCommand();
                 command.CommandText = """
                     INSERT INTO NativeMaterialManagerRows(MaterialId, UpdatedAtUtc) VALUES ('MAT-THERMAL-1', 'verify');
-                    INSERT INTO NativeMaterialManagerRows(MaterialId, UpdatedAtUtc) VALUES ('MAT-THERMAL-2', 'verify');
                     """;
                 command.ExecuteNonQuery();
             }
-            var workbookPath = IOPath.Combine(root, "thermal.xlsx");
-            using (var workbook = new XLWorkbook())
-            {
-                var sheet = workbook.Worksheets.Add("Sheet1");
-                sheet.Cell(1, 1).Value = "MaterialID";
-                sheet.Cell(1, 2).Value = "Hitamæling";
-                sheet.Cell(2, 1).Value = "MAT-THERMAL-1";
-                sheet.Cell(2, 2).Value = 51;
-                sheet.Cell(3, 1).Value = "MAT-THERMAL-2";
-                workbook.SaveAs(workbookPath);
-            }
-            var service = new ThermalDeflectionWorkbookImportService();
-            var preview = service.Preview(
-                workbookPath,
-                database.GetCanonicalThermalDeflectionMaterialIds(),
-                database.GetThermalDeflectionResults());
-            var applied = database.ApplyThermalDeflectionImport(preview);
-            var stored = database.GetThermalDeflectionResults();
-            var repeat = service.Preview(
-                workbookPath,
-                database.GetCanonicalThermalDeflectionMaterialIds(),
-                stored);
-            var invalidPath = IOPath.Combine(root, "thermal-invalid.xlsx");
-            using (var workbook = new XLWorkbook())
-            {
-                var sheet = workbook.Worksheets.Add("Sheet1");
-                sheet.Cell(1, 1).Value = "MaterialID";
-                sheet.Cell(1, 2).Value = "Hitamæling";
-                sheet.Cell(2, 1).Value = "MAT-THERMAL-1";
-                sheet.Cell(2, 2).Value = 24;
-                sheet.Cell(3, 1).Value = "MAT-THERMAL-2";
-                sheet.Cell(3, 2).Value = "not-a-number";
-                sheet.Cell(4, 1).Value = "MAT-UNKNOWN";
-                sheet.Cell(4, 2).Value = 60;
-                sheet.Cell(5, 1).Value = "MAT-THERMAL-1";
-                sheet.Cell(5, 2).Value = 52;
-                workbook.SaveAs(invalidPath);
-            }
-            var invalid = service.Preview(
-                invalidPath,
-                database.GetCanonicalThermalDeflectionMaterialIds(),
-                stored);
-            var invalidApplyBlocked = false;
-            try { database.ApplyThermalDeflectionImport(invalid); }
-            catch (InvalidOperationException) { invalidApplyBlocked = true; }
             var immutableMethodBlocked = false;
             try
             {
@@ -279,25 +218,20 @@ public sealed partial class LocalDatabase
             }
             catch (SqliteException) { immutableMethodBlocked = true; }
             database.SaveManualThermalDeflectionMeasurement(
-                "MAT-THERMAL-2", 60, "2026-08-14", "Manual verification");
+                "MAT-THERMAL-1", 60, "2026-08-14", "Manual verification");
             var manual = database.GetThermalDeflectionMeasurements()
-                .Single(row => row.MaterialId == "MAT-THERMAL-2");
+                .Single(row => row.MaterialId == "MAT-THERMAL-1");
             database.SaveManualThermalDeflectionMeasurement(
-                "MAT-THERMAL-2", 61, "2026-08-15", "Updated verification");
+                "MAT-THERMAL-1", 61, "2026-08-15", "Updated verification");
             var manualUpdated = database.GetThermalDeflectionMeasurements()
-                .Single(row => row.MaterialId == "MAT-THERMAL-2");
+                .Single(row => row.MaterialId == "MAT-THERMAL-1");
             database.SaveManualThermalDeflectionMeasurement(
-                "MAT-THERMAL-2", null, null, null);
-            return preview.CanApply && preview.SourceRows == 2 && preview.Inserts == 1 &&
-                   preview.BlankResults == 1 && applied.Inserted == 1 &&
-                   stored.Count == 1 && stored["MAT-THERMAL-1"] == 51 &&
-                   repeat.CanApply && repeat.Unchanged == 1 && repeat.Inserts == 0 &&
-                   !invalid.CanApply && invalid.Issues.Count == 4 &&
-                   invalidApplyBlocked && immutableMethodBlocked &&
+                "MAT-THERMAL-1", null, null, null);
+            return immutableMethodBlocked &&
                    manual.ResultTemperatureC == 60 && manual.MeasuredDate == "2026-08-14" &&
                    manual.MethodVersion == ThermalDeflectionMethodContract.Version &&
                    manualUpdated.ResultTemperatureC == 61 && manualUpdated.TestNotes == "Updated verification" &&
-                   database.GetThermalDeflectionResults().Count == 1;
+                   database.GetThermalDeflectionResults().Count == 0;
         }
         catch
         {

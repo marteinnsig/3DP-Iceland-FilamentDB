@@ -13,10 +13,10 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 4 |
+| Open | 3 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 104 |
+| Solved | 105 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
@@ -170,7 +170,7 @@ Date: 2026-08-02
 Area: Native measurements / fixture-specific heat deflection
 Type: Workflow friction / Data issue
 Severity: Important
-Status: In Progress
+Status: Solved
 What happened: The owner has built a thermal bend fixture but the application has no dedicated place to record the result for each
 MaterialID. A 127 x 12.7 x 3.2 mm specimen is printed flat and supported on two end pillars with a 110 mm clear span. A 54 g M20 nut
 applies the centered load, and the recorded endpoint is the temperature at which mid-span deflection reaches 2 mm.
@@ -208,11 +208,16 @@ add/edit/clear/restart, invalid/range and locale handling,
 MaterialID identity synchronization, delete/archive behavior, method-snapshot immutability, schema migration, Excel round trip,
 Help/navigation, disposable automation and Full Data Verification with exact business-state recovery. Public reports, website
 publication and Engineering Score use remain out of scope until separately designed and approved.
-Owner accepted the corrected 221-Material preview and v61.0.1 schema/import foundation on 2026-08-14. The feedback remains
-In Progress because the final v61.0.3 round trip/acceptance remains authoritative scope.
+Owner accepted the corrected 221-Material preview and v61.0.1 schema/import foundation on 2026-08-14.
 v61.0.2 adds the native Fast workspace, validation, date/notes, immutable method display, auto-save, blank-clear, navigation and
 central Help. Profile `20260814174328-29081146` passes 427/427 and exact recovery. Owner runtime/visual acceptance passes on
 2026-08-14 for entry, invalid-value rejection, restart persistence, explicit clear, layout and Help readability.
+v61.0.3 uses a guarded one-time transition to populate 191 results and preserve 30 blanks from owner-confirmed source SHA-256
+`5CC2742C...58CE`. Profile `20260814181952-48fb589d` passes 428/428 with exact state recovery. Owner accepts preview/apply,
+restart, export readability and Verification, then requests retirement because future measurements are entered directly in the app.
+The buttons, handlers, importer, verifier, Help and automation discovery are removed.
+Post-retirement profile `20260814184446-a76801d2` passes 428/428 with exact recovery; Help passes 696/696. Owner accepts the
+final post-retirement UI and Verification PASS on 2026-08-14; the feedback is resolved.
 
 Date: 2026-07-30
 Area: Application date entry and display / Purchase Orders / Materials

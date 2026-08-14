@@ -2,6 +2,18 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v61.0.3 - Thermal Canonical Population and Transition Retirement
+
+- Used a preview-first, source/state-verified transaction to populate the accepted
+  one-time MaterialID/Hitamæling source; blanks remained non-destructive.
+- Owner confirms source SHA-256 `5CC2742C...58CE`. Canonical schema-v41 seed now
+  contains 191 results and preserves 30 blanks; SHA-256 is `28741D5F...8E25`.
+- Owner accepts preview/apply, 191 populated rows, restart, export and Verification.
+- Retires the completed one-time import/export buttons, handlers, service, verifier,
+  Help and automation discovery. Direct app entry is now the supported workflow;
+  governed disaster recovery retains thermal data.
+- Owner accepts the final post-retirement UI and Verification PASS on 2026-08-14.
+
 ## v61.0.2 - Native Heat Deflection Workspace, Help and Persistence
 
 - Adds a 23rd top-level `Heat Deflection` workspace and grouped Navigate item.

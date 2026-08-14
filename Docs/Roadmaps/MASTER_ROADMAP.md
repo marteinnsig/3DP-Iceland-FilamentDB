@@ -6,12 +6,12 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v61.0.3 — Governed Thermal Excel Round Trip and Canonical Population**
+Current roadmap increment: **v61.0.4 — Thermal Analytics and Engineering-score Contract**
 
 Current acceptance note: v61.0.2 native Heat Deflection workspace, Help and persistence are owner accepted;
 Verification passes 427/427.
 
-Next note: import the accepted thermal workbook through governed preview/apply and prove lossless Excel round trip.
+Next note: research and obtain owner approval for thermal normalization, weighting, missing-data and compatibility rules.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -48,7 +48,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
 | v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Complete — canonical v60.0.6 runtime accepted |
-| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — v61.0.2 owner accepted |
+| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — v61.0.3 owner accepted |
 
 ## Reconciliation of the older plans
 
@@ -2899,14 +2899,20 @@ blockers may change the order, but must be recorded here before implementation.
   - Keep public reports, website publication and Engineering Score integration out of scope pending separate owner approval.
   - Completion condition: owner accepts entry, clearing, restart, filtering and method traceability; required gates pass.
 - **v61.0.3 — Governed Thermal Excel Round Trip and Canonical Population**
-  - State: **In progress after accepted v61.0.2.**
-  - Import the owner-accepted corrected workbook only through preview/apply with 221 exact IDs, 191 results and 30 preserved blanks.
-  - Extend governed Excel import/export with result °C, ISO date, notes, method version and explicit source/provenance fields.
-  - Preserve non-destructive blanks and reject identity, range, duplicate, method or source-hash drift before any transaction applies.
-  - Prove deterministic export/import round trip, existing workbook compatibility, restart persistence and exact recovery.
-  - Completion condition: owner accepts exact preview and populated native rows; workbook, schema, Help and runtime gates pass.
+  - State: **Completed and owner accepted 2026-08-14.**
+  - Populate the owner-approved source through preview/apply with 221 exact IDs, 191 results and 30 preserved blanks.
+  - Preserve full result/method/source provenance in SQLite and governed disaster recovery.
+  - After owner acceptance, retire the one-time import/export UI, handlers, importer, verifier, Help and automation discovery.
+  - Keep direct in-app entry as the only normal Heat Deflection measurement workflow.
+  - Candidate evidence: owner-approved source SHA-256 `5CC2742C...58CE`; canonical schema-v41 seed SHA-256
+    `28741D5F...8E25` contains 191 results and 30 preserved blanks.
+  - Pre-retirement profile `20260814181952-48fb589d` passes 428/428 and exact logical/business-state recovery.
+  - Post-retirement profile `20260814184446-a76801d2` passes 428/428, Help 696/696 and exact recovery.
+  - Owner accepts the final post-retirement UI and Full Data Verification PASS on 2026-08-14.
+  - Completion condition: accepted population remains intact; retired transition surfaces are absent; direct entry, recovery,
+    Help, schema, Debug/Release and post-retirement runtime gates pass.
 - **v61.0.4 — Thermal Analytics and Engineering-score Contract**
-  - State: Planned after v61.0.3; scoring design requires owner approval before implementation.
+  - State: Current research and decision increment; scoring design requires owner approval before implementation.
   - Define how raw fixture-specific °C becomes a comparable 0-100 thermal axis without presenting it as standardized HDT.
   - Research global versus material-family normalization, bounds, outlier handling, ties, missing values and minimum peer coverage.
   - Decide explicitly whether Thermal Deflection changes Overall/Rank Score or remains an independent ranked axis.

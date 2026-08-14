@@ -1,5 +1,16 @@
 # Automated Runtime Acceptance
 
+## v61.0.3 - Thermal Population and Transition Retirement Accepted
+
+- Pre-retirement profile `20260814181952-48fb589d` passes 428/428 and exact recovery.
+- After owner acceptance, smoke no longer discovers retired workbook controls.
+- Full Verification owns immutable-method/manual persistence, accepted 191-row
+  provenance and exact absence of the transition UI/service.
+- Post-retirement profile `20260814184446-a76801d2` passes 428/428 with 23/23 tabs,
+  23/23 Navigate actions and exact logical/business-state recovery.
+- Seed hash is `28741D5F...8E25`; Production, FTPS, updates and owner database
+  remain blocked. Owner accepts the final UI and Verification PASS on 2026-08-14.
+
 ## v60.0.6 - Locale-aware Application Date Presentation
 
 - The existing explicit `reports` scenario remains the bounded owner because it

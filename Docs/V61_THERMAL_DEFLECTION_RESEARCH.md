@@ -44,9 +44,12 @@ Read-only source: `Export fyrir hitamælingar.xlsx`, sheet `Sheet1`, table
   The owner confirmed it was an entry error and corrected it to 51 °C on
   2026-08-14. The corrected workbook has no remaining below-ambient values.
 
-The final v61.0.1 preview against the configured 221-Material owner database
-and corrected canonical tester seed uses workbook SHA-256
-`6EBDA00A000B53A686F6AE13B5EEE3FEBFE6E6C786ECF7908FF644C7E90D67EA`.
+The final owner-approved source workbook for v61.0.3 uses SHA-256
+`5CC2742C6DEA382CDCCC9D260135DB3377DFC9B754D9106230B6C8CCC3AE58CE`.
+The earlier v61.0.1 preview recorded different workbook bytes with SHA-256
+`6EBDA00A000B53A686F6AE13B5EEE3FEBFE6E6C786ECF7908FF644C7E90D67EA`;
+the owner explicitly confirms the current OneDrive workbook as the canonical
+measurement source on 2026-08-14 before any v61.0.3 population.
 It resolves all 221 exact MaterialIDs, classifies 191 inserts and 30 blanks,
 reports zero issues and permits apply. The earlier 20-unknown-ID result came
 from a stale 201-Material tester seed and is superseded; no data was written.

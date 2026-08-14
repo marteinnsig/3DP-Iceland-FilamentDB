@@ -1,5 +1,20 @@
 # Current Build Notes - v60.0.6 Accepted Release
 
+## v61.0.3 thermal population and transition retirement accepted
+
+The one-time preview/apply path populated the accepted thermal source and passed
+restart/export review. Owner then requested removal because new measurements are
+entered directly in Heat Deflection. The buttons, handlers, importer, standalone
+verifier, Help and smoke discovery are retired; disaster recovery remains intact.
+
+Owner-approved source SHA-256 is `5CC2742C...58CE`. The promoted schema-v41 seed
+hash is `28741D5F...8E25`, with 221 Materials, 191 results, 30 blanks and 0 SQLite
+integrity/relationship issues. Profile `20260814181952-48fb589d` passes 428/428
+and exact state recovery before retirement. Isolated post-retirement Release and
+Help 696/696 pass; profile `20260814184446-a76801d2` passes 428/428 and exact
+logical/business-state recovery. Owner accepts the final post-retirement UI and
+Verification PASS on 2026-08-14; v61.0.3 is closed.
+
 ## v60 parent closure
 
 All six v60 feedback increments are implemented and owner accepted. Final

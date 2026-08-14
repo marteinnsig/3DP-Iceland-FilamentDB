@@ -2,6 +2,26 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v61.0.3 - Thermal Canonical Population and Transition Retirement
+
+The accepted one-time workbook transition populated canonical thermal rows through
+source/state re-verification and one backed-up transaction. Owner runtime accepted
+preview, apply, restart, export readability and Full Verification. The transition
+UI, handlers, importer service and standalone verifier are then retired in the same
+increment. Direct Heat Deflection entry is the supported workflow; governed Excel
+disaster recovery remains separate and retains thermal tables/provenance.
+
+The owner confirms source SHA-256 `5CC2742C...58CE`. The promoted schema-v41 seed
+contains 221 Materials, 191 thermal rows, 30 source blanks, 44-171 °C and has
+SHA-256 `28741D5F...8E25`. The prior empty-thermal seed is preserved as
+`filamentdb-schema-v41-pre-thermal-population.sqlite`, SHA-256 `08775AFE...A1E`.
+
+Pre-retirement profile `20260814181952-48fb589d` passes 428/428. Isolated Release
+build passes with zero warnings/errors; Help passes 696/696. Post-retirement profile
+`20260814184446-a76801d2` passes 428/428 and exact logical/business-state recovery.
+Owner accepts the final post-retirement UI and Full Verification PASS on
+2026-08-14; v61.0.3 is closed.
+
 ## v61.0.2 - Native Heat Deflection Workspace, Help and Persistence
 
 The new Fast workspace reuses canonical MaterialID identity/filter/layout

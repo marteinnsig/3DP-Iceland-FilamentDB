@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v61.0.2 Heat Deflection workspace candidate
+Version: v61.0.3 thermal population and transition retirement accepted
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted
