@@ -10,7 +10,7 @@ Current roadmap increment: **v61 — Thermal Deflection Measurement Foundation r
 
 Current acceptance note: v60.0.6 parent release and exact installer/portable bytes are owner accepted; Verification passes 425/425.
 
-Next note: v60 is complete; guarded Production promotion/publication is release closure, then v61 research begins.
+Next note: v60 Production publication and independent HTTPS verification pass; v61 research is next.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2853,6 +2853,7 @@ blockers may change the order, but must be recorded here before implementation.
   - Byte boundary: owner acceptance must cover the final self-contained installer/portable/update bytes before clean promotion.
   - Exact portable automation passes Verification 425/425 with 627 report artifacts and exact state recovery.
   - Owner accepts the exact v60.0.6 installer and portable runtime; package, signature, documentation and security gates pass.
+  - Guarded Production publication retains a remote backup; versioned/stable downloads and update feed pass exact HTTPS verification.
   - Completion condition: all recorded v60 increments are owner accepted, all six ledger items have canonical dispositions and the
     parent release passes Debug/Release, applicable security/static gates and Full Data Verification.
 

@@ -10,6 +10,8 @@ automation, Verification, README and release evidence. Final package, signature,
 security and documentation gates pass; exact portable Verification passes
 425/425 with 627 report artifacts and exact state recovery. The owner accepts
 the frozen installer and portable bytes; v60 closes without schema change.
+Guarded Production publication and independent versioned/stable HTTPS byte and
+SHA-256 verification pass with a retained remote rollback backup.
 
 # v59.0.7 - Canonical Navigation and Materials Layout
 

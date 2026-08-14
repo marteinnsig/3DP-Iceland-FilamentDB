@@ -19,6 +19,13 @@ stable-route-last plan. Exact-portable profile `20260814160759-c1d6442f` passes
 Verification 425/425, 627 report artifacts and exact state recovery. Owner
 installer/portable runtime acceptance passes on 2026-08-14.
 
+Byte-preserving Production promotion uses commit `f9d1ea3`. The application
+publisher activates four installer/portable paths with remote backup
+`/backups/application-releases/release_2026-08-14_162128_483`; the update ZIP
+activates before `latest.json`. Independent HTTPS downloads reproduce exact
+installer SHA-256 `F5E57A43...0542B3`, portable `20C29963...AFD3B`, update ZIP
+`9F033B08...45A9` and BOM-less Production feed bytes.
+
 ## v60.0.3 Material Identity Refresh Across Measurement Views
 
 All eight editable Materials identity fields now refresh Tensile, Impact and

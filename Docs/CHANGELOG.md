@@ -17,6 +17,9 @@
 - Candidate package gates pass. Exact-portable profile
   `20260814160759-c1d6442f` passes Verification 425/425, 627 report artifacts
   and exact state recovery; owner installer/portable acceptance passes.
+- Byte-preserving Production promotion at commit `f9d1ea3`, guarded remote
+  backup and FTPS publication pass. Independent versioned/stable HTTPS downloads
+  reproduce exact installer, portable, update ZIP and BOM-less feed bytes.
 
 ## v60.0.6 - Bug Fixes and Workflow Reliability
 

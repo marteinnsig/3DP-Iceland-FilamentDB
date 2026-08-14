@@ -14,6 +14,11 @@ App/runner Debug and Release builds pass with zero warnings/errors. Help
 gates pass. Exact portable profile `20260814160759-c1d6442f` passes Full Data
 Verification 425/425, verifies 627 report artifacts and restores exact state.
 The owner accepts the exact installer and portable runtime on 2026-08-14.
+Byte-preserving Production promotion records commit `f9d1ea3`. Guarded FTPS
+publication retains backup
+`/backups/application-releases/release_2026-08-14_162128_483`; independent HTTPS
+downloads reproduce the exact installer, portable and update ZIP hashes, and
+the BOM-less Production feed reproduces the exact promoted bytes.
 
 ## v59.0.11 - Public Base-material Printing Guidance
 

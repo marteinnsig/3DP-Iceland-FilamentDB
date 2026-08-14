@@ -13,7 +13,8 @@ Date: 2026-08-14
 - Exact-portable profile `20260814160759-c1d6442f` passes Verification 425/425,
   627 report artifacts and exact database/business-state recovery.
 - Owner installer/portable runtime acceptance passes on 2026-08-14.
-- Production and FTPS remain unchanged.
+- Production promotion/publication passes after owner acceptance with retained remote
+  backup and exact versioned/stable HTTPS size, SHA-256 and feed-byte parity.
 
 # v60.0.6 - Locale-aware Application Date Presentation
 

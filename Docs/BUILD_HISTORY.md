@@ -21,6 +21,12 @@ portable ZIP and deployment plan. Exact-portable profile
 `20260814160759-c1d6442f` passes Verification 425/425, 627 report artifacts and
 exact state recovery. Owner installer/portable acceptance passes on 2026-08-14.
 
+Byte-preserving Production promotion uses commit `f9d1ea3`. Guarded FTPS
+publication retains remote backup
+`/backups/application-releases/release_2026-08-14_162128_483`. Independent HTTPS
+verification reproduces exact versioned/stable installer and portable bytes,
+signed update ZIP and BOM-less Production feed.
+
 ## v60.0.6 - Bug Fixes and Workflow Reliability
 
 One shared application calendar-date codec now separates localized UI text
