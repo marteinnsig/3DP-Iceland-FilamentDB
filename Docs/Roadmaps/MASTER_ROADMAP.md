@@ -6,12 +6,12 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v61.0.4 — Thermal Analytics and Engineering-score Contract**
+Current roadmap increment: **v61.0.5 — App-wide Thermal Decision Surfaces and Radars**
 
 Current acceptance note: v61.0.2 native Heat Deflection workspace, Help and persistence are owner accepted;
 Verification passes 427/427.
 
-Next note: research and obtain owner approval for thermal normalization, weighting, missing-data and compatibility rules.
+Next note: implement the approved 200 °C thermal score contract across the in-app decision surfaces and radars.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -48,7 +48,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
 | v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Complete — canonical v60.0.6 runtime accepted |
-| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — v61.0.3 owner accepted |
+| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — v61.0.4 owner accepted |
 
 ## Reconciliation of the older plans
 
@@ -2912,15 +2912,21 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: accepted population remains intact; retired transition surfaces are absent; direct entry, recovery,
     Help, schema, Debug/Release and post-retirement runtime gates pass.
 - **v61.0.4 — Thermal Analytics and Engineering-score Contract**
-  - State: Current research and decision increment; scoring design requires owner approval before implementation.
+  - State: **Completed and owner accepted 2026-08-14.**
   - Define how raw fixture-specific °C becomes a comparable 0-100 thermal axis without presenting it as standardized HDT.
   - Research global versus material-family normalization, bounds, outlier handling, ties, missing values and minimum peer coverage.
   - Decide explicitly whether Thermal Deflection changes Overall/Rank Score or remains an independent ranked axis.
   - Version the scoring/profile contract so saved historical outputs are never silently reinterpreted after formula changes.
   - Add one canonical thermal analytics projection consumed by every downstream surface; prohibit duplicate local formulas.
+  - Accepted contract: fixed 200 °C reference, clamped 0-100 score, missing stays unavailable and two measured peers are required.
+  - The 200 °C reference retains headroom for future PPS and other high-temperature Materials; current scores span 22.0-85.5.
+  - Legacy five-axis Overall stays unchanged; Thermal is an independent ranked/radar/award axis in v61.
+  - Research rejects global/family min-max and percentile-as-score because filters/data growth would reinterpret results and small
+    families are not stable comparison populations.
+  - No AutomationRunner or Help change is warranted until the approved runtime contract is implemented in v61.0.5.
   - Completion condition: owner accepts the normalization, weighting, missing-data and backwards-compatibility contract.
 - **v61.0.5 — App-wide Thermal Decision Surfaces and Radars**
-  - State: Planned after v61.0.4.
+  - State: Current implementation increment after accepted v61.0.4.
   - Add raw °C, normalized thermal score, coverage and rank/percentile context to Material Detail Mechanical and Analytics views.
   - Expand the Material Detail radar and legends to the approved thermal axis while preserving readable labels at all window sizes.
   - Integrate the same canonical axis into Rankings Dashboard, Category Rankings, Awards & Winners and Dashboard Insights.

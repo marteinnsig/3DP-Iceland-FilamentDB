@@ -88,3 +88,58 @@ disposable measurement workflow should be extended to prove exact MaterialID
 binding, locale input, auto-save, clear/cancel behavior, restart persistence,
 method snapshot, workbook round trip and exact business-state recovery. Owner
 acceptance remains manual for wording, grid usability and method readability.
+
+## v61.0.4 accepted thermal analytics contract
+
+Code and canonical-seed research on 2026-08-14 establishes these current
+contracts:
+
+- `EngineeringScoringService` normalizes tensile, impact and stiffness against
+  fixed physical references and clamps each result to 0-100.
+- Existing Overall is the unweighted average of whichever of the five current
+  axes are available. Adding a sixth value to that average would silently
+  change historical scores, ranks, awards and downstream saved outputs.
+- Rankings use the selected axis directly, with Overall as the default. Missing
+  values are excluded from that axis rather than converted to zero.
+- The accepted thermal population covers 191 of 221 active Materials. Global
+  coverage is sufficient for a separate axis, but several material families
+  have only one to three results. Family-relative normalization would therefore
+  be unstable and misleading.
+
+The owner-accepted versioned contract is
+`3dp-thermal-analytics-fixture-v1`:
+
+- Raw result remains the primary evidence in °C with its immutable fixture
+  method version and limitation wording.
+- Thermal Score = `clamp(ResultTemperatureC / 200 °C * 100, 0, 100)`.
+- The fixed 200 °C reference follows the existing absolute-reference score
+  pattern and preserves headroom for future high-temperature materials such as
+  PPS. It never moves when Materials are added, archived or filtered.
+- The current accepted dataset produces 22.0-85.5 points; no result saturates at
+  100. Family averages remain ordered by absolute observed thermal
+  resistance rather than by within-family percentile.
+- Missing thermal measurement means no Thermal Score, rank or percentile. It is
+  never zero and does not reduce another score.
+- Thermal ties use the existing deterministic label/MaterialID ordering after
+  equal unrounded score and raw °C values.
+- Require at least two measured peers for a displayed rank/percentile. A lone
+  measured result may show raw °C and score but not `#1 of 1` context.
+- Keep the legacy five-axis Overall and its historical meaning unchanged in
+  v61. Thermal becomes an independent selectable ranking/radar/award axis.
+- Do not introduce a second thermal-inclusive Overall in v61. Any future
+  composite requires a new named/versioned score rather than relabeling Overall.
+
+This contract avoids dataset-dependent global/family min-max normalization,
+percentile-as-score and missing-as-zero behavior. It is the single contract for
+all v61.0.5-v61.0.7 consumers; those increments may not create local formulas.
+
+Automation assessment: this research/documentation increment changes no runtime
+contract, control or Help destination, so AutomationRunner and Help coverage do
+not change in v61.0.4. v61.0.5 must add deterministic
+formula, fixed-reference, saturation, missing-value, peer-count, tie and legacy
+Overall invariance checks before UI integration.
+
+The owner selects the 200 °C reference on 2026-08-14 specifically to retain
+headroom above the current 171 °C maximum for future PPS and other
+high-temperature material measurements. The remaining normalization,
+missing-data, peer-count and legacy Overall rules are accepted with it.
