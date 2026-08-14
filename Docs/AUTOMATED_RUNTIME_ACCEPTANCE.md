@@ -1143,6 +1143,16 @@ equality on that state. Schema-v32 is preserved as
 `65BD03F668768F0AAEBF937BAFC628559A168EA1A07E586CECADC7431AF7BB84`.
 Final canonical-path profile `20260726105756-ce0811c4` repeats the same PASS and
 business-state hash `4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`.
+## v61.0.2 Heat Deflection workspace candidate
+
+- Read-only smoke traverses 23/23 top-level tabs and 23/23 grouped Navigate
+  destinations, including stable Heat Deflection IDs.
+- Full Verification uses disposable temporary SQLite to prove manual insert,
+  update, date/notes, method binding, blank-clear and exact final state without
+  authorizing owner-data mutation.
+- Profile `20260814174328-29081146` passes 427/427 and exact business-state
+  recovery. Visual grid use remains owner-manual.
+
 ## v61.0.1 thermal schema and workbook import
 
 - The existing read-only smoke remains the bounded automation owner; no import

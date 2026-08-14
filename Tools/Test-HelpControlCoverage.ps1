@@ -98,6 +98,9 @@ function Get-TopSurface([string]$SurfacePath) {
 }
 
 function Get-OwnerIncrement([string]$SurfacePath, [string]$Identity) {
+    if ($Identity -match "ThermalDeflection" -or (Get-TopSurface $SurfacePath) -eq "Heat Deflection") {
+        return "v61.0.2"
+    }
     if ($Identity -match "^Navigate") {
         return "v59.0.2"
     }
@@ -158,6 +161,7 @@ function Get-HelpDestination([string]$SurfacePath) {
         "Tensile Measurements" = "measurements.controls-fields"
         "Impact Measurements" = "measurements.controls-fields"
         "Stiffness Measurements" = "measurements.controls-fields"
+        "Heat Deflection" = "measurements.thermal-deflection"
         "Rankings Dashboard" = "analysis.controls-fields"
         "Category Rankings" = "analysis.controls-fields"
         "Awards & Winners" = "analysis.controls-fields"

@@ -61,6 +61,7 @@ public partial class MainWindow : Window
         ("NavigateTensileMeasurementsTab", "TensileMeasurementsTab"),
         ("NavigateImpactMeasurementsTab", "ImpactMeasurementsTab"),
         ("NavigateStiffnessMeasurementsTab", "StiffnessMeasurementsTab"),
+        ("NavigateThermalDeflectionMeasurementsTab", "ThermalDeflectionMeasurementsTab"),
         ("NavigateExperimentalTestingTab", "ExperimentalTestingTab"),
         ("NavigatePurchaseOrdersTab", "PurchaseOrdersTab"),
         ("NavigateInventoryTab", "InventoryTab"),
@@ -225,6 +226,8 @@ public partial class MainWindow : Window
         RunStartupPhase("Fast Impact candidate view", ActivateDefaultFastImpactView);
         RunStartupPhase("Stiffness workspace initialization", InitializeNativeStiffnessMeasurements);
         RunStartupPhase("Fast Stiffness candidate view", ActivateDefaultFastStiffnessView);
+        RunStartupPhase("Heat Deflection workspace initialization", InitializeNativeThermalDeflectionMeasurements);
+        RunStartupPhase("Fast Heat Deflection view", ActivateDefaultFastThermalDeflectionView);
         UpdateNativeWorkflowStatus("Auto-save ready");
         RunStartupPhase("Application statistics refresh", RefreshApplicationStatistics);
         App.StartupPerformance.Mark("MainWindow constructor completed");
@@ -14991,6 +14994,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             "Tensile Measurements",
             "Impact Measurements",
             "Stiffness Measurements",
+            "Heat Deflection",
             "Experimental Testing",
             "Website Export",
             "Manufacturers",
@@ -15014,7 +15018,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             StringComparer.Ordinal);
         checks.Add(new VerificationCheck("v59.0.1 canonical workspace tab order", workspaceTabOrderReady,
             workspaceTabOrderReady
-                ? "All 22 top-level tabs match the owner-approved canonical sequence"
+                ? "All 23 top-level tabs match the owner-approved canonical sequence"
                 : $"Expected: {string.Join(" > ", canonicalWorkspaceTabHeaders)}"));
         string[] canonicalNavigateGroupHeaders =
         [
@@ -15113,6 +15117,23 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             thermalDeflectionImportFoundationReady
                 ? "Schema v41, immutable method v1, preview-first MaterialID binding, blank preservation and idempotent apply pass"
                 : "Thermal schema, immutable method, preview validation, blank preservation or idempotent apply failed"));
+        var thermalDeflectionWorkspaceReady =
+            thermalDeflectionImportFoundationReady &&
+            WorkspaceTabs.Items.OfType<TabItem>().Any(tab =>
+                AutomationProperties.GetAutomationId(tab) == "ThermalDeflectionMeasurementsTab") &&
+            FindName("FastThermalDeflectionViewHost") is ContentControl &&
+            AutomationProperties.GetAutomationId(FastThermalDeflectionViewHost) == "FastThermalDeflectionViewHost" &&
+            BuildFastThermalDeflectionColumns().Count == 15 &&
+            HelpContentCatalog.Sections.Count(section => section.Id == "measurements.thermal-deflection") == 1 &&
+            typeof(MainWindow).GetMethod(nameof(ApplyFastThermalDeflectionChanges),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(LocalDatabase).GetMethod(nameof(LocalDatabase.SaveManualThermalDeflectionMeasurement)) is not null;
+        checks.Add(new VerificationCheck(
+            "v61.0.2 Native Heat Deflection workspace, Help and persistence contract",
+            thermalDeflectionWorkspaceReady,
+            thermalDeflectionWorkspaceReady
+                ? "23-tab navigation, 15-column Fast grid, 25-300 °C validation, manual auto-save/clear and method Help pass"
+                : "Heat Deflection navigation, Fast grid, validation, persistence, clear behavior or Help failed"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",
@@ -19478,9 +19499,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             .Select(AutomationProperties.GetAutomationId)
             .ToList();
         var v5024TopLevelMappingsReady =
-            v5024TopLevelTabs.Count == 22 &&
+            v5024TopLevelTabs.Count == 23 &&
             v5024TopLevelIds.All(id => !string.IsNullOrWhiteSpace(id)) &&
-            v5024TopLevelIds.Distinct(StringComparer.Ordinal).Count() == 22 &&
+            v5024TopLevelIds.Distinct(StringComparer.Ordinal).Count() == 23 &&
             v5024TopLevelTabs.All(tab =>
             {
                 var sectionId = HelpContentCatalog.SectionIdForTab(tab.Header?.ToString());
@@ -19530,8 +19551,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("v50.2.4 contextual Help entry-point and coverage contract",
             v5024ContextualHelpReady,
             v5024ContextualHelpReady
-                ? "22 unique top-level and 16 unique nested tab AutomationIds resolve to stable central Help destinations; current-view F1/menu, Tools validation Help and Website menu retirement contracts are present."
-                : $"Contextual Help coverage failed: top-level {v5024TopLevelTabs.Count}/22, nested {v5024NestedTabs.Count}/16, top mappings {v5024TopLevelMappingsReady}, nested mappings {v5024NestedMappingsReady}, menu {v5024MenuHelpReady}."));
+                ? "23 unique top-level and 16 unique nested tab AutomationIds resolve to stable central Help destinations; current-view F1/menu, Tools validation Help and Website menu retirement contracts are present."
+                : $"Contextual Help coverage failed: top-level {v5024TopLevelTabs.Count}/23, nested {v5024NestedTabs.Count}/16, top mappings {v5024TopLevelMappingsReady}, nested mappings {v5024NestedMappingsReady}, menu {v5024MenuHelpReady}."));
         var v503RequiredHelpIds = new[]
         {
             "menu.file-recovery", "menu.storage", "menu.updates", "menu.release-publishing",
@@ -27159,6 +27180,7 @@ private List<string> GetVisibleAiMaterialLabels()
         _embeddedFastTensileView?.ReloadFromCanonical("the current Materials filter/search result");
         _embeddedFastImpactView?.ReloadFromCanonical("the current Materials filter/search result");
         _embeddedFastStiffnessView?.ReloadFromCanonical("the current Materials filter/search result");
+        _embeddedFastThermalDeflectionView?.ReloadFromCanonical("the current Materials filter/search result");
     }
 
     private HashSet<string> GetVisibleNativeMaterialIdsFromCurrentFilters()
@@ -27662,6 +27684,7 @@ private List<string> GetVisibleAiMaterialLabels()
         SyncNativeTensileRowsWithMaterialManager(markDirty);
         SyncNativeImpactRowsWithMaterialManager(markDirty);
         SyncNativeStiffnessRowsWithMaterialManager(markDirty);
+        ReloadNativeThermalDeflectionRows();
         ApplyNativeMeasurementFilters();
     }
 
@@ -27673,6 +27696,7 @@ private List<string> GetVisibleAiMaterialLabels()
         _embeddedFastTensileView?.CommitActiveEditor();
         _embeddedFastImpactView?.CommitActiveEditor();
         _embeddedFastStiffnessView?.CommitActiveEditor();
+        _embeddedFastThermalDeflectionView?.CommitActiveEditor();
         _nativeMaterialEditDebounceTimer.Stop();
 
         _workflowPreferencesService.CaptureWindow(this);

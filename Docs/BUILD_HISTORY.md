@@ -2,6 +2,19 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v61.0.2 - Native Heat Deflection Workspace, Help and Persistence
+
+The new Fast workspace reuses canonical MaterialID identity/filter/layout
+ownership while thermal values remain in schema v41. Manual insert/update/delete
+is transactional, assigns immutable method v1 and preserves the initial insert
+timestamp on updates. Blank result is the bounded clear action.
+
+App and AutomationRunner Debug/Release builds pass with zero warnings/errors.
+Help coverage passes 696/696. Disposable profile `20260814174328-29081146`
+passes 427/427, 23/23 tab navigation, 23/23 Navigate actions and exact
+business-state recovery. Owner runtime/visual acceptance passes on 2026-08-14,
+including entry, invalid-value rejection, restart, clear and Help readability.
+
 ## v61.0.1 - Canonical Thermal Schema and Governed Workbook Import
 
 The additive v41 foundation owns an immutable

@@ -209,7 +209,10 @@ MaterialID identity synchronization, delete/archive behavior, method-snapshot im
 Help/navigation, disposable automation and Full Data Verification with exact business-state recovery. Public reports, website
 publication and Engineering Score use remain out of scope until separately designed and approved.
 Owner accepted the corrected 221-Material preview and v61.0.1 schema/import foundation on 2026-08-14. The feedback remains
-In Progress because the native v61.0.2 workspace and final v61.0.3 round trip/acceptance are still authoritative remaining scope.
+In Progress because the final v61.0.3 round trip/acceptance remains authoritative scope.
+v61.0.2 adds the native Fast workspace, validation, date/notes, immutable method display, auto-save, blank-clear, navigation and
+central Help. Profile `20260814174328-29081146` passes 427/427 and exact recovery. Owner runtime/visual acceptance passes on
+2026-08-14 for entry, invalid-value rejection, restart persistence, explicit clear, layout and Help readability.
 
 Date: 2026-07-30
 Area: Application date entry and display / Purchase Orders / Materials

@@ -7,6 +7,13 @@ namespace FilamentDbApp.Data;
 
 public sealed partial class LocalDatabase
 {
+    public sealed record ThermalDeflectionMeasurementRecord(
+        string MaterialId,
+        double ResultTemperatureC,
+        string? MeasuredDate,
+        string? TestNotes,
+        string MethodVersion);
+
     private static void EnsureThermalDeflectionMethodV1(
         SqliteConnection connection,
         SqliteTransaction? transaction = null)
@@ -62,6 +69,83 @@ public sealed partial class LocalDatabase
         var result = new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
         while (reader.Read()) result.Add(reader.GetString(0), reader.GetDouble(1));
         return result;
+    }
+
+    public IReadOnlyList<ThermalDeflectionMeasurementRecord> GetThermalDeflectionMeasurements()
+    {
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT MaterialId, ResultTemperatureC, MeasuredDate, TestNotes, MethodVersion
+            FROM NativeThermalDeflectionMeasurements
+            ORDER BY MaterialId;
+            """;
+        using var reader = command.ExecuteReader();
+        var rows = new List<ThermalDeflectionMeasurementRecord>();
+        while (reader.Read())
+            rows.Add(new(
+                reader.GetString(0), reader.GetDouble(1),
+                reader.IsDBNull(2) ? null : reader.GetString(2),
+                reader.IsDBNull(3) ? null : reader.GetString(3),
+                reader.GetString(4)));
+        return rows;
+    }
+
+    public void SaveManualThermalDeflectionMeasurement(
+        string materialId,
+        double? resultTemperatureC,
+        string? measuredDate,
+        string? testNotes)
+    {
+        if (string.IsNullOrWhiteSpace(materialId))
+            throw new ArgumentException("MaterialID is required.", nameof(materialId));
+        if (resultTemperatureC is < 25 or > 300 ||
+            resultTemperatureC.HasValue && !double.IsFinite(resultTemperatureC.Value))
+            throw new ArgumentOutOfRangeException(nameof(resultTemperatureC));
+
+        CreateThrottledAutomaticBackupBeforeWrite();
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var transaction = connection.BeginTransaction();
+        if (!resultTemperatureC.HasValue)
+        {
+            using var delete = connection.CreateCommand();
+            delete.Transaction = transaction;
+            delete.CommandText = "DELETE FROM NativeThermalDeflectionMeasurements WHERE MaterialId=$id;";
+            delete.Parameters.AddWithValue("$id", materialId.Trim());
+            delete.ExecuteNonQuery();
+            transaction.Commit();
+            return;
+        }
+
+        EnsureThermalDeflectionMethodV1(connection, transaction);
+        var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = """
+            INSERT INTO NativeThermalDeflectionMeasurements
+                (MaterialId, ResultTemperatureC, MeasuredDate, TestNotes, MethodVersion,
+                 SourceFileName, SourceSha256, ImportedAtUtc, UpdatedAtUtc)
+            VALUES ($id, $value, $date, $notes, $method, 'Manual entry', $manual, $now, $now)
+            ON CONFLICT(MaterialId) DO UPDATE SET
+                ResultTemperatureC=excluded.ResultTemperatureC,
+                MeasuredDate=excluded.MeasuredDate,
+                TestNotes=excluded.TestNotes,
+                MethodVersion=excluded.MethodVersion,
+                SourceFileName=excluded.SourceFileName,
+                SourceSha256=excluded.SourceSha256,
+                UpdatedAtUtc=excluded.UpdatedAtUtc;
+            """;
+        command.Parameters.AddWithValue("$id", materialId.Trim());
+        command.Parameters.AddWithValue("$value", resultTemperatureC.Value);
+        command.Parameters.AddWithValue("$date", (object?)measuredDate ?? DBNull.Value);
+        command.Parameters.AddWithValue("$notes", string.IsNullOrWhiteSpace(testNotes) ? DBNull.Value : testNotes.Trim());
+        command.Parameters.AddWithValue("$method", ThermalDeflectionMethodContract.Version);
+        command.Parameters.AddWithValue("$manual", ThermalDeflectionMethodContract.SnapshotSha256);
+        command.Parameters.AddWithValue("$now", now);
+        command.ExecuteNonQuery();
+        transaction.Commit();
     }
 
     public ThermalDeflectionImportApplyResult ApplyThermalDeflectionImport(ThermalDeflectionImportPreview preview)
@@ -194,12 +278,25 @@ public sealed partial class LocalDatabase
                 command.ExecuteNonQuery();
             }
             catch (SqliteException) { immutableMethodBlocked = true; }
+            database.SaveManualThermalDeflectionMeasurement(
+                "MAT-THERMAL-2", 60, "2026-08-14", "Manual verification");
+            var manual = database.GetThermalDeflectionMeasurements()
+                .Single(row => row.MaterialId == "MAT-THERMAL-2");
+            database.SaveManualThermalDeflectionMeasurement(
+                "MAT-THERMAL-2", 61, "2026-08-15", "Updated verification");
+            var manualUpdated = database.GetThermalDeflectionMeasurements()
+                .Single(row => row.MaterialId == "MAT-THERMAL-2");
+            database.SaveManualThermalDeflectionMeasurement(
+                "MAT-THERMAL-2", null, null, null);
             return preview.CanApply && preview.SourceRows == 2 && preview.Inserts == 1 &&
                    preview.BlankResults == 1 && applied.Inserted == 1 &&
                    stored.Count == 1 && stored["MAT-THERMAL-1"] == 51 &&
                    repeat.CanApply && repeat.Unchanged == 1 && repeat.Inserts == 0 &&
                    !invalid.CanApply && invalid.Issues.Count == 4 &&
                    invalidApplyBlocked && immutableMethodBlocked &&
+                   manual.ResultTemperatureC == 60 && manual.MeasuredDate == "2026-08-14" &&
+                   manual.MethodVersion == ThermalDeflectionMethodContract.Version &&
+                   manualUpdated.ResultTemperatureC == 61 && manualUpdated.TestNotes == "Updated verification" &&
                    database.GetThermalDeflectionResults().Count == 1;
         }
         catch

@@ -75,6 +75,7 @@ xaml.application-menu.menuitem.navigatereportstab	Application menu	MenuItem	Navi
 xaml.application-menu.menuitem.navigatesettingsmanagertab	Application menu	MenuItem	NavigateSettingsManagerTab	action	v59.0.2	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigatestiffnessmeasurementstab	Application menu	MenuItem	NavigateStiffnessMeasurementsTab	action	v59.0.2	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigatetensilemeasurementstab	Application menu	MenuItem	NavigateTensileMeasurementsTab	action	v59.0.2	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.navigatethermaldeflectionmeasurementstab	Application menu	MenuItem	NavigateThermalDeflectionMeasurementsTab	action	v61.0.2	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigateusagetab	Application menu	MenuItem	NavigateUsageTab	action	v59.0.2	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigatewebsiteexporttab	Application menu	MenuItem	NavigateWebsiteExportTab	action	v59.0.2	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigateyoutuberesearchtab	Application menu	MenuItem	NavigateYouTubeResearchTab	action	v59.0.2	menu-runtime.controls-fields	covered
@@ -242,6 +243,7 @@ xaml.experimental-testing-tensile.datagridtextcolumn.n-9	Experimental Testing > 
 xaml.experimental-testing-tensile.datagridtextcolumn.notes	Experimental Testing > Tensile	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
 xaml.experimental-testing-tensile.datagridtextcolumn.orientation	Experimental Testing > Tensile	DataGridTextColumn	Orientation	read-only-column	v50.4.2	experimental.controls-fields	covered
 xaml.experimental-testing-tensile.datagridtextcolumn.std-dev	Experimental Testing > Tensile	DataGridTextColumn	Std Dev	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.heat-deflection.button.resetfastthermaldeflectioncolumns	Heat Deflection	Button	ResetFastThermalDeflectionColumns	action	v61.0.2	measurements.thermal-deflection	covered
 xaml.impact-measurements.button.resetfastimpactcolumns-click	Impact Measurements	Button	ResetFastImpactColumns_Click	action	v50.4.2	measurements.controls-fields	covered
 xaml.inventory.button.addinventoryspool-click	Inventory	Button	AddInventorySpool_Click	action	v50.4.1	inventory.controls-fields	covered
 xaml.inventory.button.clearinventoryfilters-click	Inventory	Button	ClearInventoryFilters_Click	action	v50.4.1	inventory.controls-fields	covered

@@ -3436,3 +3436,15 @@ Status: PASS; RUNTIME ACCEPTED
 - Owner runtime acceptance: PASS
 - Owner Full Data Verification: PASS 349/349
 - Canonical state: v47.0.2
+# v61.0.2 - Native Heat Deflection Workspace, Help and Persistence
+
+Date: 2026-08-14
+
+- App and AutomationRunner Debug/Release builds pass with zero warnings/errors.
+- Help coverage passes 696/696 across 23 top-level tabs and seven custom grids.
+- Disposable profile `20260814174328-29081146` passes 427/427.
+- Top-level and grouped Navigate traversal each pass 23/23.
+- Deterministic SQLite covers insert, update, date/notes, method binding,
+  explicit blank-clear and final-state recovery.
+- Owner runtime/visual acceptance passes on 2026-08-14, covering entry,
+  invalid-value rejection, restart persistence, clear and Help readability.

@@ -1,10 +1,10 @@
 {
   "Schema": "3dpiceland.help-control-coverage.v1",
-  "Release": "v59.0.11",
+  "Release": "v61.0.2",
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
   "XamlCounts": {
-    "Button": 155,
-    "MenuItem": 58,
+    "Button": 156,
+    "MenuItem": 59,
     "TextBox": 36,
     "PasswordBox": 2,
     "ComboBox": 46,
@@ -15,7 +15,7 @@
     "DataGridColumn": 356
   },
   "SurfaceCounts": {
-    "TopLevelTab": 22,
+    "TopLevelTab": 23,
     "NestedTab": 16
   },
   "CoveredOwnerIncrements": [
@@ -52,7 +52,8 @@
     "v58.0.5",
     "v58.0.6",
     "v59.0.2",
-    "v59.0.10"
+    "v59.0.10",
+    "v61.0.2"
   ],
   "CustomColumnRegistries": [
     {
@@ -89,6 +90,15 @@
       "Columns": 18,
       "OwnerIncrement": "v50.4.2",
       "HelpDestination": "measurements.controls-fields",
+      "Status": "covered"
+    },
+    {
+      "Key": "measurements.fast-thermal-deflection",
+      "Builder": "BuildFastThermalDeflectionColumns",
+      "KeyContract": "PrototypeColumnKey",
+      "Columns": 15,
+      "OwnerIncrement": "v61.0.2",
+      "HelpDestination": "measurements.thermal-deflection",
       "Status": "covered"
     },
     {

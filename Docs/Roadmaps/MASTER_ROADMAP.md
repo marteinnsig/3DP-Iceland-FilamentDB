@@ -6,12 +6,12 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v61.0.2 — Native Heat Deflection Workspace, Help and Persistence**
+Current roadmap increment: **v61.0.3 — Excel Round Trip, Final Automation and Acceptance**
 
 Current acceptance note: v61.0.1 schema/import foundation and corrected
 221-Material preview are owner accepted; Verification passes 426/426.
 
-Next note: implement the v61.0.2 native Heat Deflection workspace, Help, persistence and safe runtime acceptance.
+Next note: implement v61.0.3 governed Excel round trip, final automation and acceptance.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2880,7 +2880,7 @@ blockers may change the order, but must be recorded here before implementation.
   - Owner accepts the corrected read-only preview and v61.0.1 foundation; no thermal measurements are imported in this increment.
   - Completion condition: migration/import gates pass against a disposable profile with exact rejected-row evidence and recovery.
 - **v61.0.2 — Native Heat Deflection Workspace, Help and Persistence**
-  - State: **In progress after accepted v61.0.1.**
+  - State: **Completed and owner accepted 2026-08-14.**
   - Add a `Heat Deflection` tab with the accepted Fast Stiffness-style MaterialID-synchronized list and filtering behavior.
   - Expose one editable result per material: `Deflection temperature °C`; keep material identity and method metadata read-only.
   - Define the result as 3DPIceland fixture-specific, not ASTM D648 or ISO 75 HDT unless the standardized method is followed.
@@ -2893,10 +2893,13 @@ blockers may change the order, but must be recorded here before implementation.
   - Add locale-aware numeric validation, auto-save, explicit clear behavior, measured date/notes and restart persistence.
   - Preserve MaterialID synchronization, archive/delete behavior and existing measurement evidence without altering other tests.
   - Update navigation, stable AutomationIds, Help catalog/coverage and deterministic safe runtime acceptance.
+  - Candidate profile `20260814174328-29081146` passes 427/427, 23/23 tab/menu navigation and exact recovery.
+  - Help coverage passes 696/696 candidates with 23 top-level tabs and seven custom Fast-grid registries.
+  - Owner accepts entry, invalid-value rejection, restart persistence, explicit clear, layout and Help readability.
   - Keep public reports, website publication and Engineering Score integration out of scope pending separate owner approval.
   - Completion condition: owner accepts entry, clearing, restart, filtering and method traceability; required gates pass.
 - **v61.0.3 — Excel Round Trip, Final Automation and Acceptance**
-  - State: Planned after v61.0.2.
+  - State: **In progress after accepted v61.0.2.**
   - Extend governed Excel import/export with the native result, ISO date, notes, method version and explicit unit/provenance fields.
   - Prove existing measurement workbook compatibility and deterministic export/import round trip without identity drift.
   - Complete disposable automation, Full Data Verification, release evidence and owner runtime/readability acceptance.

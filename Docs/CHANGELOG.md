@@ -2,6 +2,21 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v61.0.2 - Native Heat Deflection Workspace, Help and Persistence
+
+- Adds a 23rd top-level `Heat Deflection` workspace and grouped Navigate item.
+- Uses a 15-column Fast grid synchronized to Materials scope, with one editable
+  25-300 °C result, measured date and notes per MaterialID.
+- First result defaults an empty date to today; valid commits auto-save. Blank
+  result explicitly deletes its thermal row, date and notes.
+- Method version is read-only and bound to the immutable fixture-v1 snapshot.
+- Central Help documents the fixture, BlueDOT limitation, non-linear oven ramp
+  and non-ASTM/non-ISO boundary.
+- Profile `20260814174328-29081146` passes 427/427, 23/23 tab/menu navigation
+  and exact business-state recovery. Help coverage passes 696/696.
+- Owner accepts entry, invalid-value rejection, restart persistence, explicit
+  clear, layout and Help readability on 2026-08-14.
+
 ## v61.0.1 - Canonical Thermal Schema and Governed Workbook Import
 
 - Advances the canonical SQLite schema from v40 to v41 with one thermal result

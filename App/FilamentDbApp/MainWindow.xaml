@@ -213,6 +213,9 @@
                     <MenuItem Header="Stiffness Measurements" Tag="StiffnessMeasurementsTab"
                               Click="NavigateWorkspaceTab_Click"
                               AutomationProperties.AutomationId="NavigateStiffnessMeasurementsTab" />
+                    <MenuItem Header="Heat Deflection" Tag="ThermalDeflectionMeasurementsTab"
+                              Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateThermalDeflectionMeasurementsTab" />
                     <MenuItem Header="Experimental Testing" Tag="ExperimentalTestingTab"
                               Click="NavigateWorkspaceTab_Click"
                               AutomationProperties.AutomationId="NavigateExperimentalTestingTab" />
@@ -1543,6 +1546,30 @@
                         <Grid>
                             <ContentControl Name="FastStiffnessViewHost" AutomationProperties.AutomationId="FastStiffnessViewHost" Margin="8"/>
                         </Grid>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Heat Deflection" AutomationProperties.AutomationId="ThermalDeflectionMeasurementsTab">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                        <TextBlock Text="Heat Deflection" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,4"/>
+                        <TextBlock Name="NativeThermalDeflectionHelpText" TextWrapping="Wrap" Foreground="#64748B"
+                                   Text="Record the nearby BlueDOT probe-indicated temperature when the flat 127 × 12.7 × 3.2 mm specimen reaches 2.00 mm mid-span deflection over the 110 mm fixture span under the nominal 54 g M20 nut load. This is a 3DPIceland fixture-specific result, not ASTM D648 or ISO 75 HDT."/>
+                    </StackPanel>
+                    <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="Reset Columns" Click="ResetFastThermalDeflectionColumns_Click"
+                                    AutomationProperties.AutomationId="ResetFastThermalDeflectionColumns" Padding="10,4"/>
+                            <TextBlock Name="NativeThermalDeflectionSummaryText" VerticalAlignment="Center" Foreground="#64748B"
+                                       Text="Heat Deflection results load automatically and save automatically after edits."/>
+                        </DockPanel>
+                    </Border>
+                    <GroupBox Grid.Row="2" Header="Native Heat Deflection Measurements — one governed result per MaterialID">
+                        <ContentControl Name="FastThermalDeflectionViewHost"
+                                        AutomationProperties.AutomationId="FastThermalDeflectionViewHost" Margin="8"/>
                     </GroupBox>
                 </Grid>
             </TabItem>

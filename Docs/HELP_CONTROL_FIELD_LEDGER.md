@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v55.0.6 Operational safety accepted
+Version: v61.0.2 Heat Deflection workspace candidate
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted

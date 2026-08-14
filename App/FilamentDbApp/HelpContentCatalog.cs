@@ -56,7 +56,7 @@ internal static class HelpContentCatalog
             optionally, a matching spool; record fixed grams, minutes and counts. Corrections append reversal/replacement events.
 
             7. Enter native measurements
-            Materials search and filters control which MaterialID rows appear in Tensile, Impact and Stiffness; there is no separate
+            Materials search and filters control which MaterialID rows appear in Tensile, Impact, Stiffness and Heat Deflection; there is no separate
             measurement MaterialID selector. Enter only editable raw inputs. Committing a valid edit recalculates read-only outputs,
             auto-saves SQLite and assigns today as measured date only when the first raw input has no existing date.
 
@@ -1025,6 +1025,20 @@ internal static class HelpContentCatalog
             today only when the date is empty. Invalid values are rejected. Reset Columns changes layout only. Revolutions and Degrees
             form one observation; never edit Deflection or Modulus directly.
             """, "stiffness", "revolutions", "degrees", "deflection", "modulus", "auto-save"),
+        new(
+            "measurements.thermal-deflection", "Testing and engineering", "Heat Deflection reference",
+            "Fixture-specific probe temperature, method traceability, date/notes, clearing and auto-save.",
+            """
+            Materials search/filter owns visible MaterialID rows. Enter one Deflection temperature °C result from 25 through 300,
+            plus optional measured date and Notes. Committing the first result assigns today only when the date is blank and saves
+            immediately to SQLite. Clearing the result explicitly removes that MaterialID's thermal result, date and notes.
+
+            The value is the nearby under-specimen BlueDOT probe-indicated temperature when the flat 127 × 12.7 × 3.2 mm specimen
+            reaches 2.00 mm mid-span deflection over a 110 mm clear span under the centered nominal 54 g M20 nut load. The central
+            bolt adds no specimen load. The oven starts near 25 °C and follows the governed non-linear observed ramp. This is a
+            3DPIceland fixture-specific result, not ASTM D648 or ISO 75 HDT, and it is not internal specimen temperature. Method
+            version is read-only and preserves the immutable v1 snapshot. Reset Columns changes layout only.
+            """, "heat deflection", "temperature", "BlueDOT", "2 mm", "method version", "auto-save", "clear"),
         new(
             "experimental.series", "Experimental testing", "Experimental Series reference",
             "Material-linked definitions, filters, publication readiness and governed lifecycle.",
@@ -2353,6 +2367,7 @@ internal static class HelpContentCatalog
         "Tensile Measurements" => "measurements.tensile",
         "Impact Measurements" => "measurements.impact",
         "Stiffness Measurements" => "measurements.stiffness",
+        "Heat Deflection" => "measurements.thermal-deflection",
         "Experimental Testing" => "experimental.series",
         "Rankings Dashboard" => "analysis.rankings",
         "Category Rankings" => "analysis.category-rankings",
