@@ -170,7 +170,7 @@ Date: 2026-08-02
 Area: Native measurements / fixture-specific heat deflection
 Type: Workflow friction / Data issue
 Severity: Important
-Status: Resolved
+Status: In Progress
 What happened: The owner has built a thermal bend fixture but the application has no dedicated place to record the result for each
 MaterialID. A 127 x 12.7 x 3.2 mm specimen is printed flat and supported on two end pillars with a 110 mm clear span. A 54 g M20 nut
 applies the centered load, and the recorded endpoint is the temperature at which mid-span deflection reaches 2 mm.
@@ -194,6 +194,9 @@ from thermapen.co.uk, FCC ID `2A167 BlueDot`, with no user calibration option. F
 are 50 °C at 1:50, 100 °C at 3:26, 150 °C at 4:35, 200 °C at 6:53 and 250 °C at 10:30. Treat this as a non-linear observed oven
 ramp profile rather than one constant heating rate, and disclose the uncalibrated-probe limitation. Keep the grid to one editable
 temperature result per material; centrally govern and automatically snapshot the method metadata.
+Workbook research on 2026-08-14 finds 221 unique MaterialIDs, 191 numeric results and 30 blanks with no duplicate IDs or formulas.
+The owner confirms `MAT0107 = 21` was an entry error and corrects it to 51 °C; no below-ambient workbook value remains.
+The authoritative staged delivery sequence is recorded under v61 in `Docs/Roadmaps/MASTER_ROADMAP.md`.
 Verification evidence: Not yet implemented. Future acceptance must prove add/edit/clear/restart, invalid/range and locale handling,
 MaterialID identity synchronization, delete/archive behavior, method-snapshot immutability, schema migration, Excel round trip,
 Help/navigation, disposable automation and Full Data Verification with exact business-state recovery. Public reports, website

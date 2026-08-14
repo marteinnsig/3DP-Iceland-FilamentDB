@@ -2,15 +2,15 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v59.0.11 — Public Base-material Printing Guidance**
+Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current canonical application release: **v59.0.11 — Public Base-material Printing Guidance**
+Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v61 — Thermal Deflection Measurement Foundation research**
+Current roadmap increment: **v61.0.1 — Canonical thermal schema and governed workbook import**
 
 Current acceptance note: v60.0.6 parent release and exact installer/portable bytes are owner accepted; Verification passes 425/425.
 
-Next note: v60 Production publication and independent HTTPS verification pass; v61 research is next.
+Next note: v61.0.0 is complete; v61.0.1 schema and preview-first importer implementation is next.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -47,7 +47,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
 | v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Complete — canonical v60.0.6 runtime accepted |
-| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Planned — fixture method and native result workflow |
+| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — research contract mapped |
 
 ## Reconciliation of the older plans
 
@@ -2857,10 +2857,24 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: all recorded v60 increments are owner accepted, all six ledger items have canonical dispositions and the
     parent release passes Debug/Release, applicable security/static gates and Full Data Verification.
 
-## Future — v61 Thermal Deflection Measurement Foundation
+## In Progress — v61 Thermal Deflection Measurement Foundation
 
-- **v61.0.0 — Fixture-specific Heat Deflection Measurement**
-  - State: Planned; begin only after the v60 sequence is complete or formally dispositioned.
+- **v61.0.0 — Thermal Method and Source-data Contract**
+  - State: **Completed and owner accepted 2026-08-14.**
+  - Freeze the fixture-specific method, limitation wording, immutable method-version rule and one-result-per-MaterialID contract.
+  - Assess the owner workbook read-only and record coverage, missing provenance, import boundaries and anomalies.
+  - Preserve source evidence and use a separately verified corrected workbook; neither file is a canonical runtime dependency.
+  - Owner confirms MAT0107 was an entry error and corrects 21 °C to 51 °C; corrected range is 44-171 °C.
+  - Completion condition: research evidence and staged v61 sequence are accepted; ambiguous values remain blocked, not inferred.
+- **v61.0.1 — Canonical Thermal Schema and Governed Workbook Import**
+  - State: Next; implementation not started.
+  - Add canonical SQLite ownership and migration for one result per MaterialID plus immutable method-version snapshots.
+  - Add a preview-first workbook importer with exact MaterialID binding, locale-aware numeric parsing and fail-closed validation.
+  - Keep blank workbook cells non-destructive; do not infer date, notes, trial series, sensor history or uncertainty.
+  - Preserve supported schema discovery, backup/restore, diagnostics and Excel disaster-recovery contracts.
+  - Completion condition: migration/import gates pass against a disposable profile with exact rejected-row evidence and recovery.
+- **v61.0.2 — Native Heat Deflection Workspace, Help and Persistence**
+  - State: Planned after v61.0.1.
   - Add a `Heat Deflection` tab with the accepted Fast Stiffness-style MaterialID-synchronized list and filtering behavior.
   - Expose one editable result per material: `Deflection temperature °C`; keep material identity and method metadata read-only.
   - Define the result as 3DPIceland fixture-specific, not ASTM D648 or ISO 75 HDT unless the standardized method is followed.
@@ -2870,13 +2884,21 @@ blockers may change the order, but must be recorded here before implementation.
   - Snapshot the observed 25 °C-start oven ramp: 50 °C 1:50, 100 °C 3:26, 150 °C 4:35, 200 °C 6:53, 250 °C 10:30.
   - Treat the ramp as non-linear and the result as nearby probe-indicated temperature; disclose the calibration limitation.
   - Use one test and one result per material.
-  - Add canonical SQLite ownership and schema migration with locale-aware numeric validation, auto-save and restart persistence.
-  - Preserve stable MaterialID synchronization, archive/delete behavior and measurement evidence without altering existing tests.
-  - Extend Excel import/export, Help, navigation, deterministic automation and Full Data Verification for the new native dataset.
+  - Add locale-aware numeric validation, auto-save, explicit clear behavior, measured date/notes and restart persistence.
+  - Preserve MaterialID synchronization, archive/delete behavior and existing measurement evidence without altering other tests.
+  - Update navigation, stable AutomationIds, Help catalog/coverage and deterministic safe runtime acceptance.
   - Keep public reports, website publication and Engineering Score integration out of scope pending separate owner approval.
-  - Rollback: remove the additive tab and consumers while preserving supported database discovery/migration for any saved results.
-  - Completion condition: owner accepts entry, clearing, restart, filtering, method traceability and Excel round trip; Debug/Release,
-    Help, schema migration, deterministic disposable acceptance and Full Data Verification pass with exact state recovery.
+  - Completion condition: owner accepts entry, clearing, restart, filtering and method traceability; required gates pass.
+- **v61.0.3 — Excel Round Trip, Final Automation and Acceptance**
+  - State: Planned after v61.0.2.
+  - Extend governed Excel import/export with the native result, ISO date, notes, method version and explicit unit/provenance fields.
+  - Prove existing measurement workbook compatibility and deterministic export/import round trip without identity drift.
+  - Complete disposable automation, Full Data Verification, release evidence and owner runtime/readability acceptance.
+  - Rollback: retire additive UI/import consumers while preserving supported database discovery/migration for saved results.
+  - Completion condition: Debug/Release, Help, schema, workbook, security, deterministic runtime and exact-state gates pass.
+- **v61 parent closure**
+  - State: Planned after v61.0.0 through v61.0.3.
+  - Reconcile feedback, Help, automation, Verification, release evidence and README before exact artifact acceptance.
 
 ### Intentionally unscheduled
 
