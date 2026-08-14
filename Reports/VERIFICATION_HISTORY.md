@@ -1,3 +1,28 @@
+# v61.0.7 - Public Website, Reports and Thermal Radar Accepted
+
+Date: 2026-08-14
+
+- Debug and Release build with zero warnings/errors.
+- Deterministic gates require thermal Website DATA keys, explicit public allowlists,
+  six-axis report radar, BlueDOT/ASTM/ISO wording and missing-value honesty.
+- AutomationRunner Release builds with zero warnings/errors; Help is 699/699.
+- Disposable reports profile `20260814212249-3d13b604` passes Full Verification
+  429/429 and verifies/hashes 2103 report-package artifacts.
+- Database hash is exactly `F9917C12AFA7C4A1F08C43CF0C46DB75EC8EF56558DB0F65875D217526B79CA6`
+  before/after; business-state hash is exactly
+  `91C73F5DE82D4C07C03A03D47D4C31106E0F88DD90D76A45E80380C6C7B5AE0E`.
+- Visual review passes for the MAT0001 six-axis material PDF and PLA comparison
+  HTML/PDF including thermal score, fixture °C, method and limitation columns.
+- Owner accepts website-preview and report-package runtime/visual output on
+  2026-08-14; Verification is PASS.
+- Owner feedback adds deterministic requirements for a raw fixture-temperature
+  chart below Stiffness and a selectable °C material-type averages metric.
+- Material Family Heatmap must include normalized Thermal and retain unavailable
+  cells when a family has no measured thermal score.
+- Isolated Release app/runner builds pass with zero warnings/errors. Smoke profile
+  `20260814215933-a35c7fbb` passes Full Verification 429/429, rendered active-
+  template contracts and exact database/business-state recovery.
+
 # v61.0.6 - AI Assistant Thermal Context Accepted
 
 Date: 2026-08-14

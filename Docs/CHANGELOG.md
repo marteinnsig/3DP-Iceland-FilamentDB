@@ -2,6 +2,20 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v61.0.7 - Public Website, Reports and Thermal Radar Accepted
+
+- Adds nullable fixture °C, normalized score, method version and concise BlueDOT/
+  non-standard limitation fields to canonical Website DATA and public DTO allowlists.
+- Expands website and material-report performance radars to the six accepted axes;
+  legacy Overall remains separate and missing thermal evidence remains unavailable.
+- Adds thermal evidence to material and comparison reports without exposing source
+  files, hashes, internal notes or paths. Production and FTPS remain blocked.
+- Adds a dedicated raw fixture-temperature chart below Stiffness and a selectable
+  °C metric in Selected filament vs material type averages.
+- Adds normalized Thermal to Material Family Heatmap with missing-value honesty.
+- Owner accepts local website/report output and Full Data Verification PASS on
+  2026-08-14. Production and FTPS remain separately guarded.
+
 ## v61.0.6 - AI Assistant Thermal Context and Safety Boundary
 
 - Adds allowlisted raw fixture °C, normalized score, method version and explicit

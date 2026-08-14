@@ -1,5 +1,22 @@
 # Current Build Notes - v60.0.6 Accepted Release
 
+## v61.0.7 public thermal website/report accepted
+
+Website DATA, local site detail/radar and eligible material/comparison report
+models now carry the accepted thermal projection plus BlueDOT/non-standard safety
+wording. Missing stays null/n/a; Overall is unchanged. Debug and Release pass.
+Disposable reports profile `20260814212249-3d13b604` passes 429/429, 2103
+artifact verification and exact state recovery. Representative material and
+comparison HTML/PDF visual review passes.
+The website candidate now also places a raw fixture-temperature bar chart below
+Stiffness and exposes fixture °C in the material-type averages Metric selector.
+Material Family Heatmap now includes normalized Thermal as a separate column.
+Isolated Release and final smoke profile `20260814215933-a35c7fbb` pass 429/429 with
+exact database and business-state hashes before/after.
+Owner accepts the local website/report presentation and Verification PASS on
+2026-08-14. Production and FTPS remain separately guarded.
+No Production or FTPS action has been run.
+
 ## v61.0.6 AI Assistant thermal context accepted
 
 Local briefs, material intelligence, recommendations, collection briefs and

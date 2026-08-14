@@ -1581,6 +1581,12 @@ internal static class HelpContentCatalog
             the canonical portfolio index, manifest and catalog. Main Website DATA is different: Website Export includes every active,
             non-archived MaterialID while the public-report flags govern linked report artifacts.
 
+            Website DATA and eligible material/comparison reports include nullable fixture thermal result °C, normalized score,
+            method version and limitation wording. The six-axis public radar uses Tensile, Impact, Stiffness, Thermal, Layer adhesion
+            and Consistency; legacy Overall remains separate. Thermal wording identifies the nearby BlueDOT probe and states that the
+            non-standard fixture result is not ASTM D648, ISO 75, specimen temperature, certified HDT or a manufacturer limit.
+            Missing thermal evidence remains null/n/a. Source files, hashes, internal notes and paths are not public fields.
+
             Printing Recommendations resolve their shared nozzle, bed, speed, cooling, drying, enclosure and profile-reference
             guidance only through canonical BaseMaterialId. They do not match display text or copy values into Materials. Published
             values are labelled base-material guidance, not manufacturer-, spool-, printer- or nozzle-specific validated settings.
@@ -1672,6 +1678,13 @@ internal static class HelpContentCatalog
             Generate Preview validates the active SQLite template and current canonical data, automatically rebuilds missing or stale
             eligible public reports, and writes index-test.html. It also writes export-manifest.txt and a timestamped ExportLogs entry.
             Main Website DATA includes every active, non-archived MaterialID; public-report checkboxes control linked report artifacts.
+
+            Each DATA row includes nullable fixture thermal °C/score, method version and limitation wording. A dedicated fixture-
+            temperature bar chart appears directly below Stiffness. In Selected filament vs material type averages, choose
+            Fixture thermal temperature, °C from Metric to compare the selected result with matching material-type averages.
+            Material Family Heatmap includes a Thermal column based on normalized thermal score. Verify that measured rows show
+            Thermal in the material detail and six-axis radar while unmeasured rows remain unavailable.
+            Thermal is a nearby BlueDOT probe-indicated fixture result, not ASTM D648, ISO 75 or specimen temperature.
 
             Preview does not replace index.html, use Production paths or perform FTPS. Open index-test.html and inspect navigation,
             material counts, representative cards, report links and browser layout. Engineering Reports is a true `#reports` tab;

@@ -2,6 +2,27 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v61.0.7 - Public Website, Reports and Thermal Radar Accepted
+
+The candidate extends the existing public allowlists with nullable thermal result,
+score, method and limitation fields. A versioned renderer transformation upgrades
+the active SQLite website template to a six-axis radar and raw-result detail while
+leaving the owner template and database unchanged. Material and comparison HTML/
+PDF renderers use the same contract. Production and FTPS are not authorized.
+Debug/Release app and AutomationRunner Release builds pass with zero warnings or
+errors. Disposable reports profile `20260814212249-3d13b604` passes Full
+Verification 429/429, verifies 2103 artifacts and preserves exact database and
+business-state hashes. Local MAT0001 material PDF and PLA comparison HTML/PDF
+visual review passes.
+Owner feedback adds a dedicated raw-temperature bar chart directly below Stiffness
+and makes fixture °C selectable in the material-type averages comparison. The same
+typed thermal payload and missing-value contract own both surfaces.
+Isolated Release app/runner builds pass with zero warnings/errors because the
+owner Release executable remained open. Final smoke profile `20260814215933-a35c7fbb`
+passes 429/429 and exact database/business-state recovery.
+Owner accepts the generated website preview, raw-temperature chart, selectable °C
+comparison, Heatmap Thermal column and Verification PASS on 2026-08-14.
+
 ## v61.0.6 - AI Assistant Thermal Context and Safety Boundary
 
 The candidate adds the canonical thermal projection to deterministic local briefs,

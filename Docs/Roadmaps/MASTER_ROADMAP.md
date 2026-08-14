@@ -6,12 +6,12 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v61.0.7 — Public Website, Reports and Thermal Radar Publication**
+Current roadmap increment: **v61.0.8 — Thermal Foundation Final Automation and Acceptance**
 
-Current acceptance note: v61.0.6 AI thermal context, exact payload privacy boundary and wording are owner accepted;
-Verification passes 429/429.
+Current acceptance note: v61.0.7 website/report thermal fields, six-axis radar, raw-temperature chart,
+comparison metric and Heatmap column are owner accepted; Verification passes 429/429.
 
-Next note: implement local governed website/report thermal fields and six-axis radar; Production/FTPS remain blocked.
+Next note: reconcile final v61 automation, Help, evidence and release gates; Production/FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2945,16 +2945,18 @@ blockers may change the order, but must be recorded here before implementation.
   - Update deterministic fake-provider, payload, parser, evidence and cancellation contracts; keep live network consent unchanged.
   - Completion condition: owner accepts local/live-preview usefulness and exact privacy/methodology boundaries; AI gates pass.
 - **v61.0.7 — Public Website, Reports and Thermal Radar Publication**
-  - State: Current implementation increment; local outputs only until separate guarded public-output approval.
+  - State: Complete and owner runtime/visual accepted on 2026-08-14; Production and FTPS remain blocked.
   - Add governed public thermal fields to the home-page material data, detail presentation, comparisons and relevant report models.
   - Expand the website and public-report radar from five axes to the approved thermal profile with responsive and PDF-safe geometry.
   - Show raw °C, normalized score, method version and concise fixture/BlueDOT/non-standard limitations wherever interpretation occurs.
+  - Add a raw fixture-temperature bar chart below Stiffness and make °C selectable in the material-type averages comparison.
+  - Add normalized Thermal to Material Family Heatmap while preserving unavailable values for families without measurements.
   - Preserve `PublishPublicReports` selection, explicit public allowlists, HTML encoding, locale-invariant SVG and
     missing-value honesty.
   - Update portal/catalog freshness, website staging, HTML/PDF parity and public package Verification; Production remains guarded.
   - Completion condition: owner accepts local website/report HTML, PDFs and radar readability before any FTPS publication.
 - **v61.0.8 — Thermal Foundation Final Automation and Acceptance**
-  - State: Planned after v61.0.3 through v61.0.7.
+  - State: Next authoritative increment after accepted v61.0.3 through v61.0.7.
   - Complete safe disposable automation for import, persistence, analytics, AI, rankings, awards, YouTube and public-output contracts.
   - Reconcile Help, feedback, release evidence, README and all deterministic Full Data Verification gates.
   - Rollback: retire additive UI/analytics/public consumers while retaining supported schema discovery and historical measurements.

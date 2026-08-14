@@ -18,6 +18,10 @@ public sealed class PublicMaterialEngineeringReportModel
     public string StiffnessScore { get; init; } = "n/a";
     public string ConsistencyScore { get; init; } = "n/a";
     public string LayerAdhesionScore { get; init; } = "n/a";
+    public string ThermalScore { get; init; } = "n/a";
+    public double? ThermalResultTemperatureC { get; init; }
+    public string ThermalMethodVersion { get; init; } = string.Empty;
+    public string ThermalLimitation { get; init; } = string.Empty;
     public string BestAxis { get; init; } = string.Empty;
     public string MsrpUsdPerKg { get; init; } = string.Empty;
     public string ManufacturerWebsite { get; init; } = string.Empty;
@@ -51,6 +55,7 @@ public sealed class PublicVerifiedMeasurementsModel
     public PublicMeasurementSetModel ImpactFlat { get; init; } = new();
     public double? StiffnessModulusMpa { get; init; }
     public double? StiffnessDeflectionMm { get; init; }
+    public double? ThermalResultTemperatureC { get; init; }
 }
 
 public sealed class PublicMeasurementSetModel
@@ -67,6 +72,7 @@ public sealed class PublicMeasurementDateProvenanceModel
     public string Tensile { get; init; } = "Not recorded";
     public string Impact { get; init; } = "Not recorded";
     public string Stiffness { get; init; } = "Not recorded";
+    public string Thermal { get; init; } = "Not recorded";
 }
 
 public sealed class PublicMetricPositionModel
@@ -96,6 +102,7 @@ public sealed class PublicEngineeringScoreProfile
     public string StiffnessScore { get; init; } = "n/a";
     public string ConsistencyScore { get; init; } = "n/a";
     public string LayerAdhesionScore { get; init; } = "n/a";
+    public string ThermalScore { get; init; } = "n/a";
 }
 
 public sealed class PublicMaterialPeerModel
@@ -156,6 +163,10 @@ public sealed class PublicComparisonMaterialModel
     public string StiffnessScore { get; init; } = "n/a";
     public string ConsistencyScore { get; init; } = "n/a";
     public string LayerAdhesionScore { get; init; } = "n/a";
+    public string ThermalScore { get; init; } = "n/a";
+    public double? ThermalResultTemperatureC { get; init; }
+    public string ThermalMethodVersion { get; init; } = string.Empty;
+    public string ThermalLimitation { get; init; } = string.Empty;
     public string MsrpUsdPerKg { get; init; } = string.Empty;
 }
 

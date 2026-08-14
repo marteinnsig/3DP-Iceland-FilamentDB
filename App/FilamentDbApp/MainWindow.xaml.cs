@@ -8790,6 +8790,12 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
     private Dictionary<string, object?> BuildWebsiteTemplateCommonFields(NativeMaterialRow row)
     {
         var materialId = row.MaterialID?.Trim() ?? string.Empty;
+        var thermalRow = _nativeThermalDeflectionRows.FirstOrDefault(item =>
+            string.Equals(item.MaterialID, materialId, StringComparison.OrdinalIgnoreCase));
+        var thermalProjection = thermalRow is not null &&
+                                TryParseMeasurement(thermalRow.ResultTemperatureC, out var thermalResult)
+            ? ThermalAnalyticsService.Project(thermalResult)
+            : null;
         var category = row.MaterialCategory?.Trim() ?? string.Empty;
         var baseMaterial = row.BaseMaterial?.Trim() ?? string.Empty;
         var variant = EmptyToNull(row.VariantFinish);
@@ -8838,6 +8844,10 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             ["landedCostUsdPerKg"] = NumberValue(row.LandedCostUsdPerKg),
             ["priceCheckedDate"] = EmptyToNull(row.PriceCheckedDate),
             ["pricingStatus"] = GetPricingStatus(row)
+            , ["thermalResultTemperatureC"] = thermalProjection?.ResultTemperatureC
+            , ["thermalScore"] = thermalProjection?.Score
+            , ["thermalMethodVersion"] = thermalProjection is null ? null : thermalRow?.MethodVersion
+            , ["thermalLimitation"] = thermalProjection is null ? null : ThermalAnalyticsService.PublicLimitation
         };
     }
 
@@ -9254,7 +9264,10 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                             BaseMaterial = item.BaseMaterial, Reinforcement = item.Reinforcement, TestCoverage = item.TestCoverage,
                             VerifiedEngineeringAxes = item.VerifiedEngineeringAxes, OverallScore = item.OverallScore,
                             TensileScore = item.TensileScore, ImpactScore = item.ImpactScore, StiffnessScore = item.StiffnessScore,
-                            ConsistencyScore = item.ConsistencyScore, LayerAdhesionScore = item.LayerAdhesionScore, MsrpUsdPerKg = item.MsrpUsdPerKg
+                            ConsistencyScore = item.ConsistencyScore, LayerAdhesionScore = item.LayerAdhesionScore,
+                            ThermalScore = item.ThermalScore, ThermalResultTemperatureC = item.ThermalResultTemperatureC,
+                            ThermalMethodVersion = item.ThermalMethodVersion, ThermalLimitation = item.ThermalLimitation,
+                            MsrpUsdPerKg = item.MsrpUsdPerKg
                         }).ToList()
                 })
                 .OrderBy(model => model.Title, StringComparer.CurrentCultureIgnoreCase)
@@ -9872,6 +9885,9 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         var verifiedSummaries = GetCanonicalVerifiedSummaryMap();
         var video = BuildVideoPlannerRow(row, verifiedSummaries);
         var ranking = BuildRankingRow(video, "Overall");
+        var thermalMeasurement = _database.GetThermalDeflectionMeasurements()
+            .FirstOrDefault(item => string.Equals(item.MaterialId, video.MaterialId, StringComparison.OrdinalIgnoreCase));
+        var thermalProjection = ThermalAnalyticsService.Project(thermalMeasurement?.ResultTemperatureC);
         var contextRankings = GetCanonicalActiveMaterialRows()
             .Select(source => BuildRankingRow(BuildVideoPlannerRow(source, verifiedSummaries), "Overall"))
             .Where(item => !string.IsNullOrWhiteSpace(item.Label))
@@ -9896,6 +9912,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             ("Stiffness", ranking.StiffnessText, ranking.Stiffness, contextRankings.Select(item => item.Stiffness)),
             ("Consistency", ranking.ConsistencyText, ranking.Consistency, contextRankings.Select(item => item.Consistency)),
             ("Layer adhesion", ranking.LayerAdhesionText, ranking.LayerAdhesion, contextRankings.Select(item => item.LayerAdhesion))
+            , ("Thermal", ranking.ThermalText, ranking.Thermal, contextRankings.Select(item => item.Thermal))
         }.Select(item =>
         {
             var position = BuildMetricRank(item.Item3, item.Item4);
@@ -9903,7 +9920,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         }).ToList();
         var axes = new[]
         {
-            ranking.Tensile, ranking.Impact, ranking.Stiffness, ranking.Consistency, ranking.LayerAdhesion
+            ranking.Tensile, ranking.Impact, ranking.Stiffness, ranking.Consistency, ranking.LayerAdhesion, ranking.Thermal
         }.Count(value => value.HasValue);
 
         return new PublicMaterialEngineeringReportModel
@@ -9924,6 +9941,10 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             StiffnessScore = ranking.StiffnessText,
             ConsistencyScore = ranking.ConsistencyText,
             LayerAdhesionScore = ranking.LayerAdhesionText,
+            ThermalScore = ranking.ThermalText,
+            ThermalResultTemperatureC = thermalProjection?.ResultTemperatureC,
+            ThermalMethodVersion = thermalMeasurement?.MethodVersion ?? string.Empty,
+            ThermalLimitation = thermalProjection is null ? string.Empty : ThermalAnalyticsService.PublicLimitation,
             BestAxis = DisplayText(ranking.BestAxis),
             MsrpUsdPerKg = ranking.PricePerKg?.ToString("0.00", CultureInfo.InvariantCulture) ?? string.Empty,
             ManufacturerWebsite = GetCell(row, "Manufacturer Website", "Website", "Product URL"),
@@ -9982,6 +10003,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         StiffnessScore = row?.StiffnessText ?? "n/a",
         ConsistencyScore = row?.ConsistencyText ?? "n/a",
         LayerAdhesionScore = row?.LayerAdhesionText ?? "n/a"
+        , ThermalScore = row?.ThermalText ?? "n/a"
     };
 
     private static PublicVerifiedMeasurementsModel PublicVerifiedMeasurementsFromSummary(MaterialResults? summary) => new()
@@ -9992,6 +10014,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         ImpactFlat = PublicMeasurementSetFromResult(summary?.Impact?.Flat),
         StiffnessModulusMpa = summary?.Stiffness?.ModulusMpa,
         StiffnessDeflectionMm = summary?.Stiffness?.DeflectionMm
+        , ThermalResultTemperatureC = null
     };
 
     private PublicMeasurementDateProvenanceModel BuildPublicMeasurementDateProvenance(string materialId)
@@ -10006,7 +10029,10 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         {
             Tensile = PublicIsoDate("Tensile"),
             Impact = PublicIsoDate("Impact"),
-            Stiffness = PublicIsoDate("Stiffness")
+            Stiffness = PublicIsoDate("Stiffness"),
+            Thermal = ParseIsoMeasuredDate(_database.GetThermalDeflectionMeasurements()
+                    .FirstOrDefault(item => string.Equals(item.MaterialId, materialId, StringComparison.OrdinalIgnoreCase))?.MeasuredDate ?? "")
+                ?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) ?? "Not recorded"
         };
     }
 
@@ -15982,11 +16008,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             StiffnessScore = "88/100",
             ConsistencyScore = "84/100",
             LayerAdhesionScore = "80/100",
+            ThermalScore = "44/100",
+            ThermalResultTemperatureC = 88.0,
+            ThermalMethodVersion = ThermalDeflectionMethodContract.Version,
+            ThermalLimitation = ThermalAnalyticsService.PublicLimitation,
             BestAxis = "Stiffness",
             MsrpUsdPerKg = "29.95",
             ManufacturerWebsite = "https://example.com/material",
             VideoReviewUrl = "https://www.youtube.com/watch?v=public-probe",
-            VerifiedEngineeringAxes = 5,
+            VerifiedEngineeringAxes = 6,
             EngineeringSummary = "Balanced governed engineering profile with stiffness as the strongest verified axis.",
             ExecutiveReview = "This material is positioned above the current verified dataset midpoint while impact remains the main limitation.",
             BestFeature = "Stiffness",
@@ -16002,6 +16032,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 Tensile = "2026-07-21",
                 Impact = "Not recorded",
                 Stiffness = "2026-07-23"
+                , Thermal = "2026-08-14"
             },
             PeerContext = new[]
             {
@@ -16091,8 +16122,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             ScopeDescription = "Verification preset containing only explicitly allowlisted MaterialIDs.",
             Materials = new[]
             {
-                new PublicComparisonMaterialModel { MaterialId = "MAT-PUBLIC-001", MaterialName = "Public PLA Blue", Manufacturer = "Verification Manufacturer", BaseMaterial = "PLA", TestCoverage = "Complete", VerifiedEngineeringAxes = 5, OverallScore = "82/100", TensileScore = "78/100", ImpactScore = "75/100", StiffnessScore = "88/100", ConsistencyScore = "84/100", LayerAdhesionScore = "80/100", MsrpUsdPerKg = "29.95" },
-                new PublicComparisonMaterialModel { MaterialId = "MAT-PUBLIC-002", MaterialName = "Public PLA Red", Manufacturer = "Verification Manufacturer", BaseMaterial = "PLA", TestCoverage = "Partial", VerifiedEngineeringAxes = 4, OverallScore = "79/100", TensileScore = "80/100", ImpactScore = "72/100", StiffnessScore = "81/100", ConsistencyScore = "78/100", LayerAdhesionScore = "n/a", MsrpUsdPerKg = "27.50" }
+                new PublicComparisonMaterialModel { MaterialId = "MAT-PUBLIC-001", MaterialName = "Public PLA Blue", Manufacturer = "Verification Manufacturer", BaseMaterial = "PLA", TestCoverage = "Complete", VerifiedEngineeringAxes = 6, OverallScore = "82/100", TensileScore = "78/100", ImpactScore = "75/100", StiffnessScore = "88/100", ConsistencyScore = "84/100", LayerAdhesionScore = "80/100", ThermalScore = "44/100", ThermalResultTemperatureC = 88, ThermalMethodVersion = ThermalDeflectionMethodContract.Version, ThermalLimitation = ThermalAnalyticsService.PublicLimitation, MsrpUsdPerKg = "29.95" },
+                new PublicComparisonMaterialModel { MaterialId = "MAT-PUBLIC-002", MaterialName = "Public PLA Red", Manufacturer = "Verification Manufacturer", BaseMaterial = "PLA", TestCoverage = "Partial", VerifiedEngineeringAxes = 4, OverallScore = "79/100", TensileScore = "80/100", ImpactScore = "72/100", StiffnessScore = "81/100", ConsistencyScore = "78/100", LayerAdhesionScore = "n/a", ThermalScore = "n/a", MsrpUsdPerKg = "27.50" }
             }
         };
         var publicComparisonProbe = _publicComparisonReportPublishingService.Build(publicComparisonProbeModel, new DateTime(2026, 7, 22, 12, 0, 0, DateTimeKind.Local), BuildInfo.ShortLabel, BuildInfo.ReleaseTitle);
@@ -17710,7 +17741,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             websitePipeline.Available ? "Selected " + websitePipeline.Radar.SelectedRadarRows + ", material groups " + websitePipeline.Radar.MaterialAverageGroups + ", reinforcement groups " + websitePipeline.Radar.ReinforcementAverageGroups : websitePipeline.ErrorMessage));
         checks.Add(new VerificationCheck("Website HTML renderer", websitePipeline.Available && websitePipeline.HtmlRenderer.Passed,
             websitePipeline.Available ? "WebsiteHtmlRendererService owns template DATA injection and render validation" : websitePipeline.ErrorMessage));
-        checks.Add(new VerificationCheck("Website renderer payload", websitePipeline.Available && websitePipeline.HtmlRenderer.PayloadRowsAligned && websitePipeline.HtmlRenderer.HasMaterialIds && websitePipeline.HtmlRenderer.HasChartMetrics && websitePipeline.HtmlRenderer.HasPricingFields,
+        checks.Add(new VerificationCheck("Website renderer payload", websitePipeline.Available && websitePipeline.HtmlRenderer.PayloadRowsAligned && websitePipeline.HtmlRenderer.HasMaterialIds && websitePipeline.HtmlRenderer.HasChartMetrics && websitePipeline.HtmlRenderer.HasPricingFields && websitePipeline.HtmlRenderer.HasThermalFields,
             websitePipeline.Available ? "Rows aligned, MaterialID present, chart/radar metrics and pricing fields available" : websitePipeline.ErrorMessage));
         checks.Add(new VerificationCheck("Website verification suite", websitePipeline.Available && websitePipeline.Website.Passed,
             websitePipeline.Available ? "WebsiteVerificationService validates HTML, DATA, JSON and publish readiness" : websitePipeline.ErrorMessage));
@@ -20878,9 +20909,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             verification.StiffnessRows = payload.Stiffness.Count;
             verification.Radar = _websiteRadarGeneratorService.VerifyRadarPayload(payload);
             verification.HtmlRenderer = _websiteHtmlRendererService.VerifyMainWebsitePayload(payload);
-            verification.Website = _websiteVerificationService.Verify(payload, verification.Radar, verification.HtmlRenderer, templateHtml, dataJson);
+            var renderedHtml = string.IsNullOrWhiteSpace(templateHtml)
+                ? null
+                : _websiteHtmlRendererService.RenderMainWebsite(templateHtml, dataJson, DateTime.UtcNow, false, "Verification");
+            verification.Website = _websiteVerificationService.Verify(payload, verification.Radar, verification.HtmlRenderer, renderedHtml, dataJson);
             verification.Available = true;
-            verification.Passed = candidates.Count > 0 && summaries.Count == candidates.Count && payload.Tensile.Count == candidates.Count && payload.Impact.Count == candidates.Count && payload.Stiffness.Count == candidates.Count && verification.Radar.Passed && verification.HtmlRenderer.Passed && verification.Website.Passed;
+            verification.Passed = candidates.Count > 0 && summaries.Count == candidates.Count &&
+                                  payload.Tensile.Count == candidates.Count && payload.Impact.Count == candidates.Count &&
+                                  payload.Stiffness.Count == candidates.Count && payload.Thermal.Count == candidates.Count &&
+                                  verification.Radar.Passed && verification.HtmlRenderer.Passed && verification.Website.Passed;
         }
         catch (Exception ex)
         {
@@ -26059,8 +26096,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
 
     private static string BuildAiThermalLimitationText() =>
-        "Nearby probe-indicated fixture temperature; non-standard comparative 3DPIceland method. " +
-        "Not ASTM D648, ISO 75, specimen temperature, certified HDT or a manufacturer limit.";
+        ThermalAnalyticsService.PublicLimitation;
 
     private void AppendAiCollectionThermalContext(List<string> lines, IReadOnlySet<string> materialIds)
     {

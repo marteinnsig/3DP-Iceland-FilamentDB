@@ -84,6 +84,7 @@ public sealed class WebsiteVerificationService
             TensileRows = payload.Tensile.Count,
             ImpactRows = payload.Impact.Count,
             StiffnessRows = payload.Stiffness.Count,
+            ThermalRows = payload.Thermal.Count,
             RadarSelectedRows = radar.SelectedRadarRows,
             RadarMaterialAverageGroups = radar.MaterialAverageGroups,
             RadarReinforcementAverageGroups = radar.ReinforcementAverageGroups,
@@ -92,7 +93,9 @@ public sealed class WebsiteVerificationService
         };
 
         result.HtmlGenerated = !string.IsNullOrWhiteSpace(templateHtml) && !string.IsNullOrWhiteSpace(dataJson);
-        result.DataBlockValid = !string.IsNullOrWhiteSpace(dataJson) && dataJson.Contains("\"tensile\"") && dataJson.Contains("\"impact\"") && dataJson.Contains("\"stiffness\"");
+        result.DataBlockValid = !string.IsNullOrWhiteSpace(dataJson) && dataJson.Contains("\"tensile\"") &&
+                                dataJson.Contains("\"impact\"") && dataJson.Contains("\"stiffness\"") &&
+                                dataJson.Contains("\"thermal\"");
         result.JsonValid = IsValidJson(dataJson);
         result.RequiredCssPresent = ContainsAny(templateHtml, "<style", "stylesheet");
         result.RequiredJavaScriptPresent = ContainsAny(templateHtml, "<script", "const DATA");
@@ -100,6 +103,10 @@ public sealed class WebsiteVerificationService
             "tensileChart",
             "impactChart",
             "stiffnessChart",
+            "thermalChart",
+            "Fixture thermal temperature, °C",
+            "3DP-THERMAL-PUBLIC-v61.0.7-r3",
+            "<th>Stiffness</th><th>Thermal</th><th>Layer adhesion</th>",
             "performanceProfileChart");
         result.MasterTemplateIdentityValid = ContainsAll(templateHtml,
             "3DPIceland Website Pricing & Value Platform v36.0",
@@ -109,12 +116,15 @@ public sealed class WebsiteVerificationService
             "pricePerformanceChart");
         result.MaterialIdIntegrity = payload.Tensile.All(row => HasText(row, "materialId")) &&
                                      payload.Impact.All(row => HasText(row, "materialId")) &&
-                                     payload.Stiffness.All(row => HasText(row, "materialId"));
+                                     payload.Stiffness.All(row => HasText(row, "materialId")) &&
+                                     payload.Thermal.All(row => HasText(row, "materialId"));
         result.NoDuplicateMaterialIds = !HasDuplicates(payload.Tensile, "materialId");
         result.ChartPayloadValid = payload.Tensile.Count > 0 &&
                                    payload.Tensile.Count == payload.Impact.Count &&
                                    payload.Tensile.Count == payload.Stiffness.Count &&
-                                   payload.Tensile.Any(row => HasAnyNumeric(row, "upright", "flat"));
+                                   payload.Tensile.Count == payload.Thermal.Count &&
+                                   payload.Tensile.Any(row => HasAnyNumeric(row, "upright", "flat")) &&
+                                   payload.Thermal.Any(row => HasAnyNumeric(row, "value"));
         result.RadarPayloadValid = radar.Passed && radar.SelectedRadarRows == payload.Tensile.Count;
         result.RendererPayloadValid = renderer.Passed;
         result.PublishReady = result.HtmlGenerated &&
@@ -273,6 +283,7 @@ public sealed class WebsiteVerificationResult
     public int TensileRows { get; set; }
     public int ImpactRows { get; set; }
     public int StiffnessRows { get; set; }
+    public int ThermalRows { get; set; }
     public int RadarSelectedRows { get; set; }
     public int RadarMaterialAverageGroups { get; set; }
     public int RadarReinforcementAverageGroups { get; set; }

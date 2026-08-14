@@ -10,7 +10,11 @@ public sealed class WebsiteRadarGeneratorService
         "baseMaterial",
         "type",
         "reinforcement",
-        "label"
+        "label",
+        "thermalResultTemperatureC",
+        "thermalScore",
+        "thermalMethodVersion",
+        "thermalLimitation"
     };
 
     public WebsiteRadarVerificationResult VerifyRadarPayload(WebsiteChartPayload chartPayload)
@@ -20,18 +24,25 @@ public sealed class WebsiteRadarGeneratorService
         result.TensileRows = chartPayload.Tensile.Count;
         result.ImpactRows = chartPayload.Impact.Count;
         result.StiffnessRows = chartPayload.Stiffness.Count;
+        result.ThermalRows = chartPayload.Thermal.Count;
         result.MaterialIds = CountDistinctMaterialIds(chartPayload.Tensile);
         result.MaterialAverageGroups = CountMaterialAverageGroups(chartPayload.Tensile);
         result.ReinforcementAverageGroups = CountReinforcementAverageGroups(chartPayload.Tensile);
         result.SelectedRadarRows = CountRowsWithRequiredFields(chartPayload.Tensile);
         result.NormalizationInputsAvailable = HasAnyMetric(chartPayload.Tensile, "upright", "flat") ||
                                               HasAnyMetric(chartPayload.Impact, "upright", "flat") ||
-                                              HasAnyMetric(chartPayload.Stiffness, "value");
+                                              HasAnyMetric(chartPayload.Stiffness, "value") ||
+                                              HasAnyMetric(chartPayload.Thermal, "value");
+        result.ThermalContractFieldsPresent = chartPayload.Tensile.All(row =>
+            row.ContainsKey("thermalResultTemperatureC") && row.ContainsKey("thermalScore") &&
+            row.ContainsKey("thermalMethodVersion") && row.ContainsKey("thermalLimitation"));
         result.RendererPayloadValid = result.TensileRows == result.ImpactRows &&
                                       result.TensileRows == result.StiffnessRows &&
+                                      result.TensileRows == result.ThermalRows &&
                                       result.SelectedRadarRows == result.TensileRows &&
                                       result.MaterialIds == result.TensileRows &&
-                                      result.NormalizationInputsAvailable;
+                                      result.NormalizationInputsAvailable &&
+                                      result.ThermalContractFieldsPresent;
         result.Passed = result.RendererPayloadValid &&
                         result.MaterialAverageGroups > 0 &&
                         result.ReinforcementAverageGroups > 0;
@@ -101,10 +112,12 @@ public sealed class WebsiteRadarVerificationResult
     public int TensileRows { get; set; }
     public int ImpactRows { get; set; }
     public int StiffnessRows { get; set; }
+    public int ThermalRows { get; set; }
     public int MaterialIds { get; set; }
     public int SelectedRadarRows { get; set; }
     public int MaterialAverageGroups { get; set; }
     public int ReinforcementAverageGroups { get; set; }
     public bool NormalizationInputsAvailable { get; set; }
     public bool RendererPayloadValid { get; set; }
+    public bool ThermalContractFieldsPresent { get; set; }
 }

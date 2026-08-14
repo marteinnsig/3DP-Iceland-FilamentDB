@@ -11,6 +11,9 @@ public static class ThermalAnalyticsService
     public const string ContractVersion = "3dp-thermal-analytics-fixture-v1";
     public const double ReferenceTemperatureC = 200.0;
     public const int MinimumRankedPeerCount = 2;
+    public const string PublicLimitation =
+        "Nearby BlueDOT probe-indicated fixture temperature from a non-standard comparative 3DPIceland method; " +
+        "not ASTM D648, ISO 75, specimen temperature, certified HDT or a manufacturer limit.";
 
     public static ThermalAnalyticsProjection? Project(double? resultTemperatureC)
     {

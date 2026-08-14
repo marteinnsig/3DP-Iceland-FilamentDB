@@ -22,7 +22,8 @@ public sealed class PublicReportPublishingService
         "MaterialID", "MaterialName", "Manufacturer", "ProductLine", "BaseMaterial",
         "MaterialCategory", "VariantFinish", "Reinforcement", "Color", "TestCoverage",
         "OverallScore", "TensileScore", "ImpactScore", "StiffnessScore", "ConsistencyScore",
-        "LayerAdhesionScore", "BestAxis", "MsrpUsdPerKg", "ManufacturerWebsite",
+        "LayerAdhesionScore", "ThermalScore", "ThermalResultTemperatureC", "ThermalMethodVersion",
+        "ThermalLimitation", "BestAxis", "MsrpUsdPerKg", "ManufacturerWebsite",
         "VideoReviewUrl", "VerifiedEngineeringAxes", "EngineeringSummary", "ExecutiveReview",
         "BestFeature", "WeakestFeature", "OverallRank", "OverallPercentile",
         "RecommendedApplications", "Strengths", "Limitations", "Tradeoffs", "PeerContext",
@@ -84,7 +85,7 @@ public sealed class PublicReportPublishingService
         var expectedPath = $"reports/materials/{SafeMaterialIdSegment(model.MaterialId)}";
         var materialIdPathPassed = string.Equals(publication.RelativeDirectory, expectedPath, StringComparison.Ordinal) &&
                                    publication.Html.Contains(WebUtility.HtmlEncode(model.MaterialId), StringComparison.Ordinal);
-        var publicFieldAllowlistPassed = PublicFieldAllowlist.Count == 42 &&
+        var publicFieldAllowlistPassed = PublicFieldAllowlist.Count == 46 &&
                                          publication.MetadataJson.Contains("publicFieldAllowlist", StringComparison.Ordinal) &&
                                          PublicFieldAllowlist.All(field => publication.MetadataJson.Contains($"\"{field}\"", StringComparison.Ordinal));
         var publicPayload = string.Join("\n", publication.Html, publication.Manifest, publication.MetadataJson, publication.PreviewIndexHtml);
@@ -119,6 +120,8 @@ public sealed class PublicReportPublishingService
                                 publication.Html.Contains("Material and manufacturer context", StringComparison.Ordinal) &&
                                 publication.Html.Contains("Verified measurement results", StringComparison.Ordinal) &&
                                 publication.Html.Contains("Measurement provenance", StringComparison.Ordinal) &&
+                                publication.Html.Contains("Fixture thermal result", StringComparison.Ordinal) &&
+                                publication.Html.Contains("BlueDOT probe-indicated fixture temperature", StringComparison.Ordinal) &&
                                 publication.Html.Contains(H(model.MeasurementDates.Tensile), StringComparison.Ordinal) &&
                                 publication.Html.Contains(H(model.MeasurementDates.Impact), StringComparison.Ordinal) &&
                                 publication.Html.Contains(H(model.MeasurementDates.Stiffness), StringComparison.Ordinal) &&
@@ -128,6 +131,7 @@ public sealed class PublicReportPublishingService
                                  !publication.Html.Contains("Unified HTML report engine", StringComparison.OrdinalIgnoreCase) &&
                                  !publication.Html.Contains("Materials in database", StringComparison.OrdinalIgnoreCase);
         var radarLayoutPassed = publication.Html.Contains("radar-label", StringComparison.Ordinal) &&
+                                publication.Html.Contains(">Thermal</text>", StringComparison.Ordinal) &&
                                 publication.Html.Contains("viewBox=\"-70 0 490 410\"", StringComparison.Ordinal) &&
                                 !Regex.IsMatch(
                                     publication.Html,
@@ -175,7 +179,8 @@ public sealed class PublicReportPublishingService
         {
             ("Overall", model.OverallScore), ("Tensile", model.TensileScore), ("Impact", model.ImpactScore),
             ("Stiffness", model.StiffnessScore), ("Consistency", model.ConsistencyScore),
-            ("Layer adhesion", model.LayerAdhesionScore), ("Best available axis", model.BestAxis)
+            ("Layer adhesion", model.LayerAdhesionScore), ("Thermal", model.ThermalScore),
+            ("Best available axis", model.BestAxis)
         };
         var identityHtml = string.Join("", identityRows.Select(row => $"<tr><th>{H(row.Item1)}</th><td>{Value(row.Item2)}</td></tr>"));
         var scoresHtml = string.Join("", scoreRows.Select(row => $"<tr><th>{H(row.Item1)}</th><td>{Value(row.Item2)}</td></tr>"));
@@ -207,11 +212,12 @@ public sealed class PublicReportPublishingService
                "<style>body{font-family:Segoe UI,Arial,sans-serif;margin:0;background:#f1f5f9;color:#0f172a}.shell{max-width:1040px;margin:30px auto;background:#fff;border:1px solid #cbd5e1;border-radius:18px;padding:30px;box-shadow:0 14px 40px rgba(15,23,42,.08)}header{display:flex;justify-content:space-between;gap:24px;border-bottom:3px solid #0f172a;padding-bottom:18px}.logo{width:180px;height:auto;display:block;margin:0 0 12px auto}h1{margin:0 0 8px}.meta,.muted{color:#64748b;line-height:1.5}.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:#eff6ff;color:#1e40af;font-weight:700}.cards,.review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}.review-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card,.review,.chart{border:1px solid #cbd5e1;border-radius:12px;padding:14px;background:#f8fafc}.label{text-transform:uppercase;font-size:11px;letter-spacing:.06em;color:#64748b}.value{font-size:20px;font-weight:800;margin-top:5px}table{width:100%;border-collapse:collapse;margin:12px 0 24px}th,td{text-align:left;border-bottom:1px solid #e2e8f0;padding:9px}th{color:#334155}.note{border:1px solid #cbd5e1;border-radius:12px;background:#f8fafc;padding:15px;line-height:1.5;margin:18px 0}.bar-row{display:grid;grid-template-columns:140px 1fr 72px;gap:10px;align-items:center;margin:9px 0}.bar-track{height:14px;background:#e2e8f0;border-radius:999px;overflow:hidden}.bar-fill{height:100%;background:#0f172a;border-radius:999px}.bar-value{text-align:right;font-variant-numeric:tabular-nums}.radar-wrap{display:grid;grid-template-columns:minmax(0,520px) 1fr;gap:20px;align-items:center}.radar-svg{width:100%;height:auto}.radar-grid{fill:none;stroke:#cbd5e1;stroke-width:1}.radar-axis{stroke:#cbd5e1;stroke-width:1}.radar-poly-selected{fill:rgba(15,23,42,.20);stroke:#0f172a;stroke-width:3}.radar-poly-material{fill:rgba(37,99,235,.08);stroke:#2563eb;stroke-width:2;stroke-dasharray:7 4}.radar-poly-manufacturer{fill:rgba(14,165,233,.06);stroke:#0ea5e9;stroke-width:2;stroke-dasharray:2 4}.radar-label{font-size:12px;fill:#334155;font-weight:650}.legend-item{display:flex;align-items:center;gap:8px;margin:10px 0}.legend-line{width:32px;height:4px;border-radius:99px}li{margin:7px 0;line-height:1.45}a{color:#1d4ed8;font-weight:650}.links{display:flex;gap:16px;flex-wrap:wrap}.footer{margin-top:28px;padding-top:14px;border-top:1px solid #e2e8f0;color:#64748b;font-size:12px}@media(max-width:700px){.shell{margin:0;border-radius:0;padding:20px}.cards,.review-grid,.radar-wrap{grid-template-columns:1fr}header{display:block}.logo{margin:16px 0 0}.bar-row{grid-template-columns:105px 1fr 64px}}@media print{body{background:#fff}.shell{margin:0;border:0;box-shadow:none;padding:0}.card,.note,.review,.chart{break-inside:avoid}}</style></head><body><main class=\"shell\">" +
                $"<header><div><div class=\"badge\">Public engineering report</div><h1>{H(model.MaterialName)}</h1><div class=\"meta\">Material Engineering Report<br>MaterialID {H(model.MaterialId)}</div></div><div><img class=\"logo\" src=\"assets/3dp-iceland-labs-logo-pdf.jpg\" alt=\"3DPIceland Labs\"><div class=\"meta\">3DPIceland Engineering Platform<br>{H(versionLabel)} - {H(releaseTitle)}<br>Generated {generatedAt:yyyy-MM-dd HH:mm:ss}</div></div></header>" +
                "<div class=\"note\"><strong>Public-data contract:</strong> This static report contains only allowlisted material identity, public links, canonical MSRP and existing Verified Material Summary / governed score outputs. It excludes raw specimen rows and non-public operational data.</div>" +
-               $"<div class=\"cards\"><div class=\"card\"><div class=\"label\">Test coverage</div><div class=\"value\">{Value(model.TestCoverage)}</div></div><div class=\"card\"><div class=\"label\">Engineering axes</div><div class=\"value\">{model.VerifiedEngineeringAxes}/5</div></div><div class=\"card\"><div class=\"label\">Public MSRP</div><div class=\"value\">{msrp}</div></div></div>" +
+               $"<div class=\"cards\"><div class=\"card\"><div class=\"label\">Test coverage</div><div class=\"value\">{Value(model.TestCoverage)}</div></div><div class=\"card\"><div class=\"label\">Engineering axes</div><div class=\"value\">{model.VerifiedEngineeringAxes}/6</div></div><div class=\"card\"><div class=\"label\">Public MSRP</div><div class=\"value\">{msrp}</div></div></div>" +
                "<h2>Material identity</h2><table><tbody>" + identityHtml + "</tbody></table>" +
                "<h2>Governed engineering profile</h2><table><tbody>" + scoresHtml + "</tbody></table>" +
                "<h2>Engineering score profile</h2><div class=\"chart\">" + scoreProfile + "</div>" +
                "<h2>Engineering radar</h2><div class=\"chart radar-wrap\">" + radar + "</div>" +
+               $"<h2>Fixture thermal result</h2><div class=\"note\"><strong>{Number(model.ThermalResultTemperatureC, "°C")}</strong> &middot; score {Value(model.ThermalScore)} &middot; method {Value(model.ThermalMethodVersion)}<br>{Value(model.ThermalLimitation)}</div>" +
                "<h2>Material and manufacturer context</h2><table><thead><tr><th>Metric</th><th>Selected material</th><th>Material average</th><th>Manufacturer average</th></tr></thead><tbody>" + comparisonRows + "</tbody></table>" +
                "<h2>Verified measurement results</h2><p class=\"muted\">Existing Verified Material Summary outputs. The public renderer does not read raw specimen rows or recalculate these values.</p><table><thead><tr><th>Measurement</th><th>Average</th><th>Std. deviation</th><th>CV</th><th>Samples</th><th>Confidence</th></tr></thead><tbody>" + measurementRows + "</tbody></table>" +
                "<h2>Measurement provenance</h2><p class=\"muted\">Canonical per-module measured dates from SQLite, shown in unambiguous ISO format. Missing dates are not inferred.</p><table><thead><tr><th>Module</th><th>Measured date</th></tr></thead><tbody>" + measurementDateRows + "</tbody></table>" +
@@ -223,7 +229,7 @@ public sealed class PublicReportPublishingService
                "<h2>Better alternatives</h2><table><thead><tr><th>MaterialID</th><th>Material</th><th>Manufacturer</th><th>Overall</th><th>Tensile</th><th>Impact</th></tr></thead><tbody>" + alternativeRows + "</tbody></table>" +
                "<h2>Peer context</h2><p class=\"muted\">Highest-scoring same-base-material peers from the current governed dataset. This context is descriptive and is not recalculated by the public renderer.</p><table><thead><tr><th>MaterialID</th><th>Material</th><th>Manufacturer</th><th>Overall</th><th>Tensile</th><th>Impact</th></tr></thead><tbody>" + peerRows + "</tbody></table>" +
                $"<h2>Public links</h2><div class=\"links\">{manufacturerLink}{videoLink}<a href=\"report.pdf\">Download PDF</a></div>" +
-               "<h2>Methodology and limitations</h2><div class=\"note\">Results are comparative 3DPIceland measurements from home-built test equipment. Missing evidence remains n/a. Scores and test results are not recalculated by this publishing layer and do not replace certified manufacturer datasheets or accredited laboratory testing.</div>" +
+               "<h2>Methodology and limitations</h2><div class=\"note\">Results are comparative 3DPIceland measurements from home-built test equipment. Thermal is a nearby BlueDOT probe-indicated fixture temperature, not ASTM D648, ISO 75 or specimen temperature. Missing evidence remains n/a. Scores and test results are not recalculated by this publishing layer and do not replace certified manufacturer datasheets or accredited laboratory testing.</div>" +
                "<ul><li><a href=\"https://iskort.is/3dp/index.html#methodology\">Testing methodology</a></li><li><a href=\"https://iskort.is/3dp/3DPIceland_Labs_Mechanical_Testing_Methodology_v1.0.pdf\">Engineering methodology whitepaper</a></li></ul>" +
                $"<div class=\"footer\">Stable public path: reports/materials/{H(SafeMaterialIdSegment(model.MaterialId))}/ &middot; Canonical HTML: index.html &middot; PDF printed from this HTML.</div>" +
                "</main></body></html>";
@@ -295,7 +301,8 @@ public sealed class PublicReportPublishingService
         var rows = new[]
         {
             ("Overall", model.OverallScore), ("Tensile", model.TensileScore), ("Impact", model.ImpactScore),
-            ("Stiffness", model.StiffnessScore), ("Consistency", model.ConsistencyScore), ("Layer adhesion", model.LayerAdhesionScore)
+            ("Stiffness", model.StiffnessScore), ("Consistency", model.ConsistencyScore),
+            ("Layer adhesion", model.LayerAdhesionScore), ("Thermal", model.ThermalScore)
         };
         return string.Join("", rows.Select(row =>
         {
@@ -313,14 +320,15 @@ public sealed class PublicReportPublishingService
             ("Impact", model.ImpactScore, model.MaterialAverage.ImpactScore, model.ManufacturerAverage.ImpactScore),
             ("Stiffness", model.StiffnessScore, model.MaterialAverage.StiffnessScore, model.ManufacturerAverage.StiffnessScore),
             ("Consistency", model.ConsistencyScore, model.MaterialAverage.ConsistencyScore, model.ManufacturerAverage.ConsistencyScore),
-            ("Layer adhesion", model.LayerAdhesionScore, model.MaterialAverage.LayerAdhesionScore, model.ManufacturerAverage.LayerAdhesionScore)
+            ("Layer adhesion", model.LayerAdhesionScore, model.MaterialAverage.LayerAdhesionScore, model.ManufacturerAverage.LayerAdhesionScore),
+            ("Thermal", model.ThermalScore, model.MaterialAverage.ThermalScore, model.ManufacturerAverage.ThermalScore)
         };
         return string.Join("", rows.Select(row => $"<tr><td>{H(row.Item1)}</td><td>{Value(row.Item2)}</td><td>{Value(row.Item3)}</td><td>{Value(row.Item4)}</td></tr>"));
     }
     private static string RadarHtml(PublicMaterialEngineeringReportModel model)
     {
-        var labels = new[] { "Overall", "Tensile", "Impact", "Stiffness", "Consistency", "Layer adhesion" };
-        var selected = new[] { model.OverallScore, model.TensileScore, model.ImpactScore, model.StiffnessScore, model.ConsistencyScore, model.LayerAdhesionScore };
+        var labels = new[] { "Tensile", "Impact", "Stiffness", "Thermal", "Layer adhesion", "Consistency" };
+        var selected = new[] { model.TensileScore, model.ImpactScore, model.StiffnessScore, model.ThermalScore, model.LayerAdhesionScore, model.ConsistencyScore };
         var material = ProfileScores(model.MaterialAverage);
         var manufacturer = ProfileScores(model.ManufacturerAverage);
         var grid = string.Join("", new[] { 25d, 50d, 75d, 100d }.Select(level => $"<polygon class=\"radar-grid\" points=\"{RadarPoints(Enumerable.Repeat(level, 6))}\"/>"));
@@ -340,7 +348,7 @@ public sealed class PublicReportPublishingService
     }
     private static IEnumerable<double> ProfileScores(PublicEngineeringScoreProfile profile) => new[]
     {
-        profile.OverallScore, profile.TensileScore, profile.ImpactScore, profile.StiffnessScore, profile.ConsistencyScore, profile.LayerAdhesionScore
+        profile.TensileScore, profile.ImpactScore, profile.StiffnessScore, profile.ThermalScore, profile.LayerAdhesionScore, profile.ConsistencyScore
     }.Select(value => ScoreValue(value) ?? 0);
     private static string RadarPoints(IEnumerable<double> values) => string.Join(" ", values.Select((value, index) =>
     {
@@ -370,7 +378,8 @@ public sealed class PublicReportPublishingService
     private static string MeasurementDateRowsHtml(PublicMeasurementDateProvenanceModel dates) =>
         $"<tr><td>Tensile</td><td>{H(dates.Tensile)}</td></tr>" +
         $"<tr><td>Impact</td><td>{H(dates.Impact)}</td></tr>" +
-        $"<tr><td>Stiffness</td><td>{H(dates.Stiffness)}</td></tr>";
+        $"<tr><td>Stiffness</td><td>{H(dates.Stiffness)}</td></tr>" +
+        $"<tr><td>Thermal</td><td>{H(dates.Thermal)}</td></tr>";
     private static string MeasurementRow(string label, PublicMeasurementSetModel result, string unit) =>
         $"<tr><td>{H(label)}</td><td>{Number(result.Average, unit)}</td><td>{Number(result.StandardDeviation, unit)}</td><td>{Percent(result.CoefficientOfVariation)}</td><td>{(result.SampleCount > 0 ? result.SampleCount.ToString(CultureInfo.InvariantCulture) : "&mdash;")}</td><td>{(result.Confidence.HasValue ? H(result.Confidence.Value.ToString(CultureInfo.InvariantCulture) + "/10") : "&mdash;")}</td></tr>";
     private static string Number(double? value, string unit) => value.HasValue && double.IsFinite(value.Value) ? H(value.Value.ToString("0.###", CultureInfo.InvariantCulture) + " " + unit) : "&mdash;";

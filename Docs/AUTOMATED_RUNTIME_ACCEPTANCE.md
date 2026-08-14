@@ -1,5 +1,21 @@
 # Automated Runtime Acceptance
 
+## v61.0.7 - Public Website, Reports and Thermal Radar Accepted
+
+- Existing `reports` scenario owns local website/report generation, HTML/PDF
+  artifacts, Full Verification and exact database recovery.
+- Production, FTPS and live website routes remain blocked; no broader scenario or
+  authorization is added.
+- Profile `20260814212249-3d13b604` passes Full Verification 429/429, 23/23
+  top-level tabs, 23/23 Navigate commands, 16/16 nested tabs and 2103 report
+  artifacts. Database and business-state hashes are exact before/after.
+- Representative material and comparison HTML/PDF visual review passes. Owner
+  accepts the website preview, report package and Verification on 2026-08-14.
+- Full Verification now renders the active SQLite template and requires the
+  thermal chart payload, chart destination, °C Metric option and versioned marker.
+- Final smoke profile `20260814215933-a35c7fbb` passes 429/429, 23/23 top-level tabs,
+  23/23 Navigate commands, 16/16 nested tabs and exact state recovery.
+
 ## v61.0.6 - AI Assistant Thermal Context Accepted
 
 - Existing smoke owns read-only AI navigation and exact payload preview; live

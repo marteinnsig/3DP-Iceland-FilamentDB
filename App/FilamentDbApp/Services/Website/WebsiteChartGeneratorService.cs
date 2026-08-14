@@ -22,6 +22,7 @@ public sealed class WebsiteChartGeneratorService
         var tensileRows = new List<Dictionary<string, object?>>();
         var impactRows = new List<Dictionary<string, object?>>();
         var stiffnessRows = new List<Dictionary<string, object?>>();
+        var thermalRows = new List<Dictionary<string, object?>>();
 
         foreach (var material in materials)
         {
@@ -60,9 +61,29 @@ public sealed class WebsiteChartGeneratorService
             {
                 ["value"] = NumberValue(summary.Stiffness?.ModulusMpa)
             });
+
+            thermalRows.Add(new Dictionary<string, object?>(common)
+            {
+                ["value"] = FiniteCommonNumber(common, "thermalResultTemperatureC")
+            });
         }
 
-        return new WebsiteChartPayload(tensileRows, impactRows, stiffnessRows);
+        return new WebsiteChartPayload(tensileRows, impactRows, stiffnessRows, thermalRows);
+    }
+
+    private static double? FiniteCommonNumber(IReadOnlyDictionary<string, object?> fields, string key)
+    {
+        if (!fields.TryGetValue(key, out var raw) || raw is null) return null;
+        var value = raw switch
+        {
+            double number => number,
+            float number => number,
+            decimal number => (double)number,
+            int number => number,
+            long number => number,
+            _ => double.NaN
+        };
+        return double.IsFinite(value) ? value : null;
     }
 
     private static double? NumberValue(double? value) => value.HasValue && double.IsFinite(value.Value) ? value.Value : null;
@@ -77,4 +98,5 @@ public sealed record WebsiteChartMaterialInput(
 public sealed record WebsiteChartPayload(
     [property: JsonPropertyName("tensile")] IReadOnlyList<Dictionary<string, object?>> Tensile,
     [property: JsonPropertyName("impact")] IReadOnlyList<Dictionary<string, object?>> Impact,
-    [property: JsonPropertyName("stiffness")] IReadOnlyList<Dictionary<string, object?>> Stiffness);
+    [property: JsonPropertyName("stiffness")] IReadOnlyList<Dictionary<string, object?>> Stiffness,
+    [property: JsonPropertyName("thermal")] IReadOnlyList<Dictionary<string, object?>> Thermal);
