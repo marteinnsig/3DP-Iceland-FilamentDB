@@ -6,12 +6,12 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v61.0.3 — Excel Round Trip, Final Automation and Acceptance**
+Current roadmap increment: **v61.0.3 — Governed Thermal Excel Round Trip and Canonical Population**
 
-Current acceptance note: v61.0.1 schema/import foundation and corrected
-221-Material preview are owner accepted; Verification passes 426/426.
+Current acceptance note: v61.0.2 native Heat Deflection workspace, Help and persistence are owner accepted;
+Verification passes 427/427.
 
-Next note: implement v61.0.3 governed Excel round trip, final automation and acceptance.
+Next note: import the accepted thermal workbook through governed preview/apply and prove lossless Excel round trip.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -48,7 +48,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
 | v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Complete — canonical v60.0.6 runtime accepted |
-| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — v61.0.1 candidate gates pass |
+| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — v61.0.2 owner accepted |
 
 ## Reconciliation of the older plans
 
@@ -2898,15 +2898,55 @@ blockers may change the order, but must be recorded here before implementation.
   - Owner accepts entry, invalid-value rejection, restart persistence, explicit clear, layout and Help readability.
   - Keep public reports, website publication and Engineering Score integration out of scope pending separate owner approval.
   - Completion condition: owner accepts entry, clearing, restart, filtering and method traceability; required gates pass.
-- **v61.0.3 — Excel Round Trip, Final Automation and Acceptance**
+- **v61.0.3 — Governed Thermal Excel Round Trip and Canonical Population**
   - State: **In progress after accepted v61.0.2.**
-  - Extend governed Excel import/export with the native result, ISO date, notes, method version and explicit unit/provenance fields.
-  - Prove existing measurement workbook compatibility and deterministic export/import round trip without identity drift.
-  - Complete disposable automation, Full Data Verification, release evidence and owner runtime/readability acceptance.
-  - Rollback: retire additive UI/import consumers while preserving supported database discovery/migration for saved results.
-  - Completion condition: Debug/Release, Help, schema, workbook, security, deterministic runtime and exact-state gates pass.
+  - Import the owner-accepted corrected workbook only through preview/apply with 221 exact IDs, 191 results and 30 preserved blanks.
+  - Extend governed Excel import/export with result °C, ISO date, notes, method version and explicit source/provenance fields.
+  - Preserve non-destructive blanks and reject identity, range, duplicate, method or source-hash drift before any transaction applies.
+  - Prove deterministic export/import round trip, existing workbook compatibility, restart persistence and exact recovery.
+  - Completion condition: owner accepts exact preview and populated native rows; workbook, schema, Help and runtime gates pass.
+- **v61.0.4 — Thermal Analytics and Engineering-score Contract**
+  - State: Planned after v61.0.3; scoring design requires owner approval before implementation.
+  - Define how raw fixture-specific °C becomes a comparable 0-100 thermal axis without presenting it as standardized HDT.
+  - Research global versus material-family normalization, bounds, outlier handling, ties, missing values and minimum peer coverage.
+  - Decide explicitly whether Thermal Deflection changes Overall/Rank Score or remains an independent ranked axis.
+  - Version the scoring/profile contract so saved historical outputs are never silently reinterpreted after formula changes.
+  - Add one canonical thermal analytics projection consumed by every downstream surface; prohibit duplicate local formulas.
+  - Completion condition: owner accepts the normalization, weighting, missing-data and backwards-compatibility contract.
+- **v61.0.5 — App-wide Thermal Decision Surfaces and Radars**
+  - State: Planned after v61.0.4.
+  - Add raw °C, normalized thermal score, coverage and rank/percentile context to Material Detail Mechanical and Analytics views.
+  - Expand the Material Detail radar and legends to the approved thermal axis while preserving readable labels at all window sizes.
+  - Integrate the same canonical axis into Rankings Dashboard, Category Rankings, Awards & Winners and Dashboard Insights.
+  - Integrate thermal strengths, limitations, comparisons, content gaps and candidate context into YouTube Research.
+  - Audit every analytics/report/export consumer so no eligible in-app surface silently remains on the prior five-axis profile.
+  - Preserve the accepted Rankings `Top 25` and Category Rankings `10` scope/default contracts while extending their metrics.
+  - Completion condition: calculations have parity across all named surfaces and owner accepts ranking, awards and radar behavior.
+- **v61.0.6 — AI Assistant Thermal Context and Safety Boundary**
+  - State: Planned after v61.0.5.
+  - Add allowlisted thermal result, score, method version and limitation wording to local AI summaries and exact payload preview.
+  - Extend briefs, comparisons, collections, recommendations and coverage diagnostics without exposing internal source paths/hashes.
+  - Require AI wording to distinguish nearby probe-indicated fixture temperature from ASTM D648, ISO 75 and specimen temperature.
+  - Update deterministic fake-provider, payload, parser, evidence and cancellation contracts; keep live network consent unchanged.
+  - Completion condition: owner accepts local/live-preview usefulness and exact privacy/methodology boundaries; AI gates pass.
+- **v61.0.7 — Public Website, Reports and Thermal Radar Publication**
+  - State: Planned after v61.0.6 and requires separate guarded public-output approval.
+  - Add governed public thermal fields to the home-page material data, detail presentation, comparisons and relevant report models.
+  - Expand the website and public-report radar from five axes to the approved thermal profile with responsive and PDF-safe geometry.
+  - Show raw °C, normalized score, method version and concise fixture/BlueDOT/non-standard limitations wherever interpretation occurs.
+  - Preserve `PublishPublicReports` selection, explicit public allowlists, HTML encoding, locale-invariant SVG and
+    missing-value honesty.
+  - Update portal/catalog freshness, website staging, HTML/PDF parity and public package Verification; Production remains guarded.
+  - Completion condition: owner accepts local website/report HTML, PDFs and radar readability before any FTPS publication.
+- **v61.0.8 — Thermal Foundation Final Automation and Acceptance**
+  - State: Planned after v61.0.3 through v61.0.7.
+  - Complete safe disposable automation for import, persistence, analytics, AI, rankings, awards, YouTube and public-output contracts.
+  - Reconcile Help, feedback, release evidence, README and all deterministic Full Data Verification gates.
+  - Rollback: retire additive UI/analytics/public consumers while retaining supported schema discovery and historical measurements.
+  - Completion condition: all v61 increments are owner accepted and Debug/Release, security, Help, workbook, runtime and exact-state
+    gates pass; public publication remains separately guarded until exact artifacts receive approval.
 - **v61 parent closure**
-  - State: Planned after v61.0.0 through v61.0.3.
+  - State: Planned after v61.0.0 through v61.0.8.
   - Reconcile feedback, Help, automation, Verification, release evidence and README before exact artifact acceptance.
 
 ### Intentionally unscheduled
