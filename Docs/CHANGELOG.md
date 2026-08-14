@@ -2,6 +2,28 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v60.0.4 - Manufacturer Report Table Containment
+
+- Contains the complete 17-column public Manufacturer Report product table in
+  a responsive horizontal region instead of allowing it to escape the report.
+- Makes the region keyboard-focusable, adds a visible focus indicator and
+  preserves every existing column, cell, public link and allowlisted value.
+- Allows natural wrapping in descriptive columns while keeping compact score
+  and price columns stable across desktop and narrow HTML.
+- Preserves a separate print/PDF layout that removes the screen wrapper,
+  restores full-page width and wraps every column without dropping content.
+- Extends deterministic public-report verification for the wrapper,
+  accessibility label, screen minimum width and print override.
+- Help is unchanged because no application control, label, navigation path or
+  user decision changed. Visual HTML/PDF acceptance remains owner-manual.
+- Debug/Release app and AutomationRunner builds, Help/docs gates and disposable
+  reports profile `20260814134142-7857ce51` pass. Full Data Verification is
+  424/424; 627 artifacts and exact logical/business-state recovery pass.
+- The four-page Prusa3D PDF retains all 17 columns and links without clipping
+  or overlap. The owner accepts contained HTML with horizontal access to the
+  rightmost columns, PDF presentation and Verification PASS. v60.0.4 is complete.
+- Production and FTPS remain unchanged.
+
 ## v60.0.3 - Material Identity Refresh Across Measurement Views
 
 - Routes every Materials identity synchronization through one ordered

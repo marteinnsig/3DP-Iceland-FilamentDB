@@ -2,6 +2,34 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v60.0.4 - Manufacturer Report Table Containment
+
+The public Manufacturer Report now wraps only its complete product-level
+engineering table in a keyboard-focusable horizontal screen region. A visible
+focus outline and narrow-screen page containment keep the report surface
+usable, while descriptive identity, coverage, axis and link columns wrap
+naturally inside a stable 1680-pixel table canvas.
+
+The canonical HTML-to-PDF path remains separate. Print removes the screen
+border and overflow behavior, resets the table minimum width, uses the full
+page and wraps all 17 columns at the existing compact 8-pixel font size. No
+model, allowlist, cell, link, score, public route or publication scope changed.
+
+Public manufacturer verification now requires the accessible region, screen
+minimum width and print override. Help does not change because no application
+surface or user decision changed; HTML and PDF usability remain manual visual
+acceptance. Debug/Release app and AutomationRunner builds plus Help/docs gates
+pass with zero warnings/errors. Disposable reports profile
+`20260814134142-7857ce51` passes Full Data Verification 424/424, hashes 627
+report artifacts and restores exact logical/business state.
+
+The representative four-page Prusa3D PDF contains 11 product rows. Visual
+inspection confirms all 17 columns, cells and Product/Video links remain inside
+the A4 landscape surface without clipping or overlap across the page break.
+The owner accepts the contained HTML table, horizontal access to every rightmost
+column, PDF presentation and Full Data Verification PASS. v60.0.4 is complete.
+Production and FTPS remain blocked and untouched.
+
 ## v60.0.3 - Material Identity Refresh Across Measurement Views
 
 Materials identity propagation is now one coherent MaterialID-based operation.

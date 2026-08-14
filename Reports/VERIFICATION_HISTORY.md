@@ -1,3 +1,21 @@
+# v60.0.4 - Manufacturer Report Table Containment
+
+Date: 2026-08-14
+
+- Debug/Release app and AutomationRunner builds pass with zero warnings/errors.
+- Help coverage and release-documentation audits pass; roadmap lines remain at
+  or below 136 characters.
+- Disposable reports profile `20260814134142-7857ce51` passes Full Data
+  Verification 424/424, verifies/hashes 627 artifacts and preserves exact
+  logical and business-state hashes.
+- Public Manufacturer Report verification requires the keyboard-focusable
+  screen region, accessibility label, 1680-pixel screen table and print reset.
+- A rendered four-page Prusa3D PDF preserves all 17 columns, 11 product rows
+  and Product/Video links without clipping or overlap.
+- Owner accepts contained HTML with horizontal access to the rightmost columns,
+  the unclipped PDF presentation and Full Data Verification PASS.
+- Production and FTPS remain blocked and untouched. v60.0.4 is complete.
+
 # v59.0.11 - Public Base-material Printing Guidance
 
 Date: 2026-07-29

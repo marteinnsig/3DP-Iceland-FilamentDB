@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v59.0.11 — Public Base-material Printing Gui
 
 Current canonical application release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Current roadmap increment: **v60.0.4 — Manufacturer Report Table Containment (Planned)**
+Current roadmap increment: **v60.0.5 — Engineering Reports Main-site Navigation (Research next)**
 
-Current acceptance note: v60.0.3 is owner accepted; Full Data Verification passes 423/423.
+Current acceptance note: v60.0.4 is owner accepted; Full Data Verification passes 424/424.
 
-Next note: v60.0.3 is complete; v60.0.4 is next. Production and FTPS remain unchanged.
+Next note: v60.0.4 is complete; v60.0.5 research is next. Production and FTPS remain unchanged.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2722,7 +2722,7 @@ to unstarted authoritative planning slots.
     - Owner acceptance: cancel, selected cleanup, linked Material deletion and Full Verification pass.
     - Completion condition met: selected scope, backup, cancel safety, link release and Verification all pass.
 
-### Current - v59.0.11 Public Base-material Printing Guidance
+### Complete - v59.0.11 Public Base-material Printing Guidance
 
 - **v59.0.11 — Public Base-material Printing Guidance**
   - State: Complete, canonical and owner runtime/visual accepted on 2026-07-29.
@@ -2785,14 +2785,21 @@ blockers may change the order, but must be recorded here before implementation.
   - Correction evidence: smoke `20260730162359-1eaaead1` passes 423/423 with exact state recovery.
   - Completion condition met: owner accepts Black/Yellow/Black, close without warning, restart persistence and Verification PASS.
 - **v60.0.4 — Manufacturer Report Table Containment**
-  - State: Planned; bounded public report-layout correction.
+  - State: Complete and owner runtime/visual accepted; Full Data Verification passes 424/424.
+  - Purpose: contain the complete product-level table on desktop and narrow screens while preserving readable access to every cell.
+  - Canonical source: the existing typed public manufacturer model, allowlist and canonical HTML-to-PDF renderer remain unchanged.
+  - Non-goals: no public-data, route, publication, report-navigation, measurement, scoring or shared-theme expansion.
   - Add responsive, keyboard-accessible screen containment for the complete product-level engineering table.
   - Preserve every column, cell and link plus the separate compact print/PDF contract; do not change public data or allowlists.
   - Keep visual HTML/PDF usability acceptance manual; deterministic checks should cover structure, escaping and retained content.
+  - Rollback: remove the additive screen wrapper/styles and their Verification assertions; generated data and PDF ownership remain.
   - Completion condition: representative short/long data is readable and contained in desktop and narrow HTML, and the visually
     inspected PDF has no clipping, overlap, missing column or forced unreadable compression.
+  - Evidence: disposable reports profile `20260814134142-7857ce51` verifies/hashes 627 artifacts with exact state recovery.
+  - Owner acceptance: contained HTML table, horizontal access to rightmost columns, PDF presentation and Verification PASS.
+  - Completion condition met: desktop containment, complete horizontal access and unclipped PDF presentation are accepted.
 - **v60.0.5 — Engineering Reports Main-site Navigation**
-  - State: Planned; research and owner design approval precede implementation.
+  - State: Current research next; owner design approval must precede implementation.
   - Map the report portal renderer, stable/deep routes, browser history, back navigation, mobile behavior and shared-shell options.
   - Integrate an approved in-page tab or shared-shell experience without duplicating rendering or weakening publication controls.
   - Preserve accessibility, responsive behavior, public allowlists and Preview/Production parity; Production and FTPS stay blocked.

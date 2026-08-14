@@ -345,7 +345,7 @@ Date: 2026-07-29
 Area: Public Manufacturer Report / product-level engineering table
 Type: Bug / UI polish
 Severity: Important
-Status: Open
+Status: Solved
 What happened: The wide `Product-level engineering context` table extends beyond the right edge of the report frame. Its final
 columns and row content render outside the governed page surface instead of remaining contained and readable.
 Expected behavior: Keep the complete table inside the visual report contract through a responsive wrapper, readable column sizing,
@@ -358,8 +358,11 @@ Screenshot / export / report attached:
 Resolution: Scheduled as v60.0.4. Initial source review finds that the 17-column table is emitted directly inside `main` without a
 screen overflow wrapper; the existing compact wrapping rule applies only to print media. Research the smallest shared HTML/CSS
 correction before implementation and visually inspect representative short/long manufacturer and material names.
-Verification evidence: Not yet implemented. Future acceptance must cover desktop and narrow HTML containment, keyboard-accessible
-horizontal scrolling where used, natural wrapping, unchanged cells/links and a visually inspected unclipped PDF.
+Verification evidence: v60.0.4 candidate adds a keyboard-focusable responsive screen wrapper, visible focus, natural wrapping and
+a separate compact print override without changing cells, links or allowlists. Debug/Release pass with zero warnings/errors.
+Disposable reports profile `20260814134142-7857ce51` passes Full Data Verification 424/424, 627 artifact checks and exact recovery.
+The four-page Prusa3D PDF retains all 17 columns/links without clipping or overlap. Owner accepted the contained HTML table,
+horizontal access to the rightmost columns, Verification PASS and the unclipped PDF. Solved in version v60.0.4 — 2026-08-14.
 
 Date: 2026-07-29
 Area: Public Printing Guidance / Base Material Catalog settings

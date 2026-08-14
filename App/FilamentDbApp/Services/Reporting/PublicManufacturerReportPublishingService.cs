@@ -25,7 +25,7 @@ public sealed class PublicManufacturerReportPublishingService
     {
         var payload = string.Join("\n", result.Html, result.Manifest, result.MetadataJson);
         var ids = model.Materials.Select(x => x.MaterialId).ToList();
-        var passed = result.RelativeDirectory == $"reports/manufacturers/{PublicComparisonReportPublishingService.SafeSlug(model.ManufacturerSlug)}" && ids.Count > 0 && ids.Distinct(StringComparer.OrdinalIgnoreCase).Count() == ids.Count && PublicFieldAllowlist.All(x => result.MetadataJson.Contains($"\"{x}\"", StringComparison.Ordinal)) && Forbidden.All(x => !payload.Contains(x, StringComparison.OrdinalIgnoreCase)) && !Regex.IsMatch(payload, @"(?<![A-Za-z0-9])[A-Za-z]:[\\/]") && result.Html.Contains("Manufacturer overview and public global position", StringComparison.Ordinal) && result.Html.Contains("Category position by base material", StringComparison.Ordinal) && result.Html.Contains("Overall leaders", StringComparison.Ordinal) && result.Html.Contains("Consistency leaders", StringComparison.Ordinal) && result.Html.Contains("Layer adhesion", StringComparison.Ordinal) && result.Html.Contains("Engineering methodology whitepaper", StringComparison.Ordinal) && result.Html.Contains("assets/3dp-iceland-labs-logo-pdf.jpg", StringComparison.Ordinal);
+        var passed = result.RelativeDirectory == $"reports/manufacturers/{PublicComparisonReportPublishingService.SafeSlug(model.ManufacturerSlug)}" && ids.Count > 0 && ids.Distinct(StringComparer.OrdinalIgnoreCase).Count() == ids.Count && PublicFieldAllowlist.All(x => result.MetadataJson.Contains($"\"{x}\"", StringComparison.Ordinal)) && Forbidden.All(x => !payload.Contains(x, StringComparison.OrdinalIgnoreCase)) && !Regex.IsMatch(payload, @"(?<![A-Za-z0-9])[A-Za-z]:[\\/]") && result.Html.Contains("Manufacturer overview and public global position", StringComparison.Ordinal) && result.Html.Contains("Category position by base material", StringComparison.Ordinal) && result.Html.Contains("Overall leaders", StringComparison.Ordinal) && result.Html.Contains("Consistency leaders", StringComparison.Ordinal) && result.Html.Contains("Layer adhesion", StringComparison.Ordinal) && result.Html.Contains("Engineering methodology whitepaper", StringComparison.Ordinal) && result.Html.Contains("assets/3dp-iceland-labs-logo-pdf.jpg", StringComparison.Ordinal) && result.Html.Contains("class=\"product-table-wrap\" tabindex=\"0\"", StringComparison.Ordinal) && result.Html.Contains("aria-label=\"Scrollable product-level engineering table\"", StringComparison.Ordinal) && result.Html.Contains(".product-table{min-width:1680px", StringComparison.Ordinal) && result.Html.Contains(".product-table-wrap{overflow:visible", StringComparison.Ordinal);
         return new PublicComparisonVerificationResult { Passed = passed, Detail = passed ? $"Allowlisted manufacturer report ready at {result.RelativeDirectory}" : "Public manufacturer route, membership, allowlist, exclusion or content verification failed" };
     }
 
@@ -33,7 +33,21 @@ public sealed class PublicManufacturerReportPublishingService
 
     private static string Html(PublicManufacturerReportModel m, DateTime at, string version, string release, string directory)
     {
-        return PublicReportScreenThemeService.Apply(ApplyCanonicalPrintLayout(HtmlCore(m, at, version, release, directory)));
+        return PublicReportScreenThemeService.Apply(
+            ApplyCanonicalPrintLayout(ApplyScreenTableContainment(HtmlCore(m, at, version, release, directory))));
+    }
+
+    private static string ApplyScreenTableContainment(string html)
+    {
+        const string screenCss = ".product-table-wrap{max-width:100%;overflow-x:auto;margin:12px 0 24px;border:1px solid #cbd5e1;border-radius:12px;scrollbar-width:thin}.product-table-wrap:focus{outline:3px solid #2563eb;outline-offset:3px}.product-table{min-width:1680px;margin:0;table-layout:fixed}.product-table th,.product-table td{white-space:nowrap}.product-table th:nth-child(2),.product-table td:nth-child(2),.product-table th:nth-child(3),.product-table td:nth-child(3),.product-table th:nth-child(4),.product-table td:nth-child(4),.product-table th:nth-child(5),.product-table td:nth-child(5),.product-table th:nth-child(6),.product-table td:nth-child(6),.product-table th:nth-child(7),.product-table td:nth-child(7),.product-table th:nth-child(14),.product-table td:nth-child(14),.product-table th:nth-child(16),.product-table td:nth-child(16),.product-table th:nth-child(17),.product-table td:nth-child(17){white-space:normal;overflow-wrap:anywhere}@media(max-width:800px){main{margin:0;padding:18px;border-radius:0}}";
+        const string tableStart = "<h2>Product-level engineering context</h2><table>";
+        const string wrappedTableStart = "<h2>Product-level engineering context</h2><div class=\"product-table-wrap\" tabindex=\"0\" role=\"region\" aria-label=\"Scrollable product-level engineering table\"><table class=\"product-table\">";
+        const string tableEnd = "</tbody></table><div class=\"note\">Results are comparative";
+        const string wrappedTableEnd = "</tbody></table></div><div class=\"note\">Results are comparative";
+
+        return html.Replace("</style>", screenCss + "</style>", StringComparison.Ordinal)
+            .Replace(tableStart, wrappedTableStart, StringComparison.Ordinal)
+            .Replace(tableEnd, wrappedTableEnd, StringComparison.Ordinal);
     }
 
     private static string HtmlCore(PublicManufacturerReportModel m, DateTime at, string version, string release, string directory)
@@ -45,7 +59,7 @@ public sealed class PublicManufacturerReportPublishingService
     }
     private static string ApplyCanonicalPrintLayout(string html)
     {
-        const string printCss = "@media print{body{background:#fff}main{max-width:none;margin:0;padding:0}header{grid-template-columns:repeat(2,minmax(0,1fr))!important}.cards{grid-template-columns:repeat(4,1fr)!important}.charts{grid-template-columns:repeat(2,minmax(0,1fr))!important}.chart{break-inside:avoid}table{font-size:8px;table-layout:auto}th,td{padding:4px;white-space:normal;overflow-wrap:anywhere}}/* 3DP-PUBLIC-PRINT-LAYOUT-v42.8.3 */";
+        const string printCss = "@media print{body{background:#fff}main{max-width:none;margin:0;padding:0}header{grid-template-columns:repeat(2,minmax(0,1fr))!important}.cards{grid-template-columns:repeat(4,1fr)!important}.charts{grid-template-columns:repeat(2,minmax(0,1fr))!important}.chart{break-inside:avoid}.product-table-wrap{overflow:visible;border:0;border-radius:0;margin:12px 0 24px}.product-table{width:100%;min-width:0;font-size:8px;table-layout:auto}.product-table th,.product-table td{padding:4px;white-space:normal;overflow-wrap:anywhere}}/* 3DP-PUBLIC-PRINT-LAYOUT-v42.8.3; manufacturer containment v60.0.4 */";
         return html.Replace("</style>", printCss + "</style>", StringComparison.Ordinal);
     }
     private static string Chart(string title, IEnumerable<PublicManufacturerMaterialModel> rows, Func<PublicManufacturerMaterialModel,string> pick) { var items=rows.Select(x=>(x.MaterialName,N:Number(pick(x)))).Where(x=>x.N.HasValue).Select(x=>(x.MaterialName,N:x.N!.Value)).OrderByDescending(x=>x.N).Take(10).ToList(); if(items.Count==0)return $"<section class=\"chart\"><h3>{H(title)}</h3><p>n/a</p></section>"; var max=Math.Max(1,items.Max(x=>x.N)); return $"<section class=\"chart\"><h3>{H(title)}</h3>{string.Join("",items.Select(x=>$"<div class=\"bar\"><div>{H(x.MaterialName)}</div><div class=\"track\"><div class=\"fill\" style=\"width:{(x.N/max*100).ToString("0.#",CultureInfo.InvariantCulture)}%\"></div></div><div>{x.N.ToString("0.#",CultureInfo.CurrentCulture)}/100</div></div>"))}</section>"; }
