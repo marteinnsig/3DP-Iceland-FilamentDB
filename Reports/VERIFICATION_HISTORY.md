@@ -1,3 +1,19 @@
+# v61.0.1 - Canonical Thermal Schema and Governed Workbook Import
+
+Date: 2026-08-14
+
+- Schema v41 adds immutable fixture-method and MaterialID result ownership.
+- Deterministic contract covers preview/apply/idempotence, preserved blanks,
+  rejected duplicate/unknown/non-numeric/out-of-range rows and method immutability.
+- App, AutomationRunner and verifier Debug/Release builds pass with zero warnings/errors.
+- Schema-v40 migration profile `20260814165236-dfcee36b` passes 426/426 and exact business-state recovery.
+- Final 221-Material schema-v41 seed profile `20260814171134-29850755` repeats 426/426 and exact business-state recovery.
+- Canonical seed SHA-256: `08775AFE6CDFC2DFF156D82FE082E3B388E2D589F881060C951C1763C1356A1E`.
+- Preserved schema-v40 fixture SHA-256: `A0C1E72984ED747C8205D8C847C1620C5C22AC6C587C86FDC7A1B6998A600870`.
+- Corrected workbook preview resolves all 221 IDs: 191 inserts, 30 blanks, zero issues and apply permitted; no data was written.
+- Owner accepts the corrected preview and v61.0.1 foundation on 2026-08-14.
+- Owner database, Production, FTPS, public outputs and scores remain unchanged.
+
 # v60 Parent Closure - Bug Fixes and Workflow Reliability
 
 Date: 2026-08-14

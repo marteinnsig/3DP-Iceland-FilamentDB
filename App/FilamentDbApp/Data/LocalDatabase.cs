@@ -26,9 +26,9 @@ public sealed partial class LocalDatabase
     private bool _requiredCanonicalMigrationBackupCreated;
     private static readonly string[] ExcelRecoveryTableInsertOrder =
     {
-        "Manufacturers", "BaseMaterialCatalog", "NativeMaterialManagerRows", "NativeSettingsRows", "DeploymentSettings", "WebsiteTemplates", "VideoIdeaQueue", "Suppliers",
+        "Manufacturers", "BaseMaterialCatalog", "NativeMaterialManagerRows", "ThermalDeflectionMethods", "NativeSettingsRows", "DeploymentSettings", "WebsiteTemplates", "VideoIdeaQueue", "Suppliers",
         "PurchaseOrders", "PurchaseOrderLines", "InventorySpoolItems", "PurchaseDocuments", "ExperimentDefinitions", "MaterialExperiments", "ExperimentalRuns", "ExperimentalMeasurements",
-        "NativeTensileSamples", "NativeTensileResults", "NativeImpactSamples", "NativeStiffnessMeasurements", "NativeMeasurementNotes",
+        "NativeTensileSamples", "NativeTensileResults", "NativeImpactSamples", "NativeStiffnessMeasurements", "NativeThermalDeflectionMeasurements", "NativeMeasurementNotes",
         "PrinterProfiles", "PrintJobQuotes", "UsageEvents"
     };
     private static readonly string[] LegacyWorkbookTablesDropOrder =
@@ -1016,19 +1016,21 @@ public sealed partial class LocalDatabase
         var missingTables = ExcelRecoveryTableInsertOrder
             .Where(required => !supplied.Contains(required, StringComparer.OrdinalIgnoreCase))
             .ToList();
-        var allowedMissingTables = snapshot.SourceSchemaVersion switch
-        {
-            < 34 => new[] { "PrinterProfiles", "PrintJobQuotes", "UsageEvents" },
-            34 => new[] { "PrinterProfiles", "PrintJobQuotes" },
-            35 => new[] { "PrintJobQuotes" },
-            _ => Array.Empty<string>()
-        };
+        var allowedMissingTables = new List<string>();
+        if (snapshot.SourceSchemaVersion < 34)
+            allowedMissingTables.AddRange(["PrinterProfiles", "PrintJobQuotes", "UsageEvents"]);
+        else if (snapshot.SourceSchemaVersion == 34)
+            allowedMissingTables.AddRange(["PrinterProfiles", "PrintJobQuotes"]);
+        else if (snapshot.SourceSchemaVersion == 35)
+            allowedMissingTables.Add("PrintJobQuotes");
+        if (snapshot.SourceSchemaVersion < 41)
+            allowedMissingTables.AddRange(["ThermalDeflectionMethods", "NativeThermalDeflectionMeasurements"]);
         var compatibleLegacyPackage =
-            missingTables.Count == allowedMissingTables.Length &&
+            missingTables.Count == allowedMissingTables.Count &&
             missingTables.All(missing =>
                 allowedMissingTables.Contains(missing, StringComparer.OrdinalIgnoreCase)) &&
             supplied.Count == ExcelRecoveryTableInsertOrder.Length -
-                allowedMissingTables.Length;
+                allowedMissingTables.Count;
         if (supplied.Distinct(StringComparer.OrdinalIgnoreCase).Count() != supplied.Count ||
             (!compatibleLegacyPackage &&
              (supplied.Count != ExcelRecoveryTableInsertOrder.Length ||
@@ -1064,7 +1066,11 @@ public sealed partial class LocalDatabase
                         {
                             "PrinterProfiles" => "DR22 PrinterProfiles",
                             "PrintJobQuotes" => "DR23 PrintJobQuotes",
-                            _ => "DR24 UsageEvents"
+                            "UsageEvents" => "DR24 UsageEvents",
+                            "ThermalDeflectionMethods" => "DR Thermal Methods",
+                            "NativeThermalDeflectionMeasurements" => "DR Thermal Results",
+                            _ => throw new InvalidOperationException(
+                                "No compatible legacy recovery mapping exists for " + tableName)
                         },
                         Columns = GetTableColumnDefinitions(connection, tableName)
                             .Select(column => column.Name)
@@ -1086,6 +1092,7 @@ public sealed partial class LocalDatabase
                     insert.ExecuteNonQuery(); rowsRestored++;
                 }
             }
+            EnsureThermalDeflectionMethodV1(connection, transaction);
             using (var marker = connection.CreateCommand())
             {
                 marker.Transaction = transaction;
@@ -1667,6 +1674,40 @@ CREATE TABLE IF NOT EXISTS UsageEvents (
     FOREIGN KEY (ReversesUsageEventId) REFERENCES UsageEvents(UsageEventId) ON DELETE RESTRICT,
     FOREIGN KEY (CorrectsUsageEventId) REFERENCES UsageEvents(UsageEventId) ON DELETE RESTRICT
 );
+
+CREATE TABLE IF NOT EXISTS ThermalDeflectionMethods (
+    MethodVersion TEXT PRIMARY KEY,
+    MethodSnapshotJson TEXT NOT NULL,
+    MethodSnapshotSha256 TEXT NOT NULL,
+    CreatedAtUtc TEXT NOT NULL
+);
+CREATE TRIGGER IF NOT EXISTS ThermalDeflectionMethods_UpdateGuard
+BEFORE UPDATE ON ThermalDeflectionMethods
+BEGIN
+    SELECT RAISE(ABORT, 'Thermal deflection method snapshots are immutable');
+END;
+CREATE TRIGGER IF NOT EXISTS ThermalDeflectionMethods_DeleteGuard
+BEFORE DELETE ON ThermalDeflectionMethods
+WHEN EXISTS (
+    SELECT 1 FROM NativeThermalDeflectionMeasurements
+    WHERE MethodVersion = OLD.MethodVersion
+)
+BEGIN
+    SELECT RAISE(ABORT, 'Thermal deflection method snapshot is referenced');
+END;
+CREATE TABLE IF NOT EXISTS NativeThermalDeflectionMeasurements (
+    MaterialId TEXT PRIMARY KEY,
+    ResultTemperatureC REAL NOT NULL CHECK (ResultTemperatureC >= 25 AND ResultTemperatureC <= 300),
+    MeasuredDate TEXT,
+    TestNotes TEXT,
+    MethodVersion TEXT NOT NULL,
+    SourceFileName TEXT NOT NULL,
+    SourceSha256 TEXT NOT NULL,
+    ImportedAtUtc TEXT NOT NULL,
+    UpdatedAtUtc TEXT NOT NULL,
+    FOREIGN KEY (MaterialId) REFERENCES NativeMaterialManagerRows(MaterialId) ON DELETE CASCADE,
+    FOREIGN KEY (MethodVersion) REFERENCES ThermalDeflectionMethods(MethodVersion) ON DELETE RESTRICT
+);
 CREATE INDEX IF NOT EXISTS IX_UsageEvents_MaterialId_OccurredAtUtc
     ON UsageEvents(MaterialId, OccurredAtUtc);
 CREATE INDEX IF NOT EXISTS IX_UsageEvents_InventoryItemId
@@ -2101,6 +2142,7 @@ DROP TABLE IF EXISTS MaterialsImport;";
               AND TRIM(COALESCE(LandedCostRateSource, '')) <> 'Legacy transaction-currency landed cost';
             """;
         command.ExecuteNonQuery();
+        EnsureThermalDeflectionMethodV1(connection);
     }
 
     private static void BackfillLegacyLandedCostCurrencyMetadata(SqliteConnection connection)

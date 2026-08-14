@@ -6,11 +6,12 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v61.0.1 — Canonical thermal schema and governed workbook import**
+Current roadmap increment: **v61.0.2 — Native Heat Deflection Workspace, Help and Persistence**
 
-Current acceptance note: v60.0.6 parent release and exact installer/portable bytes are owner accepted; Verification passes 425/425.
+Current acceptance note: v61.0.1 schema/import foundation and corrected
+221-Material preview are owner accepted; Verification passes 426/426.
 
-Next note: v61.0.0 is complete; v61.0.1 schema and preview-first importer implementation is next.
+Next note: implement the v61.0.2 native Heat Deflection workspace, Help, persistence and safe runtime acceptance.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -47,7 +48,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
 | v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Complete — canonical v60.0.6 runtime accepted |
-| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — research contract mapped |
+| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — v61.0.1 candidate gates pass |
 
 ## Reconciliation of the older plans
 
@@ -2867,14 +2868,19 @@ blockers may change the order, but must be recorded here before implementation.
   - Owner confirms MAT0107 was an entry error and corrects 21 °C to 51 °C; corrected range is 44-171 °C.
   - Completion condition: research evidence and staged v61 sequence are accepted; ambiguous values remain blocked, not inferred.
 - **v61.0.1 — Canonical Thermal Schema and Governed Workbook Import**
-  - State: Next; implementation not started.
+  - State: **Completed and owner accepted 2026-08-14.**
   - Add canonical SQLite ownership and migration for one result per MaterialID plus immutable method-version snapshots.
   - Add a preview-first workbook importer with exact MaterialID binding, locale-aware numeric parsing and fail-closed validation.
   - Keep blank workbook cells non-destructive; do not infer date, notes, trial series, sensor history or uncertainty.
   - Preserve supported schema discovery, backup/restore, diagnostics and Excel disaster-recovery contracts.
+  - Canonical schema-v41 seed SHA-256 is `08775AFE6CDFC2DFF156D82FE082E3B388E2D589F881060C951C1763C1356A1E`;
+    schema-v40 remains preserved as `filamentdb-schema-v40.sqlite` for supported migration coverage.
+  - Final disposable profile `20260814171134-29850755` passes 426/426 and exact business-state recovery.
+  - Corrected-workbook preview resolves all 221 IDs: 191 inserts, 30 non-destructive blanks, zero issues and apply permitted.
+  - Owner accepts the corrected read-only preview and v61.0.1 foundation; no thermal measurements are imported in this increment.
   - Completion condition: migration/import gates pass against a disposable profile with exact rejected-row evidence and recovery.
 - **v61.0.2 — Native Heat Deflection Workspace, Help and Persistence**
-  - State: Planned after v61.0.1.
+  - State: **In progress after accepted v61.0.1.**
   - Add a `Heat Deflection` tab with the accepted Fast Stiffness-style MaterialID-synchronized list and filtering behavior.
   - Expose one editable result per material: `Deflection temperature °C`; keep material identity and method metadata read-only.
   - Define the result as 3DPIceland fixture-specific, not ASTM D648 or ISO 75 HDT unless the standardized method is followed.

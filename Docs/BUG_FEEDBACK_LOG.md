@@ -197,10 +197,19 @@ temperature result per material; centrally govern and automatically snapshot the
 Workbook research on 2026-08-14 finds 221 unique MaterialIDs, 191 numeric results and 30 blanks with no duplicate IDs or formulas.
 The owner confirms `MAT0107 = 21` was an entry error and corrects it to 51 °C; no below-ambient workbook value remains.
 The authoritative staged delivery sequence is recorded under v61 in `Docs/Roadmaps/MASTER_ROADMAP.md`.
-Verification evidence: Not yet implemented. Future acceptance must prove add/edit/clear/restart, invalid/range and locale handling,
+v61.0.1 candidate adds schema v41, immutable method-v1 storage and a preview-first ClosedXML importer. Exact MaterialID binding,
+25-300 °C validation, non-destructive blanks, duplicate/unknown/non-numeric rejection, source SHA-256 and idempotent apply are
+deterministically verified. No user-facing import control, Help destination, public output or Engineering Score changes yet.
+Verification evidence: schema-v40 migration and refreshed schema-v41 seed profiles pass 426/426 with exact business-state recovery.
+The corrected-workbook preview against the configured 221-Material database resolves all IDs: 191 inserts, 30 blanks and zero
+issues; no measurement was written. The earlier 20-unknown result used a stale 201-Material tester seed and is superseded. Future
+acceptance must prove
+add/edit/clear/restart, invalid/range and locale handling,
 MaterialID identity synchronization, delete/archive behavior, method-snapshot immutability, schema migration, Excel round trip,
 Help/navigation, disposable automation and Full Data Verification with exact business-state recovery. Public reports, website
 publication and Engineering Score use remain out of scope until separately designed and approved.
+Owner accepted the corrected 221-Material preview and v61.0.1 schema/import foundation on 2026-08-14. The feedback remains
+In Progress because the native v61.0.2 workspace and final v61.0.3 round trip/acceptance are still authoritative remaining scope.
 
 Date: 2026-07-30
 Area: Application date entry and display / Purchase Orders / Materials

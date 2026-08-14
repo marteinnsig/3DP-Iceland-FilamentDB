@@ -2,6 +2,33 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v61.0.1 - Canonical Thermal Schema and Governed Workbook Import
+
+The additive v41 foundation owns an immutable
+`3dp-thermal-deflection-fixture-v1` snapshot and one canonical result per exact
+MaterialID. The importer previews source identity/hash, inserts, updates,
+unchanged rows, blanks and blocking issues before any transaction can apply.
+
+Existing schema-v40 databases migrate additively. Governed Excel recovery owns
+both new tables and treats them as the only permitted missing tables in older
+accepted packages. UI, Help, public reports, website and Engineering Scores are
+unchanged; the native workspace and its automation IDs remain v61.0.2 scope.
+
+App, AutomationRunner and read-only verifier Debug/Release builds pass with
+zero warnings and errors. Disposable profile `20260814171134-29850755` passes
+Full Data Verification 426/426 with exact business-state recovery. Canonical
+schema-v41 seed SHA-256 is
+`08775AFE6CDFC2DFF156D82FE082E3B388E2D589F881060C951C1763C1356A1E`;
+the prior schema-v40 seed is retained as `filamentdb-schema-v40.sqlite` with
+SHA-256 `A0C1E72984ED747C8205D8C847C1620C5C22AC6C587C86FDC7A1B6998A600870`.
+
+The corrected workbook preview remains read-only: all 221 source MaterialIDs
+resolve against the corrected canonical catalog, producing 191 candidate
+inserts, 30 non-destructive blanks, zero issues and `CanApply=true`. The earlier
+20-unknown result came from a stale 201-Material seed and is superseded.
+Owner accepted the corrected preview and v61.0.1 foundation on 2026-08-14;
+the native workspace remains the next authoritative v61.0.2 increment.
+
 ## v60 Parent Closure - Bug Fixes and Workflow Reliability
 
 All six v60 increments are implemented and owner accepted. The final candidate

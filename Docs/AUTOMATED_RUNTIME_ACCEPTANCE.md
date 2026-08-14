@@ -1143,6 +1143,19 @@ equality on that state. Schema-v32 is preserved as
 `65BD03F668768F0AAEBF937BAFC628559A168EA1A07E586CECADC7431AF7BB84`.
 Final canonical-path profile `20260726105756-ce0811c4` repeats the same PASS and
 business-state hash `4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B1C87D`.
+## v61.0.1 thermal schema and workbook import
+
+- The existing read-only smoke remains the bounded automation owner; no import
+  apply authorization or user-facing control is added before v61.0.2.
+- Full Data Verification deterministically covers schema v41, immutable method
+  v1, exact MaterialID binding, blanks, locale parsing, rejection, transactional
+  apply and idempotence without reading owner files or writing owner data.
+- Schema-v40 migration profile `20260814165236-dfcee36b` and refreshed
+  221-Material schema-v41 seed profile `20260814171134-29850755` both pass 426/426 with exact
+  business-state recovery and Production, FTPS, updates and owner data blocked.
+- The real corrected workbook is inspected only through the read-only verifier;
+  all 221 IDs resolve, with 191 inserts, 30 blanks, zero issues and no write.
+
 ## v59.0.6 Materials column order
 
 - The existing read-only smoke remains the bounded automation owner; no new

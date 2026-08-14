@@ -15104,6 +15104,15 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             materialIdentityMeasurementRefreshReady
                 ? "Black/Yellow/Black Color-only changes reach all measurement rows by MaterialID without changing samples or notes"
                 : "A named identity field failed to refresh independently or measurement-owned evidence changed"));
+        var thermalDeflectionImportFoundationReady =
+            BuildInfo.CurrentDatabaseSchema == 41 &&
+            LocalDatabase.RunThermalDeflectionImportContractVerification();
+        checks.Add(new VerificationCheck(
+            "v61.0.1 Thermal deflection schema and governed workbook import contract",
+            thermalDeflectionImportFoundationReady,
+            thermalDeflectionImportFoundationReady
+                ? "Schema v41, immutable method v1, preview-first MaterialID binding, blank preservation and idempotent apply pass"
+                : "Thermal schema, immutable method, preview validation, blank preservation or idempotent apply failed"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",
@@ -18209,7 +18218,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var excelRecoveryRows = excelRecoverySnapshot.Tables.Sum(table => table.Rows.Count);
         var excelRecoveryReady = excelRecoverySnapshot.FormatVersion == ExcelRecoverySnapshot.CurrentFormatVersion &&
                                  excelRecoverySnapshot.SourceSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
-                                 excelRecoverySnapshot.Tables.Count == 24 &&
+                                 excelRecoverySnapshot.Tables.Count == 26 &&
                                  excelRecoverySnapshot.Tables.All(table => !string.IsNullOrWhiteSpace(table.TableName) && table.Columns.Count > 0 && table.Rows.All(row => row.Count == table.Columns.Count) && ExcelDisasterRecoveryService.ComputeTableHash(table).Length == 64) &&
                                  excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMaterialManagerRows").Rows.Count == _nativeMaterialRows.Count &&
                                  typeof(ExcelDisasterRecoveryService).GetMethod("LoadAndVerify") is not null &&
@@ -18430,7 +18439,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             BuildInfo.ShortLabel,
             BuildInfo.ReleaseTitle);
         var v58041BrandIdentityReady =
-            BuildInfo.CurrentDatabaseSchema == 40 &&
+            BuildInfo.CurrentDatabaseSchema == 41 &&
             FindName("DocumentBrandDisplayNameBox") is TextBox brandNameBox &&
             brandNameBox.MaxLength == DocumentBrandIdentityService.MaximumLength &&
             FindName("SaveDocumentBrandDisplayNameButton") is Button &&
@@ -18473,7 +18482,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             "v58.0.6 Governed document branding closure release gate",
             v5806ClosureReady && releaseIdentityReady,
             v5806ClosureReady && releaseIdentityReady
-                ? "Schema v40, image/name renderers, migration/recovery and release identity align"
+                ? "Schema v41, image/name renderers, migration/recovery and release identity align"
                 : "Branding renderer, identity, migration/recovery or release identity failed"));
         var inventoryRecoveryTable = excelRecoverySnapshot.Tables.SingleOrDefault(
             table => table.TableName == "InventorySpoolItems");

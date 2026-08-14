@@ -2,6 +2,28 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v61.0.1 - Canonical Thermal Schema and Governed Workbook Import
+
+- Advances the canonical SQLite schema from v40 to v41 with one thermal result
+  per MaterialID and an immutable fixture-method snapshot.
+- Adds preview-first `.xlsx` parsing with exact MaterialID binding, source
+  SHA-256, 25-300 °C validation and insert/update/unchanged classification.
+- Blank workbook cells never clear accepted results. Duplicate, unknown,
+  non-numeric, non-finite or out-of-range rows block the complete apply.
+- Adds both thermal tables to governed Excel disaster recovery while preserving
+  compatibility with schema-v40 and older accepted recovery packages.
+- Adds deterministic Verification for successful/idempotent apply, invalid-row
+  rejection and immutable-method enforcement.
+- No user-facing control exists until v61.0.2; Help and UI automation changes
+  are therefore intentionally deferred. Public outputs and scores are unchanged.
+- App, runner and verifier Debug/Release builds pass; disposable v40 migration
+  and refreshed v41 seed profiles each pass Full Data Verification 426/426.
+- The governed corrected-workbook preview against the configured 221-Material
+  database resolves every ID: 191 inserts, 30 blanks and zero issues. The
+  earlier stale 201-Material seed was corrected; preview remains read-only.
+- Owner accepted the corrected 221-Material preview and schema/import
+  foundation on 2026-08-14. No thermal measurement was imported.
+
 ## v60 Parent Closure - Bug Fixes and Workflow Reliability
 
 - Reconciles all six owner-accepted v60 feedback increments under the final
