@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v61.0.5 thermal decision surfaces and radar candidate
+Version: v61.0.8.2 disposable thermal persistence automation
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted
@@ -173,6 +173,7 @@ not misclassified as a user-editable XAML field.
 | v55.0.5 | Runner-owned reviewed cleanup and diagnostics ownership | Candidate Help and Verification |
 | v55.0.5.1 | Shared safe-delete dialog for Material and Base Material | Owner runtime feedback correction |
 | v55.0.6 | Operational safety runtime acceptance and closure | Canonical; Verification PASS |
+| v61.0.8.2 | Hidden disposable thermal persistence controls | Tester-only; bounded exact-ID authorization |
 
 ## Initial findings and risks
 

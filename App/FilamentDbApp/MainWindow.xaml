@@ -325,6 +325,20 @@
                         <TextBlock x:Name="AutomationCrudStatusText" AutomationProperties.AutomationId="AutomationCrudStatus"
                                    Foreground="#F8FAFC" VerticalAlignment="Center" />
                     </StackPanel>
+                    <StackPanel x:Name="AutomationThermalPanel" Orientation="Horizontal" Margin="0,6,0,0"
+                                Visibility="Collapsed">
+                        <Button x:Name="AutomationThermalCreate" AutomationProperties.AutomationId="AutomationThermalCreate"
+                                Content="Thermal: Create" Click="AutomationThermalCreate_Click" Margin="0,0,6,0" />
+                        <Button x:Name="AutomationThermalUpdate" AutomationProperties.AutomationId="AutomationThermalUpdate"
+                                Content="Update" Click="AutomationThermalUpdate_Click" Margin="0,0,6,0" />
+                        <Button x:Name="AutomationThermalClear" AutomationProperties.AutomationId="AutomationThermalClear"
+                                Content="Clear" Click="AutomationThermalClear_Click" Margin="0,0,6,0" />
+                        <Button x:Name="AutomationThermalVerifyAbsent" AutomationProperties.AutomationId="AutomationThermalVerifyAbsent"
+                                Content="Verify absent" Click="AutomationThermalVerifyAbsent_Click" Margin="0,0,6,0" />
+                        <TextBlock x:Name="AutomationThermalStatusText"
+                                   AutomationProperties.AutomationId="AutomationThermalStatus"
+                                   Foreground="#F8FAFC" VerticalAlignment="Center" />
+                    </StackPanel>
                     <StackPanel x:Name="AutomationRecoveryPanel" Orientation="Horizontal" Margin="0,6,0,0" Visibility="Collapsed">
                         <Button AutomationProperties.AutomationId="AutomationRecoveryBackup" Content="Recovery: Backup + Catalog"
                                 Click="AutomationRecoveryBackup_Click" Margin="0,0,6,0" />

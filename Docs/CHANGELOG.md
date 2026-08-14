@@ -2,6 +2,40 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v61.0.8.4 - Final Help, Evidence and Owner Acceptance
+
+- Reconciles the four hidden tester-only thermal controls into the Help inventory
+  without adding them to normal user guidance; Help coverage passes 703/703.
+- Aligns README development focus, canonical VERSION and the v61 feedback ledger
+  while retaining v60.0.6 as the runtime-accepted application release.
+- Passes documentation, 136-column roadmap, diff and dependency-vulnerability
+  gates. Owner confirms Full Data Verification PASS and accepts the final runtime
+  checklist on 2026-08-14; v61 is complete. Production and FTPS remain blocked.
+
+## v61.0.8.3 - Cross-surface Deterministic Contract Closure
+
+- Reconciles one deterministic owner for every thermal projection, missing-value,
+  analytics, ranking, award, YouTube, AI privacy and public-output contract.
+- Confirms Full Data Verification 430/430 covers stable data contracts while
+  browser and PDF layout remain owner-accepted manual visual evidence.
+
+## v61.0.8.2 - Disposable Thermal Persistence Runtime Automation
+
+- Adds a bounded `thermal` AutomationRunner scenario with exact disposable
+  MaterialID authorization and no owner-database or external-publication authority.
+- Verifies add, restart persistence, update, restart persistence, clear and final
+  missing-state persistence through the canonical manual thermal save path.
+- Requires exact final logical database and business-state recovery; disposable
+  profile `20260814222751-a8d4ae0a` passes Full Data Verification 430/430.
+
+## v61.0.8.1 - Final Thermal Coverage and Gap Ledger
+
+- Maps every v61 persistence, UI, analytics, AI, ranking, YouTube and public-output
+  contract to deterministic, disposable-runtime, manual-visual or retired ownership.
+- Confirms the one-time Excel transition remains retired and must not be revived.
+- Identifies one genuine gap: bounded disposable UI add/update/clear/restart thermal
+  persistence with exact final-state recovery.
+
 ## v61.0.7 - Public Website, Reports and Thermal Radar Accepted
 
 - Adds nullable fixture °C, normalized score, method version and concise BlueDOT/

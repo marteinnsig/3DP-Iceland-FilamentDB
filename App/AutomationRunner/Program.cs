@@ -67,6 +67,7 @@ internal static class Program
                 string.Equals(options.Scenario, "reports", StringComparison.Ordinal) ||
                 string.Equals(options.Scenario, "demo", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "crud", StringComparison.Ordinal),
+                string.Equals(options.Scenario, "thermal", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "landed-cost", StringComparison.Ordinal) ||
                 string.Equals(options.Scenario, "recovery", StringComparison.Ordinal),
                 string.Equals(options.Scenario, "recovery", StringComparison.Ordinal),
@@ -74,6 +75,7 @@ internal static class Program
                 out var markerPath,
                 out databasePath,
                 out var materialCrudId,
+                out var thermalMaterialId,
                 out var landedCostPurchaseOrderId,
                 out var landedCostMaterialId,
                 out var landedCostInventoryItemId);
@@ -994,6 +996,34 @@ internal static class Program
                 Record("crud-restart-verify-absent", true, materialCrudId);
                 CaptureWindow(main, IOPath.Combine(root, "evidence", "crud-complete.png"));
             }
+            else if (string.Equals(options.Scenario, "thermal", StringComparison.Ordinal))
+            {
+                RunThermalAction(main, application.Id, "AutomationThermalCreate", "CREATED");
+                ValidateThermalPersistence(databasePath, thermalMaterialId, 88,
+                    "AUTOMATION-THERMAL-CREATED");
+                RecordDatabaseEvidence(root, databasePath, "thermal-after-create");
+                Record("thermal-create-save", true, $"{thermalMaterialId}: 88 C persisted");
+
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunThermalAction(main, application.Id, "AutomationThermalUpdate", "UPDATED");
+                ValidateThermalPersistence(databasePath, thermalMaterialId, 111,
+                    "AUTOMATION-THERMAL-UPDATED");
+                RecordDatabaseEvidence(root, databasePath, "thermal-after-update");
+                Record("thermal-restart-update-save", true, $"{thermalMaterialId}: 111 C persisted");
+
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunThermalAction(main, application.Id, "AutomationThermalClear", "CLEARED");
+                ValidateThermalAbsent(databasePath, thermalMaterialId);
+                RecordDatabaseEvidence(root, databasePath, "thermal-after-clear");
+                Record("thermal-restart-clear", true, $"{thermalMaterialId}: result removed");
+
+                (application, main) = RestartApplication(application, executable, markerPath);
+                RunThermalAction(main, application.Id, "AutomationThermalVerifyAbsent", "ABSENT");
+                ValidateThermalAbsent(databasePath, thermalMaterialId);
+                Record("thermal-restart-verify-absent", true,
+                    $"{thermalMaterialId}: baseline missing state restored");
+                CaptureWindow(main, IOPath.Combine(root, "evidence", "thermal-complete.png"));
+            }
             else if (string.Equals(options.Scenario, "landed-cost", StringComparison.Ordinal))
             {
                 var lineId = landedCostPurchaseOrderId + "-LINE";
@@ -1278,12 +1308,14 @@ internal static class Program
         bool cleanReadiness,
         bool reportGenerationAuthorized,
         bool materialCrudAuthorized,
+        bool thermalPersistenceAuthorized,
         bool landedCostWorkflowAuthorized,
         bool recoveryAuthorized,
         bool updaterAuthorized,
         out string markerPath,
         out string databasePath,
         out string materialCrudId,
+        out string thermalMaterialId,
         out string landedCostPurchaseOrderId,
         out string landedCostMaterialId,
         out string landedCostInventoryItemId)
@@ -1292,6 +1324,7 @@ internal static class Program
         IODirectory.CreateDirectory(allowedRoot);
         var profileId = DateTime.UtcNow.ToString("yyyyMMddHHmmss") + "-" + Guid.NewGuid().ToString("N")[..8];
         materialCrudId = "AUT" + profileId[^8..];
+        thermalMaterialId = string.Empty;
         landedCostPurchaseOrderId = "AUT-PO-" + profileId[^8..];
         landedCostMaterialId = "AUT-MAT-" + profileId[^8..];
         landedCostInventoryItemId = "AUT-INV-" + profileId[^8..];
@@ -1311,6 +1344,8 @@ internal static class Program
                 seedDatabase,
                 IOPath.Combine(databaseFolder, "3DPIceland-Automation-Seed-Evidence.bak"),
                 overwrite: false);
+            if (thermalPersistenceAuthorized)
+                thermalMaterialId = SelectThermalMaterialWithoutMeasurement(databasePath);
         }
         markerPath = IOPath.Combine(root, MarkerFileName);
         var manifest = new
@@ -1329,6 +1364,8 @@ internal static class Program
             reportGenerationAuthorized,
             materialCrudAuthorized,
             materialCrudId,
+            thermalPersistenceAuthorized,
+            thermalMaterialId,
             landedCostWorkflowAuthorized,
             landedCostPurchaseOrderId,
             landedCostMaterialId,
@@ -1342,6 +1379,68 @@ internal static class Program
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         }), new UTF8Encoding(false));
         return root;
+    }
+
+    private static string SelectThermalMaterialWithoutMeasurement(string databasePath)
+    {
+        using var connection = new SqliteConnection($"Data Source={databasePath}");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT m.MaterialId
+            FROM NativeMaterialManagerRows m
+            LEFT JOIN NativeThermalDeflectionMeasurements t ON t.MaterialId = m.MaterialId
+            WHERE TRIM(m.MaterialId) <> '' AND t.MaterialId IS NULL
+            ORDER BY m.MaterialId
+            LIMIT 1;
+            """;
+        var materialId = command.ExecuteScalar()?.ToString()?.Trim() ?? string.Empty;
+        Require(!string.IsNullOrWhiteSpace(materialId),
+            "Thermal automation requires one canonical material without a measurement.");
+        Require(materialId.All(ch => char.IsLetterOrDigit(ch) || ch is '-' or '_'),
+            "Selected thermal automation MaterialID is not a safe identifier.");
+        return materialId;
+    }
+
+    private static void ValidateThermalPersistence(
+        string databasePath,
+        string materialId,
+        double expectedTemperatureC,
+        string expectedNotes)
+    {
+        using var connection = new SqliteConnection($"Data Source={databasePath};Mode=ReadOnly");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = """
+            SELECT ResultTemperatureC, MeasuredDate, TestNotes, MethodVersion,
+                   SourceFileName, SourceSha256
+            FROM NativeThermalDeflectionMeasurements
+            WHERE MaterialId=$id;
+            """;
+        command.Parameters.AddWithValue("$id", materialId);
+        using var reader = command.ExecuteReader();
+        Require(reader.Read(), $"Thermal result was not persisted for {materialId}.");
+        Require(Math.Abs(reader.GetDouble(0) - expectedTemperatureC) < 0.0001,
+            $"Thermal result drifted for {materialId}.");
+        Require(reader.GetString(1) == "2026-08-14", "Thermal measured date drifted.");
+        Require(reader.GetString(2) == expectedNotes, "Thermal automation notes drifted.");
+        Require(reader.GetString(3) == "3dp-thermal-deflection-fixture-v1",
+            "Thermal method version drifted.");
+        Require(reader.GetString(4) == "Manual entry", "Thermal provenance drifted from manual entry.");
+        Require(!string.IsNullOrWhiteSpace(reader.GetString(5)), "Thermal method evidence hash is missing.");
+        Require(!reader.Read(), $"Duplicate thermal results exist for {materialId}.");
+    }
+
+    private static void ValidateThermalAbsent(string databasePath, string materialId)
+    {
+        using var connection = new SqliteConnection($"Data Source={databasePath};Mode=ReadOnly");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText =
+            "SELECT COUNT(*) FROM NativeThermalDeflectionMeasurements WHERE MaterialId=$id;";
+        command.Parameters.AddWithValue("$id", materialId);
+        Require(Convert.ToInt32(command.ExecuteScalar(), CultureInfo.InvariantCulture) == 0,
+            $"Thermal result still exists for {materialId}.");
     }
 
     private static void RunUpdaterAcceptance(
@@ -1689,6 +1788,24 @@ internal static class Program
             Thread.Sleep(150);
         }
         throw new TimeoutException($"Timed out waiting for CRUD status {expectedStatus}.");
+    }
+
+    private static void RunThermalAction(
+        AutomationElement main,
+        int processId,
+        string automationId,
+        string expectedStatus)
+    {
+        Invoke(FindById(main, automationId), processId);
+        var status = FindById(main, "AutomationThermalStatus");
+        var timer = Stopwatch.StartNew();
+        while (timer.Elapsed < ElementTimeout)
+        {
+            AssertNoUnexpectedWindows(processId, "MainWindow");
+            if (string.Equals(status.Current.Name, expectedStatus, StringComparison.Ordinal)) return;
+            Thread.Sleep(150);
+        }
+        throw new TimeoutException($"Timed out waiting for thermal status {expectedStatus}.");
     }
 
     private static void RunRecoveryAction(
@@ -2898,6 +3015,7 @@ internal static class Program
                     string.Equals(CurrentScenario, "reports", StringComparison.Ordinal) ||
                     string.Equals(CurrentScenario, "demo", StringComparison.Ordinal)
                 ,materialCrudAuthorized = string.Equals(CurrentScenario, "crud", StringComparison.Ordinal)
+                ,thermalPersistenceAuthorized = string.Equals(CurrentScenario, "thermal", StringComparison.Ordinal)
                 ,landedCostWorkflowAuthorized =
                     string.Equals(CurrentScenario, "landed-cost", StringComparison.Ordinal) ||
                     string.Equals(CurrentScenario, "recovery", StringComparison.Ordinal)
@@ -3004,9 +3122,9 @@ internal static class Program
             var scenario = scenarioIndex >= 0 && scenarioIndex + 1 < args.Length
                 ? args[scenarioIndex + 1].Trim().ToLowerInvariant()
                 : "smoke";
-            if (scenario is not ("smoke" or "reports" or "demo" or "crud" or "landed-cost" or "migration" or "recovery" or "updater" or "clean"))
+            if (scenario is not ("smoke" or "reports" or "demo" or "crud" or "thermal" or "landed-cost" or "migration" or "recovery" or "updater" or "clean"))
                 throw new ArgumentException(
-                    "--scenario must be smoke, reports, demo, crud, landed-cost, migration, recovery, updater or clean.");
+                    "--scenario must be smoke, reports, demo, crud, thermal, landed-cost, migration, recovery, updater or clean.");
             var updater = scenario == "updater" ? Required("--updater") : string.Empty;
             var seed = scenario == "clean" ? Optional("--seed-database") : Required("--seed-database");
             return new RunnerOptions(Required("--app"), seed, scenario, updater);

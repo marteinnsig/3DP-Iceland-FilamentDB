@@ -251,6 +251,9 @@ public partial class MainWindow : Window
         AutomationCrudPanel.Visibility = AutomationRuntimeProfile.Current.MaterialCrudAuthorized
             ? Visibility.Visible
             : Visibility.Collapsed;
+        AutomationThermalPanel.Visibility = AutomationRuntimeProfile.Current.ThermalPersistenceAuthorized
+            ? Visibility.Visible
+            : Visibility.Collapsed;
         AutomationRecoveryPanel.Visibility = AutomationRuntimeProfile.Current.RecoveryAuthorized
             ? Visibility.Visible
             : Visibility.Collapsed;
@@ -278,6 +281,73 @@ public partial class MainWindow : Window
     {
         AutomationCrudStatusText.Text = status;
         AutomationProperties.SetName(AutomationCrudStatusText, status);
+    }
+
+    private string GetAuthorizedThermalAutomationMaterialId()
+    {
+        var materialId = AutomationRuntimeProfile.Current?.ThermalMaterialId ?? string.Empty;
+        AutomationRuntimeProfile.DemandThermalPersistenceAuthorized(materialId);
+        if (!_nativeMaterialRows.Any(row =>
+                string.Equals(row.MaterialID, materialId, StringComparison.Ordinal)))
+            throw new InvalidOperationException(
+                $"Authorized thermal automation MaterialID does not exist: {materialId}");
+        return materialId;
+    }
+
+    private void SetAutomationThermalStatus(string status)
+    {
+        AutomationThermalStatusText.Text = status;
+        AutomationProperties.SetName(AutomationThermalStatusText, status);
+    }
+
+    private void SaveAutomationThermalMeasurement(double? resultTemperatureC, string? notes)
+    {
+        var materialId = GetAuthorizedThermalAutomationMaterialId();
+        _database.SaveManualThermalDeflectionMeasurement(
+            materialId,
+            resultTemperatureC,
+            resultTemperatureC.HasValue ? "2026-08-14" : null,
+            notes);
+        ReloadNativeThermalDeflectionRows();
+    }
+
+    private void AutomationThermalCreate_Click(object sender, RoutedEventArgs e)
+    {
+        var materialId = GetAuthorizedThermalAutomationMaterialId();
+        if (_database.GetThermalDeflectionResults().ContainsKey(materialId))
+            throw new InvalidOperationException(
+                $"Authorized thermal automation MaterialID already has a result: {materialId}");
+        SaveAutomationThermalMeasurement(88, "AUTOMATION-THERMAL-CREATED");
+        SetAutomationThermalStatus("CREATED");
+    }
+
+    private void AutomationThermalUpdate_Click(object sender, RoutedEventArgs e)
+    {
+        var materialId = GetAuthorizedThermalAutomationMaterialId();
+        if (!_database.GetThermalDeflectionResults().ContainsKey(materialId))
+            throw new InvalidOperationException(
+                $"Authorized thermal automation MaterialID has no result to update: {materialId}");
+        SaveAutomationThermalMeasurement(111, "AUTOMATION-THERMAL-UPDATED");
+        SetAutomationThermalStatus("UPDATED");
+    }
+
+    private void AutomationThermalClear_Click(object sender, RoutedEventArgs e)
+    {
+        var materialId = GetAuthorizedThermalAutomationMaterialId();
+        if (!_database.GetThermalDeflectionResults().ContainsKey(materialId))
+            throw new InvalidOperationException(
+                $"Authorized thermal automation MaterialID has no result to clear: {materialId}");
+        SaveAutomationThermalMeasurement(null, null);
+        SetAutomationThermalStatus("CLEARED");
+    }
+
+    private void AutomationThermalVerifyAbsent_Click(object sender, RoutedEventArgs e)
+    {
+        var materialId = GetAuthorizedThermalAutomationMaterialId();
+        if (_database.GetThermalDeflectionResults().ContainsKey(materialId))
+            throw new InvalidOperationException(
+                $"Authorized thermal automation result still exists: {materialId}");
+        SetAutomationThermalStatus("ABSENT");
     }
 
     private void AutomationCrudCreate_Click(object sender, RoutedEventArgs e)
@@ -15110,6 +15180,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             disposableCrudAcceptanceReady
                 ? "Exact-ID scenario authorization, profile-only commands and stable CRUD persistence evidence IDs are present"
                 : "Disposable CRUD authorization, exact-ID guard or stable evidence contract is incomplete"));
+        var disposableThermalAcceptanceReady =
+            typeof(AutomationRuntimeProfile).GetProperty(nameof(AutomationRuntimeProfile.ThermalPersistenceAuthorized)) is not null &&
+            typeof(AutomationRuntimeProfile).GetProperty(nameof(AutomationRuntimeProfile.ThermalMaterialId)) is not null &&
+            typeof(AutomationRuntimeProfile).GetMethod(nameof(AutomationRuntimeProfile.DemandThermalPersistenceAuthorized)) is not null &&
+            FindName("AutomationThermalPanel") is StackPanel &&
+            FindName("AutomationThermalStatusText") is TextBlock automationThermalStatus &&
+            AutomationProperties.GetAutomationId(automationThermalStatus) == "AutomationThermalStatus" &&
+            FindName("AutomationThermalCreate") is Button &&
+            FindName("AutomationThermalUpdate") is Button &&
+            FindName("AutomationThermalClear") is Button &&
+            FindName("AutomationThermalVerifyAbsent") is Button;
+        checks.Add(new VerificationCheck("v61.0.8 disposable thermal persistence acceptance foundation",
+            disposableThermalAcceptanceReady,
+            disposableThermalAcceptanceReady
+                ? "Exact-MaterialID thermal authorization and stable create, update, clear and absent evidence controls are present"
+                : "Disposable thermal authorization, exact-ID guard or stable persistence evidence contract is incomplete"));
         var disposableRecoveryAcceptanceReady =
             typeof(AutomationRuntimeProfile).GetProperty(nameof(AutomationRuntimeProfile.RecoveryAuthorized)) is not null &&
             typeof(AutomationRuntimeProfile).GetMethod(nameof(AutomationRuntimeProfile.DemandRecoveryAuthorized)) is not null &&

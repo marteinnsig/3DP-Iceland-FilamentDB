@@ -143,3 +143,59 @@ The owner selects the 200 °C reference on 2026-08-14 specifically to retain
 headroom above the current 171 °C maximum for future PPS and other
 high-temperature material measurements. The remaining normalization,
 missing-data, peer-count and legacy Overall rules are accepted with it.
+
+## v61.0.8.1 final coverage and gap ledger
+
+Audit date: 2026-08-14
+
+The audit maps the accepted v61.0.0-v61.0.7 implementation to one explicit
+acceptance owner per contract. `Full Data Verification` is the deterministic
+cross-surface owner; AutomationRunner supplies disposable runtime containment,
+navigation, evidence and exact-state recovery. Visual layout remains manual.
+
+| Contract | Canonical owner | Current acceptance | v61.0.8 disposition |
+|---|---|---|---|
+| Method definition and immutable method version | `ThermalDeflectionMethodContract` and SQLite method row | Deterministic persistence gate plus owner method acceptance | Retain |
+| Schema v41 migration and one-row-per-MaterialID storage | `LocalDatabase` | Migration/persistence Verification and accepted migration profiles | Retain |
+| Original workbook preview/apply/export | Historical v61.0.1-v61.0.3 transition | Owner accepted population; UI, service and discovery were retired | Do not revive or automate |
+| Native Heat Deflection grid, validation and Help | Fast thermal workspace and `measurements.thermal-deflection` | Verification plus owner entry/clear/restart/readability acceptance | Add runtime mutation coverage |
+| Manual add, update, clear and restart persistence | `SaveManualThermalDeflectionMeasurement` and Fast editor | Deterministic storage gate and prior owner test only | Genuine AutomationRunner gap |
+| Fixed 200 °C score, clamp, missing values and Overall invariance | `ThermalAnalyticsService` and `EngineeringScoringService` | Full Verification | Retain |
+| Material Detail, Compare, Analytics and six-axis radar | Canonical thermal projection | Full Verification plus owner visual acceptance | Retain; layout remains manual |
+| Rankings, category winners, awards and insights | Existing ranking/award definitions | Full Verification plus owner acceptance | Retain |
+| YouTube Research thermal evidence | `VideoPlannerRow` and research generators | Full Verification plus owner acceptance | Retain |
+| AI local briefs and exact OpenAI preview boundary | AI insight/pilot services | Full Verification, fake-provider isolation and owner acceptance | Retain |
+| Website DATA, charts, averages, Heatmap and radar | Website chart/renderer/radar services | Rendered-template Verification plus owner preview acceptance | Retain; layout remains manual |
+| Public material/comparison HTML and PDF | Typed allowlisted public DTOs and report services | Reports scenario, artifact hashes and owner HTML/PDF acceptance | Retain; PDF layout remains manual |
+| Help coverage and navigation | `HelpContentCatalog` and coverage registry | 699/699 Help audit plus owner acceptance | Reconcile at v61.0.8.4 |
+| Production/FTPS publication | Existing guarded publication workflows | Explicitly outside v61 thermal acceptance | Remain blocked |
+
+The only uncovered deterministic runtime behavior is a disposable UI-driven
+thermal add/update/clear/restart sequence. The existing `crud` scenario owns
+Material lifecycle and has broader delete authority, while `smoke` is read-only.
+A separate bounded `thermal` scenario is therefore required: it may mutate only
+one disposable thermal measurement, must restore the exact baseline value or
+missing state, and must finish with exact database and business-state hashes.
+
+No additional automation is justified for browser layout, SVG label readability
+or PDF pagination. Those are visual contracts already accepted manually. No new
+runtime surface, schema, score formula, public field or network authorization is
+required by this ledger.
+
+## v61.0.8.2-v61.0.8.3 runtime and deterministic closure
+
+Disposable thermal profile `20260814222751-a8d4ae0a` closes the sole runtime gap.
+It selected MAT0007 only because the copied canonical seed had no thermal row for
+that MaterialID, then proved 88 C create, restart persistence, 111 C update,
+restart persistence, clear and final restart absence. The logical database and
+business-state hashes both returned exactly to their baselines. The source seed,
+owner database, Production, FTPS, updates, restore and material deletion remained
+outside the scenario authorization.
+
+Full Data Verification passes 430/430 in that same runtime profile. The existing
+deterministic owners cover the fixed 200 C projection, missing and saturation
+behavior, legacy Overall invariance, Material Detail/Compare/Analytics, rankings,
+category rankings, awards, YouTube Research, local AI/OpenAI privacy projection,
+website DATA/charts/Heatmap/radar and public report allowlists. No duplicate local
+formula or additional automation is warranted. Browser/PDF layout remains the
+already accepted manual visual contract.

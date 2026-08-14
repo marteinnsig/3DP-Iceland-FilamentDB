@@ -107,6 +107,10 @@ xaml.application-shell.button.automationrecoverybackup	Application shell	Button	
 xaml.application-shell.button.automationrecoveryexportexcel	Application shell	Button	AutomationRecoveryExportExcel	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationrecoverymutate	Application shell	Button	AutomationRecoveryMutate	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationrecoveryrestoreexcel	Application shell	Button	AutomationRecoveryRestoreExcel	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationthermalclear	Application shell	Button	AutomationThermalClear	action	v61.0.8.2	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationthermalcreate	Application shell	Button	AutomationThermalCreate	action	v61.0.8.2	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationthermalupdate	Application shell	Button	AutomationThermalUpdate	action	v61.0.8.2	menu-runtime.controls-fields	covered
+xaml.application-shell.button.automationthermalverifyabsent	Application shell	Button	AutomationThermalVerifyAbsent	action	v61.0.8.2	menu-runtime.controls-fields	covered
 xaml.awards-winners.button.exportawardscsv-click	Awards & Winners	Button	ExportAwardsCsv_Click	action	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.button.refreshawards-click	Awards & Winners	Button	RefreshAwards_Click	action	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.button.resetawardsfilters-click	Awards & Winners	Button	ResetAwardsFilters_Click	action	v50.4.2	analysis.controls-fields	covered

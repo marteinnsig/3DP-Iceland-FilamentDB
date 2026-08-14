@@ -218,6 +218,14 @@ restart, export readability and Verification, then requests retirement because f
 The buttons, handlers, importer, verifier, Help and automation discovery are removed.
 Post-retirement profile `20260814184446-a76801d2` passes 428/428 with exact recovery; Help passes 696/696. Owner accepts the
 final post-retirement UI and Verification PASS on 2026-08-14; the feedback is resolved.
+v61.0.4 fixes the independent Thermal Score at a 200 C reference with missing-value honesty and preserves the legacy Overall.
+v61.0.5-v61.0.7 add thermal evidence to Material Detail/Compare/Analytics, rankings, category rankings, awards, YouTube Research,
+AI Assistant/OpenAI preview and local website/public reports. The owner accepts the app, website, HTML/PDF and Verification output.
+The v61.0.8 coverage ledger identifies only one remaining deterministic runtime gap. Disposable profile
+`20260814222751-a8d4ae0a` closes it by proving thermal create/update/clear across restarts and exact final-state recovery;
+Full Data Verification passes 430/430. Final Help/documentation/static evidence proceeds under v61.0.8.4.
+Owner confirms the final Full Data Verification PASS on 2026-08-14. Help 703/703,
+documentation, roadmap, security and exact-state gates pass; v61 is resolved and closed.
 
 Date: 2026-07-30
 Area: Application date entry and display / Purchase Orders / Materials

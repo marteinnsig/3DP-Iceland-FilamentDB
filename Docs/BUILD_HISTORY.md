@@ -2,6 +2,42 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v61.0.8.4 - Final Help, Evidence and Owner Acceptance
+
+Help discovery and committed inventory reconcile 703/703 candidates. Release
+documentation, roadmap line length, diff and read-only direct/transitive NuGet
+vulnerability gates pass. README, VERSION and feedback state align with the
+v60.0.6 runtime baseline and v61.0.8 closure. Owner confirms Full Data
+Verification PASS and accepts the final runtime checklist on 2026-08-14.
+
+## v61.0.8.3 - Cross-surface Deterministic Contract Closure
+
+The final ledger and disposable runtime evidence reconcile every stable thermal
+consumer to an existing deterministic Verification owner. Full Data Verification
+passes 430/430; no duplicate formulas or low-value browser/PDF layout automation
+are introduced. Visual layout retains the prior owner acceptance route.
+
+## v61.0.8.2 - Disposable Thermal Persistence Runtime Automation
+
+Release app and AutomationRunner Debug/Release builds pass with zero warnings and
+errors. The new exact-MaterialID `thermal` scenario is limited to a disposable
+verification profile and keeps owner database, Production, FTPS, updates, restore
+and material deletion blocked. Profile `20260814222751-a8d4ae0a` selects canonical
+missing-result material MAT0007, persists 88 C, verifies it after restart, updates
+to 111 C, verifies again, clears the row and confirms absence after a final restart.
+Full Data Verification passes 430/430. Logical database hash returns exactly to
+`F9917C12AFA7C4A1F08C43CF0C46DB75EC8EF56558DB0F65875D217526B79CA6` and the
+business-state hash returns exactly to
+`91C73F5DE82D4C07C03A03D47D4C31106E0F88DD90D76A45E80380C6C7B5AE0E`.
+
+## v61.0.8.1 - Final Thermal Coverage and Gap Ledger
+
+The research-first audit records one acceptance owner for every v61.0.0-v61.0.7
+contract in `Docs/V61_THERMAL_DEFLECTION_RESEARCH.md`. Existing Full Verification,
+reports automation and owner visual evidence cover all downstream consumers. The
+only genuine gap is UI-driven disposable thermal add/update/clear/restart evidence.
+The retired Excel transition remains historical and is not reintroduced.
+
 ## v61.0.7 - Public Website, Reports and Thermal Radar Accepted
 
 The candidate extends the existing public allowlists with nullable thermal result,

@@ -6,7 +6,7 @@ Private Windows deployment supports a per-user Setup EXE and a portable ZIP buil
 
 - **Current runtime-accepted release:** v60.0.6 — Bug Fixes and Workflow Reliability
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v61 — Thermal Deflection Measurement Foundation research
+- **Current development focus:** v61 thermal foundation complete; next major theme pending
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Your data stays yours
@@ -174,9 +174,10 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 58.0.6 is the current runtime-accepted application release. Full Data
-Verification passes 414/414 with governed document logo/name, renderer,
-migration, recovery and release-identity contracts aligned.
+Version 60.0.6 is the current runtime-accepted application release. The v61
+Thermal Deflection Measurement Foundation is complete and owner accepted through
+v61.0.8. The next coherent major-version theme has not yet been selected.
+Production and FTPS publication remain separately guarded.
 
 The v56.0.6.1 governed public-demo dataset is complete and owner accepted. Its
 36 fictional identities retain approved real comparative measurements; the
@@ -186,10 +187,10 @@ separate guarded default-No actions.
 
 The coordinated public website is live with the independent Printing Price
 Calculator, canonical Labs wordmark and favicon. `/3dp/price/` redirects to
-`index.html#calculator`. Governed custom document logo and Brand / Organization
-Name output is runtime accepted across reports, website documents and customer
-quotes. The current roadmap increment is research-first v59.0 — Application
-Navigation Finalization.
+`index.html#calculator`. Governed custom document branding is runtime accepted.
+The v61 candidate adds fixture-specific Heat Deflection measurements, analytics,
+AI/ranking/research consumers and local website/report output without changing
+the legacy Overall score.
 
 The clean-install profile contains no material dataset or private FTPS
 identity. SQLite is never restored automatically by application update

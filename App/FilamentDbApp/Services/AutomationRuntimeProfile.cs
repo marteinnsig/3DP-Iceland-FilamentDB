@@ -25,6 +25,8 @@ public sealed class AutomationRuntimeProfile
     public bool ReportGenerationAuthorized { get; init; }
     public bool MaterialCrudAuthorized { get; init; }
     public string MaterialCrudId { get; init; } = string.Empty;
+    public bool ThermalPersistenceAuthorized { get; init; }
+    public string ThermalMaterialId { get; init; } = string.Empty;
     public bool LandedCostWorkflowAuthorized { get; init; }
     public string LandedCostPurchaseOrderId { get; init; } = string.Empty;
     public string LandedCostMaterialId { get; init; } = string.Empty;
@@ -72,6 +74,16 @@ public sealed class AutomationRuntimeProfile
             !string.Equals(Current.MaterialCrudId, materialId, StringComparison.Ordinal))
             throw new InvalidOperationException(
                 "Material CRUD requires explicit authorization for the exact disposable MaterialID.");
+    }
+
+    public static void DemandThermalPersistenceAuthorized(string materialId)
+    {
+        if (!IsActive ||
+            Current?.ThermalPersistenceAuthorized != true ||
+            string.IsNullOrWhiteSpace(Current.ThermalMaterialId) ||
+            !string.Equals(Current.ThermalMaterialId, materialId, StringComparison.Ordinal))
+            throw new InvalidOperationException(
+                "Thermal persistence automation requires explicit authorization for the exact disposable MaterialID.");
     }
 
     public static void DemandRecoveryAuthorized()
@@ -127,11 +139,12 @@ public sealed class AutomationRuntimeProfile
         if (Purpose is not (VerificationPurpose or CleanReadinessPurpose))
             throw new InvalidOperationException("Automation profile purpose must be verification or clean-readiness.");
         if (Purpose == CleanReadinessPurpose &&
-            (ReportGenerationAuthorized || MaterialCrudAuthorized || LandedCostWorkflowAuthorized ||
+            (ReportGenerationAuthorized || MaterialCrudAuthorized || ThermalPersistenceAuthorized ||
+             LandedCostWorkflowAuthorized ||
              RecoveryAuthorized || UpdaterAuthorized))
             throw new InvalidOperationException("Clean Readiness profiles cannot authorize mutating automation scenarios.");
         if (PublicDemoDataset &&
-            (Purpose != VerificationPurpose || MaterialCrudAuthorized ||
+            (Purpose != VerificationPurpose || MaterialCrudAuthorized || ThermalPersistenceAuthorized ||
              LandedCostWorkflowAuthorized || RecoveryAuthorized || UpdaterAuthorized))
             throw new InvalidOperationException(
                 "Public demo profiles permit report output only; CRUD, landed-cost, recovery and updater authorization remain blocked.");
@@ -139,6 +152,9 @@ public sealed class AutomationRuntimeProfile
             (string.IsNullOrWhiteSpace(MaterialCrudId) ||
              !MaterialCrudId.All(ch => char.IsLetterOrDigit(ch) || ch is '-' or '_')))
             throw new InvalidOperationException("Authorized automation MaterialID must be a non-empty safe identifier.");
+        if (ThermalPersistenceAuthorized && !IsSafeAutomationIdentifier(ThermalMaterialId))
+            throw new InvalidOperationException(
+                "Authorized thermal automation MaterialID must be a non-empty safe identifier.");
         if (!HasValidLandedCostWorkflowAuthorization())
             throw new InvalidOperationException(
                 "Landed-cost automation requires three distinct non-empty safe disposable identities.");

@@ -3,6 +3,18 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v61 - Thermal Deflection Measurement Foundation
+
+Delivers governed fixture-specific Heat Deflection measurement storage, native
+entry, a fixed 200 C independent score and consistent thermal evidence across
+analytics, AI, rankings, awards, YouTube Research, local website and public
+reports. The legacy Overall remains unchanged and missing evidence remains
+unavailable rather than zero. Disposable thermal persistence automation passes
+Full Data Verification 430/430 with exact final-state recovery. Help 703/703,
+Debug/Release, documentation and security gates pass; the owner accepts the
+final runtime checklist on 2026-08-14. Production and FTPS remain separately
+guarded.
+
 # v60.0.6 - Bug Fixes and Workflow Reliability
 
 Completes all six recorded v60 increments and reconciles feedback, Help,

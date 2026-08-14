@@ -6,12 +6,11 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v61.0.8 — Thermal Foundation Final Automation and Acceptance**
+Current roadmap increment: **v61 parent closure — Complete**
 
-Current acceptance note: v61.0.7 website/report thermal fields, six-axis radar, raw-temperature chart,
-comparison metric and Heatmap column are owner accepted; Verification passes 429/429.
+Current acceptance note: v61.0.8 and the complete v61 thermal foundation are owner accepted; Verification passes 430/430.
 
-Next note: reconcile final v61 automation, Help, evidence and release gates; Production/FTPS remain blocked.
+Next note: select and record the next coherent major-version theme before implementation; Production and FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -48,7 +47,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v58 | Governed Custom Document Branding | ★★★☆☆ | Complete — canonical v58.0.6 runtime accepted |
 | v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
 | v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Complete — canonical v60.0.6 runtime accepted |
-| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | In progress — v61.0.5 owner accepted |
+| v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Complete — v61.0.8 owner accepted 2026-08-14 |
 
 ## Reconciliation of the older plans
 
@@ -2858,7 +2857,7 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: all recorded v60 increments are owner accepted, all six ledger items have canonical dispositions and the
     parent release passes Debug/Release, applicable security/static gates and Full Data Verification.
 
-## In Progress — v61 Thermal Deflection Measurement Foundation
+## Complete — v61 Thermal Deflection Measurement Foundation
 
 - **v61.0.0 — Thermal Method and Source-data Contract**
   - State: **Completed and owner accepted 2026-08-14.**
@@ -2956,14 +2955,36 @@ blockers may change the order, but must be recorded here before implementation.
   - Update portal/catalog freshness, website staging, HTML/PDF parity and public package Verification; Production remains guarded.
   - Completion condition: owner accepts local website/report HTML, PDFs and radar readability before any FTPS publication.
 - **v61.0.8 — Thermal Foundation Final Automation and Acceptance**
-  - State: Next authoritative increment after accepted v61.0.3 through v61.0.7.
+  - State: **Completed and owner accepted 2026-08-14.**
   - Complete safe disposable automation for import, persistence, analytics, AI, rankings, awards, YouTube and public-output contracts.
   - Reconcile Help, feedback, release evidence, README and all deterministic Full Data Verification gates.
   - Rollback: retire additive UI/analytics/public consumers while retaining supported schema discovery and historical measurements.
   - Completion condition: all v61 increments are owner accepted and Debug/Release, security, Help, workbook, runtime and exact-state
     gates pass; public publication remains separately guarded until exact artifacts receive approval.
+  - **v61.0.8.1 — Final Thermal Coverage and Gap Ledger**
+    - State: Complete; one genuine disposable runtime persistence gap identified.
+    - Map v61.0.0-v61.0.7 persistence, UI, analytics, AI, ranking, award, YouTube, website, report, Help and Verification ownership.
+    - Record each contract as automated runtime, deterministic Verification, manual visual, retired transition or genuine gap.
+    - Completion condition: the authoritative ledger identifies every remaining gap and prohibits reviving the retired Excel workflow.
+  - **v61.0.8.2 — Disposable Thermal Persistence Runtime Automation**
+    - State: Complete; disposable profile `20260814222751-a8d4ae0a` passes 430/430 and exact-state recovery.
+    - Add one bounded thermal scenario with explicit authorization for disposable add/update/clear only; owner database remains blocked.
+    - Require restart persistence, missing-value restoration, evidence capture and exact final database/business-state recovery.
+    - Completion condition: the scenario passes against the canonical seed without Production, FTPS, update, restore or
+      delete authority.
+  - **v61.0.8.3 — Cross-surface Deterministic Contract Closure**
+    - State: Complete; all deterministic consumers are reconciled and Full Data Verification passes 430/430.
+    - Reconcile Full Verification for thermal projection, missing/saturation, analytics, AI privacy, rankings, awards,
+      YouTube and public output.
+    - Keep report/PDF and website layout visual; automate only stable payload, marker, allowlist, axis and missing-value contracts.
+    - Completion condition: all deterministic thermal consumers have one explicit owner and Full Data Verification passes.
+  - **v61.0.8.4 — Final Help, Evidence and Owner Acceptance**
+    - State: Complete; Help/docs/security/runtime gates and owner Verification acceptance pass.
+    - Reconcile Help registry, feedback, README, release documents, security/static gates and final v61 rollback/evidence narrative.
+    - Completion condition: Debug/Release, runner, Help, documentation, security, disposable runtime and exact-state gates pass;
+      owner accepts the final checklist before v61 parent closure or any separately guarded public publication.
 - **v61 parent closure**
-  - State: Planned after v61.0.0 through v61.0.8.
+  - State: **Complete and owner accepted 2026-08-14.**
   - Reconcile feedback, Help, automation, Verification, release evidence and README before exact artifact acceptance.
 
 ### Intentionally unscheduled

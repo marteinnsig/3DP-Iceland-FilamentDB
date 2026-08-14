@@ -98,6 +98,9 @@ function Get-TopSurface([string]$SurfacePath) {
 }
 
 function Get-OwnerIncrement([string]$SurfacePath, [string]$Identity) {
+    if ($Identity -match "^AutomationThermal") {
+        return "v61.0.8.2"
+    }
     if ($Identity -match "ThermalDeflection" -or (Get-TopSurface $SurfacePath) -eq "Heat Deflection") {
         return "v61.0.2"
     }
