@@ -13,10 +13,10 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 6 |
+| Open | 3 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 105 |
+| Solved | 108 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
@@ -62,6 +62,72 @@ Status: Open / In progress / Partially solved / Solved / Deferred / Duplicate / 
 Resolution:
 Verification evidence:
 ```
+
+## Open findings — newest first
+
+Date: 2026-08-15
+Area: Materials / Heat Deflection test coverage
+Type: Bug / Data issue
+Severity: Important
+Status: Open
+What happened: Materials exposes read-only `In Tensile`, `In Impact` and `In Stiffness` coverage beside `Tested Status`, but the
+canonical Heat Deflection measurement added in v61 has no corresponding `In Heat` Yes/No column. `Tested Status` still counts only
+the three legacy measurement modules, so it can report Fully tested without considering Heat Deflection coverage.
+Expected behavior: Add read-only `In Heat` immediately beside `In Stiffness`. It is `Yes` only when the MaterialID has a valid Heat
+Deflection result and otherwise `No`. `Tested Status` must evaluate all four native measurement modules: zero is Not tested, one to
+three is Partially tested and all four is Fully tested. Clearing or restoring a Heat result must update both fields immediately.
+Steps to reproduce: Open Materials after v61, inspect the test-coverage columns for a MaterialID with or without a Heat Deflection
+result, and compare them with the Heat Deflection tab. No `In Heat` column exists and Tested Status ignores that module.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
+Resolution: Scheduled as v62.0.2, Materials Heat Coverage and Tested-status Integration. Add canonical `InHeat` compatibility through
+schema migration, material record/row mapping, Fast Materials layout, lifecycle synchronization, recovery/export and deterministic
+Verification. Derive coverage from valid Heat Deflection results by stable MaterialID; do not make the Materials flag independently
+editable or alter measurement evidence. Update Help and coverage registries for the new visible field and four-module status rule.
+Verification evidence: Not yet implemented. Requires schema migration/current-schema coverage, Debug/Release, Help, disposable
+runtime/result-clear persistence, Full Data Verification, exact-state recovery and owner runtime acceptance before closure.
+
+Date: 2026-08-15
+Area: Materials / Manual landed-cost pricing
+Type: Bug / Workflow friction
+Severity: Important
+Status: Open
+What happened: When manually entering an ISK Landed Cost for a Material purchased before the Purchase Orders workflow was adopted,
+the read-only Landed USD and Landed USD/kg cells did not update immediately. Moving back and forth between fields eventually caused
+the derived values to recalculate and appear.
+Expected behavior: Committing Landed Cost, Landed Currency or Spool Weight in Materials must immediately recalculate and visibly
+refresh Landed USD and Landed USD/kg for that MaterialID through the canonical pricing conversion. The committed values must persist,
+while historical Purchase Orders, Inventory lots, Usage and saved quote/calculation snapshots remain immutable.
+Steps to reproduce: In Materials, select a legacy Material, enter its manual Landed Cost in ISK and commit the cell. Observe that
+Landed USD and Landed USD/kg can remain stale until focus moves through additional fields.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
+Resolution: Scheduled as v62.0.1, Materials Pricing Derived-field Immediate Refresh. The current formula is owned by
+`ApplyMaterialPricingCalculations`, but committed Fast Materials edits enter a debounced recompute/canonical synchronization path.
+Ensure the same committed dependency change refreshes the active owner-drawn row snapshot after recalculation, without requiring a
+second focus transition. Audit Landed Cost, Landed Currency and Spool Weight plus the parallel MSRP USD/USD-per-kg dependency path.
+Add deterministic commit/recompute/visible-refresh coverage and preserve canonical auto-save and immutable historical snapshots.
+Verification evidence: Not yet implemented. Requires Debug/Release, Help assessment, Full Data Verification, disposable exact-state
+evidence and owner runtime acceptance before closure.
+
+Date: 2026-08-15
+Area: Inventory / Material identity presentation
+Type: Bug / UI polish
+Severity: Important
+Status: Open
+What happened: Inventory shows the Manufacturer twice at the start of Material Name. The canonical `WebsiteDisplayName` already
+contains Manufacturer, but `RefreshInventoryMaterialChoices()` prepends `Manufacturer` again when composing `MaterialDisplayName`.
+The duplicated label is reused by the Inventory selector, editable spool grid, filtering, default sorting and purchasing reports.
+Expected behavior: Inventory and its downstream read-only report/search projections must show one canonical human-readable material
+name per MaterialID, with Manufacturer appearing once. This presentation fix must not change MaterialID links, Inventory spool facts,
+purchase provenance, landed-cost snapshots, Usage references or canonical Materials data.
+Steps to reproduce: Open Inventory and inspect Material Name for a linked spool; compare it with the same row's Website Display Name
+in Materials. The Inventory label starts with the same Manufacturer twice.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
+Resolution: Scheduled as v62.0.0, Inventory Material-name Projection Integrity. Reuse the canonical Website Display Name rather than
+prefixing Manufacturer a second time, retain a safe MaterialID fallback, and audit Inventory dropdown/grid/search/sort plus Inventory,
+Low Stock and Purchasing Intelligence report consumers. Add deterministic Verification for single-prefix composition and unchanged
+MaterialID/spool persistence. Revalidate current Inventory Help; update it only if labels, navigation or decisions change.
+Verification evidence: Not yet implemented. Requires Debug/Release, applicable Help/documentation gates, Full Data Verification and
+owner runtime acceptance before closure.
 
 # 2026-07-28 - v59.0 navigation inventory and tab-order ownership
 
@@ -178,71 +244,7 @@ Verification evidence:
   Full Data Verification PASS.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
-## Open findings — newest first
-
-Date: 2026-08-15
-Area: Materials / Heat Deflection test coverage
-Type: Bug / Data issue
-Severity: Important
-Status: Open
-What happened: Materials exposes read-only `In Tensile`, `In Impact` and `In Stiffness` coverage beside `Tested Status`, but the
-canonical Heat Deflection measurement added in v61 has no corresponding `In Heat` Yes/No column. `Tested Status` still counts only
-the three legacy measurement modules, so it can report Fully tested without considering Heat Deflection coverage.
-Expected behavior: Add read-only `In Heat` immediately beside `In Stiffness`. It is `Yes` only when the MaterialID has a valid Heat
-Deflection result and otherwise `No`. `Tested Status` must evaluate all four native measurement modules: zero is Not tested, one to
-three is Partially tested and all four is Fully tested. Clearing or restoring a Heat result must update both fields immediately.
-Steps to reproduce: Open Materials after v61, inspect the test-coverage columns for a MaterialID with or without a Heat Deflection
-result, and compare them with the Heat Deflection tab. No `In Heat` column exists and Tested Status ignores that module.
-Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
-Resolution: Scheduled as v62.0.2, Materials Heat Coverage and Tested-status Integration. Add canonical `InHeat` compatibility through
-schema migration, material record/row mapping, Fast Materials layout, lifecycle synchronization, recovery/export and deterministic
-Verification. Derive coverage from valid Heat Deflection results by stable MaterialID; do not make the Materials flag independently
-editable or alter measurement evidence. Update Help and coverage registries for the new visible field and four-module status rule.
-Verification evidence: Not yet implemented. Requires schema migration/current-schema coverage, Debug/Release, Help, disposable
-runtime/result-clear persistence, Full Data Verification, exact-state recovery and owner runtime acceptance before closure.
-
-Date: 2026-08-15
-Area: Materials / Manual landed-cost pricing
-Type: Bug / Workflow friction
-Severity: Important
-Status: Open
-What happened: When manually entering an ISK Landed Cost for a Material purchased before the Purchase Orders workflow was adopted,
-the read-only Landed USD and Landed USD/kg cells did not update immediately. Moving back and forth between fields eventually caused
-the derived values to recalculate and appear.
-Expected behavior: Committing Landed Cost, Landed Currency or Spool Weight in Materials must immediately recalculate and visibly
-refresh Landed USD and Landed USD/kg for that MaterialID through the canonical pricing conversion. The committed values must persist,
-while historical Purchase Orders, Inventory lots, Usage and saved quote/calculation snapshots remain immutable.
-Steps to reproduce: In Materials, select a legacy Material, enter its manual Landed Cost in ISK and commit the cell. Observe that
-Landed USD and Landed USD/kg can remain stale until focus moves through additional fields.
-Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
-Resolution: Scheduled as v62.0.1, Materials Pricing Derived-field Immediate Refresh. The current formula is owned by
-`ApplyMaterialPricingCalculations`, but committed Fast Materials edits enter a debounced recompute/canonical synchronization path.
-Ensure the same committed dependency change refreshes the active owner-drawn row snapshot after recalculation, without requiring a
-second focus transition. Audit Landed Cost, Landed Currency and Spool Weight plus the parallel MSRP USD/USD-per-kg dependency path.
-Add deterministic commit/recompute/visible-refresh coverage and preserve canonical auto-save and immutable historical snapshots.
-Verification evidence: Not yet implemented. Requires Debug/Release, Help assessment, Full Data Verification, disposable exact-state
-evidence and owner runtime acceptance before closure.
-
-Date: 2026-08-15
-Area: Inventory / Material identity presentation
-Type: Bug / UI polish
-Severity: Important
-Status: Open
-What happened: Inventory shows the Manufacturer twice at the start of Material Name. The canonical `WebsiteDisplayName` already
-contains Manufacturer, but `RefreshInventoryMaterialChoices()` prepends `Manufacturer` again when composing `MaterialDisplayName`.
-The duplicated label is reused by the Inventory selector, editable spool grid, filtering, default sorting and purchasing reports.
-Expected behavior: Inventory and its downstream read-only report/search projections must show one canonical human-readable material
-name per MaterialID, with Manufacturer appearing once. This presentation fix must not change MaterialID links, Inventory spool facts,
-purchase provenance, landed-cost snapshots, Usage references or canonical Materials data.
-Steps to reproduce: Open Inventory and inspect Material Name for a linked spool; compare it with the same row's Website Display Name
-in Materials. The Inventory label starts with the same Manufacturer twice.
-Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
-Resolution: Scheduled as v62.0.0, Inventory Material-name Projection Integrity. Reuse the canonical Website Display Name rather than
-prefixing Manufacturer a second time, retain a safe MaterialID fallback, and audit Inventory dropdown/grid/search/sort plus Inventory,
-Low Stock and Purchasing Intelligence report consumers. Add deterministic Verification for single-prefix composition and unchanged
-MaterialID/spool persistence. Revalidate current Inventory Help; update it only if labels, navigation or decisions change.
-Verification evidence: Not yet implemented. Requires Debug/Release, applicable Help/documentation gates, Full Data Verification and
-owner runtime acceptance before closure.
+## Recent resolved findings — newest first
 
 Date: 2026-08-02
 Area: Native measurements / fixture-specific heat deflection
