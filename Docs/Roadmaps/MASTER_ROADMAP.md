@@ -3000,10 +3000,20 @@ blockers may change the order, but must be recorded here before implementation.
     or visible labels change.
   - Completion condition: owner accepts Inventory and report names with Manufacturer shown once; Debug/Release, Help/documentation
     gates and Full Data Verification pass without business-state drift.
+- **v62.0.1 — Materials Pricing Derived-field Immediate Refresh**
+  - State: Planned after v62.0.0; owner-reported Materials pricing-refresh bug recorded on 2026-08-15.
+  - Recalculate and visibly refresh Landed USD and Landed USD/kg immediately after committed Landed Cost, Landed Currency or Spool
+    Weight edits; audit the parallel MSRP USD and MSRP USD/kg dependency path.
+  - Preserve canonical Materials auto-save, configured currency references and locale-aware manual ISK input.
+  - Do not rewrite historical Purchase Orders, Inventory lots, Usage, saved quotes or saved calculation/rate snapshots.
+  - Add deterministic committed-edit/recompute/owner-drawn snapshot coverage; assess Help and update it only if current save timing or
+    field behavior wording changes.
+  - Completion condition: owner accepts immediate derived-value refresh without extra focus movement; Debug/Release, applicable Help
+    and documentation gates, Full Data Verification and exact-state recovery pass.
 - **v62 parent closure**
-  - State: Planned after v62.0.0 acceptance.
-  - Completion condition: the recorded Inventory identity-presentation defect is owner accepted, feedback/release evidence is
-    reconciled and no v62 implementation item remains open.
+  - State: Planned after v62.0.0-v62.0.1 acceptance.
+  - Completion condition: both recorded presentation/refresh defects are owner accepted, feedback/release evidence is reconciled and
+    no v62 implementation item remains open.
 
 ### Intentionally unscheduled
 

@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 4 |
+| Open | 5 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 105 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **115** |
+| **Total tracked findings** | **116** |
 
 ## Triage categories
 
@@ -165,6 +165,28 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-08-15
+Area: Materials / Manual landed-cost pricing
+Type: Bug / Workflow friction
+Severity: Important
+Status: Open
+What happened: When manually entering an ISK Landed Cost for a Material purchased before the Purchase Orders workflow was adopted,
+the read-only Landed USD and Landed USD/kg cells did not update immediately. Moving back and forth between fields eventually caused
+the derived values to recalculate and appear.
+Expected behavior: Committing Landed Cost, Landed Currency or Spool Weight in Materials must immediately recalculate and visibly
+refresh Landed USD and Landed USD/kg for that MaterialID through the canonical pricing conversion. The committed values must persist,
+while historical Purchase Orders, Inventory lots, Usage and saved quote/calculation snapshots remain immutable.
+Steps to reproduce: In Materials, select a legacy Material, enter its manual Landed Cost in ISK and commit the cell. Observe that
+Landed USD and Landed USD/kg can remain stale until focus moves through additional fields.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
+Resolution: Scheduled as v62.0.1, Materials Pricing Derived-field Immediate Refresh. The current formula is owned by
+`ApplyMaterialPricingCalculations`, but committed Fast Materials edits enter a debounced recompute/canonical synchronization path.
+Ensure the same committed dependency change refreshes the active owner-drawn row snapshot after recalculation, without requiring a
+second focus transition. Audit Landed Cost, Landed Currency and Spool Weight plus the parallel MSRP USD/USD-per-kg dependency path.
+Add deterministic commit/recompute/visible-refresh coverage and preserve canonical auto-save and immutable historical snapshots.
+Verification evidence: Not yet implemented. Requires Debug/Release, Help assessment, Full Data Verification, disposable exact-state
+evidence and owner runtime acceptance before closure.
 
 Date: 2026-08-15
 Area: Inventory / Material identity presentation
