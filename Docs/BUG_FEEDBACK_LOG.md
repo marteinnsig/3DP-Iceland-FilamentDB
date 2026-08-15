@@ -33,6 +33,20 @@ idea.
 
 ## How to log an item
 
+### Finding order — newest first
+
+- Insert every new bug/feedback block directly below the relevant lifecycle
+  heading, with the newest dated entry first.
+- Under `Open findings`, a newly received item always becomes the first entry.
+  When multiple items share one date, the most recently received item comes
+  first.
+- When status changes, move the complete block to the matching lifecycle
+  section while preserving its original description, dates, resolution and
+  evidence. Do not rewrite accepted historical release narratives merely to
+  make them participate in finding order.
+- Historical feedback without a known date remains after all ISO-dated entries
+  in its lifecycle section.
+
 Copy this block for each finding:
 
 ```text
@@ -164,7 +178,7 @@ Verification evidence:
   Full Data Verification PASS.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
-## Open findings
+## Open findings — newest first
 
 Date: 2026-08-15
 Area: Materials / Heat Deflection test coverage
@@ -566,7 +580,7 @@ Verification evidence: Debug/Release and Help/docs/NuGet gates pass. Smoke `2026
 `20260729152131-1cc71adc` proves cleanup is blocked by automation and exact business state recovers.
 Owner acceptance: Cancel safety, selected test-data cleanup, subsequent Material deletion and Full Data Verification all pass.
 
-## Deferred findings
+## Deferred findings — newest first
 
 Date: 2026-07-27
 Area: Purchase Orders exchange-rate refresh
