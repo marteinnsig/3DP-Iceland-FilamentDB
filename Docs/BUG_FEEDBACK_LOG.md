@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 5 |
+| Open | 6 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 105 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **116** |
+| **Total tracked findings** | **117** |
 
 ## Triage categories
 
@@ -165,6 +165,27 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-08-15
+Area: Materials / Heat Deflection test coverage
+Type: Bug / Data issue
+Severity: Important
+Status: Open
+What happened: Materials exposes read-only `In Tensile`, `In Impact` and `In Stiffness` coverage beside `Tested Status`, but the
+canonical Heat Deflection measurement added in v61 has no corresponding `In Heat` Yes/No column. `Tested Status` still counts only
+the three legacy measurement modules, so it can report Fully tested without considering Heat Deflection coverage.
+Expected behavior: Add read-only `In Heat` immediately beside `In Stiffness`. It is `Yes` only when the MaterialID has a valid Heat
+Deflection result and otherwise `No`. `Tested Status` must evaluate all four native measurement modules: zero is Not tested, one to
+three is Partially tested and all four is Fully tested. Clearing or restoring a Heat result must update both fields immediately.
+Steps to reproduce: Open Materials after v61, inspect the test-coverage columns for a MaterialID with or without a Heat Deflection
+result, and compare them with the Heat Deflection tab. No `In Heat` column exists and Tested Status ignores that module.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
+Resolution: Scheduled as v62.0.2, Materials Heat Coverage and Tested-status Integration. Add canonical `InHeat` compatibility through
+schema migration, material record/row mapping, Fast Materials layout, lifecycle synchronization, recovery/export and deterministic
+Verification. Derive coverage from valid Heat Deflection results by stable MaterialID; do not make the Materials flag independently
+editable or alter measurement evidence. Update Help and coverage registries for the new visible field and four-module status rule.
+Verification evidence: Not yet implemented. Requires schema migration/current-schema coverage, Debug/Release, Help, disposable
+runtime/result-clear persistence, Full Data Verification, exact-state recovery and owner runtime acceptance before closure.
 
 Date: 2026-08-15
 Area: Materials / Manual landed-cost pricing

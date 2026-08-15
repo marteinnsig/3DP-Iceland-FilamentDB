@@ -3010,10 +3010,20 @@ blockers may change the order, but must be recorded here before implementation.
     field behavior wording changes.
   - Completion condition: owner accepts immediate derived-value refresh without extra focus movement; Debug/Release, applicable Help
     and documentation gates, Full Data Verification and exact-state recovery pass.
+- **v62.0.2 — Materials Heat Coverage and Tested-status Integration**
+  - State: Planned after v62.0.1; owner-reported Materials coverage gap recorded on 2026-08-15.
+  - Add read-only `In Heat` immediately beside `In Stiffness`, derived from valid Heat Deflection results by stable MaterialID.
+  - Make `Tested Status` cover Tensile, Impact, Stiffness and Heat: zero is Not tested, one to three is Partially tested and all four
+    is Fully tested; result clearing/restoration must refresh both fields immediately.
+  - Extend canonical schema compatibility, material row/record mapping, lifecycle synchronization, recovery/export, Fast layout,
+    Help/coverage and deterministic Verification without making coverage manually editable.
+  - Preserve all measurement values, method snapshots, dates/notes, archived behavior and legacy database migration support.
+  - Completion condition: owner accepts the new column and four-module status across add/edit/clear/restart; schema, Debug/Release,
+    Help, Full Data Verification and disposable exact-state recovery gates pass.
 - **v62 parent closure**
-  - State: Planned after v62.0.0-v62.0.1 acceptance.
-  - Completion condition: both recorded presentation/refresh defects are owner accepted, feedback/release evidence is reconciled and
-    no v62 implementation item remains open.
+  - State: Planned after v62.0.0-v62.0.2 acceptance.
+  - Completion condition: all three recorded v62 defects are owner accepted, feedback/release evidence is reconciled and no v62
+    implementation item remains open.
 
 ### Intentionally unscheduled
 
