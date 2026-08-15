@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v61 parent closure — Complete**
+Current roadmap increment: **v62.0.0 — Inventory Material-name Projection Integrity (Planned)**
 
 Current acceptance note: v61.0.8 and the complete v61 thermal foundation are owner accepted; Verification passes 430/430.
 
-Next note: select and record the next coherent major-version theme before implementation; Production and FTPS remain blocked.
+Next note: v62.0.0 is the next bounded implementation; Production and FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2986,6 +2986,24 @@ blockers may change the order, but must be recorded here before implementation.
 - **v61 parent closure**
   - State: **Complete and owner accepted 2026-08-14.**
   - Reconcile feedback, Help, automation, Verification, release evidence and README before exact artifact acceptance.
+
+## Planned — v62 Inventory Identity Presentation Integrity
+
+- **v62.0.0 — Inventory Material-name Projection Integrity**
+  - State: Planned; owner-reported Inventory label bug recorded on 2026-08-15.
+  - Use one canonical human-readable Material name per stable MaterialID; do not prepend Manufacturer to a display name that already
+    contains it.
+  - Audit the Inventory material selector, editable spool grid, filtering, default sorting and Inventory/Low Stock/Purchasing
+    Intelligence report consumers that reuse `MaterialDisplayName`.
+  - Preserve Inventory spool facts, MaterialID relationships, purchase and landed-cost snapshots, Usage references and Materials data.
+  - Add deterministic single-prefix/fallback and unchanged-persistence coverage; revalidate Help and update only if behavior wording
+    or visible labels change.
+  - Completion condition: owner accepts Inventory and report names with Manufacturer shown once; Debug/Release, Help/documentation
+    gates and Full Data Verification pass without business-state drift.
+- **v62 parent closure**
+  - State: Planned after v62.0.0 acceptance.
+  - Completion condition: the recorded Inventory identity-presentation defect is owner accepted, feedback/release evidence is
+    reconciled and no v62 implementation item remains open.
 
 ### Intentionally unscheduled
 

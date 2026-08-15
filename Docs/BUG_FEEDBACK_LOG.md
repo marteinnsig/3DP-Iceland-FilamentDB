@@ -2,7 +2,7 @@
 
 Use this during the usage-mode period.
 
-## Status review — 2026-08-02
+## Status review — 2026-08-15
 
 This review preserves every original description and lifecycle status.
 `Solved` means the change is implemented, relevant gates pass and owner runtime
@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 3 |
+| Open | 4 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 105 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **114** |
+| **Total tracked findings** | **115** |
 
 ## Triage categories
 
@@ -165,6 +165,27 @@ Verification evidence:
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Open findings
+
+Date: 2026-08-15
+Area: Inventory / Material identity presentation
+Type: Bug / UI polish
+Severity: Important
+Status: Open
+What happened: Inventory shows the Manufacturer twice at the start of Material Name. The canonical `WebsiteDisplayName` already
+contains Manufacturer, but `RefreshInventoryMaterialChoices()` prepends `Manufacturer` again when composing `MaterialDisplayName`.
+The duplicated label is reused by the Inventory selector, editable spool grid, filtering, default sorting and purchasing reports.
+Expected behavior: Inventory and its downstream read-only report/search projections must show one canonical human-readable material
+name per MaterialID, with Manufacturer appearing once. This presentation fix must not change MaterialID links, Inventory spool facts,
+purchase provenance, landed-cost snapshots, Usage references or canonical Materials data.
+Steps to reproduce: Open Inventory and inspect Material Name for a linked spool; compare it with the same row's Website Display Name
+in Materials. The Inventory label starts with the same Manufacturer twice.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
+Resolution: Scheduled as v62.0.0, Inventory Material-name Projection Integrity. Reuse the canonical Website Display Name rather than
+prefixing Manufacturer a second time, retain a safe MaterialID fallback, and audit Inventory dropdown/grid/search/sort plus Inventory,
+Low Stock and Purchasing Intelligence report consumers. Add deterministic Verification for single-prefix composition and unchanged
+MaterialID/spool persistence. Revalidate current Inventory Help; update it only if labels, navigation or decisions change.
+Verification evidence: Not yet implemented. Requires Debug/Release, applicable Help/documentation gates, Full Data Verification and
+owner runtime acceptance before closure.
 
 Date: 2026-08-02
 Area: Native measurements / fixture-specific heat deflection
