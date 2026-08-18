@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 3 |
+| Open | 4 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 108 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **117** |
+| **Total tracked findings** | **118** |
 
 ## Triage categories
 
@@ -64,6 +64,25 @@ Verification evidence:
 ```
 
 ## Open findings — newest first
+
+Date: 2026-08-18
+Area: Purchase Orders / Line-item editing and keyboard navigation
+Type: Bug / Workflow friction
+Severity: Important
+Status: Open
+What happened: Entering `Unit price` or `Unit weight g` on a Purchase Order line requires a double-click before the cell accepts
+input. Arrow keys and Tab cannot be used to move predictably through the editable line fields, forcing repeated mouse interaction.
+Expected behavior: A selected editable line cell must enter edit mode with one direct click or standard keyboard activation. Tab and
+Shift+Tab must commit a valid value and move to the next or previous editable cell, while arrow-key navigation remains predictable.
+Locked landed-cost inputs must remain read-only after a calculation snapshot has been saved.
+Steps to reproduce: Open Purchase Orders, select an unlocked order with a line, then try to enter `Unit price` and `Unit weight g`
+with one click. Try Tab, Shift+Tab and the arrow keys to continue through the line fields; editing/navigation does not work as expected.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-18.
+Resolution: Scheduled as v62.0.3, Purchase-order Line Editor Focus and Keyboard Navigation. Audit DataGrid cell selection, edit
+activation, `BeginningEdit`, `CellEditEnding` and keyboard routing across the editable line fields. Preserve validation, committed
+values, cost allocation, receiving state and immutable landed-cost snapshots; navigation must skip read-only and locked cells safely.
+Verification evidence: Not yet implemented. Requires Debug/Release, Help and automation assessment, deterministic unlocked/locked
+editing coverage, Full Data Verification and owner mouse/keyboard runtime acceptance before closure.
 
 Date: 2026-08-15
 Area: Materials / Heat Deflection test coverage

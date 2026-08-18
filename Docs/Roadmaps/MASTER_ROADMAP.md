@@ -2987,7 +2987,7 @@ blockers may change the order, but must be recorded here before implementation.
   - State: **Complete and owner accepted 2026-08-14.**
   - Reconcile feedback, Help, automation, Verification, release evidence and README before exact artifact acceptance.
 
-## Planned — v62 Inventory Identity Presentation Integrity
+## Planned — v62 Daily Data-entry and Presentation Integrity
 
 - **v62.0.0 — Inventory Material-name Projection Integrity**
   - State: Planned; owner-reported Inventory label bug recorded on 2026-08-15.
@@ -3020,9 +3020,20 @@ blockers may change the order, but must be recorded here before implementation.
   - Preserve all measurement values, method snapshots, dates/notes, archived behavior and legacy database migration support.
   - Completion condition: owner accepts the new column and four-module status across add/edit/clear/restart; schema, Debug/Release,
     Help, Full Data Verification and disposable exact-state recovery gates pass.
+- **v62.0.3 — Purchase-order Line Editor Focus and Keyboard Navigation**
+  - State: Planned after v62.0.2; owner-reported Purchase Orders editing bug recorded on 2026-08-18.
+  - Make one direct click or standard keyboard activation enter an editable line cell without requiring a double-click.
+  - Make Tab and Shift+Tab commit valid values and move predictably between editable cells; preserve normal arrow-key navigation and
+    skip read-only or locked landed-cost cells safely.
+  - Audit `Unit price`, `Unit weight g` and adjacent editable line fields plus DataGrid selection, edit lifecycle and keyboard routing.
+  - Preserve validation, receiving state, cost-allocation calculations, committed values and immutable landed-cost snapshots.
+  - Extend deterministic UI automation only where focus/navigation can be tested reliably; update Help for the supported edit and
+    keyboard contract and retain manual owner mouse/keyboard acceptance.
+  - Completion condition: owner accepts single-click entry and predictable arrows/Tab/Shift+Tab on unlocked lines while calculated
+    orders remain locked; Debug/Release, Help, automation, Full Data Verification and exact-state recovery gates pass.
 - **v62 parent closure**
-  - State: Planned after v62.0.0-v62.0.2 acceptance.
-  - Completion condition: all three recorded v62 defects are owner accepted, feedback/release evidence is reconciled and no v62
+  - State: Planned after v62.0.0-v62.0.3 acceptance.
+  - Completion condition: all four recorded v62 defects are owner accepted, feedback/release evidence is reconciled and no v62
     implementation item remains open.
 
 ### Intentionally unscheduled
