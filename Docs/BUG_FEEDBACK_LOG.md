@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 4 |
+| Open | 5 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 108 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **118** |
+| **Total tracked findings** | **119** |
 
 ## Triage categories
 
@@ -64,6 +64,26 @@ Verification evidence:
 ```
 
 ## Open findings — newest first
+
+Date: 2026-08-21
+Area: Website / Methodology / Heat Deflection
+Type: Website idea / Data issue
+Severity: Important
+Status: Open
+What happened: The public Methodology section documents Tensile, Impact and Stiffness, but it does not yet explain the Heat
+Deflection measurement introduced in v61. The overview chip, section navigation and measurement cards therefore present incomplete
+coverage of the current native testing programme.
+Expected behavior: Add Heat Deflection to the public Methodology overview and navigation, with an accurate dedicated section covering
+the specimen, fixture, heating and measurement workflow, governed result and units, method-version context, limitations and
+comparative—not certified—interpretation. Keep the website and governed methodology source synchronized.
+Steps to reproduce: Open the exported website, choose Methodology and review its overview, jump links and measurement cards. Heat
+Deflection is absent even though the application now records and publishes governed Heat Deflection results.
+Screenshot / export / report attached: None; owner request on 2026-08-21.
+Resolution: Scheduled as v63.0.0, Public Heat Deflection Methodology. Research the accepted v61 thermal contract and add a responsive,
+accessible Heat Deflection methodology section without exposing internal-only evidence. Update deterministic content/drift checks and
+locally preview the complete website at desktop and narrow widths. Production/FTPS publication remains separately guarded.
+Verification evidence: Not yet implemented. Requires source-contract review, Debug/Release, website Verification, local visual
+HTML/PDF review where applicable, owner content/layout acceptance and separate Production/FTPS authority before public activation.
 
 Date: 2026-08-18
 Area: Purchase Orders / Line-item editing and keyboard navigation

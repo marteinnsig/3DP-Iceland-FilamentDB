@@ -3036,6 +3036,27 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: all four recorded v62 defects are owner accepted, feedback/release evidence is reconciled and no v62
     implementation item remains open.
 
+## Planned — v63 Thermal Methodology Publication
+
+- **v63.0.0 — Public Heat Deflection Methodology**
+  - State: Planned after v62 closure; owner-requested Methodology update recorded on 2026-08-21.
+  - Add Heat Deflection to the Methodology overview chip, jump navigation and measurement content using the accepted v61 thermal
+    fixture, method-version, result and unit contracts as the canonical source.
+  - Explain specimen preparation, fixture and heating workflow, temperature capture, governed result, limitations and comparative
+    interpretation without presenting the in-house measurement as certified ISO or ASTM evidence.
+  - Keep the website Methodology portal and governed methodology source synchronized; do not expose private/internal evidence or
+    invent unsupported precision, calibration claims or test conditions.
+  - Extend deterministic content/drift Verification and locally preview the complete exported website at desktop and narrow widths.
+    Assess whether the linked methodology PDF requires the same thermal section to prevent contradictory public documentation.
+  - Production generation remains local and reviewable. Website or FTPS publication requires its separate guarded authorization and
+    exact previewed-byte evidence.
+  - Completion condition: owner accepts accurate Heat Deflection content and responsive layout; Debug/Release, website/documentation
+    Verification and applicable HTML/PDF visual review pass before any separately authorized public activation.
+- **v63 parent closure**
+  - State: Planned after v63.0.0 acceptance.
+  - Completion condition: the recorded thermal Methodology work is owner accepted, public documentation is internally consistent and
+    no v63 implementation item remains open.
+
 ### Intentionally unscheduled
 
 - The unresolved one-day Variant-edit crash remains an immediate defect
