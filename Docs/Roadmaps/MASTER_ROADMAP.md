@@ -3052,9 +3052,21 @@ blockers may change the order, but must be recorded here before implementation.
     exact previewed-byte evidence.
   - Completion condition: owner accepts accurate Heat Deflection content and responsive layout; Debug/Release, website/documentation
     Verification and applicable HTML/PDF visual review pass before any separately authorized public activation.
+- **v63.0.1 — Impact Chart Orientation-label Integrity**
+  - State: Planned after v63.0.0; owner-reported website chart-label bug recorded on 2026-08-22.
+  - Scope website terminology transforms to their owning chart so the Impact Resistance legend, headings and tooltips use `Impact
+    Strength Flat` and `Impact Strength Upright`.
+  - Preserve `Tensile Strength` and `Layer Adhesion Strength` on the tensile chart and prevent either terminology set from leaking into
+    the other chart.
+  - Do not change canonical flat/upright measurements, units, colors, calculations, stored data or report snapshots.
+  - Add deterministic rendering checks for both chart contracts and inspect the generated website at desktop and narrow widths.
+  - Production generation remains local and reviewable; website or FTPS publication requires separate guarded authorization and exact
+    previewed-byte evidence.
+  - Completion condition: owner accepts both charts with correct orientation-specific names; Debug/Release, website Verification and
+    local visual review pass without data or chart-series drift.
 - **v63 parent closure**
-  - State: Planned after v63.0.0 acceptance.
-  - Completion condition: the recorded thermal Methodology work is owner accepted, public documentation is internally consistent and
+  - State: Planned after v63.0.0-v63.0.1 acceptance.
+  - Completion condition: both recorded v63 website increments are owner accepted, public content is internally consistent and
     no v63 implementation item remains open.
 
 ### Intentionally unscheduled

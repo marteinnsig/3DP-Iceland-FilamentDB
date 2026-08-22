@@ -13,14 +13,14 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 5 |
+| Open | 6 |
 | In progress | 0 |
 | Partially solved | 0 |
 | Solved | 108 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **119** |
+| **Total tracked findings** | **120** |
 
 ## Triage categories
 
@@ -64,6 +64,26 @@ Verification evidence:
 ```
 
 ## Open findings — newest first
+
+Date: 2026-08-22
+Area: Website / Impact Resistance chart terminology
+Type: Bug / UI polish
+Severity: Important
+Status: Open
+What happened: The `Impact Resistance` chart shows `Layer Adhesion Strength` and `Tensile Strength` as its column/series names instead
+of the impact-orientation labels. The website terminology cleanup replaces a shared Flat/Upright legend without limiting the change to
+the tensile chart, so the Impact chart inherits tensile-specific wording.
+Expected behavior: The Impact Resistance chart must label its two series `Impact Strength Flat` and `Impact Strength Upright` and keep
+the matching impact units, values, colors and tooltips. The tensile chart must continue to use `Tensile Strength` and `Layer Adhesion
+Strength`; fixing one chart must not relabel the other.
+Steps to reproduce: Export or open the website, navigate to the chart titled `Impact Resistance` and inspect the two series/column
+labels. They display the tensile/layer-adhesion names rather than the flat/upright impact names.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-22.
+Resolution: Scheduled as v63.0.1, Impact Chart Orientation-label Integrity. Replace the global shared-legend substitution with
+chart-scoped terminology for headings, legend entries and tooltips. Add deterministic rendering checks that require correct labels on
+both tensile and impact charts and reject cross-chart leakage while preserving canonical measurements and calculations.
+Verification evidence: Not yet implemented. Requires Debug/Release, website Verification, desktop/narrow local preview and owner
+visual acceptance before closure; Production/FTPS publication remains separately guarded.
 
 Date: 2026-08-21
 Area: Website / Methodology / Heat Deflection
