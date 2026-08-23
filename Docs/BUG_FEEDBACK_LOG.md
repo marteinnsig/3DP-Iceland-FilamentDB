@@ -79,7 +79,7 @@ Strength`; fixing one chart must not relabel the other.
 Steps to reproduce: Export or open the website, navigate to the chart titled `Impact Resistance` and inspect the two series/column
 labels. They display the tensile/layer-adhesion names rather than the flat/upright impact names.
 Screenshot / export / report attached: None; owner runtime feedback on 2026-08-22.
-Resolution: Scheduled as v63.0.1, Impact Chart Orientation-label Integrity. Replace the global shared-legend substitution with
+Resolution: Scheduled as v63.0.0, Impact Chart Orientation-label Integrity. Replace the global shared-legend substitution with
 chart-scoped terminology for headings, legend entries and tooltips. Add deterministic rendering checks that require correct labels on
 both tensile and impact charts and reject cross-chart leakage while preserving canonical measurements and calculations.
 Verification evidence: Not yet implemented. Requires Debug/Release, website Verification, desktop/narrow local preview and owner
@@ -99,7 +99,7 @@ comparative—not certified—interpretation. Keep the website and governed meth
 Steps to reproduce: Open the exported website, choose Methodology and review its overview, jump links and measurement cards. Heat
 Deflection is absent even though the application now records and publishes governed Heat Deflection results.
 Screenshot / export / report attached: None; owner request on 2026-08-21.
-Resolution: Scheduled as v63.0.0, Public Heat Deflection Methodology. Research the accepted v61 thermal contract and add a responsive,
+Resolution: Scheduled as v63.0.1, Public Heat Deflection Methodology. Research the accepted v61 thermal contract and add a responsive,
 accessible Heat Deflection methodology section without exposing internal-only evidence. Update deterministic content/drift checks and
 locally preview the complete website at desktop and narrow widths. Production/FTPS publication remains separately guarded.
 Verification evidence: Not yet implemented. Requires source-contract review, Debug/Release, website Verification, local visual
@@ -118,7 +118,7 @@ Locked landed-cost inputs must remain read-only after a calculation snapshot has
 Steps to reproduce: Open Purchase Orders, select an unlocked order with a line, then try to enter `Unit price` and `Unit weight g`
 with one click. Try Tab, Shift+Tab and the arrow keys to continue through the line fields; editing/navigation does not work as expected.
 Screenshot / export / report attached: None; owner runtime feedback on 2026-08-18.
-Resolution: Scheduled as v62.0.3, Purchase-order Line Editor Focus and Keyboard Navigation. Audit DataGrid cell selection, edit
+Resolution: Scheduled as v62.0.2, Purchase-order Line Editor Focus and Keyboard Navigation. Audit DataGrid cell selection, edit
 activation, `BeginningEdit`, `CellEditEnding` and keyboard routing across the editable line fields. Preserve validation, committed
 values, cost allocation, receiving state and immutable landed-cost snapshots; navigation must skip read-only and locked cells safely.
 Verification evidence: Not yet implemented. Requires Debug/Release, Help and automation assessment, deterministic unlocked/locked
@@ -138,7 +138,7 @@ three is Partially tested and all four is Fully tested. Clearing or restoring a 
 Steps to reproduce: Open Materials after v61, inspect the test-coverage columns for a MaterialID with or without a Heat Deflection
 result, and compare them with the Heat Deflection tab. No `In Heat` column exists and Tested Status ignores that module.
 Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
-Resolution: Scheduled as v62.0.2, Materials Heat Coverage and Tested-status Integration. Add canonical `InHeat` compatibility through
+Resolution: Scheduled as v62.0.3, Materials Heat Coverage and Tested-status Integration. Add canonical `InHeat` compatibility through
 schema migration, material record/row mapping, Fast Materials layout, lifecycle synchronization, recovery/export and deterministic
 Verification. Derive coverage from valid Heat Deflection results by stable MaterialID; do not make the Materials flag independently
 editable or alter measurement evidence. Update Help and coverage registries for the new visible field and four-module status rule.

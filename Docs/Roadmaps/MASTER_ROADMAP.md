@@ -3010,18 +3010,8 @@ blockers may change the order, but must be recorded here before implementation.
     field behavior wording changes.
   - Completion condition: owner accepts immediate derived-value refresh without extra focus movement; Debug/Release, applicable Help
     and documentation gates, Full Data Verification and exact-state recovery pass.
-- **v62.0.2 — Materials Heat Coverage and Tested-status Integration**
-  - State: Planned after v62.0.1; owner-reported Materials coverage gap recorded on 2026-08-15.
-  - Add read-only `In Heat` immediately beside `In Stiffness`, derived from valid Heat Deflection results by stable MaterialID.
-  - Make `Tested Status` cover Tensile, Impact, Stiffness and Heat: zero is Not tested, one to three is Partially tested and all four
-    is Fully tested; result clearing/restoration must refresh both fields immediately.
-  - Extend canonical schema compatibility, material row/record mapping, lifecycle synchronization, recovery/export, Fast layout,
-    Help/coverage and deterministic Verification without making coverage manually editable.
-  - Preserve all measurement values, method snapshots, dates/notes, archived behavior and legacy database migration support.
-  - Completion condition: owner accepts the new column and four-module status across add/edit/clear/restart; schema, Debug/Release,
-    Help, Full Data Verification and disposable exact-state recovery gates pass.
-- **v62.0.3 — Purchase-order Line Editor Focus and Keyboard Navigation**
-  - State: Planned after v62.0.2; owner-reported Purchase Orders editing bug recorded on 2026-08-18.
+- **v62.0.2 — Purchase-order Line Editor Focus and Keyboard Navigation**
+  - State: Planned after v62.0.1; owner-reported Purchase Orders editing bug recorded on 2026-08-18.
   - Make one direct click or standard keyboard activation enter an editable line cell without requiring a double-click.
   - Make Tab and Shift+Tab commit valid values and move predictably between editable cells; preserve normal arrow-key navigation and
     skip read-only or locked landed-cost cells safely.
@@ -3031,15 +3021,37 @@ blockers may change the order, but must be recorded here before implementation.
     keyboard contract and retain manual owner mouse/keyboard acceptance.
   - Completion condition: owner accepts single-click entry and predictable arrows/Tab/Shift+Tab on unlocked lines while calculated
     orders remain locked; Debug/Release, Help, automation, Full Data Verification and exact-state recovery gates pass.
+- **v62.0.3 — Materials Heat Coverage and Tested-status Integration**
+  - State: Planned after v62.0.2; owner-reported Materials coverage gap recorded on 2026-08-15.
+  - Add read-only `In Heat` immediately beside `In Stiffness`, derived from valid Heat Deflection results by stable MaterialID.
+  - Make `Tested Status` cover Tensile, Impact, Stiffness and Heat: zero is Not tested, one to three is Partially tested and all four
+    is Fully tested; result clearing/restoration must refresh both fields immediately.
+  - Extend canonical schema compatibility, material row/record mapping, lifecycle synchronization, recovery/export, Fast layout,
+    Help/coverage and deterministic Verification without making coverage manually editable.
+  - Preserve all measurement values, method snapshots, dates/notes, archived behavior and legacy database migration support.
+  - Completion condition: owner accepts the new column and four-module status across add/edit/clear/restart; schema, Debug/Release,
+    Help, Full Data Verification and disposable exact-state recovery gates pass.
 - **v62 parent closure**
   - State: Planned after v62.0.0-v62.0.3 acceptance.
   - Completion condition: all four recorded v62 defects are owner accepted, feedback/release evidence is reconciled and no v62
     implementation item remains open.
 
-## Planned — v63 Thermal Methodology Publication
+## Planned — v63 Public Website Accuracy and Thermal Methodology
 
-- **v63.0.0 — Public Heat Deflection Methodology**
-  - State: Planned after v62 closure; owner-requested Methodology update recorded on 2026-08-21.
+- **v63.0.0 — Impact Chart Orientation-label Integrity**
+  - State: Planned after v62 closure; owner-reported website chart-label bug recorded on 2026-08-22.
+  - Scope website terminology transforms to their owning chart so the Impact Resistance legend, headings and tooltips use `Impact
+    Strength Flat` and `Impact Strength Upright`.
+  - Preserve `Tensile Strength` and `Layer Adhesion Strength` on the tensile chart and prevent either terminology set from leaking into
+    the other chart.
+  - Do not change canonical flat/upright measurements, units, colors, calculations, stored data or report snapshots.
+  - Add deterministic rendering checks for both chart contracts and inspect the generated website at desktop and narrow widths.
+  - Production generation remains local and reviewable; website or FTPS publication requires separate guarded authorization and exact
+    previewed-byte evidence.
+  - Completion condition: owner accepts both charts with correct orientation-specific names; Debug/Release, website Verification and
+    local visual review pass without data or chart-series drift.
+- **v63.0.1 — Public Heat Deflection Methodology**
+  - State: Planned after v63.0.0; owner-requested Methodology update recorded on 2026-08-21.
   - Add Heat Deflection to the Methodology overview chip, jump navigation and measurement content using the accepted v61 thermal
     fixture, method-version, result and unit contracts as the canonical source.
   - Explain specimen preparation, fixture and heating workflow, temperature capture, governed result, limitations and comparative
@@ -3052,18 +3064,6 @@ blockers may change the order, but must be recorded here before implementation.
     exact previewed-byte evidence.
   - Completion condition: owner accepts accurate Heat Deflection content and responsive layout; Debug/Release, website/documentation
     Verification and applicable HTML/PDF visual review pass before any separately authorized public activation.
-- **v63.0.1 — Impact Chart Orientation-label Integrity**
-  - State: Planned after v63.0.0; owner-reported website chart-label bug recorded on 2026-08-22.
-  - Scope website terminology transforms to their owning chart so the Impact Resistance legend, headings and tooltips use `Impact
-    Strength Flat` and `Impact Strength Upright`.
-  - Preserve `Tensile Strength` and `Layer Adhesion Strength` on the tensile chart and prevent either terminology set from leaking into
-    the other chart.
-  - Do not change canonical flat/upright measurements, units, colors, calculations, stored data or report snapshots.
-  - Add deterministic rendering checks for both chart contracts and inspect the generated website at desktop and narrow widths.
-  - Production generation remains local and reviewable; website or FTPS publication requires separate guarded authorization and exact
-    previewed-byte evidence.
-  - Completion condition: owner accepts both charts with correct orientation-specific names; Debug/Release, website Verification and
-    local visual review pass without data or chart-series drift.
 - **v63 parent closure**
   - State: Planned after v63.0.0-v63.0.1 acceptance.
   - Completion condition: both recorded v63 website increments are owner accepted, public content is internally consistent and
