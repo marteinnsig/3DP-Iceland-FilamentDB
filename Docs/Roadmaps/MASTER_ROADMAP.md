@@ -6,12 +6,12 @@ Last runtime-accepted baseline: **v63.0.1 — Public Heat Deflection Methodology
 
 Current canonical application release: **v63.0.1 — Public Heat Deflection Methodology**
 
-Current roadmap increment: **No implementation increment selected — open-feedback review required**
+Current roadmap increment: **No implementation increment selected — feedback ledger has zero active findings**
 
 Current acceptance note: v63.0.0-v63.0.1 and the v63 public-website-accuracy milestone are owner accepted; Verification passes 437/437.
 
-Next note: re-read the open feedback ledger before promoting one bounded increment; the unreproduced Variant-edit crash has priority
-if diagnostics make it reproducible.
+Next note: select and record one bounded increment before implementation. The unreproduced Variant-edit crash becomes active only if
+new diagnostics make it reproducible.
 Production and FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in

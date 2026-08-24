@@ -2,7 +2,7 @@
 
 Use this during the usage-mode period.
 
-## Status review — 2026-08-15
+## Status review — 2026-08-24
 
 This review preserves every original description and lifecycle status.
 `Solved` means the change is implemented, relevant gates pass and owner runtime
@@ -13,10 +13,10 @@ idea.
 
 | Status | Items |
 |---|---:|
-| Open | 6 |
+| Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 108 |
+| Solved | 114 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
@@ -65,48 +65,7 @@ Verification evidence:
 
 ## Open findings — newest first
 
-Date: 2026-08-22
-Area: Website / Impact Resistance chart terminology
-Type: Bug / UI polish
-Severity: Important
-Status: Resolved in v63.0.0; owner accepted 2026-08-24
-What happened: The `Impact Resistance` chart shows `Layer Adhesion Strength` and `Tensile Strength` as its column/series names instead
-of the impact-orientation labels. The website terminology cleanup replaces a shared Flat/Upright legend without limiting the change to
-the tensile chart, so the Impact chart inherits tensile-specific wording.
-Expected behavior: The Impact Resistance chart must label its two series `Impact Strength Flat` and `Impact Strength Upright` and keep
-the matching impact units, values, colors and tooltips. The tensile chart must continue to use `Tensile Strength` and `Layer Adhesion
-Strength`; fixing one chart must not relabel the other.
-Steps to reproduce: Export or open the website, navigate to the chart titled `Impact Resistance` and inspect the two series/column
-labels. They display the tensile/layer-adhesion names rather than the flat/upright impact names.
-Screenshot / export / report attached: None; owner runtime feedback on 2026-08-22.
-Resolution: Scheduled as v63.0.0, Impact Chart Orientation-label Integrity. Replace the global shared-legend substitution with
-chart-scoped terminology for headings, legend entries and tooltips. Add deterministic rendering checks that require correct labels on
-both tensile and impact charts and reject cross-chart leakage while preserving canonical measurements and calculations.
-Verification evidence: Chart-scoped legends/tooltips and actual-render leakage checks are implemented. Debug/Release pass; disposable
-profile `20260824213737-c2e22572` passes Full Data Verification 435/435 with exact business-state recovery. Owner accepts desktop and
-narrow local Preview rendering and confirms Verification PASS on 2026-08-24; Production/FTPS publication remains separately guarded.
-
-Date: 2026-08-21
-Area: Website / Methodology / Heat Deflection
-Type: Website idea / Data issue
-Severity: Important
-Status: Resolved in v63.0.1; owner accepted 2026-08-24
-What happened: The public Methodology section documents Tensile, Impact and Stiffness, but it does not yet explain the Heat
-Deflection measurement introduced in v61. The overview chip, section navigation and measurement cards therefore present incomplete
-coverage of the current native testing programme.
-Expected behavior: Add Heat Deflection to the public Methodology overview and navigation, with an accurate dedicated section covering
-the specimen, fixture, heating and measurement workflow, governed result and units, method-version context, limitations and
-comparative—not certified—interpretation. Keep the website and governed methodology source synchronized.
-Steps to reproduce: Open the exported website, choose Methodology and review its overview, jump links and measurement cards. Heat
-Deflection is absent even though the application now records and publishes governed Heat Deflection results.
-Screenshot / export / report attached: None; owner request on 2026-08-21.
-Resolution: Scheduled as v63.0.1, Public Heat Deflection Methodology. Research the accepted v61 thermal contract and add a responsive,
-accessible Heat Deflection methodology section without exposing internal-only evidence. Update deterministic content/drift checks and
-locally preview the complete website at desktop and narrow widths. Production/FTPS publication remains separately guarded.
-Verification evidence: Portal and whitepaper source are synchronized with deterministic drift gates. Isolated Debug/Release pass;
-profile `20260824215920-ede0ec4b` passes Full Data Verification 437/437 with exact business-state evidence. The 32-page PDF passes
-visual review. Owner accepts desktop/narrow HTML Preview content/layout and Verification on 2026-08-24; Production/FTPS publication
-remains separately guarded.
+No active findings.
 
 # 2026-07-28 - v59.0 navigation inventory and tab-order ownership
 
@@ -224,6 +183,49 @@ remains separately guarded.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Recent resolved findings — newest first
+
+Date: 2026-08-22
+Area: Website / Impact Resistance chart terminology
+Type: Bug / UI polish
+Severity: Important
+Status: Solved
+What happened: The `Impact Resistance` chart shows `Layer Adhesion Strength` and `Tensile Strength` as its column/series names instead
+of the impact-orientation labels. The website terminology cleanup replaces a shared Flat/Upright legend without limiting the change to
+the tensile chart, so the Impact chart inherits tensile-specific wording.
+Expected behavior: The Impact Resistance chart must label its two series `Impact Strength Flat` and `Impact Strength Upright` and keep
+the matching impact units, values, colors and tooltips. The tensile chart must continue to use `Tensile Strength` and `Layer Adhesion
+Strength`; fixing one chart must not relabel the other.
+Steps to reproduce: Export or open the website, navigate to the chart titled `Impact Resistance` and inspect the two series/column
+labels. They display the tensile/layer-adhesion names rather than the flat/upright impact names.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-22.
+Resolution: Scheduled as v63.0.0, Impact Chart Orientation-label Integrity. Replace the global shared-legend substitution with
+chart-scoped terminology for headings, legend entries and tooltips. Add deterministic rendering checks that require correct labels on
+both tensile and impact charts and reject cross-chart leakage while preserving canonical measurements and calculations.
+Verification evidence: Chart-scoped legends/tooltips and actual-render leakage checks are implemented. Debug/Release pass; disposable
+profile `20260824213737-c2e22572` passes Full Data Verification 435/435 with exact business-state recovery. Owner accepts desktop and
+narrow local Preview rendering and confirms Verification PASS on 2026-08-24; Production/FTPS publication remains separately guarded.
+
+Date: 2026-08-21
+Area: Website / Methodology / Heat Deflection
+Type: Website idea / Data issue
+Severity: Important
+Status: Solved
+What happened: The public Methodology section documents Tensile, Impact and Stiffness, but it does not yet explain the Heat
+Deflection measurement introduced in v61. The overview chip, section navigation and measurement cards therefore present incomplete
+coverage of the current native testing programme.
+Expected behavior: Add Heat Deflection to the public Methodology overview and navigation, with an accurate dedicated section covering
+the specimen, fixture, heating and measurement workflow, governed result and units, method-version context, limitations and
+comparative—not certified—interpretation. Keep the website and governed methodology source synchronized.
+Steps to reproduce: Open the exported website, choose Methodology and review its overview, jump links and measurement cards. Heat
+Deflection is absent even though the application now records and publishes governed Heat Deflection results.
+Screenshot / export / report attached: None; owner request on 2026-08-21.
+Resolution: Scheduled as v63.0.1, Public Heat Deflection Methodology. Research the accepted v61 thermal contract and add a responsive,
+accessible Heat Deflection methodology section without exposing internal-only evidence. Update deterministic content/drift checks and
+locally preview the complete website at desktop and narrow widths. Production/FTPS publication remains separately guarded.
+Verification evidence: Portal and whitepaper source are synchronized with deterministic drift gates. Isolated Debug/Release pass;
+profile `20260824215920-ede0ec4b` passes Full Data Verification 437/437 with exact business-state evidence. The 32-page PDF passes
+visual review. Owner accepts desktop/narrow HTML Preview content/layout and Verification on 2026-08-24; Production/FTPS publication
+remains separately guarded.
 
 Date: 2026-08-18
 Area: Purchase Orders / Line-item editing and keyboard navigation
@@ -365,7 +367,7 @@ Date: 2026-07-30
 Area: Application date entry and display / Purchase Orders / Materials
 Type: Workflow friction / Data issue
 Severity: Important
-Status: Resolved
+Status: Solved
 What happened: Dates entered manually are understood in Icelandic day-month-year order, while a Purchase Order created by the
 application receives `yyyy-MM-dd`. That value is copied unchanged into Materials `Purchase Date` and `Price Checked`, so equivalent
 user-facing date fields show different formats depending on their source.
@@ -542,7 +544,7 @@ Date: 2026-07-29
 Area: Public Printing Guidance / Base Material Catalog settings
 Type: Report idea / Data issue
 Severity: Important
-Status: Solved in v59.0.11
+Status: Solved
 What happened: Public Printing Guidance shows `Not recorded` for every canonical printing setting even when the MaterialID is linked
 to a Base Material Catalog row containing nozzle, bed, speed, cooling, drying, enclosure and printer/slicer guidance.
 Expected behavior: Resolve each eligible MaterialID through its canonical `BaseMaterialId` and show the matching Base Material Catalog
