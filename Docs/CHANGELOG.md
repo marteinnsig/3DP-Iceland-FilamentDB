@@ -2,6 +2,23 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v62.0.2 - Purchase-order Line Editor Focus and Keyboard Navigation
+
+- Gives the Purchase Order line grid the accepted one-click TextBox/ComboBox edit
+  activation and handled-events keyboard navigation path.
+- Commits valid values on Enter, Tab, Shift+Tab and arrow navigation, then moves
+  predictably across visible bound editable cells.
+- Skips dynamically locked landed-cost inputs while retaining editable receiving,
+  material-link, storage and Notes fields on calculated orders.
+- Does not attach generic bulk-update or paste actions to Purchase Order lines.
+- Updates both Purchase Order Help topics; deterministic Verification owns grid
+  configuration/lock scope while physical mouse and caret behavior remains manual.
+- Debug/Release pass with zero warnings/errors; Help 703/703, release documentation
+  and NuGet gates pass; disposable Full Data Verification passes 433/433 with exact
+  state recovery.
+- Owner accepts one-click, keyboard navigation and calculated-order lock behavior
+  and confirms Full Data Verification PASS on 2026-08-24; v62.0.2 is complete.
+
 ## v62.0.1 - Materials Pricing Derived-field Immediate Refresh
 
 - Recalculates MSRP/Landed USD and USD/kg synchronously when a committed Fast

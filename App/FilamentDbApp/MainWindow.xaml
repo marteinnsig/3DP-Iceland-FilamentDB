@@ -2159,6 +2159,10 @@
         <DataGrid Grid.Row="5" Name="PurchaseOrderLinesGrid" Style="{StaticResource HighPerformanceDataGrid}"
                   AutomationProperties.AutomationId="PurchaseOrderLinesGrid"
                   AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="False"
+                  SelectionMode="Single"
+                  SelectionUnit="CellOrRowHeader"
                   BeginningEdit="PurchaseOrderGrid_BeginningEdit"
                   CellEditEnding="PurchaseOrderGrid_CellEditEnding">
             <DataGrid.Columns>

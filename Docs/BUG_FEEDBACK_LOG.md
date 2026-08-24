@@ -105,25 +105,6 @@ locally preview the complete website at desktop and narrow widths. Production/FT
 Verification evidence: Not yet implemented. Requires source-contract review, Debug/Release, website Verification, local visual
 HTML/PDF review where applicable, owner content/layout acceptance and separate Production/FTPS authority before public activation.
 
-Date: 2026-08-18
-Area: Purchase Orders / Line-item editing and keyboard navigation
-Type: Bug / Workflow friction
-Severity: Important
-Status: Open
-What happened: Entering `Unit price` or `Unit weight g` on a Purchase Order line requires a double-click before the cell accepts
-input. Arrow keys and Tab cannot be used to move predictably through the editable line fields, forcing repeated mouse interaction.
-Expected behavior: A selected editable line cell must enter edit mode with one direct click or standard keyboard activation. Tab and
-Shift+Tab must commit a valid value and move to the next or previous editable cell, while arrow-key navigation remains predictable.
-Locked landed-cost inputs must remain read-only after a calculation snapshot has been saved.
-Steps to reproduce: Open Purchase Orders, select an unlocked order with a line, then try to enter `Unit price` and `Unit weight g`
-with one click. Try Tab, Shift+Tab and the arrow keys to continue through the line fields; editing/navigation does not work as expected.
-Screenshot / export / report attached: None; owner runtime feedback on 2026-08-18.
-Resolution: Scheduled as v62.0.2, Purchase-order Line Editor Focus and Keyboard Navigation. Audit DataGrid cell selection, edit
-activation, `BeginningEdit`, `CellEditEnding` and keyboard routing across the editable line fields. Preserve validation, committed
-values, cost allocation, receiving state and immutable landed-cost snapshots; navigation must skip read-only and locked cells safely.
-Verification evidence: Not yet implemented. Requires Debug/Release, Help and automation assessment, deterministic unlocked/locked
-editing coverage, Full Data Verification and owner mouse/keyboard runtime acceptance before closure.
-
 Date: 2026-08-15
 Area: Materials / Heat Deflection test coverage
 Type: Bug / Data issue
@@ -261,6 +242,25 @@ runtime/result-clear persistence, Full Data Verification, exact-state recovery a
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Recent resolved findings — newest first
+
+Date: 2026-08-18
+Area: Purchase Orders / Line-item editing and keyboard navigation
+Type: Bug / Workflow friction
+Severity: Important
+Status: Solved
+What happened: Entering `Unit price` or `Unit weight g` on a Purchase Order line requires a double-click before the cell accepts
+input. Arrow keys and Tab cannot be used to move predictably through the editable line fields, forcing repeated mouse interaction.
+Expected behavior: A selected editable line cell must enter edit mode with one direct click or standard keyboard activation. Tab and
+Shift+Tab must commit a valid value and move to the next or previous editable cell, while arrow-key navigation remains predictable.
+Locked landed-cost inputs must remain read-only after a calculation snapshot has been saved.
+Steps to reproduce: Open Purchase Orders, select an unlocked order with a line, then try to enter `Unit price` and `Unit weight g`
+with one click. Try Tab, Shift+Tab and the arrow keys to continue through the line fields; editing/navigation does not work as expected.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-18.
+Resolution: Solved in version v62.0.2 — 2026-08-24. Purchase Order lines use one-click activation and predictable
+Enter/Tab/Shift+Tab/arrow movement through editable cells while calculated landed-cost inputs remain dynamically skipped and locked.
+Verification evidence: Debug/Release pass with zero warnings/errors; Help 703/703, release documentation and NuGet audit pass;
+disposable profile `20260824204247-5a5c3eb2` passes Full Data Verification 433/433 with exact state recovery. Owner accepts mouse,
+keyboard and locked-order behavior and confirms Full Data Verification PASS on 2026-08-24.
 
 Date: 2026-08-15
 Area: Materials / Manual landed-cost pricing

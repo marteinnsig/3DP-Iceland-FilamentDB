@@ -1,3 +1,21 @@
+# v62.0.2 - Purchase-order Line Editor Focus and Keyboard Navigation
+
+Date: 2026-08-24
+
+- Debug and Release builds pass with zero warnings/errors.
+- Purchase Order lines use one-click cell activation plus Enter, Tab, Shift+Tab
+  and arrow commit/movement through visible bound editable cells.
+- Calculated orders skip locked Expected, Unit price, Discount, Unit weight g,
+  Allocate and Manual shipping while receiving/link/storage/Notes remain editable.
+- Both Purchase Order Help topics document the click, key and lock contract;
+  Help coverage passes 703/703.
+- Disposable profile `20260824204247-5a5c3eb2` passes Full Data Verification
+  433/433 with exact database and business-state recovery.
+- Release documentation, roadmap and NuGet gates pass. Generic bulk update/paste
+  was not attached to the Purchase Order line grid.
+- Owner accepts mouse, keyboard and calculated-order lock behavior and confirms
+  Full Data Verification PASS on 2026-08-24. Production and FTPS remain blocked.
+
 # v62.0.1 - Materials Pricing Derived-field Immediate Refresh
 
 Date: 2026-08-24

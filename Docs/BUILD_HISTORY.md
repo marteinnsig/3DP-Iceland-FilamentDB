@@ -2,6 +2,22 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v62.0.2 - Purchase-order Line Editor Focus and Keyboard Navigation
+
+The Purchase Order line grid now opts into the proven first-click and keyboard
+edit handlers without inheriting generic bulk mutation commands. Navigation commits
+the active cell, moves through visible bound columns and excludes dynamic financial
+inputs after a landed-cost snapshot is locked. Validation, calculation, receiving
+and immutable saved snapshot ownership remain unchanged. Both Purchase Order Help
+topics cover exact click/key/lock behavior. Deterministic Full Verification owns
+grid configuration and locked-column scope; physical mouse/caret behavior remains
+manual owner acceptance. Debug/Release pass with zero warnings/errors; Help 703/703,
+release documentation and NuGet gates pass. Disposable profile
+`20260824204247-5a5c3eb2` passes Full Data Verification 433/433 with exact database
+and business-state recovery. Owner accepts one-click, Tab/Shift+Tab/arrows and
+calculated-order lock skipping and confirms Full Data Verification PASS on
+2026-08-24.
+
 ## v62.0.1 - Materials Pricing Derived-field Immediate Refresh
 
 Committed Fast Materials pricing dependencies now update the canonical derived

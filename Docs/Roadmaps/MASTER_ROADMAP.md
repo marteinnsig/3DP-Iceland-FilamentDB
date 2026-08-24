@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v62.0.2 — Purchase-order Line Editor Focus and Keyboard Navigation (Planned)**
+Current roadmap increment: **v62.0.3 — Materials Heat Coverage and Tested-status Integration (Planned)**
 
 Current acceptance note: v61.0.8 and the complete v61 thermal foundation are owner accepted; Verification passes 430/430.
 
-Next note: v62.0.2 is the next bounded implementation; Production and FTPS remain blocked.
+Next note: v62.0.3 is the next bounded implementation; Production and FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -3025,7 +3025,7 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: owner accepts immediate derived-value refresh without extra focus movement; Debug/Release, applicable Help
     and documentation gates, Full Data Verification and exact-state recovery pass.
 - **v62.0.2 — Purchase-order Line Editor Focus and Keyboard Navigation**
-  - State: Planned after v62.0.1; owner-reported Purchase Orders editing bug recorded on 2026-08-18.
+  - State: Complete and owner runtime accepted on 2026-08-24; Full Data Verification passes 433/433.
   - Make one direct click or standard keyboard activation enter an editable line cell without requiring a double-click.
   - Make Tab and Shift+Tab commit valid values and move predictably between editable cells; preserve normal arrow-key navigation and
     skip read-only or locked landed-cost cells safely.
@@ -3033,6 +3033,13 @@ blockers may change the order, but must be recorded here before implementation.
   - Preserve validation, receiving state, cost-allocation calculations, committed values and immutable landed-cost snapshots.
   - Extend deterministic UI automation only where focus/navigation can be tested reliably; update Help for the supported edit and
     keyboard contract and retain manual owner mouse/keyboard acceptance.
+  - Help/automation assessment: both Purchase Order Help topics document exact click/key/lock behavior. Full Verification owns stable
+    grid configuration and unlocked/locked column scope; physical mouse/caret movement remains owner runtime acceptance.
+  - Candidate evidence: Debug/Release pass with zero warnings/errors; Help 703/703 and release documentation pass; disposable profile
+    `20260824204247-5a5c3eb2` passes Full Data Verification 433/433 with exact database/business-state recovery; direct/transitive
+    NuGet vulnerability audit reports no vulnerable packages.
+  - Owner acceptance: one-click, Tab/Shift+Tab/arrows and calculated-order lock skipping behave normally; Verification is PASS.
+  - Completion condition met: edit/navigation, lock preservation, Help, all gates and owner runtime acceptance pass.
   - Completion condition: owner accepts single-click entry and predictable arrows/Tab/Shift+Tab on unlocked lines while calculated
     orders remain locked; Debug/Release, Help, automation, Full Data Verification and exact-state recovery gates pass.
 - **v62.0.3 — Materials Heat Coverage and Tested-status Integration**

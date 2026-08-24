@@ -1178,6 +1178,19 @@ public partial class MainWindow : Window
             grid.CommandBindings.Add(new CommandBinding(ApplicationCommands.Paste, WorkflowGrid_PasteExecuted, WorkflowGrid_PasteCanExecute));
         }
 
+        if (FindName("PurchaseOrderLinesGrid") is DataGrid purchaseOrderLinesGrid)
+        {
+            purchaseOrderLinesGrid.RemoveHandler(
+                Keyboard.PreviewKeyDownEvent,
+                new KeyEventHandler(InputDataGrid_PreviewKeyDown));
+            purchaseOrderLinesGrid.AddHandler(
+                Keyboard.PreviewKeyDownEvent,
+                new KeyEventHandler(InputDataGrid_PreviewKeyDown),
+                true);
+            purchaseOrderLinesGrid.PreviewMouseLeftButtonDown -= WorkflowGrid_PreviewMouseLeftButtonDown;
+            purchaseOrderLinesGrid.PreviewMouseLeftButtonDown += WorkflowGrid_PreviewMouseLeftButtonDown;
+        }
+
         if (_nativeMaterialIntelligenceRefreshPending || _nativeMaterialRows.Count > 0)
         {
             _nativeMaterialIntelligenceRefreshPending = false;
@@ -1969,7 +1982,7 @@ public partial class MainWindow : Window
             System.Windows.Threading.DispatcherPriority.Background);
     }
 
-    private static void MoveDataGridSelection(DataGrid grid, Key direction)
+    private void MoveDataGridSelection(DataGrid grid, Key direction)
     {
         if (grid.Items.Count == 0) return;
         var columns = GetEditableWorkflowColumns(grid);
@@ -1980,20 +1993,35 @@ public partial class MainWindow : Window
         var columnIndex = grid.CurrentColumn is null ? -1 : columns.IndexOf(grid.CurrentColumn);
         if (columnIndex < 0) columnIndex = direction == Key.Left ? columns.Count - 1 : 0;
 
-        switch (direction)
+        if (direction is Key.Left or Key.Right)
         {
-            case Key.Right:
-                if (++columnIndex >= columns.Count) { columnIndex = 0; rowIndex++; }
-                break;
-            case Key.Left:
-                if (--columnIndex < 0) { columnIndex = columns.Count - 1; rowIndex--; }
-                break;
-            case Key.Down: rowIndex++; break;
-            case Key.Up: rowIndex--; break;
+            var step = direction == Key.Left ? -1 : 1;
+            var flatIndex = rowIndex * columns.Count + columnIndex;
+            var maxFlatIndex = grid.Items.Count * columns.Count - 1;
+            while (true)
+            {
+                var nextFlatIndex = Math.Clamp(flatIndex + step, 0, maxFlatIndex);
+                if (nextFlatIndex == flatIndex) return;
+                flatIndex = nextFlatIndex;
+                rowIndex = flatIndex / columns.Count;
+                columnIndex = flatIndex % columns.Count;
+                if (IsWorkflowCellEditable(grid, grid.Items[rowIndex], columns[columnIndex])) break;
+            }
         }
-
-        rowIndex = Math.Clamp(rowIndex, 0, grid.Items.Count - 1);
-        columnIndex = Math.Clamp(columnIndex, 0, columns.Count - 1);
+        else
+        {
+            rowIndex = Math.Clamp(
+                rowIndex + (direction == Key.Up ? -1 : 1),
+                0,
+                grid.Items.Count - 1);
+            if (!IsWorkflowCellEditable(grid, grid.Items[rowIndex], columns[columnIndex]))
+            {
+                var editableColumnIndex = columns.FindIndex(column =>
+                    IsWorkflowCellEditable(grid, grid.Items[rowIndex], column));
+                if (editableColumnIndex < 0) return;
+                columnIndex = editableColumnIndex;
+            }
+        }
         var item = grid.Items[rowIndex];
         var column = columns[columnIndex];
         // CurrentCell can automatically enter SelectedCells. Do not also select the
@@ -2033,6 +2061,15 @@ public partial class MainWindow : Window
         .Where(c => c.Visibility == Visibility.Visible && !c.IsReadOnly && GetBoundPropertyName(c) is not null)
         .OrderBy(c => c.DisplayIndex)
         .ToList();
+
+    private bool IsWorkflowCellEditable(
+        DataGrid grid,
+        object? rowItem,
+        DataGridColumn column) =>
+        column.Visibility == Visibility.Visible &&
+        !column.IsReadOnly &&
+        GetBoundPropertyName(column) is not null &&
+        !IsPurchaseOrderFinancialEditLocked(grid, rowItem, column.Header?.ToString());
 
     private void WorkflowGrid_CopyCanExecute(object sender, CanExecuteRoutedEventArgs e)
     {
@@ -15475,6 +15512,56 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             materialPricingImmediateRefreshReady
                 ? "Committed MSRP/Landed amount, currency and spool-weight dependencies refresh canonical USD and USD/kg snapshot cells immediately"
                 : "Pricing dependency recompute, owner-drawn snapshot refresh, normalization or unrelated Material preservation failed"));
+        var purchaseLineEditingReady = false;
+        if (FindName("PurchaseOrderLinesGrid") is DataGrid purchaseLineGrid)
+        {
+            var editableHeaders = GetEditableWorkflowColumns(purchaseLineGrid)
+                .Select(column => column.Header?.ToString() ?? string.Empty)
+                .ToList();
+            var lockedOrderProbe = new PurchaseOrderRecord
+            {
+                LandedCostCalculationVersion = LandedCostCalculationVersion
+            };
+            var lockedHeaders = editableHeaders
+                .Where(header => !IsPurchaseOrderFinancialEditLocked(
+                    purchaseLineGrid,
+                    lockedOrderProbe,
+                    header))
+                .ToHashSet(StringComparer.Ordinal);
+            purchaseLineEditingReady =
+                purchaseLineGrid.SelectionMode == DataGridSelectionMode.Single &&
+                purchaseLineGrid.SelectionUnit == DataGridSelectionUnit.CellOrRowHeader &&
+                !purchaseLineGrid.CanUserAddRows &&
+                editableHeaders.Contains("Unit price", StringComparer.Ordinal) &&
+                editableHeaders.Contains("Unit weight g", StringComparer.Ordinal) &&
+                editableHeaders.Contains("Received", StringComparer.Ordinal) &&
+                editableHeaders.Contains("Notes", StringComparer.Ordinal) &&
+                !lockedHeaders.Contains("Expected") &&
+                !lockedHeaders.Contains("Unit price") &&
+                !lockedHeaders.Contains("Discount") &&
+                !lockedHeaders.Contains("Unit weight g") &&
+                !lockedHeaders.Contains("Allocate") &&
+                !lockedHeaders.Contains("Manual shipping") &&
+                lockedHeaders.Contains("Received") &&
+                lockedHeaders.Contains("Check") &&
+                lockedHeaders.Contains("Storage location") &&
+                lockedHeaders.Contains("Notes") &&
+                typeof(MainWindow).GetMethod(
+                    "WorkflowGrid_PreviewMouseLeftButtonDown",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+                typeof(MainWindow).GetMethod(
+                    "InputDataGrid_PreviewKeyDown",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+                typeof(MainWindow).GetMethod(
+                    "MoveDataGridSelection",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
+        }
+        checks.Add(new VerificationCheck(
+            "v62.0.2 Purchase-order line first-click and keyboard navigation contract",
+            purchaseLineEditingReady,
+            purchaseLineEditingReady
+                ? "Single-cell first-click plus Enter/Tab/Shift+Tab/arrows use editable columns and skip locked landed-cost inputs"
+                : "Purchase-line activation, keyboard routing, editable-column scope or locked-input skip contract failed"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",

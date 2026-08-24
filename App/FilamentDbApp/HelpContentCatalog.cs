@@ -286,6 +286,9 @@ internal static class HelpContentCatalog
             Line ID is read-only. Edit description, Category, SKU, Expected/Received quantity, Check state, optional Material link,
             storage, unit price, discount, unit weight, allocation toggle/manual shipping and Notes. Net/allocated/landed values and
             Allocation status are calculated. Categories are Filament, Printer, Equipment, Spare Parts, Consumables and Other.
+            One direct click enters an unlocked line cell. Enter, Tab and Shift+Tab commit a valid value and move through editable
+            cells; arrow keys commit and move in their direction. Navigation skips calculated/read-only columns and landed-cost
+            inputs locked by a saved calculation snapshot while receiving, material-link, storage and Notes fields remain available.
 
             ECB and landed costs
             Refresh ECB Reference is optional and offline-safe. New Order also refreshes a missing or more-than-24-hour-old cache,
@@ -366,6 +369,12 @@ internal static class HelpContentCatalog
             Net line, Shipping allocated, Tax allocated, Customs allocated, Fees allocated, Landed line, Landed / unit and Landed / kg
             are calculated/read-only. Allocation status explains incomplete/invalid allocation and must be resolved before downstream
             creation.
+
+            Line editing and keyboard movement
+            One direct click activates an unlocked TextBox or ComboBox cell. Enter and Tab commit a valid value and move forward;
+            Shift+Tab moves backward. Arrow keys commit and move left, right, up or down through editable cells. Navigation skips
+            calculated/read-only columns. After a landed-cost snapshot is saved it also skips locked Expected, Unit price, Discount,
+            Unit weight g, Allocate and Manual shipping inputs; receiving, Check, material link, storage and Notes remain editable.
 
             Save and history rules
             Header and line edits auto-save after a valid commit. Calculation or receiving commands first commit pending editors.
