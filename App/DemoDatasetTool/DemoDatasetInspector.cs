@@ -64,7 +64,7 @@ internal static class DemoDatasetInspector
                 "MaterialId", "Manufacturer", "ProductLine", "MarketingName",
                 "BaseMaterial", "MaterialCategory", "VariantFinish",
                 "Reinforcement", "Color", "DiameterMm", "TestedStatus",
-                "InTensile", "InImpact", "InStiffness", "SortOrder",
+                "InTensile", "InImpact", "InStiffness", "InHeat", "SortOrder",
                 "WebsiteDisplayName", "IsArchived", "UpdatedAtUtc",
                 "PublishPublicReports", "PublishPublicTestDetails",
                 "NozzleTemperatureMinC", "NozzleTemperatureRecommendedC",

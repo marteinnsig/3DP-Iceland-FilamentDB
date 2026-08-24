@@ -105,27 +105,6 @@ locally preview the complete website at desktop and narrow widths. Production/FT
 Verification evidence: Not yet implemented. Requires source-contract review, Debug/Release, website Verification, local visual
 HTML/PDF review where applicable, owner content/layout acceptance and separate Production/FTPS authority before public activation.
 
-Date: 2026-08-15
-Area: Materials / Heat Deflection test coverage
-Type: Bug / Data issue
-Severity: Important
-Status: Open
-What happened: Materials exposes read-only `In Tensile`, `In Impact` and `In Stiffness` coverage beside `Tested Status`, but the
-canonical Heat Deflection measurement added in v61 has no corresponding `In Heat` Yes/No column. `Tested Status` still counts only
-the three legacy measurement modules, so it can report Fully tested without considering Heat Deflection coverage.
-Expected behavior: Add read-only `In Heat` immediately beside `In Stiffness`. It is `Yes` only when the MaterialID has a valid Heat
-Deflection result and otherwise `No`. `Tested Status` must evaluate all four native measurement modules: zero is Not tested, one to
-three is Partially tested and all four is Fully tested. Clearing or restoring a Heat result must update both fields immediately.
-Steps to reproduce: Open Materials after v61, inspect the test-coverage columns for a MaterialID with or without a Heat Deflection
-result, and compare them with the Heat Deflection tab. No `In Heat` column exists and Tested Status ignores that module.
-Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
-Resolution: Scheduled as v62.0.3, Materials Heat Coverage and Tested-status Integration. Add canonical `InHeat` compatibility through
-schema migration, material record/row mapping, Fast Materials layout, lifecycle synchronization, recovery/export and deterministic
-Verification. Derive coverage from valid Heat Deflection results by stable MaterialID; do not make the Materials flag independently
-editable or alter measurement evidence. Update Help and coverage registries for the new visible field and four-module status rule.
-Verification evidence: Not yet implemented. Requires schema migration/current-schema coverage, Debug/Release, Help, disposable
-runtime/result-clear persistence, Full Data Verification, exact-state recovery and owner runtime acceptance before closure.
-
 # 2026-07-28 - v59.0 navigation inventory and tab-order ownership
 
 - **v59.0.2 implementation:** A grouped Navigate menu now exposes six ordered
@@ -261,6 +240,22 @@ Enter/Tab/Shift+Tab/arrow movement through editable cells while calculated lande
 Verification evidence: Debug/Release pass with zero warnings/errors; Help 703/703, release documentation and NuGet audit pass;
 disposable profile `20260824204247-5a5c3eb2` passes Full Data Verification 433/433 with exact state recovery. Owner accepts mouse,
 keyboard and locked-order behavior and confirms Full Data Verification PASS on 2026-08-24.
+
+Date: 2026-08-15
+Area: Materials / Heat Deflection test coverage
+Type: Bug / Data issue
+Severity: Important
+Status: Solved
+What happened: Materials lacked read-only `In Heat`, and Tested Status counted only Tensile, Impact and Stiffness.
+Expected behavior: Derive `In Heat` from valid canonical Heat Deflection results and evaluate Tested Status across all four modules.
+Steps to reproduce: Compare Materials coverage/status with Heat Deflection results, including add, clear and restart.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
+Resolution: Solved in version v62.0.3 — 2026-08-24. Schema v42, Fast Materials and lifecycle synchronization add canonical
+read-only Heat coverage and four-module Tested Status. A versioned migration places the new column after the user's saved In Stiffness
+position once while preserving all other saved layout choices.
+Verification evidence: Debug/Release, Help 703/703, documentation and NuGet gates pass. Profile `20260824212528-729ab735` passes
+Full Data Verification 434/434, Heat create/update/clear/restart and exact state recovery. Owner accepts values, status behavior and
+corrected column placement on 2026-08-24.
 
 Date: 2026-08-15
 Area: Materials / Manual landed-cost pricing

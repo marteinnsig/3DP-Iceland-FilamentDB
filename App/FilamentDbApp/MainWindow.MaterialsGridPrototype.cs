@@ -11,6 +11,7 @@ namespace FilamentDbApp;
 
 public partial class MainWindow
 {
+    private const int FastMaterialsLayoutContractVersion = 1;
     private static readonly IComparer<string> CanonicalMaterialIdComparer =
         Comparer<string>.Create(CompareCanonicalMaterialIds);
 
@@ -143,7 +144,18 @@ public partial class MainWindow
     private MaterialsRenderingPrototypeView CreateMaterialsRenderingPrototypeView(bool directCanonicalEditing)
     {
         var columns = BuildFastMaterialsColumns();
-        columns = ApplyFastMaterialsLayout(columns, _workflowPreferencesService.GetFastMaterialsGridLayout());
+        var savedLayout = _workflowPreferencesService.GetFastMaterialsGridLayout();
+        var migrationRequired =
+            _workflowPreferencesService.GetFastMaterialsLayoutContractVersion() < FastMaterialsLayoutContractVersion;
+        var migratedLayout = migrationRequired
+            ? MigrateFastMaterialsHeatColumnLayout(columns, savedLayout)
+            : savedLayout;
+        if (migrationRequired)
+        {
+            _workflowPreferencesService.SetFastMaterialsGridLayout(migratedLayout);
+            _workflowPreferencesService.SetFastMaterialsLayoutContractVersion(FastMaterialsLayoutContractVersion);
+        }
+        columns = ApplyFastMaterialsLayout(columns, migratedLayout);
 
         var rows = BuildMaterialsPrototypeRows(columns);
 
@@ -179,6 +191,7 @@ public partial class MainWindow
             FastMaterialsColumn("In Tensile", 90, "InTensile", true),
             FastMaterialsColumn("In Impact", 90, "InImpact", true),
             FastMaterialsColumn("In Stiffness", 95, "InStiffness", true),
+            FastMaterialsColumn("In Heat", 85, "InHeat", true),
             FastMaterialsColumn("Notes", 220, "Notes", false),
             FastMaterialsColumn("Website Display Name", 240, "WebsiteDisplayName", true),
             FastMaterialsColumn("Manufacturer Website", 260, "ManufacturerWebsite", false),
@@ -365,6 +378,37 @@ public partial class MainWindow
             .Select(item => item.Column)
             .ToList();
         return resized.Count == columns.Count ? resized : columns;
+    }
+
+    private static IReadOnlyList<WorkflowColumnLayout> MigrateFastMaterialsHeatColumnLayout(
+        IReadOnlyList<MaterialsPrototypeColumn> columns,
+        IReadOnlyList<WorkflowColumnLayout> savedLayout)
+    {
+        const string stiffnessKey = "binding:InStiffness";
+        const string heatKey = "binding:InHeat";
+        if (savedLayout.Count == 0) return savedLayout;
+
+        var stiffness = savedLayout.FirstOrDefault(item =>
+            string.Equals(item.Key, stiffnessKey, StringComparison.Ordinal));
+        var heatColumn = columns.FirstOrDefault(column =>
+            string.Equals(PrototypeColumnKey(column), heatKey, StringComparison.Ordinal));
+        if (stiffness is null || heatColumn is null) return savedLayout;
+
+        var heatWidth = savedLayout.FirstOrDefault(item =>
+            string.Equals(item.Key, heatKey, StringComparison.Ordinal))?.Width ?? heatColumn.Width;
+        var orderedWithoutHeat = savedLayout
+            .Where(item => !string.Equals(item.Key, heatKey, StringComparison.Ordinal))
+            .OrderBy(item => item.DisplayIndex)
+            .ToList();
+        var stiffnessIndex = orderedWithoutHeat.FindIndex(item =>
+            string.Equals(item.Key, stiffnessKey, StringComparison.Ordinal));
+        if (stiffnessIndex < 0) return savedLayout;
+
+        orderedWithoutHeat.Insert(stiffnessIndex + 1,
+            new WorkflowColumnLayout(heatKey, heatWidth, stiffnessIndex + 1));
+        return orderedWithoutHeat
+            .Select((item, index) => item with { DisplayIndex = index })
+            .ToList();
     }
 
     private static string PrototypeColumnKey(MaterialsPrototypeColumn column) =>

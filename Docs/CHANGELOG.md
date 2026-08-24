@@ -2,6 +2,21 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v62.0.3 - Materials Heat Coverage and Tested-status Integration
+
+- Adds read-only `In Heat` immediately after `In Stiffness` in Fast Materials.
+- Derives Heat coverage from valid canonical Heat Deflection results by stable MaterialID; the field is never independently editable.
+- Changes Tested Status to Not tested for zero modules, Partially tested for one to three, and Fully tested only for all four.
+- Introduces schema v42 `InHeat` compatibility across SQLite persistence, material mappings, spreadsheet export, recovery and report fingerprints.
+- Refreshes Materials immediately after Heat add/update/clear and extends disposable thermal automation to verify Yes/No persistence.
+- Updates Materials Help and deterministic Full Verification.
+- Migrates existing saved Materials layouts by inserting `In Heat` immediately after their saved `In Stiffness` position without
+  resetting any other saved width/order; this corrects the owner-observed new-column fallback to the far right.
+- The migration is one-time/versioned, including repair of the initially appended `DisplayIndex 52`; later intentional user moves remain saved.
+- Debug/Release, Help 703/703, documentation and NuGet gates pass. Canonical-seed profile `20260824212528-729ab735` passes
+  Full Data Verification 434/434 with exact business-state recovery.
+- Owner accepts Heat values, four-module status behavior and corrected saved-layout placement on 2026-08-24; v62.0.3 is complete.
+
 ## v62.0.2 - Purchase-order Line Editor Focus and Keyboard Navigation
 
 - Gives the Purchase Order line grid the accepted one-click TextBox/ComboBox edit

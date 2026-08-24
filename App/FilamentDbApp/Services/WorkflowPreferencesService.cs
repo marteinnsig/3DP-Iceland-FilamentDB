@@ -174,6 +174,15 @@ public sealed class WorkflowPreferencesService
     public IReadOnlyList<WorkflowColumnLayout> GetFastMaterialsGridLayout() =>
         GetFastGridLayout("Materials");
 
+    public int GetFastMaterialsLayoutContractVersion() =>
+        _preferences.FastMaterialsLayoutContractVersion;
+
+    public void SetFastMaterialsLayoutContractVersion(int version)
+    {
+        _preferences.FastMaterialsLayoutContractVersion = Math.Max(0, version);
+        Save();
+    }
+
     public IReadOnlyList<WorkflowColumnLayout> GetFastGridLayout(string workspace)
     {
         var layout = string.Equals(workspace, "Materials", StringComparison.Ordinal) &&
@@ -493,6 +502,7 @@ public sealed class WorkflowPreferencesService
         public string AiAssistantProviderId { get; set; } = LocalAiAssistantProvider.Id;
         public string AiAssistantModel { get; set; } = OpenAiAssistantProviderFoundation.DefaultModel;
         public List<WorkflowColumnLayout> FastMaterialsGridLayout { get; set; } = new();
+        public int FastMaterialsLayoutContractVersion { get; set; }
         public Dictionary<string, List<WorkflowColumnLayout>> FastGridLayouts { get; set; } = new(StringComparer.Ordinal);
         public Dictionary<string, List<double>> GridColumnWidths { get; set; } = new(StringComparer.Ordinal);
         public Dictionary<string, List<GridColumnPreference>> GridColumnLayouts { get; set; } = new(StringComparer.Ordinal);

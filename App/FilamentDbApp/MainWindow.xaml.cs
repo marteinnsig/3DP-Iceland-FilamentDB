@@ -309,6 +309,10 @@ public partial class MainWindow : Window
             resultTemperatureC.HasValue ? "2026-08-14" : null,
             notes);
         ReloadNativeThermalDeflectionRows();
+        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
+        if (!SaveNativeMaterialsSilent())
+            throw new InvalidOperationException("Thermal automation could not persist Materials Heat coverage.");
+        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
     }
 
     private void AutomationThermalCreate_Click(object sender, RoutedEventArgs e)
@@ -13404,12 +13408,12 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
     private void AddNativeMaterialsSheet(XLWorkbook workbook)
     {
         var ws = workbook.Worksheets.Add("00 Materials");
-        var headers = new[] { "MaterialID", "Manufacturer", "Product Line", "Marketing Name", "Base Material", "Category", "Variant/Finish", "Reinforcement", "Color", "Diameter mm", "Spool Weight g", "Manufacturer SKU", "Inventory ID", "Purchase ID", "Purchased From", "Supplier URL", "Purchase Date", "Order Number", "Batch Number", "Storage Location", "Inventory Status", "Quantity", "Remaining Weight g", "Purchase Price", "Purchase Currency", "Shipping", "VAT", "MSRP Amount", "MSRP Currency", "MSRP USD", "Landed Cost Amount", "Landed Cost Currency", "Landed Cost USD", "MSRP USD/kg", "Landed USD/kg", "Price Checked Date", "Manufacturer Website", "YouTube Review URL", "Thumbnail Filename", "Video", "Notes", "Tested Status", "In Tensile", "In Impact", "In Stiffness", "Sort Order", "Source Priority", "Website Display Name", "Material Key", "Publish Public Reports", "Publish Public Test Details", "Archived", "Validation" };
+        var headers = new[] { "MaterialID", "Manufacturer", "Product Line", "Marketing Name", "Base Material", "Category", "Variant/Finish", "Reinforcement", "Color", "Diameter mm", "Spool Weight g", "Manufacturer SKU", "Inventory ID", "Purchase ID", "Purchased From", "Supplier URL", "Purchase Date", "Order Number", "Batch Number", "Storage Location", "Inventory Status", "Quantity", "Remaining Weight g", "Purchase Price", "Purchase Currency", "Shipping", "VAT", "MSRP Amount", "MSRP Currency", "MSRP USD", "Landed Cost Amount", "Landed Cost Currency", "Landed Cost USD", "MSRP USD/kg", "Landed USD/kg", "Price Checked Date", "Manufacturer Website", "YouTube Review URL", "Thumbnail Filename", "Video", "Notes", "Tested Status", "In Tensile", "In Impact", "In Stiffness", "In Heat", "Sort Order", "Source Priority", "Website Display Name", "Material Key", "Publish Public Reports", "Publish Public Test Details", "Archived", "Validation" };
         WriteHeader(ws, 1, headers);
         var r = 2;
         foreach (var m in _nativeMaterialRows)
         {
-            var values = new object?[] { m.MaterialID, m.Manufacturer, m.ProductLine, m.MarketingName, m.BaseMaterial, m.MaterialCategory, m.VariantFinish, m.Reinforcement, m.Color, m.DiameterMm, m.SpoolWeightG, m.ManufacturerSku, m.InventoryId, m.PurchaseId, m.PurchasedFrom, m.SupplierUrl, m.PurchaseDate, m.OrderNumber, m.BatchNumber, m.StorageLocation, m.InventoryStatus, m.Quantity, m.RemainingWeightG, m.PurchasePriceAmount, m.PurchaseCurrency, m.ShippingAmount, m.VatAmount, m.MsrpAmount, m.MsrpCurrency, m.MsrpUsd, m.LandedCostAmount, m.LandedCostCurrency, m.LandedCostUsd, m.MsrpUsdPerKg, m.LandedCostUsdPerKg, m.PriceCheckedDate, m.ManufacturerWebsite, m.YouTubeReviewUrl, m.ThumbnailFilename, m.Video, m.Notes, m.TestedStatus, m.InTensile, m.InImpact, m.InStiffness, m.SortOrder, m.SourcePriority, m.WebsiteDisplayName, m.MaterialKey, m.PublishPublicReports ? "Yes" : "No", m.PublishPublicTestDetails ? "Yes" : "No", m.IsArchived ? "Yes" : "No", m.ValidationSummary };
+            var values = new object?[] { m.MaterialID, m.Manufacturer, m.ProductLine, m.MarketingName, m.BaseMaterial, m.MaterialCategory, m.VariantFinish, m.Reinforcement, m.Color, m.DiameterMm, m.SpoolWeightG, m.ManufacturerSku, m.InventoryId, m.PurchaseId, m.PurchasedFrom, m.SupplierUrl, m.PurchaseDate, m.OrderNumber, m.BatchNumber, m.StorageLocation, m.InventoryStatus, m.Quantity, m.RemainingWeightG, m.PurchasePriceAmount, m.PurchaseCurrency, m.ShippingAmount, m.VatAmount, m.MsrpAmount, m.MsrpCurrency, m.MsrpUsd, m.LandedCostAmount, m.LandedCostCurrency, m.LandedCostUsd, m.MsrpUsdPerKg, m.LandedCostUsdPerKg, m.PriceCheckedDate, m.ManufacturerWebsite, m.YouTubeReviewUrl, m.ThumbnailFilename, m.Video, m.Notes, m.TestedStatus, m.InTensile, m.InImpact, m.InStiffness, m.InHeat, m.SortOrder, m.SourcePriority, m.WebsiteDisplayName, m.MaterialKey, m.PublishPublicReports ? "Yes" : "No", m.PublishPublicTestDetails ? "Yes" : "No", m.IsArchived ? "Yes" : "No", m.ValidationSummary };
             for (var c = 0; c < values.Length; c++) ws.Cell(r, c + 1).Value = values[c]?.ToString() ?? string.Empty;
             r++;
         }
@@ -15381,7 +15385,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Black/Yellow/Black Color-only changes reach all measurement rows by MaterialID without changing samples or notes"
                 : "A named identity field failed to refresh independently or measurement-owned evidence changed"));
         var thermalDeflectionImportFoundationReady =
-            BuildInfo.CurrentDatabaseSchema == 41 &&
+            BuildInfo.CurrentDatabaseSchema == 42 &&
             LocalDatabase.RunThermalDeflectionPersistenceContractVerification();
         checks.Add(new VerificationCheck(
             "v61.0.1 Thermal deflection schema, method and persistence contract",
@@ -15562,6 +15566,37 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             purchaseLineEditingReady
                 ? "Single-cell first-click plus Enter/Tab/Shift+Tab/arrows use editable columns and skip locked landed-cost inputs"
                 : "Purchase-line activation, keyboard routing, editable-column scope or locked-input skip contract failed"));
+        var savedHeatLayoutProbe = MigrateFastMaterialsHeatColumnLayout(
+            BuildFastMaterialsColumns(),
+            [
+                new WorkflowColumnLayout("binding:MaterialID", 100, 0),
+                new WorkflowColumnLayout("binding:InStiffness", 95, 1),
+                new WorkflowColumnLayout("binding:Notes", 220, 2),
+                new WorkflowColumnLayout("binding:InHeat", 85, 52)
+            ]);
+        var savedHeatLayoutMigrationReady =
+            savedHeatLayoutProbe.Single(item => item.Key == "binding:InStiffness").DisplayIndex == 1 &&
+            savedHeatLayoutProbe.Single(item => item.Key == "binding:InHeat").DisplayIndex == 2 &&
+            savedHeatLayoutProbe.Single(item => item.Key == "binding:Notes").DisplayIndex == 3;
+        var heatCoverageReady =
+            BuildInfo.CurrentDatabaseSchema == 42 &&
+            BuildFastMaterialsColumns().Any(column =>
+                string.Equals(column.Header, "In Heat", StringComparison.Ordinal) &&
+                string.Equals(column.PropertyName, "InHeat", StringComparison.Ordinal) &&
+                column.IsReadOnly) &&
+            savedHeatLayoutMigrationReady &&
+            _nativeMaterialRows.Where(row => !string.IsNullOrWhiteSpace(row.MaterialID)).All(row =>
+                string.Equals(row.InHeat,
+                    _database.GetThermalDeflectionResults().ContainsKey(row.MaterialID.Trim()) ? "Yes" : "No",
+                    StringComparison.OrdinalIgnoreCase)) &&
+            _nativeMaterialRows.All(row =>
+                string.Equals(row.TestedStatus, BuildNativeMaterialTestedStatus(row), StringComparison.Ordinal));
+        checks.Add(new VerificationCheck(
+            "v62.0.3 Materials Heat coverage and four-module Tested Status contract",
+            heatCoverageReady,
+            heatCoverageReady
+                ? "Schema v42, read-only In Heat, saved-layout placement and four-module Tested Status match canonical Heat Deflection results"
+                : "Schema, In Heat layout/migration, Heat-result projection or four-module Tested Status drifted"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",
@@ -17232,11 +17267,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
              GetCanonicalVisibleMaterialReportRows().All(row => !IsTruthy(GetCell(row, "Archived"))));
         var nativeReportSummaryMap = BuildVerifiedMaterialSummaryMap(GetNativeWebsiteExportCandidateRows());
         var activeNativeMaterials = _nativeMaterialRows.Where(row => !row.IsArchived && !string.IsNullOrWhiteSpace(row.MaterialID)).ToList();
+        var thermalCoverageIds = _database.GetThermalDeflectionResults().Keys
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         var materialSummarySourceParityReady = activeNativeMaterials.Count == 0 ||
             (activeNativeMaterials.Count(row => string.Equals(row.InTensile, "Yes", StringComparison.OrdinalIgnoreCase)) == activeNativeMaterials.Count(row => nativeReportSummaryMap.TryGetValue(row.MaterialID.Trim(), out var summary) && summary.HasTensileResults) &&
              activeNativeMaterials.Count(row => string.Equals(row.InImpact, "Yes", StringComparison.OrdinalIgnoreCase)) == activeNativeMaterials.Count(row => nativeReportSummaryMap.TryGetValue(row.MaterialID.Trim(), out var summary) && summary.HasImpactResults) &&
              activeNativeMaterials.Count(row => string.Equals(row.InStiffness, "Yes", StringComparison.OrdinalIgnoreCase)) == activeNativeMaterials.Count(row => nativeReportSummaryMap.TryGetValue(row.MaterialID.Trim(), out var summary) && summary.HasStiffnessResults) &&
-             activeNativeMaterials.Count(row => string.Equals(row.TestedStatus, "Fully tested", StringComparison.OrdinalIgnoreCase)) == activeNativeMaterials.Count(row => nativeReportSummaryMap.TryGetValue(row.MaterialID.Trim(), out var summary) && summary.IsCompleteEngineeringSummary));
+             activeNativeMaterials.All(row => string.Equals(row.InHeat, thermalCoverageIds.Contains(row.MaterialID.Trim()) ? "Yes" : "No", StringComparison.OrdinalIgnoreCase)) &&
+             activeNativeMaterials.All(row => string.Equals(row.TestedStatus, BuildNativeMaterialTestedStatus(row), StringComparison.Ordinal)));
         var engineeringAdvisorReady = advisorInsight.CoveredAxes == 5 &&
             advisorInsight.ConfidenceLabel == "High evidence coverage" &&
             advisorInsight.EvidenceSummary.Contains("Impact 91", StringComparison.Ordinal) &&
@@ -18906,7 +18944,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             BuildInfo.ShortLabel,
             BuildInfo.ReleaseTitle);
         var v58041BrandIdentityReady =
-            BuildInfo.CurrentDatabaseSchema == 41 &&
+            BuildInfo.CurrentDatabaseSchema == 42 &&
             FindName("DocumentBrandDisplayNameBox") is TextBox brandNameBox &&
             brandNameBox.MaxLength == DocumentBrandIdentityService.MaximumLength &&
             FindName("SaveDocumentBrandDisplayNameButton") is Button &&
@@ -20547,7 +20585,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         {
             "Material ID", "Manufacturer", "Product Line", "Marketing Name", "Base Material", "Category",
             "Variant / Finish", "Reinforcement", "Color", "Tested Status", "In Tensile", "In Impact",
-            "In Stiffness", "Notes", "Website Display Name", "Manufacturer Website", "YouTube Review URL",
+            "In Stiffness", "In Heat", "Notes", "Website Display Name", "Manufacturer Website", "YouTube Review URL",
             "Video", "Spool Weight g / spool", "Purchase Price", "Currency", "MSRP Amount", "MSRP Currency",
             "MSRP USD", "MSRP USD/kg", "Landed Cost", "Landed Currency", "Landed USD", "Landed USD/kg", "Inventory ID",
             "Inventory Status", "Inventory Qty", "Remaining Weight g / spool", "Storage Location", "Purchase ID",
@@ -20557,11 +20595,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             "Material Key", "Validation"
         };
         var fastMaterialsContractReady =
-            fastMaterialsContractColumns.Count == 52 &&
+            fastMaterialsContractColumns.Count == 53 &&
             fastMaterialsContractColumns.Select(column => column.Header).SequenceEqual(
                 approvedFastMaterialsColumnOrder,
                 StringComparer.Ordinal) &&
-            fastMaterialsContractColumns.Select(PrototypeColumnKey).Distinct(StringComparer.Ordinal).Count() == 52 &&
+            fastMaterialsContractColumns.Select(PrototypeColumnKey).Distinct(StringComparer.Ordinal).Count() == 53 &&
             fastMaterialsContractColumns.Count(column => column.EditorKind == MaterialsPrototypeEditorKind.CheckBox) == 3 &&
             fastMaterialsContractColumns.Count(column => column.EditorKind == MaterialsPrototypeEditorKind.ComboBox) == 6 &&
             WorkflowPreferencesService.VerifyFastMaterialsGridLayoutResetContract() &&
@@ -27105,6 +27143,7 @@ private List<string> GetVisibleAiMaterialLabels()
         public string InTensile { get; set; } = "";
         public string InImpact { get; set; } = "";
         public string InStiffness { get; set; } = "";
+        public string InHeat { get; set; } = "";
         public string SortOrder { get; set; } = "";
         public string SourcePriority { get; set; } = "";
         public string WebsiteDisplayName { get; set; } = "";
@@ -27763,6 +27802,7 @@ private List<string> GetVisibleAiMaterialLabels()
             "Tensile" => string.Equals(row.InTensile, "Yes", StringComparison.OrdinalIgnoreCase),
             "Impact" => string.Equals(row.InImpact, "Yes", StringComparison.OrdinalIgnoreCase),
             "Stiffness" => string.Equals(row.InStiffness, "Yes", StringComparison.OrdinalIgnoreCase),
+            "Heat" => string.Equals(row.InHeat, "Yes", StringComparison.OrdinalIgnoreCase),
             _ => true
         };
     }
@@ -27787,7 +27827,7 @@ private List<string> GetVisibleAiMaterialLabels()
         {
             "Material ID", "Manufacturer", "Product Line", "Marketing Name", "Base Material", "Category", "Variant / Finish", "Reinforcement", "Color",
             "Diameter mm", "Printing Profile ID", "Printing Profile Kind", "Nozzle Temperature Min °C", "Nozzle Temperature Recommended °C", "Nozzle Temperature Max °C", "Bed Temperature Min °C", "Bed Temperature Recommended °C", "Bed Temperature Max °C", "Print Speed Min mm/s", "Print Speed Recommended mm/s", "Print Speed Max mm/s", "Cooling Min %", "Cooling Recommended %", "Cooling Max %", "Cooling Requirement", "Drying Temperature °C", "Drying Time hours", "Enclosure Requirement", "Printer Profile Reference", "Slicer Profile Reference", "Slicer Identity", "Slicer Version", "Printing Settings Provenance", "Printing Settings Source URL", "Printing Settings Checked Date", "Printing Settings Validation Note", "Spool Weight g", "Manufacturer SKU", "Inventory ID", "Purchase ID", "Purchased From", "Supplier URL", "Purchase Date", "Order Number", "Batch Number", "Storage Location", "Inventory Status", "Quantity", "Remaining Weight g", "Purchase Price", "Purchase Currency", "Shipping", "VAT", "Manufacturer Website", "YouTube Review URL", "Thumbnail Filename",
-            "Video", "Notes", "Tested Status", "In Tensile", "In Impact", "In Stiffness", "Sort Order", "Source Priority", "Website Display Name", "Material Key", "Publish Public Reports", "Publish Public Test Details", "Archived"
+            "Video", "Notes", "Tested Status", "In Tensile", "In Impact", "In Stiffness", "In Heat", "Sort Order", "Source Priority", "Website Display Name", "Material Key", "Publish Public Reports", "Publish Public Test Details", "Archived"
         })
         {
             table.Columns.Add(column);
@@ -27856,6 +27896,7 @@ private List<string> GetVisibleAiMaterialLabels()
         row["In Tensile"] = material.InTensile;
         row["In Impact"] = material.InImpact;
         row["In Stiffness"] = material.InStiffness;
+        row["In Heat"] = material.InHeat;
         row["Sort Order"] = material.SortOrder;
         row["Source Priority"] = material.SourcePriority;
         row["Website Display Name"] = material.WebsiteDisplayName;
@@ -28032,6 +28073,7 @@ private List<string> GetVisibleAiMaterialLabels()
             InTensile = row.InTensile,
             InImpact = row.InImpact,
             InStiffness = row.InStiffness,
+            InHeat = row.InHeat,
             SortOrder = row.SortOrder,
             SourcePriority = row.SourcePriority,
             WebsiteDisplayName = row.WebsiteDisplayName,
@@ -28119,6 +28161,7 @@ private List<string> GetVisibleAiMaterialLabels()
             InTensile = record.InTensile,
             InImpact = record.InImpact,
             InStiffness = record.InStiffness,
+            InHeat = record.InHeat,
             SortOrder = record.SortOrder,
             SourcePriority = record.SourcePriority,
             WebsiteDisplayName = record.WebsiteDisplayName,
@@ -28445,13 +28488,13 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private string BuildNativeMaterialTestedStatus(NativeMaterialRow row)
     {
-        var testedCount = new[] { row.InTensile, row.InImpact, row.InStiffness }
+        var testedCount = new[] { row.InTensile, row.InImpact, row.InStiffness, row.InHeat }
             .Count(value => string.Equals((value ?? string.Empty).Trim(), "Yes", StringComparison.OrdinalIgnoreCase));
 
         return testedCount switch
         {
             0 => "Not tested",
-            3 => "Fully tested",
+            4 => "Fully tested",
             _ => "Partially tested"
         };
     }
@@ -28483,6 +28526,11 @@ private List<string> GetVisibleAiMaterialLabels()
             .Select(row => row.MaterialID.Trim())
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
+        var heatMaterialIds = _database.GetThermalDeflectionResults().Keys
+            .Where(materialId => !string.IsNullOrWhiteSpace(materialId))
+            .Select(materialId => materialId.Trim())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
         var changed = false;
         foreach (var material in _nativeMaterialRows.Where(row => !string.IsNullOrWhiteSpace(row.MaterialID)))
         {
@@ -28490,6 +28538,7 @@ private List<string> GetVisibleAiMaterialLabels()
             var newInTensile = tensileMaterialIds.Contains(materialId) ? "Yes" : "No";
             var newInImpact = impactMaterialIds.Contains(materialId) ? "Yes" : "No";
             var newInStiffness = stiffnessMaterialIds.Contains(materialId) ? "Yes" : "No";
+            var newInHeat = heatMaterialIds.Contains(materialId) ? "Yes" : "No";
 
             if (!string.Equals(material.InTensile, newInTensile, StringComparison.OrdinalIgnoreCase))
             {
@@ -28506,6 +28555,12 @@ private List<string> GetVisibleAiMaterialLabels()
             if (!string.Equals(material.InStiffness, newInStiffness, StringComparison.OrdinalIgnoreCase))
             {
                 material.InStiffness = newInStiffness;
+                changed = true;
+            }
+
+            if (!string.Equals(material.InHeat, newInHeat, StringComparison.OrdinalIgnoreCase))
+            {
+                material.InHeat = newInHeat;
                 changed = true;
             }
 
@@ -28574,6 +28629,7 @@ private List<string> GetVisibleAiMaterialLabels()
         row.InTensile = NormalizeNativeYesNo(row.InTensile);
         row.InImpact = NormalizeNativeYesNo(row.InImpact);
         row.InStiffness = NormalizeNativeYesNo(row.InStiffness);
+        row.InHeat = NormalizeNativeYesNo(row.InHeat);
         row.TestedStatus = BuildNativeMaterialTestedStatus(row);
         row.MaterialCategory = BuildNativeMaterialCategory(row);
         row.SortOrder = BuildNativeMaterialSortOrder(row, rowIndex);

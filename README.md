@@ -6,7 +6,7 @@ Private Windows deployment supports a per-user Setup EXE and a portable ZIP buil
 
 - **Current runtime-accepted release:** v60.0.6 — Bug Fixes and Workflow Reliability
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v61 thermal foundation complete; next major theme pending
+- **Current development focus:** v62 workflow reliability complete; v63 public website accuracy is next
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Your data stays yours
@@ -175,9 +175,8 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 ## Current development focus
 
 Version 60.0.6 is the current runtime-accepted application release. The v61
-Thermal Deflection Measurement Foundation is complete and owner accepted through
-v61.0.8. The next coherent major-version theme has not yet been selected.
-Production and FTPS publication remain separately guarded.
+Thermal Deflection foundation and v62 workflow-reliability milestone are complete and owner accepted. The next bounded increment is
+v63.0.0 Impact Chart Orientation-label Integrity. Production and FTPS remain separately guarded.
 
 The v56.0.6.1 governed public-demo dataset is complete and owner accepted. Its
 36 fictional identities retain approved real comparative measurements; the

@@ -12,7 +12,7 @@ public static class BuildInfo
     public const string ReleaseCode = "WORKFLOW-RELIABILITY";
     public const string ReleaseTitle = "Bug Fixes and Workflow Reliability";
     public const int MinimumUpdateDatabaseSchema = 29;
-    public const int CurrentDatabaseSchema = 41;
+    public const int CurrentDatabaseSchema = 42;
 
     public static string Version
     {

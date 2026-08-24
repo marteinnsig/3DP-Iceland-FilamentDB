@@ -18,6 +18,8 @@ public partial class MainWindow
     private void InitializeNativeThermalDeflectionMeasurements()
     {
         ReloadNativeThermalDeflectionRows();
+        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
+        SaveNativeMaterialsSilent();
         RefreshNativeThermalDeflectionSummary();
     }
 
@@ -117,6 +119,7 @@ public partial class MainWindow
             row.MethodVersion = hasResult ? ThermalDeflectionMethodContract.Version : "";
         }
         RefreshNativeThermalDeflectionSummary();
+        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: true);
         return true;
     }
 

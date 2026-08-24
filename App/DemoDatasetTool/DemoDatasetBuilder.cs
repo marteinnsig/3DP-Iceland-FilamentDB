@@ -587,12 +587,13 @@ internal static class DemoDatasetBuilder
                 TryParseFlexibleDouble(item.Revolutions, out var revolutions) &&
                 TryParseFlexibleDouble(item.Degrees, out var degrees) &&
                 revolutions + degrees / 360d > 0);
-            var testedCount = new[] { hasTensile, hasImpact, hasStiffness }
+            const bool hasHeat = false;
+            var testedCount = new[] { hasTensile, hasImpact, hasStiffness, hasHeat }
                 .Count(value => value);
             var tested = testedCount switch
             {
                 0 => "Not tested",
-                3 => "Fully tested",
+                4 => "Fully tested",
                 _ => "Partially tested"
             };
             var definition = Bases[row.BaseMaterial];
@@ -603,10 +604,10 @@ internal static class DemoDatasetBuilder
                   MaterialId,ManufacturerId,Manufacturer,ProductLine,MarketingName,
                   BaseMaterialId,BaseMaterial,MaterialCategory,VariantFinish,
                   Reinforcement,Color,DiameterMm,Video,TestedStatus,InTensile,
-                  InImpact,InStiffness,SortOrder,SourcePriority,WebsiteDisplayName,
+                  InImpact,InStiffness,InHeat,SortOrder,SourcePriority,WebsiteDisplayName,
                   MaterialKey,PublishPublicReports,PublishPublicTestDetails,
                   IsArchived,UpdatedAtUtc)
-                VALUES($a,$b,$c,$d,$e,$f,$g,$h,$i,$j,$k,'','No',$l,$m,$n,$o,
+                VALUES($a,$b,$c,$d,$e,$f,$g,$h,$i,$j,$k,'','No',$l,$m,$n,$o,'No',
                   $p,'Materials master',$q,$r,0,0,0,$s);
                 """, row.MaterialId, row.ManufacturerId, row.Manufacturer,
                 row.ProductLine, row.MarketingName, row.BaseMaterialId,
@@ -739,10 +740,10 @@ internal static class DemoDatasetBuilder
                                NOT BETWEEN 1 AND 4))
                    OR COALESCE(Reinforcement,'') NOT IN ('','CF','GF')
                    OR SourcePriority <> 'Materials master'
-                   OR TestedStatus <> 'Fully tested'
+                   OR TestedStatus <> 'Partially tested'
                    OR InTensile <> 'Yes'
                    OR InImpact <> 'Yes'
-                   OR InStiffness <> 'Yes' OR Video <> 'No'
+                   OR InStiffness <> 'Yes' OR InHeat <> 'No' OR Video <> 'No'
                    OR UpdatedAtUtc <> '{FixedUtc}'
                    OR WebsiteDisplayName <>
                       trim(Manufacturer||' '||ProductLine||' '||MarketingName||' '||
@@ -758,7 +759,7 @@ internal static class DemoDatasetBuilder
         if (Scalar(db, """
                 SELECT COUNT(*) FROM NativeMaterialManagerRows
                 WHERE InTensile='Yes' AND InImpact='Yes' AND InStiffness='Yes'
-                  AND TestedStatus='Fully tested';
+                  AND InHeat='No' AND TestedStatus='Partially tested';
                 """) != "36")
             throw new InvalidDataException("MATERIAL_COVERAGE");
         if (Convert.ToInt64(Scalar(db, """
@@ -824,7 +825,7 @@ internal static class DemoDatasetBuilder
             "MaterialId", "ManufacturerId", "Manufacturer", "ProductLine",
             "MarketingName", "BaseMaterialId", "BaseMaterial",
             "MaterialCategory", "VariantFinish", "Reinforcement", "Color",
-            "Video", "TestedStatus", "InTensile", "InImpact", "InStiffness",
+            "Video", "TestedStatus", "InTensile", "InImpact", "InStiffness", "InHeat",
             "SortOrder", "SourcePriority", "WebsiteDisplayName", "MaterialKey",
             "PublishPublicReports", "PublishPublicTestDetails", "IsArchived",
             "UpdatedAtUtc"

@@ -1429,6 +1429,12 @@ internal static class Program
         Require(reader.GetString(4) == "Manual entry", "Thermal provenance drifted from manual entry.");
         Require(!string.IsNullOrWhiteSpace(reader.GetString(5)), "Thermal method evidence hash is missing.");
         Require(!reader.Read(), $"Duplicate thermal results exist for {materialId}.");
+        reader.Close();
+        command.CommandText = "SELECT InHeat, TestedStatus FROM NativeMaterialManagerRows WHERE MaterialId=$id;";
+        using var coverageReader = command.ExecuteReader();
+        Require(coverageReader.Read(), $"Materials coverage row is missing for {materialId}.");
+        Require(coverageReader.GetString(0) == "Yes", $"In Heat did not refresh for {materialId}.");
+        Require(coverageReader.GetString(1) != "Not tested", $"Tested Status ignored Heat coverage for {materialId}.");
     }
 
     private static void ValidateThermalAbsent(string databasePath, string materialId)
@@ -1441,6 +1447,9 @@ internal static class Program
         command.Parameters.AddWithValue("$id", materialId);
         Require(Convert.ToInt32(command.ExecuteScalar(), CultureInfo.InvariantCulture) == 0,
             $"Thermal result still exists for {materialId}.");
+        command.CommandText = "SELECT InHeat FROM NativeMaterialManagerRows WHERE MaterialId=$id;";
+        Require(Convert.ToString(command.ExecuteScalar(), CultureInfo.InvariantCulture) == "No",
+            $"In Heat did not clear for {materialId}.");
     }
 
     private static void RunUpdaterAcceptance(

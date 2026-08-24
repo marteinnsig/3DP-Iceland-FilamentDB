@@ -1295,6 +1295,7 @@ CREATE TABLE IF NOT EXISTS Materials (
     InTensile TEXT,
     InImpact TEXT,
     InStiffness TEXT,
+    InHeat TEXT,
     SortOrder TEXT,
     SourcePriority TEXT,
     WebsiteDisplayName TEXT,
@@ -1539,6 +1540,7 @@ CREATE TABLE IF NOT EXISTS NativeMaterialManagerRows (
     InTensile TEXT,
     InImpact TEXT,
     InStiffness TEXT,
+    InHeat TEXT,
     SortOrder TEXT,
     SourcePriority TEXT,
     WebsiteDisplayName TEXT,
@@ -2043,6 +2045,7 @@ DROP TABLE IF EXISTS MaterialsImport;";
         EnsureColumn(connection, "NativeMaterialManagerRows", "YouTubeReviewUrl", "TEXT");
         EnsureColumn(connection, "NativeMaterialManagerRows", "ThumbnailFilename", "TEXT");
         EnsureColumn(connection, "NativeMaterialManagerRows", "Notes", "TEXT");
+        EnsureColumn(connection, "NativeMaterialManagerRows", "InHeat", "TEXT NOT NULL DEFAULT 'No'");
         EnsureColumn(connection, "NativeMaterialManagerRows", "SourcePriority", "TEXT");
         EnsureColumn(connection, "NativeMaterialManagerRows", "MaterialKey", "TEXT");
         EnsureColumn(connection, "NativeMaterialManagerRows", "PublishPublicReports", "INTEGER NOT NULL DEFAULT 0");
@@ -2704,11 +2707,11 @@ ProfileKind=excluded.ProfileKind,UpdatedAtUtc=excluded.UpdatedAtUtc;";
 INSERT INTO NativeMaterialManagerRows (
     MaterialId, ManufacturerId, Manufacturer, ProductLine, MarketingName, BaseMaterialId, BaseMaterial, MaterialCategory, VariantFinish,
     Reinforcement, Color, DiameterMm, SpoolWeightG, ManufacturerSku, InventoryId, PurchaseId, PurchasedFrom, SupplierUrl, PurchaseDate, OrderNumber, BatchNumber, StorageLocation, InventoryStatus, Quantity, RemainingWeightG, PurchasePriceAmount, PurchaseCurrency, ShippingAmount, VatAmount, MsrpAmount, MsrpCurrency, MsrpUsd, LandedCostAmount, LandedCostCurrency, LandedCostUsd, MsrpUsdPerKg, LandedCostUsdPerKg, PriceCheckedDate, NozzleTemperatureMinC, NozzleTemperatureRecommendedC, NozzleTemperatureMaxC, BedTemperatureMinC, BedTemperatureRecommendedC, BedTemperatureMaxC, PrintSpeedMinMmPerS, PrintSpeedRecommendedMmPerS, PrintSpeedMaxMmPerS, CoolingRequirement, DryingTimeHours, EnclosureRequirement, PrinterProfileReference, SlicerProfileReference, PrintingProfileId, PrintingProfileKind, CoolingMinPercent, CoolingRecommendedPercent, CoolingMaxPercent, DryingTemperatureC, SlicerIdentity, SlicerVersion, PrintingSettingsProvenance, PrintingSettingsSourceUrl, PrintingSettingsCheckedDate, PrintingSettingsValidationNote, ManufacturerWebsite, YouTubeReviewUrl, ThumbnailFilename,
-    Video, Notes, TestedStatus, InTensile, InImpact, InStiffness, SortOrder, SourcePriority, WebsiteDisplayName, MaterialKey, PublishPublicReports, PublishPublicTestDetails, IsArchived, UpdatedAtUtc
+    Video, Notes, TestedStatus, InTensile, InImpact, InStiffness, InHeat, SortOrder, SourcePriority, WebsiteDisplayName, MaterialKey, PublishPublicReports, PublishPublicTestDetails, IsArchived, UpdatedAtUtc
 ) VALUES (
     $MaterialId, $ManufacturerId, $Manufacturer, $ProductLine, $MarketingName, $BaseMaterialId, $BaseMaterial, $MaterialCategory, $VariantFinish,
     $Reinforcement, $Color, $DiameterMm, $SpoolWeightG, $ManufacturerSku, $InventoryId, $PurchaseId, $PurchasedFrom, $SupplierUrl, $PurchaseDate, $OrderNumber, $BatchNumber, $StorageLocation, $InventoryStatus, $Quantity, $RemainingWeightG, $PurchasePriceAmount, $PurchaseCurrency, $ShippingAmount, $VatAmount, $MsrpAmount, $MsrpCurrency, $MsrpUsd, $LandedCostAmount, $LandedCostCurrency, $LandedCostUsd, $MsrpUsdPerKg, $LandedCostUsdPerKg, $PriceCheckedDate, $NozzleTemperatureMinC, $NozzleTemperatureRecommendedC, $NozzleTemperatureMaxC, $BedTemperatureMinC, $BedTemperatureRecommendedC, $BedTemperatureMaxC, $PrintSpeedMinMmPerS, $PrintSpeedRecommendedMmPerS, $PrintSpeedMaxMmPerS, $CoolingRequirement, $DryingTimeHours, $EnclosureRequirement, $PrinterProfileReference, $SlicerProfileReference, $PrintingProfileId, $PrintingProfileKind, $CoolingMinPercent, $CoolingRecommendedPercent, $CoolingMaxPercent, $DryingTemperatureC, $SlicerIdentity, $SlicerVersion, $PrintingSettingsProvenance, $PrintingSettingsSourceUrl, $PrintingSettingsCheckedDate, $PrintingSettingsValidationNote, $ManufacturerWebsite, $YouTubeReviewUrl, $ThumbnailFilename,
-    $Video, $Notes, $TestedStatus, $InTensile, $InImpact, $InStiffness, $SortOrder, $SourcePriority, $WebsiteDisplayName, $MaterialKey, $PublishPublicReports, $PublishPublicTestDetails, $IsArchived, $UpdatedAtUtc
+    $Video, $Notes, $TestedStatus, $InTensile, $InImpact, $InStiffness, $InHeat, $SortOrder, $SourcePriority, $WebsiteDisplayName, $MaterialKey, $PublishPublicReports, $PublishPublicTestDetails, $IsArchived, $UpdatedAtUtc
 )
 ON CONFLICT(MaterialId) DO UPDATE SET
     ManufacturerId=excluded.ManufacturerId,
@@ -2783,6 +2786,7 @@ ON CONFLICT(MaterialId) DO UPDATE SET
     InTensile=excluded.InTensile,
     InImpact=excluded.InImpact,
     InStiffness=excluded.InStiffness,
+    InHeat=excluded.InHeat,
     SortOrder=excluded.SortOrder,
     SourcePriority=excluded.SourcePriority,
     WebsiteDisplayName=excluded.WebsiteDisplayName,
@@ -2865,6 +2869,7 @@ ON CONFLICT(MaterialId) DO UPDATE SET
         var pInTensile = insert.Parameters.Add("$InTensile", SqliteType.Text);
         var pInImpact = insert.Parameters.Add("$InImpact", SqliteType.Text);
         var pInStiffness = insert.Parameters.Add("$InStiffness", SqliteType.Text);
+        var pInHeat = insert.Parameters.Add("$InHeat", SqliteType.Text);
         var pSortOrder = insert.Parameters.Add("$SortOrder", SqliteType.Text);
         var pSourcePriority = insert.Parameters.Add("$SourcePriority", SqliteType.Text);
         var pWebsiteDisplayName = insert.Parameters.Add("$WebsiteDisplayName", SqliteType.Text);
@@ -2963,6 +2968,7 @@ ON CONFLICT(MaterialId) DO UPDATE SET
             pInTensile.Value = material.InTensile ?? string.Empty;
             pInImpact.Value = material.InImpact ?? string.Empty;
             pInStiffness.Value = material.InStiffness ?? string.Empty;
+            pInHeat.Value = material.InHeat ?? string.Empty;
             pSortOrder.Value = material.SortOrder ?? string.Empty;
             pSourcePriority.Value = material.SourcePriority ?? string.Empty;
             pWebsiteDisplayName.Value = material.WebsiteDisplayName ?? string.Empty;
@@ -3012,7 +3018,7 @@ ON CONFLICT(MaterialId) DO UPDATE SET
 SELECT
     MaterialId, ManufacturerId, Manufacturer, ProductLine, MarketingName, BaseMaterialId, BaseMaterial, MaterialCategory, VariantFinish,
     Reinforcement, Color, DiameterMm, SpoolWeightG, ManufacturerSku, InventoryId, PurchaseId, PurchasedFrom, SupplierUrl, PurchaseDate, OrderNumber, BatchNumber, StorageLocation, InventoryStatus, Quantity, RemainingWeightG, PurchasePriceAmount, PurchaseCurrency, ShippingAmount, VatAmount, MsrpAmount, MsrpCurrency, MsrpUsd, LandedCostAmount, LandedCostCurrency, LandedCostUsd, MsrpUsdPerKg, LandedCostUsdPerKg, PriceCheckedDate, NozzleTemperatureMinC, NozzleTemperatureRecommendedC, NozzleTemperatureMaxC, BedTemperatureMinC, BedTemperatureRecommendedC, BedTemperatureMaxC, PrintSpeedMinMmPerS, PrintSpeedRecommendedMmPerS, PrintSpeedMaxMmPerS, CoolingRequirement, DryingTimeHours, EnclosureRequirement, PrinterProfileReference, SlicerProfileReference, PrintingProfileId, PrintingProfileKind, CoolingMinPercent, CoolingRecommendedPercent, CoolingMaxPercent, DryingTemperatureC, SlicerIdentity, SlicerVersion, PrintingSettingsProvenance, PrintingSettingsSourceUrl, PrintingSettingsCheckedDate, PrintingSettingsValidationNote, ManufacturerWebsite, YouTubeReviewUrl, ThumbnailFilename,
-    Video, Notes, TestedStatus, InTensile, InImpact, InStiffness, SortOrder, SourcePriority, WebsiteDisplayName, MaterialKey, PublishPublicReports, PublishPublicTestDetails, IsArchived
+    Video, Notes, TestedStatus, InTensile, InImpact, InStiffness, InHeat, SortOrder, SourcePriority, WebsiteDisplayName, MaterialKey, PublishPublicReports, PublishPublicTestDetails, IsArchived
 FROM NativeMaterialManagerRows
 ORDER BY
     CASE WHEN SortOrder IS NULL OR SortOrder = '' THEN 999999 ELSE CAST(SortOrder AS REAL) END,
@@ -3101,6 +3107,7 @@ ORDER BY
                 InTensile = ReadString(reader, "InTensile"),
                 InImpact = ReadString(reader, "InImpact"),
                 InStiffness = ReadString(reader, "InStiffness"),
+                InHeat = ReadString(reader, "InHeat"),
                 SortOrder = ReadString(reader, "SortOrder"),
                 SourcePriority = ReadString(reader, "SourcePriority"),
                 WebsiteDisplayName = ReadString(reader, "WebsiteDisplayName"),

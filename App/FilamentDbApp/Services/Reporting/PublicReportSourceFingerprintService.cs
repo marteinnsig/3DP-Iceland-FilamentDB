@@ -17,7 +17,7 @@ public sealed class PublicReportSourceFingerprintService
         ("NativeMaterialManagerRows", """
             SELECT MaterialId, Manufacturer, ProductLine, MarketingName, BaseMaterialId, BaseMaterial, MaterialCategory,
                    VariantFinish, Reinforcement, Color, DiameterMm, SpoolWeightG, MsrpUsdPerKg,
-                   ManufacturerWebsite, YouTubeReviewUrl, TestedStatus, InTensile, InImpact, InStiffness,
+                   ManufacturerWebsite, YouTubeReviewUrl, TestedStatus, InTensile, InImpact, InStiffness, InHeat,
                    SortOrder, WebsiteDisplayName, MaterialKey, PublishPublicReports,
                    PublishPublicTestDetails, IsArchived
             FROM NativeMaterialManagerRows

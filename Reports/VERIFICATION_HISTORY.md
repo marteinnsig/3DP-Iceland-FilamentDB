@@ -1,3 +1,19 @@
+# v62.0.3 - Materials Heat Coverage and Tested-status Integration
+
+Date: 2026-08-24
+
+- Schema v42, Fast Materials, material mapping/detail/export, recovery and source fingerprints carry read-only `InHeat` compatibility.
+- Tested Status derives from Tensile, Impact, Stiffness and Heat; Heat add/update/clear refreshes coverage immediately.
+- Debug and Release solution builds pass with zero warnings/errors; Help passes 703/703 and release documentation passes.
+- Canonical-seed profile `20260824212528-729ab735` passes Full Data Verification 434/434, versioned saved-layout repair coverage,
+  Heat create/update/clear/restart and exact
+  business-state recovery. Direct/transitive NuGet audit reports no vulnerable packages.
+- Schema-v41 fixture SHA-256 `28741D5F...8E25` is retained. Canonical schema-v42 seed SHA-256 `CEF1F9D5...2D09` has integrity `ok`,
+  221 Materials, 191 Heat rows and 191 matching `InHeat=Yes` rows.
+- Owner runtime acceptance passes for Heat values, four-module status and corrected column placement. Production and FTPS remain blocked.
+- Owner confirms Heat values/status behavior. A saved-layout placement defect was corrected so the new key is inserted after the
+  saved In Stiffness position once without resetting other choices or overriding later intentional moves; owner recheck passes.
+
 # v62.0.2 - Purchase-order Line Editor Focus and Keyboard Navigation
 
 Date: 2026-08-24

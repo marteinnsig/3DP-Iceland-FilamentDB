@@ -1208,6 +1208,18 @@ business-state hash `4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B
 - Profile `20260814174328-29081146` passes 427/427 and exact business-state
   recovery. Visual grid use remains owner-manual.
 
+## v62.0.3 Materials Heat coverage candidate
+
+- The bounded `thermal` scenario now verifies that canonical Heat create/update sets `InHeat=Yes`, Tested Status includes the fourth
+  module, clear sets `InHeat=No`, and every state survives restart.
+- Canonical schema-v42 seed profile `20260824212528-729ab735` passes Full Data Verification 434/434, versioned saved-layout repair coverage
+  and exact business-state recovery.
+- The schema-v41 source is retained as `filamentdb-schema-v41-thermal-coverage-migration.sqlite` with SHA-256
+  `28741D5FAE8012E1E39EA03BDACE0AC75F22A96751F3438A075F8D88BCCA8E25`.
+- Canonical `C:\Seed-Database\filamentdb.sqlite` is schema v42, integrity `ok`, and has SHA-256
+  `CEF1F9D5142578BBFE91D37A79BF11A6255CE550B8CA388D8582BF2D7D332D09`.
+- Physical column placement and immediate visual refresh remain owner-manual; Production, FTPS and owner data stay blocked.
+
 ## v61.0.1 thermal schema and workbook import
 
 - The existing read-only smoke remains the bounded automation owner; no import

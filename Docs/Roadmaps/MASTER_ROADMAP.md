@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v62.0.3 — Materials Heat Coverage and Tested-status Integration (Planned)**
+Current roadmap increment: **v63.0.0 — Impact Chart Orientation-label Integrity (Planned)**
 
-Current acceptance note: v61.0.8 and the complete v61 thermal foundation are owner accepted; Verification passes 430/430.
+Current acceptance note: v62.0.0-v62.0.3 and the v62 workflow-reliability milestone are owner accepted; Verification passes 434/434.
 
-Next note: v62.0.3 is the next bounded implementation; Production and FTPS remain blocked.
+Next note: v63.0.0 is the next bounded implementation; Production and FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -3043,17 +3043,29 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: owner accepts single-click entry and predictable arrows/Tab/Shift+Tab on unlocked lines while calculated
     orders remain locked; Debug/Release, Help, automation, Full Data Verification and exact-state recovery gates pass.
 - **v62.0.3 — Materials Heat Coverage and Tested-status Integration**
-  - State: Planned after v62.0.2; owner-reported Materials coverage gap recorded on 2026-08-15.
+  - State: Complete; owner runtime accepted on 2026-08-24 and Full Data Verification passes 434/434.
   - Add read-only `In Heat` immediately beside `In Stiffness`, derived from valid Heat Deflection results by stable MaterialID.
   - Make `Tested Status` cover Tensile, Impact, Stiffness and Heat: zero is Not tested, one to three is Partially tested and all four
     is Fully tested; result clearing/restoration must refresh both fields immediately.
   - Extend canonical schema compatibility, material row/record mapping, lifecycle synchronization, recovery/export, Fast layout,
     Help/coverage and deterministic Verification without making coverage manually editable.
   - Preserve all measurement values, method snapshots, dates/notes, archived behavior and legacy database migration support.
+  - Implementation: schema v42 adds persisted compatibility field `InHeat`; Materials derives it from canonical valid Heat Deflection
+    results and derives Tested Status from all four modules. Fast Materials, detail/export, recovery fingerprints, Help and disposable
+    thermal automation carry the same contract; add/update/clear refresh the Materials projection immediately.
+  - Candidate evidence: Debug/Release pass with zero warnings/errors; Help 703/703 and release documentation pass; canonical-seed
+    profile `20260824212528-729ab735` passes Full Data Verification 434/434 plus thermal create/update/clear/restart and exact
+    business-state recovery. NuGet reports no vulnerable packages.
+  - Seed evidence: schema-v41 fixture SHA-256 `28741D5F...8E25` is preserved; canonical schema-v42 seed SHA-256
+    `CEF1F9D5...2D09` has integrity `ok`, 221 Materials, 191 Heat results and 191 matching `InHeat=Yes` rows.
+  - Runtime correction: existing saved 52-column Materials layouts now insert the new key immediately after their saved In Stiffness
+    position once under a versioned layout contract and preserve every other saved width/order. Owner confirms Heat values/status
+    behavior and corrected placement.
+  - Completion condition met: schema, lifecycle, layout migration, Help, automation, exact recovery and owner acceptance pass.
   - Completion condition: owner accepts the new column and four-module status across add/edit/clear/restart; schema, Debug/Release,
     Help, Full Data Verification and disposable exact-state recovery gates pass.
 - **v62 parent closure**
-  - State: Planned after v62.0.0-v62.0.3 acceptance.
+  - State: Complete; all four increments are owner accepted on 2026-08-24.
   - Completion condition: all four recorded v62 defects are owner accepted, feedback/release evidence is reconciled and no v62
     implementation item remains open.
 

@@ -75,6 +75,7 @@ public sealed class NativeMaterialRecord
     public string InTensile { get; set; } = string.Empty;
     public string InImpact { get; set; } = string.Empty;
     public string InStiffness { get; set; } = string.Empty;
+    public string InHeat { get; set; } = string.Empty;
     public string SortOrder { get; set; } = string.Empty;
     public string SourcePriority { get; set; } = string.Empty;
     public string WebsiteDisplayName { get; set; } = string.Empty;

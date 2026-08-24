@@ -93,7 +93,8 @@ The Material Manager now owns the same kind of automatic field logic that previo
 Computed/read-only fields:
 
 - Video
-- Tested Status
+- Tested Status (derived from Tensile, Impact, Stiffness and Heat coverage)
+- In Heat (read-only; Yes only while a valid canonical Heat Deflection result exists)
 - Sort Order
 - Source Priority
 - Website Display Name

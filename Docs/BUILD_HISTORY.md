@@ -2,6 +2,22 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v62.0.3 - Materials Heat Coverage and Tested-status Integration
+
+Schema v42 adds `InHeat` to the canonical Materials compatibility row. The Fast Materials grid exposes it read-only beside In Stiffness,
+while lifecycle synchronization derives it solely from valid canonical Heat Deflection results. Tested Status now evaluates Tensile,
+Impact, Stiffness and Heat, and Heat add/update/clear refreshes the Materials projection immediately. SQLite mapping, spreadsheet export,
+recovery/report fingerprints, Help, deterministic Verification and disposable thermal automation share the same four-module contract.
+Owner runtime acceptance confirms Heat coverage values, four-module Tested Status and corrected saved-layout placement.
+
+Debug and Release solution builds pass with zero warnings/errors; Help passes 703/703, release documentation passes and the
+direct/transitive NuGet audit reports no vulnerable packages. Disposable canonical-seed profile `20260824212528-729ab735` passes
+Full Data Verification 434/434 and Heat create/update/clear across restart with exact business-state recovery. Schema-v41 seed
+`28741D5F...8E25` is retained as a migration fixture; canonical schema-v42 seed `CEF1F9D5...2D09` passes integrity and hash parity.
+Owner runtime review confirmed Heat coverage/status behavior but exposed that an existing saved Materials layout appended the new key.
+The corrected versioned layout migration repairs the appended key once, inserts it after the saved In Stiffness position and preserves
+every other saved width/order. Later intentional user moves are not overridden.
+
 ## v62.0.2 - Purchase-order Line Editor Focus and Keyboard Navigation
 
 The Purchase Order line grid now opts into the proven first-click and keyboard

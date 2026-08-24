@@ -173,17 +173,20 @@ internal static class HelpContentCatalog
             Variant / Finish, Reinforcement and Color are editable text. Category is derived/read-only. Public reports and Public test
             details are independent checkboxes: the first controls linked public report artifacts, the second permits eligible raw test
             detail. Manufacturer Website and YouTube Review URL accept reviewed URLs. Video, Tested Status and In Tensile/Impact/
-            Stiffness are read-only state. Notes is editable multiline content. Website Display Name, Material Key and Validation are
+            Stiffness/Heat are read-only state. In Heat is Yes only while the Material ID has a valid Heat Deflection result. Tested
+            Status is Not tested with zero covered modules, Partially tested with one to three, and Fully tested only with all four.
+            Adding or clearing a Heat Deflection result refreshes both fields immediately. Notes is editable multiline content.
+            Website Display Name, Material Key and Validation are
             read-only derived output. Duplicate Website Display Name values are advisory because separate Materials can share public
             wording; Material ID remains unique and owns measurement relationships. A committed identity edit auto-saves Materials,
-            then synchronizes Tensile, Impact and Stiffness. Closing the application commits the active editor and completes that same
+            then synchronizes Tensile, Impact, Stiffness and Heat. Closing the application commits the active editor and completes that same
             parent-before-measurement save order.
 
             Default column order
             The default begins with identity and test status, then Notes, website identity/media, spool and price facts, inventory,
             purchase evidence, publication choices and internal metadata. Existing saved user layouts keep their own width/order until
             Reset Columns is explicitly accepted. All 52 Materials columns remain visible and unfrozen; layout never changes canonical
-            data, report/PDF fields or website-export fields.
+            data, report/PDF fields or website-export fields. The complete default layout contains 53 Materials columns.
 
             Inventory and purchase-evidence cells
             Spool Weight g / spool and Remaining Weight g / spool are grams; Remaining cannot exceed spool weight. Manufacturer SKU,
