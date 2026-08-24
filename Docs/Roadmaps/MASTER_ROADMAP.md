@@ -6,11 +6,12 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v63.0.0 — Impact Chart Orientation-label Integrity (Planned)**
+Current roadmap increment: **v63.0.1 — Public Heat Deflection Methodology (Planned)**
 
 Current acceptance note: v62.0.0-v62.0.3 and the v62 workflow-reliability milestone are owner accepted; Verification passes 434/434.
 
-Next note: v63.0.0 is the next bounded implementation; Production and FTPS remain blocked.
+Next note: v63.0.0 is owner accepted with Full Data Verification PASS; v63.0.1 is the next bounded implementation.
+Production and FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -3072,7 +3073,7 @@ blockers may change the order, but must be recorded here before implementation.
 ## Planned — v63 Public Website Accuracy and Thermal Methodology
 
 - **v63.0.0 — Impact Chart Orientation-label Integrity**
-  - State: Planned after v62 closure; owner-reported website chart-label bug recorded on 2026-08-22.
+  - State: Complete and owner runtime accepted on 2026-08-24; Full Data Verification passes 435/435.
   - Scope website terminology transforms to their owning chart so the Impact Resistance legend, headings and tooltips use `Impact
     Strength Flat` and `Impact Strength Upright`.
   - Preserve `Tensile Strength` and `Layer Adhesion Strength` on the tensile chart and prevent either terminology set from leaking into

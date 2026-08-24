@@ -108,6 +108,18 @@ public sealed class WebsiteVerificationService
             "3DP-THERMAL-PUBLIC-v61.0.7-r3",
             "<th>Stiffness</th><th>Thermal</th><th>Layer adhesion</th>",
             "performanceProfileChart");
+        var tensileSection = GetChartSection(templateHtml, "tensileChart");
+        var impactSection = GetChartSection(templateHtml, "impactChart");
+        result.ChartTerminologyValid =
+            ContainsAll(tensileSection, "Tensile Strength", "Layer Adhesion Strength") &&
+            !ContainsAny(tensileSection, "Impact Strength Flat", "Impact Strength Upright") &&
+            ContainsAll(impactSection, "Impact Strength Flat", "Impact Strength Upright") &&
+            !ContainsAny(impactSection, "Tensile Strength", "Layer Adhesion Strength") &&
+            ContainsAll(templateHtml,
+                "target==='tensileChart'",
+                "target==='impactChart'",
+                "Impact Strength Flat",
+                "Impact Strength Upright");
         result.MasterTemplateIdentityValid = ContainsAll(templateHtml,
             "3DPIceland Website Pricing & Value Platform v36.0",
             "pricingExplorerCard",
@@ -133,6 +145,7 @@ public sealed class WebsiteVerificationService
                               result.RequiredCssPresent &&
                               result.RequiredJavaScriptPresent &&
                               result.RequiredSectionsPresent &&
+                              result.ChartTerminologyValid &&
                               result.MasterTemplateIdentityValid &&
                               result.MaterialIdIntegrity &&
                               result.NoDuplicateMaterialIds &&
@@ -155,6 +168,18 @@ public sealed class WebsiteVerificationService
         {
             return false;
         }
+    }
+
+    private static string GetChartSection(string? html, string chartId)
+    {
+        if (string.IsNullOrWhiteSpace(html)) return string.Empty;
+        var chartIndex = html.IndexOf($"id=\"{chartId}\"", StringComparison.Ordinal);
+        if (chartIndex < 0) return string.Empty;
+        var sectionStart = html.LastIndexOf("<section", chartIndex, StringComparison.Ordinal);
+        var sectionEnd = html.IndexOf("</section>", chartIndex, StringComparison.Ordinal);
+        return sectionStart >= 0 && sectionEnd >= 0
+            ? html[sectionStart..(sectionEnd + "</section>".Length)]
+            : string.Empty;
     }
 
     private static string RemoveGeneratedHeader(string html)
@@ -295,6 +320,7 @@ public sealed class WebsiteVerificationResult
     public bool RequiredCssPresent { get; set; }
     public bool RequiredJavaScriptPresent { get; set; }
     public bool RequiredSectionsPresent { get; set; }
+    public bool ChartTerminologyValid { get; set; }
     public bool MasterTemplateIdentityValid { get; set; }
     public bool MaterialIdIntegrity { get; set; }
     public bool NoDuplicateMaterialIds { get; set; }

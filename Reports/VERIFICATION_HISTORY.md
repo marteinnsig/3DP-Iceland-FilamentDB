@@ -1,3 +1,17 @@
+# v63.0.0 - Impact Chart Orientation-label Integrity
+
+Date: 2026-08-24
+
+- Debug and Release isolated solution builds pass with zero warnings/errors.
+- Chart-scoped rendering preserves Tensile Strength/Layer Adhesion Strength and assigns Impact Strength Flat/Impact Strength Upright
+  only to the Impact Resistance legend and tooltip branch.
+- Disposable canonical-seed profile `20260824213737-c2e22572` passes Full Data Verification 435/435, both new website terminology
+  checks and exact database/business-state recovery.
+- Existing read-only website Verification owns the deterministic runtime contract; no new mutating automation scenario is warranted.
+- Generated website terminology does not change in-app Help ownership. Owner desktop/narrow Preview acceptance passes.
+- Canonical measurements, units, colors, calculations, stored data and report snapshots are unchanged. Production and FTPS are blocked.
+- Owner confirms Full Data Verification PASS on 2026-08-24; v63.0.0 is complete.
+
 # v62.0.3 - Materials Heat Coverage and Tested-status Integration
 
 Date: 2026-08-24

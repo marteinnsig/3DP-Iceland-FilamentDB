@@ -2,6 +2,19 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v63.0.0 - Impact Chart Orientation-label Integrity
+
+The website cleanup now locates the owning `tensileChart` and `impactChart` sections before changing their shared orientation legend.
+Tensile retains Tensile Strength/Layer Adhesion Strength; Impact uses Impact Strength Flat/Impact Strength Upright. Tooltip terminology
+follows the same scoped contract while canonical values, units, colors, calculations and persisted content remain unchanged.
+
+Debug and Release isolated solution builds pass with zero warnings/errors. Disposable canonical-seed profile
+`20260824213737-c2e22572` passes Full Data Verification 435/435, the actual-render website terminology contract, the bounded v63 probe
+and exact database/business-state recovery. Existing website Verification now makes cross-chart terminology part of PublishReady.
+The existing read-only smoke/website Verification boundary is sufficient; no new mutating automation scenario is justified. In-app Help
+is unaffected because this changes generated website terminology only. Owner accepts desktop/narrow Preview rendering and confirms
+Full Data Verification PASS on 2026-08-24. Production and FTPS remain blocked.
+
 ## v62.0.3 - Materials Heat Coverage and Tested-status Integration
 
 Schema v42 adds `InHeat` to the canonical Materials compatibility row. The Fast Materials grid exposes it read-only beside In Stiffness,

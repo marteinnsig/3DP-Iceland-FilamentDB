@@ -8688,9 +8688,36 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
     }
 
 
+    private static string ReplaceInWebsiteChartSection(
+        string html,
+        string chartId,
+        string oldValue,
+        string newValue)
+    {
+        var chartIndex = html.IndexOf($"id=\"{chartId}\"", StringComparison.Ordinal);
+        if (chartIndex < 0) return html;
+        var sectionStart = html.LastIndexOf("<section", chartIndex, StringComparison.Ordinal);
+        var sectionEnd = html.IndexOf("</section>", chartIndex, StringComparison.Ordinal);
+        if (sectionStart < 0 || sectionEnd < 0) return html;
+        sectionEnd += "</section>".Length;
+        var section = html[sectionStart..sectionEnd].Replace(oldValue, newValue, StringComparison.Ordinal);
+        return html[..sectionStart] + section + html[sectionEnd..];
+    }
+
+    private static string GetWebsiteChartSection(string html, string chartId)
+    {
+        var chartIndex = html.IndexOf($"id=\"{chartId}\"", StringComparison.Ordinal);
+        if (chartIndex < 0) return string.Empty;
+        var sectionStart = html.LastIndexOf("<section", chartIndex, StringComparison.Ordinal);
+        var sectionEnd = html.IndexOf("</section>", chartIndex, StringComparison.Ordinal);
+        return sectionStart >= 0 && sectionEnd >= 0
+            ? html[sectionStart..(sectionEnd + "</section>".Length)]
+            : string.Empty;
+    }
+
     private static string ApplyWebsiteTerminologyCleanup(string html)
     {
-        const string marker = "<!-- 3DP-WEBSITE-TERMINOLOGY-v40.12.2 -->";
+        const string marker = "<!-- 3DP-WEBSITE-TERMINOLOGY-v63.0.0 -->";
         if (html.Contains(marker, StringComparison.Ordinal)) return html;
 
         // The legacy manufacturers CTA is redundant now that For Manufacturers is a portal tab.
@@ -8705,10 +8732,12 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             "<section class=\"card\"><h2>Tensile strength</h2>",
             "<section class=\"card\"><h2>Tensile Strength vs Layer Adhesion Strength</h2>",
             StringComparison.Ordinal);
-        html = html.Replace(
-            "<span><i class=\"key upright\"></i>Upright</span><span><i class=\"key flat\"></i>Flat</span><span>Error bars: standard deviation</span>",
-            "<span><i class=\"key upright\"></i>Layer Adhesion Strength <small>(upright specimens)</small></span><span><i class=\"key flat\"></i>Tensile Strength <small>(flat specimens)</small></span><span>Error bars: standard deviation</span>",
-            StringComparison.Ordinal);
+        const string sharedOrientationLegend = "<span><i class=\"key upright\"></i>Upright</span><span><i class=\"key flat\"></i>Flat</span><span>Error bars: standard deviation</span>";
+        const string tensileLegend = "<span><i class=\"key upright\"></i>Layer Adhesion Strength <small>(upright specimens)</small></span><span><i class=\"key flat\"></i>Tensile Strength <small>(flat specimens)</small></span><span>Error bars: standard deviation</span>";
+        const string impactLegend = "<span><i class=\"key upright\"></i>Impact Strength Upright <small>(upright specimens)</small></span><span><i class=\"key flat\"></i>Impact Strength Flat <small>(flat specimens)</small></span><span>Error bars: standard deviation</span>";
+        html = ReplaceInWebsiteChartSection(html, "tensileChart", sharedOrientationLegend, tensileLegend);
+        html = ReplaceInWebsiteChartSection(html, "impactChart", sharedOrientationLegend, impactLegend);
+        html = ReplaceInWebsiteChartSection(html, "impactChart", tensileLegend, impactLegend);
         html = html.Replace(
             "Ranking by upright tensile strength relative to flat tensile strength",
             "Ranking by layer adhesion strength relative to tensile strength",
@@ -8738,8 +8767,10 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         html = html.Replace("shortLabel:'Tensile upright'", "shortLabel:'Layer Adhesion Strength'", StringComparison.Ordinal);
 
         const string oldTooltipLabel = "${key==='flat'?'Flat':'Upright'}: ${fmt(val)} ${unit}";
-        const string newTooltipLabel = "${target==='tensileChart'?(key==='flat'?'Tensile Strength':'Layer Adhesion Strength'):(key==='flat'?'Flat':'Upright')}: ${fmt(val)} ${unit}${target==='tensileChart'?(key==='flat'?'<br>Measured from flat printed specimens.':'<br>Measured from upright printed specimens.'):''}";
+        const string v40TooltipLabel = "${target==='tensileChart'?(key==='flat'?'Tensile Strength':'Layer Adhesion Strength'):(key==='flat'?'Flat':'Upright')}: ${fmt(val)} ${unit}${target==='tensileChart'?(key==='flat'?'<br>Measured from flat printed specimens.':'<br>Measured from upright printed specimens.'):''}";
+        const string newTooltipLabel = "${target==='tensileChart'?(key==='flat'?'Tensile Strength':'Layer Adhesion Strength'):target==='impactChart'?(key==='flat'?'Impact Strength Flat':'Impact Strength Upright'):(key==='flat'?'Flat':'Upright')}: ${fmt(val)} ${unit}${target==='tensileChart'||target==='impactChart'?(key==='flat'?'<br>Measured from flat printed specimens.':'<br>Measured from upright printed specimens.'):''}";
         html = html.Replace(oldTooltipLabel, newTooltipLabel, StringComparison.Ordinal);
+        html = html.Replace(v40TooltipLabel, newTooltipLabel, StringComparison.Ordinal);
 
         var headClose = html.IndexOf("</head>", StringComparison.OrdinalIgnoreCase);
         const string terminologyCss = "<style id=\"websiteTerminologyStyles\">.legend small{color:#94a3b8;font-size:12px;font-weight:500}</style>";
@@ -18042,6 +18073,10 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             activeDatabaseTemplate is null ? "No active SQLite website template" : $"Active {activeDatabaseTemplate.TemplateVersion}; {databaseTemplates.Count} stored version(s); SHA-256 recorded"));
         checks.Add(new VerificationCheck("Website master template identity", websitePipeline.Available && websitePipeline.Website.MasterTemplateIdentityValid,
             websitePipeline.Available ? (websitePipeline.Website.MasterTemplateIdentityValid ? "Active SQLite template matches the approved v36 Pricing & Value master surface" : "Active SQLite template is missing one or more approved master-template markers") : websitePipeline.ErrorMessage));
+        checks.Add(new VerificationCheck("Website chart terminology contract", websitePipeline.Available && websitePipeline.Website.ChartTerminologyValid,
+            websitePipeline.Available && websitePipeline.Website.ChartTerminologyValid
+                ? "Tensile and Impact chart legends/tooltips use distinct chart-owned orientation labels"
+                : "Tensile or Impact chart terminology is missing or crosses chart boundaries"));
         checks.Add(new VerificationCheck("Website publish readiness", websitePipeline.Available && websitePipeline.Website.PublishReady,
             websitePipeline.Available ? (websitePipeline.Website.PublishReady ? "READY FOR PUBLISH" : "Not ready for publish") : websitePipeline.ErrorMessage));
         checks.Add(new VerificationCheck("Experimental website publication control", FindName("MaterialExperimentsGrid") is DataGrid experimentalPublishGrid && experimentalPublishGrid.Columns.Any(column => string.Equals(column.Header?.ToString(), "Website", StringComparison.Ordinal)),
@@ -18292,13 +18327,26 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             guardedPublicReportFtpsReady
                 ? "The exact Test or Production allowlist is backed up and fully staged before ordered activation, with size verification, entry index last and rollback coverage for replaced and newly added files"
                 : "Plan-based FTPS staging, activation order, result/progress contract or rollback coverage is unavailable"));
-        var terminologyProbe = ApplyWebsiteTerminologyCleanup(portalProbe + "<div class=\"manufacturer-cta\"><a href=\"manufacturers/\">For manufacturers and resellers →</a></div><section class=\"card\"><h2>Tensile strength</h2><div class=\"legend\"><span><i class=\"key upright\"></i>Upright</span><span><i class=\"key flat\"></i>Flat</span><span>Error bars: standard deviation</span></div></section>");
+        var terminologyProbe = ApplyWebsiteTerminologyCleanup(portalProbe + "<div class=\"manufacturer-cta\"><a href=\"manufacturers/\">For manufacturers and resellers →</a></div><section class=\"card\"><h2>Tensile strength</h2><div class=\"legend\"><span><i class=\"key upright\"></i>Upright</span><span><i class=\"key flat\"></i>Flat</span><span>Error bars: standard deviation</span></div><div id=\"tensileChart\"></div></section><section class=\"card\"><h2>Impact resistance</h2><div class=\"legend\"><span><i class=\"key upright\"></i>Upright</span><span><i class=\"key flat\"></i>Flat</span><span>Error bars: standard deviation</span></div><div id=\"impactChart\"></div></section><script>const label=`${key==='flat'?'Flat':'Upright'}: ${fmt(val)} ${unit}`;</script>");
         var legacyManufacturerCtaRemoved = !Regex.IsMatch(
             terminologyProbe,
             @"class=[""']manufacturer-cta[""']",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-        checks.Add(new VerificationCheck("Website terminology mapping", terminologyProbe.Contains("Tensile Strength vs Layer Adhesion Strength", StringComparison.Ordinal) && terminologyProbe.Contains("Layer Adhesion Strength", StringComparison.Ordinal) && legacyManufacturerCtaRemoved && terminologyProbe.Contains("manufacturer-cta-primary", StringComparison.Ordinal),
-            "Website maps tensile flat/upright terminology, removes only the exact legacy manufacturer CTA and preserves current manufacturer action classes"));
+        var tensileTerminologySection = GetWebsiteChartSection(terminologyProbe, "tensileChart");
+        var impactTerminologySection = GetWebsiteChartSection(terminologyProbe, "impactChart");
+        var chartScopedTerminologyReady =
+            tensileTerminologySection.Contains("Tensile Strength", StringComparison.Ordinal) &&
+            tensileTerminologySection.Contains("Layer Adhesion Strength", StringComparison.Ordinal) &&
+            !tensileTerminologySection.Contains("Impact Strength", StringComparison.Ordinal) &&
+            impactTerminologySection.Contains("Impact Strength Flat", StringComparison.Ordinal) &&
+            impactTerminologySection.Contains("Impact Strength Upright", StringComparison.Ordinal) &&
+            !impactTerminologySection.Contains("Tensile Strength", StringComparison.Ordinal) &&
+            !impactTerminologySection.Contains("Layer Adhesion Strength", StringComparison.Ordinal) &&
+            terminologyProbe.Contains("target==='impactChart'?(key==='flat'?'Impact Strength Flat':'Impact Strength Upright')", StringComparison.Ordinal);
+        checks.Add(new VerificationCheck("v63.0.0 Website chart-scoped orientation terminology", chartScopedTerminologyReady && legacyManufacturerCtaRemoved && terminologyProbe.Contains("manufacturer-cta-primary", StringComparison.Ordinal),
+            chartScopedTerminologyReady
+                ? "Tensile and Impact headings, legends and tooltips retain their owning terminology without cross-chart leakage"
+                : "Tensile or Impact chart terminology leaked across chart boundaries"));
         var pricingTerminologyProbe = ApplyWebsiteTerminologyCleanup("<select><option value=\"tensileFlat\">Tensile flat, MPa</option><option value=\"tensileUpright\">Tensile upright, MPa</option></select><script>const map={tensileFlat:'Tensile flat',tensileUpright:'Tensile upright'};const configs={tensileFlat:{label:'Tensile flat',shortLabel:'Tensile flat'},tensileUpright:{label:'Tensile upright',shortLabel:'Tensile upright'}};</script>");
         checks.Add(new VerificationCheck("Website pricing terminology mapping", pricingTerminologyProbe.Contains("Tensile Strength, MPa", StringComparison.Ordinal) && pricingTerminologyProbe.Contains("Layer Adhesion Strength, MPa", StringComparison.Ordinal) && !pricingTerminologyProbe.Contains("Tensile flat", StringComparison.Ordinal) && !pricingTerminologyProbe.Contains("Tensile upright", StringComparison.Ordinal),
             "Performance vs Price and Value Rankings use the public tensile terminology"));
@@ -21181,7 +21229,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             verification.HtmlRenderer = _websiteHtmlRendererService.VerifyMainWebsitePayload(payload);
             var renderedHtml = string.IsNullOrWhiteSpace(templateHtml)
                 ? null
-                : _websiteHtmlRendererService.RenderMainWebsite(templateHtml, dataJson, DateTime.UtcNow, false, "Verification");
+                : ApplyWebsiteTerminologyCleanup(_websiteHtmlRendererService.RenderMainWebsite(
+                    templateHtml, dataJson, DateTime.UtcNow, false, "Verification"));
             verification.Website = _websiteVerificationService.Verify(payload, verification.Radar, verification.HtmlRenderer, renderedHtml, dataJson);
             verification.Available = true;
             verification.Passed = candidates.Count > 0 && summaries.Count == candidates.Count &&
@@ -21841,6 +21890,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         sb.AppendLine("Required CSS: " + (verification.Website.RequiredCssPresent ? "Present" : "Missing"));
         sb.AppendLine("Required JavaScript: " + (verification.Website.RequiredJavaScriptPresent ? "Present" : "Missing"));
         sb.AppendLine("Required sections: " + (verification.Website.RequiredSectionsPresent ? "Present" : "Missing"));
+        sb.AppendLine("Chart terminology: " + (verification.Website.ChartTerminologyValid ? "PASS" : "FAIL"));
         sb.AppendLine("Bundled master template identity: " + (verification.Website.MasterTemplateIdentityValid ? "MATCH" : "MISMATCH"));
         sb.AppendLine("MaterialID integrity: " + (verification.Website.MaterialIdIntegrity ? "PASS" : "FAIL"));
         sb.AppendLine("Duplicate MaterialID check: " + (verification.Website.NoDuplicateMaterialIds ? "PASS" : "FAIL"));

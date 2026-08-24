@@ -69,7 +69,7 @@ Date: 2026-08-22
 Area: Website / Impact Resistance chart terminology
 Type: Bug / UI polish
 Severity: Important
-Status: Open
+Status: Resolved in v63.0.0; owner accepted 2026-08-24
 What happened: The `Impact Resistance` chart shows `Layer Adhesion Strength` and `Tensile Strength` as its column/series names instead
 of the impact-orientation labels. The website terminology cleanup replaces a shared Flat/Upright legend without limiting the change to
 the tensile chart, so the Impact chart inherits tensile-specific wording.
@@ -82,8 +82,9 @@ Screenshot / export / report attached: None; owner runtime feedback on 2026-08-2
 Resolution: Scheduled as v63.0.0, Impact Chart Orientation-label Integrity. Replace the global shared-legend substitution with
 chart-scoped terminology for headings, legend entries and tooltips. Add deterministic rendering checks that require correct labels on
 both tensile and impact charts and reject cross-chart leakage while preserving canonical measurements and calculations.
-Verification evidence: Not yet implemented. Requires Debug/Release, website Verification, desktop/narrow local preview and owner
-visual acceptance before closure; Production/FTPS publication remains separately guarded.
+Verification evidence: Chart-scoped legends/tooltips and actual-render leakage checks are implemented. Debug/Release pass; disposable
+profile `20260824213737-c2e22572` passes Full Data Verification 435/435 with exact business-state recovery. Owner accepts desktop and
+narrow local Preview rendering and confirms Verification PASS on 2026-08-24; Production/FTPS publication remains separately guarded.
 
 Date: 2026-08-21
 Area: Website / Methodology / Heat Deflection

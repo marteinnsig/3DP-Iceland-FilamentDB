@@ -2,6 +2,19 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v63.0.0 - Impact Chart Orientation-label Integrity
+
+- Scopes website orientation terminology to the owning chart instead of globally replacing the shared Flat/Upright legend.
+- Keeps `Tensile Strength` and `Layer Adhesion Strength` on the tensile chart while using `Impact Strength Flat` and
+  `Impact Strength Upright` on the Impact Resistance chart, including chart tooltips.
+- Adds actual-render website Verification plus a deterministic cross-chart leakage probe; Full Data Verification passes 435/435 with
+  exact business-state recovery on disposable profile `20260824213737-c2e22572`.
+- Does not change measurements, units, colors, calculations, saved data or report snapshots. Production and FTPS remain blocked.
+- Automation assessment: the existing read-only website Verification path owns the deterministic contract; no new mutating runner
+  scenario is warranted. Help assessment: no in-app control, label, navigation or workflow changed, so Help content is unaffected.
+- Debug and Release solution builds pass with zero warnings/errors. Owner accepts desktop/narrow Preview rendering and confirms Full
+  Data Verification PASS on 2026-08-24; v63.0.0 is complete.
+
 ## v62.0.3 - Materials Heat Coverage and Tested-status Integration
 
 - Adds read-only `In Heat` immediately after `In Stiffness` in Fast Materials.
