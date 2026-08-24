@@ -15416,6 +15416,57 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             thermalAnalyticsReady
                 ? "Fixed 200 °C thermal score, missing/saturation rules and independent app decision surfaces pass without changing legacy Overall"
                 : "Thermal projection, decision-surface binding or legacy Overall invariance failed"));
+        var inventoryNameProbeMaterial = new NativeMaterialRow
+        {
+            MaterialID = "VERIFY-V62-MAT",
+            Manufacturer = "Prusa",
+            ProductLine = "Galaxy",
+            Color = "Black",
+            WebsiteDisplayName = "Prusa Galaxy Black"
+        };
+        var inventoryNameProbe = BuildInventoryMaterialDisplayName(
+            inventoryNameProbeMaterial,
+            inventoryNameProbeMaterial.MaterialID);
+        var inventoryFallbackProbe = BuildInventoryMaterialDisplayName(
+            new NativeMaterialRow
+            {
+                MaterialID = "VERIFY-V62-FALLBACK",
+                Manufacturer = "Fallback Maker",
+                ProductLine = "Fallback Line"
+            },
+            "VERIFY-V62-FALLBACK");
+        var inventoryIdProbe = BuildInventoryMaterialDisplayName(null, "VERIFY-V62-ID");
+        var inventoryReportProbeRow = new InventorySpoolRecord
+        {
+            InventoryItemId = "VERIFY-V62-SPOOL",
+            MaterialId = inventoryNameProbeMaterial.MaterialID,
+            MaterialDisplayName = inventoryNameProbe,
+            Status = "Empty",
+            Quantity = "1",
+            RemainingWeightG = "0"
+        };
+        var inventoryNameReportProbe = _purchasingReportService.Build(
+            "inventory-report", [inventoryReportProbeRow], [], [],
+            new DateTime(2026, 8, 24, 12, 0, 0, DateTimeKind.Utc));
+        var lowStockNameReportProbe = _purchasingReportService.Build(
+            "low-stock-report", [inventoryReportProbeRow], [], [],
+            new DateTime(2026, 8, 24, 12, 0, 0, DateTimeKind.Utc));
+        var inventoryNameProjectionReady =
+            inventoryNameProbe == "Prusa Galaxy Black" &&
+            inventoryFallbackProbe == "Fallback Maker Fallback Line" &&
+            inventoryIdProbe == "VERIFY-V62-ID" &&
+            inventoryReportProbeRow.MaterialId == "VERIFY-V62-MAT" &&
+            inventoryReportProbeRow.InventoryItemId == "VERIFY-V62-SPOOL" &&
+            inventoryNameReportProbe.Html.Contains("Prusa Galaxy Black", StringComparison.Ordinal) &&
+            lowStockNameReportProbe.Html.Contains("Prusa Galaxy Black", StringComparison.Ordinal) &&
+            !inventoryNameReportProbe.Html.Contains("Prusa Prusa", StringComparison.Ordinal) &&
+            !lowStockNameReportProbe.Html.Contains("Prusa Prusa", StringComparison.Ordinal);
+        checks.Add(new VerificationCheck(
+            "v62.0.0 Inventory canonical Material-name projection contract",
+            inventoryNameProjectionReady,
+            inventoryNameProjectionReady
+                ? "Canonical Website Display Name is reused once; computed-name and MaterialID fallbacks plus Inventory/Low Stock reports pass"
+                : "Inventory name projection duplicated Manufacturer, lost fallback identity, changed stable links or drifted in a purchasing report"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",
@@ -28995,7 +29046,7 @@ private List<string> GetVisibleAiMaterialLabels()
         if (FindName("PurchaseOrderLinesGrid") is not DataGrid grid) return;
         if (grid.Columns.OfType<DataGridComboBoxColumn>().FirstOrDefault(c => (c.Header?.ToString() ?? "").Contains("material", StringComparison.OrdinalIgnoreCase)) is not { } column) return;
         var choices = _nativeMaterialRows.Where(m => !m.IsArchived && !string.IsNullOrWhiteSpace(m.MaterialID))
-            .Select(m => new KeyValuePair<string,string>(m.MaterialID, $"{m.Manufacturer} {m.WebsiteDisplayName}".Trim()))
+            .Select(m => new KeyValuePair<string,string>(m.MaterialID, BuildInventoryMaterialDisplayName(m, m.MaterialID)))
             .OrderBy(x => x.Value, StringComparer.CurrentCultureIgnoreCase).ToList();
         column.ItemsSource = choices;
         var labels = choices.ToDictionary(x=>x.Key,x=>x.Value,StringComparer.OrdinalIgnoreCase);
@@ -30667,7 +30718,7 @@ private List<string> GetVisibleAiMaterialLabels()
             materials.TryGetValue(x.MaterialId, out var material);
             return new InventoryItemInput
             {
-                InventoryItemId = x.InventoryItemId, MaterialID = x.MaterialId, DisplayName = material?.WebsiteDisplayName ?? x.MaterialId, Manufacturer = material?.Manufacturer ?? "", BaseMaterial = material?.BaseMaterial ?? "",
+                InventoryItemId = x.InventoryItemId, MaterialID = x.MaterialId, DisplayName = BuildInventoryMaterialDisplayName(material, x.MaterialId), Manufacturer = material?.Manufacturer ?? "", BaseMaterial = material?.BaseMaterial ?? "",
                 StorageLocation = x.StorageLocation, Status = x.Status, Quantity = x.Quantity, SpoolWeightG = x.SpoolWeightG, RemainingWeightG = x.RemainingWeightG, PurchasePriceAmount = x.PurchasePriceAmount, Currency = x.PurchaseCurrency, IsArchived = material?.IsArchived ?? false
             };
         }));
@@ -31155,7 +31206,7 @@ private List<string> GetVisibleAiMaterialLabels()
             .Where(m => !m.IsArchived && !string.IsNullOrWhiteSpace(m.MaterialID))
             .Select(m => new KeyValuePair<string, string>(
                 m.MaterialID,
-                $"{m.Manufacturer} {m.WebsiteDisplayName}".Trim()))
+                BuildInventoryMaterialDisplayName(m, m.MaterialID)))
             .OrderBy(x => x.Value, StringComparer.CurrentCultureIgnoreCase)
             .ThenBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
             .ToList();
@@ -31164,6 +31215,20 @@ private List<string> GetVisibleAiMaterialLabels()
         foreach (var spool in _inventorySpoolRows)
             spool.MaterialDisplayName = labels.TryGetValue(spool.MaterialId, out var label) ? label : spool.MaterialId;
         _inventorySpoolView?.Refresh();
+    }
+
+    private string BuildInventoryMaterialDisplayName(NativeMaterialRow? material, string? materialId)
+    {
+        if (material is null)
+            return materialId?.Trim() ?? string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(material.WebsiteDisplayName))
+            return material.WebsiteDisplayName.Trim();
+
+        var computedName = BuildNativeMaterialDisplayName(material);
+        return !string.IsNullOrWhiteSpace(computedName)
+            ? computedName
+            : materialId?.Trim() ?? string.Empty;
     }
 
     private bool SaveInventorySpools(

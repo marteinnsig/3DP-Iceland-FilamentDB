@@ -1,3 +1,20 @@
+# v62.0.0 - Inventory Material-name Projection Integrity
+
+Date: 2026-08-24
+
+- Debug and Release builds pass with zero warnings/errors.
+- Deterministic coverage verifies canonical single-prefix display, computed-name
+  and MaterialID fallbacks, unchanged stable links and Inventory/Low Stock output.
+- Help coverage passes 703/703; release documentation and roadmap-length gates pass.
+- Direct/transitive NuGet vulnerability audit reports no vulnerable packages.
+- Disposable profile `20260824193914-7a1fe790` passes Full Data Verification
+  431/431 with zero FAIL and zero N/A.
+- Database hash returns exactly to `F9917C12AFA7C4A1F08C43CF0C46DB75EC8EF56558DB0F65875D217526B79CA6`;
+  business-state hash returns exactly to
+  `91C73F5DE82D4C07C03A03D47D4C31106E0F88DD90D76A45E80380C6C7B5AE0E`.
+- Owner accepts the corrected Inventory and downstream report presentation on
+  2026-08-24. Production and FTPS remain blocked.
+
 # v61.0.7 - Public Website, Reports and Thermal Radar Accepted
 
 Date: 2026-08-14

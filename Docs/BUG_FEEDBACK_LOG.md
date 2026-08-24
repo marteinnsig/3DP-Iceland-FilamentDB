@@ -167,27 +167,6 @@ Add deterministic commit/recompute/visible-refresh coverage and preserve canonic
 Verification evidence: Not yet implemented. Requires Debug/Release, Help assessment, Full Data Verification, disposable exact-state
 evidence and owner runtime acceptance before closure.
 
-Date: 2026-08-15
-Area: Inventory / Material identity presentation
-Type: Bug / UI polish
-Severity: Important
-Status: Open
-What happened: Inventory shows the Manufacturer twice at the start of Material Name. The canonical `WebsiteDisplayName` already
-contains Manufacturer, but `RefreshInventoryMaterialChoices()` prepends `Manufacturer` again when composing `MaterialDisplayName`.
-The duplicated label is reused by the Inventory selector, editable spool grid, filtering, default sorting and purchasing reports.
-Expected behavior: Inventory and its downstream read-only report/search projections must show one canonical human-readable material
-name per MaterialID, with Manufacturer appearing once. This presentation fix must not change MaterialID links, Inventory spool facts,
-purchase provenance, landed-cost snapshots, Usage references or canonical Materials data.
-Steps to reproduce: Open Inventory and inspect Material Name for a linked spool; compare it with the same row's Website Display Name
-in Materials. The Inventory label starts with the same Manufacturer twice.
-Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
-Resolution: Scheduled as v62.0.0, Inventory Material-name Projection Integrity. Reuse the canonical Website Display Name rather than
-prefixing Manufacturer a second time, retain a safe MaterialID fallback, and audit Inventory dropdown/grid/search/sort plus Inventory,
-Low Stock and Purchasing Intelligence report consumers. Add deterministic Verification for single-prefix composition and unchanged
-MaterialID/spool persistence. Revalidate current Inventory Help; update it only if labels, navigation or decisions change.
-Verification evidence: Not yet implemented. Requires Debug/Release, applicable Help/documentation gates, Full Data Verification and
-owner runtime acceptance before closure.
-
 # 2026-07-28 - v59.0 navigation inventory and tab-order ownership
 
 - **v59.0.2 implementation:** A grouped Navigate menu now exposes six ordered
@@ -304,6 +283,26 @@ owner runtime acceptance before closure.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Recent resolved findings — newest first
+
+Date: 2026-08-15
+Area: Inventory / Material identity presentation
+Type: Bug / UI polish
+Severity: Important
+Status: Solved
+What happened: Inventory shows the Manufacturer twice at the start of Material Name. The canonical `WebsiteDisplayName` already
+contains Manufacturer, but `RefreshInventoryMaterialChoices()` prepends `Manufacturer` again when composing `MaterialDisplayName`.
+The duplicated label is reused by the Inventory selector, editable spool grid, filtering, default sorting and purchasing reports.
+Expected behavior: Inventory and its downstream read-only report/search projections must show one canonical human-readable material
+name per MaterialID, with Manufacturer appearing once. This presentation fix must not change MaterialID links, Inventory spool facts,
+purchase provenance, landed-cost snapshots, Usage references or canonical Materials data.
+Steps to reproduce: Open Inventory and inspect Material Name for a linked spool; compare it with the same row's Website Display Name
+in Materials. The Inventory label starts with the same Manufacturer twice.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
+Resolution: Solved in version v62.0.0 — 2026-08-24. Inventory, Low Stock and Purchasing Intelligence now reuse the canonical Website
+Display Name once, with computed-name and MaterialID fallbacks; stable MaterialID links and spool/business data remain unchanged.
+Verification evidence: Debug/Release builds pass with zero warnings/errors; Help coverage passes 703/703, release documentation passes,
+the NuGet audit reports no vulnerable packages and disposable profile `20260824193914-7a1fe790` passes Full Data Verification 431/431
+with exact database/business-state recovery. Owner runtime acceptance confirms the corrected Inventory presentation on 2026-08-24.
 
 Date: 2026-08-02
 Area: Native measurements / fixture-specific heat deflection

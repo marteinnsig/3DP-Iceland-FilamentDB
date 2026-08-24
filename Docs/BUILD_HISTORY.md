@@ -2,6 +2,20 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v62.0.0 - Inventory Material-name Projection Integrity
+
+The Inventory projection now consumes one canonical human-readable name per
+MaterialID instead of prepending Manufacturer to an already complete Website
+Display Name. The same projection feeds the editable spool grid, Inventory summary,
+filtering, sorting, Inventory Report, Low Stock Report and Purchasing Intelligence.
+The change is presentation-only and does not mutate canonical business data. Help
+does not change because the visible control contract is unchanged. Debug and Release
+pass with zero warnings/errors, Help coverage passes 703/703, release documentation
+passes and disposable profile `20260824193914-7a1fe790` passes Full Data Verification
+431/431 with exact database and business-state recovery. The direct/transitive
+NuGet vulnerability audit reports no vulnerable packages from the current sources.
+Owner accepts the corrected Inventory and report presentation on 2026-08-24.
+
 ## v61.0.8.4 - Final Help, Evidence and Owner Acceptance
 
 Help discovery and committed inventory reconcile 703/703 candidates. Release

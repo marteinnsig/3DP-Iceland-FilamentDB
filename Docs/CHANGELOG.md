@@ -2,6 +2,21 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v62.0.0 - Inventory Material-name Projection Integrity
+
+- Reuses the canonical Website Display Name in the Inventory material selector,
+  editable spool grid, filtering, default sorting and purchasing reports.
+- Falls back to the computed material identity and then MaterialID only when the
+  canonical display name is absent; no Inventory, purchase or Material data changes.
+- Adds deterministic single-prefix, fallback and downstream report coverage.
+- Help assessment: no update required because labels, navigation, save timing and
+  user decisions are unchanged.
+- Debug/Release pass with zero warnings/errors; Help coverage passes 703/703 and
+  disposable Full Data Verification passes 431/431 with exact state recovery.
+- Direct/transitive NuGet vulnerability audit reports no vulnerable packages.
+- Owner accepts the corrected Inventory and downstream report presentation on
+  2026-08-24; v62.0.0 is complete.
+
 ## v61.0.8.4 - Final Help, Evidence and Owner Acceptance
 
 - Reconciles the four hidden tester-only thermal controls into the Help inventory

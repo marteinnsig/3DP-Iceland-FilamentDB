@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v62.0.0 — Inventory Material-name Projection Integrity (Planned)**
+Current roadmap increment: **v62.0.1 — Materials Pricing Derived-field Immediate Refresh (Planned)**
 
 Current acceptance note: v61.0.8 and the complete v61 thermal foundation are owner accepted; Verification passes 430/430.
 
-Next note: v62.0.0 is the next bounded implementation; Production and FTPS remain blocked.
+Next note: v62.0.1 is the next bounded implementation; Production and FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -2990,7 +2990,7 @@ blockers may change the order, but must be recorded here before implementation.
 ## Planned — v62 Daily Data-entry and Presentation Integrity
 
 - **v62.0.0 — Inventory Material-name Projection Integrity**
-  - State: Planned; owner-reported Inventory label bug recorded on 2026-08-15.
+  - State: Complete and owner runtime accepted on 2026-08-24; Full Data Verification passes 431/431.
   - Use one canonical human-readable Material name per stable MaterialID; do not prepend Manufacturer to a display name that already
     contains it.
   - Audit the Inventory material selector, editable spool grid, filtering, default sorting and Inventory/Low Stock/Purchasing
@@ -2998,6 +2998,12 @@ blockers may change the order, but must be recorded here before implementation.
   - Preserve Inventory spool facts, MaterialID relationships, purchase and landed-cost snapshots, Usage references and Materials data.
   - Add deterministic single-prefix/fallback and unchanged-persistence coverage; revalidate Help and update only if behavior wording
     or visible labels change.
+  - Candidate evidence: Debug/Release pass with zero warnings/errors; Help 703/703 and release documentation pass; disposable profile
+    `20260824193914-7a1fe790` passes Full Data Verification 431/431 with exact database/business-state recovery; direct/transitive
+    NuGet vulnerability audit reports no vulnerable packages.
+  - Help assessment: no change required because labels, navigation, save timing, persistence ownership and user decisions are intact.
+  - Owner acceptance: Inventory, filtering/sorting and downstream report names show Manufacturer once; no business data changed.
+  - Completion condition met: canonical/fallback labels, reports, unchanged persistence, all gates and owner runtime acceptance pass.
   - Completion condition: owner accepts Inventory and report names with Manufacturer shown once; Debug/Release, Help/documentation
     gates and Full Data Verification pass without business-state drift.
 - **v62.0.1 — Materials Pricing Derived-field Immediate Refresh**
