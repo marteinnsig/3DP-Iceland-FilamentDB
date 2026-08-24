@@ -2,6 +2,27 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v62.0.1 - Materials Pricing Derived-field Immediate Refresh
+
+Committed Fast Materials pricing dependencies now update the canonical derived
+fields and active row snapshot before focus navigation continues. The existing
+debounced SQLite auto-save, filter rebuild and downstream synchronization remain
+the persistence owner. Purchase Orders, Inventory, Usage and immutable saved
+snapshots are not rewritten. Build, Help, documentation, security and disposable
+Verification evidence pass: Debug/Release have zero warnings/errors, Help is
+703/703, release documentation passes, profile `20260824200300-0c41b03c` passes
+Full Data Verification 432/432 with exact database/business-state recovery and the
+direct/transitive NuGet audit reports no vulnerable packages.
+
+Owner Full Verification initially exposed one unrelated historical false gate:
+205 valid thermal results comprised 188 unchanged workbook-source rows and 17
+governed manual rows, with zero range errors and zero orphan links. v61.0.3 had
+incorrectly required the workbook-source count to remain exactly 191 despite the
+accepted manual add/update/clear workflow. The corrected gate validates canonical
+method, range, MaterialID and governed workbook/manual provenance per retained row.
+Owner confirms the pricing behavior and corrected Full Data Verification PASS on
+2026-08-24.
+
 ## v62.0.0 - Inventory Material-name Projection Integrity
 
 The Inventory projection now consumes one canonical human-readable name per

@@ -15371,7 +15371,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 : "Heat Deflection navigation, Fast grid, validation, persistence, clear behavior or Help failed"));
         var thermalDeflectionPopulationRetirementReady =
             thermalDeflectionWorkspaceReady &&
-            _database.ThermalDeflectionPopulationMatchesAcceptedSource() &&
+            _database.ThermalDeflectionPopulationHasValidProvenance() &&
             FindName("PreviewThermalDeflectionImport") is null &&
             FindName("ExportThermalDeflectionResults") is null &&
             typeof(MainWindow).GetMethod("PreviewThermalDeflectionImport_Click",
@@ -15384,11 +15384,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             typeof(MainWindow).GetMethod(nameof(AddNativeThermalDeflectionSheet),
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null;
         checks.Add(new VerificationCheck(
-            "v61.0.3 Accepted thermal population and retired transition UI contract",
+            "v61.0.3 Supported thermal provenance and retired transition UI contract",
             thermalDeflectionPopulationRetirementReady,
             thermalDeflectionPopulationRetirementReady
-                ? "Accepted 191-row source population is intact; one-time import/export UI and service are retired"
-                : "Accepted source population drifted or one-time thermal workbook transition surfaces remain"));
+                ? "Retained workbook/manual results have canonical method, range, MaterialID and provenance; one-time import/export surfaces are retired"
+                : "Thermal method, range, MaterialID, provenance or retired transition-surface contract failed"));
         var legacyProbe = new TensileTestResult { FlatMpa = "40", UprightMpa = "40" };
         var legacyProfile = _scoringService.BuildProfile(legacyProbe, Array.Empty<TestSummaryMetric>());
         var thermalProfile = _scoringService.BuildProfile(legacyProbe, Array.Empty<TestSummaryMetric>(), 171.0);
@@ -15467,6 +15467,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             inventoryNameProjectionReady
                 ? "Canonical Website Display Name is reused once; computed-name and MaterialID fallbacks plus Inventory/Low Stock reports pass"
                 : "Inventory name projection duplicated Manufacturer, lost fallback identity, changed stable links or drifted in a purchasing report"));
+        var materialPricingImmediateRefreshReady =
+            RunMaterialPricingImmediateRefreshContractVerification();
+        checks.Add(new VerificationCheck(
+            "v62.0.1 Materials pricing derived-field immediate refresh contract",
+            materialPricingImmediateRefreshReady,
+            materialPricingImmediateRefreshReady
+                ? "Committed MSRP/Landed amount, currency and spool-weight dependencies refresh canonical USD and USD/kg snapshot cells immediately"
+                : "Pricing dependency recompute, owner-drawn snapshot refresh, normalization or unrelated Material preservation failed"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",

@@ -2,6 +2,26 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v62.0.1 - Materials Pricing Derived-field Immediate Refresh
+
+- Recalculates MSRP/Landed USD and USD/kg synchronously when a committed Fast
+  Materials edit changes amount, currency or spool weight.
+- Refreshes the active owner-drawn row snapshot in the same commit without moving
+  selection, rebuilding rows or resetting viewport offsets.
+- Retains the existing debounced canonical auto-save and dependent-module sync.
+- Adds deterministic amount/currency/weight, parallel MSRP/Landed, snapshot and
+  unrelated-field preservation coverage.
+- Help requires no change because labels and canonical auto-save ownership remain;
+  Help 703/703 and release documentation pass.
+- Debug/Release pass with zero warnings/errors; disposable Full Data Verification
+  passes 432/432 with exact state recovery and the NuGet audit reports no findings.
+- Corrects the v61.0.3 thermal population gate exposed by owner-data growth: every
+  retained result must have canonical method, range, MaterialID and governed
+  workbook/manual provenance, while supported manual add/update/clear may change
+  the historical workbook-source count.
+- Owner accepts immediate pricing refresh and confirms corrected Full Data
+  Verification PASS on 2026-08-24; v62.0.1 is complete.
+
 ## v62.0.0 - Inventory Material-name Projection Integrity
 
 - Reuses the canonical Website Display Name in the Inventory material selector,

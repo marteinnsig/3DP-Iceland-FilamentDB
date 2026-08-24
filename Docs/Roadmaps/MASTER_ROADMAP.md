@@ -6,11 +6,11 @@ Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability
 
 Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
 
-Current roadmap increment: **v62.0.1 — Materials Pricing Derived-field Immediate Refresh (Planned)**
+Current roadmap increment: **v62.0.2 — Purchase-order Line Editor Focus and Keyboard Navigation (Planned)**
 
 Current acceptance note: v61.0.8 and the complete v61 thermal foundation are owner accepted; Verification passes 430/430.
 
-Next note: v62.0.1 is the next bounded implementation; Production and FTPS remain blocked.
+Next note: v62.0.2 is the next bounded implementation; Production and FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -3007,13 +3007,21 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: owner accepts Inventory and report names with Manufacturer shown once; Debug/Release, Help/documentation
     gates and Full Data Verification pass without business-state drift.
 - **v62.0.1 — Materials Pricing Derived-field Immediate Refresh**
-  - State: Planned after v62.0.0; owner-reported Materials pricing-refresh bug recorded on 2026-08-15.
+  - State: Complete and owner runtime accepted on 2026-08-24; Full Data Verification passes 432/432.
   - Recalculate and visibly refresh Landed USD and Landed USD/kg immediately after committed Landed Cost, Landed Currency or Spool
     Weight edits; audit the parallel MSRP USD and MSRP USD/kg dependency path.
   - Preserve canonical Materials auto-save, configured currency references and locale-aware manual ISK input.
   - Do not rewrite historical Purchase Orders, Inventory lots, Usage, saved quotes or saved calculation/rate snapshots.
   - Add deterministic committed-edit/recompute/owner-drawn snapshot coverage; assess Help and update it only if current save timing or
     field behavior wording changes.
+  - Candidate evidence: Debug/Release pass with zero warnings/errors; Help 703/703 and release documentation pass; disposable profile
+    `20260824200300-0c41b03c` passes Full Data Verification 432/432 with exact database/business-state recovery; direct/transitive
+    NuGet vulnerability audit reports no vulnerable packages.
+  - Help assessment: no change required; canonical auto-save timing, visible labels, persistence ownership and user decisions remain.
+  - Verification correction: v61.0.3 now validates every retained workbook/manual result's method, range, MaterialID and provenance;
+    it no longer rejects supported manual additions, updates or clears because the original workbook-source count changed from 191.
+  - Owner acceptance: immediate Landed/MSRP derived refresh and corrected owner Full Data Verification PASS are confirmed.
+  - Completion condition met: immediate snapshot refresh, persistence boundaries, all gates and owner runtime acceptance pass.
   - Completion condition: owner accepts immediate derived-value refresh without extra focus movement; Debug/Release, applicable Help
     and documentation gates, Full Data Verification and exact-state recovery pass.
 - **v62.0.2 — Purchase-order Line Editor Focus and Keyboard Navigation**

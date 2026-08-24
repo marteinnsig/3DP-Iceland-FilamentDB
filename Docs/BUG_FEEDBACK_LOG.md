@@ -145,28 +145,6 @@ editable or alter measurement evidence. Update Help and coverage registries for 
 Verification evidence: Not yet implemented. Requires schema migration/current-schema coverage, Debug/Release, Help, disposable
 runtime/result-clear persistence, Full Data Verification, exact-state recovery and owner runtime acceptance before closure.
 
-Date: 2026-08-15
-Area: Materials / Manual landed-cost pricing
-Type: Bug / Workflow friction
-Severity: Important
-Status: Open
-What happened: When manually entering an ISK Landed Cost for a Material purchased before the Purchase Orders workflow was adopted,
-the read-only Landed USD and Landed USD/kg cells did not update immediately. Moving back and forth between fields eventually caused
-the derived values to recalculate and appear.
-Expected behavior: Committing Landed Cost, Landed Currency or Spool Weight in Materials must immediately recalculate and visibly
-refresh Landed USD and Landed USD/kg for that MaterialID through the canonical pricing conversion. The committed values must persist,
-while historical Purchase Orders, Inventory lots, Usage and saved quote/calculation snapshots remain immutable.
-Steps to reproduce: In Materials, select a legacy Material, enter its manual Landed Cost in ISK and commit the cell. Observe that
-Landed USD and Landed USD/kg can remain stale until focus moves through additional fields.
-Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
-Resolution: Scheduled as v62.0.1, Materials Pricing Derived-field Immediate Refresh. The current formula is owned by
-`ApplyMaterialPricingCalculations`, but committed Fast Materials edits enter a debounced recompute/canonical synchronization path.
-Ensure the same committed dependency change refreshes the active owner-drawn row snapshot after recalculation, without requiring a
-second focus transition. Audit Landed Cost, Landed Currency and Spool Weight plus the parallel MSRP USD/USD-per-kg dependency path.
-Add deterministic commit/recompute/visible-refresh coverage and preserve canonical auto-save and immutable historical snapshots.
-Verification evidence: Not yet implemented. Requires Debug/Release, Help assessment, Full Data Verification, disposable exact-state
-evidence and owner runtime acceptance before closure.
-
 # 2026-07-28 - v59.0 navigation inventory and tab-order ownership
 
 - **v59.0.2 implementation:** A grouped Navigate menu now exposes six ordered
@@ -283,6 +261,26 @@ evidence and owner runtime acceptance before closure.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Recent resolved findings — newest first
+
+Date: 2026-08-15
+Area: Materials / Manual landed-cost pricing
+Type: Bug / Workflow friction
+Severity: Important
+Status: Solved
+What happened: When manually entering an ISK Landed Cost for a Material purchased before the Purchase Orders workflow was adopted,
+the read-only Landed USD and Landed USD/kg cells did not update immediately. Moving back and forth between fields eventually caused
+the derived values to recalculate and appear.
+Expected behavior: Committing Landed Cost, Landed Currency or Spool Weight in Materials must immediately recalculate and visibly
+refresh Landed USD and Landed USD/kg for that MaterialID through the canonical pricing conversion. The committed values must persist,
+while historical Purchase Orders, Inventory lots, Usage and saved quote/calculation snapshots remain immutable.
+Steps to reproduce: In Materials, select a legacy Material, enter its manual Landed Cost in ISK and commit the cell. Observe that
+Landed USD and Landed USD/kg can remain stale until focus moves through additional fields.
+Screenshot / export / report attached: None; owner runtime feedback on 2026-08-15.
+Resolution: Solved in version v62.0.1 — 2026-08-24. Committed amount, currency and spool-weight dependencies now recalculate parallel
+MSRP/Landed USD and USD/kg values and refresh the active owner-drawn snapshot immediately while canonical auto-save remains unchanged.
+Verification evidence: Debug/Release pass with zero warnings/errors; Help 703/703, release documentation and NuGet audit pass;
+disposable profile `20260824200300-0c41b03c` passes Full Data Verification 432/432 with exact state recovery. Owner accepts pricing
+refresh behavior and confirms corrected owner Full Data Verification PASS on 2026-08-24.
 
 Date: 2026-08-15
 Area: Inventory / Material identity presentation

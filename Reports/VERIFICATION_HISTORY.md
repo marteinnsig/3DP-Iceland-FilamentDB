@@ -1,3 +1,21 @@
+# v62.0.1 - Materials Pricing Derived-field Immediate Refresh
+
+Date: 2026-08-24
+
+- Debug and Release builds pass with zero warnings/errors.
+- Committed amount, currency and spool-weight edits synchronously refresh parallel
+  MSRP/Landed USD and USD/kg canonical fields plus the active owner-drawn snapshot.
+- Disposable profile `20260824200300-0c41b03c` passes Full Data Verification
+  432/432 with exact database and business-state recovery.
+- Help coverage passes 703/703; release documentation, roadmap and NuGet gates pass.
+- Owner Full Verification first exposed a historical v61.0.3 false gate: 205 valid
+  thermal results contained 188 workbook and 17 governed manual rows, with zero
+  range errors and zero orphan links.
+- Corrected v61.0.3 validates canonical method, range, MaterialID and governed
+  workbook/manual provenance instead of freezing the mutable source count at 191.
+- Owner accepts immediate pricing refresh and confirms corrected Full Data
+  Verification PASS on 2026-08-24. Production and FTPS remain blocked.
+
 # v62.0.0 - Inventory Material-name Projection Integrity
 
 Date: 2026-08-24

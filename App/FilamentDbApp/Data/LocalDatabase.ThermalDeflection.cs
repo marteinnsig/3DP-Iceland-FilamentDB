@@ -168,22 +168,31 @@ public sealed partial class LocalDatabase
         transaction.Commit();
     }
 
-    public bool ThermalDeflectionPopulationMatchesAcceptedSource()
+    public bool ThermalDeflectionPopulationHasValidProvenance()
     {
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
         using var command = connection.CreateCommand();
         command.CommandText = """
             SELECT
-                SUM(CASE WHEN SourceSha256=$source AND MethodVersion=$method THEN 1 ELSE 0 END),
-                SUM(CASE WHEN ResultTemperatureC < 25 OR ResultTemperatureC > 300 THEN 1 ELSE 0 END),
-                SUM(CASE WHEN MaterialId NOT IN (SELECT MaterialId FROM NativeMaterialManagerRows) THEN 1 ELSE 0 END)
+                COALESCE(SUM(CASE WHEN MethodVersion<>$method THEN 1 ELSE 0 END), 0),
+                COALESCE(SUM(CASE WHEN ResultTemperatureC < 25 OR ResultTemperatureC > 300 THEN 1 ELSE 0 END), 0),
+                COALESCE(SUM(CASE WHEN MaterialId NOT IN (SELECT MaterialId FROM NativeMaterialManagerRows) THEN 1 ELSE 0 END), 0),
+                COALESCE(SUM(CASE WHEN NOT (
+                    SourceSha256=$acceptedSource OR
+                    (SourceFileName='Manual entry' AND SourceSha256=$manualSource)
+                ) THEN 1 ELSE 0 END), 0)
             FROM NativeThermalDeflectionMeasurements;
             """;
-        command.Parameters.AddWithValue("$source", "5CC2742C6DEA382CDCCC9D260135DB3377DFC9B754D9106230B6C8CCC3AE58CE");
+        command.Parameters.AddWithValue("$acceptedSource", "5CC2742C6DEA382CDCCC9D260135DB3377DFC9B754D9106230B6C8CCC3AE58CE");
+        command.Parameters.AddWithValue("$manualSource", ThermalDeflectionMethodContract.SnapshotSha256);
         command.Parameters.AddWithValue("$method", ThermalDeflectionMethodContract.Version);
         using var reader = command.ExecuteReader();
-        return reader.Read() && reader.GetInt32(0) == 191 && reader.GetInt32(1) == 0 && reader.GetInt32(2) == 0;
+        return reader.Read() &&
+               reader.GetInt32(0) == 0 &&
+               reader.GetInt32(1) == 0 &&
+               reader.GetInt32(2) == 0 &&
+               reader.GetInt32(3) == 0;
     }
 
     public static bool RunThermalDeflectionPersistenceContractVerification()
@@ -221,6 +230,15 @@ public sealed partial class LocalDatabase
                 "MAT-THERMAL-1", 60, "2026-08-14", "Manual verification");
             var manual = database.GetThermalDeflectionMeasurements()
                 .Single(row => row.MaterialId == "MAT-THERMAL-1");
+            var manualPopulationReady = database.ThermalDeflectionPopulationHasValidProvenance();
+            using (var connection = new SqliteConnection(database.ConnectionString))
+            {
+                connection.Open();
+                using var command = connection.CreateCommand();
+                command.CommandText = "UPDATE NativeThermalDeflectionMeasurements SET SourceSha256='invalid-provenance';";
+                command.ExecuteNonQuery();
+            }
+            var invalidProvenanceBlocked = !database.ThermalDeflectionPopulationHasValidProvenance();
             database.SaveManualThermalDeflectionMeasurement(
                 "MAT-THERMAL-1", 61, "2026-08-15", "Updated verification");
             var manualUpdated = database.GetThermalDeflectionMeasurements()
@@ -228,6 +246,7 @@ public sealed partial class LocalDatabase
             database.SaveManualThermalDeflectionMeasurement(
                 "MAT-THERMAL-1", null, null, null);
             return immutableMethodBlocked &&
+                   manualPopulationReady && invalidProvenanceBlocked &&
                    manual.ResultTemperatureC == 60 && manual.MeasuredDate == "2026-08-14" &&
                    manual.MethodVersion == ThermalDeflectionMethodContract.Version &&
                    manualUpdated.ResultTemperatureC == 61 && manualUpdated.TestNotes == "Updated verification" &&

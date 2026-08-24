@@ -443,9 +443,119 @@ public partial class MainWindow
             }
         }
 
+        RefreshMaterialPricingDerivedSnapshotCells(changes);
+
         MarkNativeMaterialsDirty();
         QueueNativeMaterialEditRefresh();
         return true;
+    }
+
+    private void RefreshMaterialPricingDerivedSnapshotCells(
+        IReadOnlyList<MaterialsPrototypeChange> changes)
+    {
+        var pricingRows = changes
+            .Where(change => IsMaterialPricingDependencyProperty(change.Column.PropertyName))
+            .Select(change => change.Row)
+            .Where(row => row.Source is NativeMaterialRow)
+            .Distinct()
+            .ToList();
+        if (pricingRows.Count == 0) return;
+
+        foreach (var prototypeRow in pricingRows)
+        {
+            var material = (NativeMaterialRow)prototypeRow.Source;
+            ApplyMaterialPricingCalculations(material);
+        }
+    }
+
+    private static bool IsMaterialPricingDependencyProperty(string? propertyName) =>
+        propertyName is nameof(NativeMaterialRow.MsrpAmount) or
+            nameof(NativeMaterialRow.MsrpCurrency) or
+            nameof(NativeMaterialRow.LandedCostAmount) or
+            nameof(NativeMaterialRow.LandedCostCurrency) or
+            nameof(NativeMaterialRow.SpoolWeightG);
+
+    private static void RefreshPrototypeRowFromSource(
+        MaterialsPrototypeRow row,
+        IReadOnlyList<MaterialsPrototypeColumn> columns)
+    {
+        for (var columnIndex = 0; columnIndex < columns.Count; columnIndex++)
+        {
+            row.Cells[columnIndex] = PrototypeCellText(
+                row.Source,
+                columns[columnIndex].PropertyName);
+        }
+    }
+
+    private bool RunMaterialPricingImmediateRefreshContractVerification()
+    {
+        var columns = new List<MaterialsPrototypeColumn>
+        {
+            FastMaterialsColumn("Spool Weight", 100, nameof(NativeMaterialRow.SpoolWeightG), false),
+            FastMaterialsColumn("MSRP Amount", 100, nameof(NativeMaterialRow.MsrpAmount), false),
+            FastMaterialsColumn("MSRP Currency", 100, nameof(NativeMaterialRow.MsrpCurrency), false),
+            FastMaterialsColumn("MSRP USD", 100, nameof(NativeMaterialRow.MsrpUsd), true),
+            FastMaterialsColumn("MSRP USD/kg", 100, nameof(NativeMaterialRow.MsrpUsdPerKg), true),
+            FastMaterialsColumn("Landed Cost", 100, nameof(NativeMaterialRow.LandedCostAmount), false),
+            FastMaterialsColumn("Landed Currency", 100, nameof(NativeMaterialRow.LandedCostCurrency), false),
+            FastMaterialsColumn("Landed USD", 100, nameof(NativeMaterialRow.LandedCostUsd), true),
+            FastMaterialsColumn("Landed USD/kg", 100, nameof(NativeMaterialRow.LandedCostUsdPerKg), true)
+        };
+        var material = new NativeMaterialRow
+        {
+            MaterialID = "VERIFY-V62-PRICING",
+            SpoolWeightG = "1000",
+            MsrpAmount = "30",
+            MsrpCurrency = "usd",
+            LandedCostAmount = "25",
+            LandedCostCurrency = "usd",
+            Notes = "UNCHANGED-PRICING-PROBE"
+        };
+        var cells = columns.Select(column => PrototypeCellText(material, column.PropertyName)).ToArray();
+        var row = new MaterialsPrototypeRow(
+            material,
+            material.MaterialID,
+            cells,
+            cells.ToArray(),
+            () => true);
+
+        material.LandedCostAmount = "50";
+        var landedChange = new MaterialsPrototypeChange(
+            row,
+            columns[5],
+            5,
+            "25",
+            "50");
+        RefreshMaterialPricingDerivedSnapshotCells([landedChange]);
+        RefreshPrototypeRowFromSource(row, columns);
+        var landedCommitReady =
+            material.LandedCostUsd == "50.00" &&
+            material.LandedCostUsdPerKg == "50.00" &&
+            row.Cells[7] == "50.00" &&
+            row.Cells[8] == "50.00";
+
+        material.SpoolWeightG = "500";
+        var weightChange = new MaterialsPrototypeChange(
+            row,
+            columns[0],
+            0,
+            "1000",
+            "500");
+        RefreshMaterialPricingDerivedSnapshotCells([weightChange]);
+        RefreshPrototypeRowFromSource(row, columns);
+        return landedCommitReady &&
+               material.MsrpCurrency == "USD" &&
+               material.LandedCostCurrency == "USD" &&
+               material.MsrpUsd == "30.00" &&
+               material.MsrpUsdPerKg == "60.00" &&
+               material.LandedCostUsd == "50.00" &&
+               material.LandedCostUsdPerKg == "100.00" &&
+               row.Cells[3] == "30.00" &&
+               row.Cells[4] == "60.00" &&
+               row.Cells[7] == "50.00" &&
+               row.Cells[8] == "100.00" &&
+               material.MaterialID == "VERIFY-V62-PRICING" &&
+               material.Notes == "UNCHANGED-PRICING-PROBE";
     }
 
     private static string PrototypeCellText(object row, string? propertyName)
@@ -993,6 +1103,7 @@ public partial class MainWindow
                 _explicitSameValueCommits.Clear();
                 return;
             }
+            RefreshChangedRowsFromSources(changes);
             if (_reloadAfterApply)
             {
                 RefreshCurrentRowsFromSources();
@@ -1008,6 +1119,14 @@ public partial class MainWindow
             _explicitSameValueCommits.Clear();
             UpdateApplyState();
             _status.Text = $"Saved {changes.Count:N0} changed field(s) through the canonical Materials auto-save workflow.";
+        }
+
+        private void RefreshChangedRowsFromSources(
+            IReadOnlyList<MaterialsPrototypeChange> changes)
+        {
+            foreach (var row in changes.Select(change => change.Row).Distinct())
+                RefreshPrototypeRowFromSource(row, _columns);
+            _surface.InvalidateVisual();
         }
 
         private void RefreshCurrentRowsFromSources()
