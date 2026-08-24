@@ -4,9 +4,9 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v60.0.6 — Bug Fixes and Workflow Reliability
+- **Current runtime-accepted release:** v63.0.1 — Public Heat Deflection Methodology
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v62 workflow reliability complete; v63 public website accuracy is next
+- **Current development focus:** v63 public website accuracy is complete; the next bounded increment awaits open-feedback review
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Your data stays yours
@@ -174,9 +174,10 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 60.0.6 is the current runtime-accepted application release. The v61
-Thermal Deflection foundation and v62 workflow-reliability milestone are complete and owner accepted. The next bounded increment is
-v63.0.0 Impact Chart Orientation-label Integrity. Production and FTPS remain separately guarded.
+Version 63.0.1 is the current runtime-accepted application release. The v61
+Thermal Deflection foundation, v62 workflow-reliability milestone and v63 public website accuracy/methodology milestone are complete
+and owner accepted. No new implementation increment is selected until the open feedback ledger is reviewed. Production and FTPS
+remain separately guarded.
 
 The v56.0.6.1 governed public-demo dataset is complete and owner accepted. Its
 36 fictional identities retain approved real comparative measurements; the

@@ -2,15 +2,16 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v60.0.6 — Bug Fixes and Workflow Reliability**
+Last runtime-accepted baseline: **v63.0.1 — Public Heat Deflection Methodology**
 
-Current canonical application release: **v60.0.6 — Bug Fixes and Workflow Reliability**
+Current canonical application release: **v63.0.1 — Public Heat Deflection Methodology**
 
-Current roadmap increment: **v63.0.1 — Public Heat Deflection Methodology (Planned)**
+Current roadmap increment: **No implementation increment selected — open-feedback review required**
 
-Current acceptance note: v62.0.0-v62.0.3 and the v62 workflow-reliability milestone are owner accepted; Verification passes 434/434.
+Current acceptance note: v63.0.0-v63.0.1 and the v63 public-website-accuracy milestone are owner accepted; Verification passes 437/437.
 
-Next note: v63.0.0 is owner accepted with Full Data Verification PASS; v63.0.1 is the next bounded implementation.
+Next note: re-read the open feedback ledger before promoting one bounded increment; the unreproduced Variant-edit crash has priority
+if diagnostics make it reproducible.
 Production and FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in
@@ -49,6 +50,8 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v59 | Application Navigation Finalization | ★★★☆☆ | Complete — canonical v59.0.11 runtime accepted |
 | v60 | Bug Fixes and Workflow Reliability | ★★★★★ | Complete — canonical v60.0.6 runtime accepted |
 | v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Complete — v61.0.8 owner accepted 2026-08-14 |
+| v62 | Workflow Reliability Corrections | ★★★★★ | Complete — v62.0.3 owner accepted 2026-08-24 |
+| v63 | Public Website Accuracy and Thermal Methodology | ★★★★☆ | Complete — v63.0.1 owner accepted 2026-08-24 |
 
 ## Reconciliation of the older plans
 
@@ -3085,7 +3088,7 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: owner accepts both charts with correct orientation-specific names; Debug/Release, website Verification and
     local visual review pass without data or chart-series drift.
 - **v63.0.1 — Public Heat Deflection Methodology**
-  - State: Planned after v63.0.0; owner-requested Methodology update recorded on 2026-08-21.
+  - State: Complete and owner runtime accepted on 2026-08-24; Full Data Verification passes 437/437.
   - Add Heat Deflection to the Methodology overview chip, jump navigation and measurement content using the accepted v61 thermal
     fixture, method-version, result and unit contracts as the canonical source.
   - Explain specimen preparation, fixture and heating workflow, temperature capture, governed result, limitations and comparative
@@ -3099,7 +3102,7 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: owner accepts accurate Heat Deflection content and responsive layout; Debug/Release, website/documentation
     Verification and applicable HTML/PDF visual review pass before any separately authorized public activation.
 - **v63 parent closure**
-  - State: Planned after v63.0.0-v63.0.1 acceptance.
+  - State: Complete on 2026-08-24; both recorded increments are owner accepted and no v63 implementation item remains open.
   - Completion condition: both recorded v63 website increments are owner accepted, public content is internally consistent and
     no v63 implementation item remains open.
 

@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v63 - Public Website Accuracy and Thermal Methodology
+
+Corrects cross-chart Impact/Tensile terminology and adds the governed v61 Heat Deflection fixture, endpoint, method-version and
+limitations to both the responsive Methodology portal and native whitepaper source. Deterministic website/whitepaper drift checks pass;
+disposable Full Data Verification passes 437/437. The 32-page PDF and desktop/narrow HTML Preview pass owner acceptance on 2026-08-24.
+No measurements, scores, stored results or stable public routes change. Production and FTPS remain separately guarded.
+
 # v61 - Thermal Deflection Measurement Foundation
 
 Delivers governed fixture-specific Heat Deflection measurement storage, native

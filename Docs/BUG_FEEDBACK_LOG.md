@@ -90,7 +90,7 @@ Date: 2026-08-21
 Area: Website / Methodology / Heat Deflection
 Type: Website idea / Data issue
 Severity: Important
-Status: Open
+Status: Resolved in v63.0.1; owner accepted 2026-08-24
 What happened: The public Methodology section documents Tensile, Impact and Stiffness, but it does not yet explain the Heat
 Deflection measurement introduced in v61. The overview chip, section navigation and measurement cards therefore present incomplete
 coverage of the current native testing programme.
@@ -103,8 +103,10 @@ Screenshot / export / report attached: None; owner request on 2026-08-21.
 Resolution: Scheduled as v63.0.1, Public Heat Deflection Methodology. Research the accepted v61 thermal contract and add a responsive,
 accessible Heat Deflection methodology section without exposing internal-only evidence. Update deterministic content/drift checks and
 locally preview the complete website at desktop and narrow widths. Production/FTPS publication remains separately guarded.
-Verification evidence: Not yet implemented. Requires source-contract review, Debug/Release, website Verification, local visual
-HTML/PDF review where applicable, owner content/layout acceptance and separate Production/FTPS authority before public activation.
+Verification evidence: Portal and whitepaper source are synchronized with deterministic drift gates. Isolated Debug/Release pass;
+profile `20260824215920-ede0ec4b` passes Full Data Verification 437/437 with exact business-state evidence. The 32-page PDF passes
+visual review. Owner accepts desktop/narrow HTML Preview content/layout and Verification on 2026-08-24; Production/FTPS publication
+remains separately guarded.
 
 # 2026-07-28 - v59.0 navigation inventory and tab-order ownership
 

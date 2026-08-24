@@ -18211,17 +18211,24 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             "Active SQLite manufacturer profiles are available to the website portal renderer"));
         checks.Add(new VerificationCheck("Manufacturer engineering intelligence", manufacturerPortalProbe.Contains("manufacturer-intelligence", StringComparison.Ordinal) && manufacturerPortalProbe.Contains("Strongest tensile", StringComparison.Ordinal),
             "Verified Material Summary and EngineeringScoreProfile outputs drive manufacturer leaders, coverage and top-material summaries"));
-        checks.Add(new VerificationCheck("Methodology portal content", new[] { "methodology-overview", "methodology-printing", "methodology-tensile", "methodology-impact", "methodology-stiffness", "methodology-statistics", "methodology-limitations", "methodology-faq", "methodology-whitepaper" }.All(id => portalProbe.Contains(id, StringComparison.Ordinal)),
+        checks.Add(new VerificationCheck("Methodology portal content", new[] { "methodology-overview", "methodology-printing", "methodology-tensile", "methodology-impact", "methodology-stiffness", "methodology-thermal", "methodology-statistics", "methodology-limitations", "methodology-faq", "methodology-whitepaper" }.All(id => portalProbe.Contains(id, StringComparison.Ordinal)),
             "Level 2 Engineering methodology sections are embedded in the single-file portal export"));
         checks.Add(new VerificationCheck("Methodology procedure videos", new[] { "kax8Ha_AGcQ", "ibjS_tWL6sg", "nv9PexjvFRw" }.All(videoId => portalProbe.Contains(videoId, StringComparison.Ordinal)),
             "Tensile, impact and stiffness procedure videos are linked from their test cards"));
         checks.Add(new VerificationCheck("Methodology technical constants", new[] { "6.5016 mm²", "105.411°", "0.00004816 m²", "1.058774 mm per revolution", "118.2 mm", "5.47 N", "34.679467 mm⁴" }.All(value => portalProbe.Contains(value, StringComparison.Ordinal)),
             "Public technical details align with the native tensile, impact and stiffness calculation constants"));
+        checks.Add(new VerificationCheck("Methodology thermal contract", new[] { ThermalDeflectionMethodContract.Version, "127 × 12.7 × 3.2 mm", "110 mm clear support span", "nominal 54 g M20 nut", "0.530 N", "2.00 mm", "BlueDOT probe-indicated fixture temperature", "not ASTM D648 or ISO 75 HDT", "does not claim specimen-core temperature" }.All(value => portalProbe.Contains(value, StringComparison.Ordinal)),
+            "Public Heat Deflection content matches the immutable v61 fixture/result contract without a certified-standard claim"));
         var documentationEngineProbe = new DocumentationEngineService();
         var documentationDocumentProbe = documentationEngineProbe.BuildDocument(DateTime.Now);
         var documentationPdfProbe = documentationEngineProbe.RenderPdf(documentationDocumentProbe);
         checks.Add(new VerificationCheck("Native documentation model", documentationDocumentProbe.Sections.Count >= 7 && documentationDocumentProbe.Sections.All(section => !string.IsNullOrWhiteSpace(section.Id) && !string.IsNullOrWhiteSpace(section.Title)),
             "Methodology sections are owned by the native Documentation Engine model"));
+        var documentationThermalProbe = documentationDocumentProbe.Sections.FirstOrDefault(section => section.Id == "thermal-deflection");
+        var documentationThermalText = documentationThermalProbe is null ? string.Empty : string.Join("\n", documentationThermalProbe.Details);
+        checks.Add(new VerificationCheck("Engineering whitepaper thermal contract", documentationThermalProbe is not null &&
+            new[] { ThermalDeflectionMethodContract.Version, "127 x 12.7 x 3.2 mm", "110 mm", "54 g M20 nut", "0.530 N", "2.00 mm", "BlueDOT probe-indicated fixture temperature", "not ASTM D648", "ISO 75 HDT" }.All(value => documentationThermalText.Contains(value, StringComparison.Ordinal)),
+            "Governed whitepaper source carries the same Heat Deflection fixture, endpoint, method and interpretation boundaries"));
         checks.Add(new VerificationCheck("Engineering whitepaper generation", documentationPdfProbe.Length > 1000 && Encoding.ASCII.GetString(documentationPdfProbe, 0, 5) == "%PDF-",
             $"Generated {documentationPdfProbe.Length} PDF bytes from methodology version {documentationDocumentProbe.Version}"));
         checks.Add(new VerificationCheck("Methodology and whitepaper governance", portalProbe.Contains("Engineering Methodology Whitepaper", StringComparison.Ordinal) && portalProbe.Contains(DocumentationEngineService.WhitepaperFileName, StringComparison.Ordinal),

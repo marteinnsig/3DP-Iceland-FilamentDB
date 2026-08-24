@@ -1,3 +1,18 @@
+# v63.0.1 - Public Heat Deflection Methodology
+
+Date: 2026-08-24
+
+- Debug and Release isolated solution builds pass with zero warnings/errors.
+- Website and whitepaper-source gates require the immutable v61 fixture geometry, 2.00 mm endpoint, BlueDOT probe-indicated °C result,
+  method version and explicit non-ASTM/non-ISO/specimen-temperature boundaries.
+- Disposable canonical-seed profile `20260824215920-ede0ec4b` passes Full Data Verification 437/437 and exact business-state evidence.
+- The native whitepaper renders as 32 pages; contents, Heat Deflection section, following section transition and revision history pass
+  visual inspection without clipping, overlap or an orphaned continuation page.
+- Existing read-only smoke/Full Verification owns deterministic acceptance; no mutating automation or in-app Help change is warranted.
+- Owner accepts desktop/narrow HTML Preview content/layout and confirms Verification PASS on 2026-08-24. v63 is complete;
+  Production and FTPS remain blocked.
+- README release identity is synchronized; stable installer and portable download routes both return HTTP 200.
+
 # v63.0.0 - Impact Chart Orientation-label Integrity
 
 Date: 2026-08-24

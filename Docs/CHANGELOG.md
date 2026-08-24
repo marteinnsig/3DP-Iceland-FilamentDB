@@ -2,6 +2,22 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v63.0.1 - Public Heat Deflection Methodology
+
+- Adds Heat Deflection to the Methodology overview chip, jump navigation and responsive measurement-card grid.
+- Documents the immutable `3dp-thermal-deflection-fixture-v1` specimen, 110 mm span, nominal 54 g load, 2.00 mm endpoint, nearby
+  BlueDOT probe-indicated °C result and non-linear oven-ramp context without claiming specimen temperature, ASTM D648 or ISO 75 HDT.
+- Synchronizes the embedded website portal and governed whitepaper source; the stable methodology v1.0 filename and all measurement,
+  score, storage and publication contracts remain unchanged.
+- Adds deterministic rendered-portal and whitepaper-source drift checks. Disposable profile `20260824215920-ede0ec4b` passes Full
+  Data Verification 437/437 with exact business-state evidence.
+- Whitepaper renders as a clean 32-page PDF after removing an orphaned continuation page; Heat Deflection and revision pages pass
+  visual review. Owner accepts desktop/narrow HTML Preview content and layout and confirms Verification PASS on 2026-08-24.
+- v63.0.0-v63.0.1 are complete and the v63 public-website-accuracy milestone closes; Production and FTPS remain blocked.
+- README runtime/development identity is synchronized, and its stable installer and portable routes return HTTP 200 during closure.
+- Automation assessment: the existing read-only smoke and Full Verification boundary owns the content contract; no mutating scenario
+  is warranted. Help assessment: no in-app control, label, navigation or workflow changed, so in-application Help is unaffected.
+
 ## v63.0.0 - Impact Chart Orientation-label Integrity
 
 - Scopes website orientation terminology to the owning chart instead of globally replacing the shared Flat/Upright legend.

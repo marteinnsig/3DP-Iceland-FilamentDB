@@ -15,3 +15,5 @@ The Documentation Engine is the governed source for long-form methodology docume
 
 ## Governance
 Changes to equipment, specimen geometry, calculation constants or interpretation rules require an updated methodology version and revision-history entry.
+
+Platform v63.0.1 synchronizes the already governed v61 Heat Deflection method into the website and whitepaper source without changing the methodology version, fixture contract, stored results or calculations. The existing v1.0 filename remains stable; the document revision history records the platform documentation addition.

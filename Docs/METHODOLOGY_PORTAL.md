@@ -15,6 +15,7 @@ The file is compiled as an embedded resource and injected into the canonical sin
 - Tensile Strength and Layer Adhesion Strength
 - Impact Resistance
 - Stiffness
+- Heat Deflection (`3dp-thermal-deflection-fixture-v1`)
 - Printing Standard
 - Statistics, CV and confidence
 - Known limitations
@@ -30,3 +31,5 @@ The file is compiled as an embedded resource and injected into the canonical sin
 ## Governance
 
 Native database keys and calculation ownership remain unchanged. Public terminology and explanatory content are presentation-layer documentation. Technical constants shown publicly must remain aligned with the native calculation engine and Verification Center.
+
+Heat Deflection documents the 127 × 12.7 × 3.2 mm flat specimen, 110 mm clear span, nominal 54 g M20 nut load, 2.00 mm endpoint and nearby BlueDOT probe-indicated fixture temperature. It must remain explicitly comparative and must not be described as specimen-core temperature, ASTM D648 or ISO 75 HDT.

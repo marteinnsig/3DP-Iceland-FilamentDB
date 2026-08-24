@@ -1,6 +1,14 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v63.0.1 - Public Heat Deflection Methodology
+
+Closes the v63 public-website-accuracy milestone. Website chart terminology is scoped correctly, and the Methodology portal plus
+governed whitepaper source now document the accepted fixture-specific Heat Deflection method without certified-standard claims.
+Debug/Release, Help, documentation and dependency gates pass. Disposable profile `20260824215920-ede0ec4b` passes Full Data
+Verification 437/437; the 32-page whitepaper and desktop/narrow HTML Preview pass owner visual acceptance on 2026-08-24. Production
+and FTPS remain separately guarded. README identifies the accepted release, and both governed stable download routes return HTTP 200.
+
 ## v60.0.6 - Bug Fixes and Workflow Reliability
 
 Closes six owner-reported workflow and presentation findings: guarded spool
