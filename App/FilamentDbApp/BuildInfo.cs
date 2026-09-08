@@ -9,10 +9,10 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "WORKFLOW-RELIABILITY";
-    public const string ReleaseTitle = "Bug Fixes and Workflow Reliability";
+    public const string ReleaseCode = "FLEXIBLE-MATERIAL-TESTING";
+    public const string ReleaseTitle = "TPU Compression and Shore Measurement Foundation";
     public const int MinimumUpdateDatabaseSchema = 29;
-    public const int CurrentDatabaseSchema = 42;
+    public const int CurrentDatabaseSchema = 43;
 
     public static string Version
     {

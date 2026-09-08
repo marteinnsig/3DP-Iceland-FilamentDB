@@ -28,6 +28,7 @@ public sealed partial class LocalDatabase
     {
         "Manufacturers", "BaseMaterialCatalog", "NativeMaterialManagerRows", "ThermalDeflectionMethods", "NativeSettingsRows", "DeploymentSettings", "WebsiteTemplates", "VideoIdeaQueue", "Suppliers",
         "PurchaseOrders", "PurchaseOrderLines", "InventorySpoolItems", "PurchaseDocuments", "ExperimentDefinitions", "MaterialExperiments", "ExperimentalRuns", "ExperimentalMeasurements",
+        "FlexibleTestSpecimens", "CompressionMeasurementPoints", "StressRelaxationPoints", "RecoveryMeasurements", "ShoreHardnessReadings",
         "NativeTensileSamples", "NativeTensileResults", "NativeImpactSamples", "NativeStiffnessMeasurements", "NativeThermalDeflectionMeasurements", "NativeMeasurementNotes",
         "PrinterProfiles", "PrintJobQuotes", "UsageEvents"
     };
@@ -1025,6 +1026,9 @@ public sealed partial class LocalDatabase
             allowedMissingTables.Add("PrintJobQuotes");
         if (snapshot.SourceSchemaVersion < 41)
             allowedMissingTables.AddRange(["ThermalDeflectionMethods", "NativeThermalDeflectionMeasurements"]);
+        if (snapshot.SourceSchemaVersion < 43)
+            allowedMissingTables.AddRange(["FlexibleTestSpecimens", "CompressionMeasurementPoints", "StressRelaxationPoints",
+                "RecoveryMeasurements", "ShoreHardnessReadings"]);
         var compatibleLegacyPackage =
             missingTables.Count == allowedMissingTables.Count &&
             missingTables.All(missing =>
@@ -1903,6 +1907,7 @@ VALUES (1, '', 21, '', CURRENT_TIMESTAMP);
 
 DROP TABLE IF EXISTS MaterialsImport;";
         command.ExecuteNonQuery();
+        EnsureFlexibleTestingSchema(connection);
         EnsureNativeSettingsRowsKeySchema(connection);
         EnsureColumn(connection, "Manufacturers", "DisplayName", "TEXT");
         EnsureColumn(connection, "Manufacturers", "Country", "TEXT");

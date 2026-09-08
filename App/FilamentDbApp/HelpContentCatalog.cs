@@ -819,7 +819,8 @@ internal static class HelpContentCatalog
             """
             Experimental Testing is separate from native measurement entry. A series defines the material, experiment and default unit;
             Add Series prefers the selected active Material and otherwise uses the first active Material. Runs hold controlled values
-            and five canonical editors: Tensile Upright/Flat, Impact Upright/Flat and Stiffness. Valid edits auto-calculate and auto-save.
+            and canonical Tensile, Impact and Stiffness editors plus the specimen-aware Flexible Materials workspace. Valid edits
+            auto-calculate and auto-save.
 
             Only one Run can be baseline per Series. Runs default Planned and Active.
             Active only filters series visibility. Include inactive history in comparison affects result comparison scope only when
@@ -918,6 +919,17 @@ internal static class HelpContentCatalog
             Stiffness Revolutions and Degrees are the editable paired source. Notes is editable. Average MPa/kJ/m², Result MPa,
             deviation, CV, Count, Confidence and validation are calculated/read-only. Valid commits auto-save the Series graph and
             refresh Results without changing native Material measurement rows.
+
+            Flexible Materials
+            Add separate Compression or Shore specimens under the selected Run. The saved specimen row snapshots actual dimensions,
+            mass when known, infill, pattern, nozzle, layer height, walls, top/bottom layers, temperature, extrusion multiplier and
+            method notes. Compression points preserve cycle, displacement from initial contact, force and actual hold time. Strain and
+            apparent compressive stress use initial height and gross cylindrical area. Clear Target reached when the force limit stops
+            the test; blank values stay missing. Relaxation preserves actual compression/time/force points and reports retention from
+            the earliest valid point in the same specimen/cycle/compression group. Recovery reports Residual Height Loss, not
+            Compression Set. Shore A and D readings remain separate and are never converted. Comparable Results groups identical
+            method snapshots and conditions, reduces repeats within a specimen, then shows independent specimen count, mean and
+            sample standard deviation. These are comparative in-house results, not ASTM/ISO claims or a general strength score.
 
             Results views
             Dashboard cards, Table and Charts are fully read-only. Table columns Run, Status, controlled value/unit, Tensile/Impact/
@@ -1127,6 +1139,24 @@ internal static class HelpContentCatalog
             Material's native Stiffness Measurements rows.
             """,
             "experimental stiffness", "revolutions", "degrees", "deflection", "modulus", "auto-save"),
+        new(
+            "experimental.measurements.flexible", "Experimental testing", "Flexible Materials reference",
+            "Record manual TPU compression, relaxation, recovery and Shore readings without mixing methods or specimens.",
+            """
+            Where: Experimental Testing > select a Series > select a Run > Flexible Materials. Add a Compression Specimen or Shore
+            Specimen, then edit the specimen's actual geometry and print/method snapshot. The Ø20 x 10 mm, 100% rectilinear, 0.4 mm
+            nozzle, 0.20 mm layer, two-wall and three-top/bottom values are editable starting values, not method requirements.
+
+            Select the specimen before adding Compression, Stress Relaxation, Recovery or Shore rows. Compression calculates strain
+            as displacement / initial height and apparent stress as N / gross cylinder area in mm2. Every named target result includes
+            its actual hold time. A force-limited target is Target reached off with force/displacement left factual or blank—never zero
+            or estimated. Relaxation uses actual times; recovery is Residual Height Loss and must not be described as Compression Set.
+            Shore values are measured records distinct from manufacturer hardness. A and D are neither converted nor averaged together.
+
+            Comparable Results includes only an identical saved method/condition group. Multiple readings or cycles on one specimen do
+            not inflate independent specimen n. The UI does not add TPU results to the legacy Experimental Overall score or publish them.
+            """,
+            "TPU", "compression", "apparent stress", "stress relaxation", "recovery", "Shore A", "Shore D", "specimen count"),
         new(
             "experimental.results", "Experimental testing", "Experimental Results reference",
             "Choose Dashboard, Table or Charts for the selected-Series comparison.",
@@ -2430,6 +2460,7 @@ internal static class HelpContentCatalog
             "Tensile" => "experimental.measurements.tensile",
             "Impact" => "experimental.measurements.impact",
             "Stiffness" => "experimental.measurements.stiffness",
+            "Flexible Materials" => "experimental.measurements.flexible",
             "Results" => resultsHeader switch
             {
                 "Dashboard" => "experimental.results.dashboard",

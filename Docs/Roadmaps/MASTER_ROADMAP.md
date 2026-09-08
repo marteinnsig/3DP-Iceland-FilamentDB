@@ -2,16 +2,16 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v63.0.1 — Public Heat Deflection Methodology**
+Last runtime-accepted baseline: **v64.0.0 — TPU Compression and Shore Hardness Measurement Foundation**
 
-Current canonical application release: **v63.0.1 — Public Heat Deflection Methodology**
+Current canonical application release: **v64.0.0 — TPU Compression and Shore Hardness Measurement Foundation**
 
 Current roadmap increment: **No implementation increment selected — feedback ledger has zero active findings**
 
-Current acceptance note: v63.0.0-v63.0.1 and the v63 public-website-accuracy milestone are owner accepted; Verification passes 437/437.
+Current acceptance note: v64.0.0 and the v64 flexible-material milestone are owner accepted; Verification passes 438/438.
 
-Next note: select and record one bounded increment before implementation. The unreproduced Variant-edit crash becomes active only if
-new diagnostics make it reproducible.
+Next note: select and record one bounded increment before implementation.
+The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
 Production and FTPS remain blocked.
 
 This file is the canonical strategic roadmap. Completed build details belong in
@@ -52,6 +52,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Complete — v61.0.8 owner accepted 2026-08-14 |
 | v62 | Workflow Reliability Corrections | ★★★★★ | Complete — v62.0.3 owner accepted 2026-08-24 |
 | v63 | Public Website Accuracy and Thermal Methodology | ★★★★☆ | Complete — v63.0.1 owner accepted 2026-08-24 |
+| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — v64.0.0 owner accepted 2026-09-08 |
 
 ## Reconciliation of the older plans
 
@@ -3105,6 +3106,32 @@ blockers may change the order, but must be recorded here before implementation.
   - State: Complete on 2026-08-24; both recorded increments are owner accepted and no v63 implementation item remains open.
   - Completion condition: both recorded v63 website increments are owner accepted, public content is internally consistent and
     no v63 implementation item remains open.
+
+## Complete — v64 Flexible-material Comparative Testing
+
+- **v64.0.0 — TPU Compression and Shore Hardness Measurement Foundation**
+  - State: Complete and owner runtime accepted on 2026-09-08; Full Data Verification passes 438/438.
+  - Add MaterialID-linked specimens with immutable method snapshots, actual geometry, mass, infill, shell and print settings.
+  - Add manual compression points that preserve specimen identity, cycle, displacement, force and hold time; calculate strain and
+    apparent compressive stress from actual initial height and gross cylindrical area without calling either result strength or modulus.
+  - Add manual stress-relaxation and recovery observations using actual times and compression ratios; calculate force retention and
+    residual height loss while explicitly excluding standardized Compression Set claims.
+  - Add separate Shore A/D reading records with specimen thickness, reading time and method notes; never convert or aggregate scales.
+  - Compare only method-compatible independent specimens, show specimen count, mean and sample standard deviation, and retain raw rows.
+  - Preserve all existing Experimental tensile/impact/stiffness workflows and historical SQLite data through an additive schema
+    migration.
+  - Non-goals: website publishing, general scoring, equipment integration, foaming-specific automation and full Compression Set testing.
+  - Automation/Help: add deterministic calculation, validation, migration and persistence contracts; update Experimental Testing Help
+    and stable control coverage. Runtime editing and comparison readability remain owner acceptance items.
+  - Rollback: retire the additive UI and consumers while retaining schema discovery and historical flexible-test records.
+  - Completion condition: Debug/Release, Help/documentation and Full Data Verification gates pass; owner accepts add/edit/reload and
+    comparable-results behavior before v64.0.0 is marked complete.
+  - Completion condition met: owner confirms all guided specimen, compression, relaxation, recovery, Shore, comparison and restart
+    checks work normally. Debug/Release, Help/docs and disposable exact-state gates pass.
+- **v64 parent closure**
+  - State: Complete on 2026-09-08; the recorded measurement foundation is owner accepted and no v64 item remains open.
+  - Completion condition: the first usable manual flexible-material workflow is accepted without expanding into website publishing,
+    general scoring, equipment integration or standardized Compression Set testing.
 
 ### Intentionally unscheduled
 

@@ -1,6 +1,14 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v64.0.0 - TPU Compression and Shore Measurement Foundation
+
+Adds schema-v43 specimen-aware manual compression, stress-relaxation, recovery and Shore A/D measurements inside Experimental
+Testing. Raw readings, cycles, actual times and method snapshots remain traceable; comparison statistics count only compatible
+independent specimens and do not enter the legacy Overall score. Debug/Release, Help and documentation gates pass. Disposable profile
+`20260908211459-c4332cb0` passes Full Data Verification 438/438 with exact-state recovery, and owner runtime acceptance passes on
+2026-09-08. Website publication, equipment integration and standardized Compression Set remain outside this release.
+
 ## v63.0.1 - Public Heat Deflection Methodology
 
 Closes the v63 public-website-accuracy milestone. Website chart terminology is scoped correctly, and the Methodology portal plus

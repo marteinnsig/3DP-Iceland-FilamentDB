@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v64 - Flexible-material Comparative Testing
+
+Delivers the first usable specimen-aware TPU workflow: manual compression point/cycle entry, apparent-stress and strain calculations,
+actual-time relaxation, height recovery and separate measured Shore A/D readings. Saved method snapshots protect historical meaning,
+and compatible comparisons report independent specimen count, mean and sample standard deviation without changing the legacy Overall
+score. Debug/Release and governed documentation pass; disposable Full Data Verification passes 438/438 with exact-state recovery.
+Owner accepts all guided runtime and restart/reload checks on 2026-09-08.
+
 # v63 - Public Website Accuracy and Thermal Methodology
 
 Corrects cross-chart Impact/Tensile terminology and adds the governed v61 Heat Deflection fixture, endpoint, method-version and

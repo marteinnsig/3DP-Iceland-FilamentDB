@@ -1699,6 +1699,75 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
+<TabItem Header="Flexible Materials" Name="ExperimentalFlexibleMaterialsTab" AutomationProperties.AutomationId="ExperimentalFlexibleMaterialsTab">
+  <Grid Margin="8">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="140"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+    <StackPanel Grid.Row="0" Margin="0,0,0,6">
+      <TextBlock Text="Manual TPU compression, relaxation, recovery and Shore hardness" FontWeight="SemiBold" FontSize="16"/>
+      <TextBlock Text="Comparative in-house testing only—not ASTM/ISO. Select a specimen below before adding readings. Blank is not zero; clear Target reached when a force limit prevents the requested strain." Foreground="#64748B" TextWrapping="Wrap"/>
+      <WrapPanel Margin="0,5,0,0">
+        <Button Content="Add Compression Specimen" AutomationProperties.AutomationId="FlexibleAddCompressionSpecimen" Click="AddFlexibleCompressionSpecimen_Click" Padding="9,4" Margin="0,0,6,0"/>
+        <Button Content="Add Shore Specimen" AutomationProperties.AutomationId="FlexibleAddShoreSpecimen" Click="AddFlexibleShoreSpecimen_Click" Padding="9,4" Margin="0,0,6,0"/>
+        <Button Content="Delete Specimen" AutomationProperties.AutomationId="FlexibleDeleteSpecimen" Click="DeleteFlexibleSpecimen_Click" Padding="9,4"/>
+        <TextBlock Name="FlexibleTestingStatusText" AutomationProperties.AutomationId="FlexibleTestingStatus" Margin="12,4,0,0" Foreground="#475569" TextWrapping="Wrap"/>
+      </WrapPanel>
+    </StackPanel>
+    <DataGrid Grid.Row="1" Name="FlexibleSpecimensGrid" AutomationProperties.AutomationId="FlexibleSpecimensGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single" SelectionChanged="FlexibleSpecimensGrid_SelectionChanged" CellEditEnding="FlexibleTestingGrid_CellEditEnding" HorizontalScrollBarVisibility="Auto">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Specimen" Binding="{Binding SpecimenLabel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="95"/>
+        <DataGridTextColumn Header="Purpose" Binding="{Binding IntendedTest,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="90"/>
+        <DataGridTextColumn Header="Ø mm" Binding="{Binding DiameterMm,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="62"/>
+        <DataGridTextColumn Header="Height mm" Binding="{Binding InitialHeightMm,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="72"/>
+        <DataGridTextColumn Header="Thickness mm" Binding="{Binding ThicknessMm,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="82"/>
+        <DataGridTextColumn Header="Mass g" Binding="{Binding MassG,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="62"/>
+        <DataGridTextColumn Header="Infill %" Binding="{Binding InfillPercent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="64"/>
+        <DataGridTextColumn Header="Pattern" Binding="{Binding InfillPattern,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="90"/>
+        <DataGridTextColumn Header="Nozzle mm" Binding="{Binding NozzleDiameterMm,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="72"/>
+        <DataGridTextColumn Header="Layer mm" Binding="{Binding LayerHeightMm,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="70"/>
+        <DataGridTextColumn Header="Walls" Binding="{Binding Perimeters,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="55"/>
+        <DataGridTextColumn Header="Top" Binding="{Binding TopLayers,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="48"/>
+        <DataGridTextColumn Header="Bottom" Binding="{Binding BottomLayers,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="55"/>
+        <DataGridTextColumn Header="Temp °C" Binding="{Binding PrintTemperatureC,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="65"/>
+        <DataGridTextColumn Header="Extrusion multiplier" Binding="{Binding ExtrusionMultiplier,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="105"/>
+        <DataGridTextColumn Header="Other print settings" Binding="{Binding PrintSettings,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="150"/>
+        <DataGridTextColumn Header="Method version" Binding="{Binding MethodVersion,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+        <DataGridTextColumn Header="Method notes" Binding="{Binding MethodNotes,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="220"/>
+      </DataGrid.Columns>
+    </DataGrid>
+    <WrapPanel Grid.Row="2" Margin="0,6,0,6">
+      <Button Content="Add Compression Point" AutomationProperties.AutomationId="FlexibleAddCompressionPoint" Click="AddCompressionPoint_Click" Padding="8,3" Margin="0,0,5,0"/>
+      <Button Content="Add Relaxation Point" AutomationProperties.AutomationId="FlexibleAddRelaxationPoint" Click="AddRelaxationPoint_Click" Padding="8,3" Margin="0,0,5,0"/>
+      <Button Content="Add Recovery" AutomationProperties.AutomationId="FlexibleAddRecovery" Click="AddRecoveryMeasurement_Click" Padding="8,3" Margin="0,0,5,0"/>
+      <Button Content="Add Shore Reading" AutomationProperties.AutomationId="FlexibleAddShoreReading" Click="AddShoreReading_Click" Padding="8,3" Margin="0,0,5,0"/>
+      <Button Content="Delete Selected Reading" AutomationProperties.AutomationId="FlexibleDeleteReading" Click="DeleteFlexibleReading_Click" Padding="8,3"/>
+    </WrapPanel>
+    <TabControl Grid.Row="3" Name="FlexibleTestingTabs" AutomationProperties.AutomationId="FlexibleTestingTabs">
+      <TabItem Header="Compression" AutomationProperties.AutomationId="FlexibleCompressionTab">
+        <DataGrid Name="CompressionPointsGrid" AutomationProperties.AutomationId="CompressionPointsGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CanUserAddRows="False" CellEditEnding="FlexibleTestingGrid_CellEditEnding" HorizontalScrollBarVisibility="Auto"><DataGrid.Columns>
+          <DataGridTextColumn Header="Cycle" Binding="{Binding CycleNumber,Mode=TwoWay}" Width="55"/><DataGridTextColumn Header="Target strain %" Binding="{Binding TargetStrainPercent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="95"/><DataGridCheckBoxColumn Header="Target reached" Binding="{Binding TargetReached,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="90"/><DataGridTextColumn Header="Displacement mm" Binding="{Binding DisplacementMm,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="105"/><DataGridTextColumn Header="Force N" Binding="{Binding ForceN,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="75"/><DataGridTextColumn Header="Hold s" Binding="{Binding HoldTimeSeconds,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="65"/><DataGridTextColumn Header="Strain %" Binding="{Binding StrainPercent}" IsReadOnly="True" Width="70"/><DataGridTextColumn Header="Apparent stress MPa" Binding="{Binding ApparentStressMpa}" IsReadOnly="True" Width="120"/><DataGridTextColumn Header="Result" Binding="{Binding ResultLabel}" IsReadOnly="True" Width="230"/><DataGridTextColumn Header="Notes" Binding="{Binding Notes,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+        </DataGrid.Columns></DataGrid>
+      </TabItem>
+      <TabItem Header="Stress Relaxation" AutomationProperties.AutomationId="FlexibleRelaxationTab">
+        <DataGrid Name="StressRelaxationGrid" AutomationProperties.AutomationId="StressRelaxationGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CanUserAddRows="False" CellEditEnding="FlexibleTestingGrid_CellEditEnding"><DataGrid.Columns>
+          <DataGridTextColumn Header="Cycle" Binding="{Binding CycleNumber,Mode=TwoWay}" Width="60"/><DataGridTextColumn Header="Compression %" Binding="{Binding CompressionPercent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="105"/><DataGridTextColumn Header="Actual time s" Binding="{Binding ElapsedTimeSeconds,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="90"/><DataGridTextColumn Header="Force N" Binding="{Binding ForceN,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="85"/><DataGridTextColumn Header="Force retention %" Binding="{Binding ForceRetentionPercent}" IsReadOnly="True" Width="120"/><DataGridTextColumn Header="Notes" Binding="{Binding Notes,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+        </DataGrid.Columns></DataGrid>
+      </TabItem>
+      <TabItem Header="Recovery" AutomationProperties.AutomationId="FlexibleRecoveryTab">
+        <DataGrid Name="RecoveryMeasurementsGrid" AutomationProperties.AutomationId="RecoveryMeasurementsGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CanUserAddRows="False" CellEditEnding="FlexibleTestingGrid_CellEditEnding"><DataGrid.Columns>
+          <DataGridTextColumn Header="Cycle" Binding="{Binding CycleNumber,Mode=TwoWay}" Width="55"/><DataGridTextColumn Header="Initial height mm" Binding="{Binding InitialHeightMm,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="105"/><DataGridTextColumn Header="Height after rest mm" Binding="{Binding HeightAfterRestMm,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="125"/><DataGridTextColumn Header="Rest time s" Binding="{Binding RestTimeSeconds,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="85"/><DataGridTextColumn Header="Compression %" Binding="{Binding CompressionPercent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="100"/><DataGridTextColumn Header="Compressed hold s" Binding="{Binding CompressionHoldSeconds,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="110"/><DataGridTextColumn Header="Residual height loss %" Binding="{Binding ResidualHeightLossPercent}" IsReadOnly="True" Width="130"/><DataGridTextColumn Header="Notes (not Compression Set)" Binding="{Binding Notes,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+        </DataGrid.Columns></DataGrid>
+      </TabItem>
+      <TabItem Header="Shore Hardness" AutomationProperties.AutomationId="FlexibleShoreTab">
+        <DataGrid Name="ShoreHardnessGrid" AutomationProperties.AutomationId="ShoreHardnessGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CanUserAddRows="False" CellEditEnding="FlexibleTestingGrid_CellEditEnding"><DataGrid.Columns>
+          <DataGridComboBoxColumn Header="Scale" SelectedItemBinding="{Binding ShoreScale,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="65"><DataGridComboBoxColumn.ItemsSource><x:Array Type="{x:Type sys:String}"><sys:String>A</sys:String><sys:String>D</sys:String></x:Array></DataGridComboBoxColumn.ItemsSource></DataGridComboBoxColumn><DataGridTextColumn Header="Hardness value" Binding="{Binding HardnessValue,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="100"/><DataGridTextColumn Header="Reading time s" Binding="{Binding ReadingTimeSeconds,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="100"/><DataGridTextColumn Header="Thickness mm" Binding="{Binding SpecimenThicknessMm,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="95"/><DataGridTextColumn Header="Method notes" Binding="{Binding Notes,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="*"/>
+        </DataGrid.Columns></DataGrid>
+      </TabItem>
+      <TabItem Header="Comparable Results" AutomationProperties.AutomationId="FlexibleComparisonTab">
+        <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions><TextBlock Text="Only identical method snapshots, target/hold/cycle conditions and Shore scales are grouped. Repeats on one specimen are reduced before independent-specimen statistics." Foreground="#64748B" TextWrapping="Wrap" Margin="5"/><DataGrid Grid.Row="1" Name="FlexibleComparisonGrid" AutomationProperties.AutomationId="FlexibleComparisonGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"><DataGrid.Columns><DataGridTextColumn Header="Metric" Binding="{Binding Metric}" Width="210"/><DataGridTextColumn Header="Method group" Binding="{Binding MethodGroup}" Width="360"/><DataGridTextColumn Header="Condition" Binding="{Binding Condition}" Width="170"/><DataGridTextColumn Header="Specimens n" Binding="{Binding SpecimenCount}" Width="85"/><DataGridTextColumn Header="Mean" Binding="{Binding Mean}" Width="75"/><DataGridTextColumn Header="Sample SD" Binding="{Binding StandardDeviation}" Width="75"/><DataGridTextColumn Header="Unit" Binding="{Binding Unit}" Width="75"/><DataGridTextColumn Header="Not reached" Binding="{Binding NotReachedCount}" Width="80"/></DataGrid.Columns></DataGrid></Grid>
+      </TabItem>
+    </TabControl>
+  </Grid>
+</TabItem>
 <TabItem Header="Results" AutomationProperties.AutomationId="ExperimentalResultsTab">
                 <Grid Margin="8">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>

@@ -2,6 +2,16 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v64.0.0 - TPU Compression and Shore Measurement Foundation
+
+The first usable implementation adds additive schema-v43 specimen and raw-reading tables plus a dedicated Flexible Materials editor
+inside Experimental Testing. Deterministic calculation and SQLite close/reopen probes cover the 20 x 10 mm cylinder example, missing
+denominators, actual-time relaxation, recovery and separate Shore scales. Isolated Debug/Release solution builds pass with zero
+warnings/errors; Help and release-documentation gates pass. Disposable Release smoke `20260908211459-c4332cb0` visits 23/23 top-level
+and 17/17 nested tabs, opens Flexible Materials contextual Help, passes Full Data Verification 438/438 and restores the exact
+business-state hash. Owner confirms all guided specimen, measurement, comparison and restart/reload checks work normally on
+2026-09-08; v64.0.0 is runtime accepted.
+
 ## v63.0.1 - Public Heat Deflection Methodology
 
 The embedded Methodology portal and native Documentation Engine now share the accepted v61 Heat Deflection contract: flat

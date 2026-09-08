@@ -1,5 +1,15 @@
 # Automated Runtime Acceptance
 
+## v64.0.0 - Flexible-material measurement foundation accepted
+
+- Disposable Release smoke profile `20260908211459-c4332cb0` migrates a canonical schema-v42 seed copy to schema v43, starts the
+  application, visits 23/23 top-level and 17/17 nested tabs, and resolves Flexible Materials contextual Help.
+- Full Data Verification passes 438/438. Deterministic contracts cover the 20 x 10 mm cylinder strain/apparent-stress example,
+  missing denominators, actual-time force retention, recovery, force-limit outcomes, separate Shore scales and SQLite close/reopen.
+- The scenario is read-only except for governed disposable migration/evidence and finishes with the exact baseline/final business-state
+  hash. Owner data, Production, FTPS, update, restore and destructive actions remain blocked.
+- Owner confirms manual add/edit/restart and comparison readability on 2026-09-08.
+
 ## v61.0.7 - Public Website, Reports and Thermal Radar Accepted
 
 - Existing `reports` scenario owns local website/report generation, HTML/PDF
@@ -7,14 +17,14 @@
 - Production, FTPS and live website routes remain blocked; no broader scenario or
   authorization is added.
 - Profile `20260814212249-3d13b604` passes Full Verification 429/429, 23/23
-  top-level tabs, 23/23 Navigate commands, 16/16 nested tabs and 2103 report
+  top-level tabs, 23/23 Navigate commands, 17/17 nested tabs and 2103 report
   artifacts. Database and business-state hashes are exact before/after.
 - Representative material and comparison HTML/PDF visual review passes. Owner
   accepts the website preview, report package and Verification on 2026-08-14.
 - Full Verification now renders the active SQLite template and requires the
   thermal chart payload, chart destination, °C Metric option and versioned marker.
 - Final smoke profile `20260814215933-a35c7fbb` passes 429/429, 23/23 top-level tabs,
-  23/23 Navigate commands, 16/16 nested tabs and exact state recovery.
+  23/23 Navigate commands, 17/17 nested tabs and exact state recovery.
 
 ## v61.0.6 - AI Assistant Thermal Context Accepted
 

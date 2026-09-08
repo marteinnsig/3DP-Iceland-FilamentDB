@@ -2,6 +2,27 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v64.0.0 - TPU Compression and Shore Measurement Foundation
+
+- Adds schema v43 specimen-aware storage under Experimental Runs for flexible-material specimens, compression points, stress
+  relaxation points, recovery observations and Shore readings while preserving the legacy Experimental five-result graph unchanged.
+- Snapshots actual specimen geometry, optional mass, infill/pattern, nozzle, layer, shell, temperature, extrusion multiplier, other
+  print settings and method version/notes with each specimen. The initial cylinder/profile values are editable defaults.
+- Calculates compressive strain from displacement/initial height and apparent compressive stress from force/gross cylindrical area.
+  Named target results retain actual hold time; force-limited targets are explicitly not reached and never become zero or estimates.
+- Calculates actual-time force retention within the same specimen/cycle/compression group and Residual Height Loss after a recorded
+  rest. The UI explicitly avoids Compression Strength, Young's Modulus and Compression Set claims.
+- Stores Shore A and D as separate measured scales, distinct from manufacturer-provided hardness, without conversion or cross-scale
+  averaging. Comparable Results groups exact saved methods/conditions, reduces repeats per specimen and reports independent specimen
+  count, mean and sample standard deviation.
+- Extends in-application Help, stable AutomationIds, the control inventory, schema-42 recovery compatibility and deterministic formula/
+  reopen-persistence Verification. Website publishing, general scoring, equipment integration and full Compression Set remain out of scope.
+- Debug and Release isolated solution builds pass with zero warnings/errors. Help and release-documentation gates pass. Disposable
+  Release smoke profile `20260908211459-c4332cb0` visits 23/23 top-level and 17/17 nested tabs, resolves Flexible Materials Help,
+  passes Full Data Verification 438/438 and preserves the exact business-state hash.
+- Owner confirms all guided specimen creation, compression, force-limit, relaxation, recovery, separate Shore A/D, comparable-results
+  and restart/reload checks work normally. v64.0.0 and the v64 milestone are runtime accepted on 2026-09-08.
+
 ## v63.0.1 - Public Heat Deflection Methodology
 
 - Adds Heat Deflection to the Methodology overview chip, jump navigation and responsive measurement-card grid.

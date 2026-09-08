@@ -215,7 +215,7 @@ internal static class Program
             var experimentalNestedTabIds = new[]
             {
                 "ExperimentalTensileTab", "ExperimentalImpactTab", "ExperimentalStiffnessTab",
-                "ExperimentalResultsTab"
+                "ExperimentalFlexibleMaterialsTab", "ExperimentalResultsTab"
             };
             foreach (var tabId in experimentalNestedTabIds)
                 SelectTab(main, tabId, application.Id);
@@ -243,15 +243,17 @@ internal static class Program
                 .Concat(experimentalResultViewIds)
                 .Concat(materialDetailNestedTabIds)
                 .ToArray();
-            Require(nestedTabIds.Length == 16 &&
-                    nestedTabIds.Distinct(StringComparer.Ordinal).Count() == 16,
-                "Nested tab registry is not exactly 16 unique AutomationIds.");
+            Require(nestedTabIds.Length == 17 &&
+                    nestedTabIds.Distinct(StringComparer.Ordinal).Count() == 17,
+                "Nested tab registry is not exactly 17 unique AutomationIds.");
             Record("nested-tab-navigation", true,
-                $"Visited {nestedTabIds.Length}/16 unique nested tabs by AutomationId");
+                $"Visited {nestedTabIds.Length}/17 unique nested tabs by AutomationId");
 
             SelectTab(main, "RankingsDashboardTab", application.Id);
             OpenContextHelpAndRequireTitle(main, application.Id, "Rankings Dashboard reference");
             SelectTab(main, "ExperimentalTestingTab", application.Id);
+            SelectTab(main, "ExperimentalFlexibleMaterialsTab", application.Id);
+            OpenContextHelpAndRequireTitle(main, application.Id, "Flexible Materials reference");
             SelectTab(main, "ExperimentalResultsTab", application.Id);
             SelectTab(main, "ExperimentalResultsTableTab", application.Id);
             OpenContextHelpAndRequireTitle(main, application.Id, "Experimental Table reference");

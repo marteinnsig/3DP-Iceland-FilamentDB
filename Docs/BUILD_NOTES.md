@@ -1,4 +1,12 @@
-# Current Build Notes - v60.0.6 Accepted Release
+# Current Build Notes - v64.0.0 Accepted Release
+
+## v64.0.0 TPU compression and Shore measurement foundation
+
+Schema v43 and the Experimental Testing > Flexible Materials workspace provide specimen-aware manual compression, relaxation,
+recovery and separate Shore A/D entry. Raw values and method snapshots persist; only compatible independent specimens are compared,
+and no TPU result enters the legacy Overall score. Debug/Release, Help and documentation pass. Disposable profile
+`20260908211459-c4332cb0` passes Full Data Verification 438/438 with exact-state recovery. Owner confirms all guided runtime and
+restart/reload checks pass on 2026-09-08. Production and FTPS remain blocked.
 
 ## v61.0.7 public thermal website/report accepted
 

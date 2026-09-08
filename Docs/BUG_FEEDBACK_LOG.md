@@ -2,7 +2,7 @@
 
 Use this during the usage-mode period.
 
-## Status review — 2026-08-24
+## Status review — 2026-09-08
 
 This review preserves every original description and lifecycle status.
 `Solved` means the change is implemented, relevant gates pass and owner runtime
@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 114 |
+| Solved | 115 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **120** |
+| **Total tracked findings** | **121** |
 
 ## Triage categories
 
@@ -183,6 +183,23 @@ No active findings.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Recent resolved findings — newest first
+
+### 2026-09-08 — Manual TPU compression, relaxation, recovery and Shore measurements
+
+- **Area:** Experimental Testing.
+- **Type:** Workflow / data capability.
+- **Severity:** Important.
+- **What happened:** The application had no specimen-aware storage or UI for manual compression-point series, stress relaxation,
+  height recovery or measured Shore A/D readings. The former ten-value Experimental row could not distinguish repeat cycles from
+  independent specimens.
+- **Expected behavior:** MaterialID-linked raw-value entry/reload, dimension-based strain/apparent-stress calculations, actual-time
+  relaxation/recovery, separate Shore scales and method-compatible specimen comparison with explicit sample count.
+- **Status:** Solved in v64.0.0 on 2026-09-08.
+- **Resolution:** Schema v43, Flexible Materials editors and comparable-results grouping preserve specimen/cycle/method identity and
+  keep TPU results outside legacy Overall scoring and public output.
+- **Verification evidence:** Debug/Release pass; Help/docs pass; disposable profile `20260908211459-c4332cb0` passes 438/438 with
+  exact-state recovery; owner confirms all eight add/edit/calculate/reload/comparison steps work normally.
+- **Boundary:** Comparative in-house testing only; no ASTM/ISO claim, equipment connection, web publishing, general score or Compression Set.
 
 Date: 2026-08-22
 Area: Website / Impact Resistance chart terminology

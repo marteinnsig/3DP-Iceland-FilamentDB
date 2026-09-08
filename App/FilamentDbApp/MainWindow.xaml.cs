@@ -15416,7 +15416,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Black/Yellow/Black Color-only changes reach all measurement rows by MaterialID without changing samples or notes"
                 : "A named identity field failed to refresh independently or measurement-owned evidence changed"));
         var thermalDeflectionImportFoundationReady =
-            BuildInfo.CurrentDatabaseSchema == 42 &&
+            BuildInfo.CurrentDatabaseSchema >= 42 &&
             LocalDatabase.RunThermalDeflectionPersistenceContractVerification();
         checks.Add(new VerificationCheck(
             "v61.0.1 Thermal deflection schema, method and persistence contract",
@@ -15610,7 +15610,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             savedHeatLayoutProbe.Single(item => item.Key == "binding:InHeat").DisplayIndex == 2 &&
             savedHeatLayoutProbe.Single(item => item.Key == "binding:Notes").DisplayIndex == 3;
         var heatCoverageReady =
-            BuildInfo.CurrentDatabaseSchema == 42 &&
+            BuildInfo.CurrentDatabaseSchema >= 42 &&
             BuildFastMaterialsColumns().Any(column =>
                 string.Equals(column.Header, "In Heat", StringComparison.Ordinal) &&
                 string.Equals(column.PropertyName, "InHeat", StringComparison.Ordinal) &&
@@ -15628,6 +15628,23 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             heatCoverageReady
                 ? "Schema v42, read-only In Heat, saved-layout placement and four-module Tested Status match canonical Heat Deflection results"
                 : "Schema, In Heat layout/migration, Heat-result projection or four-module Tested Status drifted"));
+        var flexibleTestingReady =
+            BuildInfo.CurrentDatabaseSchema == 43 &&
+            LocalDatabase.RunFlexibleTestingCalculationContractVerification() &&
+            LocalDatabase.RunFlexibleTestingPersistenceContractVerification() &&
+            FindName("ExperimentalFlexibleMaterialsTab") is TabItem &&
+            FindName("FlexibleSpecimensGrid") is DataGrid &&
+            FindName("CompressionPointsGrid") is DataGrid &&
+            FindName("StressRelaxationGrid") is DataGrid &&
+            FindName("RecoveryMeasurementsGrid") is DataGrid &&
+            FindName("ShoreHardnessGrid") is DataGrid &&
+            FindName("FlexibleComparisonGrid") is DataGrid;
+        checks.Add(new VerificationCheck(
+            "v64.0.0 TPU compression, recovery and Shore calculation contract",
+            flexibleTestingReady,
+            flexibleTestingReady
+                ? "Schema v43, nullable formulas, specimen/cycle raw rows, force-limit outcome, separate Shore scales and comparison UI pass"
+                : "Flexible-test schema, formulas, specimen-aware editors or comparable-results surface failed"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",
@@ -18778,7 +18795,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var excelRecoveryRows = excelRecoverySnapshot.Tables.Sum(table => table.Rows.Count);
         var excelRecoveryReady = excelRecoverySnapshot.FormatVersion == ExcelRecoverySnapshot.CurrentFormatVersion &&
                                  excelRecoverySnapshot.SourceSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
-                                 excelRecoverySnapshot.Tables.Count == 26 &&
+                                 excelRecoverySnapshot.Tables.Count == 31 &&
                                  excelRecoverySnapshot.Tables.All(table => !string.IsNullOrWhiteSpace(table.TableName) && table.Columns.Count > 0 && table.Rows.All(row => row.Count == table.Columns.Count) && ExcelDisasterRecoveryService.ComputeTableHash(table).Length == 64) &&
                                  excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMaterialManagerRows").Rows.Count == _nativeMaterialRows.Count &&
                                  typeof(ExcelDisasterRecoveryService).GetMethod("LoadAndVerify") is not null &&
@@ -18999,7 +19016,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             BuildInfo.ShortLabel,
             BuildInfo.ReleaseTitle);
         var v58041BrandIdentityReady =
-            BuildInfo.CurrentDatabaseSchema == 42 &&
+            BuildInfo.CurrentDatabaseSchema >= 42 &&
             FindName("DocumentBrandDisplayNameBox") is TextBox brandNameBox &&
             brandNameBox.MaxLength == DocumentBrandIdentityService.MaximumLength &&
             FindName("SaveDocumentBrandDisplayNameButton") is Button &&
@@ -20061,10 +20078,10 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 HelpContentCatalog.SectionIdForMaterialDetailTab(tab.Header?.ToString())))
             .ToList();
         var v5024NestedMappingsReady =
-            v5024NestedTabs.Count == 16 &&
+            v5024NestedTabs.Count == 17 &&
             v5024NestedIds.All(id => !string.IsNullOrWhiteSpace(id)) &&
-            v5024NestedIds.Distinct(StringComparer.Ordinal).Count() == 16 &&
-            v5024NestedSectionIds.Count == 16 &&
+            v5024NestedIds.Distinct(StringComparer.Ordinal).Count() == 17 &&
+            v5024NestedSectionIds.Count == 17 &&
             v5024NestedSectionIds.All(sectionId =>
                 helpSections.Count(section => section.Id == sectionId) == 1);
         var v5024MenuHelpReady =
@@ -29912,6 +29929,7 @@ private List<string> GetVisibleAiMaterialLabels()
         // refresh from that event can throw InvalidOperationException in WPF.
         RefreshExperimentalStatus();
         RefreshExperimentalPublicationReadiness();
+        InitializeFlexibleMaterialTesting();
     }
 
 
@@ -30113,6 +30131,7 @@ private List<string> GetVisibleAiMaterialLabels()
         var row = ResolveExperimentalRun();
         if (row is null) { MessageBox.Show(this, "Select a run first.", "Experimental Testing"); return; }
         if (MessageBox.Show(this, $"Delete experimental run {row.ExperimentalRunId}?", "Experimental Testing", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+        RemoveFlexibleTestingRun(row.ExperimentalRunId);
         _experimentalRunRows.Remove(row); foreach (var measurement in _experimentalMeasurementRows.Where(x => x.ExperimentalRunId == row.ExperimentalRunId).ToList()) _experimentalMeasurementRows.Remove(measurement); if (ReferenceEquals(_lastSelectedExperimentalRun,row)) _lastSelectedExperimentalRun=null; SaveExperimentalRuns(); _experimentalRunView?.Refresh(); RefreshExperimentalSeriesResults(); RefreshExperimentalStatus();
     }
 
@@ -30141,6 +30160,7 @@ private List<string> GetVisibleAiMaterialLabels()
         BindExperimentalMeasurementEditors(run);
         RefreshExperimentalSeriesResults();
         RefreshExperimentalStatus();
+        BindFlexibleTestingRun(run);
     }
 
 
@@ -30751,6 +30771,7 @@ private List<string> GetVisibleAiMaterialLabels()
         grid.CommitEdit(DataGridEditingUnit.Row, true);
         _materialExperimentRows.Remove(row);
         var deletedRunIds = _experimentalRunRows.Where(x => x.MaterialExperimentId == row.MaterialExperimentId).Select(x => x.ExperimentalRunId).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var runId in deletedRunIds) RemoveFlexibleTestingRun(runId);
         foreach (var run in _experimentalRunRows.Where(x => deletedRunIds.Contains(x.ExperimentalRunId)).ToList()) _experimentalRunRows.Remove(run);
         foreach (var measurement in _experimentalMeasurementRows.Where(x => deletedRunIds.Contains(x.ExperimentalRunId)).ToList()) _experimentalMeasurementRows.Remove(measurement);
         SaveExperimentalRuns();
