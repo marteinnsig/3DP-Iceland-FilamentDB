@@ -714,11 +714,12 @@ internal static class HelpContentCatalog
             Order rates, received Inventory provenance, Usage history or saved quote snapshots. ECB remains an optional reference for
             session-new Purchase Orders, not the Settings owner.
 
-            Flexible specimen defaults
-            Flexible Material Testing owns editable default specimen diameter, height and Shore thickness values in mm. Save Settings
-            stores them in SQLite. Each value must be greater than zero. They are copied only when a new flexible-test specimen is
-            created; changing a default never rewrites geometry already saved with an existing specimen. Built-ins are 9 mm diameter,
-            10 mm height for the accepted compression method and 9 mm Shore thickness.
+            Flexible specimen and compression defaults
+            Flexible Material Testing owns editable default specimen diameter, height, Shore thickness and compression displacement
+            values in mm. Save Settings stores them in SQLite. Each value must be greater than zero. Geometry is copied only when a new
+            flexible-test specimen is created; displacement is copied only when a new compression point is created. Changing a default
+            never rewrites saved specimens or readings. Built-ins are 9 mm diameter, 10 mm height, 9 mm Shore thickness and 2 mm
+            compression displacement.
 
             Document branding
             The Document Branding group owns an optional Brand / Organization Name and PNG for generated documents only. Save Brand Name
@@ -754,10 +755,11 @@ internal static class HelpContentCatalog
             values block Save and retain the last accepted SQLite value.
 
             Flexible Material Testing values
-            Default specimen diameter, Default specimen height and Default specimen thickness are positive millimetre values. Click
-            Save Settings before creating a specimen. Compression and Shore specimen buttons copy the current saved/editor values into
-            that new specimen; existing specimen geometry remains unchanged. Reload Saved Settings restores the last saved values, and
-            Restore Built-in Defaults restores 9 mm diameter, 10 mm height and 9 mm thickness with the other non-Deployment rows.
+            Default specimen diameter, Default specimen height, Default specimen thickness and Default compression displacement are
+            positive millimetre values. Click Save Settings before creating a specimen or compression point. Compression and Shore
+            specimen buttons copy current geometry into that new specimen; prepared and manually added compression rows copy the
+            displacement default. Existing specimens and readings remain unchanged. Reload Saved Settings restores the last saved
+            values, and Restore Built-in Defaults restores 9 mm diameter, 10 mm height, 9 mm thickness and 2 mm displacement.
 
             Currency and purchasing values
             Governed currency values are the offline/manual fallback and remain owner-editable. ECB is optional reference data for
@@ -1160,7 +1162,9 @@ internal static class HelpContentCatalog
             below that table. Edit its actual geometry and print/method snapshot. A migrated session may show its former Experimental Run as read-only
             provenance, but new sessions do not require an Experimental Series or Run. Diameter, height and Shore thickness are copied
             from the Flexible Material Testing rows in Settings Manager when each new specimen is created; built-ins are 9 mm diameter,
-            10 mm height and 9 mm Shore thickness. Changing Settings never rewrites an existing specimen. Geometry plus the 100% rectilinear, 0.4 mm nozzle, 0.20 mm
+            10 mm height and 9 mm Shore thickness. A separate 2 mm displacement default is copied into each newly prepared or manually
+            added compression point. Changing Settings never rewrites an existing specimen or reading. Editable cells enter edit mode
+            on the first plain click; calculated result cells remain read-only. Geometry plus the 100% rectilinear, 0.4 mm nozzle, 0.20 mm
             layer, two-wall and three-top/bottom values remain editable starting values, not method requirements.
 
             Accepted TPU compression method v1.0
@@ -1177,6 +1181,8 @@ internal static class HelpContentCatalog
             its actual hold time. A force-limited target is Target reached off with force/displacement left factual or blank—never zero
             or estimated. Relaxation uses actual times; recovery is Residual Height Loss and must not be described as Compression Set.
             Shore values are measured records distinct from manufacturer hardness. A and D are neither converted nor averaged together.
+            To remove an accidental reading, click any cell in that row, then click Delete Selected Reading. If no reading is selected,
+            the status line explains what must be selected; specimen and session deletion are separate actions.
 
             This is not ASTM D575 or ISO 7743. The 30 s reading does not claim equilibrium. If 20% cannot be reached within the FK 500
             range, clear Target reached and preserve factual values; never enter an invented 500 N result. Comparable Results reports

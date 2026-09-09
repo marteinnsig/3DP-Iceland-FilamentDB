@@ -1,6 +1,6 @@
 # Help Coverage Matrix
 
-Version: v64.0.4 TPU pending-row validation coverage maintained
+Version: v64.0.5 flexible direct-edit and displacement-default coverage
 
 Purpose: authoritative inventory for the v50.2 per-tab reference milestone.
 This matrix records every supported UI surface, its owner, required reference

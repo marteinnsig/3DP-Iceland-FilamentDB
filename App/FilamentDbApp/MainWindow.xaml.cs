@@ -15669,14 +15669,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             .Where(row => string.Equals(row.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase))
             .ToList();
         var flexibleDefaultSettingsReady =
-            TryGetFlexibleSpecimenDefaults(out var defaultDiameter, out var defaultHeight, out var defaultThickness, out _) &&
-            flexibleSavedDefaults.Count == 3 &&
+            TryGetFlexibleDefaults(out var defaultDiameter, out var defaultHeight, out var defaultThickness, out var defaultDisplacement, out _) &&
+            flexibleSavedDefaults.Count >= 3 &&
             new[] { FlexibleDefaultDiameterParameter, FlexibleDefaultHeightParameter, FlexibleDefaultThicknessParameter }.All(parameter =>
                 flexibleSavedDefaults.Count(row => string.Equals(row.Parameter, parameter, StringComparison.OrdinalIgnoreCase)) == 1) &&
             FlexibleMaterialTestingService.ParseOptional(defaultDiameter) is > 0 &&
             FlexibleMaterialTestingService.ParseOptional(defaultHeight) is > 0 &&
             FlexibleMaterialTestingService.ParseOptional(defaultThickness) is > 0 &&
-            flexibleBuiltInDefaults.Count == 3 &&
+            flexibleBuiltInDefaults.Count >= 3 &&
             flexibleBuiltInDefaults.Single(row => row.Parameter == FlexibleDefaultDiameterParameter).Value == "9" &&
             flexibleBuiltInDefaults.Single(row => row.Parameter == FlexibleDefaultHeightParameter).Value == "10" &&
             flexibleBuiltInDefaults.Single(row => row.Parameter == FlexibleDefaultThicknessParameter).Value == "9" &&
@@ -15689,6 +15689,45 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             flexibleDefaultSettingsReady
                 ? "Three positive SQLite-canonical geometry defaults exist, v1 defaults are 9 x 10 mm with 9 mm Shore thickness, and snapshots remain editable"
                 : "Flexible specimen default rows, validation, accepted built-ins or snapshot ownership failed"));
+        var compressionDefaultProbe = CreateCompressionPoint("VERIFY-V64-SPECIMEN", "2", "30");
+        var deletionProbe = new CompressionPointRecord { CompressionPointId = "VERIFY-V64-DELETE" };
+        var canonicalDeletionProbe = new List<CompressionPointRecord> { deletionProbe };
+        var visibleDeletionProbe = new List<CompressionPointRecord> { deletionProbe };
+        var immediateDeletionReady = RemoveFlexibleReadingFromCollections(
+            deletionProbe,
+            canonicalDeletionProbe,
+            visibleDeletionProbe);
+        var flexibleDirectEditAndDisplacementReady =
+            FlexibleMaterialTestingService.ParseOptional(defaultDisplacement) is > 0 &&
+            flexibleSavedDefaults.Count == 4 &&
+            flexibleSavedDefaults.Count(row => string.Equals(row.Parameter, FlexibleDefaultDisplacementParameter, StringComparison.OrdinalIgnoreCase)) == 1 &&
+            flexibleBuiltInDefaults.Count == 4 &&
+            flexibleBuiltInDefaults.Single(row => row.Parameter == FlexibleDefaultDisplacementParameter).Value == "2" &&
+            compressionDefaultProbe.SpecimenId == "VERIFY-V64-SPECIMEN" &&
+            compressionDefaultProbe.DisplacementMm == "2" &&
+            compressionDefaultProbe.TargetStrainPercent == "20" &&
+            compressionDefaultProbe.HoldTimeSeconds == "30" &&
+            ReferenceEquals(ResolveFlexibleReading<CompressionPointRecord>(deletionProbe, null, null, null), deletionProbe) &&
+            ReferenceEquals(ResolveFlexibleReading<CompressionPointRecord>(null, deletionProbe, null, null), deletionProbe) &&
+            ReferenceEquals(ResolveFlexibleReading<CompressionPointRecord>(null, null, deletionProbe, null), deletionProbe) &&
+            ReferenceEquals(ResolveFlexibleReading<CompressionPointRecord>(null, null, null, deletionProbe), deletionProbe) &&
+            immediateDeletionReady &&
+            canonicalDeletionProbe.Count == 0 &&
+            visibleDeletionProbe.Count == 0 &&
+            FlexibleEditableGridNames.Length == 6 &&
+            typeof(MainWindow).GetMethod("RegisterFlexibleFirstClickEditing", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("FlexibleParentGrid_PreviewMouseLeftButtonDown", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("FlexibleReadingGrid_CurrentCellChanged", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("FlexibleReadingGrid_SelectedCellsChanged", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("SelectAdjacentFlexibleReading", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("ResolveSelectedFlexibleSpecimen", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            FlexibleEditableGridNames.All(name => FindName(name) is DataGrid { SelectionUnit: DataGridSelectionUnit.CellOrRowHeader });
+        checks.Add(new VerificationCheck(
+            "v64.0.5 flexible-grid direct editing and displacement default contract",
+            flexibleDirectEditAndDisplacementReady,
+            flexibleDirectEditAndDisplacementReady
+                ? "Prepared points snapshot 2 mm; direct editing and immediate canonical/visible-row deletion pass"
+                : "Compression default, direct editing or immediate selected-reading deletion drifted"));
         var tpuCompressionMethodV1Ready =
             LocalDatabase.RunTpuCompressionMethodV1ContractVerification() &&
             FlexibleMaterialTestingService.CompressionMethodName == "3DPIceland Labs TPU Compression Test" &&
@@ -26804,6 +26843,7 @@ private List<string> GetVisibleAiMaterialLabels()
             new NativeSettingRow { Section = "Flexible Material Testing", Parameter = "Default specimen diameter", Value = "9", Unit = "mm", UsedBy = "Flexible Material Testing", Notes = "Applied only when a new specimen is created; saved specimens are unchanged" },
             new NativeSettingRow { Section = "Flexible Material Testing", Parameter = "Default specimen height", Value = "10", Unit = "mm", UsedBy = "Flexible Material Testing", Notes = "Applied only when a new specimen is created; accepted TPU compression v1.0 height" },
             new NativeSettingRow { Section = "Flexible Material Testing", Parameter = "Default specimen thickness", Value = "9", Unit = "mm", UsedBy = "Flexible Material Testing", Notes = "Applied only when a new specimen is created; used by Shore readings" },
+            new NativeSettingRow { Section = "Flexible Material Testing", Parameter = "Default compression displacement", Value = "2", Unit = "mm", UsedBy = "Flexible Material Testing", Notes = "Applied only to newly created compression points; saved readings are unchanged" },
             new NativeSettingRow { Section = "Impact", Parameter = "Hammer mass", Value = "0.52300000000000002", Unit = "kg", UsedBy = "Impact", Notes = "Measured hammer mass" },
             new NativeSettingRow { Section = "Impact", Parameter = "Hammer start height", Value = "0.63", Unit = "m", UsedBy = "Impact", Notes = "Height at release position" },
             new NativeSettingRow { Section = "Impact", Parameter = "Hammer impact height", Value = "7.0000000000000007E-2", Unit = "m", UsedBy = "Impact", Notes = "Height at impact position" },
@@ -26899,7 +26939,7 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void SaveNativeSettings_Click(object sender, RoutedEventArgs e)
     {
-        if (!TryGetFlexibleSpecimenDefaults(out _, out _, out _, out var flexibleDefaultsError))
+        if (!TryGetFlexibleDefaults(out _, out _, out _, out _, out var flexibleDefaultsError))
         {
             MessageBox.Show(this, flexibleDefaultsError, "Flexible Material Testing Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;

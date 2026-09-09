@@ -2,6 +2,23 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v64.0.5 - Flexible-grid Direct Editing and Displacement Default
+
+- Editable cells in all six Flexible Material Testing grids now enter edit mode on the first plain click; calculated columns remain
+  read-only and ordinary cell/row-header selection is preserved.
+- Settings Manager adds a positive SQLite-backed `Default compression displacement`, built in as 2 mm. New prepared 10 s/30 s rows
+  and manually added compression points snapshot it; existing readings are never rewritten.
+- Help and Full Data Verification cover the four settings, direct-edit registration and prospective compression-point defaults.
+- Delete Selected Reading now resolves the active cell's row before the legacy SelectedItem fallback and shows guidance when no row is
+  selected. It removes the row from both canonical storage state and the filtered visible list, so deletion is shown immediately.
+- Consecutive deletes retain normal WPF selection state: CurrentCell is no longer invalidated or the child grid rebound after each
+  delete, and current/selected-cell changes update the remembered reading.
+- After a successful delete, the adjacent surviving row is explicitly selected and remembered so the next delete action has an
+  unambiguous target without specimen navigation or an extra recovery click.
+- Isolated and normal Release builds pass with zero warnings and zero errors. Disposable profile
+  `20260909201802-a3da3946` passes Full Data Verification 443/443, navigation and exact-state recovery. Owner runtime acceptance
+  is accepted on 2026-09-09; consecutive deletes now work without switching specimens.
+
 ## v64.0.4 - TPU Pending-row Validation Fix
 
 - Fixes Add Compression Specimen being rolled back because its newly prepared 10 s/30 s rows had no displacement yet.

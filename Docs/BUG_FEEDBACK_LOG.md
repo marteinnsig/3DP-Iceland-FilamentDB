@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 119 |
+| Solved | 120 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **125** |
+| **Total tracked findings** | **126** |
 
 ## Triage categories
 
@@ -188,6 +188,18 @@ No active findings.
 
 ## Recent resolved findings — newest first
 
+### 2026-09-09 — Flexible measurement cells require two clicks and displacement needs a configurable default
+
+- **Area:** Flexible Material Testing / Settings Manager.
+- **Type:** Workflow friction.
+- **Severity:** Important.
+- **Resolution:** v64.0.5 enables first-click editing, adds the prospective-only Settings-backed 2 mm compression displacement and
+  makes reading deletion follow the active cell through focus transfer. The visible and canonical lists update together, and after a
+  successful delete the adjacent surviving row is explicitly selected for an immediate consecutive delete.
+- **Status:** Solved and owner runtime accepted on 2026-09-09; the corrected consecutive-delete path works without specimen navigation.
+- **Verification evidence:** Debug/Release and Help/docs pass; profile `20260909201802-a3da3946` passes Full Data Verification 443/443
+  and exact-state recovery.
+
 ### 2026-09-09 — Add Compression Specimen shows reached-target displacement error
 
 - **Area:** Flexible Material Testing / compression specimen creation
@@ -195,7 +207,8 @@ No active findings.
 - **Resolution:** v64.0.4 permits completely blank prepared 10 s/30 s rows while still requiring displacement when force is entered on
   a reached row. Target reached off remains the explicit force-limited outcome.
 - **Status:** Solved and owner runtime accepted on 2026-09-09; the exact formerly failing button path now works.
-- **Verification evidence:** Debug/Release and Help/docs pass; profile `20260909175133-18ad8ba2` passes 442/442 and exact-state recovery.
+- **Verification evidence:** Debug/Release and Help/docs pass; profile `20260909175133-18ad8ba2` passes 442/442 and
+  exact-state recovery.
 
 ### 2026-09-09 — Govern accepted TPU Compression Test v1.0 in app and methodology
 
@@ -204,7 +217,8 @@ No active findings.
 - **Resolution:** v64.0.3 adds editable 9 x 10 mm, 20%, 10 s / primary 30 s method snapshots, n−1 statistics, CV/range, interval
   reduction, Help, whitepaper and public Methodology contracts. The unlinked 64D round remains verification evidence only.
 - **Status:** Solved and owner runtime accepted as part of the completed v64.0.4 workflow on 2026-09-09; no live publish occurred.
-- **Verification evidence:** The corrected 405 N dataset reproduces 433.0/14.23/3.29% and 400.5/12.02/3.00%; final profile passes 442/442.
+- **Verification evidence:** The corrected 405 N dataset reproduces 433.0/14.23/3.29% and 400.5/12.02/3.00%; final profile passes
+  442/442.
 
 ### 2026-09-09 — Flexible specimen geometry defaults should come from Settings
 
@@ -222,7 +236,8 @@ No active findings.
 - **Severity:** Important.
 - **What happened:** Flexible measurements were nested under Experimental Testing. During standalone acceptance, Add Compression
   Specimen also crashed because an absent legacy Experimental Run foreign key was saved as an empty string.
-- **Expected behavior:** A dedicated MaterialID-linked workspace, with MaterialID plus Website Display Name and workflow-ordered actions.
+- **Expected behavior:** A dedicated MaterialID-linked workspace, with MaterialID plus Website Display Name and workflow-ordered
+  actions.
 - **Status:** Solved and owner runtime accepted in v64.0.1 on 2026-09-08.
 - **Resolution:** The top-level workspace owns MaterialID-linked sessions; v43 data retains optional Run provenance, while new specimens
   save absent provenance as SQL NULL. Save failures are contained and failed adds are rolled back from the UI.
@@ -245,7 +260,8 @@ No active findings.
   keep TPU results outside legacy Overall scoring and public output.
 - **Verification evidence:** Debug/Release pass; Help/docs pass; disposable profile `20260908211459-c4332cb0` passes 438/438 with
   exact-state recovery; owner confirms all eight add/edit/calculate/reload/comparison steps work normally.
-- **Boundary:** Comparative in-house testing only; no ASTM/ISO claim, equipment connection, web publishing, general score or Compression Set.
+- **Boundary:** Comparative in-house testing only; no ASTM/ISO claim, equipment connection, web publishing, general score or
+  Compression Set.
 
 Date: 2026-08-22
 Area: Website / Impact Resistance chart terminology

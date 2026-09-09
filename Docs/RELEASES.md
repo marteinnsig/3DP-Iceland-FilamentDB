@@ -1,6 +1,15 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v64.0.5 - Flexible-grid Direct Editing and Displacement Default
+
+Makes all six Flexible Material Testing measurement grids editable on the first plain click and adds a positive SQLite-backed 2 mm
+default compression displacement for new rows only. Delete Selected Reading now follows the active reading through button-focus
+transfer, updates both canonical and visible collections immediately, and selects the adjacent surviving row for consecutive deletes.
+Historical readings remain unchanged. Debug/Release, Help and documentation gates pass; disposable profile
+`20260909201802-a3da3946` passes Full Data Verification 443/443 and exact-state recovery. Owner runtime acceptance passes on
+2026-09-09, including two consecutive deletes without specimen navigation. No live publish occurred.
+
 ## v64.0.4 - TPU Pending-row Validation Fix
 
 Closes v64 with configurable new-specimen geometry, the accepted `3DP-TPU-COMP-v1.0` method and corrected blank preparation-row

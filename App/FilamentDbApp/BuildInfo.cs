@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "TPU-PENDING-ROW-FIX";
-    public const string ReleaseTitle = "TPU Pending-row Validation Fix";
+    public const string ReleaseCode = "FLEXIBLE-DIRECT-EDIT";
+    public const string ReleaseTitle = "Flexible-grid Direct Editing and Displacement Default";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 44;
 

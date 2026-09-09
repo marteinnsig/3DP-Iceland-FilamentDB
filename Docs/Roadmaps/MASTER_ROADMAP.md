@@ -2,13 +2,13 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v64.0.4 — TPU Pending-row Validation Fix**
+Last runtime-accepted baseline: **v64.0.5 — Flexible-grid Direct Editing and Displacement Default**
 
-Current canonical application release: **v64.0.4 — TPU Pending-row Validation Fix**
+Current canonical application release: **v64.0.5 — Flexible-grid Direct Editing and Displacement Default**
 
-Current roadmap increment: **v64 complete — Flexible-material Comparative Testing**
+Current roadmap increment: **None — await the next owner-approved coherent milestone**
 
-Current acceptance note: v64.0.0-v64.0.4 are complete and owner runtime accepted.
+Current acceptance note: v64.0.0-v64.0.5 are complete and owner runtime accepted.
 
 Next note: await owner feedback before scheduling a new coherent major milestone.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
@@ -52,7 +52,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Complete — v61.0.8 owner accepted 2026-08-14 |
 | v62 | Workflow Reliability Corrections | ★★★★★ | Complete — v62.0.3 owner accepted 2026-08-24 |
 | v63 | Public Website Accuracy and Thermal Methodology | ★★★★☆ | Complete — v63.0.1 owner accepted 2026-08-24 |
-| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — v64.0.4 owner accepted 2026-09-09 |
+| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — canonical v64.0.5 runtime accepted |
 
 ## Reconciliation of the older plans
 
@@ -3107,7 +3107,7 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: both recorded v63 website increments are owner accepted, public content is internally consistent and
     no v63 implementation item remains open.
 
-## Current — v64 Flexible-material Comparative Testing
+## Complete — v64 Flexible-material Comparative Testing
 
 - **v64.0.0 — TPU Compression and Shore Hardness Measurement Foundation**
   - State: Complete and owner runtime accepted on 2026-09-08; Full Data Verification passes 438/438.
@@ -3140,8 +3140,8 @@ blockers may change the order, but must be recorded here before implementation.
     measurement-reading actions below it. Standalone specimens require a session identity, not an Experimental Run identity.
   - Persist an absent legacy Experimental Run as SQL NULL and contain save failures inside the workspace; a failed add must not terminate
     the application or leave a phantom in-memory specimen.
-  - Use the owner's current 9 mm diameter and 9 mm height/thickness specimen as the editable new-specimen default; preserve every saved
-    historical dimension unchanged.
+  - Use the owner's current 9 mm diameter and 9 mm height/thickness specimen as the editable new-specimen default; preserve every
+    saved historical dimension unchanged.
   - Update Navigate, Help, control inventory, recovery compatibility and disposable runtime traversal in the same increment.
   - Rollback: restore the accepted v64.0.0 UI host while retaining standalone session and migration discovery for supported data.
   - Completion condition: schema migration, Debug/Release, Help/docs and Full Data Verification pass; owner accepts direct MaterialID
@@ -3149,8 +3149,9 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition met: owner confirms the corrected Add Compression Specimen path works after the SQL NULL foreign-key fix;
     Material naming and action order are accepted, and all automated gates pass.
 - **v64 parent closure**
-  - State: Complete; v64.0.0-v64.0.4 are owner accepted.
-  - Completion condition met: no recorded v64 item remains open; final profile passes 442/442 with exact-state recovery.
+  - State: Complete on 2026-09-09; v64.0.0-v64.0.5 are owner accepted and no v64 implementation item remains open.
+  - Completion condition met: v64.0.5 passes its gates and owner runtime acceptance; final profile passes 443/443 with exact-state
+    recovery.
 - **v64.0.2 — Configurable Flexible-specimen Defaults**
   - State: Complete; owner accepted with v64.0.4 on 2026-09-09.
   - Add SQLite-canonical Settings rows for new flexible-specimen diameter, height and specimen thickness, initially 9 mm.
@@ -3178,6 +3179,27 @@ blockers may change the order, but must be recorded here before implementation.
     outcome rather than an empty placeholder.
   - Completion condition: Add Compression Specimen succeeds without red validation, incomplete rows survive reload, invalid partial
     readings remain blocked, builds/gates pass and owner confirms the reproduced path.
+- **v64.0.5 — Flexible-grid Direct Editing and Displacement Default**
+  - State: Complete and owner runtime accepted on 2026-09-09; Full Data Verification passes 443/443.
+  - Enter edit mode on the first plain click in editable Flexible Material Testing cells while preserving read-only calculated cells.
+  - Resolve Delete Selected Reading from the active cell's row, with SelectedItem retained as a compatibility fallback; show a clear
+    instruction when no reading is selected.
+  - Remove the row from both the canonical reading collection and the filtered visible specimen list so the UI changes immediately;
+    switching specimens must not be required to reveal an already-persisted deletion.
+  - Retain the last clicked reading per measurement grid across the focus transfer to Delete Selected Reading. Clear this remembered
+    row whenever specimen contents are rebound so the fallback cannot cross specimen identity.
+  - Do not invalidate CurrentCell or rebind the child table after a successful deletion; update its visible list in place and retain
+    normal WPF selection flow so consecutive rows can be deleted without specimen navigation.
+  - After deletion, explicitly select the adjacent surviving row at the deleted index (or the previous final row). The next explicit
+    Delete Selected Reading action must therefore work without specimen navigation or an extra row-selection recovery step.
+  - Add a positive SQLite-canonical `Default compression displacement` setting with a 2 mm built-in value. Copy it only into newly
+    created compression rows, including the prepared 10 s / 30 s rows; preserve all saved historical readings unchanged.
+  - Update Help and deterministic verification for the fourth Flexible setting, prospective-only default ownership and direct-edit
+    registration. Existing safe save, nullable-row and method-snapshot behavior remains unchanged.
+  - Completion condition: Debug/Release, Help/docs and Full Data Verification pass; owner confirms first-click typing, selected-row
+    deletion and editable 2 mm defaults in both prepared and manually added compression rows.
+  - Completion condition met: owner confirms the corrected consecutive-delete path works without specimen navigation; prior runtime
+    checks accepted first-click editing and configurable prospective defaults, and all governed gates pass.
 
 ### Intentionally unscheduled
 

@@ -1,5 +1,19 @@
 # Automated Runtime Acceptance
 
+## v64.0.5 - Flexible-grid direct editing and displacement default accepted
+
+- Full Data Verification checks the fourth positive SQLite setting, exact 2 mm built-in displacement, new-point snapshot factory and
+  all six direct-edit grid contracts.
+- Existing disposable smoke navigation is sufficient for safe automated coverage; actual first-click caret usability remains an owner
+  runtime check because synthetic traversal would not provide reliable visual/input evidence.
+- Production, FTPS, update, restore and destructive actions remain outside this increment.
+- Profile `20260909201802-a3da3946` passes Full Data Verification 443/443, including canonical/visible-list immediate deletion,
+  four-path reading selection resolution, consecutive-selection handlers, no forced CurrentCell reset and explicit adjacent-row
+  reselection after deletion. It also passes 24/24 top-level tabs, 24/24 Navigate destinations, 16/16 nested tabs and exact
+  database/business-state recovery.
+- Owner runtime acceptance passes on 2026-09-09: after deleting one of two compression rows, the adjacent survivor remains selected
+  and can be deleted immediately without switching specimens.
+
 ## v64.0.4 - TPU pending-row validation fix accepted
 
 - Verification distinguishes blank prepared rows, invalid force-without-displacement, completed reached readings and force-limit rows.
@@ -16,7 +30,8 @@
 
 ## v64.0.2 - Configurable Flexible-specimen Defaults accepted with v64.0.4
 
-- Full Data Verification checks the three positive SQLite-canonical settings, the accepted 9 mm diameter / 10 mm height / 9 mm Shore-thickness built-ins and specimen snapshot ownership.
+- Full Data Verification checks the three positive SQLite-canonical settings, the accepted 9 mm diameter / 10 mm height / 9 mm
+  Shore-thickness built-ins and specimen snapshot ownership.
 - No control or AutomationId changed. The read-only smoke remains sufficient; Save/create/restart is owner runtime acceptance.
 - Production, FTPS, update, restore and destructive actions remain outside this increment.
 - Profile `20260909031115-ccf084cb` visits 24/24 top-level and 16/16 nested tabs, invokes 24/24 Navigate destinations, passes Full Data

@@ -15,6 +15,9 @@ v64.0.2-v64.0.4 add SQLite-backed geometry defaults, the accepted 9 x 10 mm TPU 
 readings, n−1 statistics/CV/range, public methodology and correct blank preparation-row validation. Saved historical geometry remains
 unchanged. The unlinked validation round is not assigned to a guessed MaterialID. Final profile `20260909175133-18ad8ba2` passes
 442/442 with exact-state recovery, and the owner confirms the reproduced Add Compression Specimen path works on 2026-09-09.
+v64.0.5 completes the milestone with first-click measurement editing, a configurable prospective-only 2 mm displacement default and
+stable consecutive reading deletion. Profile `20260909201802-a3da3946` passes 443/443 with exact-state recovery; the owner confirms
+the corrected consecutive-delete workflow on 2026-09-09.
 
 # v63 - Public Website Accuracy and Thermal Methodology
 

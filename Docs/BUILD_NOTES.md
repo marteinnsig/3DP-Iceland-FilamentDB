@@ -1,4 +1,17 @@
-# Current Build Notes - v64.0.4 Accepted Release
+# Current Build Notes - v64.0.5
+
+## v64.0.5 flexible-grid direct editing and displacement default
+
+Editable Flexible Material Testing cells now enter edit mode on the first plain click. Settings Manager owns a positive 2 mm
+`Default compression displacement`; it is copied only to new compression rows and stays editable per row. Existing saved readings are
+unchanged. Delete Selected Reading now uses the active cell's row and explains when no row is selected. The active session/specimen
+follows the cell clicked, so deletion refreshes immediately and later Add actions retain their parent. The last directly clicked
+reading is retained across focus transfer to the delete button and cleared on specimen rebinding.
+Deletion now updates the child list in place without invalidating CurrentCell, allowing consecutive selections/deletes.
+The adjacent surviving row is selected automatically after deletion, so a second delete has an explicit target.
+Builds pass with zero warnings/errors. Disposable profile `20260909201802-a3da3946` passes
+Full Data Verification 443/443 and exact-state recovery. Owner runtime acceptance passes on 2026-09-09, including consecutive
+deletes without specimen navigation.
 
 ## v64.0.4 TPU pending-row validation fix
 

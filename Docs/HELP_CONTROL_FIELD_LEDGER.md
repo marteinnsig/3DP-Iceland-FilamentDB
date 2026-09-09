@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v64.0.4 TPU pending-row validation fix
+Version: v64.0.5 flexible direct-edit and displacement-default coverage
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted

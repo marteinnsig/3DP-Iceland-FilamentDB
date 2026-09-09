@@ -2,6 +2,28 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v64.0.5 - Flexible-grid Direct Editing and Displacement Default
+
+The accepted first-click DataGrid activation path is now registered for the six editable Flexible Material Testing grids. A fourth
+SQLite-canonical Flexible setting supplies an editable 2 mm displacement snapshot to new prepared and manually added compression rows
+without touching historical readings. Deterministic Verification covers the setting/default factory and direct-edit grid contract.
+Runtime testing then exposed that Delete Selected Reading still consulted row-oriented SelectedItem after the grid moved to cell
+selection. It now resolves CurrentCell.Item first, retains SelectedItem as a fallback and reports an actionable no-selection status.
+The final correction keeps session/specimen identity synchronized from the cell under the pointer and resolves action context from
+CurrentCell, SelectedItem or the retained valid specimen. Delete refreshes the active specimen immediately and subsequent Add actions
+retain that same specimen identity.
+The displayed child grid is a filtered list separate from the canonical collection. Deletion now removes the same row from both before
+refreshing, eliminating the stale line that previously disappeared only after specimen navigation.
+Focus transfer can clear WPF's current selection before the button handler runs, so each measurement grid now retains the last directly
+clicked row until specimen rebinding clears it. The deletion resolver tests current, selected-cell, selected-row and remembered paths.
+The child grid is no longer rebound and CurrentCell is no longer invalidated after deletion; CurrentCellChanged and
+SelectedCellsChanged keep consecutive row selection synchronized.
+Owner evidence then showed the sole surviving row visible but unselected. Successful deletion now explicitly selects and remembers the
+adjacent row at the deleted index, or the preceding final row, giving the next delete action a stable target.
+Isolated and normal Release builds pass with zero warnings and zero errors. Disposable profile `20260909201802-a3da3946` passes
+443/443 Verification, 24/24 top-level and Navigate paths, 16/16 nested tabs and exact database/business-state recovery. Owner runtime
+acceptance passes on 2026-09-09: the owner confirms the corrected consecutive-delete workflow now works.
+
 ## v64.0.4 - TPU Pending-row Validation Fix
 
 Owner runtime testing exposed that v1.0's two automatically prepared rows were validated as completed readings. Validation now
