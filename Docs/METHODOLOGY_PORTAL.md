@@ -16,6 +16,7 @@ The file is compiled as an embedded resource and injected into the canonical sin
 - Impact Resistance
 - Stiffness
 - Heat Deflection (`3dp-thermal-deflection-fixture-v1`)
+- TPU Compression (`3DP-TPU-COMP-v1.0`)
 - Printing Standard
 - Statistics, CV and confidence
 - Known limitations
@@ -33,3 +34,7 @@ The file is compiled as an embedded resource and injected into the canonical sin
 Native database keys and calculation ownership remain unchanged. Public terminology and explanatory content are presentation-layer documentation. Technical constants shown publicly must remain aligned with the native calculation engine and Verification Center.
 
 Heat Deflection documents the 127 × 12.7 × 3.2 mm flat specimen, 110 mm clear span, nominal 54 g M20 nut load, 2.00 mm endpoint and nearby BlueDOT probe-indicated fixture temperature. It must remain explicitly comparative and must not be described as specimen-core temperature, ASTM D648 or ISO 75 HDT.
+
+TPU Compression documents the 9 x 10 mm, 100% rectilinear cylinder, 20% Z compression, approximately 15-second manual approach and
+separate 10/30-second force readings. The 30-second reading is primary. It is not ASTM D575 or ISO 7743. Material results may come only
+from eligible MaterialID-linked SQLite rows; the unlinked 64D validation round is never published as a named material result.

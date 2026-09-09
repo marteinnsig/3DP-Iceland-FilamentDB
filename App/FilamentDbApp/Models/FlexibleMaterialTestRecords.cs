@@ -23,7 +23,7 @@ public sealed class FlexibleTestSpecimenRecord
     public string IntendedTest { get; set; } = "Compression";
     public string Shape { get; set; } = "Cylinder";
     public string DiameterMm { get; set; } = "9";
-    public string InitialHeightMm { get; set; } = "9";
+    public string InitialHeightMm { get; set; } = "10";
     public string ThicknessMm { get; set; } = "9";
     public string MassG { get; set; } = string.Empty;
     public string InfillPercent { get; set; } = "100";
@@ -101,4 +101,9 @@ public sealed class ShoreHardnessReadingRecord
 
 public sealed record FlexibleComparisonRow(
     string Metric, string MethodGroup, string Condition, int SpecimenCount,
-    string Mean, string StandardDeviation, string Unit, int NotReachedCount);
+    string Mean, string StandardDeviation, string CoefficientOfVariation,
+    string Minimum, string Maximum, string Unit, int NotReachedCount);
+
+public sealed record TpuCompressionPublicSummary(
+    int SpecimenCount30Seconds, double Mean30SecondsN, double SampleStandardDeviation30SecondsN, double CoefficientOfVariation30Seconds,
+    int SpecimenCount10Seconds, double Mean10SecondsN, double SampleStandardDeviation10SecondsN, double CoefficientOfVariation10Seconds);

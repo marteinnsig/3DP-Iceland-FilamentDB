@@ -45,7 +45,22 @@ public sealed class WebsiteHtmlRendererService
         var updated = ReplaceDataBlock(template, dataJson);
         updated = RemoveLegacyPricingOverlay(updated);
         updated = ApplyThermalPresentation(updated);
+        updated = ApplyFlexibleCompressionPresentation(updated);
         return generatedNote + updated;
+    }
+
+    private static string ApplyFlexibleCompressionPresentation(string html)
+    {
+        const string marker = "/* 3DP-TPU-COMPRESSION-PUBLIC-v64.0.3 */";
+        if (html.Contains(marker, StringComparison.Ordinal)) return html;
+        const string existing = "${esc(selected.thermalLimitation||'No fixture-specific thermal result is available; no value is inferred.')}</div>`;";
+        const string replacement = "${esc(selected.thermalLimitation||'No fixture-specific thermal result is available; no value is inferred.')}</div>" +
+            "<div class=\"value-note\"><strong>TPU Compression:</strong> ${selected.tpuCompressionForce30N==null?'N/A':fmt(selected.tpuCompressionForce30N)+' N at 20% strain — 30 s hold · n='+selected.tpuCompressionN30+' · sample SD '+fmt(selected.tpuCompressionSd30N)+' N · CV '+fmt(selected.tpuCompressionCv30Percent)+'%'}<br>" +
+            "${selected.tpuCompressionForce10N==null?'10 s detail unavailable':'10 s detail: '+fmt(selected.tpuCompressionForce10N)+' N · n='+selected.tpuCompressionN10+' · sample SD '+fmt(selected.tpuCompressionSd10N)+' N · CV '+fmt(selected.tpuCompressionCv10Percent)+'%'}<br>" +
+            "${selected.tpuCompressionForce30N==null?'No eligible MaterialID-linked v1.0 result is inferred.':'3DPIceland Labs comparative method '+esc(selected.tpuCompressionMethodVersion)+'; not ASTM D575 or ISO 7743.'}</div>`;";
+        if (!html.Contains(existing, StringComparison.Ordinal))
+            throw new InvalidOperationException("The active website template does not support the TPU compression presentation contract.");
+        return html.Replace(existing, replacement, StringComparison.Ordinal).Replace("</script>", marker + "\n</script>", StringComparison.Ordinal);
     }
 
     private static string ApplyThermalPresentation(string html)
@@ -180,8 +195,12 @@ public sealed class WebsiteHtmlRendererService
         result.HasThermalFields = payload.Tensile.All(row =>
             row.ContainsKey("thermalResultTemperatureC") && row.ContainsKey("thermalScore") &&
             row.ContainsKey("thermalMethodVersion") && row.ContainsKey("thermalLimitation"));
+        result.HasFlexibleCompressionFields = payload.Tensile.All(row =>
+            row.ContainsKey("tpuCompressionForce30N") && row.ContainsKey("tpuCompressionSd30N") &&
+            row.ContainsKey("tpuCompressionCv30Percent") && row.ContainsKey("tpuCompressionN30") &&
+            row.ContainsKey("tpuCompressionForce10N") && row.ContainsKey("tpuCompressionMethodVersion"));
         result.TemplateDataBlockSupported = true;
-        result.Passed = result.HasDataPayload && result.PayloadRowsAligned && result.HasMaterialIds && result.HasChartMetrics && result.HasPricingFields && result.HasThermalFields && result.TemplateDataBlockSupported;
+        result.Passed = result.HasDataPayload && result.PayloadRowsAligned && result.HasMaterialIds && result.HasChartMetrics && result.HasPricingFields && result.HasThermalFields && result.HasFlexibleCompressionFields && result.TemplateDataBlockSupported;
         return result;
     }
 
@@ -301,5 +320,6 @@ public sealed class WebsiteHtmlRendererVerificationResult
     public bool HasChartMetrics { get; set; }
     public bool HasPricingFields { get; set; }
     public bool HasThermalFields { get; set; }
+    public bool HasFlexibleCompressionFields { get; set; }
     public bool TemplateDataBlockSupported { get; set; }
 }

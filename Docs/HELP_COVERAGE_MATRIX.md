@@ -1,6 +1,6 @@
 # Help Coverage Matrix
 
-Version: v64.0.1 standalone flexible-material testing coverage maintained
+Version: v64.0.4 TPU pending-row validation coverage maintained
 
 Purpose: authoritative inventory for the v50.2 per-tab reference milestone.
 This matrix records every supported UI surface, its owner, required reference
@@ -148,7 +148,7 @@ Required leaf destinations:
 | Experimental Series | `experimental.series` | SQLite Series graph | Add, Duplicate, Delete, Find, Active only, Clear, Material/experiment/unit/baseline/Website/Active/Notes and readiness | Core IDs good; Clear and nested tabs missing |
 | Experimental Runs | `experimental.runs` | SQLite Runs graph | Add, Duplicate, Delete, lifecycle, measured date, baseline uniqueness, Active/history and persistence | Core action/grid IDs present |
 | Experimental editors | `experimental.measurements` | Run measurement rows + `ResultsService` | Tensile/Impact/Stiffness raw and computed fields, dates, notes, validation and auto-save | All legacy nested tabs have IDs; grids remain outside v50.2.4 navigation |
-| Flexible Material Testing | `flexible-testing.overview` | SQLite MaterialID-linked session/specimen graph + `FlexibleMaterialTestingService` | Session ownership, specimen/method snapshots, compression points/cycles/hold, force-limit outcome, actual-time relaxation, recovery, separate Shore A/D and compatible specimen statistics | v64.0.1 top-level workspace and editor grids have stable IDs; physical entry/readability remains owner acceptance |
+| Flexible Material Testing | `flexible-testing.overview` | SQLite session/specimen graph + `FlexibleMaterialTestingService`; Settings Manager owns new-specimen geometry defaults | Prospective diameter/height/Shore-thickness defaults, immutable specimen snapshots, readings and comparable statistics | v64.0.2 reuses stable controls; physical Save/create/restart remains owner acceptance |
 | Experimental Results Dashboard | `experimental.results.dashboard` | Selected Series comparison | Scope label, baseline/best/recommended cards, readiness and active/history effect | Nested tab ID covered |
 | Experimental Results Table | `experimental.results.table` | Selected Series comparison | Rank, metrics, delta-to-baseline, CV and baseline highlighting | Nested tab ID covered |
 | Experimental Results Charts | `experimental.results.charts` | Selected Series comparison | Metric charts, baseline-normalized chart and baseline prerequisite | Nested tab ID covered |

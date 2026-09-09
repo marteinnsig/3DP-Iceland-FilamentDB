@@ -2,15 +2,15 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v64.0.1 — Standalone Flexible-material Testing Workspace**
+Last runtime-accepted baseline: **v64.0.4 — TPU Pending-row Validation Fix**
 
-Current canonical application release: **v64.0.1 — Standalone Flexible-material Testing Workspace**
+Current canonical application release: **v64.0.4 — TPU Pending-row Validation Fix**
 
-Current roadmap increment: **None — next bounded increment awaits owner feedback**
+Current roadmap increment: **v64 complete — Flexible-material Comparative Testing**
 
-Current acceptance note: v64.0.1 and the v64 milestone are owner runtime accepted on 2026-09-08.
+Current acceptance note: v64.0.0-v64.0.4 are complete and owner runtime accepted.
 
-Next note: review new owner feedback before scheduling another bounded increment.
+Next note: await owner feedback before scheduling a new coherent major milestone.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
 Production and FTPS remain blocked.
 
@@ -52,7 +52,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Complete — v61.0.8 owner accepted 2026-08-14 |
 | v62 | Workflow Reliability Corrections | ★★★★★ | Complete — v62.0.3 owner accepted 2026-08-24 |
 | v63 | Public Website Accuracy and Thermal Methodology | ★★★★☆ | Complete — v63.0.1 owner accepted 2026-08-24 |
-| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — v64.0.1 owner accepted |
+| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — v64.0.4 owner accepted 2026-09-09 |
 
 ## Reconciliation of the older plans
 
@@ -3149,8 +3149,35 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition met: owner confirms the corrected Add Compression Specimen path works after the SQL NULL foreign-key fix;
     Material naming and action order are accepted, and all automated gates pass.
 - **v64 parent closure**
-  - State: Complete and owner runtime accepted on 2026-09-08; v64.0.0 remains immutable and accepted.
-  - Completion condition: v64.0.1 is owner accepted and no recorded v64 item remains open.
+  - State: Complete; v64.0.0-v64.0.4 are owner accepted.
+  - Completion condition met: no recorded v64 item remains open; final profile passes 442/442 with exact-state recovery.
+- **v64.0.2 — Configurable Flexible-specimen Defaults**
+  - State: Complete; owner accepted with v64.0.4 on 2026-09-09.
+  - Add SQLite-canonical Settings rows for new flexible-specimen diameter, height and specimen thickness, initially 9 mm.
+  - Apply validated Settings values only when a new specimen is created; never rewrite saved specimen geometry or results.
+  - Restore Built-in Defaults restores 9 mm values; Reload Saved Settings restores the last explicitly saved values.
+  - Update Help and deterministic contracts for validation, persistence and prospective-only behavior.
+  - Completion condition: Debug/Release, Help/docs and Full Data Verification pass; owner accepts editing/saving the defaults and
+    confirms new specimens receive changed values while an older specimen stays unchanged.
+- **v64.0.3 — TPU Compression Method v1.0**
+  - State: Complete; owner accepted with v64.0.4 on 2026-09-09.
+  - Govern `3DPIceland Labs TPU Compression Test` v1.0: 9 mm diameter x 10 mm actual height, 100% rectilinear, Z compression,
+    approximately 15 s manual approach, 20% strain and separate 10 s / primary 30 s readings.
+  - Make new compression specimens/readings start from that editable method snapshot without rewriting historical records.
+  - Show independent-specimen n, mean, sample SD, CV and range; calculate 10-to-30 s force reduction without calling it initial-force
+    relaxation, strength, modulus, Shore hardness or Compression Set.
+  - Preserve the supplied ten-specimen unlinked 64D validation round as deterministic verification/documentation evidence only until
+    the owner supplies its exact MaterialID; never create or infer a material association.
+  - Add the method and limitations to Help, the native methodology source and public Methodology portal. No live publish is authorized.
+  - Completion condition: statistics reproduce 433.0 N / 14.23 N / 3.29% and 400.5 N / 12.02 N / 3.00%, the corrected 405 N is
+    covered, Help/website/whitepaper agree, Debug/Release and verification gates pass, and owner accepts the runtime workflow.
+- **v64.0.4 — Pending Compression-row Validation Fix**
+  - State: Complete; owner confirms the reproduced Add Compression Specimen path works on 2026-09-09.
+  - Permit the new v1.0 10 s and 30 s preparation rows to persist with blank force/displacement before the physical test is performed.
+  - Once a reached row contains force, require a valid displacement; Target reached off continues to represent a factual force-limited
+    outcome rather than an empty placeholder.
+  - Completion condition: Add Compression Specimen succeeds without red validation, incomplete rows survive reload, invalid partial
+    readings remain blocked, builds/gates pass and owner confirms the reproduced path.
 
 ### Intentionally unscheduled
 

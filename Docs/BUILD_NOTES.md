@@ -1,4 +1,26 @@
-# Current Build Notes - v64.0.1 Accepted Release
+# Current Build Notes - v64.0.4 Accepted Release
+
+## v64.0.4 TPU pending-row validation fix
+
+Add Compression Specimen can now save its blank prepared 10 s and 30 s rows. Measured reached rows still require displacement.
+Owner confirms Add Compression Specimen works without the former red validation message.
+Profile `20260909175133-18ad8ba2` passes Full Data Verification 442/442 and exact-state recovery.
+
+## v64.0.3 TPU Compression Method v1.0
+
+New compression specimens start with separate 20% / 10 s and 20% / 30 s readings under the accepted editable v1.0 method snapshot.
+The 30-second result is primary. Comparable Results now includes n, sample SD, CV and range. Help, website Methodology and whitepaper
+source share the same non-standard-method wording. The unlinked 64D validation round remains verification evidence only.
+Profile `20260909172724-bc37a4b1` passes Full Data Verification 441/441 and exact-state recovery; owner runtime review remains required.
+Profile `20260909172724-bc37a4b1` passes Full Data Verification 441/441 and exact-state recovery; owner runtime review remains required.
+
+## v64.0.2 configurable flexible-specimen defaults
+
+Settings Manager now contains default diameter, height and Shore thickness for new Flexible Material Testing specimens. Built-in values
+are 9 mm; valid saved values survive reload/restart. A new specimen copies the current values, while every existing specimen retains its
+saved geometry. This candidate requires owner runtime acceptance before it replaces v64.0.1 as the accepted release.
+Isolated builds and static gates pass; disposable profile `20260909031115-ccf084cb` passes Verification 439/439 with exact recovery.
+Isolated builds and static gates pass; disposable profile `20260909031115-ccf084cb` passes Verification 439/439 with exact recovery.
 
 ## v64.0.1 standalone flexible-material testing workspace
 

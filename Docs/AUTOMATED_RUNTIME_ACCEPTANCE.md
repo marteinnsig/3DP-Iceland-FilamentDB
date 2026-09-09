@@ -1,5 +1,27 @@
 # Automated Runtime Acceptance
 
+## v64.0.4 - TPU pending-row validation fix accepted
+
+- Verification distinguishes blank prepared rows, invalid force-without-displacement, completed reached readings and force-limit rows.
+- Owner repeats and accepts the exact Add Compression Specimen path that produced the red validation message on 2026-09-09.
+- Profile `20260909175133-18ad8ba2` passes Full Data Verification 442/442, 24/24 navigation and exact-state recovery.
+
+## v64.0.3 - TPU Compression Method v1.0 accepted with v64.0.4
+
+- Verification owns the exact ten-specimen values, corrected 405 N row, n−1 statistics, CV/range, force reduction and MaterialID gate.
+- Website verification owns Methodology wording plus SQLite-derived public payload/presentation. No live publish is authorized.
+- Owner acceptance covers the visible two-row specimen workflow, comparison columns, Help and local website Preview.
+- Profile `20260909172724-bc37a4b1` visits 24/24 top-level and 16/16 nested tabs, invokes 24/24 Navigate destinations, passes Full Data
+  Verification 441/441 and preserves exact database and business-state hashes.
+
+## v64.0.2 - Configurable Flexible-specimen Defaults accepted with v64.0.4
+
+- Full Data Verification checks the three positive SQLite-canonical settings, the accepted 9 mm diameter / 10 mm height / 9 mm Shore-thickness built-ins and specimen snapshot ownership.
+- No control or AutomationId changed. The read-only smoke remains sufficient; Save/create/restart is owner runtime acceptance.
+- Production, FTPS, update, restore and destructive actions remain outside this increment.
+- Profile `20260909031115-ccf084cb` visits 24/24 top-level and 16/16 nested tabs, invokes 24/24 Navigate destinations, passes Full Data
+  Verification 439/439 and finishes with exact database and business-state hashes.
+
 ## v64.0.1 - Standalone Flexible-material Testing accepted
 
 - Automation now expects 24 top-level tabs, 24 Navigate destinations and 16 nested Experimental/Material Detail tabs.

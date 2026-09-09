@@ -2,6 +2,41 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v64.0.4 - TPU Pending-row Validation Fix
+
+- Fixes Add Compression Specimen being rolled back because its newly prepared 10 s/30 s rows had no displacement yet.
+- Completely blank preparation rows now persist normally. Once force is entered on a reached row, displacement remains required;
+  Target reached off continues to mean a genuine force-limited outcome.
+- Adds deterministic pending/invalid/completed/force-limited validation coverage without changing saved data or schema.
+- Owner confirms the formerly failing Add Compression Specimen path works on 2026-09-09; v64.0.2-v64.0.4 and the v64 milestone close.
+- Debug/Release and documentation/Help gates pass. Disposable profile `20260909175133-18ad8ba2` passes Full Data Verification 442/442
+  and exact database/business-state recovery.
+
+## v64.0.3 - TPU Compression Method v1.0
+
+- Governs `3DPIceland Labs TPU Compression Test` as method `3DP-TPU-COMP-v1.0`: nominal Ø9 x 10 mm, 100% rectilinear,
+  Z compression, approximately 15-second manual approach and 20% strain.
+- New compression specimens receive editable first-cycle 10 s and primary 30 s reading rows. Existing specimens and historical method
+  snapshots are unchanged; new general compression points default to 20% / 30 s.
+- Comparable Results adds sample SD (n−1), CV, minimum and maximum, and reports 10-to-30-second force reduction separately.
+- Adds MaterialID-linked/public-allowlisted website payload fields and visible detailed-result wording without adding compression to the
+  general score. Missing or ineligible results remain unavailable rather than inferred.
+- Adds the exact non-standard method and limitations to Help, public Methodology and the generated whitepaper source. The supplied 64D
+  ten-specimen round remains unlinked verification/documentation evidence; its corrected specimen-2 30 s value is 405 N.
+- Debug/Release and Help/release-documentation gates pass. Disposable profile `20260909172724-bc37a4b1` passes Full Data Verification
+  441/441, all website/whitepaper TPU contracts and exact database/business-state recovery.
+- Debug/Release and Help/release-documentation gates pass. Disposable profile `20260909172724-bc37a4b1` passes Full Data Verification
+  441/441, all website/whitepaper TPU contracts and exact database/business-state recovery.
+
+## v64.0.2 - Configurable Flexible-specimen Defaults
+
+- Adds SQLite-backed Settings Manager values for default flexible-specimen diameter, height and Shore thickness, initially 9 mm.
+- Copies the positive-mm defaults only into new specimens; existing saved geometry and calculated results are never rewritten.
+- Save validates all three values; Reload restores saved values and Restore Built-in Defaults restores 9 mm.
+- Help and Verification are extended. Owner acceptance covers prospective creation, restart and preservation of an earlier specimen.
+- Isolated Debug/Release builds, Help and release-documentation gates pass. Disposable smoke profile
+  `20260909031115-ccf084cb` passes Full Data Verification 439/439 and exact database/business-state recovery.
+
 ## v64.0.1 - Standalone Flexible-material Testing Workspace
 
 - Moves flexible-material compression, relaxation, recovery and Shore measurement entry from the Experimental Testing editor into a

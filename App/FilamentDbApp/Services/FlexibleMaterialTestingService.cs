@@ -5,6 +5,10 @@ namespace FilamentDbApp.Services;
 
 public sealed class FlexibleMaterialTestingService
 {
+    public const string CompressionMethodName = "3DPIceland Labs TPU Compression Test";
+    public const string CompressionMethodVersion = "3DP-TPU-COMP-v1.0";
+    public const string CompressionMethodNotes = "Comparative in-house test; SAUTER TVL + FK 500; Z compression; approximately 15 s manual approach; not ASTM D575 or ISO 7743.";
+
     public static double? ParseOptional(string? value)
     {
         if (string.IsNullOrWhiteSpace(value)) return null;
@@ -40,6 +44,13 @@ public sealed class FlexibleMaterialTestingService
         return later >= 0d && reference > 0d ? later / reference * 100d : null;
     }
 
+    public static double? CalculateForceReductionPercent(string? force10SecondsN, string? force30SecondsN)
+    {
+        var first = ParseOptional(force10SecondsN);
+        var later = ParseOptional(force30SecondsN);
+        return first > 0d && later >= 0d ? (first - later) / first * 100d : null;
+    }
+
     public static double? CalculateResidualHeightLossPercent(string? initialHeightMm, string? heightAfterRestMm)
     {
         var initial = ParseOptional(initialHeightMm);
@@ -72,8 +83,8 @@ public sealed class FlexibleMaterialTestingService
             ValidateNonNegativeOptional(point.ForceN, "Compression force", errors);
             ValidateNonNegativeOptional(point.HoldTimeSeconds, "Compression hold time", errors);
             ValidateRangeOptional(point.TargetStrainPercent, 0d, 100d, "Target strain", errors);
-            if (point.TargetReached && ParseOptional(point.DisplacementMm) is null)
-                errors.Add("A reached compression target requires a displacement; leave it blank only when Target reached is cleared.");
+            if (point.TargetReached && ParseOptional(point.ForceN).HasValue && ParseOptional(point.DisplacementMm) is null)
+                errors.Add("A reached compression reading with force requires a displacement; enter the measured displacement or clear Target reached for a force-limited outcome.");
         }
         foreach (var point in relaxation)
         {
@@ -120,7 +131,7 @@ public sealed class FlexibleMaterialTestingService
             point.ResultLabel = !point.TargetReached && target.HasValue
                 ? $"Target {target:0.##}% not reached"
                 : target.HasValue && ParseOptional(point.ForceN).HasValue
-                    ? $"Compression Force at {target:0.##}% Strain ({FormatHold(point.HoldTimeSeconds)})"
+                    ? $"Compression Force at {target:0.##}% Strain — {FormatHold(point.HoldTimeSeconds)} (N)"
                     : string.Empty;
         }
         foreach (var group in relaxation.GroupBy(x => new { x.SpecimenId, x.CycleNumber, x.CompressionPercent }))
@@ -164,6 +175,26 @@ public sealed class FlexibleMaterialTestingService
             AddSummary(rows, $"Apparent Compressive Stress at {group.Key.Target}% Strain", group.Key.Method,
                 $"{group.Key.Hold} s hold · cycle {group.Key.CycleNumber}", specimenStresses, "MPa", notReached);
         }
+        var reductionGroups = compression
+            .Where(x => x.TargetReached && x.CycleNumber == 1 && ParseOptional(x.ForceN).HasValue)
+            .GroupBy(x =>
+            {
+                specimenById.TryGetValue(x.SpecimenId, out var specimen);
+                return new { Method = MethodKey(specimen), Target = NumericKey(x.TargetStrainPercent) };
+            });
+        foreach (var group in reductionGroups)
+        {
+            var reductions = group.GroupBy(x => x.SpecimenId, StringComparer.OrdinalIgnoreCase)
+                .Select(specimenRows =>
+                {
+                    var at10 = specimenRows.FirstOrDefault(x => ParseOptional(x.HoldTimeSeconds) == 10d);
+                    var at30 = specimenRows.FirstOrDefault(x => ParseOptional(x.HoldTimeSeconds) == 30d);
+                    return CalculateForceReductionPercent(at10?.ForceN, at30?.ForceN);
+                })
+                .Where(x => x.HasValue).Select(x => x!.Value).ToList();
+            AddSummary(rows, $"Force reduction from 10 s to 30 s at {group.Key.Target}% Strain", group.Key.Method,
+                "first compression only", reductions, "%", 0);
+        }
         var shoreGroups = shore.Where(x => ParseOptional(x.HardnessValue).HasValue && x.ShoreScale is "A" or "D")
             .GroupBy(x =>
             {
@@ -180,6 +211,31 @@ public sealed class FlexibleMaterialTestingService
         return rows.OrderBy(x => x.Metric, StringComparer.CurrentCultureIgnoreCase).ThenBy(x => x.MethodGroup).ToList();
     }
 
+    public static TpuCompressionPublicSummary? BuildPublicMethodV1Summary(
+        string materialId,
+        IReadOnlyCollection<FlexibleTestSessionRecord> sessions,
+        IReadOnlyCollection<FlexibleTestSpecimenRecord> specimens,
+        IReadOnlyCollection<CompressionPointRecord> compression)
+    {
+        var sessionIds = sessions.Where(x => x.IsActive && string.Equals(x.MaterialID, materialId, StringComparison.OrdinalIgnoreCase))
+            .Select(x => x.FlexibleTestSessionId).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var eligibleSpecimens = specimens.Where(x => sessionIds.Contains(x.FlexibleTestSessionId) &&
+            string.Equals(x.MethodVersion, CompressionMethodVersion, StringComparison.Ordinal) &&
+            ParseOptional(x.DiameterMm) == 9d && ParseOptional(x.InitialHeightMm) == 10d &&
+            ParseOptional(x.InfillPercent) == 100d && string.Equals(x.InfillPattern?.Trim(), "Rectilinear", StringComparison.OrdinalIgnoreCase))
+            .Select(x => x.SpecimenId).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        List<double> ValuesAt(double hold) => compression.Where(x => eligibleSpecimens.Contains(x.SpecimenId) && x.CycleNumber == 1 &&
+                x.TargetReached && ParseOptional(x.TargetStrainPercent) == 20d && ParseOptional(x.HoldTimeSeconds) == hold && ParseOptional(x.ForceN).HasValue)
+            .GroupBy(x => x.SpecimenId, StringComparer.OrdinalIgnoreCase).Select(x => x.Average(p => ParseOptional(p.ForceN)!.Value)).ToList();
+        var at30 = ValuesAt(30d);
+        if (at30.Count == 0) return null;
+        var at10 = ValuesAt(10d);
+        static double Sd(IReadOnlyList<double> values) => values.Count < 2 ? double.NaN : Math.Sqrt(values.Sum(x => Math.Pow(x - values.Average(), 2d)) / (values.Count - 1));
+        static double Cv(IReadOnlyList<double> values) { var sd = Sd(values); return values.Count < 2 || values.Average() == 0d ? double.NaN : sd / values.Average() * 100d; }
+        return new TpuCompressionPublicSummary(at30.Count, at30.Average(), Sd(at30), Cv(at30),
+            at10.Count, at10.Count == 0 ? double.NaN : at10.Average(), Sd(at10), Cv(at10));
+    }
+
     private static string MethodKey(FlexibleTestSpecimenRecord? s) => s is null ? "Unknown method" :
         $"{s.Shape} {NumericKey(s.DiameterMm)} x {NumericKey(s.InitialHeightMm)} mm; " +
         $"{NumericKey(s.InfillPercent)}% {s.InfillPattern}; nozzle {NumericKey(s.NozzleDiameterMm)} mm; layer {NumericKey(s.LayerHeightMm)} mm; " +
@@ -193,7 +249,12 @@ public sealed class FlexibleMaterialTestingService
         var mean = values.Count == 0 ? string.Empty : values.Average().ToString("0.###", CultureInfo.CurrentCulture);
         var sd = values.Count < 2 ? string.Empty : Math.Sqrt(values.Sum(x => Math.Pow(x - values.Average(), 2d)) / (values.Count - 1))
             .ToString("0.###", CultureInfo.CurrentCulture);
-        rows.Add(new FlexibleComparisonRow(metric, method, condition, values.Count, mean, sd, unit, notReached));
+        var cv = values.Count < 2 || values.Average() == 0d ? string.Empty :
+            (Math.Sqrt(values.Sum(x => Math.Pow(x - values.Average(), 2d)) / (values.Count - 1)) / values.Average() * 100d)
+            .ToString("0.###", CultureInfo.CurrentCulture);
+        var minimum = values.Count == 0 ? string.Empty : values.Min().ToString("0.###", CultureInfo.CurrentCulture);
+        var maximum = values.Count == 0 ? string.Empty : values.Max().ToString("0.###", CultureInfo.CurrentCulture);
+        rows.Add(new FlexibleComparisonRow(metric, method, condition, values.Count, mean, sd, cv, minimum, maximum, unit, notReached));
     }
 
     private static string Normalize(string? value) => string.IsNullOrWhiteSpace(value) ? "not recorded" : value.Trim();

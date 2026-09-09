@@ -276,10 +276,63 @@ ON CONFLICT(SpecimenId) DO UPDATE SET FlexibleTestSessionId=excluded.FlexibleTes
                OptionalForeignKey(string.Empty) is DBNull &&
                string.Equals(OptionalForeignKey(" RUN-1 ").ToString(), "RUN-1", StringComparison.Ordinal) &&
                new FlexibleTestSpecimenRecord().DiameterMm == "9" &&
-               new FlexibleTestSpecimenRecord().InitialHeightMm == "9" &&
+               new FlexibleTestSpecimenRecord().InitialHeightMm == "10" &&
                new FlexibleTestSpecimenRecord().ThicknessMm == "9" &&
                Services.FlexibleMaterialTestingService.CalculateStrainPercent("1", "") is null &&
                Services.FlexibleMaterialTestingService.CalculateApparentStressMpa("100", "0") is null;
+    }
+
+    public static bool RunTpuCompressionMethodV1ContractVerification()
+    {
+        var forces10 = new[] { 450d, 430d, 435d, 410d, 450d, 445d, 426d, 445d, 420d, 419d };
+        var forces30 = new[] { 408d, 405d, 402d, 391d, 418d, 410d, 394d, 410d, 387d, 380d };
+        var specimens = Enumerable.Range(1, 10).Select(index => new FlexibleTestSpecimenRecord
+        {
+            SpecimenId = $"V1-{index}", FlexibleTestSessionId = "UNLINKED-VERIFICATION-EVIDENCE",
+            DiameterMm = "9", InitialHeightMm = "10", InfillPercent = "100", InfillPattern = "Rectilinear",
+            MethodVersion = Services.FlexibleMaterialTestingService.CompressionMethodVersion
+        }).ToArray();
+        var points = specimens.SelectMany((specimen, index) => new[]
+        {
+            new CompressionPointRecord { SpecimenId=specimen.SpecimenId,CycleNumber=1,TargetStrainPercent="20",TargetReached=true,ForceN=forces10[index].ToString(CultureInfo.InvariantCulture),HoldTimeSeconds="10" },
+            new CompressionPointRecord { SpecimenId=specimen.SpecimenId,CycleNumber=1,TargetStrainPercent="20",TargetReached=true,ForceN=forces30[index].ToString(CultureInfo.InvariantCulture),HoldTimeSeconds="30" }
+        }).ToArray();
+        var comparisons = Services.FlexibleMaterialTestingService.BuildComparisons(specimens, points, []);
+        var publicSummary = Services.FlexibleMaterialTestingService.BuildPublicMethodV1Summary(
+            "MAT-VALIDATION",
+            [new FlexibleTestSessionRecord { FlexibleTestSessionId="UNLINKED-VERIFICATION-EVIDENCE",MaterialID="MAT-VALIDATION",IsActive=true }],
+            specimens,
+            points);
+        var at10 = comparisons.Single(row => row.Metric == "Compression Force at 20% Strain" && row.Condition.StartsWith("10 s hold", StringComparison.Ordinal));
+        var at30 = comparisons.Single(row => row.Metric == "Compression Force at 20% Strain" && row.Condition.StartsWith("30 s hold", StringComparison.Ordinal));
+        var reduction = comparisons.Single(row => row.Metric == "Force reduction from 10 s to 30 s at 20% Strain");
+        static bool Close(string actual, double expected, double tolerance) =>
+            Services.FlexibleMaterialTestingService.ParseOptional(actual) is double value && Math.Abs(value - expected) <= tolerance;
+        return at10.SpecimenCount == 10 && Close(at10.Mean, 433.0, 0.001) && Close(at10.StandardDeviation, 14.228, 0.001) &&
+               Close(at10.CoefficientOfVariation, 3.286, 0.001) && at10.Minimum == "410" && at10.Maximum == "450" &&
+               at30.SpecimenCount == 10 && Close(at30.Mean, 400.5, 0.001) && Close(at30.StandardDeviation, 12.021, 0.001) &&
+               Close(at30.CoefficientOfVariation, 3.002, 0.001) && at30.Minimum == "380" && at30.Maximum == "418" &&
+               forces30[1] == 405d && reduction.SpecimenCount == 10 &&
+               publicSummary is { SpecimenCount30Seconds: 10, SpecimenCount10Seconds: 10 } &&
+               Math.Abs(publicSummary.Mean30SecondsN - 400.5d) < 0.001d &&
+               Services.FlexibleMaterialTestingService.BuildPublicMethodV1Summary("UNKNOWN", [], specimens, points) is null &&
+               Services.FlexibleMaterialTestingService.CalculateForceReductionPercent("450", "408") is double firstReduction &&
+               Math.Abs(firstReduction - 9.333333333d) < 0.000001d;
+    }
+
+    public static bool RunPendingCompressionRowValidationContractVerification()
+    {
+        var specimen = new FlexibleTestSpecimenRecord { SpecimenId="PENDING",FlexibleTestSessionId="FTS-PENDING" };
+        IReadOnlyList<string> Validate(CompressionPointRecord point) =>
+            Services.FlexibleMaterialTestingService.Validate([specimen], [point], [], [], []);
+        var pending10 = new CompressionPointRecord { SpecimenId=specimen.SpecimenId,CycleNumber=1,TargetStrainPercent="20",TargetReached=true,HoldTimeSeconds="10" };
+        var pending30 = new CompressionPointRecord { SpecimenId=specimen.SpecimenId,CycleNumber=1,TargetStrainPercent="20",TargetReached=true,HoldTimeSeconds="30" };
+        var invalidMeasured = new CompressionPointRecord { SpecimenId=specimen.SpecimenId,CycleNumber=1,TargetStrainPercent="20",TargetReached=true,HoldTimeSeconds="30",ForceN="400" };
+        var forceLimited = new CompressionPointRecord { SpecimenId=specimen.SpecimenId,CycleNumber=1,TargetStrainPercent="20",TargetReached=false,HoldTimeSeconds="30",ForceN="499" };
+        var completed = new CompressionPointRecord { SpecimenId=specimen.SpecimenId,CycleNumber=1,TargetStrainPercent="20",TargetReached=true,HoldTimeSeconds="30",ForceN="400",DisplacementMm="2" };
+        return Validate(pending10).Count == 0 && Validate(pending30).Count == 0 &&
+               Validate(invalidMeasured).Any(error => error.Contains("with force requires a displacement", StringComparison.Ordinal)) &&
+               Validate(forceLimited).Count == 0 && Validate(completed).Count == 0;
     }
 
     public static bool RunFlexibleTestingPersistenceContractVerification()

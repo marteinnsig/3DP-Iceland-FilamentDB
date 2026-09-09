@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v64.0.1 standalone flexible-material testing workspace
+Version: v64.0.4 TPU pending-row validation fix
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted

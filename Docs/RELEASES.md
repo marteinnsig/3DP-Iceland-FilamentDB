@@ -1,6 +1,15 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v64.0.4 - TPU Pending-row Validation Fix
+
+Closes v64 with configurable new-specimen geometry, the accepted `3DP-TPU-COMP-v1.0` method and corrected blank preparation-row
+behavior. New compression specimens start with editable 20% readings at 10 s and primary 30 s; Comparable Results reports independent
+specimen n, mean, n−1 sample SD, CV, range and interval reduction. Help, public Methodology and whitepaper source share the explicit
+non-ASTM/ISO limitations. The unlinked 64D validation round remains evidence only and is not published as a named material result.
+Owner confirms the formerly failing Add Compression Specimen path works. Debug/Release and static gates pass; profile
+`20260909175133-18ad8ba2` passes Full Data Verification 442/442 and exact-state recovery on 2026-09-09. No live publish occurred.
+
 ## v64.0.1 - Standalone Flexible-material Testing Workspace
 
 Moves compression, stress relaxation, recovery and Shore testing into a dedicated top-level workspace with MaterialID-linked sessions.

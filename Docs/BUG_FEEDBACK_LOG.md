@@ -2,7 +2,7 @@
 
 Use this during the usage-mode period.
 
-## Status review — 2026-09-08
+## Status review — 2026-09-09
 
 This review preserves every original description and lifecycle status.
 `Solved` means the change is implemented, relevant gates pass and owner runtime
@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 116 |
+| Solved | 119 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **122** |
+| **Total tracked findings** | **125** |
 
 ## Triage categories
 
@@ -187,6 +187,33 @@ No active findings.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Recent resolved findings — newest first
+
+### 2026-09-09 — Add Compression Specimen shows reached-target displacement error
+
+- **Area:** Flexible Material Testing / compression specimen creation
+- **Type:** Bug
+- **Resolution:** v64.0.4 permits completely blank prepared 10 s/30 s rows while still requiring displacement when force is entered on
+  a reached row. Target reached off remains the explicit force-limited outcome.
+- **Status:** Solved and owner runtime accepted on 2026-09-09; the exact formerly failing button path now works.
+- **Verification evidence:** Debug/Release and Help/docs pass; profile `20260909175133-18ad8ba2` passes 442/442 and exact-state recovery.
+
+### 2026-09-09 — Govern accepted TPU Compression Test v1.0 in app and methodology
+
+- **Area:** Flexible Material Testing / Documentation / Website Methodology
+- **Type:** Workflow friction / Reporting idea / Website idea
+- **Resolution:** v64.0.3 adds editable 9 x 10 mm, 20%, 10 s / primary 30 s method snapshots, n−1 statistics, CV/range, interval
+  reduction, Help, whitepaper and public Methodology contracts. The unlinked 64D round remains verification evidence only.
+- **Status:** Solved and owner runtime accepted as part of the completed v64.0.4 workflow on 2026-09-09; no live publish occurred.
+- **Verification evidence:** The corrected 405 N dataset reproduces 433.0/14.23/3.29% and 400.5/12.02/3.00%; final profile passes 442/442.
+
+### 2026-09-09 — Flexible specimen geometry defaults should come from Settings
+
+- **Area:** Settings Manager / Flexible Material Testing.
+- **Type:** Workflow friction.
+- **Resolution:** v64.0.2 adds positive SQLite-backed diameter, height and thickness defaults copied only into new specimens. Accepted
+  TPU v1.0 built-ins are 9 mm diameter, 10 mm height and 9 mm Shore thickness; existing specimens stay unchanged.
+- **Status:** Solved and owner runtime accepted as part of v64.0.4 on 2026-09-09.
+- **Verification evidence:** Final Debug/Release, Help/docs and disposable Full Data Verification 442/442 pass with exact recovery.
 
 ### 2026-09-08 — Flexible-material measurements need a standalone workspace
 

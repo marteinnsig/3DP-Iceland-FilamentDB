@@ -714,6 +714,12 @@ internal static class HelpContentCatalog
             Order rates, received Inventory provenance, Usage history or saved quote snapshots. ECB remains an optional reference for
             session-new Purchase Orders, not the Settings owner.
 
+            Flexible specimen defaults
+            Flexible Material Testing owns editable default specimen diameter, height and Shore thickness values in mm. Save Settings
+            stores them in SQLite. Each value must be greater than zero. They are copied only when a new flexible-test specimen is
+            created; changing a default never rewrites geometry already saved with an existing specimen. Built-ins are 9 mm diameter,
+            10 mm height for the accepted compression method and 9 mm Shore thickness.
+
             Document branding
             The Document Branding group owns an optional Brand / Organization Name and PNG for generated documents only. Save Brand Name
             trims repeated whitespace and immediately stores 1–80 visible characters in this SQLite database. Select PNG validates and
@@ -746,6 +752,12 @@ internal static class HelpContentCatalog
             Measurement constants govern native/experimental calculations and validation. Calculation/Printer values govern
             prospective machine, labor, energy and buffer results. Use the displayed Unit and Notes for exact allowed range; invalid
             values block Save and retain the last accepted SQLite value.
+
+            Flexible Material Testing values
+            Default specimen diameter, Default specimen height and Default specimen thickness are positive millimetre values. Click
+            Save Settings before creating a specimen. Compression and Shore specimen buttons copy the current saved/editor values into
+            that new specimen; existing specimen geometry remains unchanged. Reload Saved Settings restores the last saved values, and
+            Restore Built-in Defaults restores 9 mm diameter, 10 mm height and 9 mm thickness with the other non-Deployment rows.
 
             Currency and purchasing values
             Governed currency values are the offline/manual fallback and remain owner-editable. ECB is optional reference data for
@@ -1146,14 +1158,29 @@ internal static class HelpContentCatalog
             Where: Flexible Material Testing. Add a MaterialID-linked Test Session; the Material selector shows MaterialID together with
             Website Display Name. Use the specimen buttons above the specimen table, then select a specimen and use the reading buttons
             below that table. Edit its actual geometry and print/method snapshot. A migrated session may show its former Experimental Run as read-only
-            provenance, but new sessions do not require an Experimental Series or Run. The Ø9 x 9 mm, 100% rectilinear, 0.4 mm
-            nozzle, 0.20 mm layer, two-wall and three-top/bottom values are editable starting values, not method requirements.
+            provenance, but new sessions do not require an Experimental Series or Run. Diameter, height and Shore thickness are copied
+            from the Flexible Material Testing rows in Settings Manager when each new specimen is created; built-ins are 9 mm diameter,
+            10 mm height and 9 mm Shore thickness. Changing Settings never rewrites an existing specimen. Geometry plus the 100% rectilinear, 0.4 mm nozzle, 0.20 mm
+            layer, two-wall and three-top/bottom values remain editable starting values, not method requirements.
+
+            Accepted TPU compression method v1.0
+            Add Compression Specimen creates editable 20% strain rows for 10 s and 30 s holds under 3DPIceland Labs TPU Compression
+            Test v1.0. The nominal specimen is Ø9 x 10 mm, 100% rectilinear, printed on its circular base and compressed in Z on the
+            SAUTER TVL with FK 500. Zero displacement at first contact, lower evenly over about 15 s, then hold displacement fixed.
+            The primary result is Compression Force at 20% Strain — 30 s hold (N); 10 s is supporting detail. The first cycle of
+            independent specimens is the baseline. Edit or label other methods and repeat cycles rather than mixing them.
+            The two prepared rows may remain completely blank until the physical test is performed. Once force is entered on a reached
+            row, measured displacement is required; clear Target reached only for a genuine force-limited outcome.
 
             Select the specimen before adding Compression, Stress Relaxation, Recovery or Shore rows. Compression calculates strain
             as displacement / initial height and apparent stress as N / gross cylinder area in mm2. Every named target result includes
             its actual hold time. A force-limited target is Target reached off with force/displacement left factual or blank—never zero
             or estimated. Relaxation uses actual times; recovery is Residual Height Loss and must not be described as Compression Set.
             Shore values are measured records distinct from manufacturer hardness. A and D are neither converted nor averaged together.
+
+            This is not ASTM D575 or ISO 7743. The 30 s reading does not claim equilibrium. If 20% cannot be reached within the FK 500
+            range, clear Target reached and preserve factual values; never enter an invented 500 N result. Comparable Results reports
+            independent-specimen n, mean, sample SD (n−1), CV and range. Force reduction is only from 10 s to 30 s, not from peak force.
 
             Comparable Results includes only an identical saved method/condition group. Multiple readings or cycles on one specimen do
             not inflate independent specimen n. The UI does not add TPU results to the legacy Experimental Overall score or publish them.

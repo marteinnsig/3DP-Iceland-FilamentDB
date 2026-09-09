@@ -10,6 +10,10 @@ namespace FilamentDbApp;
 
 public partial class MainWindow
 {
+    private const string FlexibleSettingsSection = "Flexible Material Testing";
+    private const string FlexibleDefaultDiameterParameter = "Default specimen diameter";
+    private const string FlexibleDefaultHeightParameter = "Default specimen height";
+    private const string FlexibleDefaultThicknessParameter = "Default specimen thickness";
     private readonly ObservableCollection<FlexibleTestSessionRecord> _flexibleTestSessions = new();
     private readonly ObservableCollection<FlexibleTestSpecimenRecord> _flexibleSpecimens = new();
     private readonly ObservableCollection<CompressionPointRecord> _compressionPoints = new();
@@ -121,21 +125,39 @@ public partial class MainWindow
     private void AddFlexibleSpecimen(string intendedTest)
     {
         if (_selectedFlexibleSession is null) { MessageBox.Show(this, "Select or add a test session first.", "Flexible Material Testing"); return; }
+        if (!TryGetFlexibleSpecimenDefaults(out var diameter, out var height, out var thickness, out var error))
+        {
+            MessageBox.Show(this, error, "Flexible Material Testing Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
         var number = _flexibleSpecimens.Count(x => x.FlexibleTestSessionId == _selectedFlexibleSession.FlexibleTestSessionId) + 1;
         var row = new FlexibleTestSpecimenRecord
         {
             SpecimenId = Id("TPU"), FlexibleTestSessionId = _selectedFlexibleSession.FlexibleTestSessionId,
-            SpecimenLabel = $"Specimen {number}", IntendedTest = intendedTest, ThicknessMm = "9",
-            MethodVersion = intendedTest == "Shore" ? "SHORE-v1" : "TPU-COMP-v1",
+            SpecimenLabel = $"Specimen {number}", IntendedTest = intendedTest,
+            DiameterMm = diameter, InitialHeightMm = height, ThicknessMm = thickness,
+            MethodVersion = intendedTest == "Shore" ? "SHORE-v1" : FlexibleMaterialTestingService.CompressionMethodVersion,
+            MethodNotes = intendedTest == "Shore" ? "Comparative in-house test; not ASTM/ISO." : FlexibleMaterialTestingService.CompressionMethodNotes,
             CreatedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture)
         };
         _flexibleSpecimens.Add(row); _selectedFlexibleSpecimen = row;
-        if (!SaveFlexibleTesting()) { _flexibleSpecimens.Remove(row); _selectedFlexibleSpecimen = null; BindFlexibleTestingSession(_selectedFlexibleSession); return; }
+        var methodPoints = new List<CompressionPointRecord>();
+        if (string.Equals(intendedTest, "Compression", StringComparison.Ordinal))
+        {
+            methodPoints.Add(new CompressionPointRecord { CompressionPointId=Id("CMP"), SpecimenId=row.SpecimenId, CycleNumber=1, TargetStrainPercent="20", HoldTimeSeconds="10" });
+            methodPoints.Add(new CompressionPointRecord { CompressionPointId=Id("CMP"), SpecimenId=row.SpecimenId, CycleNumber=1, TargetStrainPercent="20", HoldTimeSeconds="30" });
+            foreach (var point in methodPoints) _compressionPoints.Add(point);
+        }
+        if (!SaveFlexibleTesting())
+        {
+            foreach (var point in methodPoints) _compressionPoints.Remove(point);
+            _flexibleSpecimens.Remove(row); _selectedFlexibleSpecimen = null; BindFlexibleTestingSession(_selectedFlexibleSession); return;
+        }
         BindFlexibleTestingSession(_selectedFlexibleSession);
         FlexibleSpecimensGrid.SelectedItem = row; FlexibleSpecimensGrid.ScrollIntoView(row);
     }
 
-    private void AddCompressionPoint_Click(object sender, RoutedEventArgs e) => AddChild(_compressionPoints, new CompressionPointRecord { CompressionPointId=Id("CMP"),SpecimenId=SelectedSpecimenId(),CycleNumber=1,TargetStrainPercent="10",HoldTimeSeconds="10" });
+    private void AddCompressionPoint_Click(object sender, RoutedEventArgs e) => AddChild(_compressionPoints, new CompressionPointRecord { CompressionPointId=Id("CMP"),SpecimenId=SelectedSpecimenId(),CycleNumber=1,TargetStrainPercent="20",HoldTimeSeconds="30" });
     private void AddRelaxationPoint_Click(object sender, RoutedEventArgs e) => AddChild(_stressRelaxationPoints, new StressRelaxationPointRecord { RelaxationPointId=Id("REL"),SpecimenId=SelectedSpecimenId(),CycleNumber=1,CompressionPercent="25",ElapsedTimeSeconds="10" });
     private void AddRecoveryMeasurement_Click(object sender, RoutedEventArgs e) => AddChild(_recoveryMeasurements, new RecoveryMeasurementRecord { RecoveryMeasurementId=Id("RCV"),SpecimenId=SelectedSpecimenId(),CycleNumber=1,InitialHeightMm=_selectedFlexibleSpecimen?.InitialHeightMm??string.Empty,RestTimeSeconds="60",CompressionPercent="25" });
     private void AddShoreReading_Click(object sender, RoutedEventArgs e) => AddChild(_shoreHardnessReadings, new ShoreHardnessReadingRecord { ShoreReadingId=Id("SHR"),SpecimenId=SelectedSpecimenId(),ShoreScale="A",SpecimenThicknessMm=_selectedFlexibleSpecimen?.ThicknessMm??string.Empty });
@@ -222,4 +244,43 @@ public partial class MainWindow
     private static string Id(string prefix) => prefix + "-" + Guid.NewGuid().ToString("N")[..8].ToUpperInvariant();
     private void SetFlexibleStatus(string text, bool error) { FlexibleTestingStatusText.Text=text; FlexibleTestingStatusText.Foreground=error?System.Windows.Media.Brushes.Firebrick:System.Windows.Media.Brushes.DarkSlateGray; }
     private sealed record FlexibleMaterialChoice(string MaterialID, string DisplayName);
+
+    private void EnsureFlexibleTestingDefaultSettings()
+    {
+        var added = false;
+        foreach (var defaultRow in GetDefaultNativeSettingsRows().Where(x =>
+                     string.Equals(x.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase)))
+        {
+            if (_nativeSettingsRows.Any(x =>
+                    string.Equals(x.Section, defaultRow.Section, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(x.Parameter, defaultRow.Parameter, StringComparison.OrdinalIgnoreCase)))
+                continue;
+            _nativeSettingsRows.Add(defaultRow);
+            added = true;
+        }
+        if (added) SaveCanonicalNativeSettings();
+    }
+
+    private bool TryGetFlexibleSpecimenDefaults(
+        out string diameter,
+        out string height,
+        out string thickness,
+        out string error)
+    {
+        diameter = Setting(FlexibleDefaultDiameterParameter);
+        height = Setting(FlexibleDefaultHeightParameter);
+        thickness = Setting(FlexibleDefaultThicknessParameter);
+        error = string.Empty;
+        if (FlexibleMaterialTestingService.ParseOptional(diameter) is not > 0d)
+            error = "Default specimen diameter must be a positive number in mm.";
+        else if (FlexibleMaterialTestingService.ParseOptional(height) is not > 0d)
+            error = "Default specimen height must be a positive number in mm.";
+        else if (FlexibleMaterialTestingService.ParseOptional(thickness) is not > 0d)
+            error = "Default specimen thickness must be a positive number in mm.";
+        return error.Length == 0;
+
+        string Setting(string parameter) => _nativeSettingsRows.FirstOrDefault(x =>
+            string.Equals(x.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(x.Parameter, parameter, StringComparison.OrdinalIgnoreCase))?.Value?.Trim() ?? string.Empty;
+    }
 }

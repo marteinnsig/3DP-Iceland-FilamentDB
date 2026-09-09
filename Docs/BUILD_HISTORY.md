@@ -2,6 +2,34 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v64.0.4 - TPU Pending-row Validation Fix
+
+Owner runtime testing exposed that v1.0's two automatically prepared rows were validated as completed readings. Validation now
+distinguishes an entirely blank future reading from a partially recorded reached result: blank rows save, force plus Target reached
+requires displacement, and Target reached off remains reserved for an actual force-limited outcome.
+Owner repeats the reproduced button path successfully on 2026-09-09; v64.0.2-v64.0.4 are runtime accepted.
+Disposable profile `20260909175133-18ad8ba2` passes 442/442 Verification and exact database/business-state recovery.
+
+## v64.0.3 - TPU Compression Method v1.0
+
+The flexible-test framework now encodes the accepted 9 x 10 mm, 20% strain, 10 s / primary 30 s method as editable snapshots. The
+comparison service reports actual independent-specimen n, mean, n−1 sample SD, CV and range, plus explicitly interval-scoped force
+reduction. A deterministic ten-specimen dataset proves 433.0 N / 14.23 N / 3.29% and 400.5 N / 12.02 N / 3.00%, including the corrected
+405 N value. Because its MaterialID is unknown, the evidence is not inserted into owner data or published as a named material result.
+Public output is derived only from active, exact-method, MaterialID-linked SQLite rows already inside the public allowlist boundary.
+Isolated Debug/Release builds and static gates pass. Disposable smoke `20260909172724-bc37a4b1` passes 441/441 Verification, website
+rendering contracts and exact database/business-state recovery.
+Isolated Debug/Release builds and static gates pass. Disposable smoke `20260909172724-bc37a4b1` passes 441/441 Verification, website
+rendering contracts and exact database/business-state recovery.
+
+## v64.0.2 - Configurable Flexible-specimen Defaults
+
+Flexible Material Testing geometry defaults now belong to the SQLite-backed Settings Manager. Diameter, height and Shore thickness
+require positive millimetre values and are copied only when a new specimen is created. Existing records remain unchanged after later
+default changes. Verification owns the deterministic contract; owner acceptance owns Save, create-another and restart behavior.
+Isolated Debug/Release builds and static gates pass. Disposable smoke `20260909031115-ccf084cb` passes 439/439 Verification and exact
+database/business-state recovery.
+
 ## v64.0.1 - Standalone Flexible-material Testing Workspace
 
 Flexible-material testing is rehosted as a first-class top-level workspace backed by schema-v44 MaterialID-linked sessions. The migration

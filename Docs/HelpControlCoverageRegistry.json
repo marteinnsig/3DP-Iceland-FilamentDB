@@ -1,6 +1,6 @@
 {
   "Schema": "3dpiceland.help-control-coverage.v1",
-  "Release": "v64.0.1",
+  "Release": "v64.0.4",
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
   "XamlCounts": {
     "Button": 170,
@@ -12,7 +12,7 @@
     "RadioButton": 0,
     "DatePicker": 0,
     "DataGrid": 38,
-    "DataGridColumn": 420
+    "DataGridColumn": 423
   },
   "SurfaceCounts": {
     "TopLevelTab": 24,
@@ -60,7 +60,10 @@
     "v61.0.7",
     "v61.0.8.2",
     "v64.0.0",
-    "v64.0.1"
+    "v64.0.1",
+    "v64.0.2",
+    "v64.0.3",
+    "v64.0.4"
   ],
   "CustomColumnRegistries": [
     {

@@ -8934,6 +8934,8 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
     private Dictionary<string, object?> BuildWebsiteTemplateCommonFields(NativeMaterialRow row)
     {
         var materialId = row.MaterialID?.Trim() ?? string.Empty;
+        var tpuCompression = FlexibleMaterialTestingService.BuildPublicMethodV1Summary(
+            materialId, _flexibleTestSessions, _flexibleSpecimens, _compressionPoints);
         var thermalRow = _nativeThermalDeflectionRows.FirstOrDefault(item =>
             string.Equals(item.MaterialID, materialId, StringComparison.OrdinalIgnoreCase));
         var thermalProjection = thermalRow is not null &&
@@ -8992,7 +8994,18 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             , ["thermalScore"] = thermalProjection?.Score
             , ["thermalMethodVersion"] = thermalProjection is null ? null : thermalRow?.MethodVersion
             , ["thermalLimitation"] = thermalProjection is null ? null : ThermalAnalyticsService.PublicLimitation
+            , ["tpuCompressionForce30N"] = FiniteOrNull(tpuCompression?.Mean30SecondsN)
+            , ["tpuCompressionSd30N"] = FiniteOrNull(tpuCompression?.SampleStandardDeviation30SecondsN)
+            , ["tpuCompressionCv30Percent"] = FiniteOrNull(tpuCompression?.CoefficientOfVariation30Seconds)
+            , ["tpuCompressionN30"] = tpuCompression?.SpecimenCount30Seconds
+            , ["tpuCompressionForce10N"] = FiniteOrNull(tpuCompression?.Mean10SecondsN)
+            , ["tpuCompressionSd10N"] = FiniteOrNull(tpuCompression?.SampleStandardDeviation10SecondsN)
+            , ["tpuCompressionCv10Percent"] = FiniteOrNull(tpuCompression?.CoefficientOfVariation10Seconds)
+            , ["tpuCompressionN10"] = tpuCompression is { SpecimenCount10Seconds: > 0 } ? tpuCompression.SpecimenCount10Seconds : null
+            , ["tpuCompressionMethodVersion"] = tpuCompression is null ? null : FlexibleMaterialTestingService.CompressionMethodVersion
         };
+
+        static double? FiniteOrNull(double? value) => value.HasValue && double.IsFinite(value.Value) ? value : null;
     }
 
     private static string GetPricingStatus(NativeMaterialRow row)
@@ -15649,6 +15662,53 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             flexibleTestingReady
                 ? "Schema v44, MaterialID-linked sessions, nullable formulas, specimen/cycle raw rows, separate Shore scales and standalone UI pass"
                 : "Flexible-test schema, formulas, specimen-aware editors or comparable-results surface failed"));
+        var flexibleBuiltInDefaults = GetDefaultNativeSettingsRows()
+            .Where(row => string.Equals(row.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var flexibleSavedDefaults = _nativeSettingsRows
+            .Where(row => string.Equals(row.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var flexibleDefaultSettingsReady =
+            TryGetFlexibleSpecimenDefaults(out var defaultDiameter, out var defaultHeight, out var defaultThickness, out _) &&
+            flexibleSavedDefaults.Count == 3 &&
+            new[] { FlexibleDefaultDiameterParameter, FlexibleDefaultHeightParameter, FlexibleDefaultThicknessParameter }.All(parameter =>
+                flexibleSavedDefaults.Count(row => string.Equals(row.Parameter, parameter, StringComparison.OrdinalIgnoreCase)) == 1) &&
+            FlexibleMaterialTestingService.ParseOptional(defaultDiameter) is > 0 &&
+            FlexibleMaterialTestingService.ParseOptional(defaultHeight) is > 0 &&
+            FlexibleMaterialTestingService.ParseOptional(defaultThickness) is > 0 &&
+            flexibleBuiltInDefaults.Count == 3 &&
+            flexibleBuiltInDefaults.Single(row => row.Parameter == FlexibleDefaultDiameterParameter).Value == "9" &&
+            flexibleBuiltInDefaults.Single(row => row.Parameter == FlexibleDefaultHeightParameter).Value == "10" &&
+            flexibleBuiltInDefaults.Single(row => row.Parameter == FlexibleDefaultThicknessParameter).Value == "9" &&
+            typeof(FlexibleTestSpecimenRecord).GetProperty(nameof(FlexibleTestSpecimenRecord.DiameterMm))?.CanWrite == true &&
+            typeof(FlexibleTestSpecimenRecord).GetProperty(nameof(FlexibleTestSpecimenRecord.InitialHeightMm))?.CanWrite == true &&
+            typeof(FlexibleTestSpecimenRecord).GetProperty(nameof(FlexibleTestSpecimenRecord.ThicknessMm))?.CanWrite == true;
+        checks.Add(new VerificationCheck(
+            "v64.0.2 configurable flexible-specimen defaults contract",
+            flexibleDefaultSettingsReady,
+            flexibleDefaultSettingsReady
+                ? "Three positive SQLite-canonical geometry defaults exist, v1 defaults are 9 x 10 mm with 9 mm Shore thickness, and snapshots remain editable"
+                : "Flexible specimen default rows, validation, accepted built-ins or snapshot ownership failed"));
+        var tpuCompressionMethodV1Ready =
+            LocalDatabase.RunTpuCompressionMethodV1ContractVerification() &&
+            FlexibleMaterialTestingService.CompressionMethodName == "3DPIceland Labs TPU Compression Test" &&
+            FlexibleMaterialTestingService.CompressionMethodVersion == "3DP-TPU-COMP-v1.0" &&
+            BuildMethodologyPortalHtml().Contains("methodology-tpu-compression", StringComparison.Ordinal) &&
+            BuildMethodologyPortalHtml().Contains("Compression Force at 20% Strain — 30 s hold (N)", StringComparison.Ordinal) &&
+            BuildMethodologyPortalHtml().Contains("not ASTM D575 or ISO 7743", StringComparison.Ordinal);
+        checks.Add(new VerificationCheck(
+            "v64.0.3 TPU Compression Method v1.0 contract",
+            tpuCompressionMethodV1Ready,
+            tpuCompressionMethodV1Ready
+                ? "Accepted 9 x 10 mm method, 10 s / primary 30 s readings, corrected ten-specimen statistics and non-standard public wording pass"
+                : "TPU method identity, validation statistics, primary result naming or public limitation wording failed"));
+        var pendingCompressionRowsReady = LocalDatabase.RunPendingCompressionRowValidationContractVerification();
+        checks.Add(new VerificationCheck(
+            "v64.0.4 pending compression-row validation contract",
+            pendingCompressionRowsReady,
+            pendingCompressionRowsReady
+                ? "Blank prepared 10 s / 30 s rows are valid; measured reached rows require displacement and force-limited rows remain explicit"
+                : "Pending-row, measured displacement or force-limited validation behavior failed"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
                 "_isHandlingInventorySpoolCollectionChanged",
@@ -18232,7 +18292,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             "Active SQLite manufacturer profiles are available to the website portal renderer"));
         checks.Add(new VerificationCheck("Manufacturer engineering intelligence", manufacturerPortalProbe.Contains("manufacturer-intelligence", StringComparison.Ordinal) && manufacturerPortalProbe.Contains("Strongest tensile", StringComparison.Ordinal),
             "Verified Material Summary and EngineeringScoreProfile outputs drive manufacturer leaders, coverage and top-material summaries"));
-        checks.Add(new VerificationCheck("Methodology portal content", new[] { "methodology-overview", "methodology-printing", "methodology-tensile", "methodology-impact", "methodology-stiffness", "methodology-thermal", "methodology-statistics", "methodology-limitations", "methodology-faq", "methodology-whitepaper" }.All(id => portalProbe.Contains(id, StringComparison.Ordinal)),
+        checks.Add(new VerificationCheck("Methodology portal content", new[] { "methodology-overview", "methodology-printing", "methodology-tensile", "methodology-impact", "methodology-stiffness", "methodology-tpu-compression", "methodology-thermal", "methodology-statistics", "methodology-limitations", "methodology-faq", "methodology-whitepaper" }.All(id => portalProbe.Contains(id, StringComparison.Ordinal)),
             "Level 2 Engineering methodology sections are embedded in the single-file portal export"));
         checks.Add(new VerificationCheck("Methodology procedure videos", new[] { "kax8Ha_AGcQ", "ibjS_tWL6sg", "nv9PexjvFRw" }.All(videoId => portalProbe.Contains(videoId, StringComparison.Ordinal)),
             "Tensile, impact and stiffness procedure videos are linked from their test cards"));
@@ -18250,6 +18310,13 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("Engineering whitepaper thermal contract", documentationThermalProbe is not null &&
             new[] { ThermalDeflectionMethodContract.Version, "127 x 12.7 x 3.2 mm", "110 mm", "54 g M20 nut", "0.530 N", "2.00 mm", "BlueDOT probe-indicated fixture temperature", "not ASTM D648", "ISO 75 HDT" }.All(value => documentationThermalText.Contains(value, StringComparison.Ordinal)),
             "Governed whitepaper source carries the same Heat Deflection fixture, endpoint, method and interpretation boundaries"));
+        var documentationTpuProbe = documentationDocumentProbe.Sections.FirstOrDefault(section => section.Id == "tpu-compression");
+        var documentationTpuText = documentationTpuProbe is null ? string.Empty : string.Join("\n", documentationTpuProbe.Details);
+        checks.Add(new VerificationCheck("Engineering whitepaper TPU compression contract", documentationTpuProbe is not null &&
+            new[] { FlexibleMaterialTestingService.CompressionMethodVersion, FlexibleMaterialTestingService.CompressionMethodName,
+                "9 mm diameter x 10 mm", "20%", "10 seconds", "30 seconds", "not ASTM D575 or ISO 7743", "405 N" }
+                .All(value => documentationTpuText.Contains(value, StringComparison.Ordinal)),
+            "Governed whitepaper source carries the accepted TPU method, corrected validation evidence and non-standard boundaries"));
         checks.Add(new VerificationCheck("Engineering whitepaper generation", documentationPdfProbe.Length > 1000 && Encoding.ASCII.GetString(documentationPdfProbe, 0, 5) == "%PDF-",
             $"Generated {documentationPdfProbe.Length} PDF bytes from methodology version {documentationDocumentProbe.Version}"));
         checks.Add(new VerificationCheck("Methodology and whitepaper governance", portalProbe.Contains("Engineering Methodology Whitepaper", StringComparison.Ordinal) && portalProbe.Contains(DocumentationEngineService.WhitepaperFileName, StringComparison.Ordinal),
@@ -26540,6 +26607,7 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         LoadBuiltInNativeSettingsDefaults();
         LoadCanonicalNativeSettings();
+        EnsureFlexibleTestingDefaultSettings();
         EnsurePricingSettings();
         LoadDeploymentSettingsIntoManager();
         var canonicalBaseMaterials = _database.LoadBaseMaterialCatalog();
@@ -26733,6 +26801,9 @@ private List<string> GetVisibleAiMaterialLabels()
         {
             new NativeSettingRow { Section = "General", Parameter = "Gravity", Value = "9.81", Unit = "m/s²", UsedBy = "Impact, stiffness", Notes = "Standard gravity" },
             new NativeSettingRow { Section = "General", Parameter = "Maximum samples per orientation", Value = "10", Unit = "samples", UsedBy = "All", Notes = "Used for confidence and sample counts" },
+            new NativeSettingRow { Section = "Flexible Material Testing", Parameter = "Default specimen diameter", Value = "9", Unit = "mm", UsedBy = "Flexible Material Testing", Notes = "Applied only when a new specimen is created; saved specimens are unchanged" },
+            new NativeSettingRow { Section = "Flexible Material Testing", Parameter = "Default specimen height", Value = "10", Unit = "mm", UsedBy = "Flexible Material Testing", Notes = "Applied only when a new specimen is created; accepted TPU compression v1.0 height" },
+            new NativeSettingRow { Section = "Flexible Material Testing", Parameter = "Default specimen thickness", Value = "9", Unit = "mm", UsedBy = "Flexible Material Testing", Notes = "Applied only when a new specimen is created; used by Shore readings" },
             new NativeSettingRow { Section = "Impact", Parameter = "Hammer mass", Value = "0.52300000000000002", Unit = "kg", UsedBy = "Impact", Notes = "Measured hammer mass" },
             new NativeSettingRow { Section = "Impact", Parameter = "Hammer start height", Value = "0.63", Unit = "m", UsedBy = "Impact", Notes = "Height at release position" },
             new NativeSettingRow { Section = "Impact", Parameter = "Hammer impact height", Value = "7.0000000000000007E-2", Unit = "m", UsedBy = "Impact", Notes = "Height at impact position" },
@@ -26828,6 +26899,11 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void SaveNativeSettings_Click(object sender, RoutedEventArgs e)
     {
+        if (!TryGetFlexibleSpecimenDefaults(out _, out _, out _, out var flexibleDefaultsError))
+        {
+            MessageBox.Show(this, flexibleDefaultsError, "Flexible Material Testing Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
         SaveCanonicalNativeSettings();
         SaveDeploymentSettingsFromManager();
         SaveBaseMaterialCatalogToDatabase();
@@ -26838,7 +26914,7 @@ private List<string> GetVisibleAiMaterialLabels()
     {
         var result = MessageBox.Show(
             this,
-            "Reload saved General and Deployment settings from SQLite?\n\n" +
+            "Reload saved Settings and Deployment values from SQLite?\n\n" +
             "Current unsaved Settings edits will be discarded. The Base Material Catalog is unchanged.",
             "Reload Saved Settings?",
             MessageBoxButton.YesNo,
@@ -26850,6 +26926,7 @@ private List<string> GetVisibleAiMaterialLabels()
         }
 
         LoadCanonicalNativeSettings();
+        EnsureFlexibleTestingDefaultSettings();
         LoadDeploymentSettingsIntoManager();
         EnsurePurchasingCurrencySettings();
         RefreshPurchaseCurrencyChoices();
@@ -26860,12 +26937,12 @@ private List<string> GetVisibleAiMaterialLabels()
         ApplyNativeMaterialComputedFieldsToAllRows();
         RefreshNativeMaterialGridValidation();
         RefreshFastSettingsViews();
-        ShowTransientStatus("Saved General and Deployment settings reloaded; Base Material Catalog was unchanged.");
+        ShowTransientStatus("Saved Settings and Deployment values reloaded; Base Material Catalog was unchanged.");
     }
 
     private void ResetNativeSettings_Click(object sender, RoutedEventArgs e)
     {
-        var result = MessageBox.Show(this, "Restore general Settings Manager rows from the built-in defaults?\n\nCurrent unsaved general settings will be replaced. Deployment settings and the canonical Base Material Catalog remain separately owned.", "Restore Built-in Defaults?", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
+        var result = MessageBox.Show(this, "Restore non-Deployment Settings Manager rows from the built-in defaults?\n\nCurrent unsaved values, including Flexible Material Testing defaults, will be replaced. Deployment settings and the canonical Base Material Catalog remain separately owned.", "Restore Built-in Defaults?", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
         if (result != MessageBoxResult.Yes)
         {
             return;
@@ -26878,7 +26955,7 @@ private List<string> GetVisibleAiMaterialLabels()
         ApplyNativeMaterialComputedFieldsToAllRows();
         RefreshNativeMaterialGridValidation();
         RefreshFastSettingsViews();
-        ShowTransientStatus("Built-in General Settings restored and saved; Deployment Settings and Base Material Catalog were unchanged.");
+        ShowTransientStatus("Built-in non-Deployment Settings restored and saved; Deployment Settings and Base Material Catalog were unchanged.");
     }
 
     private void ReplaceNativeGeneralSettingsWithBuiltInDefaults()

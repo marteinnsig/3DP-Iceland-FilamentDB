@@ -14,11 +14,11 @@
     <h1>How the filament results are produced</h1>
     <p>This page documents the practical, repeatable test workflow behind the public database. It combines an accessible explanation with technical details for readers who want to understand specimen orientation, measurements, calculations, repeatability and known limitations.</p>
     <p class="methodology-callout"><strong>Scope:</strong> These are comparative 3DPIceland Labs measurements produced with consistent in-house equipment and procedures. They are not certified ISO or ASTM datasheet values and should not be interpreted as a replacement for accredited laboratory testing.</p>
-    <div class="methodology-version-row"><span class="methodology-chip">Methodology v1.0</span><span class="methodology-chip">Level 2 — Engineering</span><span class="methodology-chip">Tensile · Impact · Stiffness · Heat Deflection</span><span class="methodology-chip">Revised August 2026</span></div>
+    <div class="methodology-version-row"><span class="methodology-chip">Methodology v1.0</span><span class="methodology-chip">Level 2 — Engineering</span><span class="methodology-chip">Tensile · Impact · Stiffness · TPU Compression · Heat Deflection</span><span class="methodology-chip">Revised September 2026</span></div>
   </header>
 
   <nav class="methodology-jump" aria-label="Methodology sections">
-    <a href="#methodology" data-methodology-scroll="methodology-overview">Overview</a><a href="#methodology" data-methodology-scroll="methodology-printing">Printing standard</a><a href="#methodology" data-methodology-scroll="methodology-tensile">Tensile</a><a href="#methodology" data-methodology-scroll="methodology-impact">Impact</a><a href="#methodology" data-methodology-scroll="methodology-stiffness">Stiffness</a><a href="#methodology" data-methodology-scroll="methodology-thermal">Heat Deflection</a><a href="#methodology" data-methodology-scroll="methodology-statistics">Statistics</a><a href="#methodology" data-methodology-scroll="methodology-limitations">Limitations</a><a href="#methodology" data-methodology-scroll="methodology-faq">FAQ</a><a href="#methodology" data-methodology-scroll="methodology-whitepaper">Whitepaper</a>
+    <a href="#methodology" data-methodology-scroll="methodology-overview">Overview</a><a href="#methodology" data-methodology-scroll="methodology-printing">Printing standard</a><a href="#methodology" data-methodology-scroll="methodology-tensile">Tensile</a><a href="#methodology" data-methodology-scroll="methodology-impact">Impact</a><a href="#methodology" data-methodology-scroll="methodology-stiffness">Stiffness</a><a href="#methodology" data-methodology-scroll="methodology-tpu-compression">TPU Compression</a><a href="#methodology" data-methodology-scroll="methodology-thermal">Heat Deflection</a><a href="#methodology" data-methodology-scroll="methodology-statistics">Statistics</a><a href="#methodology" data-methodology-scroll="methodology-limitations">Limitations</a><a href="#methodology" data-methodology-scroll="methodology-faq">FAQ</a><a href="#methodology" data-methodology-scroll="methodology-whitepaper">Whitepaper</a>
   </nav>
 
   <section id="methodology-overview" class="methodology-section">
@@ -80,8 +80,18 @@
       <div class="methodology-video"><strong>Watch the complete test procedure</strong><a href="https://www.youtube.com/watch?v=nv9PexjvFRw" target="_blank" rel="noopener noreferrer">▶ Stiffness testing video</a><span>Shows specimen placement, zero-contact setup, deflection reading and stiffness calculation.</span></div>
     </article>
 
+    <article id="methodology-tpu-compression" class="methodology-card">
+      <p class="portal-eyebrow">Mechanical test 04</p><h2>TPU Compression</h2>
+      <p><strong>What it measures:</strong> Resistance of a printed TPU cylinder to 20% Z-direction compression. A higher force means greater resistance under this exact method, not automatically a better material.</p>
+      <h3>3DPIceland Labs TPU Compression Test — v1.0</h3>
+      <ul><li>9 mm diameter × 10 mm actual initial height cylinder with 100% rectilinear infill, printed on its flat circular base.</li><li>SAUTER TVL manual stand with SAUTER FK 500 force gauge; displacement is zeroed at first contact before noticeable compression.</li><li>The platen is lowered evenly over approximately 15 seconds to 20% of measured initial height (2.00 mm for exactly 10.00 mm).</li><li>Displacement is held fixed; force is read separately after 10 seconds and 30 seconds.</li><li>The primary result is <span class="metric">Compression Force at 20% Strain — 30 s hold (N)</span>. The 10 s reading is supporting detail.</li><li>Baseline comparison uses the first compression of independent specimens; later cycles remain explicitly separate.</li></ul>
+      <h3>Interpretation and limits</h3>
+      <p>The 30 s point was selected because force change had slowed during method development, reducing sensitivity to small timing error. It does not claim equilibrium. If 20% strain cannot be reached within the FK 500 measurement range, the target is recorded as not reached; 500 N is never invented as a target result.</p>
+      <details class="methodology-details"><summary>Technical details and limitations</summary><p>This is an in-house comparative method, not ASTM D575 or ISO 7743. ISO 7743 informed development, but the specimen, manual approach, 20% target and hold readings are specific to 3DPIceland Labs. Manual rate, first contact, print quality, dimensions and fixture compliance can affect results. Specimen spread describes method repeatability, not a complete uncertainty budget.</p></details>
+    </article>
+
     <article id="methodology-thermal" class="methodology-card">
-      <p class="portal-eyebrow">Mechanical test 04</p><h2>Heat Deflection</h2>
+      <p class="portal-eyebrow">Mechanical test 05</p><h2>Heat Deflection</h2>
       <p><strong>What it measures:</strong> The nearby under-specimen BlueDOT probe-indicated fixture temperature when a flat specimen reaches <span class="metric">2.00 mm</span> mid-span deflection. The governed result is recorded in <span class="metric">°C</span> under method <code>3dp-thermal-deflection-fixture-v1</code>.</p>
       <h3>Specimen and fixture</h3>
       <ul><li>A 127 × 12.7 × 3.2 mm specimen is printed flat.</li><li>The specimen rests across a 110 mm clear support span.</li><li>A centered nominal 54 g M20 nut applies approximately 0.530 N; the central bolt does not add specimen load.</li></ul>
@@ -97,7 +107,7 @@
     <h2>Statistics, confidence and interpretation</h2>
     <div class="methodology-grid">
       <div><h3>Average</h3><p>The displayed engineering value is based on the mean of the valid specimen measurements available for that orientation and test.</p></div>
-      <div><h3>Variation and CV</h3><p>Standard deviation and coefficient of variation show the spread between specimens. CV relates the spread to the average, which helps compare consistency across values of different magnitude.</p></div>
+      <div><h3>Variation and CV</h3><p>Sample standard deviation uses n−1. CV is sample SD divided by the mean × 100. They describe observed independent specimens, not fixed accuracy or uncertainty for future measurements.</p></div>
       <div><h3>Confidence</h3><p>The confidence indicator combines sample coverage and measurement consistency. Lower confidence means the result should be interpreted more cautiously; it does not mean the material itself is weak.</p></div>
     </div>
     <h3>3DPIceland internal comparative repeatability scale</h3>

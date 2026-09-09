@@ -17,3 +17,7 @@ The Documentation Engine is the governed source for long-form methodology docume
 Changes to equipment, specimen geometry, calculation constants or interpretation rules require an updated methodology version and revision-history entry.
 
 Platform v63.0.1 synchronizes the already governed v61 Heat Deflection method into the website and whitepaper source without changing the methodology version, fixture contract, stored results or calculations. The existing v1.0 filename remains stable; the document revision history records the platform documentation addition.
+
+Platform v64.0.3 adds the accepted `3DP-TPU-COMP-v1.0` method to the governed source and public Methodology portal. The stable whitepaper
+filename remains unchanged; the source records the 9 x 10 mm specimen, 20% target, 10/30-second readings, statistics and non-standard
+limits. The unlinked validation round remains documented evidence only until its exact MaterialID is supplied.

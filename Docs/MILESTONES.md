@@ -11,7 +11,10 @@ and compatible comparisons report independent specimen count, mean and sample st
 score. v64.0.1 completes the milestone by moving the workflow into a standalone MaterialID-linked workspace, preserving v43 data and
 optional Run provenance, showing Website Display Name and containing save failures. Debug/Release and governed documentation pass;
 disposable Full Data Verification passes 438/438 with exact-state recovery. Owner accepts the corrected add/edit workflow on 2026-09-08.
-New specimens use editable 9 mm diameter and 9 mm height/thickness defaults; saved historical geometry remains unchanged.
+v64.0.2-v64.0.4 add SQLite-backed geometry defaults, the accepted 9 x 10 mm TPU Compression v1.0 workflow, 10 s / primary 30 s
+readings, n−1 statistics/CV/range, public methodology and correct blank preparation-row validation. Saved historical geometry remains
+unchanged. The unlinked validation round is not assigned to a guessed MaterialID. Final profile `20260909175133-18ad8ba2` passes
+442/442 with exact-state recovery, and the owner confirms the reproduced Add Compression Specimen path works on 2026-09-09.
 
 # v63 - Public Website Accuracy and Thermal Methodology
 
