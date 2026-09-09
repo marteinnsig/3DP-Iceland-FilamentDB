@@ -2,13 +2,13 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v64.0.5 — Flexible-grid Direct Editing and Displacement Default**
+Last runtime-accepted baseline: **v64.0.6 — Flexible Cell Entry and Keyboard Navigation**
 
-Current canonical application release: **v64.0.5 — Flexible-grid Direct Editing and Displacement Default**
+Current canonical application release: **v64.0.6 — Flexible Cell Entry and Keyboard Navigation**
 
 Current roadmap increment: **None — await the next owner-approved coherent milestone**
 
-Current acceptance note: v64.0.0-v64.0.5 are complete and owner runtime accepted.
+Current acceptance note: v64.0.0-v64.0.6 are complete and owner runtime accepted.
 
 Next note: await owner feedback before scheduling a new coherent major milestone.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
@@ -52,7 +52,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Complete — v61.0.8 owner accepted 2026-08-14 |
 | v62 | Workflow Reliability Corrections | ★★★★★ | Complete — v62.0.3 owner accepted 2026-08-24 |
 | v63 | Public Website Accuracy and Thermal Methodology | ★★★★☆ | Complete — v63.0.1 owner accepted 2026-08-24 |
-| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — canonical v64.0.5 runtime accepted |
+| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — canonical v64.0.6 runtime accepted |
 
 ## Reconciliation of the older plans
 
@@ -3149,8 +3149,8 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition met: owner confirms the corrected Add Compression Specimen path works after the SQL NULL foreign-key fix;
     Material naming and action order are accepted, and all automated gates pass.
 - **v64 parent closure**
-  - State: Complete on 2026-09-09; v64.0.0-v64.0.5 are owner accepted and no v64 implementation item remains open.
-  - Completion condition met: v64.0.5 passes its gates and owner runtime acceptance; final profile passes 443/443 with exact-state
+  - State: Complete on 2026-09-09; v64.0.0-v64.0.6 are owner accepted and no v64 implementation item remains open.
+  - Completion condition met: v64.0.6 passes its gates and owner runtime acceptance; final profile passes 444/444 with exact-state
     recovery.
 - **v64.0.2 — Configurable Flexible-specimen Defaults**
   - State: Complete; owner accepted with v64.0.4 on 2026-09-09.
@@ -3200,6 +3200,23 @@ blockers may change the order, but must be recorded here before implementation.
     deletion and editable 2 mm defaults in both prepared and manually added compression rows.
   - Completion condition met: owner confirms the corrected consecutive-delete path works without specimen navigation; prior runtime
     checks accepted first-click editing and configurable prospective defaults, and all governed gates pass.
+- **v64.0.6 — Flexible Cell Entry and Keyboard Navigation**
+  - State: Complete and owner runtime accepted on 2026-09-09; Full Data Verification passes 444/444.
+  - Make one plain click on an editable Flexible measurement cell, including Compression `Force N`, create and focus its editor so
+    typing can begin immediately without a second click.
+  - Register the accepted workflow-grid keyboard path for Flexible grids so Tab/Shift+Tab and arrow keys commit and move through
+    editable cells while skipping calculated/read-only columns.
+  - Do not rebind all specimen reading tables after CellEditEnding. Save and recalculate normally, then update only the read-only
+    calculated cells in the edited row so a newly activated editor keeps keyboard focus.
+  - Do not rebind all specimen reading tables after CellEditEnding. Save and recalculate normally, then update only the read-only
+    calculated cells in the edited row so a newly activated editor keeps keyboard focus.
+  - Preserve v64.0.5 selection, consecutive-delete, save and specimen-identity behavior.
+  - Add a repository rule requiring future WPF entry surfaces to inspect and match the accepted Tensile Measurements interaction and
+    trace post-edit refresh/rebind focus behavior before acceptance.
+  - Update Help and deterministic verification for the direct editor-focus and keyboard-handler contracts.
+  - Completion condition: Debug/Release, Help/docs and Full Data Verification pass; owner confirms single-click Force N entry and
+    Tab/arrow navigation in the Flexible measurement grids.
+  - Completion condition met: owner confirms single-click typing and keyboard navigation retain focus after the rebind-free save fix.
 
 ### Intentionally unscheduled
 

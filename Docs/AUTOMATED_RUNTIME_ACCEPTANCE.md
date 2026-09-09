@@ -1,5 +1,16 @@
 # Automated Runtime Acceptance
 
+## v64.0.6 - Flexible cell entry and keyboard navigation accepted
+
+- Full Data Verification checks the dedicated Flexible editor-focus helper, non-rebinding calculated-cell refresh, cell-selection mode,
+  shared keyboard handler and editable Compression `Force N` binding.
+- A human runtime check remains required for actual one-click caret focus and Tab/arrow usability; automation does not synthesize
+  owner input against the active database.
+- Production, FTPS, update, restore and destructive actions remain outside this increment.
+- Profile `20260909214927-33d87e07` passes Full Data Verification 444/444, 24/24 top-level and Navigate paths, 16/16 nested tabs and
+  exact database/business-state recovery.
+- Owner runtime acceptance passes on 2026-09-09: one-click entry, Tab/Shift+Tab and arrow movement keep the destination editor focused.
+
 ## v64.0.5 - Flexible-grid direct editing and displacement default accepted
 
 - Full Data Verification checks the fourth positive SQLite setting, exact 2 mm built-in displacement, new-point snapshot factory and

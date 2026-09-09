@@ -12,6 +12,29 @@
   app locks the normal output, use an isolated MSBuild `ArtifactsPath` instead
   of stopping the user's application.
 
+## Canonical WPF data-entry behavior
+
+- Before adding or changing any user-editable WPF grid or field, inspect the
+  accepted `Tensile Measurements` input workflow and its shared handlers as the
+  canonical interaction reference. Do not implement a new local approximation
+  without documenting why the canonical path cannot be reused.
+- Match the accepted contract where applicable: one plain click creates and
+  focuses the editor; typing works immediately; Tab and Shift+Tab move across
+  editable cells; arrow keys move predictably; read-only/calculated columns are
+  skipped; validation and commit/save timing remain explicit.
+- Trace the complete post-edit path before declaring parity. In particular,
+  check `BeginningEdit`, `PreparingCellForEdit`, routed keyboard handlers,
+  `CellEditEnding`, deferred callbacks, recalculation, refresh and ItemsSource
+  rebinding. A later refresh or rebind must not steal focus from the editor that
+  the user just entered.
+- Reuse the established shared handlers and focus/commit helpers when their
+  data contract fits. If a grid needs specialized persistence or calculation
+  refresh, preserve the same visible keyboard and focus behavior.
+- Add deterministic registration/ownership checks where useful, but always
+  require an owner runtime test of single-click typing, Tab/Shift+Tab and arrow
+  movement for every new data-entry surface. A build-only or reflection-only
+  check is not sufficient evidence of input usability.
+
 ## Feature retirement and cleanup
 
 - When functionality, a UI action, a workflow, or a larger system surface is

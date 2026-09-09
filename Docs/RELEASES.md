@@ -1,6 +1,14 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v64.0.6 - Flexible Cell Entry and Keyboard Navigation
+
+Aligns Flexible Material Testing input with the accepted workflow-grid interaction: one plain click focuses the editor, and
+Tab/Shift+Tab plus arrow keys commit and move through editable cells while skipping calculated columns. CellEditEnding no longer
+rebinds all specimen reading tables after the next editor activates; persistence and recalculation continue while only calculated cells
+refresh. Debug/Release and Help/docs pass; profile `20260909214927-33d87e07` passes Full Data Verification 444/444 and exact-state
+recovery. Owner runtime acceptance passes on 2026-09-09. No live publish occurred.
+
 ## v64.0.5 - Flexible-grid Direct Editing and Displacement Default
 
 Makes all six Flexible Material Testing measurement grids editable on the first plain click and adds a positive SQLite-backed 2 mm

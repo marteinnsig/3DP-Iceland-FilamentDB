@@ -1,4 +1,14 @@
-# Current Build Notes - v64.0.5
+# Current Build Notes - v64.0.6
+
+## v64.0.6 flexible cell entry and keyboard navigation
+
+Flexible measurement cells create and focus their editor on the original plain click. The same routed keyboard handler used by the
+accepted workflow grids now owns Tab, Shift+Tab and arrow movement through editable columns. Debug/Release pass with zero
+warnings/errors; disposable profile `20260909214927-33d87e07` passes Full
+Data Verification 444/444 and exact-state recovery.
+CellEditEnding no longer rebinds every specimen-reading grid after the next editor receives focus; it persists normally and refreshes
+only calculated cells in the edited row.
+Owner runtime acceptance passes on 2026-09-09: single-click typing and keyboard movement retain editor focus.
 
 ## v64.0.5 flexible-grid direct editing and displacement default
 

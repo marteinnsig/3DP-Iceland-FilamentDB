@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "FLEXIBLE-DIRECT-EDIT";
-    public const string ReleaseTitle = "Flexible-grid Direct Editing and Displacement Default";
+    public const string ReleaseCode = "FLEXIBLE-CELL-NAV";
+    public const string ReleaseTitle = "Flexible Cell Entry and Keyboard Navigation";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 44;
 

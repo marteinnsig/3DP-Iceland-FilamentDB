@@ -18,6 +18,9 @@ unchanged. The unlinked validation round is not assigned to a guessed MaterialID
 v64.0.5 completes the milestone with first-click measurement editing, a configurable prospective-only 2 mm displacement default and
 stable consecutive reading deletion. Profile `20260909201802-a3da3946` passes 443/443 with exact-state recovery; the owner confirms
 the corrected consecutive-delete workflow on 2026-09-09.
+v64.0.6 completes the reopened input-parity correction: Flexible measurement editors now retain focus through save/recalculation and
+support the accepted single-click, Tab/Shift+Tab and arrow-key workflow. Profile `20260909214927-33d87e07` passes 444/444 with
+exact-state recovery, and the owner accepts the corrected input behavior on 2026-09-09.
 
 # v63 - Public Website Accuracy and Thermal Methodology
 

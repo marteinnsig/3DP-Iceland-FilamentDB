@@ -72,6 +72,8 @@ public partial class MainWindow
             grid.CurrentCellChanged += FlexibleReadingGrid_CurrentCellChanged;
             grid.SelectedCellsChanged -= FlexibleReadingGrid_SelectedCellsChanged;
             grid.SelectedCellsChanged += FlexibleReadingGrid_SelectedCellsChanged;
+            grid.RemoveHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler(InputDataGrid_PreviewKeyDown));
+            grid.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler(InputDataGrid_PreviewKeyDown), true);
             grid.PreviewMouseLeftButtonDown -= WorkflowGrid_PreviewMouseLeftButtonDown;
             grid.PreviewMouseLeftButtonDown += WorkflowGrid_PreviewMouseLeftButtonDown;
         }
@@ -350,7 +352,21 @@ public partial class MainWindow
 
     private void FlexibleTestingGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
     {
-        Dispatcher.BeginInvoke(new Action(() => { SaveFlexibleTesting(); BindFlexibleSpecimenRows(_selectedFlexibleSpecimen); }), DispatcherPriority.ContextIdle);
+        if (sender is not DataGrid grid || e.Row.Item is not { } editedRow) return;
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            if (SaveFlexibleTesting()) RefreshFlexibleCalculatedCells(grid, editedRow);
+        }), DispatcherPriority.ContextIdle);
+    }
+
+    private static void RefreshFlexibleCalculatedCells(DataGrid grid, object rowItem)
+    {
+        foreach (var column in grid.Columns.Where(column => column.IsReadOnly))
+        {
+            var cell = GetWorkflowGridCell(grid, rowItem, column);
+            var text = cell is null ? null : FindVisualChild<TextBlock>(cell);
+            text?.GetBindingExpression(TextBlock.TextProperty)?.UpdateTarget();
+        }
     }
 
     private bool SaveFlexibleTesting()

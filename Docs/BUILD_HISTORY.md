@@ -2,6 +2,20 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v64.0.6 - Flexible Cell Entry and Keyboard Navigation
+
+Owner testing showed that the v64.0.5 click handler changed selection appearance but did not consistently focus the generated
+TextBox, especially in Compression `Force N`. Flexible cell-mode grids now begin editing while the realized clicked cell is available,
+then focus the generated TextBox/ComboBox and restore the caret. They also receive the existing handled-events keyboard route used by
+accepted workflow grids, providing Tab/Shift+Tab and four-arrow commit-and-move behavior while skipping read-only calculations.
+Runtime retest identified the focus thief: CellEditEnding queued a full specimen-row rebind after the destination editor activated.
+The save path now keeps the current ItemsSource/editor and refreshes only calculated TextBlock bindings in the edited row.
+`AGENTS.md` now makes Tensile Measurements the mandatory interaction reference for future WPF data-entry work and explicitly requires
+focus-safe post-edit tracing plus owner single-click/keyboard acceptance.
+Debug and Release build with zero warnings/errors. Disposable profile `20260909214927-33d87e07` passes Full Data Verification
+444/444, all 24 top-level and Navigate paths, 16 nested tabs and exact-state recovery. Owner runtime acceptance passes on
+2026-09-09: single-click typing and keyboard movement retain editor focus.
+
 ## v64.0.5 - Flexible-grid Direct Editing and Displacement Default
 
 The accepted first-click DataGrid activation path is now registered for the six editable Flexible Material Testing grids. A fourth

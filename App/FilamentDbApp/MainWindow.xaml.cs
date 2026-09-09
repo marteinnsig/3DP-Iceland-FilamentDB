@@ -1224,6 +1224,22 @@ public partial class MainWindow : Window
         grid.CurrentCell = new DataGridCellInfo(targetItem, targetColumn);
         if (clickedCell.IsReadOnly || targetColumn.IsReadOnly) return;
 
+        if (FlexibleEditableGridNames.Contains(grid.Name, StringComparer.Ordinal))
+        {
+            // Flexible grids use cell selection. Focus and begin the editor while the
+            // original mouse event still identifies the realized cell; deferring the
+            // entire activation can leave only CurrentCell selected and require a
+            // second click before the TextBox exists.
+            e.Handled = true;
+            TryActivateFlexibleGridCellFromClick(
+                grid,
+                clickedCell,
+                targetItem,
+                targetColumn,
+                clickPositionInCell);
+            return;
+        }
+
         // Own the click so WPF does not spend the first click selecting the cell and the
         // second click entering edit mode. Activation is deferred just enough for the
         // previous ComboBox/TextBox edit to close and commit cleanly.
@@ -1239,6 +1255,67 @@ public partial class MainWindow : Window
             grid.CommitEdit(DataGridEditingUnit.Row, true);
             TryActivateWorkflowGridCell(grid, targetItem, targetColumn, selectAllText: false, clickPositionInCell: clickPositionInCell);
         }), System.Windows.Threading.DispatcherPriority.Input);
+    }
+
+    private void TryActivateFlexibleGridCellFromClick(
+        DataGrid grid,
+        DataGridCell clickedCell,
+        object targetItem,
+        DataGridColumn targetColumn,
+        Point clickPositionInCell)
+    {
+        try
+        {
+            CloseOpenWorkflowComboBoxes(grid);
+            grid.CommitEdit(DataGridEditingUnit.Cell, true);
+            grid.CommitEdit(DataGridEditingUnit.Row, true);
+
+            var targetInfo = new DataGridCellInfo(targetItem, targetColumn);
+            grid.SelectedCells.Clear();
+            grid.CurrentCell = targetInfo;
+            if (!grid.SelectedCells.Contains(targetInfo)) grid.SelectedCells.Add(targetInfo);
+            clickedCell.Focus();
+            grid.BeginEdit();
+            grid.UpdateLayout();
+        }
+        catch (InvalidOperationException)
+        {
+            grid.CancelEdit(DataGridEditingUnit.Cell);
+        }
+
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            if (!grid.IsLoaded || !grid.IsVisible) return;
+            if (!grid.Items.Contains(targetItem) || !grid.Columns.Contains(targetColumn)) return;
+
+            var cell = GetWorkflowGridCell(grid, targetItem, targetColumn);
+            if (cell is null || cell.IsReadOnly) return;
+            if (!cell.IsEditing)
+            {
+                grid.CurrentCell = new DataGridCellInfo(targetItem, targetColumn);
+                cell.Focus();
+                if (!grid.BeginEdit()) return;
+                grid.UpdateLayout();
+            }
+
+            var comboBox = FindVisualChild<ComboBox>(cell);
+            if (comboBox is not null)
+            {
+                comboBox.Focus();
+                Keyboard.Focus(comboBox);
+                comboBox.IsDropDownOpen = true;
+                return;
+            }
+
+            var textBox = FindVisualChild<TextBox>(cell);
+            if (textBox is null) return;
+            _suppressSelectAllForTextBox = textBox;
+            textBox.Focus();
+            Keyboard.Focus(textBox);
+            var point = cell.TranslatePoint(clickPositionInCell, textBox);
+            textBox.SelectionLength = 0;
+            textBox.CaretIndex = ResolveMouseCaretIndex(textBox, point);
+        }), DispatcherPriority.Input);
     }
 
     private void WorkflowGrid_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -15728,6 +15805,22 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             flexibleDirectEditAndDisplacementReady
                 ? "Prepared points snapshot 2 mm; direct editing and immediate canonical/visible-row deletion pass"
                 : "Compression default, direct editing or immediate selected-reading deletion drifted"));
+        var flexibleCellEntryAndKeyboardReady =
+            typeof(MainWindow).GetMethod("TryActivateFlexibleGridCellFromClick", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("RefreshFlexibleCalculatedCells", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("InputDataGrid_PreviewKeyDown", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            FlexibleEditableGridNames.All(name => FindName(name) is DataGrid { SelectionUnit: DataGridSelectionUnit.CellOrRowHeader }) &&
+            FindName("CompressionPointsGrid") is DataGrid compressionEntryGrid &&
+            compressionEntryGrid.Columns.Any(column =>
+                string.Equals(column.Header?.ToString(), "Force N", StringComparison.Ordinal) &&
+                !column.IsReadOnly &&
+                string.Equals(GetBoundPropertyName(column), nameof(CompressionPointRecord.ForceN), StringComparison.Ordinal));
+        checks.Add(new VerificationCheck(
+            "v64.0.6 flexible cell-entry and keyboard-navigation contract",
+            flexibleCellEntryAndKeyboardReady,
+            flexibleCellEntryAndKeyboardReady
+                ? "Flexible cell-mode grids preserve editor focus without row rebinding, expose shared Tab/Shift+Tab/arrow routing, and keep Compression Force N editable"
+                : "Flexible editor-focus preservation, calculated-cell refresh, keyboard routing, cell-selection mode or Force N editability drifted"));
         var tpuCompressionMethodV1Ready =
             LocalDatabase.RunTpuCompressionMethodV1ContractVerification() &&
             FlexibleMaterialTestingService.CompressionMethodName == "3DPIceland Labs TPU Compression Test" &&

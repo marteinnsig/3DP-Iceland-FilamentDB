@@ -1163,8 +1163,11 @@ internal static class HelpContentCatalog
             provenance, but new sessions do not require an Experimental Series or Run. Diameter, height and Shore thickness are copied
             from the Flexible Material Testing rows in Settings Manager when each new specimen is created; built-ins are 9 mm diameter,
             10 mm height and 9 mm Shore thickness. A separate 2 mm displacement default is copied into each newly prepared or manually
-            added compression point. Changing Settings never rewrites an existing specimen or reading. Editable cells enter edit mode
-            on the first plain click; calculated result cells remain read-only. Geometry plus the 100% rectilinear, 0.4 mm nozzle, 0.20 mm
+            added compression point. Changing Settings never rewrites an existing specimen or reading. One plain click creates and
+            focuses the editor in an editable cell, including Force N. Tab and Shift+Tab move horizontally through editable cells;
+            arrow keys commit and move left, right, up or down while calculated result cells remain read-only and are skipped.
+            Calculated values refresh without rebuilding the reading tables or taking focus from the next editable cell. Geometry plus
+            the 100% rectilinear, 0.4 mm nozzle, 0.20 mm
             layer, two-wall and three-top/bottom values remain editable starting values, not method requirements.
 
             Accepted TPU compression method v1.0

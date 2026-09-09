@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 120 |
+| Solved | 121 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **126** |
+| **Total tracked findings** | **127** |
 
 ## Triage categories
 
@@ -187,6 +187,17 @@ No active findings.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Recent resolved findings — newest first
+
+### 2026-09-09 — Force N still requires two clicks and Flexible grids need keyboard navigation
+
+- **Area:** Flexible Material Testing / measurement entry.
+- **Type:** Workflow friction.
+- **Severity:** Important.
+- **Resolution:** v64.0.6 reuses the accepted workflow-grid click and keyboard paths, then removes the deferred full-grid rebind that
+  stole focus after CellEditEnding. Persistence/recalculation remain active while only calculated cells in the edited row refresh.
+- **Status:** Solved and owner runtime accepted on 2026-09-09; single-click typing and Tab/arrow navigation retain editor focus.
+- **Verification evidence:** Debug/Release and Help/docs pass; profile `20260909214927-33d87e07` passes Full Data Verification 444/444
+  and exact-state recovery.
 
 ### 2026-09-09 — Flexible measurement cells require two clicks and displacement needs a configurable default
 

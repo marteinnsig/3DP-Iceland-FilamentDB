@@ -2,6 +2,19 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v64.0.6 - Flexible Cell Entry and Keyboard Navigation
+
+- Editable Flexible cells now focus and create their editor during the original mouse action, then restore the precise text caret;
+  Compression `Force N` no longer intentionally waits for a second click.
+- Flexible grids register the shared handled-events keyboard route. Tab/Shift+Tab and arrows commit the current edit, move across
+  editable cells and skip calculated/read-only columns.
+- v64.0.5 selection, consecutive deletion, Settings defaults and historical reading behavior remain unchanged.
+- Repository rules now require every new WPF data-entry surface to inspect and match the accepted Tensile Measurements click, focus,
+  keyboard, validation, commit/save and non-rebinding behavior before implementation and runtime acceptance.
+- Help and deterministic Verification cover the new editor-focus and keyboard-navigation contracts. Debug and Release build with zero
+  warnings/errors; profile `20260909214927-33d87e07` passes Full Data Verification 444/444 and exact-state recovery. Owner runtime
+  acceptance passes on 2026-09-09: single-click typing and keyboard movement retain editor focus.
+
 ## v64.0.5 - Flexible-grid Direct Editing and Displacement Default
 
 - Editable cells in all six Flexible Material Testing grids now enter edit mode on the first plain click; calculated columns remain
