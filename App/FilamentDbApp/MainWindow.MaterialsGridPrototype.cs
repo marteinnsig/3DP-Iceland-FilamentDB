@@ -11,7 +11,7 @@ namespace FilamentDbApp;
 
 public partial class MainWindow
 {
-    private const int FastMaterialsLayoutContractVersion = 1;
+    private const int FastMaterialsLayoutContractVersion = 2;
     private static readonly IComparer<string> CanonicalMaterialIdComparer =
         Comparer<string>.Create(CompareCanonicalMaterialIds);
 
@@ -148,7 +148,7 @@ public partial class MainWindow
         var migrationRequired =
             _workflowPreferencesService.GetFastMaterialsLayoutContractVersion() < FastMaterialsLayoutContractVersion;
         var migratedLayout = migrationRequired
-            ? MigrateFastMaterialsHeatColumnLayout(columns, savedLayout)
+            ? MigrateFastMaterialsCoverageColumnLayout(columns, savedLayout)
             : savedLayout;
         if (migrationRequired)
         {
@@ -192,6 +192,7 @@ public partial class MainWindow
             FastMaterialsColumn("In Impact", 90, "InImpact", true),
             FastMaterialsColumn("In Stiffness", 95, "InStiffness", true),
             FastMaterialsColumn("In Heat", 85, "InHeat", true),
+            FastMaterialsColumn("In Flexible", 90, "InFlexible", true),
             FastMaterialsColumn("Notes", 220, "Notes", false),
             FastMaterialsColumn("Website Display Name", 240, "WebsiteDisplayName", true),
             FastMaterialsColumn("Manufacturer Website", 260, "ManufacturerWebsite", false),
@@ -380,12 +381,13 @@ public partial class MainWindow
         return resized.Count == columns.Count ? resized : columns;
     }
 
-    private static IReadOnlyList<WorkflowColumnLayout> MigrateFastMaterialsHeatColumnLayout(
+    private static IReadOnlyList<WorkflowColumnLayout> MigrateFastMaterialsCoverageColumnLayout(
         IReadOnlyList<MaterialsPrototypeColumn> columns,
         IReadOnlyList<WorkflowColumnLayout> savedLayout)
     {
         const string stiffnessKey = "binding:InStiffness";
         const string heatKey = "binding:InHeat";
+        const string flexibleKey = "binding:InFlexible";
         if (savedLayout.Count == 0) return savedLayout;
 
         var stiffness = savedLayout.FirstOrDefault(item =>
@@ -396,17 +398,28 @@ public partial class MainWindow
 
         var heatWidth = savedLayout.FirstOrDefault(item =>
             string.Equals(item.Key, heatKey, StringComparison.Ordinal))?.Width ?? heatColumn.Width;
-        var orderedWithoutHeat = savedLayout
-            .Where(item => !string.Equals(item.Key, heatKey, StringComparison.Ordinal))
+        var orderedWithoutCoverage = savedLayout
+            .Where(item =>
+                !string.Equals(item.Key, heatKey, StringComparison.Ordinal) &&
+                !string.Equals(item.Key, flexibleKey, StringComparison.Ordinal))
             .OrderBy(item => item.DisplayIndex)
             .ToList();
-        var stiffnessIndex = orderedWithoutHeat.FindIndex(item =>
+        var stiffnessIndex = orderedWithoutCoverage.FindIndex(item =>
             string.Equals(item.Key, stiffnessKey, StringComparison.Ordinal));
         if (stiffnessIndex < 0) return savedLayout;
 
-        orderedWithoutHeat.Insert(stiffnessIndex + 1,
+        orderedWithoutCoverage.Insert(stiffnessIndex + 1,
             new WorkflowColumnLayout(heatKey, heatWidth, stiffnessIndex + 1));
-        return orderedWithoutHeat
+        var flexibleColumn = columns.FirstOrDefault(column =>
+            string.Equals(PrototypeColumnKey(column), flexibleKey, StringComparison.Ordinal));
+        if (flexibleColumn is not null)
+        {
+            var flexibleWidth = savedLayout.FirstOrDefault(item =>
+                string.Equals(item.Key, flexibleKey, StringComparison.Ordinal))?.Width ?? flexibleColumn.Width;
+            orderedWithoutCoverage.Insert(stiffnessIndex + 2,
+                new WorkflowColumnLayout(flexibleKey, flexibleWidth, stiffnessIndex + 2));
+        }
+        return orderedWithoutCoverage
             .Select((item, index) => item with { DisplayIndex = index })
             .ToList();
     }

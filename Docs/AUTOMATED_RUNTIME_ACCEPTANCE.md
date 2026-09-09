@@ -1,5 +1,16 @@
 # Automated Runtime Acceptance
 
+## v64.0.7 - Materials Flexible membership accepted
+
+- Full Data Verification checks read-only placement after In Heat, factual-reading MaterialID derivation, saved-layout insertion and
+  explicit four-module Tested Status isolation.
+- Existing smoke navigation and exact-state recovery cover the non-mutating runtime projection; visual column/value acceptance remains
+  an owner check. No new mutating automation scenario is warranted.
+- Production, FTPS, public export and owner data remain outside this increment.
+- Profile `20260909222055-b67b19e2` passes Full Data Verification 445/445, 24/24 top-level and Navigate paths, 16/16 nested tabs and
+  exact database/business-state recovery.
+- Owner runtime acceptance passes on 2026-09-09 for In Flexible placement/values and unchanged four-module Tested Status.
+
 ## v64.0.6 - Flexible cell entry and keyboard navigation accepted
 
 - Full Data Verification checks the dedicated Flexible editor-focus helper, non-rebinding calculated-cell refresh, cell-selection mode,

@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "FLEXIBLE-CELL-NAV";
-    public const string ReleaseTitle = "Flexible Cell Entry and Keyboard Navigation";
+    public const string ReleaseCode = "MATERIALS-FLEXIBLE-COVERAGE";
+    public const string ReleaseTitle = "Flexible Measurement Membership in Materials";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 44;
 

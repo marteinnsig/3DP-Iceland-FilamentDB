@@ -15690,7 +15690,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             purchaseLineEditingReady
                 ? "Single-cell first-click plus Enter/Tab/Shift+Tab/arrows use editable columns and skip locked landed-cost inputs"
                 : "Purchase-line activation, keyboard routing, editable-column scope or locked-input skip contract failed"));
-        var savedHeatLayoutProbe = MigrateFastMaterialsHeatColumnLayout(
+        var savedHeatLayoutProbe = MigrateFastMaterialsCoverageColumnLayout(
             BuildFastMaterialsColumns(),
             [
                 new WorkflowColumnLayout("binding:MaterialID", 100, 0),
@@ -15701,7 +15701,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var savedHeatLayoutMigrationReady =
             savedHeatLayoutProbe.Single(item => item.Key == "binding:InStiffness").DisplayIndex == 1 &&
             savedHeatLayoutProbe.Single(item => item.Key == "binding:InHeat").DisplayIndex == 2 &&
-            savedHeatLayoutProbe.Single(item => item.Key == "binding:Notes").DisplayIndex == 3;
+            savedHeatLayoutProbe.Single(item => item.Key == "binding:InFlexible").DisplayIndex == 3 &&
+            savedHeatLayoutProbe.Single(item => item.Key == "binding:Notes").DisplayIndex == 4;
         var heatCoverageReady =
             BuildInfo.CurrentDatabaseSchema >= 42 &&
             BuildFastMaterialsColumns().Any(column =>
@@ -15721,6 +15722,32 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             heatCoverageReady
                 ? "Schema v42, read-only In Heat, saved-layout placement and four-module Tested Status match canonical Heat Deflection results"
                 : "Schema, In Heat layout/migration, Heat-result projection or four-module Tested Status drifted"));
+        var flexibleCoverageIds = GetFlexibleMeasuredMaterialIds();
+        var flexibleHeaders = BuildFastMaterialsColumns().Select(column => column.Header).ToList();
+        var flexibleMaterialsCoverageReady =
+            flexibleHeaders.IndexOf("In Flexible") == flexibleHeaders.IndexOf("In Heat") + 1 &&
+            BuildFastMaterialsColumns().Any(column =>
+                string.Equals(column.Header, "In Flexible", StringComparison.Ordinal) &&
+                string.Equals(column.PropertyName, "InFlexible", StringComparison.Ordinal) &&
+                column.IsReadOnly) &&
+            _nativeMaterialRows.Where(row => !string.IsNullOrWhiteSpace(row.MaterialID)).All(row =>
+                string.Equals(row.InFlexible,
+                    flexibleCoverageIds.Contains(row.MaterialID.Trim()) ? "Yes" : "No",
+                    StringComparison.OrdinalIgnoreCase)) &&
+            BuildNativeMaterialTestedStatus(new NativeMaterialRow
+            {
+                InTensile = "No", InImpact = "No", InStiffness = "No", InHeat = "No", InFlexible = "Yes"
+            }) == "Not tested" &&
+            BuildNativeMaterialTestedStatus(new NativeMaterialRow
+            {
+                InTensile = "Yes", InImpact = "Yes", InStiffness = "Yes", InHeat = "Yes", InFlexible = "No"
+            }) == "Fully tested";
+        checks.Add(new VerificationCheck(
+            "v64.0.7 Materials Flexible membership and Tested Status isolation contract",
+            flexibleMaterialsCoverageReady,
+            flexibleMaterialsCoverageReady
+                ? "Read-only In Flexible follows factual MaterialID-linked readings after In Heat; Tested Status remains four-module only"
+                : "Flexible measurement derivation, column placement/read-only state or four-module Tested Status isolation drifted"));
         var flexibleTestingReady =
             BuildInfo.CurrentDatabaseSchema == 44 &&
             LocalDatabase.RunFlexibleTestingCalculationContractVerification() &&
@@ -20860,7 +20887,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         {
             "Material ID", "Manufacturer", "Product Line", "Marketing Name", "Base Material", "Category",
             "Variant / Finish", "Reinforcement", "Color", "Tested Status", "In Tensile", "In Impact",
-            "In Stiffness", "In Heat", "Notes", "Website Display Name", "Manufacturer Website", "YouTube Review URL",
+            "In Stiffness", "In Heat", "In Flexible", "Notes", "Website Display Name", "Manufacturer Website", "YouTube Review URL",
             "Video", "Spool Weight g / spool", "Purchase Price", "Currency", "MSRP Amount", "MSRP Currency",
             "MSRP USD", "MSRP USD/kg", "Landed Cost", "Landed Currency", "Landed USD", "Landed USD/kg", "Inventory ID",
             "Inventory Status", "Inventory Qty", "Remaining Weight g / spool", "Storage Location", "Purchase ID",
@@ -20870,11 +20897,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             "Material Key", "Validation"
         };
         var fastMaterialsContractReady =
-            fastMaterialsContractColumns.Count == 53 &&
+            fastMaterialsContractColumns.Count == 54 &&
             fastMaterialsContractColumns.Select(column => column.Header).SequenceEqual(
                 approvedFastMaterialsColumnOrder,
                 StringComparer.Ordinal) &&
-            fastMaterialsContractColumns.Select(PrototypeColumnKey).Distinct(StringComparer.Ordinal).Count() == 53 &&
+            fastMaterialsContractColumns.Select(PrototypeColumnKey).Distinct(StringComparer.Ordinal).Count() == 54 &&
             fastMaterialsContractColumns.Count(column => column.EditorKind == MaterialsPrototypeEditorKind.CheckBox) == 3 &&
             fastMaterialsContractColumns.Count(column => column.EditorKind == MaterialsPrototypeEditorKind.ComboBox) == 6 &&
             WorkflowPreferencesService.VerifyFastMaterialsGridLayoutResetContract() &&
@@ -27432,6 +27459,7 @@ private List<string> GetVisibleAiMaterialLabels()
         public string InImpact { get; set; } = "";
         public string InStiffness { get; set; } = "";
         public string InHeat { get; set; } = "";
+        public string InFlexible { get; set; } = "";
         public string SortOrder { get; set; } = "";
         public string SourcePriority { get; set; } = "";
         public string WebsiteDisplayName { get; set; } = "";
@@ -28819,6 +28847,8 @@ private List<string> GetVisibleAiMaterialLabels()
             .Select(materialId => materialId.Trim())
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
+        var flexibleMaterialIds = GetFlexibleMeasuredMaterialIds();
+
         var changed = false;
         foreach (var material in _nativeMaterialRows.Where(row => !string.IsNullOrWhiteSpace(row.MaterialID)))
         {
@@ -28827,6 +28857,7 @@ private List<string> GetVisibleAiMaterialLabels()
             var newInImpact = impactMaterialIds.Contains(materialId) ? "Yes" : "No";
             var newInStiffness = stiffnessMaterialIds.Contains(materialId) ? "Yes" : "No";
             var newInHeat = heatMaterialIds.Contains(materialId) ? "Yes" : "No";
+            var newInFlexible = flexibleMaterialIds.Contains(materialId) ? "Yes" : "No";
 
             if (!string.Equals(material.InTensile, newInTensile, StringComparison.OrdinalIgnoreCase))
             {
@@ -28852,6 +28883,12 @@ private List<string> GetVisibleAiMaterialLabels()
                 changed = true;
             }
 
+            if (!string.Equals(material.InFlexible, newInFlexible, StringComparison.OrdinalIgnoreCase))
+            {
+                material.InFlexible = newInFlexible;
+                changed = true;
+            }
+
             var previousStatus = material.TestedStatus;
             material.TestedStatus = BuildNativeMaterialTestedStatus(material);
             if (!string.Equals(previousStatus, material.TestedStatus, StringComparison.Ordinal))
@@ -28872,6 +28909,37 @@ private List<string> GetVisibleAiMaterialLabels()
         // even when the Yes/No coverage flags themselves did not change.
         RefreshSelectedNativeMaterialDetails();
         UpdateDashboardInsights();
+    }
+
+    private HashSet<string> GetFlexibleMeasuredMaterialIds()
+    {
+        var measuredSpecimenIds = _compressionPoints
+            .Where(row => !string.IsNullOrWhiteSpace(row.ForceN))
+            .Select(row => row.SpecimenId)
+            .Concat(_stressRelaxationPoints
+                .Where(row => !string.IsNullOrWhiteSpace(row.ForceN))
+                .Select(row => row.SpecimenId))
+            .Concat(_recoveryMeasurements
+                .Where(row => !string.IsNullOrWhiteSpace(row.HeightAfterRestMm))
+                .Select(row => row.SpecimenId))
+            .Concat(_shoreHardnessReadings
+                .Where(row => !string.IsNullOrWhiteSpace(row.HardnessValue))
+                .Select(row => row.SpecimenId))
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var measuredSessionIds = _flexibleSpecimens
+            .Where(specimen => measuredSpecimenIds.Contains(specimen.SpecimenId))
+            .Select(specimen => specimen.FlexibleTestSessionId)
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        return _flexibleTestSessions
+            .Where(session =>
+                measuredSessionIds.Contains(session.FlexibleTestSessionId) &&
+                !string.IsNullOrWhiteSpace(session.MaterialID))
+            .Select(session => session.MaterialID.Trim())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
     }
 
     private void RefreshSelectedNativeMaterialDetails()
@@ -28918,6 +28986,7 @@ private List<string> GetVisibleAiMaterialLabels()
         row.InImpact = NormalizeNativeYesNo(row.InImpact);
         row.InStiffness = NormalizeNativeYesNo(row.InStiffness);
         row.InHeat = NormalizeNativeYesNo(row.InHeat);
+        row.InFlexible = NormalizeNativeYesNo(row.InFlexible);
         row.TestedStatus = BuildNativeMaterialTestedStatus(row);
         row.MaterialCategory = BuildNativeMaterialCategory(row);
         row.SortOrder = BuildNativeMaterialSortOrder(row, rowIndex);

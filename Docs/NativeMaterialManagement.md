@@ -95,6 +95,8 @@ Computed/read-only fields:
 - Video
 - Tested Status (derived from Tensile, Impact, Stiffness and Heat coverage)
 - In Heat (read-only; Yes only while a valid canonical Heat Deflection result exists)
+- In Flexible (read-only; Yes only while a MaterialID-linked Flexible specimen has a factual compression, relaxation, recovery or
+  Shore measurement; excluded from Tested Status)
 - Sort Order
 - Source Priority
 - Website Display Name

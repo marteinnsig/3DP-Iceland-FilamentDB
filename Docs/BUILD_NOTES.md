@@ -1,4 +1,11 @@
-# Current Build Notes - v64.0.6
+# Current Build Notes - v64.0.7
+
+## v64.0.7 Materials Flexible measurement membership
+
+Fast Materials shows read-only In Flexible after In Heat. Yes requires a factual value in a MaterialID-linked compression,
+relaxation, recovery or Shore reading; prepared blanks remain No. Tested Status stays based only on the four ordinary modules.
+Debug/Release pass with zero warnings/errors; profile `20260909222055-b67b19e2` passes Full Data Verification 445/445 and exact-state
+recovery. Owner runtime acceptance passes on 2026-09-09 for column placement, Yes/No membership and four-module Tested Status.
 
 ## v64.0.6 flexible cell entry and keyboard navigation
 

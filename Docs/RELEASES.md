@@ -1,6 +1,14 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v64.0.7 - Flexible Measurement Membership in Materials
+
+Adds read-only In Flexible immediately after In Heat in Fast Materials. Membership is derived from factual MaterialID-linked Flexible
+compression, relaxation, recovery or Shore values; blank prepared rows remain No. Saved layout v2 inserts the column without resetting
+other widths/order, while Tested Status deliberately remains based only on Tensile, Impact, Stiffness and Heat. Debug/Release and
+Help/docs pass; profile `20260909222055-b67b19e2` passes Full Data Verification 445/445 and exact-state recovery. Owner runtime
+acceptance passes on 2026-09-09. No live publish occurred.
+
 ## v64.0.6 - Flexible Cell Entry and Keyboard Navigation
 
 Aligns Flexible Material Testing input with the accepted workflow-grid interaction: one plain click focuses the editor, and

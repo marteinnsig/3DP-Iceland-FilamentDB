@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 121 |
+| Solved | 122 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **127** |
+| **Total tracked findings** | **128** |
 
 ## Triage categories
 
@@ -187,6 +187,18 @@ No active findings.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Recent resolved findings — newest first
+
+### 2026-09-09 — Show Flexible measurement membership in Materials without changing Tested Status
+
+- **Area:** Materials / Flexible Material Testing.
+- **Type:** Workflow friction.
+- **Severity:** Important.
+- **Resolution:** v64.0.7 adds runtime-derived read-only In Flexible immediately after In Heat. Factual MaterialID-linked Flexible
+  readings produce Yes; empty specimens/prepared rows remain No. Tested Status continues to count only the four ordinary modules.
+- **Status:** Solved and owner runtime accepted on 2026-09-09; placement, Yes/No values and Tested Status isolation work normally.
+- **Verification evidence:** Debug/Release and Help/docs pass; profile `20260909222055-b67b19e2` passes Full Data Verification 445/445
+  and exact-state recovery.
+- **Boundary:** No manual/persisted flag, scoring or public export change.
 
 ### 2026-09-09 — Force N still requires two clicks and Flexible grids need keyboard navigation
 

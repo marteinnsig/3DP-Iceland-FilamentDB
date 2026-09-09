@@ -21,6 +21,9 @@ the corrected consecutive-delete workflow on 2026-09-09.
 v64.0.6 completes the reopened input-parity correction: Flexible measurement editors now retain focus through save/recalculation and
 support the accepted single-click, Tab/Shift+Tab and arrow-key workflow. Profile `20260909214927-33d87e07` passes 444/444 with
 exact-state recovery, and the owner accepts the corrected input behavior on 2026-09-09.
+v64.0.7 completes the Materials membership projection with read-only In Flexible after In Heat. Factual linked Flexible readings drive
+Yes/No without changing the four-module Tested Status definition. Profile `20260909222055-b67b19e2` passes 445/445 with exact-state
+recovery, and the owner accepts placement, values and status isolation on 2026-09-09.
 
 # v63 - Public Website Accuracy and Thermal Methodology
 

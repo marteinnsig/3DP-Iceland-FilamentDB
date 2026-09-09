@@ -84,7 +84,7 @@ Nested tabs (16):
 
 | Surface | Stable Help ID | Owner / source of truth | Required reference coverage | Automation / current gap |
 |---|---|---|---|---|
-| Materials | `materials.overview` | SQLite Materials + owner-drawn grid | Identity, all field groups, six OR/AND facets, persisted scope, per-filter/global Clear, lifecycle, validation, publication choices and auto-save | v54 facets, summaries and Clear controls have stable IDs; visual wrapping remains manual |
+| Materials | `materials.overview` | SQLite Materials + owner-drawn grid; runtime Flexible graph projection | Identity, all field groups, six OR/AND facets, persisted scope, per-filter/global Clear, lifecycle, validation, read-only In Flexible membership, publication choices and auto-save | v64.0.7 places derived In Flexible after In Heat and excludes it from Tested Status; visual placement remains owner acceptance |
 | Manufacturers | `manufacturers.overview` | SQLite Manufacturers + Material relationship | Fields, search, archived scope, Add, Duplicate, exact-name binding, Archive/Restore, Delete, rename propagation and auto-save | Tab, grid, filters and most actions lack IDs |
 | Purchase Orders | `purchase-orders.overview` | SQLite PO/lines + purchasing services | Header/line fields, lifecycle, ECB, landed costs, receiving, Material/Inventory creation, attachments and deletion | Tab/ECB only; both grids and almost every action lack IDs |
 | Inventory | `inventory.overview` | SQLite Inventory + `InventoryEngineService` | Spool fields, filters, summaries, Add, Duplicate, Delete, Refresh, validation, auto-save and Usage handoff | Entire tab currently lacks IDs |

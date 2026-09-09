@@ -2,13 +2,13 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v64.0.6 — Flexible Cell Entry and Keyboard Navigation**
+Last runtime-accepted baseline: **v64.0.7 — Flexible Measurement Membership in Materials**
 
-Current canonical application release: **v64.0.6 — Flexible Cell Entry and Keyboard Navigation**
+Current canonical application release: **v64.0.7 — Flexible Measurement Membership in Materials**
 
 Current roadmap increment: **None — await the next owner-approved coherent milestone**
 
-Current acceptance note: v64.0.0-v64.0.6 are complete and owner runtime accepted.
+Current acceptance note: v64.0.0-v64.0.7 are complete and owner runtime accepted.
 
 Next note: await owner feedback before scheduling a new coherent major milestone.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
@@ -52,7 +52,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Complete — v61.0.8 owner accepted 2026-08-14 |
 | v62 | Workflow Reliability Corrections | ★★★★★ | Complete — v62.0.3 owner accepted 2026-08-24 |
 | v63 | Public Website Accuracy and Thermal Methodology | ★★★★☆ | Complete — v63.0.1 owner accepted 2026-08-24 |
-| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — canonical v64.0.6 runtime accepted |
+| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — canonical v64.0.7 runtime accepted |
 
 ## Reconciliation of the older plans
 
@@ -3149,8 +3149,8 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition met: owner confirms the corrected Add Compression Specimen path works after the SQL NULL foreign-key fix;
     Material naming and action order are accepted, and all automated gates pass.
 - **v64 parent closure**
-  - State: Complete on 2026-09-09; v64.0.0-v64.0.6 are owner accepted and no v64 implementation item remains open.
-  - Completion condition met: v64.0.6 passes its gates and owner runtime acceptance; final profile passes 444/444 with exact-state
+  - State: Complete on 2026-09-09; v64.0.0-v64.0.7 are owner accepted and no v64 implementation item remains open.
+  - Completion condition met: v64.0.7 passes its gates and owner runtime acceptance; final profile passes 445/445 with exact-state
     recovery.
 - **v64.0.2 — Configurable Flexible-specimen Defaults**
   - State: Complete; owner accepted with v64.0.4 on 2026-09-09.
@@ -3217,6 +3217,19 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: Debug/Release, Help/docs and Full Data Verification pass; owner confirms single-click Force N entry and
     Tab/arrow navigation in the Flexible measurement grids.
   - Completion condition met: owner confirms single-click typing and keyboard navigation retain focus after the rebind-free save fix.
+- **v64.0.7 — Flexible Measurement Membership in Materials**
+  - State: Complete and owner runtime accepted on 2026-09-09; Full Data Verification passes 445/445.
+  - Add a read-only `In Flexible` Yes/No column immediately to the right of `In Heat` in the canonical Fast Materials grid.
+  - Derive Yes by stable MaterialID only when a linked Flexible specimen has at least one factual compression, relaxation, recovery or
+    Shore measurement value; blank prepared rows and specimen existence alone remain No.
+  - Preserve saved Materials layouts by inserting the new column after `In Heat` without resetting other column order or widths.
+  - Keep Tested Status strictly based on Tensile, Impact, Stiffness and Heat. Flexible membership must not prevent ordinary materials
+    from reaching Fully tested and must not contribute to partial/full status.
+  - Keep the projection read-only and runtime-derived; do not add a manual flag or a schema field that can drift from Flexible records.
+  - Update Help, layout/derivation Verification and release documentation. No public scoring or website publication is included.
+  - Completion condition: Debug/Release, Help/docs and Full Data Verification pass; owner confirms placement, Yes/No behavior and
+    unchanged four-module Tested Status semantics.
+  - Completion condition met: owner confirms In Flexible placement and values work while Tested Status remains four-module only.
 
 ### Intentionally unscheduled
 

@@ -2,6 +2,16 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v64.0.7 - Flexible Measurement Membership in Materials
+
+Fast Materials gains a read-only In Flexible projection directly after In Heat. Membership is calculated from the existing
+MaterialID-linked session/specimen graph and requires at least one factual raw measurement value; prepared blank rows do not create a
+false positive. The column remains outside SQLite Materials persistence so it cannot drift from the Flexible source graph. Tested
+Status deliberately continues to count only Tensile, Impact, Stiffness and Heat. Layout contract v2 inserts the new column after In
+Heat while preserving existing saved widths and order. Debug/Release pass with zero warnings/errors; profile
+`20260909222055-b67b19e2` passes Full Data Verification 445/445, navigation and exact-state recovery. Owner runtime acceptance passes
+on 2026-09-09 for column placement, membership values and Tested Status isolation.
+
 ## v64.0.6 - Flexible Cell Entry and Keyboard Navigation
 
 Owner testing showed that the v64.0.5 click handler changed selection appearance but did not consistently focus the generated

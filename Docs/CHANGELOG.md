@@ -2,6 +2,17 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v64.0.7 - Flexible Measurement Membership in Materials
+
+- Adds read-only `In Flexible` immediately after `In Heat` in Fast Materials.
+- Derives Yes from a MaterialID-linked Flexible specimen only when it has a factual compression/relaxation force, recovery height or
+  Shore hardness value. Empty specimens and blank prepared compression rows remain No.
+- Keeps Tested Status unchanged and explicitly four-module: Tensile, Impact, Stiffness and Heat only.
+- Advances the saved-layout contract and inserts In Flexible after In Heat without resetting other saved widths/order.
+- Help and deterministic verification cover placement, derivation and Tested Status isolation. Debug/Release pass with zero
+  warnings/errors; profile `20260909222055-b67b19e2` passes Full Data Verification 445/445 and exact-state recovery. Owner runtime
+  acceptance passes on 2026-09-09: placement and Yes/No behavior are correct and Tested Status remains four-module only.
+
 ## v64.0.6 - Flexible Cell Entry and Keyboard Navigation
 
 - Editable Flexible cells now focus and create their editor during the original mouse action, then restore the precise text caret;

@@ -58,6 +58,7 @@ public partial class MainWindow
             .ToList();
         FlexibleComparisonGrid.ItemsSource = _flexibleComparisonRows;
         RegisterFlexibleFirstClickEditing();
+        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: false);
         BindFlexibleTestingSession(_flexibleTestSessions.FirstOrDefault(x => x.IsActive) ?? _flexibleTestSessions.FirstOrDefault());
     }
 
@@ -389,6 +390,7 @@ public partial class MainWindow
             return false;
         }
         RefreshFlexibleComparisons(_selectedFlexibleSession);
+        RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: false);
         SetFlexibleStatus($"Saved {_flexibleTestSessions.Count} session(s) and {_flexibleSpecimens.Count} specimen(s); raw readings and method snapshots preserved.", false);
         return true;
     }
