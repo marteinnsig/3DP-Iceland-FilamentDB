@@ -819,7 +819,7 @@ internal static class HelpContentCatalog
             """
             Experimental Testing is separate from native measurement entry. A series defines the material, experiment and default unit;
             Add Series prefers the selected active Material and otherwise uses the first active Material. Runs hold controlled values
-            and canonical Tensile, Impact and Stiffness editors plus the specimen-aware Flexible Materials workspace. Valid edits
+            and canonical Tensile, Impact and Stiffness editors. Valid edits
             auto-calculate and auto-save.
 
             Only one Run can be baseline per Series. Runs default Planned and Active.
@@ -1140,11 +1140,13 @@ internal static class HelpContentCatalog
             """,
             "experimental stiffness", "revolutions", "degrees", "deflection", "modulus", "auto-save"),
         new(
-            "experimental.measurements.flexible", "Experimental testing", "Flexible Materials reference",
+            "flexible-testing.overview", "Testing and engineering", "Flexible Material Testing",
             "Record manual TPU compression, relaxation, recovery and Shore readings without mixing methods or specimens.",
             """
-            Where: Experimental Testing > select a Series > select a Run > Flexible Materials. Add a Compression Specimen or Shore
-            Specimen, then edit the specimen's actual geometry and print/method snapshot. The Ø20 x 10 mm, 100% rectilinear, 0.4 mm
+            Where: Flexible Material Testing. Add a MaterialID-linked Test Session; the Material selector shows MaterialID together with
+            Website Display Name. Use the specimen buttons above the specimen table, then select a specimen and use the reading buttons
+            below that table. Edit its actual geometry and print/method snapshot. A migrated session may show its former Experimental Run as read-only
+            provenance, but new sessions do not require an Experimental Series or Run. The Ø9 x 9 mm, 100% rectilinear, 0.4 mm
             nozzle, 0.20 mm layer, two-wall and three-top/bottom values are editable starting values, not method requirements.
 
             Select the specimen before adding Compression, Stress Relaxation, Recovery or Shore rows. Compression calculates strain
@@ -2442,6 +2444,7 @@ internal static class HelpContentCatalog
         "Impact Measurements" => "measurements.impact",
         "Stiffness Measurements" => "measurements.stiffness",
         "Heat Deflection" => "measurements.thermal-deflection",
+        "Flexible Material Testing" => "flexible-testing.overview",
         "Experimental Testing" => "experimental.series",
         "Rankings Dashboard" => "analysis.rankings",
         "Category Rankings" => "analysis.category-rankings",
@@ -2460,7 +2463,6 @@ internal static class HelpContentCatalog
             "Tensile" => "experimental.measurements.tensile",
             "Impact" => "experimental.measurements.impact",
             "Stiffness" => "experimental.measurements.stiffness",
-            "Flexible Materials" => "experimental.measurements.flexible",
             "Results" => resultsHeader switch
             {
                 "Dashboard" => "experimental.results.dashboard",

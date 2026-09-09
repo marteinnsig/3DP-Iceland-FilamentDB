@@ -1,3 +1,15 @@
+# v64.0.1 - Standalone Flexible-material Testing Workspace
+
+Date: 2026-09-09
+
+- Debug and Release solution builds pass with zero warnings/errors; Help and release-documentation gates pass.
+- Schema v44 owns MaterialID-linked flexible-test sessions and preserves v43 specimen/readings with optional legacy Run provenance.
+- Final disposable profile `20260909000443-cb78306f` passes Full Data Verification 438/438, 24/24 top-level tabs,
+  24/24 Navigate commands, 16/16 nested tabs and exact database/business-state recovery.
+- Owner confirms MaterialID plus Website Display Name, corrected action order and the formerly crashing Add Compression Specimen path.
+- New specimens default to editable 9 mm diameter and 9 mm height/thickness; historical geometry is not rewritten.
+- v64.0.1 and the v64 milestone are runtime accepted; Production and FTPS remain blocked.
+
 # v63.0.1 - Public Heat Deflection Methodology
 
 Date: 2026-08-24

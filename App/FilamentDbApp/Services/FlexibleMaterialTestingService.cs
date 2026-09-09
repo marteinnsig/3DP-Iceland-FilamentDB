@@ -58,8 +58,8 @@ public sealed class FlexibleMaterialTestingService
         var specimenIds = specimens.Select(x => x.SpecimenId).ToHashSet(StringComparer.OrdinalIgnoreCase);
         foreach (var specimen in specimens)
         {
-            if (string.IsNullOrWhiteSpace(specimen.SpecimenId) || string.IsNullOrWhiteSpace(specimen.ExperimentalRunId))
-                errors.Add("Every flexible-test specimen requires stable specimen and run identities.");
+            if (string.IsNullOrWhiteSpace(specimen.SpecimenId) || string.IsNullOrWhiteSpace(specimen.FlexibleTestSessionId))
+                errors.Add("Every flexible-test specimen requires stable specimen and test-session identities.");
             ValidatePositiveOptional(specimen.DiameterMm, "Specimen diameter", errors);
             ValidatePositiveOptional(specimen.InitialHeightMm, "Specimen initial height", errors);
             ValidatePositiveOptional(specimen.ThicknessMm, "Specimen thickness", errors);

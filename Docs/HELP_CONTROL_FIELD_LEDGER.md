@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v64.0.0 flexible-material comparative testing
+Version: v64.0.1 standalone flexible-material testing workspace
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted
@@ -39,16 +39,16 @@ Source snapshot: canonical runtime-accepted v55.0.6 on 2026-07-28.
 
 | Source | Discovered candidates | Reconciliation requirement |
 |---|---:|---|
-| Top-level tabs | 22 | Preserve accepted overview and contextual mappings |
-| Nested tabs | 17 | Preserve accepted nested-aware mappings, including Flexible Materials |
-| XAML buttons | 168 | Map visible action, handler, owner and Help subsection |
-| XAML menu items | 31 | Separate headings/separators from invoked commands |
+| Top-level tabs | 24 | Preserve accepted overview and contextual mappings, including Flexible Material Testing |
+| Nested tabs | 16 | Preserve accepted Experimental and Material Detail nested-aware mappings |
+| XAML buttons | 170 | Map visible action, handler, owner and Help subsection |
+| XAML menu items | 60 | Separate headings/separators from invoked commands |
 | XAML text boxes | 35 | Determine editable, read-only, multiline and generated output |
 | XAML password boxes | 2 | Record secret ownership and non-persistence boundary |
 | XAML combo boxes | 49 | Record source, allowed choice, default and save timing |
 | XAML checkboxes | 10 | Record true/false effect, persistence and dependent states |
-| XAML data grids | 37 | Reconcile grid-level read-only state and runtime columns |
-| XAML grid-column declarations | 414 | Resolve binding, grid owner and actual editability |
+| XAML data grids | 38 | Reconcile grid-level read-only state and runtime columns |
+| XAML grid-column declarations | 420 | Resolve binding, grid owner and actual editability |
 | Runtime-built windows/dialogs | open | Inventory constructors, generated controls and confirmations |
 | Owner-drawn/custom grids | 6 known | Reconcile column builders and supported edit interactions |
 

@@ -1,4 +1,13 @@
-# Current Build Notes - v64.0.0 Accepted Release
+# Current Build Notes - v64.0.1 Accepted Release
+
+## v64.0.1 standalone flexible-material testing workspace
+
+Flexible Material Testing is now a top-level workspace. Create a MaterialID-linked Test Session before adding specimens; Experimental
+Testing continues to own controlled parameter Series/Runs only. Schema v44 migrates existing flexible-test data while retaining its
+former Experimental Run as provenance. Isolated Debug/Release builds, Help and documentation gates pass; disposable profile
+`20260909000443-cb78306f` passes Full Data Verification 438/438 with exact-state recovery. Owner runtime acceptance passes.
+The Material selector shows MaterialID plus Website Display Name, specimen actions sit above the specimen table and reading actions below.
+New specimens default to the owner's current 9 mm diameter and 9 mm height/thickness geometry; saved historical dimensions are untouched.
 
 ## v64.0.0 TPU compression and Shore measurement foundation
 
@@ -3972,3 +3981,8 @@ material testing enquiries. It prepares an addressed email to
 - Fixed the v44.7.7 Stage 5I candidate Fast Materials apply/reload loop: canonical validation refresh now waits for the existing
   edit debounce after the Fast view has accepted its snapshot change, so checkbox and text edits no longer reopen the unapplied-change
   prompt recursively.
+## v64.0.1 candidate
+
+Flexible Material Testing is now a standalone top-level workspace. Create a MaterialID-linked test session there before adding specimens;
+Experimental Testing continues to own controlled parameter Series/Runs only. Schema v44 migrates existing flexible-test data without
+discarding its former Run provenance.

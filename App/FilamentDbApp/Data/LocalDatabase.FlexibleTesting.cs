@@ -61,9 +61,92 @@ CREATE TABLE IF NOT EXISTS ShoreHardnessReadings (
 CREATE INDEX IF NOT EXISTS IX_ShoreReadings_SpecimenScale ON ShoreHardnessReadings(SpecimenId, ShoreScale);
 """;
         command.ExecuteNonQuery();
+        EnsureStandaloneFlexibleTestingSessions(connection);
     }
 
-    public (List<FlexibleTestSpecimenRecord> Specimens, List<CompressionPointRecord> Compression,
+    private static void EnsureStandaloneFlexibleTestingSessions(SqliteConnection connection)
+    {
+        using (var create = connection.CreateCommand())
+        {
+            create.CommandText = """
+CREATE TABLE IF NOT EXISTS FlexibleTestSessions (
+    FlexibleTestSessionId TEXT PRIMARY KEY,
+    MaterialID TEXT NOT NULL,
+    SessionLabel TEXT NOT NULL,
+    MeasuredDate TEXT, Notes TEXT, LegacyExperimentalRunId TEXT,
+    IsActive INTEGER NOT NULL DEFAULT 1,
+    CreatedAtUtc TEXT NOT NULL, UpdatedAtUtc TEXT NOT NULL,
+    FOREIGN KEY (MaterialID) REFERENCES NativeMaterialManagerRows(MaterialID) ON DELETE RESTRICT
+);
+CREATE INDEX IF NOT EXISTS IX_FlexibleTestSessions_MaterialId ON FlexibleTestSessions(MaterialID);
+""";
+            create.ExecuteNonQuery();
+        }
+        if (!HasColumn(connection, "FlexibleTestSpecimens", "FlexibleTestSessionId"))
+        {
+            using (var foreignKeys = connection.CreateCommand()) { foreignKeys.CommandText = "PRAGMA foreign_keys=OFF;"; foreignKeys.ExecuteNonQuery(); }
+            using var migrate = connection.CreateCommand();
+            migrate.CommandText = """
+INSERT OR IGNORE INTO FlexibleTestSessions
+(FlexibleTestSessionId,MaterialID,SessionLabel,MeasuredDate,Notes,LegacyExperimentalRunId,IsActive,CreatedAtUtc,UpdatedAtUtc)
+SELECT 'FTS-LEGACY-' || r.ExperimentalRunId, s.MaterialID,
+       'Migrated Experimental Run ' || r.ExperimentalRunId, COALESCE(r.MeasuredDate,''),
+       'Migrated losslessly from the v64.0.0 Experimental Testing host.', r.ExperimentalRunId, r.IsActive,
+       COALESCE(r.CreatedAtUtc,CURRENT_TIMESTAMP), COALESCE(r.UpdatedAtUtc,CURRENT_TIMESTAMP)
+FROM FlexibleTestSpecimens f
+JOIN ExperimentalRuns r ON r.ExperimentalRunId=f.ExperimentalRunId
+JOIN MaterialExperiments s ON s.MaterialExperimentId=r.MaterialExperimentId
+GROUP BY r.ExperimentalRunId;
+CREATE TABLE FlexibleTestSpecimens_v44 (
+    SpecimenId TEXT PRIMARY KEY, FlexibleTestSessionId TEXT, ExperimentalRunId TEXT,
+    SpecimenLabel TEXT NOT NULL, IntendedTest TEXT NOT NULL, Shape TEXT NOT NULL,
+    DiameterMm TEXT, InitialHeightMm TEXT, ThicknessMm TEXT, MassG TEXT,
+    InfillPercent TEXT, InfillPattern TEXT, NozzleDiameterMm TEXT, LayerHeightMm TEXT,
+    Perimeters TEXT, TopLayers TEXT, BottomLayers TEXT, PrintTemperatureC TEXT,
+    ExtrusionMultiplier TEXT, PrintSettings TEXT, MethodVersion TEXT, MethodNotes TEXT,
+    CreatedAtUtc TEXT NOT NULL, UpdatedAtUtc TEXT NOT NULL,
+    FOREIGN KEY (FlexibleTestSessionId) REFERENCES FlexibleTestSessions(FlexibleTestSessionId) ON DELETE CASCADE,
+    FOREIGN KEY (ExperimentalRunId) REFERENCES ExperimentalRuns(ExperimentalRunId) ON DELETE SET NULL
+);
+INSERT INTO FlexibleTestSpecimens_v44
+SELECT SpecimenId,'FTS-LEGACY-' || ExperimentalRunId,ExperimentalRunId,SpecimenLabel,IntendedTest,Shape,
+       DiameterMm,InitialHeightMm,ThicknessMm,MassG,InfillPercent,InfillPattern,NozzleDiameterMm,LayerHeightMm,
+       Perimeters,TopLayers,BottomLayers,PrintTemperatureC,ExtrusionMultiplier,PrintSettings,MethodVersion,MethodNotes,
+       CreatedAtUtc,UpdatedAtUtc
+FROM FlexibleTestSpecimens;
+DROP TABLE FlexibleTestSpecimens;
+ALTER TABLE FlexibleTestSpecimens_v44 RENAME TO FlexibleTestSpecimens;
+CREATE INDEX IX_FlexibleTestSpecimens_SessionId ON FlexibleTestSpecimens(FlexibleTestSessionId);
+CREATE INDEX IX_FlexibleTestSpecimens_RunId ON FlexibleTestSpecimens(ExperimentalRunId);
+""";
+            migrate.ExecuteNonQuery();
+            using var enable = connection.CreateCommand(); enable.CommandText = "PRAGMA foreign_keys=ON;"; enable.ExecuteNonQuery();
+        }
+        using var backfill = connection.CreateCommand();
+        backfill.CommandText = """
+INSERT OR IGNORE INTO FlexibleTestSessions
+(FlexibleTestSessionId,MaterialID,SessionLabel,MeasuredDate,Notes,LegacyExperimentalRunId,IsActive,CreatedAtUtc,UpdatedAtUtc)
+SELECT 'FTS-LEGACY-' || r.ExperimentalRunId,s.MaterialID,'Migrated Experimental Run ' || r.ExperimentalRunId,
+       COALESCE(r.MeasuredDate,''),'Migrated losslessly from the v64.0.0 Experimental Testing host.',r.ExperimentalRunId,r.IsActive,
+       COALESCE(r.CreatedAtUtc,CURRENT_TIMESTAMP),COALESCE(r.UpdatedAtUtc,CURRENT_TIMESTAMP)
+FROM FlexibleTestSpecimens f JOIN ExperimentalRuns r ON r.ExperimentalRunId=f.ExperimentalRunId
+JOIN MaterialExperiments s ON s.MaterialExperimentId=r.MaterialExperimentId
+WHERE COALESCE(f.FlexibleTestSessionId,'')='' GROUP BY r.ExperimentalRunId;
+UPDATE FlexibleTestSpecimens SET FlexibleTestSessionId='FTS-LEGACY-' || ExperimentalRunId
+WHERE COALESCE(FlexibleTestSessionId,'')='' AND COALESCE(ExperimentalRunId,'')<>'';
+""";
+        backfill.ExecuteNonQuery();
+    }
+
+    private static bool HasColumn(SqliteConnection connection, string table, string column)
+    {
+        using var command = connection.CreateCommand(); command.CommandText = $"PRAGMA table_info({table});";
+        using var reader = command.ExecuteReader();
+        while (reader.Read()) if (string.Equals(reader.GetString(1), column, StringComparison.OrdinalIgnoreCase)) return true;
+        return false;
+    }
+
+    public (List<FlexibleTestSessionRecord> Sessions, List<FlexibleTestSpecimenRecord> Specimens, List<CompressionPointRecord> Compression,
         List<StressRelaxationPointRecord> Relaxation, List<RecoveryMeasurementRecord> Recovery,
         List<ShoreHardnessReadingRecord> Shore) LoadFlexibleTestingGraph()
     {
@@ -71,15 +154,17 @@ CREATE INDEX IF NOT EXISTS IX_ShoreReadings_SpecimenScale ON ShoreHardnessReadin
         connection.Open();
         Initialize();
         EnsureFlexibleTestingSchema(connection);
+        var sessions = ReadSessions(connection);
         var specimens = ReadSpecimens(connection);
         var compression = ReadCompression(connection);
         var relaxation = ReadRelaxation(connection);
         var recovery = ReadRecovery(connection);
         var shore = ReadShore(connection);
-        return (specimens, compression, relaxation, recovery, shore);
+        return (sessions, specimens, compression, relaxation, recovery, shore);
     }
 
     public void SynchronizeFlexibleTestingGraph(
+        IReadOnlyCollection<FlexibleTestSessionRecord> sessions,
         IReadOnlyCollection<FlexibleTestSpecimenRecord> specimens,
         IReadOnlyCollection<CompressionPointRecord> compression,
         IReadOnlyCollection<StressRelaxationPointRecord> relaxation,
@@ -92,16 +177,31 @@ CREATE INDEX IF NOT EXISTS IX_ShoreReadings_SpecimenScale ON ShoreHardnessReadin
         using var transaction = connection.BeginTransaction();
         var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);
 
+        foreach (var row in sessions)
+        {
+            if (string.IsNullOrWhiteSpace(row.CreatedAtUtc)) row.CreatedAtUtc = now;
+            row.UpdatedAtUtc = now;
+            Upsert(connection, transaction, """
+INSERT INTO FlexibleTestSessions
+(FlexibleTestSessionId,MaterialID,SessionLabel,MeasuredDate,Notes,LegacyExperimentalRunId,IsActive,CreatedAtUtc,UpdatedAtUtc)
+VALUES ($id,$material,$label,$date,$notes,$legacy,$active,$created,$updated)
+ON CONFLICT(FlexibleTestSessionId) DO UPDATE SET MaterialID=excluded.MaterialID,SessionLabel=excluded.SessionLabel,
+MeasuredDate=excluded.MeasuredDate,Notes=excluded.Notes,LegacyExperimentalRunId=excluded.LegacyExperimentalRunId,
+IsActive=excluded.IsActive,UpdatedAtUtc=excluded.UpdatedAtUtc;
+""",("$id",row.FlexibleTestSessionId),("$material",row.MaterialID),("$label",row.SessionLabel),("$date",row.MeasuredDate),
+                ("$notes",row.Notes),("$legacy",row.LegacyExperimentalRunId),("$active",row.IsActive?1:0),("$created",row.CreatedAtUtc),("$updated",now));
+        }
+
         foreach (var row in specimens)
         {
             if (string.IsNullOrWhiteSpace(row.CreatedAtUtc)) row.CreatedAtUtc = now;
             row.UpdatedAtUtc = now;
             Upsert(connection, transaction, """
 INSERT INTO FlexibleTestSpecimens
-(SpecimenId,ExperimentalRunId,SpecimenLabel,IntendedTest,Shape,DiameterMm,InitialHeightMm,ThicknessMm,MassG,InfillPercent,InfillPattern,NozzleDiameterMm,LayerHeightMm,Perimeters,TopLayers,BottomLayers,PrintTemperatureC,ExtrusionMultiplier,PrintSettings,MethodVersion,MethodNotes,CreatedAtUtc,UpdatedAtUtc)
-VALUES ($id,$run,$label,$test,$shape,$diameter,$height,$thickness,$mass,$infill,$pattern,$nozzle,$layer,$walls,$top,$bottom,$temperature,$multiplier,$settings,$version,$notes,$created,$updated)
-ON CONFLICT(SpecimenId) DO UPDATE SET ExperimentalRunId=excluded.ExperimentalRunId,SpecimenLabel=excluded.SpecimenLabel,IntendedTest=excluded.IntendedTest,Shape=excluded.Shape,DiameterMm=excluded.DiameterMm,InitialHeightMm=excluded.InitialHeightMm,ThicknessMm=excluded.ThicknessMm,MassG=excluded.MassG,InfillPercent=excluded.InfillPercent,InfillPattern=excluded.InfillPattern,NozzleDiameterMm=excluded.NozzleDiameterMm,LayerHeightMm=excluded.LayerHeightMm,Perimeters=excluded.Perimeters,TopLayers=excluded.TopLayers,BottomLayers=excluded.BottomLayers,PrintTemperatureC=excluded.PrintTemperatureC,ExtrusionMultiplier=excluded.ExtrusionMultiplier,PrintSettings=excluded.PrintSettings,MethodVersion=excluded.MethodVersion,MethodNotes=excluded.MethodNotes,UpdatedAtUtc=excluded.UpdatedAtUtc;
-""", ("$id",row.SpecimenId),("$run",row.ExperimentalRunId),("$label",row.SpecimenLabel),("$test",row.IntendedTest),("$shape",row.Shape),("$diameter",row.DiameterMm),("$height",row.InitialHeightMm),("$thickness",row.ThicknessMm),("$mass",row.MassG),("$infill",row.InfillPercent),("$pattern",row.InfillPattern),("$nozzle",row.NozzleDiameterMm),("$layer",row.LayerHeightMm),("$walls",row.Perimeters),("$top",row.TopLayers),("$bottom",row.BottomLayers),("$temperature",row.PrintTemperatureC),("$multiplier",row.ExtrusionMultiplier),("$settings",row.PrintSettings),("$version",row.MethodVersion),("$notes",row.MethodNotes),("$created",row.CreatedAtUtc),("$updated",now));
+(SpecimenId,FlexibleTestSessionId,ExperimentalRunId,SpecimenLabel,IntendedTest,Shape,DiameterMm,InitialHeightMm,ThicknessMm,MassG,InfillPercent,InfillPattern,NozzleDiameterMm,LayerHeightMm,Perimeters,TopLayers,BottomLayers,PrintTemperatureC,ExtrusionMultiplier,PrintSettings,MethodVersion,MethodNotes,CreatedAtUtc,UpdatedAtUtc)
+VALUES ($id,$session,$run,$label,$test,$shape,$diameter,$height,$thickness,$mass,$infill,$pattern,$nozzle,$layer,$walls,$top,$bottom,$temperature,$multiplier,$settings,$version,$notes,$created,$updated)
+ON CONFLICT(SpecimenId) DO UPDATE SET FlexibleTestSessionId=excluded.FlexibleTestSessionId,ExperimentalRunId=excluded.ExperimentalRunId,SpecimenLabel=excluded.SpecimenLabel,IntendedTest=excluded.IntendedTest,Shape=excluded.Shape,DiameterMm=excluded.DiameterMm,InitialHeightMm=excluded.InitialHeightMm,ThicknessMm=excluded.ThicknessMm,MassG=excluded.MassG,InfillPercent=excluded.InfillPercent,InfillPattern=excluded.InfillPattern,NozzleDiameterMm=excluded.NozzleDiameterMm,LayerHeightMm=excluded.LayerHeightMm,Perimeters=excluded.Perimeters,TopLayers=excluded.TopLayers,BottomLayers=excluded.BottomLayers,PrintTemperatureC=excluded.PrintTemperatureC,ExtrusionMultiplier=excluded.ExtrusionMultiplier,PrintSettings=excluded.PrintSettings,MethodVersion=excluded.MethodVersion,MethodNotes=excluded.MethodNotes,UpdatedAtUtc=excluded.UpdatedAtUtc;
+""", ("$id",row.SpecimenId),("$session",row.FlexibleTestSessionId),("$run",OptionalForeignKey(row.ExperimentalRunId)),("$label",row.SpecimenLabel),("$test",row.IntendedTest),("$shape",row.Shape),("$diameter",row.DiameterMm),("$height",row.InitialHeightMm),("$thickness",row.ThicknessMm),("$mass",row.MassG),("$infill",row.InfillPercent),("$pattern",row.InfillPattern),("$nozzle",row.NozzleDiameterMm),("$layer",row.LayerHeightMm),("$walls",row.Perimeters),("$top",row.TopLayers),("$bottom",row.BottomLayers),("$temperature",row.PrintTemperatureC),("$multiplier",row.ExtrusionMultiplier),("$settings",row.PrintSettings),("$version",row.MethodVersion),("$notes",row.MethodNotes),("$created",row.CreatedAtUtc),("$updated",now));
         }
         foreach (var row in compression)
         {
@@ -129,6 +229,7 @@ ON CONFLICT(SpecimenId) DO UPDATE SET ExperimentalRunId=excluded.ExperimentalRun
         DeleteMissing(connection, transaction, "RecoveryMeasurements", "RecoveryMeasurementId", recovery.Select(x => x.RecoveryMeasurementId));
         DeleteMissing(connection, transaction, "ShoreHardnessReadings", "ShoreReadingId", shore.Select(x => x.ShoreReadingId));
         DeleteMissing(connection, transaction, "FlexibleTestSpecimens", "SpecimenId", specimens.Select(x => x.SpecimenId));
+        DeleteMissing(connection, transaction, "FlexibleTestSessions", "FlexibleTestSessionId", sessions.Select(x => x.FlexibleTestSessionId));
         using var foreignKeys = connection.CreateCommand();
         foreignKeys.Transaction = transaction;
         foreignKeys.CommandText = "PRAGMA foreign_key_check;";
@@ -145,9 +246,9 @@ ON CONFLICT(SpecimenId) DO UPDATE SET ExperimentalRunId=excluded.ExperimentalRun
         var recovery = Services.FlexibleMaterialTestingService.CalculateResidualHeightLossPercent("10", "9.5");
         var specimens = new[]
         {
-            new FlexibleTestSpecimenRecord { SpecimenId="S1",Shape="Cylinder",DiameterMm="20",InitialHeightMm="10",InfillPercent="30",InfillPattern="Gyroid" },
-            new FlexibleTestSpecimenRecord { SpecimenId="S2",Shape="Cylinder",DiameterMm="20,0",InitialHeightMm="10,0",InfillPercent="30,0",InfillPattern="Gyroid" },
-            new FlexibleTestSpecimenRecord { SpecimenId="S3",Shape="Cylinder",DiameterMm="20",InitialHeightMm="10",InfillPercent="100",InfillPattern="Rectilinear" }
+            new FlexibleTestSpecimenRecord { SpecimenId="S1",FlexibleTestSessionId="FTS-1",Shape="Cylinder",DiameterMm="20",InitialHeightMm="10",InfillPercent="30",InfillPattern="Gyroid" },
+            new FlexibleTestSpecimenRecord { SpecimenId="S2",FlexibleTestSessionId="FTS-1",Shape="Cylinder",DiameterMm="20,0",InitialHeightMm="10,0",InfillPercent="30,0",InfillPattern="Gyroid" },
+            new FlexibleTestSpecimenRecord { SpecimenId="S3",FlexibleTestSessionId="FTS-1",Shape="Cylinder",DiameterMm="20",InitialHeightMm="10",InfillPercent="100",InfillPattern="Rectilinear" }
         };
         var points = new[]
         {
@@ -169,6 +270,14 @@ ON CONFLICT(SpecimenId) DO UPDATE SET ExperimentalRunId=excluded.ExperimentalRun
                string.Equals(forceComparison.Mean, 105.5d.ToString("0.###", CultureInfo.CurrentCulture), StringComparison.Ordinal) &&
                comparisons.Count(x => x.Metric.StartsWith("Shore ", StringComparison.Ordinal)) == 2 &&
                comparisons.All(x => x.SpecimenCount <= 2) &&
+               Services.FlexibleMaterialTestingService.Validate(
+                   [new FlexibleTestSpecimenRecord { SpecimenId="STANDALONE",FlexibleTestSessionId="FTS-STANDALONE" }],
+                   [], [], [], []).Count == 0 &&
+               OptionalForeignKey(string.Empty) is DBNull &&
+               string.Equals(OptionalForeignKey(" RUN-1 ").ToString(), "RUN-1", StringComparison.Ordinal) &&
+               new FlexibleTestSpecimenRecord().DiameterMm == "9" &&
+               new FlexibleTestSpecimenRecord().InitialHeightMm == "9" &&
+               new FlexibleTestSpecimenRecord().ThicknessMm == "9" &&
                Services.FlexibleMaterialTestingService.CalculateStrainPercent("1", "") is null &&
                Services.FlexibleMaterialTestingService.CalculateApparentStressMpa("100", "0") is null;
     }
@@ -184,17 +293,31 @@ ON CONFLICT(SpecimenId) DO UPDATE SET ExperimentalRunId=excluded.ExperimentalRun
             {
                 connection.Open();
                 using var parent = connection.CreateCommand();
-                parent.CommandText = "CREATE TABLE ExperimentalRuns(ExperimentalRunId TEXT PRIMARY KEY); INSERT INTO ExperimentalRuns VALUES ('RUN-VERIFY');";
+                parent.CommandText = """
+CREATE TABLE NativeMaterialManagerRows(MaterialID TEXT PRIMARY KEY);
+INSERT INTO NativeMaterialManagerRows VALUES ('MAT-VERIFY');
+CREATE TABLE MaterialExperiments(MaterialExperimentId TEXT PRIMARY KEY,MaterialID TEXT NOT NULL);
+INSERT INTO MaterialExperiments VALUES ('SERIES-VERIFY','MAT-VERIFY');
+CREATE TABLE ExperimentalRuns(ExperimentalRunId TEXT PRIMARY KEY,MaterialExperimentId TEXT NOT NULL,MeasuredDate TEXT,IsActive INTEGER,CreatedAtUtc TEXT,UpdatedAtUtc TEXT);
+INSERT INTO ExperimentalRuns VALUES ('RUN-VERIFY','SERIES-VERIFY','2026-01-01',1,'2026-01-01','2026-01-01');
+CREATE TABLE FlexibleTestSpecimens (
+ SpecimenId TEXT PRIMARY KEY,ExperimentalRunId TEXT NOT NULL,SpecimenLabel TEXT NOT NULL,IntendedTest TEXT NOT NULL,Shape TEXT NOT NULL,
+ DiameterMm TEXT,InitialHeightMm TEXT,ThicknessMm TEXT,MassG TEXT,InfillPercent TEXT,InfillPattern TEXT,NozzleDiameterMm TEXT,LayerHeightMm TEXT,
+ Perimeters TEXT,TopLayers TEXT,BottomLayers TEXT,PrintTemperatureC TEXT,ExtrusionMultiplier TEXT,PrintSettings TEXT,MethodVersion TEXT,MethodNotes TEXT,
+ CreatedAtUtc TEXT NOT NULL,UpdatedAtUtc TEXT NOT NULL);
+INSERT INTO FlexibleTestSpecimens VALUES ('SPEC-1','RUN-VERIFY','S1','Compression','Cylinder','20','10','','','30','Gyroid','0.4','0.20','2','3','3','225','0.95','Z compression','TPU-COMP-v1','in-house','2026-01-01','2026-01-01');
+""";
                 parent.ExecuteNonQuery();
                 EnsureFlexibleTestingSchema(connection);
                 using var insert = connection.CreateCommand();
                 insert.CommandText = """
-INSERT INTO FlexibleTestSpecimens VALUES ('SPEC-1','RUN-VERIFY','S1','Compression','Cylinder','20','10','','','30','Gyroid','0.4','0.20','2','3','3','225','0.95','Z compression','TPU-COMP-v1','in-house','2026-01-01','2026-01-01');
 INSERT INTO CompressionMeasurementPoints VALUES ('CMP-1','SPEC-1',2,'25',0,'2.1','500','10','force limit','2026-01-01');
 INSERT INTO StressRelaxationPoints VALUES ('REL-1','SPEC-1',2,'25','60','300','actual time','2026-01-01');
 INSERT INTO RecoveryMeasurements VALUES ('RCV-1','SPEC-1',2,'10','9.5','3600','25','60','not compression set','2026-01-01');
 INSERT INTO ShoreHardnessReadings VALUES ('SHR-A','SPEC-1','A','92','1','10','measured','2026-01-01');
 INSERT INTO ShoreHardnessReadings VALUES ('SHR-D','SPEC-1','D','38','1','10','separate scale','2026-01-01');
+INSERT INTO FlexibleTestSessions VALUES ('FTS-STANDALONE','MAT-VERIFY','Standalone','','','',1,'2026-01-01','2026-01-01');
+INSERT INTO FlexibleTestSpecimens VALUES ('SPEC-STANDALONE','FTS-STANDALONE',NULL,'Standalone','Compression','Cylinder','20','10','','','100','Rectilinear','0.4','0.20','2','3','3','','','','TPU-COMP-v1','in-house','2026-01-01','2026-01-01');
 """;
                 insert.ExecuteNonQuery();
             }
@@ -205,9 +328,12 @@ INSERT INTO ShoreHardnessReadings VALUES ('SHR-D','SPEC-1','D','38','1','10','se
 SELECT
  (SELECT InfillPattern || '|' || PrintTemperatureC || '|' || ExtrusionMultiplier FROM FlexibleTestSpecimens WHERE SpecimenId='SPEC-1') || ';' ||
  (SELECT CycleNumber || '|' || TargetStrainPercent || '|' || TargetReached || '|' || HoldTimeSeconds FROM CompressionMeasurementPoints WHERE CompressionPointId='CMP-1') || ';' ||
- (SELECT COUNT(DISTINCT ShoreScale) FROM ShoreHardnessReadings WHERE SpecimenId='SPEC-1');
+ (SELECT COUNT(DISTINCT ShoreScale) FROM ShoreHardnessReadings WHERE SpecimenId='SPEC-1') || ';' ||
+ (SELECT MaterialID || '|' || LegacyExperimentalRunId FROM FlexibleTestSessions WHERE FlexibleTestSessionId='FTS-LEGACY-RUN-VERIFY') || ';' ||
+ (SELECT FlexibleTestSessionId || '|' || ExperimentalRunId FROM FlexibleTestSpecimens WHERE SpecimenId='SPEC-1') || ';' ||
+ (SELECT CASE WHEN ExperimentalRunId IS NULL THEN 'NULL-RUN' ELSE 'BAD-RUN' END FROM FlexibleTestSpecimens WHERE SpecimenId='SPEC-STANDALONE');
 """;
-            return string.Equals(verify.ExecuteScalar()?.ToString(), "Gyroid|225|0.95;2|25|0|10;2", StringComparison.Ordinal);
+            return string.Equals(verify.ExecuteScalar()?.ToString(), "Gyroid|225|0.95;2|25|0|10;2;MAT-VERIFY|RUN-VERIFY;FTS-LEGACY-RUN-VERIFY|RUN-VERIFY;NULL-RUN", StringComparison.Ordinal);
         }
         catch { return false; }
         finally
@@ -224,6 +350,9 @@ SELECT
         command.ExecuteNonQuery();
     }
 
+    private static object OptionalForeignKey(string value) =>
+        string.IsNullOrWhiteSpace(value) ? DBNull.Value : value.Trim();
+
     private static void DeleteMissing(SqliteConnection connection, SqliteTransaction transaction, string table, string idColumn, IEnumerable<string> retained)
     {
         var ids = retained.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
@@ -238,7 +367,8 @@ SELECT
         command.ExecuteNonQuery();
     }
 
-    private static List<FlexibleTestSpecimenRecord> ReadSpecimens(SqliteConnection c) => Read(c, "SELECT * FROM FlexibleTestSpecimens ORDER BY ExperimentalRunId,SpecimenLabel,SpecimenId;", r => new FlexibleTestSpecimenRecord { SpecimenId=S(r,"SpecimenId"),ExperimentalRunId=S(r,"ExperimentalRunId"),SpecimenLabel=S(r,"SpecimenLabel"),IntendedTest=S(r,"IntendedTest"),Shape=S(r,"Shape"),DiameterMm=S(r,"DiameterMm"),InitialHeightMm=S(r,"InitialHeightMm"),ThicknessMm=S(r,"ThicknessMm"),MassG=S(r,"MassG"),InfillPercent=S(r,"InfillPercent"),InfillPattern=S(r,"InfillPattern"),NozzleDiameterMm=S(r,"NozzleDiameterMm"),LayerHeightMm=S(r,"LayerHeightMm"),Perimeters=S(r,"Perimeters"),TopLayers=S(r,"TopLayers"),BottomLayers=S(r,"BottomLayers"),PrintTemperatureC=S(r,"PrintTemperatureC"),ExtrusionMultiplier=S(r,"ExtrusionMultiplier"),PrintSettings=S(r,"PrintSettings"),MethodVersion=S(r,"MethodVersion"),MethodNotes=S(r,"MethodNotes"),CreatedAtUtc=S(r,"CreatedAtUtc"),UpdatedAtUtc=S(r,"UpdatedAtUtc") });
+    private static List<FlexibleTestSessionRecord> ReadSessions(SqliteConnection c) => Read(c, "SELECT * FROM FlexibleTestSessions ORDER BY MeasuredDate DESC,SessionLabel;", r => new FlexibleTestSessionRecord { FlexibleTestSessionId=S(r,"FlexibleTestSessionId"),MaterialID=S(r,"MaterialID"),SessionLabel=S(r,"SessionLabel"),MeasuredDate=S(r,"MeasuredDate"),Notes=S(r,"Notes"),LegacyExperimentalRunId=S(r,"LegacyExperimentalRunId"),IsActive=I(r,"IsActive")!=0,CreatedAtUtc=S(r,"CreatedAtUtc"),UpdatedAtUtc=S(r,"UpdatedAtUtc") });
+    private static List<FlexibleTestSpecimenRecord> ReadSpecimens(SqliteConnection c) => Read(c, "SELECT * FROM FlexibleTestSpecimens ORDER BY FlexibleTestSessionId,SpecimenLabel,SpecimenId;", r => new FlexibleTestSpecimenRecord { SpecimenId=S(r,"SpecimenId"),FlexibleTestSessionId=S(r,"FlexibleTestSessionId"),ExperimentalRunId=S(r,"ExperimentalRunId"),SpecimenLabel=S(r,"SpecimenLabel"),IntendedTest=S(r,"IntendedTest"),Shape=S(r,"Shape"),DiameterMm=S(r,"DiameterMm"),InitialHeightMm=S(r,"InitialHeightMm"),ThicknessMm=S(r,"ThicknessMm"),MassG=S(r,"MassG"),InfillPercent=S(r,"InfillPercent"),InfillPattern=S(r,"InfillPattern"),NozzleDiameterMm=S(r,"NozzleDiameterMm"),LayerHeightMm=S(r,"LayerHeightMm"),Perimeters=S(r,"Perimeters"),TopLayers=S(r,"TopLayers"),BottomLayers=S(r,"BottomLayers"),PrintTemperatureC=S(r,"PrintTemperatureC"),ExtrusionMultiplier=S(r,"ExtrusionMultiplier"),PrintSettings=S(r,"PrintSettings"),MethodVersion=S(r,"MethodVersion"),MethodNotes=S(r,"MethodNotes"),CreatedAtUtc=S(r,"CreatedAtUtc"),UpdatedAtUtc=S(r,"UpdatedAtUtc") });
     private static List<CompressionPointRecord> ReadCompression(SqliteConnection c) => Read(c, "SELECT * FROM CompressionMeasurementPoints ORDER BY SpecimenId,CycleNumber,rowid;", r => new CompressionPointRecord { CompressionPointId=S(r,"CompressionPointId"),SpecimenId=S(r,"SpecimenId"),CycleNumber=I(r,"CycleNumber"),TargetStrainPercent=S(r,"TargetStrainPercent"),TargetReached=I(r,"TargetReached")!=0,DisplacementMm=S(r,"DisplacementMm"),ForceN=S(r,"ForceN"),HoldTimeSeconds=S(r,"HoldTimeSeconds"),Notes=S(r,"Notes"),UpdatedAtUtc=S(r,"UpdatedAtUtc") });
     private static List<StressRelaxationPointRecord> ReadRelaxation(SqliteConnection c) => Read(c, "SELECT * FROM StressRelaxationPoints ORDER BY SpecimenId,CycleNumber,rowid;", r => new StressRelaxationPointRecord { RelaxationPointId=S(r,"RelaxationPointId"),SpecimenId=S(r,"SpecimenId"),CycleNumber=I(r,"CycleNumber"),CompressionPercent=S(r,"CompressionPercent"),ElapsedTimeSeconds=S(r,"ElapsedTimeSeconds"),ForceN=S(r,"ForceN"),Notes=S(r,"Notes"),UpdatedAtUtc=S(r,"UpdatedAtUtc") });
     private static List<RecoveryMeasurementRecord> ReadRecovery(SqliteConnection c) => Read(c, "SELECT * FROM RecoveryMeasurements ORDER BY SpecimenId,CycleNumber,rowid;", r => new RecoveryMeasurementRecord { RecoveryMeasurementId=S(r,"RecoveryMeasurementId"),SpecimenId=S(r,"SpecimenId"),CycleNumber=I(r,"CycleNumber"),InitialHeightMm=S(r,"InitialHeightMm"),HeightAfterRestMm=S(r,"HeightAfterRestMm"),RestTimeSeconds=S(r,"RestTimeSeconds"),CompressionPercent=S(r,"CompressionPercent"),CompressionHoldSeconds=S(r,"CompressionHoldSeconds"),Notes=S(r,"Notes"),UpdatedAtUtc=S(r,"UpdatedAtUtc") });

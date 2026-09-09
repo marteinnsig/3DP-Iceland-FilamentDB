@@ -2,15 +2,15 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v64.0.0 — TPU Compression and Shore Hardness Measurement Foundation**
+Last runtime-accepted baseline: **v64.0.1 — Standalone Flexible-material Testing Workspace**
 
-Current canonical application release: **v64.0.0 — TPU Compression and Shore Hardness Measurement Foundation**
+Current canonical application release: **v64.0.1 — Standalone Flexible-material Testing Workspace**
 
-Current roadmap increment: **No implementation increment selected — feedback ledger has zero active findings**
+Current roadmap increment: **None — next bounded increment awaits owner feedback**
 
-Current acceptance note: v64.0.0 and the v64 flexible-material milestone are owner accepted; Verification passes 438/438.
+Current acceptance note: v64.0.1 and the v64 milestone are owner runtime accepted on 2026-09-08.
 
-Next note: select and record one bounded increment before implementation.
+Next note: review new owner feedback before scheduling another bounded increment.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
 Production and FTPS remain blocked.
 
@@ -52,7 +52,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Complete — v61.0.8 owner accepted 2026-08-14 |
 | v62 | Workflow Reliability Corrections | ★★★★★ | Complete — v62.0.3 owner accepted 2026-08-24 |
 | v63 | Public Website Accuracy and Thermal Methodology | ★★★★☆ | Complete — v63.0.1 owner accepted 2026-08-24 |
-| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — v64.0.0 owner accepted 2026-09-08 |
+| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — v64.0.1 owner accepted |
 
 ## Reconciliation of the older plans
 
@@ -3107,7 +3107,7 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: both recorded v63 website increments are owner accepted, public content is internally consistent and
     no v63 implementation item remains open.
 
-## Complete — v64 Flexible-material Comparative Testing
+## Current — v64 Flexible-material Comparative Testing
 
 - **v64.0.0 — TPU Compression and Shore Hardness Measurement Foundation**
   - State: Complete and owner runtime accepted on 2026-09-08; Full Data Verification passes 438/438.
@@ -3128,10 +3128,29 @@ blockers may change the order, but must be recorded here before implementation.
     comparable-results behavior before v64.0.0 is marked complete.
   - Completion condition met: owner confirms all guided specimen, compression, relaxation, recovery, Shore, comparison and restart
     checks work normally. Debug/Release, Help/docs and disposable exact-state gates pass.
+- **v64.0.1 — Standalone Flexible-material Testing Workspace**
+  - State: Complete and owner runtime accepted on 2026-09-08; Full Data Verification passes 438/438.
+  - Move the accepted TPU compression, relaxation, recovery, Shore and comparison UI from Experimental Testing into one dedicated
+    top-level Flexible Material Testing workspace.
+  - Introduce MaterialID-linked flexible-test sessions as the native parent. Migrate existing schema-v43 specimen graphs losslessly
+    from their Experimental Run/Series material relationship and retain the former RunID as optional historical provenance.
+  - Keep Experimental Testing focused on parameter-study Series/Runs and its existing Tensile, Impact, Stiffness and Results surfaces.
+  - Preserve all v64.0.0 raw readings, calculations, method snapshots, specimen identities and comparison behavior unchanged.
+  - Show MaterialID together with Website Display Name and order actions by workflow: specimen actions above the specimen table,
+    measurement-reading actions below it. Standalone specimens require a session identity, not an Experimental Run identity.
+  - Persist an absent legacy Experimental Run as SQL NULL and contain save failures inside the workspace; a failed add must not terminate
+    the application or leave a phantom in-memory specimen.
+  - Use the owner's current 9 mm diameter and 9 mm height/thickness specimen as the editable new-specimen default; preserve every saved
+    historical dimension unchanged.
+  - Update Navigate, Help, control inventory, recovery compatibility and disposable runtime traversal in the same increment.
+  - Rollback: restore the accepted v64.0.0 UI host while retaining standalone session and migration discovery for supported data.
+  - Completion condition: schema migration, Debug/Release, Help/docs and Full Data Verification pass; owner accepts direct MaterialID
+    session selection, legacy-data visibility, editing, reload and the absence of Flexible Materials inside Experimental Testing.
+  - Completion condition met: owner confirms the corrected Add Compression Specimen path works after the SQL NULL foreign-key fix;
+    Material naming and action order are accepted, and all automated gates pass.
 - **v64 parent closure**
-  - State: Complete on 2026-09-08; the recorded measurement foundation is owner accepted and no v64 item remains open.
-  - Completion condition: the first usable manual flexible-material workflow is accepted without expanding into website publishing,
-    general scoring, equipment integration or standardized Compression Set testing.
+  - State: Complete and owner runtime accepted on 2026-09-08; v64.0.0 remains immutable and accepted.
+  - Completion condition: v64.0.1 is owner accepted and no recorded v64 item remains open.
 
 ### Intentionally unscheduled
 

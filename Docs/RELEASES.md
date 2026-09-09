@@ -1,6 +1,15 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v64.0.1 - Standalone Flexible-material Testing Workspace
+
+Moves compression, stress relaxation, recovery and Shore testing into a dedicated top-level workspace with MaterialID-linked sessions.
+The Material selector shows Website Display Name, specimen and reading actions follow workflow order, and schema v44 migrates v43 graphs
+while retaining optional legacy Run provenance. The owner-reproduced Add Compression Specimen crash is fixed by storing absent Run
+provenance as SQL NULL and containing persistence failures. Debug/Release and Help/docs pass; profile
+`20260909000443-cb78306f` passes Full Data Verification 438/438 with exact-state recovery. Owner runtime acceptance passes on
+2026-09-08. Newly created specimens use the editable 9 mm diameter and 9 mm height/thickness defaults; historical records are unchanged.
+
 ## v64.0.0 - TPU Compression and Shore Measurement Foundation
 
 Adds schema-v43 specimen-aware manual compression, stress-relaxation, recovery and Shore A/D measurements inside Experimental

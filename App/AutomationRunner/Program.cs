@@ -126,7 +126,7 @@ internal static class Program
             var topLevelTabIds = new[]
             {
                 "MaterialsTab", "MaterialDetailTab", "TensileMeasurementsTab",
-                "ImpactMeasurementsTab", "StiffnessMeasurementsTab", "ThermalDeflectionMeasurementsTab", "ExperimentalTestingTab",
+                "ImpactMeasurementsTab", "StiffnessMeasurementsTab", "ThermalDeflectionMeasurementsTab", "FlexibleMaterialTestingTab", "ExperimentalTestingTab",
                 "WebsiteExportTab", "ManufacturersTab", "BaseMaterialsTab", "PrintersTab",
                 "PurchaseOrdersTab", "InventoryTab", "UsageTab", "ReportsTab",
                 "PrintJobQuotesTab", "AiAssistantTab", "RankingsDashboardTab",
@@ -137,14 +137,14 @@ internal static class Program
             {
                 SelectTab(main, tabId, application.Id);
             }
-            Require(topLevelTabIds.Distinct(StringComparer.Ordinal).Count() == 23,
-                "Top-level tab registry is not exactly 23 unique AutomationIds.");
+            Require(topLevelTabIds.Distinct(StringComparer.Ordinal).Count() == 24,
+                "Top-level tab registry is not exactly 24 unique AutomationIds.");
             Record("top-level-tab-navigation", true,
-                $"Visited {topLevelTabIds.Length}/23 unique top-level tabs by AutomationId");
+                $"Visited {topLevelTabIds.Length}/24 unique top-level tabs by AutomationId");
 
             InvokeNavigateMenuNavigation(main, application.Id);
             Record("navigate-menu-navigation", true,
-                "Invoked 23/23 grouped Navigate commands and verified each stable tab destination");
+                "Invoked 24/24 grouped Navigate commands and verified each stable tab destination");
 
             SelectTab(main, "MaterialsTab", application.Id);
             var materialFacetIds = new[]
@@ -215,7 +215,7 @@ internal static class Program
             var experimentalNestedTabIds = new[]
             {
                 "ExperimentalTensileTab", "ExperimentalImpactTab", "ExperimentalStiffnessTab",
-                "ExperimentalFlexibleMaterialsTab", "ExperimentalResultsTab"
+                "ExperimentalResultsTab"
             };
             foreach (var tabId in experimentalNestedTabIds)
                 SelectTab(main, tabId, application.Id);
@@ -243,17 +243,17 @@ internal static class Program
                 .Concat(experimentalResultViewIds)
                 .Concat(materialDetailNestedTabIds)
                 .ToArray();
-            Require(nestedTabIds.Length == 17 &&
-                    nestedTabIds.Distinct(StringComparer.Ordinal).Count() == 17,
-                "Nested tab registry is not exactly 17 unique AutomationIds.");
+            Require(nestedTabIds.Length == 16 &&
+                    nestedTabIds.Distinct(StringComparer.Ordinal).Count() == 16,
+                "Nested tab registry is not exactly 16 unique AutomationIds.");
             Record("nested-tab-navigation", true,
-                $"Visited {nestedTabIds.Length}/17 unique nested tabs by AutomationId");
+                $"Visited {nestedTabIds.Length}/16 unique nested tabs by AutomationId");
 
             SelectTab(main, "RankingsDashboardTab", application.Id);
             OpenContextHelpAndRequireTitle(main, application.Id, "Rankings Dashboard reference");
+            SelectTab(main, "FlexibleMaterialTestingTab", application.Id);
+            OpenContextHelpAndRequireTitle(main, application.Id, "Flexible Material Testing");
             SelectTab(main, "ExperimentalTestingTab", application.Id);
-            SelectTab(main, "ExperimentalFlexibleMaterialsTab", application.Id);
-            OpenContextHelpAndRequireTitle(main, application.Id, "Flexible Materials reference");
             SelectTab(main, "ExperimentalResultsTab", application.Id);
             SelectTab(main, "ExperimentalResultsTableTab", application.Id);
             OpenContextHelpAndRequireTitle(main, application.Id, "Experimental Table reference");
@@ -1984,6 +1984,7 @@ internal static class Program
                     ("NavigateImpactMeasurementsTab", "ImpactMeasurementsTab"),
                     ("NavigateStiffnessMeasurementsTab", "StiffnessMeasurementsTab"),
                     ("NavigateThermalDeflectionMeasurementsTab", "ThermalDeflectionMeasurementsTab"),
+                    ("NavigateFlexibleMaterialTestingTab", "FlexibleMaterialTestingTab"),
                     ("NavigateExperimentalTestingTab", "ExperimentalTestingTab")
                 }),
             (

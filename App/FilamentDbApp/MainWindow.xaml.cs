@@ -62,6 +62,7 @@ public partial class MainWindow : Window
         ("NavigateImpactMeasurementsTab", "ImpactMeasurementsTab"),
         ("NavigateStiffnessMeasurementsTab", "StiffnessMeasurementsTab"),
         ("NavigateThermalDeflectionMeasurementsTab", "ThermalDeflectionMeasurementsTab"),
+        ("NavigateFlexibleMaterialTestingTab", "FlexibleMaterialTestingTab"),
         ("NavigateExperimentalTestingTab", "ExperimentalTestingTab"),
         ("NavigatePurchaseOrdersTab", "PurchaseOrdersTab"),
         ("NavigateInventoryTab", "InventoryTab"),
@@ -219,6 +220,7 @@ public partial class MainWindow : Window
         RunStartupPhase("Inventory workspace initialization", InitializeInventorySpoolManager);
         RunStartupPhase("Usage workspace initialization", InitializeUsageWorkspace);
         RunStartupPhase("Experimental workspace initialization", InitializeExperimentalMaterialManager);
+        RunStartupPhase("Flexible Material Testing workspace initialization", InitializeFlexibleMaterialTesting);
         RunStartupPhase("Purchasing workspace initialization", InitializePurchaseOrderManager);
         RunStartupPhase("Tensile workspace initialization", InitializeNativeTensileMeasurements);
         RunStartupPhase("Fast Tensile candidate view", ActivateDefaultFastTensileView);
@@ -15303,6 +15305,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             "Stiffness Measurements",
             "Heat Deflection",
             "Experimental Testing",
+            "Flexible Material Testing",
             "Website Export",
             "Manufacturers",
             "Base Materials",
@@ -15325,7 +15328,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             StringComparer.Ordinal);
         checks.Add(new VerificationCheck("v59.0.1 canonical workspace tab order", workspaceTabOrderReady,
             workspaceTabOrderReady
-                ? "All 23 top-level tabs match the owner-approved canonical sequence"
+                ? "All 24 top-level tabs match the owner-approved canonical sequence"
                 : $"Expected: {string.Join(" > ", canonicalWorkspaceTabHeaders)}"));
         string[] canonicalNavigateGroupHeaders =
         [
@@ -15357,7 +15360,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 .Distinct(StringComparer.Ordinal).Count() == NavigateMenuDestinations.Length;
         checks.Add(new VerificationCheck("v59.0.2 grouped Navigate menu destination contract", navigateMenuReady,
             navigateMenuReady
-                ? "Six ordered groups map 22 unique menu commands to 22 stable top-level tab AutomationIds"
+                ? "Six ordered groups map 24 unique menu commands to 24 stable top-level tab AutomationIds"
                 : "Navigate groups, menu AutomationIds or tab destination tags are incomplete"));
         var retiredNavigationSurfacesReady =
             typeof(MainWindow).GetMethod(
@@ -15629,10 +15632,11 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 ? "Schema v42, read-only In Heat, saved-layout placement and four-module Tested Status match canonical Heat Deflection results"
                 : "Schema, In Heat layout/migration, Heat-result projection or four-module Tested Status drifted"));
         var flexibleTestingReady =
-            BuildInfo.CurrentDatabaseSchema == 43 &&
+            BuildInfo.CurrentDatabaseSchema == 44 &&
             LocalDatabase.RunFlexibleTestingCalculationContractVerification() &&
             LocalDatabase.RunFlexibleTestingPersistenceContractVerification() &&
-            FindName("ExperimentalFlexibleMaterialsTab") is TabItem &&
+            FindName("FlexibleMaterialTestingTab") is TabItem &&
+            FindName("FlexibleSessionsGrid") is DataGrid &&
             FindName("FlexibleSpecimensGrid") is DataGrid &&
             FindName("CompressionPointsGrid") is DataGrid &&
             FindName("StressRelaxationGrid") is DataGrid &&
@@ -15640,10 +15644,10 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             FindName("ShoreHardnessGrid") is DataGrid &&
             FindName("FlexibleComparisonGrid") is DataGrid;
         checks.Add(new VerificationCheck(
-            "v64.0.0 TPU compression, recovery and Shore calculation contract",
+            "v64.0.1 standalone flexible-material testing contract",
             flexibleTestingReady,
             flexibleTestingReady
-                ? "Schema v43, nullable formulas, specimen/cycle raw rows, force-limit outcome, separate Shore scales and comparison UI pass"
+                ? "Schema v44, MaterialID-linked sessions, nullable formulas, specimen/cycle raw rows, separate Shore scales and standalone UI pass"
                 : "Flexible-test schema, formulas, specimen-aware editors or comparable-results surface failed"));
         var inventoryRestrictedDeleteRecoveryReady =
             typeof(MainWindow).GetField(
@@ -18795,7 +18799,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var excelRecoveryRows = excelRecoverySnapshot.Tables.Sum(table => table.Rows.Count);
         var excelRecoveryReady = excelRecoverySnapshot.FormatVersion == ExcelRecoverySnapshot.CurrentFormatVersion &&
                                  excelRecoverySnapshot.SourceSchemaVersion == BuildInfo.CurrentDatabaseSchema &&
-                                 excelRecoverySnapshot.Tables.Count == 31 &&
+                                 excelRecoverySnapshot.Tables.Count == 32 &&
                                  excelRecoverySnapshot.Tables.All(table => !string.IsNullOrWhiteSpace(table.TableName) && table.Columns.Count > 0 && table.Rows.All(row => row.Count == table.Columns.Count) && ExcelDisasterRecoveryService.ComputeTableHash(table).Length == 64) &&
                                  excelRecoverySnapshot.Tables.Single(table => table.TableName == "NativeMaterialManagerRows").Rows.Count == _nativeMaterialRows.Count &&
                                  typeof(ExcelDisasterRecoveryService).GetMethod("LoadAndVerify") is not null &&
@@ -20055,9 +20059,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             .Select(AutomationProperties.GetAutomationId)
             .ToList();
         var v5024TopLevelMappingsReady =
-            v5024TopLevelTabs.Count == 23 &&
+            v5024TopLevelTabs.Count == 24 &&
             v5024TopLevelIds.All(id => !string.IsNullOrWhiteSpace(id)) &&
-            v5024TopLevelIds.Distinct(StringComparer.Ordinal).Count() == 23 &&
+            v5024TopLevelIds.Distinct(StringComparer.Ordinal).Count() == 24 &&
             v5024TopLevelTabs.All(tab =>
             {
                 var sectionId = HelpContentCatalog.SectionIdForTab(tab.Header?.ToString());
@@ -20078,10 +20082,10 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 HelpContentCatalog.SectionIdForMaterialDetailTab(tab.Header?.ToString())))
             .ToList();
         var v5024NestedMappingsReady =
-            v5024NestedTabs.Count == 17 &&
+            v5024NestedTabs.Count == 16 &&
             v5024NestedIds.All(id => !string.IsNullOrWhiteSpace(id)) &&
-            v5024NestedIds.Distinct(StringComparer.Ordinal).Count() == 17 &&
-            v5024NestedSectionIds.Count == 17 &&
+            v5024NestedIds.Distinct(StringComparer.Ordinal).Count() == 16 &&
+            v5024NestedSectionIds.Count == 16 &&
             v5024NestedSectionIds.All(sectionId =>
                 helpSections.Count(section => section.Id == sectionId) == 1);
         var v5024MenuHelpReady =
@@ -20107,8 +20111,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("v50.2.4 contextual Help entry-point and coverage contract",
             v5024ContextualHelpReady,
             v5024ContextualHelpReady
-                ? "23 unique top-level and 16 unique nested tab AutomationIds resolve to stable central Help destinations; current-view F1/menu, Tools validation Help and Website menu retirement contracts are present."
-                : $"Contextual Help coverage failed: top-level {v5024TopLevelTabs.Count}/23, nested {v5024NestedTabs.Count}/16, top mappings {v5024TopLevelMappingsReady}, nested mappings {v5024NestedMappingsReady}, menu {v5024MenuHelpReady}."));
+                ? "24 unique top-level and 16 unique nested tab AutomationIds resolve to stable central Help destinations; current-view F1/menu, Tools validation Help and Website menu retirement contracts are present."
+                : $"Contextual Help coverage failed: top-level {v5024TopLevelTabs.Count}/24, nested {v5024NestedTabs.Count}/16, top mappings {v5024TopLevelMappingsReady}, nested mappings {v5024NestedMappingsReady}, menu {v5024MenuHelpReady}."));
         var v503RequiredHelpIds = new[]
         {
             "menu.file-recovery", "menu.storage", "menu.updates", "menu.release-publishing",
@@ -29929,7 +29933,6 @@ private List<string> GetVisibleAiMaterialLabels()
         // refresh from that event can throw InvalidOperationException in WPF.
         RefreshExperimentalStatus();
         RefreshExperimentalPublicationReadiness();
-        InitializeFlexibleMaterialTesting();
     }
 
 
@@ -30131,7 +30134,6 @@ private List<string> GetVisibleAiMaterialLabels()
         var row = ResolveExperimentalRun();
         if (row is null) { MessageBox.Show(this, "Select a run first.", "Experimental Testing"); return; }
         if (MessageBox.Show(this, $"Delete experimental run {row.ExperimentalRunId}?", "Experimental Testing", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
-        RemoveFlexibleTestingRun(row.ExperimentalRunId);
         _experimentalRunRows.Remove(row); foreach (var measurement in _experimentalMeasurementRows.Where(x => x.ExperimentalRunId == row.ExperimentalRunId).ToList()) _experimentalMeasurementRows.Remove(measurement); if (ReferenceEquals(_lastSelectedExperimentalRun,row)) _lastSelectedExperimentalRun=null; SaveExperimentalRuns(); _experimentalRunView?.Refresh(); RefreshExperimentalSeriesResults(); RefreshExperimentalStatus();
     }
 
@@ -30160,7 +30162,6 @@ private List<string> GetVisibleAiMaterialLabels()
         BindExperimentalMeasurementEditors(run);
         RefreshExperimentalSeriesResults();
         RefreshExperimentalStatus();
-        BindFlexibleTestingRun(run);
     }
 
 
@@ -30771,7 +30772,6 @@ private List<string> GetVisibleAiMaterialLabels()
         grid.CommitEdit(DataGridEditingUnit.Row, true);
         _materialExperimentRows.Remove(row);
         var deletedRunIds = _experimentalRunRows.Where(x => x.MaterialExperimentId == row.MaterialExperimentId).Select(x => x.ExperimentalRunId).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        foreach (var runId in deletedRunIds) RemoveFlexibleTestingRun(runId);
         foreach (var run in _experimentalRunRows.Where(x => deletedRunIds.Contains(x.ExperimentalRunId)).ToList()) _experimentalRunRows.Remove(run);
         foreach (var measurement in _experimentalMeasurementRows.Where(x => deletedRunIds.Contains(x.ExperimentalRunId)).ToList()) _experimentalMeasurementRows.Remove(measurement);
         SaveExperimentalRuns();

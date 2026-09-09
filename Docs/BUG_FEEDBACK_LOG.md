@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 115 |
+| Solved | 116 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **121** |
+| **Total tracked findings** | **122** |
 
 ## Triage categories
 
@@ -64,6 +64,10 @@ Verification evidence:
 ```
 
 ## Open findings — newest first
+
+No active findings.
+
+## In-progress findings — newest first
 
 No active findings.
 
@@ -183,6 +187,21 @@ No active findings.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Recent resolved findings — newest first
+
+### 2026-09-08 — Flexible-material measurements need a standalone workspace
+
+- **Area:** Navigation / Flexible Material Testing.
+- **Type:** Workflow friction.
+- **Severity:** Important.
+- **What happened:** Flexible measurements were nested under Experimental Testing. During standalone acceptance, Add Compression
+  Specimen also crashed because an absent legacy Experimental Run foreign key was saved as an empty string.
+- **Expected behavior:** A dedicated MaterialID-linked workspace, with MaterialID plus Website Display Name and workflow-ordered actions.
+- **Status:** Solved and owner runtime accepted in v64.0.1 on 2026-09-08.
+- **Resolution:** The top-level workspace owns MaterialID-linked sessions; v43 data retains optional Run provenance, while new specimens
+  save absent provenance as SQL NULL. Save failures are contained and failed adds are rolled back from the UI.
+- **Verification evidence:** Owner confirms the formerly crashing Add Compression Specimen path now works. Debug/Release and Help/docs
+  pass; profile `20260909000443-cb78306f` passes Full Data Verification 438/438, 24/24 top-level tabs, 24/24 Navigate commands,
+  16/16 nested tabs and exact business-state recovery.
 
 ### 2026-09-08 — Manual TPU compression, relaxation, recovery and Shore measurements
 

@@ -8,8 +8,10 @@
 Delivers the first usable specimen-aware TPU workflow: manual compression point/cycle entry, apparent-stress and strain calculations,
 actual-time relaxation, height recovery and separate measured Shore A/D readings. Saved method snapshots protect historical meaning,
 and compatible comparisons report independent specimen count, mean and sample standard deviation without changing the legacy Overall
-score. Debug/Release and governed documentation pass; disposable Full Data Verification passes 438/438 with exact-state recovery.
-Owner accepts all guided runtime and restart/reload checks on 2026-09-08.
+score. v64.0.1 completes the milestone by moving the workflow into a standalone MaterialID-linked workspace, preserving v43 data and
+optional Run provenance, showing Website Display Name and containing save failures. Debug/Release and governed documentation pass;
+disposable Full Data Verification passes 438/438 with exact-state recovery. Owner accepts the corrected add/edit workflow on 2026-09-08.
+New specimens use editable 9 mm diameter and 9 mm height/thickness defaults; saved historical geometry remains unchanged.
 
 # v63 - Public Website Accuracy and Thermal Methodology
 

@@ -1,6 +1,6 @@
 # Help Coverage Matrix
 
-Version: v52.3.2 contextual coverage maintained
+Version: v64.0.1 standalone flexible-material testing coverage maintained
 
 Purpose: authoritative inventory for the v50.2 per-tab reference milestone.
 This matrix records every supported UI surface, its owner, required reference
@@ -9,9 +9,9 @@ merely because a coarse overview mentions the tab.
 
 ## Structural baseline
 
-- 22 top-level tabs.
+- 24 top-level tabs.
 - 16 nested tabs.
-- 38 total tab surfaces.
+- 40 total tab surfaces.
 - 143 declared WPF buttons.
 - 30 menu items.
 - 100 existing WPF AutomationIds.
@@ -148,7 +148,7 @@ Required leaf destinations:
 | Experimental Series | `experimental.series` | SQLite Series graph | Add, Duplicate, Delete, Find, Active only, Clear, Material/experiment/unit/baseline/Website/Active/Notes and readiness | Core IDs good; Clear and nested tabs missing |
 | Experimental Runs | `experimental.runs` | SQLite Runs graph | Add, Duplicate, Delete, lifecycle, measured date, baseline uniqueness, Active/history and persistence | Core action/grid IDs present |
 | Experimental editors | `experimental.measurements` | Run measurement rows + `ResultsService` | Tensile/Impact/Stiffness raw and computed fields, dates, notes, validation and auto-save | All legacy nested tabs have IDs; grids remain outside v50.2.4 navigation |
-| Flexible Materials | `experimental.measurements.flexible` | SQLite specimen graph + `FlexibleMaterialTestingService` | Specimen/method snapshots, compression points/cycles/hold, force-limit outcome, actual-time relaxation, recovery, separate Shore A/D and compatible specimen statistics | v64.0.0 nested tab and editor grids have stable IDs; physical entry/readability remains owner acceptance |
+| Flexible Material Testing | `flexible-testing.overview` | SQLite MaterialID-linked session/specimen graph + `FlexibleMaterialTestingService` | Session ownership, specimen/method snapshots, compression points/cycles/hold, force-limit outcome, actual-time relaxation, recovery, separate Shore A/D and compatible specimen statistics | v64.0.1 top-level workspace and editor grids have stable IDs; physical entry/readability remains owner acceptance |
 | Experimental Results Dashboard | `experimental.results.dashboard` | Selected Series comparison | Scope label, baseline/best/recommended cards, readiness and active/history effect | Nested tab ID covered |
 | Experimental Results Table | `experimental.results.table` | Selected Series comparison | Rank, metrics, delta-to-baseline, CV and baseline highlighting | Nested tab ID covered |
 | Experimental Results Charts | `experimental.results.charts` | Selected Series comparison | Metric charts, baseline-normalized chart and baseline prerequisite | Nested tab ID covered |

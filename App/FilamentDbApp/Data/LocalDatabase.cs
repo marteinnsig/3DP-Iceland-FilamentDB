@@ -28,7 +28,7 @@ public sealed partial class LocalDatabase
     {
         "Manufacturers", "BaseMaterialCatalog", "NativeMaterialManagerRows", "ThermalDeflectionMethods", "NativeSettingsRows", "DeploymentSettings", "WebsiteTemplates", "VideoIdeaQueue", "Suppliers",
         "PurchaseOrders", "PurchaseOrderLines", "InventorySpoolItems", "PurchaseDocuments", "ExperimentDefinitions", "MaterialExperiments", "ExperimentalRuns", "ExperimentalMeasurements",
-        "FlexibleTestSpecimens", "CompressionMeasurementPoints", "StressRelaxationPoints", "RecoveryMeasurements", "ShoreHardnessReadings",
+        "FlexibleTestSessions", "FlexibleTestSpecimens", "CompressionMeasurementPoints", "StressRelaxationPoints", "RecoveryMeasurements", "ShoreHardnessReadings",
         "NativeTensileSamples", "NativeTensileResults", "NativeImpactSamples", "NativeStiffnessMeasurements", "NativeThermalDeflectionMeasurements", "NativeMeasurementNotes",
         "PrinterProfiles", "PrintJobQuotes", "UsageEvents"
     };
@@ -1029,6 +1029,8 @@ public sealed partial class LocalDatabase
         if (snapshot.SourceSchemaVersion < 43)
             allowedMissingTables.AddRange(["FlexibleTestSpecimens", "CompressionMeasurementPoints", "StressRelaxationPoints",
                 "RecoveryMeasurements", "ShoreHardnessReadings"]);
+        if (snapshot.SourceSchemaVersion < 44)
+            allowedMissingTables.Add("FlexibleTestSessions");
         var compatibleLegacyPackage =
             missingTables.Count == allowedMissingTables.Count &&
             missingTables.All(missing =>

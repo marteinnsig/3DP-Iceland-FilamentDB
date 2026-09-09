@@ -1,5 +1,15 @@
 # Automated Runtime Acceptance
 
+## v64.0.1 - Standalone Flexible-material Testing accepted
+
+- Automation now expects 24 top-level tabs, 24 Navigate destinations and 16 nested Experimental/Material Detail tabs.
+- Contextual Help resolves directly from Flexible Material Testing. Final Release profile `20260909000443-cb78306f` migrates the
+  canonical seed copy to schema v44, visits 24/24 top-level and 16/16 nested tabs, invokes 24/24 Navigate commands, passes Full Data
+  Verification 438/438 and restores the exact business-state hash. Owner data and guarded external actions remain untouched.
+- Full Verification now explicitly covers standalone specimen validation, SQL NULL legacy-Run persistence and v43 provenance migration.
+  The smoke runner remains non-mutating by design; the exact owner click path remains the required runtime acceptance check.
+- Owner confirms the formerly crashing Add Compression Specimen path works normally on 2026-09-08.
+
 ## v64.0.0 - Flexible-material measurement foundation accepted
 
 - Disposable Release smoke profile `20260908211459-c4332cb0` migrates a canonical schema-v42 seed copy to schema v43, starts the

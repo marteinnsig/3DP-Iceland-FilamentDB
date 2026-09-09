@@ -2,6 +2,26 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v64.0.1 - Standalone Flexible-material Testing Workspace
+
+- Moves flexible-material compression, relaxation, recovery and Shore measurement entry from the Experimental Testing editor into a
+  dedicated top-level Flexible Material Testing tab. Experimental Testing remains focused on controlled Series/Runs and its legacy
+  Tensile, Impact, Stiffness and Results workflow.
+- Adds schema v44 MaterialID-linked test sessions. New flexible tests no longer require an Experimental Series or Run; existing v43
+  specimen graphs migrate losslessly into sessions while retaining the former Run ID as read-only provenance.
+- Preserves all specimen settings, raw readings, calculated results and comparison rules. Session deletion remains explicitly confirmed,
+  and deleting an Experimental Run no longer removes migrated or standalone flexible-test history.
+- Shows MaterialID together with Website Display Name in the session selector, places specimen actions above the specimen table and
+  reading actions below it, and removes the obsolete requirement for a specimen to retain an Experimental Run ID.
+- Fixes the owner-reproduced Add Compression Specimen crash by persisting an absent optional Experimental Run foreign key as SQL NULL.
+  Failed session/specimen saves now roll back the just-added UI row and surface the error in the workspace instead of terminating WPF.
+- Changes only the editable defaults for newly created specimens to 9 mm diameter and 9 mm height/thickness. Existing saved specimen
+  dimensions and their calculated results remain unchanged.
+- Updates contextual Help, Navigate, stable AutomationIds, the control inventory, Excel recovery and deterministic migration/persistence
+  contracts. Debug/Release builds and Help/release-documentation gates pass. Final profile `20260909000443-cb78306f` visits
+  24/24 top-level and 16/16 nested tabs, passes Full Data Verification 438/438 and restores the exact business-state hash. Owner confirms
+  the corrected Add Compression Specimen path works; v64.0.1 and the v64 milestone are runtime accepted on 2026-09-08.
+
 ## v64.0.0 - TPU Compression and Shore Measurement Foundation
 
 - Adds schema v43 specimen-aware storage under Experimental Runs for flexible-material specimens, compression points, stress

@@ -1,15 +1,30 @@
 namespace FilamentDbApp.Models;
 
+public sealed class FlexibleTestSessionRecord
+{
+    public string FlexibleTestSessionId { get; set; } = string.Empty;
+    public string MaterialID { get; set; } = string.Empty;
+    public string MaterialDisplayName { get; set; } = string.Empty;
+    public string SessionLabel { get; set; } = string.Empty;
+    public string MeasuredDate { get; set; } = string.Empty;
+    public string Notes { get; set; } = string.Empty;
+    public string LegacyExperimentalRunId { get; set; } = string.Empty;
+    public bool IsActive { get; set; } = true;
+    public string CreatedAtUtc { get; set; } = string.Empty;
+    public string UpdatedAtUtc { get; set; } = string.Empty;
+}
+
 public sealed class FlexibleTestSpecimenRecord
 {
     public string SpecimenId { get; set; } = string.Empty;
+    public string FlexibleTestSessionId { get; set; } = string.Empty;
     public string ExperimentalRunId { get; set; } = string.Empty;
     public string SpecimenLabel { get; set; } = string.Empty;
     public string IntendedTest { get; set; } = "Compression";
     public string Shape { get; set; } = "Cylinder";
-    public string DiameterMm { get; set; } = "20";
-    public string InitialHeightMm { get; set; } = "10";
-    public string ThicknessMm { get; set; } = string.Empty;
+    public string DiameterMm { get; set; } = "9";
+    public string InitialHeightMm { get; set; } = "9";
+    public string ThicknessMm { get; set; } = "9";
     public string MassG { get; set; } = string.Empty;
     public string InfillPercent { get; set; } = "100";
     public string InfillPattern { get; set; } = "Rectilinear";

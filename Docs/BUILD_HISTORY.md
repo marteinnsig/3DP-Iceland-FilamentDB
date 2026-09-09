@@ -2,6 +2,22 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v64.0.1 - Standalone Flexible-material Testing Workspace
+
+Flexible-material testing is rehosted as a first-class top-level workspace backed by schema-v44 MaterialID-linked sessions. The migration
+retains every v43 specimen and child reading and records the former Experimental Run as provenance; new sessions are independent of the
+Experimental graph. Experimental Run/Series deletion no longer owns flexible-test deletion. Help, Navigate, recovery and automation
+contracts now target 24 top-level and 16 nested tabs. Isolated Debug/Release builds pass with zero warnings/errors, and Help plus release
+documentation gates pass. Final Release smoke `20260909000443-cb78306f` passes Full Data Verification 438/438 and exact
+business-state recovery. Owner runtime acceptance passes on 2026-09-08.
+
+Owner visual review then identified two v64.0.1 candidate corrections: the session Material selector now shows MaterialID plus Website
+Display Name, and action rows follow workflow order—specimen actions above the specimen table and reading actions below it. The obsolete
+Experimental Run identity validation was also removed from standalone specimens.
+Owner runtime then reproduced an SQLite Error 19 crash twice when adding a standalone compression specimen. Windows .NET Runtime event
+1026 identified the empty optional Experimental Run foreign key. The save now binds SQL NULL and catches persistence failures at the
+workspace boundary; deterministic contracts cover standalone validation, nullable legacy provenance and schema persistence.
+
 ## v64.0.0 - TPU Compression and Shore Measurement Foundation
 
 The first usable implementation adds additive schema-v43 specimen and raw-reading tables plus a dedicated Flexible Materials editor

@@ -57,6 +57,7 @@ xaml.application-menu.menuitem.navigatecategoryrankingstab	Application menu	Menu
 xaml.application-menu.menuitem.navigateconfigurationmenu	Application menu	MenuItem	NavigateConfigurationMenu	action	v59.0.2	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigatedashboardinsightstab	Application menu	MenuItem	NavigateDashboardInsightsTab	action	v59.0.2	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigateexperimentaltestingtab	Application menu	MenuItem	NavigateExperimentalTestingTab	action	v59.0.2	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.navigateflexiblematerialtestingtab	Application menu	MenuItem	NavigateFlexibleMaterialTestingTab	action	v59.0.2	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigateimpactmeasurementstab	Application menu	MenuItem	NavigateImpactMeasurementsTab	action	v59.0.2	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigateinventorytab	Application menu	MenuItem	NavigateInventoryTab	action	v59.0.2	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigatemanufacturerstab	Application menu	MenuItem	NavigateManufacturersTab	action	v59.0.2	menu-runtime.controls-fields	covered
@@ -155,75 +156,35 @@ xaml.category-rankings.datagridtextcolumn.overall	Category Rankings	DataGridText
 xaml.category-rankings.datagridtextcolumn.reinforcement	Category Rankings	DataGridTextColumn	Reinforcement	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.category-rankings.datagridtextcolumn.status	Category Rankings	DataGridTextColumn	Status	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.category-rankings.datagridtextcolumn.type	Category Rankings	DataGridTextColumn	Type	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
-xaml.experimental-testing-flexible-materials-comparable-results.datagrid.flexiblecomparisongrid	Experimental Testing > Flexible Materials > Comparable Results	DataGrid	FlexibleComparisonGrid	read-only-grid	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-comparable-results.datagridtextcolumn.condition	Experimental Testing > Flexible Materials > Comparable Results	DataGridTextColumn	Condition	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-comparable-results.datagridtextcolumn.mean	Experimental Testing > Flexible Materials > Comparable Results	DataGridTextColumn	Mean	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-comparable-results.datagridtextcolumn.method-group	Experimental Testing > Flexible Materials > Comparable Results	DataGridTextColumn	Method group	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-comparable-results.datagridtextcolumn.metric	Experimental Testing > Flexible Materials > Comparable Results	DataGridTextColumn	Metric	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-comparable-results.datagridtextcolumn.not-reached	Experimental Testing > Flexible Materials > Comparable Results	DataGridTextColumn	Not reached	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-comparable-results.datagridtextcolumn.sample-sd	Experimental Testing > Flexible Materials > Comparable Results	DataGridTextColumn	Sample SD	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-comparable-results.datagridtextcolumn.specimens-n	Experimental Testing > Flexible Materials > Comparable Results	DataGridTextColumn	Specimens n	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-comparable-results.datagridtextcolumn.unit	Experimental Testing > Flexible Materials > Comparable Results	DataGridTextColumn	Unit	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-compression.datagrid.compressionpointsgrid	Experimental Testing > Flexible Materials > Compression	DataGrid	CompressionPointsGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-compression.datagridcheckboxcolumn.target-reached	Experimental Testing > Flexible Materials > Compression	DataGridCheckBoxColumn	Target reached	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-compression.datagridtextcolumn.apparent-stress-mpa	Experimental Testing > Flexible Materials > Compression	DataGridTextColumn	Apparent stress MPa	read-only-column	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-compression.datagridtextcolumn.cycle	Experimental Testing > Flexible Materials > Compression	DataGridTextColumn	Cycle	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-compression.datagridtextcolumn.displacement-mm	Experimental Testing > Flexible Materials > Compression	DataGridTextColumn	Displacement mm	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-compression.datagridtextcolumn.force-n	Experimental Testing > Flexible Materials > Compression	DataGridTextColumn	Force N	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-compression.datagridtextcolumn.hold-s	Experimental Testing > Flexible Materials > Compression	DataGridTextColumn	Hold s	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-compression.datagridtextcolumn.notes	Experimental Testing > Flexible Materials > Compression	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-compression.datagridtextcolumn.result	Experimental Testing > Flexible Materials > Compression	DataGridTextColumn	Result	read-only-column	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-compression.datagridtextcolumn.strain	Experimental Testing > Flexible Materials > Compression	DataGridTextColumn	Strain %	read-only-column	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-compression.datagridtextcolumn.target-strain	Experimental Testing > Flexible Materials > Compression	DataGridTextColumn	Target strain %	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-recovery.datagrid.recoverymeasurementsgrid	Experimental Testing > Flexible Materials > Recovery	DataGrid	RecoveryMeasurementsGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-recovery.datagridtextcolumn.compressed-hold-s	Experimental Testing > Flexible Materials > Recovery	DataGridTextColumn	Compressed hold s	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-recovery.datagridtextcolumn.compression	Experimental Testing > Flexible Materials > Recovery	DataGridTextColumn	Compression %	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-recovery.datagridtextcolumn.cycle	Experimental Testing > Flexible Materials > Recovery	DataGridTextColumn	Cycle	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-recovery.datagridtextcolumn.height-after-rest-mm	Experimental Testing > Flexible Materials > Recovery	DataGridTextColumn	Height after rest mm	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-recovery.datagridtextcolumn.initial-height-mm	Experimental Testing > Flexible Materials > Recovery	DataGridTextColumn	Initial height mm	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-recovery.datagridtextcolumn.notes-not-compression-set	Experimental Testing > Flexible Materials > Recovery	DataGridTextColumn	Notes (not Compression Set)	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-recovery.datagridtextcolumn.residual-height-loss	Experimental Testing > Flexible Materials > Recovery	DataGridTextColumn	Residual height loss %	read-only-column	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-recovery.datagridtextcolumn.rest-time-s	Experimental Testing > Flexible Materials > Recovery	DataGridTextColumn	Rest time s	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-shore-hardness.datagrid.shorehardnessgrid	Experimental Testing > Flexible Materials > Shore Hardness	DataGrid	ShoreHardnessGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-shore-hardness.datagridcomboboxcolumn.scale	Experimental Testing > Flexible Materials > Shore Hardness	DataGridComboBoxColumn	Scale	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-shore-hardness.datagridtextcolumn.hardness-value	Experimental Testing > Flexible Materials > Shore Hardness	DataGridTextColumn	Hardness value	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-shore-hardness.datagridtextcolumn.method-notes	Experimental Testing > Flexible Materials > Shore Hardness	DataGridTextColumn	Method notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-shore-hardness.datagridtextcolumn.reading-time-s	Experimental Testing > Flexible Materials > Shore Hardness	DataGridTextColumn	Reading time s	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-shore-hardness.datagridtextcolumn.thickness-mm	Experimental Testing > Flexible Materials > Shore Hardness	DataGridTextColumn	Thickness mm	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-stress-relaxation.datagrid.stressrelaxationgrid	Experimental Testing > Flexible Materials > Stress Relaxation	DataGrid	StressRelaxationGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-stress-relaxation.datagridtextcolumn.actual-time-s	Experimental Testing > Flexible Materials > Stress Relaxation	DataGridTextColumn	Actual time s	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-stress-relaxation.datagridtextcolumn.compression	Experimental Testing > Flexible Materials > Stress Relaxation	DataGridTextColumn	Compression %	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-stress-relaxation.datagridtextcolumn.cycle	Experimental Testing > Flexible Materials > Stress Relaxation	DataGridTextColumn	Cycle	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-stress-relaxation.datagridtextcolumn.force-n	Experimental Testing > Flexible Materials > Stress Relaxation	DataGridTextColumn	Force N	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-stress-relaxation.datagridtextcolumn.force-retention	Experimental Testing > Flexible Materials > Stress Relaxation	DataGridTextColumn	Force retention %	read-only-column	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials-stress-relaxation.datagridtextcolumn.notes	Experimental Testing > Flexible Materials > Stress Relaxation	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.button.flexibleaddcompressionpoint	Experimental Testing > Flexible Materials	Button	FlexibleAddCompressionPoint	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.button.flexibleaddcompressionspecimen	Experimental Testing > Flexible Materials	Button	FlexibleAddCompressionSpecimen	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.button.flexibleaddrecovery	Experimental Testing > Flexible Materials	Button	FlexibleAddRecovery	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.button.flexibleaddrelaxationpoint	Experimental Testing > Flexible Materials	Button	FlexibleAddRelaxationPoint	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.button.flexibleaddshorereading	Experimental Testing > Flexible Materials	Button	FlexibleAddShoreReading	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.button.flexibleaddshorespecimen	Experimental Testing > Flexible Materials	Button	FlexibleAddShoreSpecimen	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.button.flexibledeletereading	Experimental Testing > Flexible Materials	Button	FlexibleDeleteReading	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.button.flexibledeletespecimen	Experimental Testing > Flexible Materials	Button	FlexibleDeleteSpecimen	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagrid.flexiblespecimensgrid	Experimental Testing > Flexible Materials	DataGrid	FlexibleSpecimensGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.bottom	Experimental Testing > Flexible Materials	DataGridTextColumn	Bottom	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.extrusion-multiplier	Experimental Testing > Flexible Materials	DataGridTextColumn	Extrusion multiplier	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.height-mm	Experimental Testing > Flexible Materials	DataGridTextColumn	Height mm	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.infill	Experimental Testing > Flexible Materials	DataGridTextColumn	Infill %	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.layer-mm	Experimental Testing > Flexible Materials	DataGridTextColumn	Layer mm	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.mass-g	Experimental Testing > Flexible Materials	DataGridTextColumn	Mass g	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.method-notes	Experimental Testing > Flexible Materials	DataGridTextColumn	Method notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.method-version	Experimental Testing > Flexible Materials	DataGridTextColumn	Method version	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.mm	Experimental Testing > Flexible Materials	DataGridTextColumn	Ø mm	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.nozzle-mm	Experimental Testing > Flexible Materials	DataGridTextColumn	Nozzle mm	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.other-print-settings	Experimental Testing > Flexible Materials	DataGridTextColumn	Other print settings	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.pattern	Experimental Testing > Flexible Materials	DataGridTextColumn	Pattern	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.purpose	Experimental Testing > Flexible Materials	DataGridTextColumn	Purpose	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.specimen	Experimental Testing > Flexible Materials	DataGridTextColumn	Specimen	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.temp-c	Experimental Testing > Flexible Materials	DataGridTextColumn	Temp °C	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.thickness-mm	Experimental Testing > Flexible Materials	DataGridTextColumn	Thickness mm	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.top	Experimental Testing > Flexible Materials	DataGridTextColumn	Top	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing-flexible-materials.datagridtextcolumn.walls	Experimental Testing > Flexible Materials	DataGridTextColumn	Walls	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.clearexperimentalfilters-click	Experimental Testing	Button	ClearExperimentalFilters_Click	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentaladdrun	Experimental Testing	Button	ExperimentalAddRun	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentaladdseries	Experimental Testing	Button	ExperimentalAddSeries	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentaldeleterun	Experimental Testing	Button	ExperimentalDeleteRun	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentaldeleteseries	Experimental Testing	Button	ExperimentalDeleteSeries	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentalduplicaterun	Experimental Testing	Button	ExperimentalDuplicateRun	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.button.experimentalduplicateseries	Experimental Testing	Button	ExperimentalDuplicateSeries	action	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.checkbox.experimentalactiveonly	Experimental Testing	CheckBox	ExperimentalActiveOnly	choice	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.checkbox.experimentalincludeinactivehistory	Experimental Testing	CheckBox	ExperimentalIncludeInactiveHistory	choice	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagrid.experimentalrunsgrid	Experimental Testing	DataGrid	ExperimentalRunsGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagrid.experimentalseriesgrid	Experimental Testing	DataGrid	ExperimentalSeriesGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcheckboxcolumn.active	Experimental Testing	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcheckboxcolumn.active-2	Experimental Testing	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcheckboxcolumn.baseline	Experimental Testing	DataGridCheckBoxColumn	Baseline	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcheckboxcolumn.website	Experimental Testing	DataGridCheckBoxColumn	Website	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcomboboxcolumn.baseline-material	Experimental Testing	DataGridComboBoxColumn	Baseline Material	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcomboboxcolumn.experiment	Experimental Testing	DataGridComboBoxColumn	Experiment	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcomboboxcolumn.material	Experimental Testing	DataGridComboBoxColumn	Material	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridcomboboxcolumn.status	Experimental Testing	DataGridComboBoxColumn	Status	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.default-unit	Experimental Testing	DataGridTextColumn	Default Unit	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.measured-date	Experimental Testing	DataGridTextColumn	Measured date	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.run-id	Experimental Testing	DataGridTextColumn	Run ID	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.run-notes	Experimental Testing	DataGridTextColumn	Run Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.series-id	Experimental Testing	DataGridTextColumn	Series ID	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.series-notes	Experimental Testing	DataGridTextColumn	Series Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.unit	Experimental Testing	DataGridTextColumn	Unit	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.updated-utc	Experimental Testing	DataGridTextColumn	Updated UTC	read-only-column	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.datagridtextcolumn.value	Experimental Testing	DataGridTextColumn	Value	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.experimental-testing.textbox.experimentalsearch	Experimental Testing	TextBox	ExperimentalSearch	input-candidate	v50.4.2	experimental.controls-fields	covered
 xaml.experimental-testing-impact.datagrid.experimentalimpactgrid	Experimental Testing > Impact	DataGrid	ExperimentalImpactGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
 xaml.experimental-testing-impact.datagridtextcolumn.1	Experimental Testing > Impact	DataGridTextColumn	% 1	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
 xaml.experimental-testing-impact.datagridtextcolumn.10	Experimental Testing > Impact	DataGridTextColumn	% 10	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
@@ -287,35 +248,84 @@ xaml.experimental-testing-tensile.datagridtextcolumn.n-9	Experimental Testing > 
 xaml.experimental-testing-tensile.datagridtextcolumn.notes	Experimental Testing > Tensile	DataGridTextColumn	Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
 xaml.experimental-testing-tensile.datagridtextcolumn.orientation	Experimental Testing > Tensile	DataGridTextColumn	Orientation	read-only-column	v50.4.2	experimental.controls-fields	covered
 xaml.experimental-testing-tensile.datagridtextcolumn.std-dev	Experimental Testing > Tensile	DataGridTextColumn	Std Dev	read-only-column	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.button.clearexperimentalfilters-click	Experimental Testing	Button	ClearExperimentalFilters_Click	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.button.experimentaladdrun	Experimental Testing	Button	ExperimentalAddRun	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.button.experimentaladdseries	Experimental Testing	Button	ExperimentalAddSeries	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.button.experimentaldeleterun	Experimental Testing	Button	ExperimentalDeleteRun	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.button.experimentaldeleteseries	Experimental Testing	Button	ExperimentalDeleteSeries	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.button.experimentalduplicaterun	Experimental Testing	Button	ExperimentalDuplicateRun	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.button.experimentalduplicateseries	Experimental Testing	Button	ExperimentalDuplicateSeries	action	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.checkbox.experimentalactiveonly	Experimental Testing	CheckBox	ExperimentalActiveOnly	choice	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.checkbox.experimentalincludeinactivehistory	Experimental Testing	CheckBox	ExperimentalIncludeInactiveHistory	choice	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagrid.experimentalrunsgrid	Experimental Testing	DataGrid	ExperimentalRunsGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagrid.experimentalseriesgrid	Experimental Testing	DataGrid	ExperimentalSeriesGrid	grid-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridcheckboxcolumn.active	Experimental Testing	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridcheckboxcolumn.active-2	Experimental Testing	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridcheckboxcolumn.baseline	Experimental Testing	DataGridCheckBoxColumn	Baseline	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridcheckboxcolumn.website	Experimental Testing	DataGridCheckBoxColumn	Website	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridcomboboxcolumn.baseline-material	Experimental Testing	DataGridComboBoxColumn	Baseline Material	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridcomboboxcolumn.experiment	Experimental Testing	DataGridComboBoxColumn	Experiment	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridcomboboxcolumn.material	Experimental Testing	DataGridComboBoxColumn	Material	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridcomboboxcolumn.status	Experimental Testing	DataGridComboBoxColumn	Status	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridtextcolumn.default-unit	Experimental Testing	DataGridTextColumn	Default Unit	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridtextcolumn.measured-date	Experimental Testing	DataGridTextColumn	Measured date	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridtextcolumn.run-id	Experimental Testing	DataGridTextColumn	Run ID	read-only-column	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridtextcolumn.run-notes	Experimental Testing	DataGridTextColumn	Run Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridtextcolumn.series-id	Experimental Testing	DataGridTextColumn	Series ID	read-only-column	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridtextcolumn.series-notes	Experimental Testing	DataGridTextColumn	Series Notes	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridtextcolumn.unit	Experimental Testing	DataGridTextColumn	Unit	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridtextcolumn.updated-utc	Experimental Testing	DataGridTextColumn	Updated UTC	read-only-column	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.datagridtextcolumn.value	Experimental Testing	DataGridTextColumn	Value	editable-column-candidate	v50.4.2	experimental.controls-fields	covered
-xaml.experimental-testing.textbox.experimentalsearch	Experimental Testing	TextBox	ExperimentalSearch	input-candidate	v50.4.2	experimental.controls-fields	covered
+xaml.flexible-material-testing.button.flexibleaddcompressionpoint	Flexible Material Testing	Button	FlexibleAddCompressionPoint	action	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.button.flexibleaddcompressionspecimen	Flexible Material Testing	Button	FlexibleAddCompressionSpecimen	action	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.button.flexibleaddrecovery	Flexible Material Testing	Button	FlexibleAddRecovery	action	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.button.flexibleaddrelaxationpoint	Flexible Material Testing	Button	FlexibleAddRelaxationPoint	action	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.button.flexibleaddsession	Flexible Material Testing	Button	FlexibleAddSession	action	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.button.flexibleaddshorereading	Flexible Material Testing	Button	FlexibleAddShoreReading	action	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.button.flexibleaddshorespecimen	Flexible Material Testing	Button	FlexibleAddShoreSpecimen	action	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.button.flexibledeletereading	Flexible Material Testing	Button	FlexibleDeleteReading	action	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.button.flexibledeletesession	Flexible Material Testing	Button	FlexibleDeleteSession	action	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.button.flexibledeletespecimen	Flexible Material Testing	Button	FlexibleDeleteSpecimen	action	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagrid.flexiblesessionsgrid	Flexible Material Testing	DataGrid	FlexibleSessionsGrid	grid-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagrid.flexiblespecimensgrid	Flexible Material Testing	DataGrid	FlexibleSpecimensGrid	grid-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridcheckboxcolumn.active	Flexible Material Testing	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridcomboboxcolumn.flexiblesessionmaterialcolumn	Flexible Material Testing	DataGridComboBoxColumn	FlexibleSessionMaterialColumn	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.bottom	Flexible Material Testing	DataGridTextColumn	Bottom	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.extrusion-multiplier	Flexible Material Testing	DataGridTextColumn	Extrusion multiplier	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.height-mm	Flexible Material Testing	DataGridTextColumn	Height mm	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.infill	Flexible Material Testing	DataGridTextColumn	Infill %	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.layer-mm	Flexible Material Testing	DataGridTextColumn	Layer mm	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.legacy-experimental-run	Flexible Material Testing	DataGridTextColumn	Legacy Experimental Run	read-only-column	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.mass-g	Flexible Material Testing	DataGridTextColumn	Mass g	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.measured-date	Flexible Material Testing	DataGridTextColumn	Measured date	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.method-notes	Flexible Material Testing	DataGridTextColumn	Method notes	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.method-version	Flexible Material Testing	DataGridTextColumn	Method version	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.mm	Flexible Material Testing	DataGridTextColumn	Ø mm	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.nozzle-mm	Flexible Material Testing	DataGridTextColumn	Nozzle mm	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.other-print-settings	Flexible Material Testing	DataGridTextColumn	Other print settings	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.pattern	Flexible Material Testing	DataGridTextColumn	Pattern	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.purpose	Flexible Material Testing	DataGridTextColumn	Purpose	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.session	Flexible Material Testing	DataGridTextColumn	Session	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.session-notes	Flexible Material Testing	DataGridTextColumn	Session notes	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.specimen	Flexible Material Testing	DataGridTextColumn	Specimen	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.temp-c	Flexible Material Testing	DataGridTextColumn	Temp °C	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.thickness-mm	Flexible Material Testing	DataGridTextColumn	Thickness mm	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.top	Flexible Material Testing	DataGridTextColumn	Top	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing.datagridtextcolumn.walls	Flexible Material Testing	DataGridTextColumn	Walls	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-comparable-results.datagrid.flexiblecomparisongrid	Flexible Material Testing > Comparable Results	DataGrid	FlexibleComparisonGrid	read-only-grid	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-comparable-results.datagridtextcolumn.condition	Flexible Material Testing > Comparable Results	DataGridTextColumn	Condition	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-comparable-results.datagridtextcolumn.mean	Flexible Material Testing > Comparable Results	DataGridTextColumn	Mean	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-comparable-results.datagridtextcolumn.method-group	Flexible Material Testing > Comparable Results	DataGridTextColumn	Method group	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-comparable-results.datagridtextcolumn.metric	Flexible Material Testing > Comparable Results	DataGridTextColumn	Metric	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-comparable-results.datagridtextcolumn.not-reached	Flexible Material Testing > Comparable Results	DataGridTextColumn	Not reached	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-comparable-results.datagridtextcolumn.sample-sd	Flexible Material Testing > Comparable Results	DataGridTextColumn	Sample SD	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-comparable-results.datagridtextcolumn.specimens-n	Flexible Material Testing > Comparable Results	DataGridTextColumn	Specimens n	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-comparable-results.datagridtextcolumn.unit	Flexible Material Testing > Comparable Results	DataGridTextColumn	Unit	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagrid.compressionpointsgrid	Flexible Material Testing > Compression	DataGrid	CompressionPointsGrid	grid-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagridcheckboxcolumn.target-reached	Flexible Material Testing > Compression	DataGridCheckBoxColumn	Target reached	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagridtextcolumn.apparent-stress-mpa	Flexible Material Testing > Compression	DataGridTextColumn	Apparent stress MPa	read-only-column	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagridtextcolumn.cycle	Flexible Material Testing > Compression	DataGridTextColumn	Cycle	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagridtextcolumn.displacement-mm	Flexible Material Testing > Compression	DataGridTextColumn	Displacement mm	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagridtextcolumn.force-n	Flexible Material Testing > Compression	DataGridTextColumn	Force N	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagridtextcolumn.hold-s	Flexible Material Testing > Compression	DataGridTextColumn	Hold s	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagridtextcolumn.notes	Flexible Material Testing > Compression	DataGridTextColumn	Notes	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagridtextcolumn.result	Flexible Material Testing > Compression	DataGridTextColumn	Result	read-only-column	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagridtextcolumn.strain	Flexible Material Testing > Compression	DataGridTextColumn	Strain %	read-only-column	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagridtextcolumn.target-strain	Flexible Material Testing > Compression	DataGridTextColumn	Target strain %	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-recovery.datagrid.recoverymeasurementsgrid	Flexible Material Testing > Recovery	DataGrid	RecoveryMeasurementsGrid	grid-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-recovery.datagridtextcolumn.compressed-hold-s	Flexible Material Testing > Recovery	DataGridTextColumn	Compressed hold s	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-recovery.datagridtextcolumn.compression	Flexible Material Testing > Recovery	DataGridTextColumn	Compression %	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-recovery.datagridtextcolumn.cycle	Flexible Material Testing > Recovery	DataGridTextColumn	Cycle	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-recovery.datagridtextcolumn.height-after-rest-mm	Flexible Material Testing > Recovery	DataGridTextColumn	Height after rest mm	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-recovery.datagridtextcolumn.initial-height-mm	Flexible Material Testing > Recovery	DataGridTextColumn	Initial height mm	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-recovery.datagridtextcolumn.notes-not-compression-set	Flexible Material Testing > Recovery	DataGridTextColumn	Notes (not Compression Set)	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-recovery.datagridtextcolumn.residual-height-loss	Flexible Material Testing > Recovery	DataGridTextColumn	Residual height loss %	read-only-column	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-recovery.datagridtextcolumn.rest-time-s	Flexible Material Testing > Recovery	DataGridTextColumn	Rest time s	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-shore-hardness.datagrid.shorehardnessgrid	Flexible Material Testing > Shore Hardness	DataGrid	ShoreHardnessGrid	grid-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-shore-hardness.datagridcomboboxcolumn.scale	Flexible Material Testing > Shore Hardness	DataGridComboBoxColumn	Scale	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-shore-hardness.datagridtextcolumn.hardness-value	Flexible Material Testing > Shore Hardness	DataGridTextColumn	Hardness value	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-shore-hardness.datagridtextcolumn.method-notes	Flexible Material Testing > Shore Hardness	DataGridTextColumn	Method notes	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-shore-hardness.datagridtextcolumn.reading-time-s	Flexible Material Testing > Shore Hardness	DataGridTextColumn	Reading time s	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-shore-hardness.datagridtextcolumn.thickness-mm	Flexible Material Testing > Shore Hardness	DataGridTextColumn	Thickness mm	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-stress-relaxation.datagrid.stressrelaxationgrid	Flexible Material Testing > Stress Relaxation	DataGrid	StressRelaxationGrid	grid-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.actual-time-s	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Actual time s	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.compression	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Compression %	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.cycle	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Cycle	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.force-n	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Force N	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.force-retention	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Force retention %	read-only-column	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.notes	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Notes	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.heat-deflection.button.resetfastthermaldeflectioncolumns	Heat Deflection	Button	ResetFastThermalDeflectionColumns	action	v61.0.2	measurements.thermal-deflection	covered
 xaml.impact-measurements.button.resetfastimpactcolumns-click	Impact Measurements	Button	ResetFastImpactColumns_Click	action	v50.4.2	measurements.controls-fields	covered
 xaml.inventory.button.addinventoryspool-click	Inventory	Button	AddInventorySpool_Click	action	v50.4.1	inventory.controls-fields	covered
@@ -500,6 +510,26 @@ xaml.materials.button.unarchivenativematerial-click	Materials	Button	UnarchiveNa
 xaml.materials.combobox.nativematerialcategoryfilter	Materials	ComboBox	NativeMaterialCategoryFilter	choice	v50.4.1	materials.controls-fields	covered
 xaml.materials.combobox.nativematerialtestedfilter	Materials	ComboBox	NativeMaterialTestedFilter	choice	v50.4.1	materials.controls-fields	covered
 xaml.materials.textbox.nativematerialsearch	Materials	TextBox	NativeMaterialSearch	input-candidate	v50.4.1	materials.controls-fields	covered
+xaml.printers.button.addprinterbutton	Printers	Button	AddPrinterButton	action	v50.4.1	printers.controls-fields	covered
+xaml.printers.button.archiveprinterbutton	Printers	Button	ArchivePrinterButton	action	v50.4.1	printers.controls-fields	covered
+xaml.printers.button.deleteprinterbutton	Printers	Button	DeletePrinterButton	action	v50.4.1	printers.controls-fields	covered
+xaml.printers.button.duplicateprinterbutton	Printers	Button	DuplicatePrinterButton	action	v50.4.1	printers.controls-fields	covered
+xaml.printers.button.saveprintersbutton	Printers	Button	SavePrintersButton	action	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagrid.printergrid	Printers	DataGrid	PrinterGrid	grid-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridcheckboxcolumn.active	Printers	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridcomboboxcolumn.printercurrencycolumn	Printers	DataGridComboBoxColumn	PrinterCurrencyColumn	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.annual-maintenance	Printers	DataGridTextColumn	Annual maintenance	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.buffer-override	Printers	DataGridTextColumn	Buffer override	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.life-years	Printers	DataGridTextColumn	Life (years)	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.manufacturer	Printers	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.model	Printers	DataGridTextColumn	Model	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.name	Printers	DataGridTextColumn	Name	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.notes	Printers	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.power-w	Printers	DataGridTextColumn	Power (W)	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.printer-id	Printers	DataGridTextColumn	Printer ID	read-only-column	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.purchase-cost	Printers	DataGridTextColumn	Purchase cost	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.upfront-cost	Printers	DataGridTextColumn	Upfront cost	editable-column-candidate	v50.4.1	printers.controls-fields	covered
+xaml.printers.datagridtextcolumn.uptime	Printers	DataGridTextColumn	Uptime (%)	editable-column-candidate	v50.4.1	printers.controls-fields	covered
 xaml.print-job-quotes.button.deleteprintjobquote	Print Job Quotes	Button	DeletePrintJobQuote	action	v50.4.1	print-job-quotes.controls-fields	covered
 xaml.print-job-quotes.button.exportprintjobquote	Print Job Quotes	Button	ExportPrintJobQuote	action	v50.4.1	print-job-quotes.controls-fields	covered
 xaml.print-job-quotes.button.saveprintjobquote	Print Job Quotes	Button	SavePrintJobQuote	action	v50.4.1	print-job-quotes.controls-fields	covered
@@ -528,26 +558,6 @@ xaml.print-job-quotes.textbox.quotepreparedbybox	Print Job Quotes	TextBox	QuoteP
 xaml.print-job-quotes.textbox.quoteprinthoursbox	Print Job Quotes	TextBox	QuotePrintHoursBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
 xaml.print-job-quotes.textbox.quoteprintlaborminutesbox	Print Job Quotes	TextBox	QuotePrintLaborMinutesBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
 xaml.print-job-quotes.textbox.quotequantitybox	Print Job Quotes	TextBox	QuoteQuantityBox	input-candidate	v50.4.1	print-job-quotes.controls-fields	covered
-xaml.printers.button.addprinterbutton	Printers	Button	AddPrinterButton	action	v50.4.1	printers.controls-fields	covered
-xaml.printers.button.archiveprinterbutton	Printers	Button	ArchivePrinterButton	action	v50.4.1	printers.controls-fields	covered
-xaml.printers.button.deleteprinterbutton	Printers	Button	DeletePrinterButton	action	v50.4.1	printers.controls-fields	covered
-xaml.printers.button.duplicateprinterbutton	Printers	Button	DuplicatePrinterButton	action	v50.4.1	printers.controls-fields	covered
-xaml.printers.button.saveprintersbutton	Printers	Button	SavePrintersButton	action	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagrid.printergrid	Printers	DataGrid	PrinterGrid	grid-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridcheckboxcolumn.active	Printers	DataGridCheckBoxColumn	Active	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridcomboboxcolumn.printercurrencycolumn	Printers	DataGridComboBoxColumn	PrinterCurrencyColumn	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.annual-maintenance	Printers	DataGridTextColumn	Annual maintenance	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.buffer-override	Printers	DataGridTextColumn	Buffer override	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.life-years	Printers	DataGridTextColumn	Life (years)	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.manufacturer	Printers	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.model	Printers	DataGridTextColumn	Model	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.name	Printers	DataGridTextColumn	Name	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.notes	Printers	DataGridTextColumn	Notes	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.power-w	Printers	DataGridTextColumn	Power (W)	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.printer-id	Printers	DataGridTextColumn	Printer ID	read-only-column	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.purchase-cost	Printers	DataGridTextColumn	Purchase cost	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.upfront-cost	Printers	DataGridTextColumn	Upfront cost	editable-column-candidate	v50.4.1	printers.controls-fields	covered
-xaml.printers.datagridtextcolumn.uptime	Printers	DataGridTextColumn	Uptime (%)	editable-column-candidate	v50.4.1	printers.controls-fields	covered
 xaml.purchase-orders.button.addpurchaseorderlinebutton	Purchase Orders	Button	AddPurchaseOrderLineButton	action	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.button.applylandedcostcurrencyoverride	Purchase Orders	Button	ApplyLandedCostCurrencyOverride	action	v53.0.2	purchase-orders.controls-fields	covered
 xaml.purchase-orders.button.browsepurchaseinvoice-click	Purchase Orders	Button	BrowsePurchaseInvoice_Click	action	v50.4.1	purchase-orders.controls-fields	covered
