@@ -2,13 +2,13 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v64.0.7 — Flexible Measurement Membership in Materials**
+Last runtime-accepted baseline: **v64.0.8 — Flexible Edit-transaction Rebind Safety**
 
-Current canonical application release: **v64.0.7 — Flexible Measurement Membership in Materials**
+Current canonical application release: **v64.0.8 — Flexible Edit-transaction Rebind Safety**
 
-Current roadmap increment: **None — await the next owner-approved coherent milestone**
+Current roadmap increment: **None — awaiting the next coherent milestone**
 
-Current acceptance note: v64.0.0-v64.0.7 are complete and owner runtime accepted.
+Current acceptance note: v64.0.0-v64.0.8 are complete and owner runtime accepted; v64 is complete again.
 
 Next note: await owner feedback before scheduling a new coherent major milestone.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
@@ -52,7 +52,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v61 | Thermal Deflection Measurement Foundation | ★★★★☆ | Complete — v61.0.8 owner accepted 2026-08-14 |
 | v62 | Workflow Reliability Corrections | ★★★★★ | Complete — v62.0.3 owner accepted 2026-08-24 |
 | v63 | Public Website Accuracy and Thermal Methodology | ★★★★☆ | Complete — v63.0.1 owner accepted 2026-08-24 |
-| v64 | Flexible-material Comparative Testing | ★★★★☆ | Complete — canonical v64.0.7 runtime accepted |
+| v64 | Flexible-material Comparative Testing | ★★★★★ | Complete — canonical v64.0.8 runtime accepted |
 
 ## Reconciliation of the older plans
 
@@ -3107,7 +3107,7 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: both recorded v63 website increments are owner accepted, public content is internally consistent and
     no v63 implementation item remains open.
 
-## Complete — v64 Flexible-material Comparative Testing
+## Current — v64 Flexible-material Comparative Testing
 
 - **v64.0.0 — TPU Compression and Shore Hardness Measurement Foundation**
   - State: Complete and owner runtime accepted on 2026-09-08; Full Data Verification passes 438/438.
@@ -3138,7 +3138,8 @@ blockers may change the order, but must be recorded here before implementation.
   - Preserve all v64.0.0 raw readings, calculations, method snapshots, specimen identities and comparison behavior unchanged.
   - Show MaterialID together with Website Display Name and order actions by workflow: specimen actions above the specimen table,
     measurement-reading actions below it. Standalone specimens require a session identity, not an Experimental Run identity.
-  - Persist an absent legacy Experimental Run as SQL NULL and contain save failures inside the workspace; a failed add must not terminate
+  - Persist an absent legacy Experimental Run as SQL NULL and contain save failures inside the workspace; a failed add must not
+    terminate
     the application or leave a phantom in-memory specimen.
   - Use the owner's current 9 mm diameter and 9 mm height/thickness specimen as the editable new-specimen default; preserve every
     saved historical dimension unchanged.
@@ -3149,9 +3150,8 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition met: owner confirms the corrected Add Compression Specimen path works after the SQL NULL foreign-key fix;
     Material naming and action order are accepted, and all automated gates pass.
 - **v64 parent closure**
-  - State: Complete on 2026-09-09; v64.0.0-v64.0.7 are owner accepted and no v64 implementation item remains open.
-  - Completion condition met: v64.0.7 passes its gates and owner runtime acceptance; final profile passes 445/445 with exact-state
-    recovery.
+  - State: Complete; v64.0.0-v64.0.8 are owner runtime accepted.
+  - Completion condition met: v64.0.8 passes all gates and owner runtime acceptance; no recorded v64 item remains open.
 - **v64.0.2 — Configurable Flexible-specimen Defaults**
   - State: Complete; owner accepted with v64.0.4 on 2026-09-09.
   - Add SQLite-canonical Settings rows for new flexible-specimen diameter, height and specimen thickness, initially 9 mm.
@@ -3230,6 +3230,16 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: Debug/Release, Help/docs and Full Data Verification pass; owner confirms placement, Yes/No behavior and
     unchanged four-module Tested Status semantics.
   - Completion condition met: owner confirms In Flexible placement and values work while Tested Status remains four-module only.
+- **v64.0.8 — Flexible Edit-transaction Rebind Safety**
+  - State: Complete and owner runtime accepted on 2026-09-09; Full Data Verification passes 446/446.
+  - Before session/specimen navigation changes a Flexible reading ItemsSource, commit the active DataGrid cell/row and underlying WPF
+    editable collection view. If the edit cannot close, keep the current binding and show a contained status instead of crashing.
+  - Preserve the entered value, v64.0.6 focus/keyboard behavior, v64.0.7 In Flexible projection and all saved method/raw data.
+  - Add deterministic close-before-rebind ownership checks and a safe disposable runtime navigation check where possible.
+  - Completion condition: Debug/Release, Help/docs and Full Data Verification pass; owner enters a measurement and immediately switches
+    specimens/sessions without crash or value loss.
+  - Completion condition met: owner enters a measurement and immediately switches specimens without a crash or lost value; all
+    governed gates pass.
 
 ### Intentionally unscheduled
 

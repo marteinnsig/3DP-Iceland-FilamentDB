@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 122 |
+| Solved | 123 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **128** |
+| **Total tracked findings** | **129** |
 
 ## Triage categories
 
@@ -187,6 +187,18 @@ No active findings.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Recent resolved findings — newest first
+
+### 2026-09-09 — Flexible measurement entry crash during specimen switch
+
+- **Area:** Flexible Material Testing.
+- **Type:** Bug.
+- **Severity:** Blocker.
+- **Resolution:** v64.0.8 closes the active cell, row and collection-view edit transactions before changing any Flexible reading
+  ItemsSource. Failed validation keeps the current rows visible, and a final guard contains an unexpected WPF rebind failure.
+- **Evidence:** Windows event 1026 identified the active AddNew/EditItem transaction. Debug/Release pass; profile
+  `20260909230628-1b4f91ed` passes Full Data Verification 446/446 and exact-state recovery. The owner enters a measurement and
+  immediately switches specimens without a crash or lost value on 2026-09-09.
+- **Status:** Solved and owner runtime accepted in v64.0.8.
 
 ### 2026-09-09 — Show Flexible measurement membership in Materials without changing Tested Status
 

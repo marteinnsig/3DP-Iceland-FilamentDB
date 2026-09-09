@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "MATERIALS-FLEXIBLE-COVERAGE";
-    public const string ReleaseTitle = "Flexible Measurement Membership in Materials";
+    public const string ReleaseCode = "FLEXIBLE-REBIND-SAFETY";
+    public const string ReleaseTitle = "Flexible Edit-transaction Rebind Safety";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 44;
 

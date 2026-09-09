@@ -15748,6 +15748,16 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             flexibleMaterialsCoverageReady
                 ? "Read-only In Flexible follows factual MaterialID-linked readings after In Heat; Tested Status remains four-module only"
                 : "Flexible measurement derivation, column placement/read-only state or four-module Tested Status isolation drifted"));
+        var flexibleRebindSafetyReady =
+            typeof(MainWindow).GetMethod("TryCloseFlexibleReadingEditsForRebind", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            typeof(MainWindow).GetMethod("BindFlexibleSpecimenRows", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            FlexibleEditableGridNames.Count(IsFlexibleReadingGrid) == 4;
+        checks.Add(new VerificationCheck(
+            "v64.0.8 Flexible edit-transaction rebind safety contract",
+            flexibleRebindSafetyReady,
+            flexibleRebindSafetyReady
+                ? "Four reading grids share close-before-ItemsSource-rebind ownership and failed edit closure remains contained"
+                : "Flexible edit-transaction closure, reading-grid scope or rebind ownership drifted"));
         var flexibleTestingReady =
             BuildInfo.CurrentDatabaseSchema == 44 &&
             LocalDatabase.RunFlexibleTestingCalculationContractVerification() &&

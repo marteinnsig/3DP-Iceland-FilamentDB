@@ -2,6 +2,16 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v64.0.8 - Flexible Edit-transaction Rebind Safety
+
+Windows .NET Runtime event 1026 identifies the crash as `InvalidOperationException: 'Sorting' is not allowed during an AddNew or
+EditItem transaction`, raised when `BindFlexibleSpecimenRows` replaced a DataGrid ItemsSource during an active editor. Flexible
+navigation now closes the cell, row and `IEditableCollectionView` transaction before any of the four reading grids rebind. Failed
+closure leaves the current table in place; an unexpected rebind exception is contained in the Flexible status surface. Isolated
+Debug and Release builds pass with zero warnings and zero errors. Disposable profile `20260909230628-1b4f91ed` passes Full Data
+Verification 446/446, all navigation and exact-state recovery. Owner runtime acceptance passes on 2026-09-09 for immediate specimen
+switching after active measurement entry without a crash or lost value.
+
 ## v64.0.7 - Flexible Measurement Membership in Materials
 
 Fast Materials gains a read-only In Flexible projection directly after In Heat. Membership is calculated from the existing

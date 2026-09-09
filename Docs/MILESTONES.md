@@ -24,6 +24,9 @@ exact-state recovery, and the owner accepts the corrected input behavior on 2026
 v64.0.7 completes the Materials membership projection with read-only In Flexible after In Heat. Factual linked Flexible readings drive
 Yes/No without changing the four-module Tested Status definition. Profile `20260909222055-b67b19e2` passes 445/445 with exact-state
 recovery, and the owner accepts placement, values and status isolation on 2026-09-09.
+v64.0.8 closes the final edit-transaction blocker: specimen/session navigation commits an active Flexible measurement editor before
+rebinding its reading tables and contains invalid or unexpected closure failures. Profile `20260909230628-1b4f91ed` passes 446/446
+with exact-state recovery, and the owner confirms immediate specimen switching causes no crash or lost value on 2026-09-09.
 
 # v63 - Public Website Accuracy and Thermal Methodology
 

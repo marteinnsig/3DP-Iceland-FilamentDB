@@ -1,4 +1,12 @@
-# Current Build Notes - v64.0.7
+# Current Build Notes - v64.0.8
+
+## v64.0.8 Flexible edit-transaction rebind safety
+
+The active Flexible measurement cell, row and editable collection view are committed before specimen/session navigation changes the
+reading ItemsSources. Invalid input keeps the current rows visible with a red correction message; an unexpected WPF rebind exception
+is contained instead of closing the application. Debug/Release pass with zero warnings/errors; disposable profile
+`20260909230628-1b4f91ed` passes Full Data Verification 446/446 and exact-state recovery. Owner runtime acceptance passes on
+2026-09-09 for immediate specimen switching after active measurement entry without a crash or lost value.
 
 ## v64.0.7 Materials Flexible measurement membership
 

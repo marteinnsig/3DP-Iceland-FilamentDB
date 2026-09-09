@@ -1,5 +1,15 @@
 # Automated Runtime Acceptance
 
+## v64.0.8 - Flexible edit-transaction rebind safety accepted
+
+- Full Data Verification checks shared close-before-rebind ownership across all four Flexible reading grids.
+- Existing disposable smoke navigation remains the safe automated boundary. The exact active-caret-to-parent-grid transition requires
+  owner runtime input because ordinary navigation does not deterministically preserve an open WPF edit transaction.
+- Production, FTPS, public export and owner data remain outside this increment.
+- Debug/Release pass. Profile `20260909230628-1b4f91ed` passes Full Data Verification 446/446, 24/24 top-level and Navigate paths,
+  16/16 nested tabs and exact database/business-state recovery.
+- Owner runtime acceptance passes on 2026-09-09: entering a value and immediately switching specimens causes no crash or lost value.
+
 ## v64.0.7 - Materials Flexible membership accepted
 
 - Full Data Verification checks read-only placement after In Heat, factual-reading MaterialID derivation, saved-layout insertion and

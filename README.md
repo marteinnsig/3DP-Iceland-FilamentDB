@@ -4,7 +4,7 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v64.0.7 — Flexible Measurement Membership in Materials
+- **Current runtime-accepted release:** v64.0.8 — Flexible Edit-transaction Rebind Safety
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
 - **Current development focus:** v64 is complete; the next coherent milestone is not yet scheduled
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
@@ -174,10 +174,10 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 63.0.1 is the current runtime-accepted application release. The v61
-Thermal Deflection foundation, v62 workflow-reliability milestone and v63 public website accuracy/methodology milestone are complete
-and owner accepted. No new implementation increment is selected until the open feedback ledger is reviewed. Production and FTPS
-remain separately guarded.
+Version 64.0.8 is the current runtime-accepted application release. The v64 Flexible-material Comparative Testing milestone is
+complete and owner accepted, including standalone TPU measurement entry, method snapshots, Settings defaults, comparable results,
+Materials membership and edit-transaction crash safety. No new implementation increment is selected. Production and FTPS remain
+separately guarded.
 
 The v56.0.6.1 governed public-demo dataset is complete and owner accepted. Its
 36 fictional identities retain approved real comparative measurements; the

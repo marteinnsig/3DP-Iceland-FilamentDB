@@ -1,6 +1,14 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v64.0.8 - Flexible Edit-transaction Rebind Safety
+
+Prevents Flexible specimen/session navigation from replacing reading tables during an active WPF AddNew/EditItem transaction. The
+active cell, row and collection view are committed first; failed validation retains the current rows, and an unexpected rebind failure
+is contained rather than closing the application. Debug/Release and Help/docs pass; profile `20260909230628-1b4f91ed` passes Full
+Data Verification 446/446 and exact-state recovery. Owner runtime acceptance passes on 2026-09-09 with no crash or lost entered value.
+No live publish occurred.
+
 ## v64.0.7 - Flexible Measurement Membership in Materials
 
 Adds read-only In Flexible immediately after In Heat in Fast Materials. Membership is derived from factual MaterialID-linked Flexible

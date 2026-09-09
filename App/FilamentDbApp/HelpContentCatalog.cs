@@ -1169,7 +1169,10 @@ internal static class HelpContentCatalog
             added compression point. Changing Settings never rewrites an existing specimen or reading. One plain click creates and
             focuses the editor in an editable cell, including Force N. Tab and Shift+Tab move horizontally through editable cells;
             arrow keys commit and move left, right, up or down while calculated result cells remain read-only and are skipped.
-            Calculated values refresh without rebuilding the reading tables or taking focus from the next editable cell. Geometry plus
+            Calculated values refresh without rebuilding the reading tables or taking focus from the next editable cell. Before a
+            specimen or Test Session switch replaces the visible rows, the active measurement cell and row are committed and their
+            edit transaction is closed. If an invalid value prevents that, the current rows remain visible and the red status asks you
+            to finish or correct the reading instead of discarding the edit or closing the application. Geometry plus
             the 100% rectilinear, 0.4 mm nozzle, 0.20 mm
             layer, two-wall and three-top/bottom values remain editable starting values, not method requirements.
 

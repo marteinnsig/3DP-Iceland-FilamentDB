@@ -1,9 +1,11 @@
 using FilamentDbApp.Models;
 using FilamentDbApp.Services;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -140,13 +142,50 @@ public partial class MainWindow
 
     private void BindFlexibleSpecimenRows(FlexibleTestSpecimenRecord? specimen)
     {
+        if (!TryCloseFlexibleReadingEditsForRebind())
+        {
+            SetFlexibleStatus("Finish or correct the active reading before changing specimen or session.", true);
+            return;
+        }
         _lastSelectedFlexibleReadingByGrid.Clear();
         var id = specimen?.SpecimenId;
-        SetRows("CompressionPointsGrid", _compressionPoints.Where(x => x.SpecimenId == id).OrderBy(x => x.CycleNumber).ToList());
-        SetRows("StressRelaxationGrid", _stressRelaxationPoints.Where(x => x.SpecimenId == id).OrderBy(x => x.CycleNumber).ThenBy(x => FlexibleMaterialTestingService.ParseOptional(x.ElapsedTimeSeconds)).ToList());
-        SetRows("RecoveryMeasurementsGrid", _recoveryMeasurements.Where(x => x.SpecimenId == id).OrderBy(x => x.CycleNumber).ToList());
-        SetRows("ShoreHardnessGrid", _shoreHardnessReadings.Where(x => x.SpecimenId == id).OrderBy(x => x.ShoreScale).ToList());
+        try
+        {
+            SetRows("CompressionPointsGrid", _compressionPoints.Where(x => x.SpecimenId == id).OrderBy(x => x.CycleNumber).ToList());
+            SetRows("StressRelaxationGrid", _stressRelaxationPoints.Where(x => x.SpecimenId == id).OrderBy(x => x.CycleNumber).ThenBy(x => FlexibleMaterialTestingService.ParseOptional(x.ElapsedTimeSeconds)).ToList());
+            SetRows("RecoveryMeasurementsGrid", _recoveryMeasurements.Where(x => x.SpecimenId == id).OrderBy(x => x.CycleNumber).ToList());
+            SetRows("ShoreHardnessGrid", _shoreHardnessReadings.Where(x => x.SpecimenId == id).OrderBy(x => x.ShoreScale).ToList());
+        }
+        catch (InvalidOperationException)
+        {
+            SetFlexibleStatus("Finish or correct the active reading before changing specimen or session.", true);
+        }
         void SetRows(string name, System.Collections.IEnumerable rows) { if (FindName(name) is DataGrid grid) grid.ItemsSource = rows; }
+    }
+
+    private bool TryCloseFlexibleReadingEditsForRebind()
+    {
+        foreach (var gridName in FlexibleEditableGridNames.Where(IsFlexibleReadingGrid))
+        {
+            if (FindName(gridName) is not DataGrid grid) continue;
+            try
+            {
+                if (!grid.CommitEdit(DataGridEditingUnit.Cell, true)) return false;
+                if (!grid.CommitEdit(DataGridEditingUnit.Row, true)) return false;
+
+                if (grid.ItemsSource is { } source &&
+                    CollectionViewSource.GetDefaultView(source) is IEditableCollectionView editableView)
+                {
+                    if (editableView.IsAddingNew) editableView.CommitNew();
+                    if (editableView.IsEditingItem) editableView.CommitEdit();
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void FlexibleSessionsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

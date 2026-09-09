@@ -2,6 +2,17 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v64.0.8 - Flexible Edit-transaction Rebind Safety
+
+- Prevents Flexible specimen/session navigation from replacing reading ItemsSources while WPF still owns an active AddNew/EditItem
+  transaction.
+- Commits the active measurement cell, row and editable collection view before rebind. Failed validation keeps the current reading
+  rows visible with an actionable status; a final guard contains an unexpected rebind failure rather than closing the application.
+- Preserves raw values, calculation/save behavior, direct-entry focus and keyboard navigation.
+- Windows event 1026 supplied the exact exception and stack. Debug and Release build with zero warnings/errors; disposable profile
+  `20260909230628-1b4f91ed` passes Full Data Verification 446/446 and exact-state recovery. Owner runtime acceptance passes on
+  2026-09-09: immediate specimen switching after measurement entry causes no crash or lost value.
+
 ## v64.0.7 - Flexible Measurement Membership in Materials
 
 - Adds read-only `In Flexible` immediately after `In Heat` in Fast Materials.

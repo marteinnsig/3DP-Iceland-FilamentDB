@@ -1,3 +1,15 @@
+# v64.0.8 - Flexible Edit-transaction Rebind Safety
+
+Date: 2026-09-09
+
+- Windows .NET Runtime event 1026 identifies an active AddNew/EditItem transaction during Flexible specimen switching.
+- Flexible reading rebinds now commit cell, row and collection-view edits first and contain failed closure without terminating the app.
+- Debug and Release pass with zero warnings/errors; Help and release-documentation gates pass.
+- Profile `20260909230628-1b4f91ed` passes Full Data Verification 446/446, 24/24 top-level and Navigate paths, 16/16 nested tabs and
+  exact database/business-state recovery.
+- Owner enters a measurement and immediately switches specimens without a crash or lost value. v64.0.8 and v64 are complete.
+- Production and FTPS remain blocked.
+
 # v64.0.1 - Standalone Flexible-material Testing Workspace
 
 Date: 2026-09-09
