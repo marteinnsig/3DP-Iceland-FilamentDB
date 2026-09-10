@@ -279,6 +279,14 @@ public partial class MainWindow
         foreach (var choice in choices) _fastBaseMaterialChoices.Add(choice);
     }
 
+    private void PrepareBaseMaterialChoicesForNewMaterial()
+    {
+        // The long-lived owner-drawn Materials view holds this ObservableCollection.
+        // Refresh it before the new row receives focus so catalog additions are
+        // available to its editor without restarting the application.
+        RefreshFastBaseMaterialChoices();
+    }
+
     private void BindMaterialToSelectedBaseMaterial(NativeMaterialRow material, string selectedName)
     {
         var matches = _nativeBaseMaterialRows.Where(row =>

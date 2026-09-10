@@ -1,4 +1,11 @@
-# Current Build Notes - v64.0.8
+# Current Build Notes - v65.0.0
+
+## v65.0.0 catalog-driven Material entry choices
+
+Add Material refreshes the shared Base Material dropdown choices from the canonical Base Materials collection before creating and
+focusing the new row. Every non-empty catalog entry is selectable without restart; the Materials filter continues to list only values
+used by actual Materials. Debug/Release pass with zero warnings/errors; profile `20260910000134-b1e178be` passes Full Data
+Verification 447/447 and exact-state recovery. Owner runtime acceptance passes on 2026-09-10 for selecting PEBA on a new Material.
 
 ## v64.0.8 Flexible edit-transaction rebind safety
 

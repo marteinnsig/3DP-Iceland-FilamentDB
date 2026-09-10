@@ -3,6 +3,13 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v65 - Catalog-driven Material Entry
+
+Synchronizes new-Material Base Material choices at the Add Material boundary. Every non-empty canonical Base Materials entry is
+immediately selectable while the filter remains occurrence-based. Debug/Release and governed documentation pass; profile
+`20260910000134-b1e178be` passes Full Data Verification 447/447 and exact-state recovery. The owner confirms PEBA is selectable
+without restart on 2026-09-10. Production and FTPS remain separately guarded.
+
 # v64 - Flexible-material Comparative Testing
 
 Delivers the first usable specimen-aware TPU workflow: manual compression point/cycle entry, apparent-stress and strain calculations,

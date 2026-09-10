@@ -21135,6 +21135,19 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             canonicalBaseMaterialIdentityReady && releaseIdentityReady
                 ? $"Nullable BaseMaterialId links resolve canonical names; {unlinkedBaseMaterialCount} legacy rows remain explicit and filterable"
                 : "BaseMaterialId integrity, canonical dropdown, legacy fallback, exact binding, unlinked filter or release identity failed"));
+        var catalogDrivenMaterialChoicesReady =
+            typeof(MainWindow).GetMethod(
+                nameof(PrepareBaseMaterialChoicesForNewMaterial),
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is not null &&
+            _nativeBaseMaterialRows
+                .Where(row => !string.IsNullOrWhiteSpace(row.BaseMaterial))
+                .All(row => _fastBaseMaterialChoices.Contains(row.BaseMaterial.Trim(), StringComparer.OrdinalIgnoreCase));
+        checks.Add(new VerificationCheck(
+            "v65.0.0 catalog-driven new-Material Base Material choices contract",
+            catalogDrivenMaterialChoicesReady,
+            catalogDrivenMaterialChoicesReady
+                ? "Add Material refreshes its long-lived dropdown choices from every non-empty canonical Base Material"
+                : "New-Material Base Material preparation or canonical catalog choice coverage drifted"));
         var measurementFallbackCodeRetired =
             FindName("FastTensileToggleButton") is null &&
             FindName("FastImpactToggleButton") is null &&
@@ -32290,6 +32303,7 @@ private List<string> GetVisibleAiMaterialLabels()
     private void AddNativeMaterial_Click(object sender, RoutedEventArgs e)
     {
         CreateDatabaseBackupBeforeMajorMaterialChange("adding material");
+        PrepareBaseMaterialChoicesForNewMaterial();
 
         var materialId = GenerateNextNativeMaterialId();
         var defaultManufacturer = _database.LoadManufacturers()

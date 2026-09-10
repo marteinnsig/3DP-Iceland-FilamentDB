@@ -2,6 +2,16 @@
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.
 
+## v65.0.0 - Catalog-driven Material Entry Choices
+
+- Refreshes the new-Material Base Material dropdown from all non-empty canonical Base Materials immediately before the row is created
+  and focused, so newly added entries such as PEBA do not require an application restart.
+- Retains canonical BaseMaterialId binding and historical fallback values.
+- Keeps the Materials Base Material filter occurrence-based; unused catalog entries do not appear as zero-result filters.
+- Help and deterministic verification cover the split dropdown/filter contract. Debug/Release pass with zero warnings/errors; profile
+  `20260910000134-b1e178be` passes Full Data Verification 447/447 and exact-state recovery. Owner runtime acceptance passes on
+  2026-09-10: PEBA is available and selectable for a new Material without restart.
+
 ## v64.0.8 - Flexible Edit-transaction Rebind Safety
 
 - Prevents Flexible specimen/session navigation from replacing reading ItemsSources while WPF still owns an active AddNew/EditItem

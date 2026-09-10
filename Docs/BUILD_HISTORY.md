@@ -2,6 +2,14 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+## v65.0.0 - Catalog-driven Material Entry Choices
+
+The long-lived owner-drawn Materials view already shares an observable Base Material choice collection, but Add Material did not
+explicitly refresh it at the creation boundary. v65.0.0 refreshes that collection from every canonical Base Materials row before the
+new Material is focused. The occurrence-based Materials filter remains deliberately separate. Debug/Release pass with zero
+warnings/errors; profile `20260910000134-b1e178be` passes Full Data Verification 447/447 and exact-state recovery. Owner confirms PEBA
+is available and selectable for a new Material without restart on 2026-09-10.
+
 ## v64.0.8 - Flexible Edit-transaction Rebind Safety
 
 Windows .NET Runtime event 1026 identifies the crash as `InvalidOperationException: 'Sorting' is not allowed during an AddNew or

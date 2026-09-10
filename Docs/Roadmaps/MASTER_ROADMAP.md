@@ -2,13 +2,13 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v64.0.8 — Flexible Edit-transaction Rebind Safety**
+Last runtime-accepted baseline: **v65.0.0 — Catalog-driven Material Entry Choices**
 
-Current canonical application release: **v64.0.8 — Flexible Edit-transaction Rebind Safety**
+Current canonical application release: **v65.0.0 — Catalog-driven Material Entry Choices**
 
 Current roadmap increment: **None — awaiting the next coherent milestone**
 
-Current acceptance note: v64.0.0-v64.0.8 are complete and owner runtime accepted; v64 is complete again.
+Current acceptance note: v65.0.0 is complete and owner runtime accepted.
 
 Next note: await owner feedback before scheduling a new coherent major milestone.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
@@ -53,6 +53,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v62 | Workflow Reliability Corrections | ★★★★★ | Complete — v62.0.3 owner accepted 2026-08-24 |
 | v63 | Public Website Accuracy and Thermal Methodology | ★★★★☆ | Complete — v63.0.1 owner accepted 2026-08-24 |
 | v64 | Flexible-material Comparative Testing | ★★★★★ | Complete — canonical v64.0.8 runtime accepted |
+| v65 | Catalog-driven Material Entry | ★★★★★ | Complete — canonical v65.0.0 runtime accepted |
 
 ## Reconciliation of the older plans
 
@@ -3107,7 +3108,22 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: both recorded v63 website increments are owner accepted, public content is internally consistent and
     no v63 implementation item remains open.
 
-## Current — v64 Flexible-material Comparative Testing
+## Current — v65 Catalog-driven Material Entry
+
+- **v65.0.0 — Catalog-driven Material Entry Choices**
+  - State: Complete and owner runtime accepted on 2026-09-10; Full Data Verification passes 447/447.
+  - Refresh the editable Base Material choice collection from the canonical in-memory Base Material Catalog immediately before a new
+    Material row is created and focused.
+  - Include every non-empty canonical Base Material plus supported historical Material values, case-insensitively and in stable order.
+  - Keep the Materials Base Material filter occurrence-based: it lists values attached to actual Materials rather than unused catalog
+    entries that would produce zero results.
+  - Preserve BaseMaterialId binding, auto-save, filters, existing rows and all historical data.
+  - Update Help and deterministic verification; no website, score, schema, Production or FTPS change is included.
+  - Completion condition: Debug/Release, Help/docs and Full Data Verification pass; owner adds a Material and confirms PEBA and every
+    other canonical Base Material can be selected from its dropdown.
+  - Completion condition met: owner confirms PEBA is selectable for a new Material without restart; all governed gates pass.
+
+## Completed — v64 Flexible-material Comparative Testing
 
 - **v64.0.0 — TPU Compression and Shore Hardness Measurement Foundation**
   - State: Complete and owner runtime accepted on 2026-09-08; Full Data Verification passes 438/438.

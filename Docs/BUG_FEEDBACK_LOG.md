@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 123 |
+| Solved | 124 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **129** |
+| **Total tracked findings** | **130** |
 
 ## Triage categories
 
@@ -187,6 +187,17 @@ No active findings.
 - **Status:** Resolved and runtime accepted in v59.0.1.
 
 ## Recent resolved findings — newest first
+
+### 2026-09-09 — New Material dropdown omits canonical PEBA Base Material
+
+- **Area:** Materials / Base Materials.
+- **Type:** Bug.
+- **Severity:** Important.
+- **Resolution:** v65.0.0 refreshes the long-lived dropdown collection from every non-empty canonical Base Material immediately before
+  Add Material creates and focuses its row. The Materials filter remains occurrence-based to avoid unused zero-result choices.
+- **Evidence:** Debug/Release pass; profile `20260910000134-b1e178be` passes Full Data Verification 447/447 and exact-state recovery.
+  The owner confirms PEBA is selectable in the new-Material dropdown on 2026-09-10.
+- **Status:** Solved and owner runtime accepted in v65.0.0.
 
 ### 2026-09-09 — Flexible measurement entry crash during specimen switch
 

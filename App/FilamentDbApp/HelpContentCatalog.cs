@@ -148,7 +148,9 @@ internal static class HelpContentCatalog
             text. Reset Columns uses a named default-No warning; No, Escape or closing it preserves the current layout. Explicit Yes
             restores the current application default column order/width only and persists across restart. An existing saved user
             layout otherwise remains authoritative across application upgrades. Normal committed cell edits auto-save; there is no
-            separate Save requirement.
+            separate Save requirement. Immediately before Add Material focuses its new row, the Base Material dropdown refreshes from
+            every non-empty canonical Base Materials entry, so newly cataloged choices are available without restarting. The Base
+            Material filter remains occurrence-based and lists values already assigned to Materials rather than unused catalog rows.
 
             Grid keyboard and focus
             In an editable Fast Materials cell, Left/Right/Up/Down commit the current value and move one cell in that direction;

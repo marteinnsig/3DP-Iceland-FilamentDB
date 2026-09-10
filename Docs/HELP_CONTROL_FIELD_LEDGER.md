@@ -1,6 +1,6 @@
 # Help Control and Field Ledger
 
-Version: v64.0.8 Flexible edit-transaction rebind-safety coverage
+Version: v65.0.0 catalog-driven Material-entry coverage
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted

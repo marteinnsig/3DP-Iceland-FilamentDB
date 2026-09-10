@@ -1,3 +1,15 @@
+# v65.0.0 - Catalog-driven Material Entry Choices
+
+Date: 2026-09-10
+
+- Add Material refreshes all non-empty canonical Base Material choices before creating and focusing the new row.
+- The Materials Base Material filter remains occurrence-based and canonical BaseMaterialId binding is unchanged.
+- Debug and Release pass with zero warnings/errors; Help and release-documentation gates pass.
+- Profile `20260910000134-b1e178be` passes Full Data Verification 447/447, 24/24 top-level and Navigate paths, 16/16 nested tabs and
+  exact database/business-state recovery.
+- Owner confirms PEBA is available and selectable for a new Material without restart. v65.0.0 and v65 are complete.
+- Production and FTPS remain blocked.
+
 # v64.0.8 - Flexible Edit-transaction Rebind Safety
 
 Date: 2026-09-09

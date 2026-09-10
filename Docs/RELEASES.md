@@ -1,6 +1,13 @@
 > Canonical role: curated canonical and runtime-accepted release ledger.
 > Detailed implementation chronology remains in `CHANGELOG.md`.
 
+## v65.0.0 - Catalog-driven Material Entry Choices
+
+Refreshes the long-lived Base Material dropdown from every non-empty canonical Base Materials entry immediately before Add Material
+creates and focuses its row. The occurrence-based Materials filter remains intentionally limited to values assigned to actual
+Materials. Debug/Release and Help/docs pass; profile `20260910000134-b1e178be` passes Full Data Verification 447/447 and exact-state
+recovery. Owner confirms PEBA is selectable for a new Material without restart on 2026-09-10. No live publish occurred.
+
 ## v64.0.8 - Flexible Edit-transaction Rebind Safety
 
 Prevents Flexible specimen/session navigation from replacing reading tables during an active WPF AddNew/EditItem transaction. The

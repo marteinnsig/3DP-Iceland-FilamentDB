@@ -1,5 +1,15 @@
 # Automated Runtime Acceptance
 
+## v65.0.0 - Catalog-driven Material entry choices accepted
+
+- Full Data Verification checks the Add Material preparation hook and complete canonical Base Material choice coverage.
+- Existing disposable CRUD automation owns Add Material persistence and BaseMaterialId behavior; visual dropdown contents remain an
+  owner runtime acceptance item.
+- Production, FTPS, public export and owner data remain outside this increment.
+- Debug/Release pass. Profile `20260910000134-b1e178be` passes Full Data Verification 447/447, 24/24 top-level and Navigate paths,
+  16/16 nested tabs and exact database/business-state recovery.
+- Owner runtime acceptance passes on 2026-09-10: PEBA is present and selectable in a new Material's Base Material dropdown.
+
 ## v64.0.8 - Flexible edit-transaction rebind safety accepted
 
 - Full Data Verification checks shared close-before-rebind ownership across all four Flexible reading grids.
