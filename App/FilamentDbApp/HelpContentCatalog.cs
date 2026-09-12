@@ -1229,6 +1229,11 @@ internal static class HelpContentCatalog
             Compression force/stress separates measured displacement as well as target, hold and cycle. Force reduction requires
             a unique 10 s / 30 s pair at the same displacement. Historical relaxation is counted separately, not merged into retention.
             Material Detail updates after a successful save; restart reloads the same saved evidence. Existing Overall stays unchanged.
+            For Shore, print a 50 x 50 x 8 mm coupon and let it rest for 24 hours. Use four corner positions, 10 mm from both
+            adjacent edges, plus the centre. Add five separate Shore readings under the same specimen and scale, enter 10 in
+            Reading time s and the actual thickness (8 mm for this procedure). Existing saved defaults are not retroactively changed.
+            Comparable Results includes Shore location statistics for each specimen: valid reading count, mean, sample SD and CV%.
+            The Mechanical dashboard, website bar popup and reports show this within-specimen variation separately from group SD/CV.
             Shore values are measured records distinct from manufacturer hardness. A and D are neither converted nor averaged together.
             To remove an accidental reading, click any cell in that row, then click Delete Selected Reading. If no reading is selected,
             the status line explains what must be selected; specimen and session deletion are separate actions.
@@ -1852,6 +1857,14 @@ internal static class HelpContentCatalog
             Generate Preview validates the active SQLite template and current canonical data, automatically rebuilds missing or stale
             eligible public reports, and writes index-test.html. It also writes export-manifest.txt and a timestamped ExportLogs entry.
             Main Website DATA includes every active, non-archived MaterialID; public-report checkboxes control linked report artifacts.
+            Website bar charts are horizontal, with material names beside the bars and values at their ends. Tensile and Impact
+            keep separate orientation colors and horizontal SD whiskers. Hover or click a bar for its existing evidence details.
+            Experimental score bars retain best-result and baseline highlights. Line, scatter and radar charts keep their axes.
+
+            Flexible Testing sits beside Pricing & Value. Its filters mirror Filament Database; the Filaments list selects individual materials.
+            No filament selection shows all matches. Mean bars keep each saved result's own n, sample SD and CV percent in hover/click tips.
+            Compression Force in N and Min/Max are omitted. Different measured conditions have separate charts; setup notes are not published.
+            Enter or Space on a focused bar opens its details; Escape dismisses them. Reset filters clears filament selection as well.
 
             Each DATA row includes nullable fixture thermal °C/score, method version and limitation wording. A dedicated fixture-
             temperature bar chart appears directly below Stiffness. In Selected filament vs material type averages, choose
@@ -2235,6 +2248,10 @@ internal static class HelpContentCatalog
             Export Engineering Methodology Whitepaper builds the packaged methodology document for the running release and asks for a
             local destination. Review the selected filename and folder before saving, then open the PDF and inspect page layout,
             branding, formulas and version context.
+
+            Chapter 8 covers flexible compression and Recovery with the unchanged TVL zero. It also documents the established Shore A/D
+            procedure: 50 x 50 x 8 mm specimens, 24 hours rest, four corner positions 10 mm from both edges plus the centre,
+            and 10 seconds per reading. Location SD/CV describe each specimen; independent-specimen statistics remain separate.
 
             The whitepaper explains governed methodology; it is not a database backup, Verification report or live website action.
             Export writes only the selected local PDF and does not alter SQLite, measurements or publishing state.

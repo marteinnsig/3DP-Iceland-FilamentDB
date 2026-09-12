@@ -114,11 +114,25 @@ public sealed class OpenAiAssistantPilotService
     public const int MaximumMaterials = 40;
     public const int MaximumPlanningNoteCharacters = 2000;
 
-    private static readonly JsonSerializerOptions JsonOptions = new()
+    private static readonly JsonSerializerOptions JsonOptions = CreateJsonOptions();
+
+    private static JsonSerializerOptions CreateJsonOptions()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = true
-    };
+        // Website/report additions do not expand the separately governed AI payload.
+        var resolver = new System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver();
+        resolver.Modifiers.Add(info =>
+        {
+            if (info.Type != typeof(PublicFlexibleMetricGroup)) return;
+            var locations = info.Properties.FirstOrDefault(p => p.Name == "shoreSpecimens");
+            if (locations is not null) info.Properties.Remove(locations);
+        });
+        return new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true,
+            TypeInfoResolver = resolver
+        };
+    }
 
     private static readonly HttpClient SharedClient = new(new HttpClientHandler
     {

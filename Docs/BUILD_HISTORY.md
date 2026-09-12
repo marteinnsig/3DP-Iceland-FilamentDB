@@ -3,6 +3,97 @@
 > ledger.
 
 
+## v67.0.3 - Flexible Website Publication and Closure
+
+Documentation-only closure; accepted runnable application remains v67.0.2 and its tested Release bytes are preserved.
+Owner published the website and confirmed its live appearance, then requested closure on 2026-09-12.
+Independent HTTPS returns 200 for the main site, updated Whitepaper, stable Windows installer and portable ZIP links.
+Live HTML includes Flexible Testing and within-specimen Shore statistics; the downloaded PDF confirms the established
+50 x 50 x 8 mm, 24-hour, five-position, 10-second Shore method. No Codex FTPS operation or remote-backup claim is made.
+All recorded v67 increments are complete. Debug/Release zero warnings/errors; final disposable Verification 462/462 PASS.
+Help 802/802, documentation audit and diff checks pass. README and feedback are reconciled; no new milestone is scheduled.
+Retained template transforms support existing SQLite website templates and remain actively called; no retired path is unowned.
+Application installer/update packages were not rebuilt or promoted in this website release; their separate acceptance still applies.
+Evidence: `.private/v67-closure`, `.private/v67-shore`, and `Docs/V67_FLEXIBLE_WEBSITE_ACCEPTANCE.md`.
+
+## v67.0.2 - Flexible Methodology Whitepaper
+
+### Shore method clarification and location statistics
+
+Owner clarified the established procedure: 50 x 50 x 8 mm coupon, 24 hours rest, four locations 10 mm from both corner edges
+plus the centre, and a 10-second reading at each of the five positions. Testing additional materials is ongoing.
+The corrected whitepaper supersedes the initial planned 30 mm description within this unaccepted increment.
+Saved Shore rows now also produce per-specimen valid reading count, mean, sample SD and CV. A/D and dwell/thickness remain separate.
+Group statistics still use equally weighted specimen means and independent n; point counts never substitute for specimen counts.
+Location summaries appear in Comparable Results, the Mechanical dashboard, website bar popups and private/public reports.
+Six public templates share the sanitized projection; public summaries use group-local specimen numbers, without raw IDs or notes.
+No schema migration, owner-data rewrite, input handler change, default override, AI payload expansion or Overall change.
+Existing smoke gains the pure Shore regression; Help owns the new read-only column and procedure. Coverage is 802/802.
+Debug and Release pass with zero warnings/errors. Synthetic arithmetic/public-publisher checks and actual browser popup/report pass.
+Owner readability and real-data preview acceptance remain pending; no live website publication.
+
+Chapter 8 now documents timed Recovery from the retained TVL contact zero, including the illustrative 0.14 mm offset calculation.
+It records the owner's planned Shore A/D procedure: separate scales, printed 30 x 30 x 8 mm coupons and five locations per specimen.
+Within-specimen location means remain separate from independent-specimen n, Sample SD and CV%; no results or dwell time are invented.
+The test matrix and Help now cover Recovery and planned Shore. PDF formula backgrounds and following paragraph spacing are corrected.
+Debug/Release pass with zero warnings/errors. Canonical PDF has 37 pages; final pages were rendered and visually reviewed.
+Existing disposable smoke owns a new methodology-content Verification gate; no new scenario, input field or AutomationId is needed.
+Owner accepted v67.0.1 horizontal bars and font correction. Whitepaper readability remains pending; publication belongs to v67.0.3.
+
+## v67.0.1 - Horizontal Website Charts
+
+### Flexible chart text-size correction
+
+Owner found Flexible text too small. Labels, axis ticks and means now use the database chart size of18px.
+Canvas measurement uses the same font; wider label space and24px line spacing preserve full-name wrapping.
+Actual browser computed styles confirm18px for Flexible text and database x-labels; long names visually pass.
+Debug/Release pass with zero warnings/errors. Cosmetic-only: no Help, AutomationId or tester contract changes are warranted.
+Prior460/460 behavior verification remains applicable; no calculation/filter/tooltip content changes. Owner preview retry pending.
+
+
+Owner accepted the v67.0.0 preview after its TPU comparison fix, then requested horizontal bars throughout the main website.
+Converts Tensile/Impact paired bars, Stiffness/Thermal single bars, Overall, Consistency, Flexible and Experimental score bars.
+Names appear beside bars; values, orientation colors, ranking, grouping, SD whiskers and tooltip facts retain their existing data.
+Already-horizontal comparison/value charts and line/scatter/radar charts keep their renderers. No score formula changes.
+A versioned transform replaces four vertical renderer bodies in the generated output; the active SQLite template is preserved.
+This supported-template adapter owns existing stored templates and fails closed on unsupported function boundaries.
+Subagents implemented isolated Flexible and Experimental geometry changes; main integration owns the shared database renderers.
+Debug/Release zero warnings/errors, Help 801/801 and disposable smoke/Full Verification 460/460 PASS.
+Profile `20260912032400-e8357206`; exact database and business-state recovery retained in its evidence.
+Browser checks cover six main charts, paired bars/SD, manufacturer grouping, Flexible statistics and Experimental zero/best/baseline.
+Owner visual acceptance remains pending. v67.0.2 publication follows accepted preview; no live website change in this increment.
+
+## v67.0.0 - Flexible Website Explorer
+
+Correction verification: Debug/Release zero warnings/errors; Help/docs/diff checks pass.
+Disposable profile `20260912025445-2a1afd9d`: smoke PASS, Full Verification 459/459 PASS.
+Exact database SHA-256: `26A4C891E789EF12F987549A0A205E1EC7109D11DED6E8C882078DAA71111F87`.
+Exact business-state hash: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88`.
+Normal Release updated after owner closed the app. Owner Generate Preview retry remains pending.
+
+
+### Owner preview correction — 2026-09-12
+
+Owner Generate Preview failed because the public TPU family comparison artifacts were not generated.
+Synthetic reproduction confirmed Path/membership/allowlist/exclusion/artifacts passed but content validation failed.
+BuildScoreChart omits charts with no source scores; verification incorrectly required every chart heading anyway.
+Validation now requires each chart exactly when its score exists. Null remains absent; measured zero still requires a chart.
+The regression covers Flexible-only and partial-score comparisons and rejection of a damaged required chart.
+Report rendering, raw measurements, public opt-in and publication guards are unchanged. Help was revalidated: existing public-report
+family scope, missing evidence and local Generate Preview behavior already describe the corrected contract; no new control or Help text is needed.
+The existing Full Verification smoke gains the regression; no new scenario, seed mutation or broader automation permission.
+Initial synthetic reproduction failed before the fix and passed after it. Owner retry remains required for actual preview acceptance.
+
+
+Candidate implementation — 2026-09-12; owner preview acceptance pending.
+Adds Flexible Testing beside Pricing & Value, with synchronized database filters and explicit multi-filament selection.
+Each metric/condition/unit has native-unit Mean bars; hover/click and keyboard tooltips show n, Sample SD and CV%.
+Compression Force N, Min/Max and private notes are excluded from this website payload. Saved aggregates remain separate;
+different n/setup metadata never causes pooling or changes Overall/radar scores. No raw measurements or SQLite data are changed.
+Full Verification owns public projection and portal route contracts; existing disposable smoke remains the runner owner.
+Browser checks own filtering, chart labels, zero results, CV fidelity and tooltip behavior; Help website.preview owns navigation.
+See Docs/V67_FLEXIBLE_WEBSITE_ACCEPTANCE.md for evidence and exact owner steps. Website publication is planned in v67.0.1.
+
 ## v66.0.8 - Flexible Integration Acceptance
 
 ### Owner acceptance and source release closure — 2026-09-12

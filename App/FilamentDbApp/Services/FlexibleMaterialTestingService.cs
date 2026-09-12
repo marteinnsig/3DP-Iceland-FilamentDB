@@ -186,7 +186,8 @@ public sealed class FlexibleMaterialTestingService
         BuildMetricGroups(specimens, compression, shore, recovery).Select(x => new FlexibleComparisonRow(
             x.Metric, x.MethodGroup, x.Condition, x.SpecimenCount, Format(x.Mean, "0.###"),
             Format(x.StandardDeviation, "0.###"), Format(x.CoefficientOfVariation, "0.###"),
-            Format(x.Minimum, "0.###"), Format(x.Maximum, "0.###"), x.Unit, x.NotReachedCount)).ToList();
+            Format(x.Minimum, "0.###"), Format(x.Maximum, "0.###"), x.Unit, x.NotReachedCount)
+            { LocationStatistics = FormatShoreSpecimens(x.ShoreSpecimens) }).ToList();
 
     internal static IReadOnlyList<FlexibleMetricGroupSummary> BuildMetricGroups(
         IReadOnlyCollection<FlexibleTestSpecimenRecord> specimens,
@@ -266,10 +267,20 @@ public sealed class FlexibleMaterialTestingService
             });
         foreach (var group in shoreGroups)
         {
-            var independentSpecimens = group.GroupBy(x => x.SpecimenId, StringComparer.OrdinalIgnoreCase)
-                .Select(x => x.Average(p => ParseOptional(p.HardnessValue)!.Value)).ToList();
+            var locations = group.GroupBy(x => x.SpecimenId, StringComparer.OrdinalIgnoreCase)
+                .OrderBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
+                .Select(x =>
+                {
+                    var values = x.Select(p => ParseOptional(p.HardnessValue)!.Value).ToArray();
+                    var mean = values.Average();
+                    double? sd = values.Length < 2 ? null : Math.Sqrt(values.Sum(v => Math.Pow(v - mean, 2)) / (values.Length - 1));
+                    return new ShoreSpecimenStatistics(x.Key, specimenById[x.Key].SpecimenLabel, values.Length,
+                        mean, sd, mean == 0 ? null : sd / Math.Abs(mean) * 100);
+                }).ToArray();
+            var independentSpecimens = locations.Select(x => x.Mean).ToList();
             AddSummary(rows, $"Shore {group.Key.ShoreScale} Hardness", group.Key.Method,
                 $"{group.Key.Time} s reading · {group.Key.Thickness} mm", independentSpecimens, $"Shore {group.Key.ShoreScale}", 0);
+            rows[^1] = rows[^1] with { ShoreSpecimens = locations };
         }
         var recoveryGroups = (recovery ?? []).Where(x => specimenById.ContainsKey(x.SpecimenId) &&
             x.CycleNumber > 0 && x.TvlContactOffsetError.Length == 0 && ParseOptional(x.CompressionPercent) is > 0d and <= 100d &&
@@ -345,6 +356,8 @@ public sealed class FlexibleMaterialTestingService
     }
 
     private static string Normalize(string? value) => string.IsNullOrWhiteSpace(value) ? "not recorded" : value.Trim();
+    public static string FormatShoreSpecimens(IReadOnlyList<ShoreSpecimenStatistics> specimens) =>
+        string.Join("\n", specimens.Select(s => $"{s.SpecimenLabel}: {s.ReadingCount} readings; mean {Format(s.Mean, "0.###")}; location SD {Format(s.StandardDeviation, "0.###")}; location CV {Format(s.CoefficientOfVariation, "0.###")}%"));
     private static string NumericKey(string? value) => ParseOptional(value) is double parsed
         ? parsed.ToString("R", CultureInfo.InvariantCulture)
         : Normalize(value);

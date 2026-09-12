@@ -1,3 +1,56 @@
+# v67.0.3 - Accepted website closure
+
+Owner published and visually accepted the live site on 2026-09-12. Independent HTTPS checks pass for the main site,
+updated methodology PDF and stable installer/portable links. Live content confirms Flexible Testing and corrected Shore methods.
+Existing exact accepted runtime remains v67.0.2: Debug/Release zero warnings/errors, Full Verification 462/462, Help 802/802.
+Dependency audit reports no vulnerable packages. Closure changes are documentation only; no rebuild or new FTPS operation.
+Local evidence: `.private/v67-closure/live-verification.txt` and the accepted `.private/v67-shore` tester evidence.
+
+# v67.0.2 - Flexible Methodology Whitepaper
+
+### Shore clarification final verification
+
+Final disposable profile `20260912042153-c9d8b6d4`: smoke PASS and Full Verification 462/462 PASS.
+Database baseline/final SHA-256: `0F9A1B51479016DCD6F3F382C55AC8E6D1FF93D9D9AD8A813B66675F0043AC91`.
+Business-state baseline/final: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88`.
+Debug/Release zero warnings/errors, Help 802/802, documentation audit and diff whitespace checks PASS.
+The first 461/462 run exposed a widened AI DTO shape; the AI serializer now retains its established group-only allowlist.
+Failed profile `20260912041818-e3aaee74` is retained for diagnosis; final run verifies the correction.
+Final whitepaper pages 21-22 and browser Shore popup/report tables were visually inspected; owner readability review pending.
+Local evidence: `.private/v67-shore`. No owner-data mutation, live publication, commit or push in this unaccepted increment.
+
+Debug/Release: zero warnings/errors. Disposable smoke and Full Verification PASS 461/461.
+Profile: `20260912035550-239796cb`.
+Database baseline/final SHA-256: `B7D10189DC9D2633A772BFA4A3A7C840CAF9CDAAEC832273ECC50322E2E801EE`.
+Business-state baseline/final: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88`.
+Final canonical PDF: 37 pages rendered; overview and detailed Recovery/Shore/formula pages inspected.
+Evidence and reproduction fixture retained in `.private/v67-whitepaper`; owner readability acceptance pending.
+
+# v67.0.1 - Horizontal Website Charts
+
+- Debug/Release zero warnings/errors; Help 801/801. Profile `20260912032400-e8357206`: smoke PASS; Full Verification 460/460 PASS.
+- Database recovery SHA-256: `59D81E50D16BD4A25C4E614CEA19297364D0A446E41E104B1DAC92643656318D`.
+- Business-state recovery: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88`.
+- Browser inspected actual embedded assets against synthetic data and the canonical SQLite template; no JavaScript errors.
+- Six database charts horizontal, paired SD whiskers and grouping preserved; Flexible n/SD/CV and Experimental colors verified.
+- Owner visual acceptance pending. Local fixture retained in `.private/v67-horizontal`; no live publication.
+
+# v67.0.0 - Flexible Website Explorer
+
+Correction verification: Debug/Release zero warnings/errors; Help/docs/diff checks pass.
+Disposable profile `20260912025445-2a1afd9d`: smoke PASS, Full Verification 459/459 PASS.
+Exact database SHA-256: `26A4C891E789EF12F987549A0A205E1EC7109D11DED6E8C882078DAA71111F87`.
+Exact business-state hash: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88`.
+Normal Release updated after owner closed the app. Owner Generate Preview retry remains pending.
+
+
+- Candidate: Debug/Release pass with zero warnings/errors; Help coverage passes 801/801.
+- Profile `20260912023829-85994faa`: disposable smoke PASS; Full Verification 458/458 PASS, exact database/business-state recovery.
+- Browser fixture passes selection/filter/reset, native Mean bars, n/SD/CV, zero values, keyboard popup and narrow-layout checks.
+- Projection excludes force N, Min/Max and private notes; Overall/radar contracts remain unchanged.
+- Full evidence, hashes and manual owner steps: `Docs/V67_FLEXIBLE_WEBSITE_ACCEPTANCE.md`.
+- Owner preview acceptance pending; v67.0.1 publication is planned. No live publication or accepted v67 release claim.
+
 # v66.0.8 - Flexible Integration Acceptance
 
 - Owner accepted final v66.0.8 research lists on 2026-09-12; all recorded v66 increments now accepted.

@@ -2,15 +2,15 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v66.0.8 — Flexible Integration Acceptance**
+Last runtime-accepted baseline: **v67.0.2 — Flexible Methodology Whitepaper**
 
-Current canonical application release: **v66.0.8 — Flexible Integration Acceptance**
+Current canonical application release: **v67.0.2 — Flexible Methodology Whitepaper**
 
-Current roadmap increment: **v66.0.8 — complete; owner accepted 2026-09-12**
+Current roadmap increment: **v67.0.3 — complete; owner published and accepted the live website**
 
-Current acceptance note: all recorded v66 increments accepted, including final research-list integration.
+Current acceptance note: all v67 increments accepted; owner published the website and independent HTTPS checks pass.
 
-Next note: no new milestone scheduled. Distribution packaging requires its own exact-byte acceptance gates.
+Next note: no new milestone scheduled. Application distribution requires separate exact-byte package acceptance.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
 Production/FTPS remain gated: no v66 installer/update package has received exact-byte runtime acceptance.
 
@@ -55,6 +55,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v64 | Flexible-material Comparative Testing | ★★★★★ | Complete — canonical v64.0.8 runtime accepted |
 | v65 | Catalog-driven Material Entry | ★★★★★ | Complete — canonical v65.0.0 runtime accepted |
 | v66 | Flexible Measurement Consolidation and Integration | ★★★★★ | Complete — canonical v66.0.8 runtime accepted |
+| v67 | Flexible Website Explorer | ★★★★★ | Complete — website published and owner accepted |
 
 ## Reconciliation of the older plans
 
@@ -3111,7 +3112,7 @@ blockers may change the order, but must be recorded here before implementation.
 
 ## Completed — v65 Catalog-driven Material Entry
 
-- **v66.0.8 — Flexible Integration Acceptance**
+- **v67.0.1 — Horizontal Website Charts**
   - State: Complete and owner runtime accepted on 2026-09-10; Full Data Verification passes 447/447.
   - Refresh the editable Base Material choice collection from the canonical in-memory Base Material Catalog immediately before a new
     Material row is created and focused.
@@ -3341,6 +3342,34 @@ blockers may change the order, but must be recorded here before implementation.
   - Reconcile Help, automated tester, report/PDF evidence, README, feedback and full cross-surface inventory.
   - Completion: 457/457, Debug/Release, dependency audit, Help/docs and README link checks pass; source release closure accepted.
   - Preserve accepted runtime identity/bytes. Installer/update packaging and Production runtime acceptance are not yet established.
+## Completed — v67 Flexible Website Explorer
+
+- **v67.0.0 — Flexible Website Tab and Native-unit Charts**
+  - State: Accepted; owner preview looks good after TPU prerequisite fix. 459/459 PASS.
+  - Correction: make public comparison chart validation respect missing scores; regress Flexible-only/partial-score reports.
+  - Add Flexible Testing beside Pricing & Value with canonical synchronized filters and explicit filament selection.
+  - Mean bars for apparent stress, retention, reduction, recovery and Shore; exclude compression force in N and Min/Max.
+  - Hover/click tooltips retain independent n, sample SD, CV percent, units, condition and unreached readings.
+  - Preserve each saved summary, align charts by metric/condition/unit, exclude raw method/specimen notes from public payload.
+  - Completion: safe projection, browser behavior/visual evidence, Debug/Release, Help and Full Verification pass; owner accepts.
+- **v67.0.1 — Horizontal Website Charts**
+  - State: Accepted by owner after the Flexible 18px typography correction; builds/browser checks pass.
+  - Convert remaining vertical database, Flexible and Experimental score bars; retain already-horizontal charts.
+  - Preserve selection, sorting, grouping, values, ranks, color meanings, SD whiskers and tooltip facts; line/scatter/radar unchanged.
+  - Owner visual correction: match Flexible chart labels/ticks/means to database 18px text; adjust wrapping and row spacing.
+  - Completion: representative browser checks, Debug/Release, Help, Full Verification and owner visual acceptance.
+- **v67.0.2 — Flexible Methodology Whitepaper**
+  - State: Accepted by owner; corrected Shore procedure, app/website/report statistics and 462/462 verified.
+  - Describe unchanged TVL zero, 20% compression, recorded hold/rest and residual height loss;
+    Shore 50 x 50 x 8 mm, 24 h conditioning, five locations, 10 s readings.
+  - Separate scales and within-specimen readings from independent n; publish each specimen location mean, sample SD and CV
+    separately in app, website and reports.
+  - Completion: generated PDF visual inspection, documentation/Help checks, builds and owner readability acceptance.
+- **v67.0.3 — Flexible Website Publication and Closure**
+  - State: Complete; owner published and accepted the live site. Independent HTTPS/content checks pass on 2026-09-12.
+  - Publish accepted website bytes through governed backup/inventory/verification paths; no owner database or app-package publishing.
+  - Completion: website-specific publication authority and preview acceptance are recorded, HTTPS output verified, Help/docs reconciled.
+
 ### Intentionally unscheduled
 
 - The unresolved one-day Variant-edit crash remains an immediate defect

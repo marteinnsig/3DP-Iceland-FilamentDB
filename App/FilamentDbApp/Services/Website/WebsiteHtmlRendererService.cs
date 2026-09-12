@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 using System.Text;
 
@@ -46,6 +46,7 @@ public sealed class WebsiteHtmlRendererService
         updated = RemoveLegacyPricingOverlay(updated);
         updated = ApplyThermalPresentation(updated);
         updated = ApplyFlexibleCompressionPresentation(updated);
+        updated = HorizontalWebsiteChartService.Apply(updated);
         return generatedNote + updated;
     }
 

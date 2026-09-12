@@ -1,5 +1,33 @@
 # Automated Runtime Acceptance
 
+## v67.0.2 - Shore location statistics
+
+Existing disposable smoke gains a synthetic Shore regression: one five-point specimen, unequal reading counts across specimens,
+separate A/D and dwell groups, blank/invalid exclusions, zero-mean CV, singleton SD and safe website/report projection.
+The public-publisher contract also exercises Shore location summaries across all six templates. No scenario authorization changes.
+No new input field or handler: the added column and dashboard rows are read-only. No owner database or canonical seed changes.
+Browser visual review and owner real-data acceptance own presentation; no low-value pixel tests are added.
+
+## v67.0.1 - Horizontal Website Charts
+
+Existing smoke/Full Verification gains fail-closed template-transform, idempotence and source-preservation checks.
+Profile `20260912032400-e8357206` passes 460/460 with exact database/business recovery. Browser visual checks cover
+paired SD bars, grouping, Flexible statistics and Experimental zero/missing/best/baseline. No new scenario or AutomationId.
+Geometry/readability stay owner visual acceptance; no low-value pixel assertions, owner-data automation or seed changes.
+
+## v67.0.0 - Flexible Website Explorer
+
+Owner preview correction adds missing-score comparison regression; profile `20260912025445-2a1afd9d` passes 459/459.
+Flexible-only, zero/partial score and damaged-required-chart checks pass; exact database/business-state recovery holds.
+Earlier 458/458 evidence below predates this corrective contract.
+
+Existing disposable smoke owns the added public projection and portal/hash Verification contracts: 458/458 PASS.
+Profile `20260912023829-85994faa` preserves exact database and business-state recovery; full hashes and owner steps are in
+`Docs/V67_FLEXIBLE_WEBSITE_ACCEPTANCE.md`. No new editable WPF field, AutomationId, scenario authorization or seed refresh.
+Browser checks exercise actual service HTML against the canonical template: selection, cross-tab filters, Reset, tooltip
+statistics, zero Mean and label wrapping. No visual-only tester assertions were added. Owner-data preview acceptance remains pending.
+Help website.preview and registry/inventory are updated; no Production or external publication occurred.
+
 ## v66.0.3 - Saved Flexible evidence candidate
 
 - Extend existing Full Verification with active MaterialID/parent isolation, Recovery condition/statistics, raw nonmutation,

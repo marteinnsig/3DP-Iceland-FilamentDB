@@ -45,7 +45,11 @@ public static class FlexibleRankingExportService
                 foreach (var value in values) output.Append("<td style=\"padding:4px 8px;max-width:22em;overflow-wrap:anywhere\">").Append(H(Display(value))).Append("</td>");
                 output.Append("</tr>");
             }
-            output.Append("</tbody></table></div></section>");
+            output.Append("</tbody></table></div>");
+            foreach (var row in group.Rows.Where(r => r.Result.ShoreSpecimens.Count > 0))
+                output.Append("<h4>").Append(H(row.Label)).Append("</h4>")
+                    .Append(FlexibleReportEvidenceService.RenderShoreHtml([row.Result]));
+            output.Append("</section>");
         }
         return output.ToString();
     }
@@ -61,6 +65,8 @@ public static class FlexibleRankingExportService
                 .AppendLine($"{first.Metric}; {first.Condition}; method {first.MethodId[..12]}");
             foreach (var row in group.Rows)
                 output.AppendLine($"{row.Label}: rank {Display(Rank(row.Rank))}; mean {Display(Number(row.Result.Mean))} {row.Result.Unit}; n {row.Result.SpecimenCount}; SD {Display(Number(row.Result.StandardDeviation))}; CV {Display(Number(row.Result.CoefficientOfVariation))}%; range {Range(row.Result)}; not reached {row.Result.NotReachedCount}.");
+            foreach (var row in group.Rows.Where(r => r.Result.ShoreSpecimens.Count > 0))
+                output.AppendLine(row.Label).AppendLine(FlexibleReportEvidenceService.RenderText([row.Result]));
             output.AppendLine();
         }
         return output.ToString();

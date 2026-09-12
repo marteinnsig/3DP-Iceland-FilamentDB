@@ -8050,7 +8050,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
         // The Manufacturers portal consumes the same canonical active material rows
         // supplied to the website DATA pipeline for this render.
-        var canonical = ApplyWebsiteTerminologyCleanup(ApplyConsistencyCalibrationToWebsite(ApplyPublicReportLinksToWebsite(ApplyNativeWebsitePortalNavigation(InjectExperimentalWebsiteSection(rendered), allRows))));
+        var canonical = ApplyWebsiteTerminologyCleanup(ApplyConsistencyCalibrationToWebsite(ApplyPublicReportLinksToWebsite(ApplyNativeWebsitePortalNavigation(InjectExperimentalWebsiteSection(rendered), allRows, visibleRows))));
         string embeddedReports;
         try
         {
@@ -8230,7 +8230,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
   <div class=""search-reset compact-filter-row""><div class=""search-filter""><button type=""button"" id=""pricingFilterReset"">Reset filters</button><label for=""pricingFilterSearch"">Search</label><input id=""pricingFilterSearch"" type=""search"" placeholder=""Search label...""></div><div class=""sort-filter""><label for=""pricingFilterSortMode"">Sort tensile / impact by</label><select id=""pricingFilterSortMode""></select></div></div>
 </section>";
 
-    private string ApplyNativeWebsitePortalNavigation(string html, IReadOnlyList<DataRow>? manufacturerRows = null)
+    private string ApplyNativeWebsitePortalNavigation(string html, IReadOnlyList<DataRow>? manufacturerRows = null, IReadOnlyList<DataRow>? flexibleRows = null)
     {
         const string markerStart = "<!-- 3DP-NATIVE-PORTAL-START -->";
         const string markerEnd = "<!-- 3DP-NATIVE-PORTAL-END -->";
@@ -8307,6 +8307,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         portalBody.AppendLine("  <div class=\"portal-navigation-inner\">");
         portalBody.AppendLine("    <button type=\"button\" class=\"portal-tab is-active\" data-portal-target=\"database\" aria-controls=\"portalPageDatabase\" aria-selected=\"true\">Filament Database</button>");
         portalBody.AppendLine("    <button type=\"button\" class=\"portal-tab\" data-portal-target=\"pricing\" aria-controls=\"portalPagePricing\" aria-selected=\"false\">Pricing &amp; Value</button>");
+        portalBody.AppendLine("    <button type=\"button\" class=\"portal-tab\" data-portal-target=\"flexible\" aria-controls=\"portalPageFlexible\" aria-selected=\"false\">Flexible Testing</button>");
         portalBody.AppendLine("    <button type=\"button\" class=\"portal-tab\" data-portal-target=\"experimental\" aria-controls=\"portalPageExperimental\" aria-selected=\"false\">Experimental Lab</button>");
         portalBody.AppendLine("    <button type=\"button\" class=\"portal-tab\" data-portal-target=\"manufacturers\" aria-controls=\"portalPageManufacturers\" aria-selected=\"false\">Manufacturers</button>");
         portalBody.AppendLine("    <button type=\"button\" class=\"portal-tab\" data-portal-target=\"calculator\" aria-controls=\"portalPageCalculator\" aria-selected=\"false\">Printing Price Calculator</button>");
@@ -8323,6 +8324,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         portalBody.AppendLine(pricingContent.ToString());
         portalBody.AppendLine("  </div>");
         portalBody.AppendLine("</section>");
+        portalBody.AppendLine(BuildFlexibleWebsitePage(flexibleRows ?? Array.Empty<DataRow>()));
         portalBody.AppendLine("<section id=\"portalPageExperimental\" class=\"portal-page\" data-portal-page=\"experimental\" hidden>");
         portalBody.AppendLine("  <div class=\"portal-page-heading\"><p class=\"portal-eyebrow\">3DPIceland Labs</p><h1>Experimental Lab</h1><p>Published parameter studies and verified native test runs. Full chart visualization arrives in the dedicated Experimental Lab dashboard milestone.</p></div>");
         portalBody.AppendLine(experimentalBlock);
@@ -8368,7 +8370,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         const string portalScript = @"
 <script id=""nativePortalNavigationScript"">
 (function(){
-  const valid=['database','pricing','experimental','manufacturers','calculator','reports','methodology'];
+  const valid=['database','pricing','flexible','experimental','manufacturers','calculator','reports','methodology'];
   const tabs=Array.from(document.querySelectorAll('[data-portal-target]'));
   const pages=Array.from(document.querySelectorAll('[data-portal-page]'));
   function routeFromHash(){
@@ -8381,6 +8383,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
     pages.forEach(page=>{const active=page.dataset.portalPage===route;page.hidden=!active;page.classList.toggle('is-active',active);});
     if(updateHash && location.hash!=='#'+route) history.pushState(null,'','#'+route);
     document.documentElement.dataset.portalRoute=route;
+    if(route==='flexible') requestAnimationFrame(()=>window.renderFlexibleTesting?.());
     if(route==='pricing'){
       syncPricingFilters();
       requestAnimationFrame(()=>{if(typeof renderPricePerformance==='function')renderPricePerformance();});
@@ -15918,6 +15921,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("v66.0.8 Flexible research output coverage", flexibleResearchReady,
             flexibleResearchReady ? "Flexible-only planning, exact pairs, coverage gaps, calendar and playlist facts pass without Overall"
                 : "Flexible research output coverage failed"));
+        var horizontalWebsiteReady = HorizontalWebsiteChartService.VerifyContract();
+        checks.Add(new VerificationCheck("v67.0.1 Horizontal website presentation contract", horizontalWebsiteReady,
+            horizontalWebsiteReady ? "Four vertical renderers replaced once; source data/helpers preserved; unsupported template fails closed"
+                : "Horizontal chart presentation contract failed"));
+        var flexibleWebsiteReady = FlexibleWebsiteService.VerifyContract();
+        checks.Add(new VerificationCheck("v67.0.0 Flexible website public chart projection", flexibleWebsiteReady,
+            flexibleWebsiteReady ? "Safe scope, native means, SD/CV fidelity, missing/zero, no N/min/max/private metadata and embedded page pass"
+                : "Flexible website projection or asset failed"));
         var flexibleSavedDefaults = _nativeSettingsRows
             .Where(row => string.Equals(row.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase))
             .ToList();
@@ -16815,6 +16826,10 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         };
         var publicComparisonProbe = _publicComparisonReportPublishingService.Build(publicComparisonProbeModel, new DateTime(2026, 7, 22, 12, 0, 0, DateTimeKind.Local), BuildInfo.ShortLabel, BuildInfo.ReleaseTitle);
         var publicComparisonVerification = _publicComparisonReportPublishingService.Verify(publicComparisonProbeModel, publicComparisonProbe);
+        var missingComparisonScoresReady = PublicComparisonReportPublishingService.VerifyMissingScoreContract();
+        checks.Add(new VerificationCheck("v67.0.0 Public comparison missing-score contract", missingComparisonScoresReady,
+            missingComparisonScoresReady ? "Flexible-only and partial-score comparisons pass; zero remains measured and missing required charts fail"
+                : "Comparison verification does not match available source scores"));
         var publicComparisonReady = publicComparisonVerification.Passed && FindName("BuildPublicComparisonReportPreviewButton") is Button;
         checks.Add(new VerificationCheck("Public Comparison Report route and allowlist", publicComparisonReady,
             publicComparisonReady ? $"Stable reports/comparisons/material-family-pla route; {PublicComparisonReportPublishingService.PublicFieldAllowlist.Count} explicit fields; local preview only" : publicComparisonVerification.Detail));
@@ -17881,6 +17896,16 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         };
         var videoHandoffProbe = BuildRecommendationVideoPlannerRow(handoffRecommendationProbe);
         var whitepaperDocumentProbe = new DocumentationEngineService().BuildDocument(new DateTime(2026, 7, 21));
+        var flexibleMethodText = string.Join("\n", whitepaperDocumentProbe.Sections.Where(section => section.Id == "tpu-compression")
+            .SelectMany(section => section.Details));
+        var flexibleMethodReady = new[] { "Recovery after unloading", "Hrest = H0 - TVL contact offset", "Shore A and Shore D",
+            "50 x 50 mm and 8 mm", "five distinct locations", "n = 1", "24 hours", "10 seconds", "(40,40)", "established 3DPIceland" }
+            .All(text => flexibleMethodText.Contains(text, StringComparison.Ordinal));
+        checks.Add(new VerificationCheck("v67.0.2 Flexible whitepaper methodology", flexibleMethodReady,
+            flexibleMethodReady ? "Recovery contact-offset formula, Shore A/D geometry, five locations, independent n, established protocol and location statistics present"
+                : "Flexible whitepaper method contract incomplete"));
+        checks.Add(new VerificationCheck("v67.0.2 Shore location statistics", ShoreStatisticsVerification.Verify(),
+            "Per-specimen sample SD/CV, independent n, scale/time separation and safe website/report projection"));
         var whitepaperHandoffReady = whitepaperDocumentProbe.Sections.Any(section => section.Id == "intelligence-handoffs" &&
                 section.Details.Contains(EngineeringIntelligenceHandoffService.GovernanceStatement));
         var whitepaperConsistencyCalibrationReady = whitepaperDocumentProbe.Sections.Any(section => section.Id == "statistics" &&
@@ -18513,9 +18538,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var portalProbe = ApplyNativeWebsitePortalNavigation(experimentalWebsiteProbe);
         checks.Add(new VerificationCheck("Native website portal navigation", portalProbe.Contains("3DP-NATIVE-PORTAL-START", StringComparison.Ordinal) && portalProbe.Contains("nativePortalNavigationScript", StringComparison.Ordinal),
             "Single-file portal navigation is injected into preview and production exports"));
-        checks.Add(new VerificationCheck("Website portal page foundation", new[] { "portalPageDatabase", "portalPagePricing", "portalPageExperimental", "portalPageManufacturers", "portalPageCalculator", "portalPageMethodology" }.All(id => portalProbe.Contains(id, StringComparison.Ordinal)),
-            "Filament Database, Pricing & Value, Experimental Lab, Manufacturers, calculator and Methodology surfaces are present"));
-        checks.Add(new VerificationCheck("Website hash navigation", new[] { "database", "pricing", "experimental", "manufacturers", "calculator", "reports", "methodology" }.All(route => portalProbe.Contains("'" + route + "'", StringComparison.Ordinal)),
+        checks.Add(new VerificationCheck("Website portal page foundation", new[] { "portalPageDatabase", "portalPagePricing", "portalPageFlexible", "portalPageExperimental", "portalPageManufacturers", "portalPageCalculator", "portalPageMethodology" }.All(id => portalProbe.Contains(id, StringComparison.Ordinal)),
+            "Filament Database, Pricing & Value, Flexible Testing, Experimental Lab, Manufacturers, calculator and Methodology surfaces are present"));
+        checks.Add(new VerificationCheck("Website hash navigation", new[] { "database", "pricing", "flexible", "experimental", "manufacturers", "calculator", "reports", "methodology" }.All(route => portalProbe.Contains("'" + route + "'", StringComparison.Ordinal)),
             "Direct hash links and browser Back/Forward routing are available"));
         checks.Add(new VerificationCheck("Printing price calculator parity contract",
             new[]
@@ -18557,7 +18582,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         const string pricingPortalSourceProbe = "<html><body><main><section class=\"filters\"></section><section class=\"card\" id=\"pricingExplorerCard\">Pricing</section><section class=\"card\" id=\"pricePerformanceCard\">Performance</section><section class=\"card\" id=\"valueRankingsCard\">Rankings</section><section class=\"card methodology-box\"><h2>About the methodology</h2></section><section id=\"databaseSentinel\">Database</section></main></body></html>";
         var pricingPortalProbe = ApplyNativeWebsitePortalNavigation(pricingPortalSourceProbe);
         var pricingPageStart = pricingPortalProbe.IndexOf("id=\"portalPagePricing\"", StringComparison.Ordinal);
-        var pricingPageEnd = pricingPortalProbe.IndexOf("id=\"portalPageExperimental\"", StringComparison.Ordinal);
+        var pricingPageEnd = pricingPortalProbe.IndexOf("id=\"portalPageFlexible\"", StringComparison.Ordinal);
         var pricingPageContent = pricingPageStart >= 0 && pricingPageEnd > pricingPageStart
             ? pricingPortalProbe.Substring(pricingPageStart, pricingPageEnd - pricingPageStart)
             : string.Empty;

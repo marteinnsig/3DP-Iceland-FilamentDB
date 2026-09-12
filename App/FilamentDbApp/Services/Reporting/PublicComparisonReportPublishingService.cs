@@ -65,11 +65,11 @@ public sealed class PublicComparisonReportPublishingService
                              publication.Manifest.Contains("PDF from canonical HTML: report.pdf", StringComparison.Ordinal);
         var contentPassed = publication.Html.Contains("Public comparison report", StringComparison.Ordinal) &&
                             publication.Html.Contains("Engineering-axis leaders", StringComparison.Ordinal) &&
-                            publication.Html.Contains("Overall comparison", StringComparison.Ordinal) &&
-                            publication.Html.Contains("Tensile comparison", StringComparison.Ordinal) &&
-                            publication.Html.Contains("Impact comparison", StringComparison.Ordinal) &&
-                            publication.Html.Contains("Stiffness comparison", StringComparison.Ordinal) &&
-                            publication.Html.Contains("Thermal comparison", StringComparison.Ordinal) &&
+                            ChartMatchesAvailableScores("Overall comparison", model.Materials, item => item.OverallScore, publication.Html) &&
+                            ChartMatchesAvailableScores("Tensile comparison", model.Materials, item => item.TensileScore, publication.Html) &&
+                            ChartMatchesAvailableScores("Impact comparison", model.Materials, item => item.ImpactScore, publication.Html) &&
+                            ChartMatchesAvailableScores("Stiffness comparison", model.Materials, item => item.StiffnessScore, publication.Html) &&
+                            ChartMatchesAvailableScores("Thermal comparison", model.Materials, item => item.ThermalScore, publication.Html) &&
                             publication.Html.Contains("comparison-chart-grid", StringComparison.Ordinal) &&
                             publication.Html.Contains("Materials and evidence context", StringComparison.Ordinal) &&
                             publication.Html.Contains("Overall score available", StringComparison.Ordinal) &&
@@ -153,6 +153,47 @@ public sealed class PublicComparisonReportPublishingService
         var max = Math.Max(1, items.Max(item => item.Score));
         var rows = items.Select(item => $"<div class=\"bar-row\"><div class=\"bar-label\" title=\"{H(item.MaterialName)}\">{H(item.MaterialName)}</div><div class=\"bar-track\"><div class=\"bar-fill\" style=\"width:{Math.Max(2, Math.Min(100, item.Score / max * 100)).ToString("0.#", CultureInfo.InvariantCulture)}%\"></div></div><div class=\"bar-value\">{H(item.Score.ToString("0.#", CultureInfo.CurrentCulture) + "/100")}</div></div>");
         return $"<section class=\"comparison-chart\"><div class=\"chart-title\">{H(title)}</div>{string.Join("", rows)}</section>";
+    }
+    private static bool ChartMatchesAvailableScores(string title, IEnumerable<PublicComparisonMaterialModel> materials,
+        Func<PublicComparisonMaterialModel, string> selector, string html)
+    {
+        // Missing scores intentionally produce no chart; a measured zero still requires one.
+        var expected = materials.Any(item => Number(selector(item)).HasValue);
+        var present = html.Contains($"<div class=\"chart-title\">{H(title)}</div>", StringComparison.Ordinal);
+        return expected == present;
+    }
+
+    public static bool VerifyMissingScoreContract()
+    {
+        var service = new PublicComparisonReportPublishingService();
+        var at = new DateTime(2026, 9, 12);
+        var flexible = new PublicFlexibleMetricGroup("synthetic", "Force retention at 20% Strain",
+            "10–30 s · 2 mm displacement · cycle 1", 9, 92.262, 0.443, 0.481, 91.628, 92.889, "%", 0);
+        PublicComparisonReportModel Model(string? tensile = null) => new()
+        {
+            PresetSlug = "material-family-tpu", Title = "TPU Material Family Comparison", BaseMaterial = "TPU",
+            Materials = new[]
+            {
+                new PublicComparisonMaterialModel { MaterialId = "SYN-A", MaterialName = "Synthetic TPU A",
+                    FlexibleResults = new[] { flexible }, TensileScore = tensile ?? "n/a" },
+                new PublicComparisonMaterialModel { MaterialId = "SYN-B", MaterialName = "Synthetic TPU B" }
+            }
+        };
+        var missing = Model();
+        var missingOutput = service.Build(missing, at, "verification", "Synthetic");
+        var zero = Model("0/100");
+        var zeroOutput = service.Build(zero, at, "verification", "Synthetic");
+        var damaged = new PublicComparisonPublicationResult
+        {
+            RelativeDirectory = zeroOutput.RelativeDirectory, Manifest = zeroOutput.Manifest,
+            MetadataJson = zeroOutput.MetadataJson,
+            Html = zeroOutput.Html.Replace("<div class=\"chart-title\">Tensile comparison</div>", "", StringComparison.Ordinal)
+        };
+        return service.Verify(missing, missingOutput).Passed && service.Verify(zero, zeroOutput).Passed &&
+            missingOutput.Html.Contains("Force retention at 20% Strain", StringComparison.Ordinal) &&
+            !missingOutput.Html.Contains("class=\"bar-fill\"", StringComparison.Ordinal) &&
+            zeroOutput.Html.Contains("class=\"bar-fill\"", StringComparison.Ordinal) &&
+            !service.Verify(zero, damaged).Passed;
     }
     private static double? Number(string? value) { var match = Regex.Match(value ?? "", @"-?\d+(?:[.,]\d+)?"); return match.Success && double.TryParse(match.Value.Replace(',', '.'), NumberStyles.Float, CultureInfo.InvariantCulture, out var number) ? number : null; }
     private static string H(string? value) => WebUtility.HtmlEncode(value ?? string.Empty);

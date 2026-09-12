@@ -93,6 +93,10 @@ public partial class MainWindow
                         FlexibleEvidenceNumber(group.CoefficientOfVariation),
                         group.Minimum.HasValue ? $"{FlexibleEvidenceNumber(group.Minimum)}–{FlexibleEvidenceNumber(group.Maximum)}" : "—"
                     }, false);
+                    foreach (var specimen in group.ShoreSpecimens)
+                        AddFlexibleDashboardRow(table, new[] { $"Location statistics · {specimen.SpecimenLabel}",
+                            $"{group.Unit} · {specimen.ReadingCount} readings", FlexibleEvidenceNumber(specimen.Mean), "",
+                            FlexibleEvidenceNumber(specimen.StandardDeviation), FlexibleEvidenceNumber(specimen.CoefficientOfVariation), "" }, false);
                     first = false;
                 }
             }

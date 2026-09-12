@@ -18,7 +18,12 @@ public static class FlexibleReportEvidenceService
             SafeMetric(group), SafeCondition(group), Math.Max(0, group.SpecimenCount),
             Finite(group.Mean), Finite(group.StandardDeviation), Finite(group.CoefficientOfVariation),
             Finite(group.Minimum), Finite(group.Maximum), Unit(group.MetricKind), Math.Max(0, group.NotReachedCount))
-            { MethodId = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(group.MethodGroup))).ToLowerInvariant() })
+            {
+                MethodId = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(group.MethodGroup))).ToLowerInvariant(),
+                ShoreSpecimens = group.MetricKind is FlexibleMetricKind.ShoreA or FlexibleMetricKind.ShoreD
+                    ? group.ShoreSpecimens.Select((s, i) => new PublicShoreSpecimenStatistics(i + 1, Math.Max(0, s.ReadingCount),
+                        Finite(s.Mean), Finite(s.StandardDeviation), Finite(s.CoefficientOfVariation))).ToArray() : []
+            })
             .ToArray() ?? [];
 
     private static double? Finite(double? value) => value is double number && double.IsFinite(number) ? number : null;
@@ -66,11 +71,20 @@ public static class FlexibleReportEvidenceService
         var rows = string.Concat(groups.Select((g, index) =>
             $"<tr style=\"break-inside:avoid;page-break-inside:avoid\"><td style=\"font-size:0.85em;white-space:nowrap\">{MethodLabel(g)}</td><td>{H(g.Metric)} ({H(g.Unit)})</td><td style=\"max-width:24em;white-space:normal;overflow-wrap:anywhere\">{H(g.Condition)}</td><td>{N(g.Mean)}</td><td>{g.SpecimenCount}</td><td>{N(g.StandardDeviation)}</td><td>{N(g.CoefficientOfVariation)}</td><td>{N(g.Minimum)}–{N(g.Maximum)}</td><td>{g.NotReachedCount}</td></tr>"));
         return "<section class=\"flexible-evidence\"><h2>Flexible Material Testing</h2><p>Comparative in-house measurements; n = independent specimens. Separate test groups; Overall unchanged.</p>" +
-            "<div style=\"max-width:100%;overflow-x:auto\"><table style=\"width:auto;max-width:100%;font-size:0.85em\"><thead><tr><th>Method</th><th>Result</th><th>Condition</th><th>Mean</th><th>n</th><th>SD</th><th>CV %</th><th>Range</th><th>Not reached</th></tr></thead><tbody>" + rows + "</tbody></table></div></section>";
+            "<div style=\"max-width:100%;overflow-x:auto\"><table style=\"width:auto;max-width:100%;font-size:0.85em\"><thead><tr><th>Method</th><th>Result</th><th>Condition</th><th>Mean</th><th>n</th><th>SD</th><th>CV %</th><th>Range</th><th>Not reached</th></tr></thead><tbody>" + rows + "</tbody></table></div>" + RenderShoreHtml(groups) + "</section>";
+    }
+    public static string RenderShoreHtml(IReadOnlyList<PublicFlexibleMetricGroup> groups)
+    {
+        var rows = string.Concat(groups.SelectMany(g => g.ShoreSpecimens.Select(s =>
+            $"<tr style=\"break-inside:avoid;page-break-inside:avoid\"><td>{MethodLabel(g)}</td><td>{H(g.Metric)}</td><td>{H(g.Condition)}</td><td>{s.SpecimenNumber}</td><td>{s.ReadingCount}</td><td>{N(s.Mean)}</td><td>{N(s.StandardDeviation)}</td><td>{N(s.CoefficientOfVariation)}</td></tr>")));
+        return rows.Length == 0 ? string.Empty :
+            "<h3>Shore location statistics</h3><p>Within each specimen; specimen numbers are local to each test group. SD uses the sample formula. These readings do not increase independent n.</p>" +
+            "<table style=\"width:auto;max-width:100%;font-size:0.85em\"><thead><tr><th>Method</th><th>Scale</th><th>Condition</th><th>Specimen</th><th>Readings</th><th>Mean</th><th>Location SD</th><th>Location CV %</th></tr></thead><tbody>" + rows + "</tbody></table>";
     }
     public static string RenderText(IReadOnlyList<PublicFlexibleMetricGroup> groups) => groups.Count == 0 ? string.Empty :
         "Flexible Material Testing\nComparative in-house measurements; n = independent specimens. Overall unchanged.\n" +
-        string.Join("\n", groups.Select((g, i) => $"Method {MethodLabel(g)}: {g.Metric} ({g.Unit}); {g.Condition}; mean {N(g.Mean)}; n {g.SpecimenCount}; SD {N(g.StandardDeviation)}; CV {N(g.CoefficientOfVariation)}%; range {N(g.Minimum)}–{N(g.Maximum)}; not reached {g.NotReachedCount}."));
+        string.Join("\n", groups.Select((g, i) => $"Method {MethodLabel(g)}: {g.Metric} ({g.Unit}); {g.Condition}; mean {N(g.Mean)}; n {g.SpecimenCount}; SD {N(g.StandardDeviation)}; CV {N(g.CoefficientOfVariation)}%; range {N(g.Minimum)}–{N(g.Maximum)}; not reached {g.NotReachedCount}." +
+            string.Concat(g.ShoreSpecimens.Select(s => $"\n  Specimen {s.SpecimenNumber} (within this group): {s.ReadingCount} readings; mean {N(s.Mean)}; Location SD {N(s.StandardDeviation)}; Location CV {N(s.CoefficientOfVariation)}%."))));
 
     /// <summary>Pure synthetic acceptance: all six public templates receive the same safe aggregate.</summary>
     public static bool VerifyPublishersContract()
@@ -79,7 +93,10 @@ public static class FlexibleReportEvidenceService
             "Compression Force at 20% Strain", "PRIVATE-FLEX-PRINTER-NOTES",
             "30 s hold · 2 mm displacement · cycle 1", "PRIVATE-FLEX-COMPARISON-KEY",
             3, 123.456, 2.345, 1.9, 120, 126, "N", 1);
-        var groups = Build(new("PRIVATE-FLEX-SPECIMEN", [source], 1, 3, 0));
+        var shore = source with { MetricKind = FlexibleMetricKind.ShoreA, Metric = "Shore A Hardness", Unit = "Shore A",
+            Condition = "10 s reading · 8 mm", ComparisonKey = "PRIVATE-FLEX-SHORE-KEY",
+            ShoreSpecimens = [new("PRIVATE-FLEX-SPECIMEN-ID", "PRIVATE-FLEX-LABEL", 5, 74, Math.Sqrt(10), Math.Sqrt(10) / 74 * 100)] };
+        var groups = Build(new("PRIVATE-FLEX-SPECIMEN", [source, shore], 1, 3, 0));
         var at = new DateTime(2026, 9, 12, 12, 0, 0, DateTimeKind.Utc);
         const string version = "verification";
         const string title = "Synthetic Flexible report";
@@ -119,7 +136,7 @@ public static class FlexibleReportEvidenceService
             (session.Html, session.MetadataJson), (recommendation.Html, recommendation.MetadataJson)
         ];
         var expectedProperties = new[] { "GroupId", "MethodId", "Metric", "Condition", "SpecimenCount", "Mean",
-            "StandardDeviation", "CoefficientOfVariation", "Minimum", "Maximum", "Unit", "NotReachedCount" };
+            "StandardDeviation", "CoefficientOfVariation", "Minimum", "Maximum", "Unit", "NotReachedCount", "ShoreSpecimens" };
         using var dto = JsonDocument.Parse(JsonSerializer.Serialize(groups[0]));
         var closedShape = dto.RootElement.EnumerateObject().Select(x => x.Name).OrderBy(x => x, StringComparer.Ordinal)
             .SequenceEqual(expectedProperties.OrderBy(x => x, StringComparer.Ordinal));
@@ -127,6 +144,7 @@ public static class FlexibleReportEvidenceService
             report.Html.Contains("Flexible Material Testing", StringComparison.Ordinal) &&
             report.Html.Contains("123.456", StringComparison.Ordinal) &&
             report.Html.Contains("2.345", StringComparison.Ordinal) &&
+            report.Html.Contains("Location SD", StringComparison.Ordinal) && report.Json.Contains("ShoreSpecimens", StringComparison.Ordinal) &&
             report.Json.Contains("\"FlexibleResults\"", StringComparison.Ordinal) &&
             report.Json.Contains("\"Mean\": 123.456", StringComparison.Ordinal) &&
             !report.Html.Contains("PRIVATE-FLEX", StringComparison.Ordinal) &&

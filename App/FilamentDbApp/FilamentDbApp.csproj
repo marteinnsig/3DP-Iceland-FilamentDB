@@ -8,15 +8,17 @@
     <ApplicationIcon>Assets\3dp-iceland-labs-icon.ico</ApplicationIcon>
     <AssemblyName>3DPIcelandFilamentDB</AssemblyName>
     <RootNamespace>FilamentDbApp</RootNamespace>
-    <Version>66.0.8</Version>
-    <AssemblyVersion>66.0.8.0</AssemblyVersion>
-    <FileVersion>66.0.8.0</FileVersion>
-    <InformationalVersion>66.0.8-FLEXIBLE-INTEGRATION-CANDIDATE</InformationalVersion>
+    <Version>67.0.2</Version>
+    <AssemblyVersion>67.0.2.0</AssemblyVersion>
+    <FileVersion>67.0.2.0</FileVersion>
+    <InformationalVersion>67.0.2-FLEXIBLE-WEBSITE-CANDIDATE</InformationalVersion>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Copyright>Copyright © 2026 Marteinn Sigurðsson / 3DPIceland Labs</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\Website\FlexibleTestingPortal.html" />
+    <EmbeddedResource Include="Assets\Website\HorizontalBarCharts.js" />
     <Content Include="..\..\LICENSE" Link="LICENSE">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

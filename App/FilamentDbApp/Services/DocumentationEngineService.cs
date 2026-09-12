@@ -23,7 +23,7 @@ public sealed class DocumentationEngineService
             "3DPIceland Labs maintains a comparative database of fused-filament-fabrication materials. The purpose of the programme is to print specimens under controlled and repeatable conditions, measure their mechanical response with the same equipment and calculation path, and make the resulting comparisons understandable to makers, designers and filament manufacturers.",
             "The project is designed around consistency rather than accreditation. A result is most useful when it can be compared directly with other results produced by the same workflow. Every specimen therefore passes through a common chain: material preparation, controlled slicing, printing, specimen identification, physical testing, native calculation, verification and publication.",
             "## What the whitepaper covers",
-            "This document describes the current printing standard, specimen handling, tensile and layer-adhesion testing, pendulum impact testing, stiffness testing, fixture-specific Heat Deflection testing, statistical processing, confidence indicators, data governance and publication pipeline. It also documents known limitations and the conditions under which results should be interpreted.",
+            "This document describes the current printing standard, specimen handling, tensile and layer-adhesion testing, pendulum impact testing, stiffness testing, flexible-material compression, Recovery, Shore A/D hardness measurements, fixture-specific Heat Deflection testing, statistical processing, confidence indicators, data governance and publication pipeline. It also documents known limitations and the conditions under which results should be interpreted.",
             "## What the whitepaper does not claim",
             "The equipment is not represented as an accredited ISO or ASTM laboratory system. The specimen geometries, fixtures and calculations are optimized for internal comparison and practical repeatability. Values should not be substituted automatically for certified material-datasheet values, structural design allowables or safety-critical engineering calculations.",
             "NOTE: A published number should always be read together with print orientation, sample count, spread and methodology version."),
@@ -137,8 +137,8 @@ public sealed class DocumentationEngineService
             "## Video reference",
             "The stiffness-test demonstration is available at https://www.youtube.com/watch?v=nv9PexjvFRw. It shows zero-load calibration, the known weight, turn/degree recording and conversion to MPa."),
 
-        S("tpu-compression", "8. TPU Compression testing",
-            "The accepted 3DPIceland Labs TPU Compression Test v1.0 for comparable printed-cylinder resistance.",
+        S("tpu-compression", "8. Flexible-material testing",
+            "Printed-cylinder compression, timed recovery and the Shore A/D hardness procedure for flexible filaments.",
             "## Method identity and equipment",
             $"Method {FlexibleMaterialTestingService.CompressionMethodVersion} is named {FlexibleMaterialTestingService.CompressionMethodName}. It uses a SAUTER TVL manual compression stand and SAUTER FK 500 force gauge with a 500 N measurement range.",
             "## Specimen and orientation",
@@ -153,6 +153,22 @@ public sealed class DocumentationEngineService
             "## Limits and interpretation",
             "This is an in-house comparative method, not ASTM D575 or ISO 7743. ISO 7743 informed development, but the final geometry, manual approach, 20% target and timed readings are the 3DPIceland implementation. The result is compression resistance, not fracture strength, Shore hardness or Young's modulus. A higher force means greater resistance under this method, not automatically a better material.",
             "If 20% strain cannot be reached within the FK 500 range, record target not reached and factual force/displacement only. Never invent a 500 N target result. The former 400 N development caution was not a manufacturer limit or rejection criterion.",
+            "## Apparent stress and force retention",
+            "Compression force remains the raw reading in N. Apparent compressive stress divides this force by the specimen's original circular cross-sectional area and is reported in MPa. Website Flexible charts use stress rather than a separate force-in-N chart. Stress, force reduction, retention and recovery are separate measured responses; they do not modify the legacy Overall score.",
+            "FORMULA: Apparent stress (MPa) = force (N) / original area (mm2), with original area = pi x diameter squared / 4. Force retention from 10 s to 30 s (%) = F30 / F10 x 100, for the same specimen, cycle and held displacement, with F10 greater than zero.",
+            "## Recovery after unloading",
+            "Recovery uses the compression specimen and its actual initial height H0. Zero the TVL displacement at first contact before loading, and retain that same zero throughout compression, unloading and the recovery measurement. Compress to 20% of initial height; for H0 = 10.00 mm the displacement is 2.00 mm. Record the actual compression hold time; the app's default for a new Recovery reading is 30 seconds and can be changed in Settings.",
+            "Release the compression load fully, then allow the specimen to rest unloaded for the recorded interval. The owner's current workflow uses 60 seconds of rest. Bring the platen down only until it first touches the recovered specimen, without noticeably compressing it, and record the TVL contact offset from the original zero. Do not reset the TVL zero before this reading.",
+            "FORMULA: Height after rest Hrest = H0 - TVL contact offset. Residual height loss (%) = (H0 - Hrest) / H0 x 100.",
+            "For example, with H0 = 10.00 mm and a contact offset of 0.14 mm, the recovered height is 9.86 mm and residual height loss is 1.4%. This is an illustrative calculation, not an additional material result. The app accepts the contact offset and calculates height after rest, so the operator does not need to subtract manually.",
+            "Keep compression percentage, loaded hold time, unloaded rest time, initial height and cycle with each reading. Residual height loss describes the specimen at that recorded rest time; it does not establish permanent deformation or equilibrium recovery. This short in-house procedure is not a standardized compression-set result.",
+            "## Shore A and Shore D hardness",
+            "The operator has separate Shore A and Shore D durometers. Each specimen is a printed square 50 x 50 mm and 8 mm thick. Allow the specimen to rest for 24 hours after printing before measuring. Record material, specimen identity, actual thickness and print settings with the readings; Shore coupons retain their own print snapshot.",
+            "Measure at five distinct locations: four corner positions, each 10 mm in from both adjacent edges, and the centre. Using one corner as the origin, the locations in mm are (10,10), (40,10), (10,40), (40,40) and (25,25). At every location, wait 10 seconds before reading and save the five readings separately under the same specimen and scale.",
+            "Keep Shore A and Shore D as separate result groups; do not convert or average the scales together. For each specimen and scale, the app calculates the arithmetic mean, sample standard deviation of its location readings and CV%. Website popups and reports identify these as within-specimen location statistics. Reading count is the number of valid saved readings, so an incomplete set is not silently presented as five readings.",
+            "FORMULA: Location mean = sum / m. Sample SD = sqrt(sum((reading - mean)^2) / (m - 1)). CV% = sample SD / abs(mean) x 100. m = valid reading count.",
+            "Sample SD needs at least two readings; CV is unavailable when the mean is zero. Across multiple independent specimens, the group mean is the mean of specimen means, with equal weight per specimen. Group SD and CV describe differences between those specimen means; they are separate from the location statistics. Five locations on one coupon give n = 1 independent specimen. Its location SD and CV are available, while between-specimen SD and CV need at least two specimens.",
+            "This is the established 3DPIceland in-house Shore procedure; testing of additional materials is ongoing. It makes no ASTM or ISO conformity claim. Published hardness results come only from actual saved readings on the stated scale, dwell and thickness; this method description does not create results or retroactively assign conditions to historical readings.",
             "NOTE: The ten-specimen 64D validation round is unlinked evidence because its exact MaterialID is unknown. Its corrected second 30-second reading is 405 N; it must not be published as a named material result."),
 
         S("thermal-deflection", "9. Heat Deflection testing",
@@ -308,6 +324,7 @@ public sealed class DocumentationEngineService
             "Platform v41.5 - Added governed Engineering Intelligence handoff documentation for canonical reports and video planning. No methodology constants or measurement calculations changed.",
             "Platform v41.6 - Calibrated repeatability interpretation to the internal 3DPIceland score scale and documented known impact-pointer, tensile low-force and stiffness-angle limitations. The established consistency-score formula and historic rankings were preserved.",
             "Platform v63.0.1 - Added the already governed v61 Heat Deflection fixture, endpoint, method-version and limitation contract to public methodology documentation. No measurement constant, stored result or score calculation changed.",
+            "Platform v67.0.2 - Documented Recovery using unchanged TVL zero and the established Shore A/D procedure: 50 x 50 x 8 mm, 24 hours rest, five locations and 10 seconds per reading. Added within-specimen location statistics; stored raw readings and Overall are unchanged.",
             "Platform implementation: v40.15.3 - Manufacturer Edit Transaction Safety.",
             "Future revisions must state the date, affected test, reason for change, whether constants changed and whether historic results were migrated or remain under an earlier methodology version.")
     };
@@ -424,7 +441,7 @@ public sealed class DocumentationEngineService
         else if (raw.StartsWith("DIAGRAM: ")) { prefix = "Data flow: "; raw = raw[9..]; bold = true; indent = 12; }
         var wrapped = Wrap(prefix + raw, indent > 0 ? 81 : 89).ToList();
         for (var i = 0; i < wrapped.Count; i++)
-            yield return new PdfLine(wrapped[i], size, bold && i == 0, i == wrapped.Count - 1 ? space : 3, indent);
+            yield return new PdfLine(wrapped[i], size, bold && i == 0, i == wrapped.Count - 1 ? space + (indent > 0 ? 10 : 0) : 3, indent);
     }
 
     private static IEnumerable<string> Wrap(string text, int width)
@@ -468,7 +485,7 @@ public sealed class DocumentationEngineService
         Text(sb, "Comparative testing of FFF filament specimens", 46, 397, 14, false, 0.25, 0.29, 0.33);
         Text(sb, "Tensile strength  |  Layer adhesion  |  Impact resistance  |  Stiffness", 46, 368, 10, false, 0.25, 0.29, 0.33);
         Text(sb, "Version " + document.Version, 46, 158, 13, true, 0.10, 0.12, 0.15);
-        Text(sb, "Platform implementation: v40.15.3", 46, 135, 10, false, 0.25, 0.29, 0.33);
+        Text(sb, "Platform implementation: " + BuildInfo.ShortLabel, 46, 135, 10, false, 0.25, 0.29, 0.33);
         Text(sb, "Generated " + document.GeneratedAt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture), 46, 116, 10, false, 0.25, 0.29, 0.33);
         Text(sb, "3DPIceland Labs", 46, 78, 13, true, 0.05, 0.39, 0.82);
         Text(sb, "Comparative engineering - transparent methods - verified publication", 46, 57, 9, false, 0.25, 0.29, 0.33);
@@ -501,8 +518,8 @@ public sealed class DocumentationEngineService
         {
             if (line.Indent > 0)
             {
-                sb.AppendLine($"0.94 0.97 1.00 rg 48 {y - line.Size - 6} 516 {line.Size + line.SpaceAfter + 11} re f");
-                sb.AppendLine($"0.05 0.39 0.82 rg 48 {y - line.Size - 6} 3 {line.Size + line.SpaceAfter + 11} re f");
+                sb.AppendLine($"0.94 0.97 1.00 rg 48 {y - 4} 516 {line.Size + 6} re f");
+                sb.AppendLine($"0.05 0.39 0.82 rg 48 {y - 4} 3 {line.Size + 6} re f");
             }
             var c = line.Size >= 13 ? (0.10, 0.12, 0.15) : (0.16, 0.18, 0.21);
             Text(sb, line.Text, 52 + line.Indent, y, line.Size, line.Bold, c.Item1, c.Item2, c.Item3);
@@ -518,7 +535,7 @@ public sealed class DocumentationEngineService
         Text(sb, "The programme separates properties, orientations, inputs and verified outputs.", 48, 680, 10, false, 0.25, 0.29, 0.33);
         var xs = new[] { 48, 152, 272, 386, 564 };
         var yTop = 638;
-        var rowH = 58;
+        var rowH = 50;
         sb.AppendLine($"0.09 0.16 0.24 rg 48 {yTop} 516 34 re f");
         var headers = new[] { "Test", "Primary input", "Orientation", "Published output" };
         for (var i = 0; i < headers.Length; i++) Text(sb, headers[i], xs[i] + 8, yTop + 12, 9, true, 1, 1, 1);
@@ -528,6 +545,10 @@ public sealed class DocumentationEngineService
             new[] { "Tensile", "Peak force (N)", "Upright", "Layer adhesion (MPa)" },
             new[] { "Impact", "Pendulum return (%)", "Flat / upright", "Impact resistance (kJ/m2)" },
             new[] { "Stiffness", "Revolutions + angle", "Beam fixture", "Stiffness index (MPa)" },
+            new[] { "Compression", "Timed force (N)", "Printed cylinder", "Stress, reduction, retention" },
+            new[] { "Recovery", "TVL contact offset", "After unloaded rest", "Residual height loss (%)" },
+            new[] { "Shore", "A / D; 10 s", "50 x 50 x 8 mm", "Mean; location SD / CV" },
+            new[] { "Heat Deflection", "Probe temperature", "Heated beam fixture", "Fixture temperature (C)" },
             new[] { "Statistics", "Verified sample set", "Per test/orientation", "Mean, SD, CV, confidence" }
         };
         for (var r = 0; r < rows.Length; r++)
@@ -543,8 +564,8 @@ public sealed class DocumentationEngineService
         for (var i = 0; i < xs.Length; i++) sb.AppendLine($"0.72 0.76 0.80 RG {xs[i]} {yTop - rows.Length * rowH} m {xs[i]} {yTop + 34} l S");
         for (var r = 0; r <= rows.Length; r++) { var y = yTop - r * rowH; sb.AppendLine($"0.72 0.76 0.80 RG 48 {y} m 564 {y} l S"); }
         sb.AppendLine($"0.72 0.76 0.80 RG 48 {yTop + 34} m 564 {yTop + 34} l S");
-        Text(sb, "Publication rule", 48, 285, 13, true, 0.10, 0.12, 0.15);
-        Text(sb, "Only verified Material Summary outputs are consumed by Website, Reports and Documentation.", 48, 260, 10, false, 0.20, 0.23, 0.27);
+        Text(sb, "Publication rule", 48, 144, 13, true, 0.10, 0.12, 0.15);
+        Text(sb, "Published results use verified saved evidence; planned tests have no inferred results.", 48, 124, 10, false, 0.20, 0.23, 0.27);
         Footer(sb, pageNumber, pageCount, document);
         return sb.ToString();
     }

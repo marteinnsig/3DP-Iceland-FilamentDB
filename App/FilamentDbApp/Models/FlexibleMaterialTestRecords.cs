@@ -200,7 +200,13 @@ public sealed class ShoreHardnessReadingRecord
 public sealed record FlexibleComparisonRow(
     string Metric, string MethodGroup, string Condition, int SpecimenCount,
     string Mean, string StandardDeviation, string CoefficientOfVariation,
-    string Minimum, string Maximum, string Unit, int NotReachedCount);
+    string Minimum, string Maximum, string Unit, int NotReachedCount)
+{
+    public string LocationStatistics { get; init; } = string.Empty;
+}
+
+public sealed record ShoreSpecimenStatistics(string SpecimenId, string SpecimenLabel, int ReadingCount,
+    double Mean, double? StandardDeviation, double? CoefficientOfVariation);
 
 public sealed record TpuCompressionPublicSummary(
     int SpecimenCount30Seconds, double Mean30SecondsN, double SampleStandardDeviation30SecondsN, double CoefficientOfVariation30Seconds,
@@ -216,7 +222,10 @@ public enum FlexibleMetricKind
 public sealed record FlexibleMetricGroupSummary(
     FlexibleMetricKind MetricKind, string Metric, string MethodGroup, string Condition, string ComparisonKey,
     int SpecimenCount, double? Mean, double? StandardDeviation, double? CoefficientOfVariation,
-    double? Minimum, double? Maximum, string Unit, int NotReachedCount);
+    double? Minimum, double? Maximum, string Unit, int NotReachedCount)
+{
+    public IReadOnlyList<ShoreSpecimenStatistics> ShoreSpecimens { get; init; } = [];
+}
 
 public sealed record FlexibleMaterialEvidenceSnapshot(
     string MaterialId, IReadOnlyList<FlexibleMetricGroupSummary> Groups, int SessionCount,

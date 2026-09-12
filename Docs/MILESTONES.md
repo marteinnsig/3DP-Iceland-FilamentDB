@@ -3,6 +3,14 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v67 - Flexible Website Explorer
+
+Owner published and accepted the live website on 2026-09-12. Flexible Testing adds filtered native-unit charts, horizontal labels
+and within-specimen Shore statistics; the whitepaper documents Recovery and the established Shore A/D procedure.
+All recorded increments v67.0.0-v67.0.3 are complete; runnable application remains accepted v67.0.2.
+Debug/Release, 462/462 Verification, Help 802/802, dependency audit and independent live HTTPS checks pass.
+Application distribution packages were not promoted by this website milestone.
+
 # v65 - Catalog-driven Material Entry
 
 Synchronizes new-Material Base Material choices at the Add Material boundary. Every non-empty canonical Base Materials entry is

@@ -98,6 +98,9 @@ function Get-TopSurface([string]$SurfacePath) {
 }
 
 function Get-OwnerIncrement([string]$SurfacePath, [string]$Identity) {
+    if ($SurfacePath -eq "Flexible Material Testing > Comparable Results" -and $Identity -eq "Shore location statistics") {
+        return "v67.0.2"
+    }
     if ($Identity -match "^AutomationThermal") {
         return "v61.0.8.2"
     }
@@ -160,6 +163,7 @@ function Get-HelpDestination([string]$SurfacePath) {
         "Base Materials" = "base-materials.controls-fields"
         "Settings Manager" = "settings.controls-fields"
         "Experimental Testing" = "experimental.controls-fields"
+        "Flexible Material Testing" = "flexible-testing.overview"
         "Material Detail" = "material-detail.controls-fields"
         "Tensile Measurements" = "measurements.controls-fields"
         "Impact Measurements" = "measurements.controls-fields"

@@ -264,3 +264,19 @@ Saved method snapshots remain supported by data entry, Mechanical detail, analyt
 
 v66.0.8: material-detail.video-planner and youtube.overview own Flexible candidates in the existing read-only discovery grids.
 No controls/IDs or editing path added. Copy actions use current generated facts; saved records are not rewritten.
+
+v67.0.0: website.preview owns Flexible Testing, synchronized web filters, filament selection and Mean/SD/CV tooltips.
+No WPF data-entry control is added; website keyboard/tooltip/selection verification is browser-owned.
+
+### v67.0.1 — Horizontal website charts
+
+website.preview owns horizontal labels, end values and SD whiskers; existing chart identities and filtering remain unchanged.
+No editable WPF surface or new AutomationId. Browser visual checks and owner acceptance own label readability.
+
+### v67.0.2 — Flexible whitepaper methods
+
+help.whitepaper owns Chapter 8 Recovery and established Shore A/D procedure: 50 x 50 x 8 mm, 24 h, five locations, 10 s.
+
+Flexible testing Help owns the read-only Shore location statistics column and dashboard rows; website.preview owns its popup.
+Each specimen retains valid reading count, mean, sample SD and CV; independent-specimen statistics remain separate.
+No editable field or input handler changes. Existing Shore rows retain their saved dwell, thickness and identities.

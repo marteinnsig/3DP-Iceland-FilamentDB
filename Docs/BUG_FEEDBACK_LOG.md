@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 128 |
+| Solved | 133 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **134** |
+| **Total tracked findings** | **139** |
 
 ## Triage categories
 
@@ -69,9 +69,49 @@ No active findings.
 
 ## In-progress findings — newest first
 
+
 No active findings.
 
 ## Resolved findings — newest first
+
+### 2026-09-12 — Flexible measurements on the website
+
+- **Status:** Solved — v67 website published and owner accepted.
+- **Request:** Flexible Testing tab beside Pricing & Value, filament selection like Filament Database, native-unit Mean bars.
+- **Display:** Exclude Compression Force in N and Min/Max; show sample SD, CV%, n and useful conditions in bar tooltips.
+- **Scope:** Safe saved Flexible projection, existing website filter and tooltip behavior; preserve per-material statistics.
+- **Completion:** Verified local preview accepted, then governed website publication and HTTPS verification.
+- **Acceptance:** Owner reports live publication and visual PASS; independent HTTPS verifies Flexible/Shore and corrected PDF.
+
+
+### 2026-09-12 — Recovery and Shore methodology missing from whitepaper
+
+- **Status:** Solved — v67.0.2.
+- **Request:** Explain Recovery and planned Shore A/D measurement on printed 30 x 30 x 8 mm samples at five locations per specimen.
+- **Boundary:** Owner has both durometers; measurements not yet collected. No invented results, dwell time or instrument model.
+- **Clarification:** Established method: 50 x 50 x 8 mm, 24 h rest, four corner positions 10 mm from each edge plus centre, 10 s.
+- **Extension:** Per-specimen location mean, sample SD and CV in app, website and reports; existing independent n remains intact.
+- **Completion:** Canonical generated PDF, statistical/sample identity accuracy, visual inspection and owner acceptance.
+- **Acceptance:** Owner accepted corrected method and results; 462/462, builds, Help and visual checks pass.
+
+
+### 2026-09-12 — Flexible chart text too small
+
+- **Status:** Solved — v67.0.1.
+- **Request:** Match Flexible chart text to Filament Database chart text.
+- **Correction:** Use the canonical 18px chart-label size for labels, axis ticks and means; expand wrapping/row spacing accordingly.
+- **Completion:** Debug/Release, browser font/layout inspection and owner preview acceptance; no calculation or interaction changes.
+
+- **Acceptance:** Owner accepted layout and text size on 2026-09-12; Debug/Release and browser checks passed.
+
+### 2026-09-12 — Horizontal website bars and readable material labels
+
+- **Status:** Solved — v67.0.1.
+- **Request:** Convert all main website bar charts to horizontal bars with material names beside them.
+- **Scope:** Remaining vertical database, Flexible and Experimental score bars; preserve statistics and interaction behavior.
+- **Completion:** Builds, browser/data checks and owner visual acceptance. Existing horizontal charts retain their orientation.
+
+- **Acceptance:** Owner accepted layout and text size on 2026-09-12; Debug/Release and browser checks passed.
 
 ### 2026-09-11 — Flexible evidence throughout material analysis and exports
 
