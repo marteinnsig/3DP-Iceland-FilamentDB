@@ -134,8 +134,9 @@ public partial class MainWindow
         if (FlexibleSessionsGrid.SelectedItem != session) FlexibleSessionsGrid.SelectedItem = session;
         var specimens = session is null ? [] : _flexibleSpecimens
             .Where(x => string.Equals(x.FlexibleTestSessionId, session.FlexibleTestSessionId, StringComparison.OrdinalIgnoreCase))
-            .OrderBy(x => x.SpecimenLabel, StringComparer.CurrentCultureIgnoreCase).ToList();
+            .OrderBy(x => x.SpecimenLabel, FlexibleSpecimenLabelComparer.Ascending).ToList();
         FlexibleSpecimensGrid.ItemsSource = specimens;
+        foreach (var column in FlexibleSpecimensGrid.Columns) column.SortDirection = null;
         _selectedFlexibleSpecimen = specimens.FirstOrDefault();
         FlexibleSpecimensGrid.SelectedItem = _selectedFlexibleSpecimen;
         BindFlexibleSpecimenRows(_selectedFlexibleSpecimen);
@@ -180,24 +181,40 @@ public partial class MainWindow
         foreach (var gridName in FlexibleEditableGridNames.Where(IsFlexibleReadingGrid))
         {
             if (FindName(gridName) is not DataGrid grid) continue;
-            try
-            {
-                if (!grid.CommitEdit(DataGridEditingUnit.Cell, true)) return false;
-                if (!grid.CommitEdit(DataGridEditingUnit.Row, true)) return false;
-
-                if (grid.ItemsSource is { } source &&
-                    CollectionViewSource.GetDefaultView(source) is IEditableCollectionView editableView)
-                {
-                    if (editableView.IsAddingNew) editableView.CommitNew();
-                    if (editableView.IsEditingItem) editableView.CommitEdit();
-                }
-            }
-            catch (InvalidOperationException)
-            {
-                return false;
-            }
+            if (!TryCommitFlexibleGridEdits(grid)) return false;
         }
         return true;
+    }
+
+    private static bool TryCommitFlexibleGridEdits(DataGrid grid)
+    {
+        try
+        {
+            if (!grid.CommitEdit(DataGridEditingUnit.Cell, true) || !grid.CommitEdit(DataGridEditingUnit.Row, true)) return false;
+            if (grid.ItemsSource is { } source && CollectionViewSource.GetDefaultView(source) is IEditableCollectionView editable)
+            {
+                if (editable.IsAddingNew) editable.CommitNew();
+                if (editable.IsEditingItem) editable.CommitEdit();
+            }
+            return true;
+        }
+        catch (InvalidOperationException) { return false; }
+    }
+
+    private void FlexibleSpecimensGrid_Sorting(object sender, DataGridSortingEventArgs e)
+    {
+        if (sender is not DataGrid grid || e.Column.SortMemberPath != nameof(FlexibleTestSpecimenRecord.SpecimenLabel)) return;
+        e.Handled = true;
+        if (!TryCommitFlexibleGridEdits(grid))
+        {
+            SetFlexibleStatus("Finish or correct the specimen edit before sorting.", true);
+            return;
+        }
+        if (CollectionViewSource.GetDefaultView(grid.ItemsSource) is not ListCollectionView view) return;
+        var descending = e.Column.SortDirection == ListSortDirection.Ascending;
+        view.CustomSort = new FlexibleSpecimenLabelComparer(descending);
+        foreach (var column in grid.Columns) column.SortDirection = null;
+        e.Column.SortDirection = descending ? ListSortDirection.Descending : ListSortDirection.Ascending;
     }
 
     private void FlexibleSessionsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -4,9 +4,9 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v67.0.2 — Flexible Methodology Whitepaper
+- **Current runtime-accepted release:** v67.0.4 — Flexible List Layout and Ordering
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v67 complete — Flexible Testing website published and accepted; next milestone not yet scheduled
+- **Current development focus:** v67 website and v67.0.4 Flexible list layout and ordering complete
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Your data stays yours

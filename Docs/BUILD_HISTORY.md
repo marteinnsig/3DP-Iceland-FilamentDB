@@ -3,6 +3,19 @@
 > ledger.
 
 
+## v67.0.4 - Flexible List Layout and Ordering
+
+Owner-requested bounded UI correction after accepted v67 closure. Sessions grow up to 625 px (formerly 125 px).
+The specimen grid is 292 px with 24 px rows and a 32 px header, leaving room for 10 full rows including scrollbars.
+An outer page scroller preserves access to the 360 px reading-tab viewport on shorter windows; grids stay height-bounded.
+Specimen labels use natural numeric order initially and when toggling the Specimen header. Long numeric labels cannot overflow.
+Sorting reuses the existing cell/row/collection-view commit sequence before applying the view comparer. No record is renamed.
+Canonical shared click/keyboard handlers, deferred save and calculated-cell refresh remain. No input field or AutomationId added.
+Full Verification adds a pure ascending/descending numeric regression; no pixel-only tester assertions or wider scenario authority.
+Help explains list capacities, scrolling and header sort. Owner accepted the corrected UI and requested closure on 2026-09-12.
+Owner refinement removes star-row centering above the reading tabs; Auto rows and top alignment keep a 6 px gap.
+Debug/Release and 950/1500 px offscreen layout checks pass. Cosmetic-only refinement; prior 463/463 behavior results retained.
+
 ## v67.0.3 - Flexible Website Publication and Closure
 
 Documentation-only closure; accepted runnable application remains v67.0.2 and its tested Release bytes are preserved.

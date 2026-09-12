@@ -15907,6 +15907,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("v66.0.5 Flexible rankings and exports contract", flexibleRankingsReady,
             flexibleRankingsReady ? "Exact conditions, independent peers, ties, missing/zero, directional awards and safe scoped exports pass"
                 : "Flexible ranking, award or export contract failed"));
+        checks.Add(new VerificationCheck("v67.0.4 Flexible specimen numeric ordering", FlexibleSpecimenLabelComparer.Verify(),
+            "Natural ascending/descending labels preserve multiple digit groups and avoid numeric overflow"));
         var flexibleIntelligenceReady = FlexibleMaterialIntelligenceService.VerifyContract() && VerifyFlexibleIdeaSnapshot() &&
             OpenAiAssistantPilotService.VerifyFlexiblePreviewContract() && FlexibleVideoChoice is not null &&
             FlexibleRecommendationChoice is not null && FlexibleResearchChoice is not null;

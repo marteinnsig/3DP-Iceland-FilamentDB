@@ -2,15 +2,15 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v67.0.2 — Flexible Methodology Whitepaper**
+Last runtime-accepted baseline: **v67.0.4 — Flexible List Layout and Ordering**
 
-Current canonical application release: **v67.0.2 — Flexible Methodology Whitepaper**
+Current canonical application release: **v67.0.4 — Flexible List Layout and Ordering**
 
-Current roadmap increment: **v67.0.3 — complete; owner published and accepted the live website**
+Current roadmap increment: **v67.0.4 — Flexible list layout and numeric ordering**
 
-Current acceptance note: all v67 increments accepted; owner published the website and independent HTTPS checks pass.
+Current acceptance note: v67 website accepted and published; v67.0.4 list-layout refinement accepted on 2026-09-12.
 
-Next note: no new milestone scheduled. Application distribution requires separate exact-byte package acceptance.
+Next note: v67.0.4 UI correction is complete. Application distribution remains separately gated.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
 Production/FTPS remain gated: no v66 installer/update package has received exact-byte runtime acceptance.
 
@@ -3406,3 +3406,13 @@ blockers may change the order, but must be recorded here before implementation.
 5. Require Debug/Release, applicable static/security/package gates, Verification
    and runtime/visual acceptance before marking it complete or advancing the
    canonical release.
+
+## Completed follow-up — v67.0.4 Flexible list layout and numeric ordering
+
+- State: Complete; owner accepted the final layout and requested closure on 2026-09-12.
+- Session list capacity grows to five times its former height; specimen viewport shows 10 rows.
+- Preserve access to measurement tabs on short windows and canonical click/keyboard/edit/save behavior.
+- Natural numeric specimen ordering on initial display and column-header sorting; no renamed or rewritten records.
+- Completion: Debug/Release, deterministic sort and Full Verification checks, Help/docs and owner layout/input acceptance.
+
+Owner refinement: use 10 specimen rows and remove the gap above reading tabs. Auto-sized rows and top alignment prevent centering.

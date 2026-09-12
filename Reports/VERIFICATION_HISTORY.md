@@ -1,3 +1,15 @@
+# v67.0.4 - Flexible List Layout and Ordering
+
+Final verification: Debug/Release zero warnings/errors. Disposable smoke and Full Verification 463/463 PASS.
+Profile `20260912142615-fe3b7951`; exact database recovery SHA-256:
+`FF381B6CFE6FA1B2757884730CBD4589CEF6524C06E68E67FF4F333298894744`.
+Business-state recovery: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88`.
+Help 802/802 and documentation/diff checks PASS. Normal Release directory contains v67.0.4 for owner review.
+Offscreen WPF fixture used the actual Flexible tab XAML with handlers detached and the virtualization-only style omitted.
+Rendered 30 synthetic sessions and 20 specimens: Session viewport 625 px; specimen viewport 420 px with 15 complete visible rows.
+The fixture checks layout, not interactive editing; owner single-click/keyboard/header-sort acceptance remains required.
+Evidence/fixture retained in `.private/v67-list-layout`. No owner data, live website, commit or push changed by this candidate.
+
 # v67.0.3 - Accepted website closure
 
 Owner published and visually accepted the live site on 2026-09-12. Independent HTTPS checks pass for the main site,

@@ -280,3 +280,9 @@ help.whitepaper owns Chapter 8 Recovery and established Shore A/D procedure: 50 
 Flexible testing Help owns the read-only Shore location statistics column and dashboard rows; website.preview owns its popup.
 Each specimen retains valid reading count, mean, sample SD and CV; independent-specimen statistics remain separate.
 No editable field or input handler changes. Existing Shore rows retain their saved dwell, thickness and identities.
+
+### v67.0.4 — Flexible list layout and ordering
+
+flexible-testing.overview owns the larger bounded Session and specimen lists, page scrolling and numeric Specimen header sorting.
+No new input field or AutomationId. Existing shared click/keyboard handlers and deferred save path remain; sort commits edits first.
+Owner visual/input acceptance is required; pure numeric ordering is added to Full Verification without pixel assertions.

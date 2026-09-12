@@ -1166,6 +1166,9 @@ internal static class HelpContentCatalog
             "flexible-testing.overview", "Testing and engineering", "Flexible Material Testing",
             "Record manual TPU compression, relaxation, recovery and Shore readings without mixing methods or specimens.",
             """
+            The Test Session list grows with its contents up to five times the former height. The specimen list has room for
+            10 rows; on shorter windows scroll the page to reach the measurement tabs below. Specimen labels sort
+            numerically (1, 2, ... 9, 10); click the Specimen header to toggle ascending or descending order.
             Where: Flexible Material Testing. Add a MaterialID-linked Test Session; the Material selector shows MaterialID together with
             Website Display Name. Use the specimen buttons above the specimen table, then select a specimen and use the reading buttons
             below that table. Edit its actual geometry and print/method snapshot. A migrated session may show its former Experimental Run as read-only

@@ -1,6 +1,6 @@
 {
   "Schema": "3dpiceland.help-control-coverage.v1",
-  "Release": "v67.0.2",
+  "Release": "v67.0.4",
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
   "XamlCounts": {
     "Button": 178,
@@ -19,6 +19,7 @@
     "NestedTab": 16
   },
   "CoveredOwnerIncrements": [
+    "v67.0.4",
     "v67.0.2",
     "v67.0.1",
     "v67.0.0",

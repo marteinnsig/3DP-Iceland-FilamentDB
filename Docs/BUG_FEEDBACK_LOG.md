@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 133 |
+| Solved | 134 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **139** |
+| **Total tracked findings** | **140** |
 
 ## Triage categories
 
@@ -69,10 +69,18 @@ No active findings.
 
 ## In-progress findings — newest first
 
-
 No active findings.
 
 ## Resolved findings — newest first
+
+### 2026-09-12 — Flexible list capacity and numeric specimen ordering
+
+- **Status:** Solved — v67.0.4; owner accepted the corrected layout and requested closure on 2026-09-12.
+- **Request:** Fivefold Session list capacity, at least 15 specimen rows, and order 1, 2, ... 9, 10.
+- **Implementation:** Bounded Session growth, 292 px specimen viewport, page scrolling and natural label/header sorting.
+- **Refinement:** Owner now requests 10 specimen rows and no large gap between reading buttons and tabs.
+- **Boundary:** Preserve raw rows/IDs and canonical input behavior; sorting commits active edits before changing the view.
+- **Completion:** Builds, numeric-order regression, Full Verification, Help/docs and owner layout/input acceptance.
 
 ### 2026-09-12 — Flexible measurements on the website
 

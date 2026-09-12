@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "FLEXIBLE-WEBSITE-CANDIDATE";
-    public const string ReleaseTitle = "Flexible Methodology Whitepaper";
+    public const string ReleaseCode = "FLEXIBLE-LIST-POLISH";
+    public const string ReleaseTitle = "Flexible List Layout and Ordering";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 44;
 
