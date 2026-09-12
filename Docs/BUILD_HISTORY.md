@@ -2,6 +2,187 @@
 > `CHANGELOG.md` owns chronology and `RELEASES.md` owns the curated release
 > ledger.
 
+
+## v66.0.8 - Flexible Integration Acceptance
+
+### Owner acceptance and source release closure — 2026-09-12
+
+Owner accepted the final v66.0.8 research-list integration. Every recorded v66 increment is accepted; earlier candidate notes below
+remain chronological evidence. Runtime baseline is v66.0.8, preserving the tested FLEXIBLE-INTEGRATION-CANDIDATE identity/bytes.
+Final Debug/Release and 457/457 verification pass; dependency audit reports no vulnerable packages, Help/docs/diff checks pass.
+README stable installer/portable routes returned HTTP 200; links describe published artifacts, not a claim that v66 is deployed.
+Branch master and origin/master aligned before closure. Commit/push is authorized by standing owner release policy.
+No v66 signed distribution package or exact-byte Production runtime acceptance exists; deployment gates have not activated.
+
+Final profile `20260912020243-90444968` passes 457/457 with exact-state recovery. Debug/Release, Help/docs pass.
+Normal Release is updated; final research-list owner review remains before closure.
+
+Owner accepted Settings default, saved-idea restart and Analytics on 2026-09-12. Normal Release refreshed after owner closed app.
+Initial new coverage test failed because its handwritten summary omitted the condition; it now uses the canonical projector.
+The corrected pure contract passes. Visual inspection shortened Grade to Measured to fit the existing column.
+
+Closure audit found missing Flexible-only readiness in the main planner and measured candidates in legacy research outputs.
+Adds separate factual title/thumbnail rows, exact-condition discovery pairs, no-video gaps, calendar slots and a Flexible playlist.
+Legacy score engines remain unchanged. Candidate editorial priority is 40 for measured readiness plus 30 without a recorded video;
+pair/playlist planning priority is 60. These are content-planning priorities, not material performance scores or Overall.
+One representative topic per material prefers matching peers, then stable category/key; the opportunity selector retains all topics.
+Calendar reserves the first of every three slots for Flexible when available. Copy paths preserve measured facts and conditions.
+Subagent review corrected top-thumbnail ordering and retained facts in Copy Best Thumbnail. Existing saved ideas are not rewritten.
+Help, README development focus and consumer inventory reconciled. Unified Compare accepted; earlier manual checks remain pending.
+Candidate only; no commit/push, major closure, Production promotion or publication until acceptance requirements are reconciled.
+
+## v66.0.7 - Flexible Comparison and Analytics
+
+Owner correction: Compare now aligns material results by metric/unit/measurement condition, ignoring specimen setup metadata.
+Numbered Test setup sections retired. Different n and saved statistics remain per cell; multiple summaries are never pooled.
+Shared exact-method ranking/report contracts remain intact; this change owns the selected-material Compare presentation.
+Help and deterministic comparison checks updated; owner visual acceptance pending.
+
+Debug/Release and Help/docs pass; disposable profile `20260912012154-8c93dc53` passes 456/456 with exact-state recovery.
+Final native-unit chart/Compare render and pure contracts pass; owner review remains pending.
+
+Owner requested the next increment on 2026-09-12. Prior outstanding acceptance is retained, not inferred complete.
+Analytics now includes visible Flexible-only materials in separate native-unit charts, before the Overall eligibility filter.
+Existing Chart Mode partitions by manufacturer/material type/product line/variant/reinforcement while keeping each material's
+mean, n, SD, CV and range. No pooling of specimen counts or statistics; method and condition boundaries remain exact.
+Compare keeps its accepted A-D scope and adds dispersion/range to native-unit cells. No universal Flexible winner highlighting.
+Selected Mechanical dashboard and Dashboard Insights already own detail/coverage. Existing website chart payloads and normalized
+radars remain score-only; safe Flexible public evidence stays in the separately implemented report sections, without publication.
+Subagent review identified ambiguous radar coverage and missing unreached context; both are corrected. Zero bars have zero length.
+Help and existing disposable Full Verification cover scope/condition/zero/missing/sample contracts. No new input workflow or seed.
+Candidate only: owner chart/grouping/Compare review required. v66.0.8 must reconcile outstanding earlier acceptance before closure.
+## v66.0.6 - Flexible Research and Intelligence
+
+Owner follow-up: dropdown labels now contain only material and topic, on one line with ellipsis for long names.
+Method and condition remain in the selected result; exact-condition identity and saved facts are unchanged.
+Help/ledger updated. Cosmetic selector presentation needs visual review, not a new tester contract.
+
+Owner dropdown correction: all three Flexible opportunity selectors now grow to fit wrapped selected text.
+Open lists use a 320px scrolling viewport. Local sizing overrides the app's fixed 30px ComboBox style.
+Labels, data, selection and save behavior are unchanged; cosmetic-only, no new Help or tester contract required.
+
+Owner accepted v66.0.5 ranking/category/award results and layout. Continuing the recorded integration sequence.
+Adds measured Flexible opportunities to YouTube Research, dataset Video Planner and Recommendations, independent of Overall.
+Exact method/condition peers, statistics and use-specific guidance share one pure service. Wrapped choices show safe method IDs.
+Dedicated Copy Flexible brief is local. Save Flexible idea preserves current facts/peers in the existing global saved-idea queue.
+Persist the proposed queue transaction before memory/UI replacement; identical snapshots are deduplicated without rewriting older ones.
+Detail clearing now preserves the global saved queue, preventing later saves from dropping ideas hidden by Materials filtering.
+Existing idea edits are committed through the canonical grid flow before snapshot insertion; validation failures block the save.
+Dashboard Insights adds compact visible coverage. Local AI briefs respect processed 60/250-material scope and announce topic limits.
+Existing YouTube reports include the same scoped narrative. OpenAI exact preview includes sanitized Flexible aggregates/hashes;
+private method notes remain excluded, request hashes change with results, and explicit consent/store=false/no tools remain enforced.
+Saved sessions and ideas are never regenerated by background refresh. No automatic network, owner-data writes or seed migration.
+Debug/Release and Help pass; final disposable verification/visual evidence recorded in VERIFICATION_HISTORY. Owner review pending.
+Canonical remains v65.0.0; v66.0.2 Settings and v66.0.7-.8 still require closure.
+
+## v66.0.5 - Flexible Rankings, Categories and Awards
+
+Owner accepted v66.0.4 report results and HTML/PDF layout on 2026-09-12. Continuing the recorded Flexible sequence.
+Adds separate read-only Flexible sections in Rankings Dashboard, Category Rankings and Awards & Winners.
+Visible Materials and Base Material/Manufacturer/Reinforcement filters apply before any rigid-score eligibility.
+Category grouping and row limits operate within exact method/condition groups; equal means retain shared competition ranks.
+Two distinct measured materials are required for ranks or awards. Missing/unmatched values remain unranked; zero remains measured.
+Retention, force reduction and recovery have explicit directional awards; force/stress/Shore are descriptive without universal winners.
+Overall stays unchanged. Flexible category selectors and Export Flexible CSV are independent of the existing score lists.
+Saved refresh, filter changes, Reset and empty-scope clearing update all three sections. Ranked report HTML/text uses the same renderer.
+Help and Full Verification cover scope, peers, ties, missing data and safe exports. No new editable grid, seed change or runner scenario.
+Debug/Release and Help/docs pass. Profile `20260912003327-0cfad714` passes 454/454 with exact-state recovery.
+Synthetic WPF rows and exports reviewed. Final HTML header-spacing correction rebuilt separately; owner runtime review remains.
+Canonical remains v65.0.0; no live publication or milestone closure.
+
+## v66.0.4 - Flexible Reports and PDF Exports
+
+Candidate: saved active-session Flexible aggregates now follow each report's actual MaterialID scope in HTML, text and PDF.
+All six public report families use a closed aggregate DTO with numeric conditions and opaque group/method identifiers.
+Private notes, printer identity, specimen identifiers and raw method keys are excluded. Owner approved public templates 2026-09-12.
+Flexible source tables participate in freshness fingerprints. Legacy Overall and rigid-test completeness remain unchanged.
+Fallback PDFs continue across pages; certificate validation counts materials independently from page count.
+Full Verification now checks safe projection, all six publishers, missing values, continuation and certificate identity.
+Existing smoke owns these pure synthetic contracts; no new input, AutomationId, runner authorization or seed migration is needed.
+Help/docs and Debug/Release pass with zero warnings. Profile `20260912001436-525fe4d1` passes 453/453 and exact recovery.
+Reports scenario validates 699 catalog entries and 2103 artifacts. Synthetic PDF layout passes; owner export review pending.
+Canonical remains v65.0.0. This candidate neither uploads reports nor closes the v66 milestone.
+
+## v66.0.3.1 - Flexible Material Detail Handoffs
+
+Owner accepted the compact v66.0.3 layout. Adds saved Flexible information to Material Detail Compare, Video Planner and Recommendations.
+Compare uses the exact method/condition key, A-D identities, mean/unit/n and an unmatched-peer marker; no universal winner or score.
+Selected-material video briefs use measured topics; guidance relates recorded load/retention/recovery/hardness to comparison choices.
+Matching candidates require shared measured keys and distinct MaterialIDs within the current Materials scope. Empty data remains empty.
+Both panels identify the displayed material, work without Overall and refresh from saved evidence; saved ideas remain immutable.
+Existing Overall and global ranking/planner/research/export contracts remain owned by the recorded later increments.
+Help and existing Full Verification cover isolation, matching, missing/zero and measured-topic guidance. No new input or scenario.
+Debug/Release, Help and documentation gates pass. Profile `20260911234829-81ae08d6` passes Full Verification 452/452 and exact recovery.
+Synthetic WPF renders inspected; owner runtime review pending. Canonical remains v65.0.0; no publication or release closure.
+## v66.0.3 - Canonical Flexible Evidence and Material Details
+
+Adds a saved active-MaterialID evidence projection shared with Comparable Results, including Recovery residual height loss.
+Material Detail > Mechanical > Engineering Dashboard shows compact Flexible tables with mean, n, SD, CV, range and units.
+General shows only coverage and the Mechanical location; Test setup expands each method once.
+Inactive sessions and unfinished edits do not enter material summaries; all active saved sessions may contribute matching specimens.
+Stress derives from raw force/geometry; force/stress distinguishes displacement; reduction requires unique matched 10/30 s holds.
+Existing Overall, raw data, schema44 and historical relaxation storage remain unchanged. Internal method metadata stays private.
+Help, saved-evidence and detail-format Verification contracts are extended; the existing disposable smoke owns acceptance.
+No new input surface, runner authorization, seed migration or external publication. Visual/owner acceptance remains required.
+The full owner request is tracked through v66.0.4-.8; reports/PDF, rankings/awards, research and analytics are not yet integrated.
+Debug/Release and Help/docs pass. Profile `20260911223150-70e446de` passes Full Verification 451/451 and exact recovery.
+Canonical release remains v65.0.0; owner runtime acceptance is pending.
+### Owner layout correction
+
+Owner rejected repetitive General method/statistics prose and requested Mechanical dashboard parity.
+General now contains coverage and the Mechanical location only. Mechanical / Engineering Dashboard has a Flexible table per method,
+with condition, result/unit, mean, n, SD, CV and range. Each saved method appears once in collapsed Test setup; shared conditions
+are shown once. The original verbose field builder is replaced, with no unused adapter retained. Saved cache and raw inputs persist.
+Selected-material dashboard scope moved forward from v66.0.7; other analytics remain planned. Overall remains unchanged.
+Existing Verification checks the revised read-only renderer, setup grouping and empty results; no new editable grid or scenario.
+Help, field ownership, Debug/Release and documentation gates pass. Profile `20260911230648-cd4b8e83` passes Full Verification 451/451 and exact database/business-state recovery.
+Synthetic WPF table rendering inspected; owner review of the revised Mechanical dashboard remains pending.
+
+
+### Wide-window spacing correction
+
+Flexible tables use bounded 330/220 px text columns plus compact numeric columns, aligned left (950 px total).
+Long conditions wrap; narrow viewports retain horizontal scrolling. Enlarging the window no longer expands the columns.
+Debug/Release pass with zero warnings/errors. Actual WPF synthetic renders inspected at 1100 and 1900 px; spacing remains identical.
+Cosmetic-only change: no data, calculations, entry behavior, Help labels or scenario authorization changed; no new tester test warranted.
+Existing Help ownership remains valid. Owner visual acceptance of the new spacing is pending.
+
+## v66.0.2 - Recovery Hold-time Default
+
+Adds Default recovery compressed hold under Settings Manager / Flexible Material Testing, initially 30 s. Add Recovery snapshots it
+into Compressed hold s; existing measurements and the separate 60 s rest default remain unchanged. Missing settings are added by the
+existing SQLite default-maintenance path without replacing saved choices. Nonnegative finite input is required by editor and Save.
+Help and existing Full Verification cover default presence, validation and row snapshots. No schema/seed or new runner scenario.
+Debug/Release and Help/docs pass. Profile `20260910182851-e2f30af3` passes Full Data Verification 450/450 and exact database/business-state recovery.
+Owner runtime acceptance pending; no release closure or publication.
+
+## v66.0.1 - Recovery TVL Contact Entry
+
+Adds TVL contact offset mm as an alternate Recovery input. With TVL zero retained from initial contact, 0.14 mm means height loss;
+10 mm initial height gives 9.86 mm recovered height. Direct height entry remains supported and historical offsets are derived.
+The existing height columns remain canonical; no schema/seed change. Decimal-comma input and invalid pending text are preserved.
+Shared input/focus handlers remain unchanged; property notifications synchronize fields without rebinding.
+Help and existing calculation/persistence Verification contracts are extended. No new runner scenario or authorization is required.
+Debug/Release pass with zero warnings/errors. Review found and fixed partial initial-height repair: pending TVL input now remains
+authoritative through sequential typing until the valid initial-height edit commits. Tests cover 1 -> 10 and threshold crossing.
+Profile `20260910181732-9500d441` passes Full Data Verification 449/449 and exact database/business-state recovery.
+Owner runtime acceptance remains pending. Canonical release remains v65.0.0.
+
+## v66.0.0 - Compression Force Retention
+
+Owner accepted tab/summary behavior. Follow-up correction: Add Recovery defaults to 20% compression for new rows only.
+Help is synchronized. No new tester scenario is warranted for this literal default; input, calculation and storage paths are unchanged.
+
+Candidate: Compression derives retention from compatible timed holds and notifies dependent read-only cells without rebinding.
+Add Relaxation Point and its handler are retired; Saved Stress Relaxation is visible only for specimens with historical records.
+Owner follow-up adds Comparable Results retention summaries by method, target, displacement, cycle and actual interval.
+Statistics use raw per-specimen ratios and independent n; no existing force-reduction/public calculations were changed.
+Debug/Release pass with zero warnings/errors. Help, documentation, diff and direct/transitive vulnerability gates pass.
+The first disposable run passed formula and UI contracts but failed release identity; BuildInfo was aligned with the candidate
+assembly identity, then both configurations rebuilt. Failed profile `20260910172427-f7038342` is retained for diagnostics.
+Profile `20260910173647-74918792` passes Full Data Verification 448/448 and exact database/business-state recovery.
+Owner acceptance is pending; canonical release remains v65.0.0.
+
 ## v65.0.0 - Catalog-driven Material Entry Choices
 
 The long-lived owner-drawn Materials view already shares an observable Base Material choice collection, but Add Material did not

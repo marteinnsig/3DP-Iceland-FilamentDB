@@ -1,4 +1,5 @@
-﻿using FilamentDbApp.Services.Calculations;
+using FilamentDbApp.Models;
+using FilamentDbApp.Services.Calculations;
 
 namespace FilamentDbApp.Services.Reporting;
 
@@ -21,7 +22,10 @@ public sealed class ReportingDataPipelineService
                 Number(material.Summary.Impact?.Flat.Average),
                 Number(material.Summary.Impact?.Upright.Average),
                 Number(material.Summary.Stiffness?.ModulusMpa),
-                IsComplete(material.Summary)))
+                IsComplete(material.Summary))
+            {
+                FlexibleResults = material.FlexibleResults.ToArray()
+            })
             .ToList();
 
         return new ReportingDataPipelinePayload(rows);
@@ -77,7 +81,10 @@ public sealed class ReportingDataPipelineService
 public sealed record ReportingMaterialInput(
     string MaterialId,
     IReadOnlyDictionary<string, object?> CommonFields,
-    MaterialResults Summary);
+    MaterialResults Summary)
+{
+    public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
+}
 
 public sealed record ReportingDataPipelinePayload(
     IReadOnlyList<ReportingMaterialSummaryRow> Rows);
@@ -95,7 +102,10 @@ public sealed record ReportingMaterialSummaryRow(
     double? ImpactFlatKjM2,
     double? ImpactUprightKjM2,
     double? StiffnessMpa,
-    bool IsComplete);
+    bool IsComplete)
+{
+    public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
+}
 
 public sealed class ReportingDataPipelineVerificationResult
 {

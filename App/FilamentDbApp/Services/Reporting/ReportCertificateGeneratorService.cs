@@ -1,4 +1,4 @@
-﻿namespace FilamentDbApp.Services.Reporting;
+namespace FilamentDbApp.Services.Reporting;
 
 public sealed class ReportCertificateGeneratorService
 {
@@ -7,7 +7,11 @@ public sealed class ReportCertificateGeneratorService
         var generatedAtUtc = DateTime.UtcNow;
         var pdfReady = pdfDocument.ContentType == "application/pdf" &&
                        pdfDocument.Bytes.Length > 0 &&
-                       pdfDocument.PageCount == reportModel.MaterialReports.Count;
+                       pdfDocument.MaterialReportsRendered == reportModel.MaterialReports.Count &&
+                       pdfDocument.PageCount >= reportModel.MaterialReports.Count &&
+                       pdfDocument.Payload.Pages.Count == pdfDocument.PageCount &&
+                       new HashSet<string>(pdfDocument.Payload.Pages.Select(page => page.MaterialId), StringComparer.OrdinalIgnoreCase)
+                           .SetEquals(reportModel.MaterialReports.Select(report => report.MaterialId));
 
         var certificates = reportModel.MaterialReports
             .Where(report => !string.IsNullOrWhiteSpace(report.MaterialId))
@@ -42,13 +46,13 @@ public sealed class ReportCertificateGeneratorService
                                       batch.Certificates.All(certificate => certificate.Fields.Count >= 6 && certificate.SourcePdfReady),
             CertificateReady = batch.SourcePdfContentType == "application/pdf" &&
                                batch.SourcePdfByteCount > 0 &&
-                               batch.SourcePdfPageCount == reportModel.MaterialReports.Count &&
+                               batch.SourcePdfPageCount >= reportModel.MaterialReports.Count &&
                                batch.Certificates.All(certificate => certificate.ReadyForIssue)
         };
 
         result.Passed = result.InputReports > 0 &&
                         result.GeneratedCertificates == result.InputReports &&
-                        result.SourcePdfPages == result.InputReports &&
+                        result.SourcePdfPages >= result.InputReports &&
                         result.SourcePdfBytes > 0 &&
                         result.MaterialIdCoverage &&
                         result.PayloadValidationPassed &&

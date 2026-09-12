@@ -2,17 +2,17 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v65.0.0 — Catalog-driven Material Entry Choices**
+Last runtime-accepted baseline: **v66.0.8 — Flexible Integration Acceptance**
 
-Current canonical application release: **v65.0.0 — Catalog-driven Material Entry Choices**
+Current canonical application release: **v66.0.8 — Flexible Integration Acceptance**
 
-Current roadmap increment: **None — awaiting the next coherent milestone**
+Current roadmap increment: **v66.0.8 — complete; owner accepted 2026-09-12**
 
-Current acceptance note: v65.0.0 is complete and owner runtime accepted.
+Current acceptance note: all recorded v66 increments accepted, including final research-list integration.
 
-Next note: await owner feedback before scheduling a new coherent major milestone.
+Next note: no new milestone scheduled. Distribution packaging requires its own exact-byte acceptance gates.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
-Production and FTPS remain blocked.
+Production/FTPS remain gated: no v66 installer/update package has received exact-byte runtime acceptance.
 
 This file is the canonical strategic roadmap. Completed build details belong in
 `Docs/CHANGELOG.md`, `Docs/BUILD_HISTORY.md`, `Docs/MILESTONES.md` and
@@ -54,6 +54,7 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v63 | Public Website Accuracy and Thermal Methodology | ★★★★☆ | Complete — v63.0.1 owner accepted 2026-08-24 |
 | v64 | Flexible-material Comparative Testing | ★★★★★ | Complete — canonical v64.0.8 runtime accepted |
 | v65 | Catalog-driven Material Entry | ★★★★★ | Complete — canonical v65.0.0 runtime accepted |
+| v66 | Flexible Measurement Consolidation and Integration | ★★★★★ | Complete — canonical v66.0.8 runtime accepted |
 
 ## Reconciliation of the older plans
 
@@ -2950,7 +2951,7 @@ blockers may change the order, but must be recorded here before implementation.
   - Update deterministic fake-provider, payload, parser, evidence and cancellation contracts; keep live network consent unchanged.
   - Completion condition: owner accepts local/live-preview usefulness and exact privacy/methodology boundaries; AI gates pass.
 - **v61.0.7 — Public Website, Reports and Thermal Radar Publication**
-  - State: Complete and owner runtime/visual accepted on 2026-08-14; Production and FTPS remain blocked.
+  - State: Complete and owner runtime/visual accepted on 2026-08-14; Production/FTPS remain gated: no v66 installer/update package has received exact-byte runtime acceptance.
   - Add governed public thermal fields to the home-page material data, detail presentation, comparisons and relevant report models.
   - Expand the website and public-report radar from five axes to the approved thermal profile with responsive and PDF-safe geometry.
   - Show raw °C, normalized score, method version and concise fixture/BlueDOT/non-standard limitations wherever interpretation occurs.
@@ -3108,9 +3109,9 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition: both recorded v63 website increments are owner accepted, public content is internally consistent and
     no v63 implementation item remains open.
 
-## Current — v65 Catalog-driven Material Entry
+## Completed — v65 Catalog-driven Material Entry
 
-- **v65.0.0 — Catalog-driven Material Entry Choices**
+- **v66.0.8 — Flexible Integration Acceptance**
   - State: Complete and owner runtime accepted on 2026-09-10; Full Data Verification passes 447/447.
   - Refresh the editable Base Material choice collection from the canonical in-memory Base Material Catalog immediately before a new
     Material row is created and focused.
@@ -3257,6 +3258,89 @@ blockers may change the order, but must be recorded here before implementation.
   - Completion condition met: owner enters a measurement and immediately switches specimens without a crash or lost value; all
     governed gates pass.
 
+## Completed — v66 Flexible Measurement Consolidation and Integration
+
+- **v66.0.0 — Compression Force Retention**
+  - State: Implemented after owner feedback; empty legacy tab hidden and retention included in Comparable Results.
+  - Debug/Release, Help/docs pass; revised profile `20260910173647-74918792` passes Verification 448/448 and exact recovery.
+  - Owner accepted tab/summary behavior on 2026-09-10. Follow-up: new Recovery rows default to 20%; older values stay unchanged.
+  - Recovery 20% default: Debug/Release and Help/docs pass; owner subsequently confirms Recovery TVL entry works.
+  - Add calculated Force retention % to Compression using actual hold times for the same specimen, cycle, target and displacement.
+  - Remove Add Relaxation Point; show a saved-reading tab only when the selected specimen has historical relaxation rows.
+  - Comparable Results summarizes per-specimen retention by matching method, target, displacement, cycle and actual time interval.
+  - Reuse accepted input handlers and refresh dependent calculated cells without rebinding or moving editor focus.
+  - Update Help and deterministic Verification; preserve schema, raw data and the primary 30 s compression result.
+  - Completion condition: Debug/Release, applicable Help/docs gates and Full Data Verification pass; owner accepts calculations,
+    single-click typing, Tab/Shift+Tab, arrows and access to historical readings. No publication is included.
+
+- **v66.0.1 — Recovery TVL Contact Entry**
+  - State: Owner runtime accepted on 2026-09-10; profile `20260910181732-9500d441` passes 449/449 and exact recovery.
+  - TVL retained-zero offset and direct height are synchronized alternate inputs; historical canonical heights remain unchanged.
+  - Debug/Release and Help/docs passed. Implementation remains in the current uncommitted v66 batch.
+- **v66.0.2 — Recovery Hold-time Default**
+  - State: Implemented; Debug/Release and Help/docs pass; profile `20260910182851-e2f30af3` passes 450/450 and exact recovery.
+  - Owner accepted the 30 s Settings-backed Recovery hold default on 2026-09-12 during closure reconciliation.
+  - Add a nonnegative finite seconds setting under Flexible Material Testing and validate it before saving/creating rows.
+  - Snapshot the current setting into new rows only; preserve earlier readings and shared keyboard/persistence paths.
+  - Update Help and existing deterministic Verification; no new scenario, schema or seed changes.
+  - Completion condition: Debug/Release, Help/docs and Full Verification pass; owner accepts Settings and new-row default behavior.
+
+- **v66.0.3 — Canonical Flexible Evidence and Material Details**
+  - State: Implemented; owner approved separate Flexible comparisons/categories with legacy Overall unchanged.
+  - Debug/Release and Help/docs pass; profile `20260911223150-70e446de` passes 451/451 with exact recovery. Owner review pending.
+  - Owner layout correction: compact General and Mechanical tables; constrain column widths on enlarged windows.
+  - Owner accepts compact Mechanical layout and wide-window spacing; v66.0.3 runtime accepted on 2026-09-11.
+  - Revised Debug/Release and Help/docs pass; profile `20260911230648-cd4b8e83` passes 451/451 and exact recovery.
+  - Show each method once in expandable Test setup, share condition headings and keep statistics in aligned result rows.
+  - This pulls the selected-material Mechanical dashboard from v66.0.7 into the current unaccepted v66.0.3 scope.
+  - Project active sessions by exact MaterialID, full method/condition keys and independent specimen statistics.
+  - Add Recovery to Comparable Results and use the same raw-derived projection in read-only Material Details.
+  - Completion: Debug/Release, Help/docs and Full Verification pass; owner accepts matching results and refresh behavior.
+- **v66.0.3.1 — Flexible Material Detail Handoffs**
+  - State: Owner accepted Compare, Video Planner and Recommendations detail handoffs; continuing the recorded sequence.
+  - Debug/Release and Help/docs pass; profile `20260911234829-81ae08d6` passes 452/452 with exact recovery.
+  - Add condition-matched Flexible comparison and selected-material facts/guidance in the two detail planning surfaces.
+  - Preserve Overall, saved video ideas and generic recommendation ranking; full collection/research/export integration stays planned.
+  - Completion: Debug/Release, Help/docs and Full Verification pass; owner accepts all three selected-material surfaces.
+- **v66.0.4 — Flexible Reports and PDF Exports**
+  - State: Owner accepted results and HTML/PDF layout on 2026-09-12; 453/453 and reports scenario pass.
+  - Evidence: profile `20260912001436-525fe4d1`, 699 report entries, 2103 artifacts, exact recovery and synthetic visual PASS.
+  - Owner explicitly approved public-safe template integration on 2026-09-12; existing opt-ins remain, no live publishing.
+  - Cover internal material, comparison, manufacturer, test-session and summary HTML/TXT/PDF reports.
+  - Extend public-safe typed DTOs, source fingerprints and all affected publishers without exposing private method notes.
+  - Completion: report scenario and parity gates pass; owner accepts generated HTML/PDF layout. No live publishing.
+- **v66.0.5 — Flexible Rankings, Categories and Awards**
+  - State: Owner accepted ranking/category/award results and layout; 454/454 and Debug/Release pass.
+  - Evidence: profile `20260912003327-0cfad714`, exact recovery, Help/docs and synthetic visual review. Overall unchanged.
+  - Add separate condition-matched Flexible categories, ranking/award views and their CSV/report exports.
+  - Use native units, explicit direction and at least two comparable materials for leader/award claims.
+  - Completion: isolation and Overall-invariance gates pass; owner accepts ranking labels and eligibility.
+- **v66.0.6 — Flexible Research and Intelligence**
+  - State: Owner accepted research workflow and saved idea persistence after restart on 2026-09-12; 455/455 pass.
+  - Dropdown layout and research/save-restart acceptance recorded; v66.0.8 extends the remaining main research lists.
+  - Evidence: profile `20260912005251-23d41f48`, exact recovery, safe AI preview and immutable saved-idea contracts.
+  - Cover YouTube Research, Video Planner, discovery, recommendations, dashboards and local AI briefs.
+  - Preserve saved idea/session snapshots; extend explicit OpenAI preview allowlist and hashes without automatic sending.
+  - Completion: scoped evidence, snapshot and preview contracts pass; owner accepts research and intelligence output.
+- **v66.0.7 — Flexible Comparison and Analytics Parity**
+  - State: Unified Compare and Analytics grouping accepted by owner on 2026-09-12.
+  - Debug/Release and 456/456 verification pass; profile `20260912014555-8b282f28` retains exact recovery.
+  - Add condition-separated native-unit analytics charts with per-material statistics and existing Chart Mode grouping.
+  - Preserve individual specimen counts; no pooled manufacturer averages or changes to normalized radar/Overall.
+  - Compare correction requested: align by metric/unit/measurement condition regardless of specimen setup metadata.
+  - Remove numbered setup sections; preserve separate saved summaries within a cell without pooling their specimen counts.
+  - Enrich Compare cells with dispersion; reconcile already-integrated dashboards and website score-chart boundaries.
+  - Cover side-by-side comparison, material/manufacturer analytics, dashboard charts and remaining evidence consumers.
+  - Completion: mapped consumer inventory reconciled, deterministic parity passes and owner accepts visual output.
+- **v66.0.8 — Flexible Integration Acceptance and Closure**
+  - State: Complete; owner accepted final research lists on 2026-09-12. All prior increments accepted.
+  - Audit consumer coverage and reconcile remaining Settings/research/Analytics acceptance before release closure.
+  - Required correction before closure: feed Flexible-only readiness and measured title/thumbnail candidates into planner/research.
+  - Add exact-condition discovery pairs, coverage gaps, calendar candidates and a Flexible playlist without legacy score claims.
+  - Preserve saved records and status-only collection/pipeline reports; verify fresh data before owner acceptance.
+  - Reconcile Help, automated tester, report/PDF evidence, README, feedback and full cross-surface inventory.
+  - Completion: 457/457, Debug/Release, dependency audit, Help/docs and README link checks pass; source release closure accepted.
+  - Preserve accepted runtime identity/bytes. Installer/update packaging and Production runtime acceptance are not yet established.
 ### Intentionally unscheduled
 
 - The unresolved one-day Variant-edit crash remains an immediate defect

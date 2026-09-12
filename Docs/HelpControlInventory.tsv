@@ -113,12 +113,14 @@ xaml.application-shell.button.automationthermalcreate	Application shell	Button	A
 xaml.application-shell.button.automationthermalupdate	Application shell	Button	AutomationThermalUpdate	action	v61.0.8.2	menu-runtime.controls-fields	covered
 xaml.application-shell.button.automationthermalverifyabsent	Application shell	Button	AutomationThermalVerifyAbsent	action	v61.0.8.2	menu-runtime.controls-fields	covered
 xaml.awards-winners.button.exportawardscsv-click	Awards & Winners	Button	ExportAwardsCsv_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.button.exportflexibleawardcsv	Awards & Winners	Button	ExportFlexibleAwardCsv	action	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.button.refreshawards-click	Awards & Winners	Button	RefreshAwards_Click	action	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.button.resetawardsfilters-click	Awards & Winners	Button	ResetAwardsFilters_Click	action	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.combobox.awardsbasematerialfilter	Awards & Winners	ComboBox	AwardsBaseMaterialFilter	choice	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.combobox.awardsmanufacturerfilter	Awards & Winners	ComboBox	AwardsManufacturerFilter	choice	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.combobox.awardsreinforcementfilter	Awards & Winners	ComboBox	AwardsReinforcementFilter	choice	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.combobox.awardssetfilter	Awards & Winners	ComboBox	AwardsSetFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.awards-winners.combobox.flexibleawardcategoryfilter	Awards & Winners	ComboBox	FlexibleAwardCategoryFilter	choice	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.datagrid.awardsgrid	Awards & Winners	DataGrid	AwardsGrid	read-only-grid	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.datagridtextcolumn.award	Awards & Winners	DataGridTextColumn	Award	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.awards-winners.datagridtextcolumn.manufacturer	Awards & Winners	DataGridTextColumn	Manufacturer	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
@@ -136,6 +138,7 @@ xaml.base-materials.button.deletebasematerial	Base Materials	Button	DeleteBaseMa
 xaml.base-materials.button.duplicatebasematerial	Base Materials	Button	DuplicateBaseMaterial	action	v50.4.1	base-materials.controls-fields	covered
 xaml.base-materials.button.resetbasematerialcolumnsbutton	Base Materials	Button	ResetBaseMaterialColumnsButton	action	v50.4.1	base-materials.controls-fields	covered
 xaml.category-rankings.button.exportcategoryrankingscsv-click	Category Rankings	Button	ExportCategoryRankingsCsv_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.button.exportflexiblecategorycsv	Category Rankings	Button	ExportFlexibleCategoryCsv	action	v50.4.2	analysis.controls-fields	covered
 xaml.category-rankings.button.refreshcategoryrankings-click	Category Rankings	Button	RefreshCategoryRankings_Click	action	v50.4.2	analysis.controls-fields	covered
 xaml.category-rankings.button.resetcategoryrankingfilters-click	Category Rankings	Button	ResetCategoryRankingFilters_Click	action	v50.4.2	analysis.controls-fields	covered
 xaml.category-rankings.combobox.categoryrankingbasematerialfilter	Category Rankings	ComboBox	CategoryRankingBaseMaterialFilter	choice	v50.4.2	analysis.controls-fields	covered
@@ -144,6 +147,7 @@ xaml.category-rankings.combobox.categoryrankinglimitfilter	Category Rankings	Com
 xaml.category-rankings.combobox.categoryrankingmanufacturerfilter	Category Rankings	ComboBox	CategoryRankingManufacturerFilter	choice	v50.4.2	analysis.controls-fields	covered
 xaml.category-rankings.combobox.categoryrankingmetricfilter	Category Rankings	ComboBox	CategoryRankingMetricFilter	choice	v50.4.2	analysis.controls-fields	covered
 xaml.category-rankings.combobox.categoryrankingreinforcementfilter	Category Rankings	ComboBox	CategoryRankingReinforcementFilter	choice	v50.4.2	analysis.controls-fields	covered
+xaml.category-rankings.combobox.flexiblecategorycategoryfilter	Category Rankings	ComboBox	FlexibleCategoryCategoryFilter	choice	v50.4.2	analysis.controls-fields	covered
 xaml.category-rankings.datagrid.categoryrankingsgrid	Category Rankings	DataGrid	CategoryRankingsGrid	read-only-grid	v50.4.2	analysis.controls-fields	covered
 xaml.category-rankings.datagridtextcolumn.anonymous	Category Rankings	DataGridTextColumn	#	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
 xaml.category-rankings.datagridtextcolumn.best-axis	Category Rankings	DataGridTextColumn	Best Axis	editable-column-candidate	v50.4.2	analysis.controls-fields	covered
@@ -266,6 +270,7 @@ xaml.flexible-material-testing-compression.datagridtextcolumn.apparent-stress-mp
 xaml.flexible-material-testing-compression.datagridtextcolumn.cycle	Flexible Material Testing > Compression	DataGridTextColumn	Cycle	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-compression.datagridtextcolumn.displacement-mm	Flexible Material Testing > Compression	DataGridTextColumn	Displacement mm	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-compression.datagridtextcolumn.force-n	Flexible Material Testing > Compression	DataGridTextColumn	Force N	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-compression.datagridtextcolumn.force-retention	Flexible Material Testing > Compression	DataGridTextColumn	Force retention %	read-only-column	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-compression.datagridtextcolumn.hold-s	Flexible Material Testing > Compression	DataGridTextColumn	Hold s	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-compression.datagridtextcolumn.notes	Flexible Material Testing > Compression	DataGridTextColumn	Notes	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-compression.datagridtextcolumn.result	Flexible Material Testing > Compression	DataGridTextColumn	Result	read-only-column	v50.4.3	start.workflow	covered
@@ -280,23 +285,23 @@ xaml.flexible-material-testing-recovery.datagridtextcolumn.initial-height-mm	Fle
 xaml.flexible-material-testing-recovery.datagridtextcolumn.notes-not-compression-set	Flexible Material Testing > Recovery	DataGridTextColumn	Notes (not Compression Set)	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-recovery.datagridtextcolumn.residual-height-loss	Flexible Material Testing > Recovery	DataGridTextColumn	Residual height loss %	read-only-column	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-recovery.datagridtextcolumn.rest-time-s	Flexible Material Testing > Recovery	DataGridTextColumn	Rest time s	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-recovery.datagridtextcolumn.tvl-contact-offset-mm	Flexible Material Testing > Recovery	DataGridTextColumn	TVL contact offset mm	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-saved-stress-relaxation.datagrid.stressrelaxationgrid	Flexible Material Testing > Saved Stress Relaxation	DataGrid	StressRelaxationGrid	grid-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-saved-stress-relaxation.datagridtextcolumn.actual-time-s	Flexible Material Testing > Saved Stress Relaxation	DataGridTextColumn	Actual time s	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-saved-stress-relaxation.datagridtextcolumn.compression	Flexible Material Testing > Saved Stress Relaxation	DataGridTextColumn	Compression %	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-saved-stress-relaxation.datagridtextcolumn.cycle	Flexible Material Testing > Saved Stress Relaxation	DataGridTextColumn	Cycle	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-saved-stress-relaxation.datagridtextcolumn.force-n	Flexible Material Testing > Saved Stress Relaxation	DataGridTextColumn	Force N	editable-column-candidate	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-saved-stress-relaxation.datagridtextcolumn.force-retention	Flexible Material Testing > Saved Stress Relaxation	DataGridTextColumn	Force retention %	read-only-column	v50.4.3	start.workflow	covered
+xaml.flexible-material-testing-saved-stress-relaxation.datagridtextcolumn.notes	Flexible Material Testing > Saved Stress Relaxation	DataGridTextColumn	Notes	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-shore-hardness.datagrid.shorehardnessgrid	Flexible Material Testing > Shore Hardness	DataGrid	ShoreHardnessGrid	grid-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-shore-hardness.datagridcomboboxcolumn.scale	Flexible Material Testing > Shore Hardness	DataGridComboBoxColumn	Scale	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-shore-hardness.datagridtextcolumn.hardness-value	Flexible Material Testing > Shore Hardness	DataGridTextColumn	Hardness value	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-shore-hardness.datagridtextcolumn.method-notes	Flexible Material Testing > Shore Hardness	DataGridTextColumn	Method notes	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-shore-hardness.datagridtextcolumn.reading-time-s	Flexible Material Testing > Shore Hardness	DataGridTextColumn	Reading time s	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing-shore-hardness.datagridtextcolumn.thickness-mm	Flexible Material Testing > Shore Hardness	DataGridTextColumn	Thickness mm	editable-column-candidate	v50.4.3	start.workflow	covered
-xaml.flexible-material-testing-stress-relaxation.datagrid.stressrelaxationgrid	Flexible Material Testing > Stress Relaxation	DataGrid	StressRelaxationGrid	grid-candidate	v50.4.3	start.workflow	covered
-xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.actual-time-s	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Actual time s	editable-column-candidate	v50.4.3	start.workflow	covered
-xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.compression	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Compression %	editable-column-candidate	v50.4.3	start.workflow	covered
-xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.cycle	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Cycle	editable-column-candidate	v50.4.3	start.workflow	covered
-xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.force-n	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Force N	editable-column-candidate	v50.4.3	start.workflow	covered
-xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.force-retention	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Force retention %	read-only-column	v50.4.3	start.workflow	covered
-xaml.flexible-material-testing-stress-relaxation.datagridtextcolumn.notes	Flexible Material Testing > Stress Relaxation	DataGridTextColumn	Notes	editable-column-candidate	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing.button.flexibleaddcompressionpoint	Flexible Material Testing	Button	FlexibleAddCompressionPoint	action	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing.button.flexibleaddcompressionspecimen	Flexible Material Testing	Button	FlexibleAddCompressionSpecimen	action	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing.button.flexibleaddrecovery	Flexible Material Testing	Button	FlexibleAddRecovery	action	v50.4.3	start.workflow	covered
-xaml.flexible-material-testing.button.flexibleaddrelaxationpoint	Flexible Material Testing	Button	FlexibleAddRelaxationPoint	action	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing.button.flexibleaddsession	Flexible Material Testing	Button	FlexibleAddSession	action	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing.button.flexibleaddshorereading	Flexible Material Testing	Button	FlexibleAddShoreReading	action	v50.4.3	start.workflow	covered
 xaml.flexible-material-testing.button.flexibleaddshorespecimen	Flexible Material Testing	Button	FlexibleAddShoreSpecimen	action	v50.4.3	start.workflow	covered
@@ -423,8 +428,11 @@ xaml.material-detail-compare.datagridtextcolumn.best	Material Detail > Compare	D
 xaml.material-detail-compare.datagridtextcolumn.best-2	Material Detail > Compare	DataGridTextColumn	Best	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-compare.datagridtextcolumn.metric	Material Detail > Compare	DataGridTextColumn	Metric	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-compare.datagridtextcolumn.score	Material Detail > Compare	DataGridTextColumn	Score	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.button.copyflexiblerecommendationbrief	Material Detail > Recommendations	Button	CopyFlexibleRecommendationBrief	action	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-recommendations.button.refreshrecommendations-click	Material Detail > Recommendations	Button	RefreshRecommendations_Click	action	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.button.saveflexiblerecommendationidea	Material Detail > Recommendations	Button	SaveFlexibleRecommendationIdea	action	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-recommendations.button.sendrecommendationtovideoplannerbutton	Material Detail > Recommendations	Button	SendRecommendationToVideoPlannerButton	action	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-recommendations.combobox.flexiblerecommendationchoice	Material Detail > Recommendations	ComboBox	FlexibleRecommendationChoice	choice	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-recommendations.combobox.recommendationbasematerialfilter	Material Detail > Recommendations	ComboBox	RecommendationBaseMaterialFilter	choice	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-recommendations.combobox.recommendationcategoryfilter	Material Detail > Recommendations	ComboBox	RecommendationCategoryFilter	choice	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-recommendations.combobox.recommendationusecasefilter	Material Detail > Recommendations	ComboBox	RecommendationUseCaseFilter	choice	v50.4.2	material-detail.controls-fields	covered
@@ -458,10 +466,13 @@ xaml.material-detail-recommendations.datagridtextcolumn.why-consider-it	Material
 xaml.material-detail-recommendations.datagridtextcolumn.why-it-won	Material Detail > Recommendations	DataGridTextColumn	Why it won	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-recommendations.textbox.recommendationchatgptprompt	Material Detail > Recommendations	TextBox	RecommendationChatGptPrompt	read-only	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-video-planner.button.clearrecommendationvideoideas-click	Material Detail > Video Planner	Button	ClearRecommendationVideoIdeas_Click	action	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.button.copyflexiblevideobrief	Material Detail > Video Planner	Button	CopyFlexibleVideoBrief	action	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-video-planner.button.copyrecommendationvideoideaprompt-click	Material Detail > Video Planner	Button	CopyRecommendationVideoIdeaPrompt_Click	action	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-video-planner.button.refreshvideoplanner-click	Material Detail > Video Planner	Button	RefreshVideoPlanner_Click	action	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.button.saveflexiblevideoidea	Material Detail > Video Planner	Button	SaveFlexibleVideoIdea	action	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-video-planner.checkbox.videonoyoutubeonlycheck	Material Detail > Video Planner	CheckBox	VideoNoYoutubeOnlyCheck	choice	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-video-planner.checkbox.videoreadyonlycheck	Material Detail > Video Planner	CheckBox	VideoReadyOnlyCheck	choice	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-video-planner.combobox.flexiblevideochoice	Material Detail > Video Planner	ComboBox	FlexibleVideoChoice	choice	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-video-planner.combobox.videobasematerialfilter	Material Detail > Video Planner	ComboBox	VideoBaseMaterialFilter	choice	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-video-planner.combobox.videocategoryfilter	Material Detail > Video Planner	ComboBox	VideoCategoryFilter	choice	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-video-planner.combobox.videomanufacturerfilter	Material Detail > Video Planner	ComboBox	VideoManufacturerFilter	choice	v50.4.2	material-detail.controls-fields	covered
@@ -622,9 +633,11 @@ xaml.purchase-orders.datagridtextcolumn.supplier-vat	Purchase Orders	DataGridTex
 xaml.purchase-orders.datagridtextcolumn.tax-allocated	Purchase Orders	DataGridTextColumn	Tax allocated	read-only-column	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.datagridtextcolumn.unit-price	Purchase Orders	DataGridTextColumn	Unit price	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
 xaml.purchase-orders.datagridtextcolumn.unit-weight-g	Purchase Orders	DataGridTextColumn	Unit weight g	editable-column-candidate	v50.4.1	purchase-orders.controls-fields	covered
+xaml.rankings-dashboard.button.exportflexiblerankingcsv	Rankings Dashboard	Button	ExportFlexibleRankingCsv	action	v50.4.2	analysis.controls-fields	covered
 xaml.rankings-dashboard.button.exportrankingscsv-click	Rankings Dashboard	Button	ExportRankingsCsv_Click	action	v50.4.2	analysis.controls-fields	covered
 xaml.rankings-dashboard.button.refreshrankings-click	Rankings Dashboard	Button	RefreshRankings_Click	action	v50.4.2	analysis.controls-fields	covered
 xaml.rankings-dashboard.button.resetrankingfilters-click	Rankings Dashboard	Button	ResetRankingFilters_Click	action	v50.4.2	analysis.controls-fields	covered
+xaml.rankings-dashboard.combobox.flexiblerankingcategoryfilter	Rankings Dashboard	ComboBox	FlexibleRankingCategoryFilter	choice	v50.4.2	analysis.controls-fields	covered
 xaml.rankings-dashboard.combobox.rankingbasematerialfilter	Rankings Dashboard	ComboBox	RankingBaseMaterialFilter	choice	v50.4.2	analysis.controls-fields	covered
 xaml.rankings-dashboard.combobox.rankinglimitfilter	Rankings Dashboard	ComboBox	RankingLimitFilter	choice	v50.4.2	analysis.controls-fields	covered
 xaml.rankings-dashboard.combobox.rankingmanufacturerfilter	Rankings Dashboard	ComboBox	RankingManufacturerFilter	choice	v50.4.2	analysis.controls-fields	covered
@@ -730,12 +743,15 @@ xaml.website-export.textbox.websiteexportfolderbox	Website Export	TextBox	Websit
 xaml.website-export.textbox.websiteexportpreviewlog	Website Export	TextBox	WebsiteExportPreviewLog	read-only	v50.4.3	website.controls-fields	covered
 xaml.youtube-research.button.copybestyoutubethumbnail-click	YouTube Research	Button	CopyBestYouTubeThumbnail_Click	action	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.button.copycontentcalendarplan-click	YouTube Research	Button	CopyContentCalendarPlan_Click	action	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.button.copyflexibleresearchbrief	YouTube Research	Button	CopyFlexibleResearchBrief	action	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.button.copytopchannelgaps-click	YouTube Research	Button	CopyTopChannelGaps_Click	action	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.button.copytopcomparisondiscovery-click	YouTube Research	Button	CopyTopComparisonDiscovery_Click	action	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.button.copytopplaylists-click	YouTube Research	Button	CopyTopPlaylists_Click	action	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.button.copyyoutuberesearchprompt-click	YouTube Research	Button	CopyYouTubeResearchPrompt_Click	action	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.button.copyyoutubethumbnailbriefs-click	YouTube Research	Button	CopyYouTubeThumbnailBriefs_Click	action	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.button.refreshyoutuberesearch-click	YouTube Research	Button	RefreshYouTubeResearch_Click	action	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.button.saveflexibleresearchidea	YouTube Research	Button	SaveFlexibleResearchIdea	action	v50.4.3	youtube.controls-fields	covered
+xaml.youtube-research.combobox.flexibleresearchchoice	YouTube Research	ComboBox	FlexibleResearchChoice	choice	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.datagrid.channelgaplist	YouTube Research	DataGrid	ChannelGapList	read-only-grid	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.datagrid.comparisondiscoverylist	YouTube Research	DataGrid	ComparisonDiscoveryList	read-only-grid	v50.4.3	youtube.controls-fields	covered
 xaml.youtube-research.datagrid.contentcalendarlist	YouTube Research	DataGrid	ContentCalendarList	read-only-grid	v50.4.3	youtube.controls-fields	covered

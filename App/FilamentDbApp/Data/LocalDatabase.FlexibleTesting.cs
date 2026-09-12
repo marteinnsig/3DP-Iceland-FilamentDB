@@ -1,4 +1,4 @@
-using FilamentDbApp.Models;
+﻿using FilamentDbApp.Models;
 using Microsoft.Data.Sqlite;
 using System.Globalization;
 
@@ -263,7 +263,9 @@ ON CONFLICT(SpecimenId) DO UPDATE SET FlexibleTestSessionId=excluded.FlexibleTes
             new ShoreHardnessReadingRecord { SpecimenId="S1",ShoreScale="D",HardnessValue="35",ReadingTimeSeconds="1",SpecimenThicknessMm="10" }
         ]);
         var forceComparison = comparisons.Single(x => x.Metric == "Compression Force at 25% Strain" && x.SpecimenCount == 2);
-        return Math.Abs(strain.GetValueOrDefault() - 10d) < 0.000001d &&
+        var compressionRetentionReady = VerifyCompressionRetention();
+        return RunFlexibleMaterialEvidenceContractVerification() && compressionRetentionReady && VerifyCompressionRetentionComparisons() && VerifyRecoveryTvlInput() &&
+               Math.Abs(strain.GetValueOrDefault() - 10d) < 0.000001d &&
                Math.Abs(stress.GetValueOrDefault() - 0.318309886d) < 0.000001d &&
                Math.Abs(retention.GetValueOrDefault() - 60d) < 0.000001d &&
                Math.Abs(recovery.GetValueOrDefault() - 5d) < 0.000001d &&
@@ -280,6 +282,316 @@ ON CONFLICT(SpecimenId) DO UPDATE SET FlexibleTestSessionId=excluded.FlexibleTes
                new FlexibleTestSpecimenRecord().ThicknessMm == "9" &&
                Services.FlexibleMaterialTestingService.CalculateStrainPercent("1", "") is null &&
                Services.FlexibleMaterialTestingService.CalculateApparentStressMpa("100", "0") is null;
+
+        bool VerifyCompressionRetentionComparisons()
+        {
+            var comparisonSpecimens = Enumerable.Range(1, 6).Select(index => new FlexibleTestSpecimenRecord
+            {
+                SpecimenId = $"RET-{index}", FlexibleTestSessionId = "RET-SESSION",
+                MethodVersion = index == 4 ? "different-method" : "retention-verification"
+            }).ToArray();
+            CompressionPointRecord Reading(int specimen, string force, string time, string displacement = "2",
+                int cycle = 1, string target = "20") => new()
+            {
+                SpecimenId = $"RET-{specimen}", CycleNumber = cycle, TargetStrainPercent = target,
+                TargetReached = true, DisplacementMm = displacement, HoldTimeSeconds = time, ForceN = force,
+                // Comparable Results must derive from raw readings, even before Recalculate runs.
+                ForceRetentionPercent = "stale"
+            };
+            static bool Close(string actual, double expected) =>
+                Services.FlexibleMaterialTestingService.ParseOptional(actual) is double value &&
+                Math.Abs(value - expected) <= 0.001d;
+            var readings = new List<CompressionPointRecord>
+            {
+                Reading(1, "100", "10"), Reading(1, "80", "30"),
+                Reading(2, "200", "10,0"), Reading(2, "180", "30,0", "2,0")
+            };
+            var baseline = Services.FlexibleMaterialTestingService.BuildComparisons(comparisonSpecimens, readings, [])
+                .Single(row => row.Metric == "Force retention at 20% Strain");
+            if (baseline.Condition != "10–30 s · 2 mm displacement · cycle 1" || baseline.Unit != "%" ||
+                baseline.SpecimenCount != 2 || !Close(baseline.Mean, 85) ||
+                !Close(baseline.StandardDeviation, 7.071067812) || !Close(baseline.CoefficientOfVariation, 8.318903308) ||
+                !Close(baseline.Minimum, 80) || !Close(baseline.Maximum, 90)) return false;
+
+            // Repeated later readings contribute one specimen mean, not extra independent samples.
+            readings.Add(Reading(1, "60", "30"));
+            var repeated = Services.FlexibleMaterialTestingService.BuildComparisons(comparisonSpecimens, readings, [])
+                .Single(row => row.Metric == "Force retention at 20% Strain");
+            if (repeated.SpecimenCount != 2 || !Close(repeated.Mean, 80) ||
+                !Close(repeated.StandardDeviation, 14.142135624) || !Close(repeated.Minimum, 70) ||
+                !Close(repeated.Maximum, 90)) return false;
+
+            readings.AddRange(
+            [
+                Reading(3, "100", "5"), Reading(3, "50", "30"),
+                Reading(1, "40", "60"),
+                Reading(1, "100", "10", "3"), Reading(1, "60", "30", "3"),
+                Reading(1, "100", "10", cycle: 2), Reading(1, "65", "30", cycle: 2),
+                Reading(4, "100", "10"), Reading(4, "55", "30"),
+                Reading(1, "100", "10", target: "30"), Reading(1, "45", "30", target: "30"),
+                // A zero reference and duplicate earliest times must never enter a summary.
+                Reading(5, "0", "10"), Reading(5, "50", "30"),
+                Reading(6, "100", "10"), Reading(6, "100", "10,0"), Reading(6, "50", "30")
+            ]);
+            var summaries = Services.FlexibleMaterialTestingService.BuildComparisons(comparisonSpecimens, readings, [])
+                .Where(row => row.Metric.StartsWith("Force retention at ", StringComparison.Ordinal)).ToList();
+            bool HasSingle(string metric, string condition, double expected) => summaries.Any(row =>
+                row.Metric == metric && row.Condition == condition && row.SpecimenCount == 1 && Close(row.Mean, expected));
+            return summaries.Count == 7 && summaries.Sum(row => row.SpecimenCount) == 8 &&
+                summaries.Count(row => row.Condition == baseline.Condition && row.Metric == baseline.Metric) == 2 &&
+                summaries.Where(row => row.Condition == baseline.Condition && row.Metric == baseline.Metric)
+                    .Select(row => row.MethodGroup).Distinct(StringComparer.Ordinal).Count() == 2 &&
+                summaries.Any(row => row.Metric == baseline.Metric && row.Condition == baseline.Condition &&
+                    row.SpecimenCount == 2 && Close(row.Mean, 80)) &&
+                HasSingle(baseline.Metric, baseline.Condition, 55) &&
+                HasSingle(baseline.Metric, "5–30 s · 2 mm displacement · cycle 1", 50) &&
+                HasSingle(baseline.Metric, "10–60 s · 2 mm displacement · cycle 1", 40) &&
+                HasSingle(baseline.Metric, "10–30 s · 3 mm displacement · cycle 1", 60) &&
+                HasSingle(baseline.Metric, "10–30 s · 2 mm displacement · cycle 2", 65) &&
+                HasSingle("Force retention at 30% Strain", baseline.Condition, 45) &&
+                readings.All(point => point.ForceRetentionPercent == "stale");
+        }
+
+        bool VerifyCompressionRetention()
+        {
+            CompressionPointRecord Point(string force, string time) => new()
+            {
+                SpecimenId = "S1", CycleNumber = 1, TargetStrainPercent = "20",
+                TargetReached = true, DisplacementMm = "2", ForceN = force, HoldTimeSeconds = time
+            };
+            void Calculate(params CompressionPointRecord[] readings) =>
+                Services.FlexibleMaterialTestingService.Recalculate(specimens, readings, [], []);
+            bool IsRetention(CompressionPointRecord point, double expected) =>
+                Services.FlexibleMaterialTestingService.ParseOptional(point.ForceRetentionPercent) is { } actual &&
+                Math.Abs(actual - expected) < 0.000001d;
+
+            var first = Point("100", "10");
+            var later = Point("85", "30,0");
+            later.TargetStrainPercent = "20,0";
+            later.DisplacementMm = "2.0";
+            Calculate(later, first);
+            if (first.ForceRetentionPercent.Length != 0 || !IsRetention(later, 85)) return false;
+
+            var notified = false;
+            later.PropertyChanged += (_, args) => notified |= args.PropertyName == nameof(CompressionPointRecord.ForceRetentionPercent);
+            first.ForceN = "200";
+            Calculate(first, later);
+            if (!notified || !IsRetention(later, 42.5)) return false;
+            first.ForceN = "100";
+
+            // Unrelated conditions must never borrow this specimen's reference force.
+            var otherCycle = Point("90", "30"); otherCycle.CycleNumber = 2;
+            var otherSpecimen = Point("90", "30"); otherSpecimen.SpecimenId = "S2";
+            var otherDisplacement = Point("90", "30"); otherDisplacement.DisplacementMm = "3";
+            var otherTarget = Point("90", "30"); otherTarget.TargetStrainPercent = "30";
+            Calculate(first, later, otherCycle, otherSpecimen, otherDisplacement, otherTarget);
+            if (!IsRetention(later, 85) || new[] { otherCycle, otherSpecimen, otherDisplacement, otherTarget }
+                .Any(point => point.ForceRetentionPercent.Length != 0)) return false;
+
+            foreach (var invalidate in new Action<CompressionPointRecord>[]
+            {
+                point => point.TargetReached = false,
+                point => point.CycleNumber = 0,
+                point => point.TargetStrainPercent = "",
+                point => point.TargetStrainPercent = "0",
+                point => point.TargetStrainPercent = "101",
+                point => point.DisplacementMm = "",
+                point => point.DisplacementMm = "0",
+                point => point.DisplacementMm = "-1",
+                point => point.HoldTimeSeconds = "",
+                point => point.HoldTimeSeconds = "-1",
+                point => point.ForceN = "",
+                point => point.ForceN = "-1",
+                point => point.ForceN = "NaN"
+            })
+            {
+                var invalid = Point("50", "5");
+                invalidate(invalid);
+                invalid.ForceRetentionPercent = "stale";
+                Calculate(invalid, first, later);
+                if (invalid.ForceRetentionPercent.Length != 0 || !IsRetention(later, 85)) return false;
+            }
+
+            Calculate(first, Point("100", "10,0"), later);
+            if (first.ForceRetentionPercent.Length != 0 || later.ForceRetentionPercent.Length != 0) return false;
+            first.ForceN = "0";
+            Calculate(first, later);
+            if (later.ForceRetentionPercent.Length != 0) return false;
+            first.ForceN = "100";
+            first.HoldTimeSeconds = "0";
+            later.ForceN = "0";
+            Calculate(first, later);
+            if (!IsRetention(later, 0)) return false;
+
+            var legacy = new[]
+            {
+                new StressRelaxationPointRecord { SpecimenId = "S1", CompressionPercent = "20", ElapsedTimeSeconds = "10", ForceN = "100" },
+                new StressRelaxationPointRecord { SpecimenId = "S1", CompressionPercent = "20", ElapsedTimeSeconds = "30", ForceN = "85" }
+            };
+            Services.FlexibleMaterialTestingService.Recalculate(specimens, [first, later], legacy, []);
+            return legacy[0].ForceRetentionPercent.Length == 0 &&
+                Services.FlexibleMaterialTestingService.ParseOptional(legacy[1].ForceRetentionPercent) == 85d &&
+                legacy[0].ForceN == "100" && legacy[1].ForceN == "85";
+        }
+    }
+
+    private static bool VerifyRecoveryTvlInput()
+    {
+        var specimen = new FlexibleTestSpecimenRecord { SpecimenId = "TVL", FlexibleTestSessionId = "TVL-SESSION" };
+        var row = new RecoveryMeasurementRecord { SpecimenId = specimen.SpecimenId, InitialHeightMm = "10" };
+        var notifications = new HashSet<string>();
+        row.PropertyChanged += (_, change) => notifications.Add(change.PropertyName ?? string.Empty);
+        bool Number(string value, double expected) =>
+            Services.FlexibleMaterialTestingService.ParseOptional(value) is double actual && Math.Abs(actual - expected) < 0.000001d;
+        bool Valid() => Services.FlexibleMaterialTestingService.Validate([specimen], [], [], [row], []).Count == 0;
+        void Calculate() => Services.FlexibleMaterialTestingService.Recalculate([specimen], [], [], [row]);
+
+        row.TvlContactOffsetMm = "0.14";
+        Calculate();
+        if (!Valid() || !Number(row.HeightAfterRestMm, 9.86) || !Number(row.ResidualHeightLossPercent, 1.4) ||
+            !notifications.Contains(nameof(row.HeightAfterRestMm)) ||
+            !notifications.Contains(nameof(row.TvlContactOffsetMm)) ||
+            !notifications.Contains(nameof(row.ResidualHeightLossPercent))) return false;
+        row.TvlContactOffsetMm = "0,14";
+        if (row.TvlContactOffsetMm != "0,14" || !Number(row.HeightAfterRestMm, 9.86)) return false;
+        row.InitialHeightMm = "9";
+        if (!Number(row.HeightAfterRestMm, 9.86) || !Number(row.TvlContactOffsetMm, -0.86)) return false;
+        row.TvlContactOffsetMm = "0,14";
+        Calculate();
+        if (!Number(row.HeightAfterRestMm, 8.86) || !Number(row.ResidualHeightLossPercent, 1.56)) return false;
+        row.TvlContactOffsetMm = "0";
+        if (!Valid() || !Number(row.HeightAfterRestMm, 9)) return false;
+        row.TvlContactOffsetMm = "-0.14";
+        if (!Valid() || !Number(row.HeightAfterRestMm, 9.14)) return false;
+        var savedHeight = row.HeightAfterRestMm;
+        foreach (var invalid in new[] { "NaN", "Infinity", "bad", "10", "-" })
+        {
+            row.TvlContactOffsetMm = invalid;
+            if (Valid() || row.TvlContactOffsetError.Length == 0 || row.TvlContactOffsetMm != invalid ||
+                row.HeightAfterRestMm != savedHeight) return false;
+        }
+        row.InitialHeightMm = "8";
+        if (row.TvlContactOffsetMm != "-" || Valid() || row.HeightAfterRestMm != savedHeight) return false;
+        row.HeightAfterRestMm = "7.50";
+        if (!Valid() || !Number(row.TvlContactOffsetMm, 0.5) || row.HeightAfterRestMm != "7.50") return false;
+        row.TvlContactOffsetMm = "";
+        if (!Valid() || row.HeightAfterRestMm.Length != 0 || row.TvlContactOffsetMm.Length != 0) return false;
+        row.InitialHeightMm = "";
+        row.TvlContactOffsetMm = "0.14";
+        if (Valid() || row.HeightAfterRestMm.Length != 0) return false;
+        row.InitialHeightMm = "1";
+        if (!Valid() || !Number(row.HeightAfterRestMm, 0.86)) return false;
+        row.InitialHeightMm = "10";
+        if (!Valid() || !Number(row.HeightAfterRestMm, 9.86)) return false;
+        row.AcceptInputCommit();
+        row.InitialHeightMm = "11";
+        if (!Number(row.HeightAfterRestMm, 9.86) || !Number(row.TvlContactOffsetMm, 1.14)) return false;
+        row.TvlContactOffsetMm = "12";
+        if (Valid()) return false;
+        row.AcceptInputCommit(); // Invalid edits cannot release pending offset ownership.
+        row.InitialHeightMm = "2";
+        if (Valid() || !Number(row.HeightAfterRestMm, 9.86)) return false;
+        row.InitialHeightMm = "20";
+        if (!Valid() || !Number(row.HeightAfterRestMm, 8)) return false;
+        row.InitialHeightMm = "200";
+        if (!Valid() || !Number(row.HeightAfterRestMm, 188) || row.TvlContactOffsetMm != "12") return false;
+        row.AcceptInputCommit();
+        row.InitialHeightMm = "201";
+        if (!Number(row.HeightAfterRestMm, 188) || !Number(row.TvlContactOffsetMm, 13)) return false;
+        var legacy = new RecoveryMeasurementRecord { InitialHeightMm = "10", HeightAfterRestMm = "9.5" };
+        return Number(legacy.TvlContactOffsetMm, 0.5) && legacy.InitialHeightMm == "10" && legacy.HeightAfterRestMm == "9.5";
+    }
+
+    public static bool RunFlexibleMaterialEvidenceContractVerification()
+    {
+        var sessions = new[]
+        {
+            new FlexibleTestSessionRecord { FlexibleTestSessionId = "A", MaterialID = "MAT-A" },
+            new FlexibleTestSessionRecord { FlexibleTestSessionId = "B", MaterialID = "MAT-B" },
+            new FlexibleTestSessionRecord { FlexibleTestSessionId = "OFF", MaterialID = "MAT-A", IsActive = false }
+        };
+        var specimens = new[]
+        {
+            new FlexibleTestSpecimenRecord { SpecimenId = "A1", FlexibleTestSessionId = "A" },
+            new FlexibleTestSpecimenRecord { SpecimenId = "A2", FlexibleTestSessionId = "A", InitialHeightMm = "10,0" },
+            new FlexibleTestSpecimenRecord { SpecimenId = "B1", FlexibleTestSessionId = "B" },
+            new FlexibleTestSpecimenRecord { SpecimenId = "OFF1", FlexibleTestSessionId = "OFF" },
+            new FlexibleTestSpecimenRecord { SpecimenId = "ORPHAN", FlexibleTestSessionId = "MISSING" }
+        };
+        RecoveryMeasurementRecord Recovery(string specimen, string height) => new()
+        {
+            SpecimenId = specimen, InitialHeightMm = "10", HeightAfterRestMm = height,
+            CompressionPercent = "20", CompressionHoldSeconds = "30", RestTimeSeconds = "60"
+        };
+        var recoveries = new[] { Recovery("A1", "9.8"), Recovery("A1", "9.8"), Recovery("A2", "9.6"),
+            Recovery("B1", "5"), Recovery("OFF1", "5"), Recovery("ORPHAN", "5"), Recovery("MISSING", "5") };
+        var points = new[]
+        {
+            new CompressionPointRecord { SpecimenId = "A1", TargetStrainPercent = "20", DisplacementMm = "2",
+                HoldTimeSeconds = "10", ForceN = "100", ApparentStressMpa = "stale" },
+            new CompressionPointRecord { SpecimenId = "A1", TargetStrainPercent = "20", DisplacementMm = "2",
+                HoldTimeSeconds = "30", ForceN = "80", ForceRetentionPercent = "stale" }
+        };
+        var legacy = new[] { new StressRelaxationPointRecord { SpecimenId = "A1" }, new StressRelaxationPointRecord { SpecimenId = "B1" } };
+        FlexibleMaterialEvidenceSnapshot Build() => Services.FlexibleMaterialEvidenceService.Build("mat-a", sessions,
+            specimens, points, legacy, recoveries, []);
+        static bool Near(double? actual, double expected) => actual.HasValue && Math.Abs(actual.Value - expected) < 0.000001d;
+        var snapshot = Build();
+        var recovery = snapshot.Groups.Single(x => x.MetricKind == FlexibleMetricKind.ResidualHeightLoss);
+        if (snapshot.SessionCount != 1 || snapshot.SpecimenCount != 2 || !snapshot.HasResults || snapshot.LegacyRelaxationPointCount != 1 ||
+            recovery.SpecimenCount != 2 || !Near(recovery.Mean, 3d) || !Near(recovery.StandardDeviation, Math.Sqrt(2d)) ||
+            !Near(recovery.Minimum, 2d) || !Near(recovery.Maximum, 4d) ||
+            !snapshot.Groups.Any(x => x.MetricKind == FlexibleMetricKind.ApparentCompressiveStress && Near(x.Mean, 100d / (Math.PI * 81d / 4d))) ||
+            points[0].ApparentStressMpa != "stale" || points[1].ForceRetentionPercent != "stale" ||
+            recoveries[0].ResidualHeightLossPercent.Length != 0) return false;
+        var originalCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("is-IS");
+            if (!snapshot.Groups.Select(x => x.ComparisonKey).Order().SequenceEqual(Build().Groups.Select(x => x.ComparisonKey).Order())) return false;
+        }
+        finally { CultureInfo.CurrentCulture = originalCulture; }
+        var alternateTargetPoints = points.Select(x => new CompressionPointRecord
+        {
+            SpecimenId = x.SpecimenId, TargetStrainPercent = "25", DisplacementMm = x.DisplacementMm,
+            HoldTimeSeconds = x.HoldTimeSeconds, ForceN = x.ForceN, CycleNumber = x.CycleNumber
+        }).ToArray();
+        var alternateTarget = Services.FlexibleMaterialEvidenceService.Build("MAT-A", sessions, specimens, alternateTargetPoints, [], [], []);
+        foreach (var kind in new[] { FlexibleMetricKind.CompressionForce, FlexibleMetricKind.ApparentCompressiveStress,
+            FlexibleMetricKind.ForceRetention, FlexibleMetricKind.ForceReduction })
+        {
+            var originalKeys = snapshot.Groups.Where(x => x.MetricKind == kind).Select(x => x.ComparisonKey).ToHashSet(StringComparer.Ordinal);
+            var alternateKeys = alternateTarget.Groups.Where(x => x.MetricKind == kind).Select(x => x.ComparisonKey).ToArray();
+            if (originalKeys.Count == 0 || alternateKeys.Length != originalKeys.Count || alternateKeys.Any(originalKeys.Contains)) return false;
+        }
+        var displaced = points.Concat([new CompressionPointRecord { SpecimenId = "A2", TargetStrainPercent = "20",
+            DisplacementMm = "1.9", HoldTimeSeconds = "10", ForceN = "300" }]).ToArray();
+        var displacementGroups = Services.FlexibleMaterialEvidenceService.Build("MAT-A", sessions, specimens, displaced, [], [], []).Groups;
+        if (displacementGroups.Count(x => x.MetricKind == FlexibleMetricKind.CompressionForce) != 3 ||
+            displacementGroups.Count(x => x.MetricKind == FlexibleMetricKind.ApparentCompressiveStress) != 3 ||
+            displacementGroups.Where(x => x.MetricKind == FlexibleMetricKind.CompressionForce).Any(x => x.SpecimenCount != 1) ||
+            displacementGroups.Any(x => x.MethodGroup.Contains("0.20000000000000001", StringComparison.Ordinal))) return false;
+        recoveries[2].CompressionHoldSeconds = "60";
+        if (Build().Groups.Count(x => x.MetricKind == FlexibleMetricKind.ResidualHeightLoss) != 2) return false;
+        recoveries[2].CompressionHoldSeconds = "30";
+        recoveries[2].HeightAfterRestMm = string.Empty;
+        var missingHeight = Build().Groups.Single(x => x.MetricKind == FlexibleMetricKind.ResidualHeightLoss);
+        if (missingHeight.SpecimenCount != 1 || missingHeight.StandardDeviation is not null || !Near(missingHeight.Mean, 2d)) return false;
+        recoveries[2].HeightAfterRestMm = "9.6";
+        points[1].DisplacementMm = "3";
+        if (Build().Groups.Any(x => x.MetricKind is FlexibleMetricKind.ForceRetention or FlexibleMetricKind.ForceReduction)) return false;
+        points[1].DisplacementMm = "2";
+        var duplicatePoints = points.Concat([points[0]]).ToArray();
+        if (Services.FlexibleMaterialEvidenceService.Build("MAT-A", sessions, specimens, duplicatePoints, [], [], []).Groups
+            .Any(x => x.MetricKind is FlexibleMetricKind.ForceRetention or FlexibleMetricKind.ForceReduction)) return false;
+        var ambiguous = specimens.Concat([new FlexibleTestSpecimenRecord { SpecimenId = "A1", FlexibleTestSessionId = "B" }]).ToArray();
+        var isolated = Services.FlexibleMaterialEvidenceService.Build("MAT-A", sessions, ambiguous, points, legacy, recoveries, []);
+        var ambiguousSessions = sessions.Concat([new FlexibleTestSessionRecord { FlexibleTestSessionId = "A", MaterialID = "MAT-B" }]).ToArray();
+        return isolated.SpecimenCount == 1 && isolated.LegacyRelaxationPointCount == 0 &&
+            isolated.Groups.Count == 1 && Near(isolated.Groups[0].Mean, 4d) &&
+            !Services.FlexibleMaterialEvidenceService.Build("MAT-A", ambiguousSessions, specimens, points, legacy, recoveries, []).HasResults &&
+            !Services.FlexibleMaterialEvidenceService.Build("UNKNOWN", sessions, specimens, points, legacy, recoveries, []).HasResults &&
+            !Services.FlexibleMaterialEvidenceService.Build("MAT-A", sessions, specimens, [], [], [], []).HasResults;
     }
 
     public static bool RunTpuCompressionMethodV1ContractVerification()
@@ -294,8 +606,8 @@ ON CONFLICT(SpecimenId) DO UPDATE SET FlexibleTestSessionId=excluded.FlexibleTes
         }).ToArray();
         var points = specimens.SelectMany((specimen, index) => new[]
         {
-            new CompressionPointRecord { SpecimenId=specimen.SpecimenId,CycleNumber=1,TargetStrainPercent="20",TargetReached=true,ForceN=forces10[index].ToString(CultureInfo.InvariantCulture),HoldTimeSeconds="10" },
-            new CompressionPointRecord { SpecimenId=specimen.SpecimenId,CycleNumber=1,TargetStrainPercent="20",TargetReached=true,ForceN=forces30[index].ToString(CultureInfo.InvariantCulture),HoldTimeSeconds="30" }
+            new CompressionPointRecord { SpecimenId=specimen.SpecimenId,CycleNumber=1,TargetStrainPercent="20",TargetReached=true,DisplacementMm="2",ForceN=forces10[index].ToString(CultureInfo.InvariantCulture),HoldTimeSeconds="10" },
+            new CompressionPointRecord { SpecimenId=specimen.SpecimenId,CycleNumber=1,TargetStrainPercent="20",TargetReached=true,DisplacementMm="2",ForceN=forces30[index].ToString(CultureInfo.InvariantCulture),HoldTimeSeconds="30" }
         }).ToArray();
         var comparisons = Services.FlexibleMaterialTestingService.BuildComparisons(specimens, points, []);
         var publicSummary = Services.FlexibleMaterialTestingService.BuildPublicMethodV1Summary(
@@ -373,6 +685,15 @@ INSERT INTO FlexibleTestSessions VALUES ('FTS-STANDALONE','MAT-VERIFY','Standalo
 INSERT INTO FlexibleTestSpecimens VALUES ('SPEC-STANDALONE','FTS-STANDALONE',NULL,'Standalone','Compression','Cylinder','20','10','','','100','Rectilinear','0.4','0.20','2','3','3','','','','TPU-COMP-v1','in-house','2026-01-01','2026-01-01');
 """;
                 insert.ExecuteNonQuery();
+                var enteredRecovery = new RecoveryMeasurementRecord
+                {
+                    InitialHeightMm = "10", TvlContactOffsetMm = "0,14"
+                };
+                using var recoveryTransaction = connection.BeginTransaction();
+                Upsert(connection, recoveryTransaction,
+                    "INSERT INTO RecoveryMeasurements VALUES ('RCV-TVL','SPEC-STANDALONE',1,$initial,$after,'60','20','30','TVL roundtrip','2026-01-01');",
+                    ("$initial", enteredRecovery.InitialHeightMm), ("$after", enteredRecovery.HeightAfterRestMm));
+                recoveryTransaction.Commit();
             }
             using var reopened = new SqliteConnection($"Data Source={path};Mode=ReadOnly;Pooling=False");
             reopened.Open();
@@ -384,9 +705,20 @@ SELECT
  (SELECT COUNT(DISTINCT ShoreScale) FROM ShoreHardnessReadings WHERE SpecimenId='SPEC-1') || ';' ||
  (SELECT MaterialID || '|' || LegacyExperimentalRunId FROM FlexibleTestSessions WHERE FlexibleTestSessionId='FTS-LEGACY-RUN-VERIFY') || ';' ||
  (SELECT FlexibleTestSessionId || '|' || ExperimentalRunId FROM FlexibleTestSpecimens WHERE SpecimenId='SPEC-1') || ';' ||
- (SELECT CASE WHEN ExperimentalRunId IS NULL THEN 'NULL-RUN' ELSE 'BAD-RUN' END FROM FlexibleTestSpecimens WHERE SpecimenId='SPEC-STANDALONE');
+ (SELECT CASE WHEN ExperimentalRunId IS NULL THEN 'NULL-RUN' ELSE 'BAD-RUN' END FROM FlexibleTestSpecimens WHERE SpecimenId='SPEC-STANDALONE') || ';' ||
+ (SELECT InitialHeightMm || '|' || HeightAfterRestMm || '|' || RestTimeSeconds || '|' || CompressionPercent || '|' || CompressionHoldSeconds FROM RecoveryMeasurements WHERE RecoveryMeasurementId='RCV-1');
 """;
-            return string.Equals(verify.ExecuteScalar()?.ToString(), "Gyroid|225|0.95;2|25|0|10;2;MAT-VERIFY|RUN-VERIFY;FTS-LEGACY-RUN-VERIFY|RUN-VERIFY;NULL-RUN", StringComparison.Ordinal);
+            if (!string.Equals(verify.ExecuteScalar()?.ToString(),
+                    "Gyroid|225|0.95;2|25|0|10;2;MAT-VERIFY|RUN-VERIFY;FTS-LEGACY-RUN-VERIFY|RUN-VERIFY;NULL-RUN;10|9.5|3600|25|60",
+                    StringComparison.Ordinal)) return false;
+            var recovered = ReadRecovery(reopened);
+            var legacyRecovery = recovered.Single(row => row.RecoveryMeasurementId == "RCV-1");
+            var tvlRecovery = recovered.Single(row => row.RecoveryMeasurementId == "RCV-TVL");
+            return legacyRecovery.InitialHeightMm == "10" && legacyRecovery.HeightAfterRestMm == "9.5" &&
+                Services.FlexibleMaterialTestingService.ParseOptional(legacyRecovery.TvlContactOffsetMm) == 0.5d &&
+                tvlRecovery.InitialHeightMm == "10" &&
+                Services.FlexibleMaterialTestingService.ParseOptional(tvlRecovery.HeightAfterRestMm) == 9.86d &&
+                Services.FlexibleMaterialTestingService.ParseOptional(tvlRecovery.TvlContactOffsetMm) == 0.14d;
         }
         catch { return false; }
         finally

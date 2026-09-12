@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -38,7 +38,7 @@ public sealed class ReportPdfRendererService
     {
         var pages = reportModel.MaterialReports
             .Where(report => !string.IsNullOrWhiteSpace(report.MaterialId))
-            .Select(report => BuildPage(report, brandDisplayName))
+            .SelectMany(report => BuildPages(report, brandDisplayName))
             .ToList();
 
         var bytes = BuildBrandedPdf(pages, logo, brandDisplayName);
@@ -47,7 +47,7 @@ public sealed class ReportPdfRendererService
             ContentType: ContentType,
             Bytes: bytes,
             PageCount: pages.Count,
-            MaterialReportsRendered: pages.Count,
+            MaterialReportsRendered: pages.Select(page => page.MaterialId).Distinct(StringComparer.OrdinalIgnoreCase).Count(),
             RenderedAtUtc: DateTime.UtcNow,
             Payload: new ReportingPdfPayload(pages));
     }
@@ -68,6 +68,7 @@ public sealed class ReportPdfRendererService
         var materialIds = payload.Pages
             .Select(page => page.MaterialId)
             .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
         var pdfText = Encoding.ASCII.GetString(document.Bytes.Where(b => b < 128).ToArray());
         var logo = branding is null
@@ -88,8 +89,8 @@ public sealed class ReportPdfRendererService
             HasPdfHeader = document.Bytes.Length > 5 && Encoding.ASCII.GetString(document.Bytes, 0, 5) == "%PDF-",
             HasPdfTrailer = pdfText.Contains("%%EOF", StringComparison.Ordinal),
             MaterialIdCoverage = materialIds.Count == reportModel.MaterialReports.Count && materialIds.Count == materialIds.Distinct(StringComparer.OrdinalIgnoreCase).Count(),
-            PayloadValidationPassed = payload.Pages.Count == reportModel.MaterialReports.Count && payload.Pages.All(page => page.Lines.Count > 0),
-            RenderReady = document.Bytes.Length > 0 && document.PageCount == reportModel.MaterialReports.Count && document.ContentType == ContentType,
+            PayloadValidationPassed = payload.Pages.Count >= reportModel.MaterialReports.Count && payload.Pages.All(page => page.Lines.Count > 0),
+            RenderReady = document.Bytes.Length > 0 && document.PageCount >= reportModel.MaterialReports.Count && document.ContentType == ContentType,
             HasBrandedLayout = pdfText.Contains("3DPIceland Branded PDF Renderer", StringComparison.Ordinal) && pdfText.Contains("/ImLogo", StringComparison.Ordinal),
             HasLogoAsset = logo is not null && logo.Bytes.Length > 0,
             LogoAssetName = LogoFileName
@@ -97,8 +98,8 @@ public sealed class ReportPdfRendererService
 
         result.Passed = result.InputReports > 0 &&
                         result.RenderedReports == result.InputReports &&
-                        result.PageCount == result.InputReports &&
-                        result.PayloadPages == result.InputReports &&
+                        result.PageCount >= result.InputReports &&
+                        result.PayloadPages >= result.InputReports &&
                         result.ByteCount > 0 &&
                         result.HasPdfHeader &&
                         result.HasPdfTrailer &&
@@ -111,7 +112,19 @@ public sealed class ReportPdfRendererService
         return result;
     }
 
-    private static ReportingPdfPage BuildPage(
+    internal static bool VerifyContinuationContract()
+    {
+        var body = string.Join("\n", Enumerable.Range(0, 80).Select(index =>
+            "Flexible condition " + index.ToString(CultureInfo.InvariantCulture) + " " + new string('x', 110)));
+        var report = new ReportingMaterialReportModel("FLEX-PDF-CONTRACT", "Flexible fixture", null, null, null,
+            new[] { new ReportingReportSection("Flexible Material Testing", ReportingSectionType.FlexibleMetrics,
+                new Dictionary<string, string?> { ["Results"] = body + "\nFINAL-FLEXIBLE-RESULT" }) });
+        var pages = BuildPages(report, "3DPIceland").ToList();
+        return pages.Count > 1 && pages.All(page => page.Lines.Skip(6).All(line => line.Length <= 92)) &&
+            pages.Last().Lines.Contains("FINAL-FLEXIBLE-RESULT") &&
+            pages.SelectMany(page => page.Lines.Skip(6)).Count(line => line.StartsWith("Flexible condition ", StringComparison.Ordinal)) == 80;
+    }
+    private static IEnumerable<ReportingPdfPage> BuildPages(
         ReportingMaterialReportModel report,
         string brandDisplayName)
     {
@@ -129,14 +142,40 @@ public sealed class ReportPdfRendererService
 
         foreach (var section in report.Sections)
         {
-            lines.Add(section.Title);
+            if (section.SectionType != ReportingSectionType.FlexibleMetrics)
+                lines.Add(section.Title);
             foreach (var field in section.Fields)
             {
-                lines.Add("  " + field.Key + ": " + Clean(field.Value));
+                foreach (var valueLine in Clean(field.Value).Replace("\r", string.Empty, StringComparison.Ordinal).Split('\n'))
+                    lines.Add(section.SectionType == ReportingSectionType.FlexibleMetrics
+                        ? valueLine
+                        : "  " + field.Key + ": " + valueLine);
             }
         }
 
-        return new ReportingPdfPage(report.MaterialId, lines);
+        // Keep every result on continuation pages instead of silently truncating long reports.
+        var header = lines.Take(6).ToArray();
+        var body = new List<string>();
+        foreach (var line in lines.Skip(6))
+        {
+            var wrapped = WrapForPdf(line, 92).ToArray();
+            if (body.Count > 0 && body.Count + wrapped.Length > 26)
+            {
+                yield return new ReportingPdfPage(report.MaterialId, header.Concat(body).ToArray());
+                body.Clear();
+            }
+            foreach (var part in wrapped)
+            {
+                if (body.Count == 26)
+                {
+                    yield return new ReportingPdfPage(report.MaterialId, header.Concat(body).ToArray());
+                    body.Clear();
+                }
+                body.Add(part);
+            }
+        }
+        if (body.Count > 0)
+            yield return new ReportingPdfPage(report.MaterialId, header.Concat(body).ToArray());
     }
 
     private static string Clean(string? value)
@@ -257,7 +296,7 @@ public sealed class ReportPdfRendererService
         sb.AppendLine("0.04 0.10 0.18 rg 0 0 612 642 re f");
         sb.AppendLine("0.00 0.55 1.00 rg 0 637 612 5 re f");
         sb.AppendLine("0.08 0.16 0.28 rg 34 502 544 104 re f");
-        sb.AppendLine("0.08 0.16 0.28 rg 34 250 544 232 re f");
+        sb.AppendLine("0.08 0.16 0.28 rg 34 64 544 418 re f");
         sb.AppendLine("0.00 0.48 1.00 rg 34 602 544 2 re f");
         sb.AppendLine("0.00 0.48 1.00 rg 34 478 544 2 re f");
         sb.AppendLine("0.80 0.90 1.00 rg");
@@ -284,9 +323,9 @@ public sealed class ReportPdfRendererService
 
         Text(sb, "Engineering Summary", 52, 452, 15, true);
         var y = 428;
-        foreach (var line in safeLines.Skip(6).Take(22))
+        foreach (var line in safeLines.Skip(6))
         {
-            Text(sb, TrimForPdf(line, 92), 58, y, 9, false);
+            Text(sb, line, 58, y, 9, false);
             y -= 14;
         }
 
@@ -306,9 +345,17 @@ public sealed class ReportPdfRendererService
         sb.AppendLine("ET");
     }
 
-    private static string TrimForPdf(string value, int max)
+    private static IEnumerable<string> WrapForPdf(string value, int max)
     {
-        return value.Length <= max ? value : value[..Math.Max(0, max - 3)] + "...";
+        var remaining = value;
+        while (remaining.Length > max)
+        {
+            var split = remaining.LastIndexOf(' ', max, max);
+            if (split <= 0) split = max;
+            yield return remaining[..split];
+            remaining = remaining[split..].TrimStart();
+        }
+        yield return remaining;
     }
 
     private static string ToPdfAscii(string value)
@@ -316,7 +363,15 @@ public sealed class ReportPdfRendererService
         var sb = new StringBuilder(value.Length);
         foreach (var ch in value)
         {
-            sb.Append(ch <= 126 && ch >= 32 ? ch : '?');
+            sb.Append(ch switch
+            {
+                '\u00b7' => ';',
+                '\u2013' or '\u2014' or '\u2212' or '\u2011' => '-',
+                '\u00b2' => '2',
+                '\u00b3' => '3',
+                '\u00a0' => ' ',
+                _ => ch <= 126 && ch >= 32 ? ch : '?'
+            });
         }
         return sb.ToString();
     }

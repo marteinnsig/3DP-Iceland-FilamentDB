@@ -2888,6 +2888,9 @@ public partial class MainWindow : Window
         DashboardImpactReliabilityInterpretationText.Text = impactReliability.Interpretation;
 
         DashboardStiffnessText.Text = FormatSummaryMetric(FindMetric(metrics, "Stiffness", "Modulus"));
+        var flexibleMaterialId = GetCell(row, "Material ID", "MaterialID").Trim();
+        RenderFlexibleEngineeringDashboard(flexibleMaterialId);
+        var hasFlexible = _flexibleMaterialEvidence.TryGetValue(flexibleMaterialId, out var flexibleEvidence) && flexibleEvidence.HasResults;
 
 
         var nativeTestedStatus = DataTableHelpers.FirstValue(row, "Tested Status", "Test Status", "Tested", "Is Tested");
@@ -2899,11 +2902,11 @@ public partial class MainWindow : Window
             ? !string.Equals(nativeTestedStatus.Trim(), "Not tested", StringComparison.OrdinalIgnoreCase)
             : hasDashboardData;
         DashboardTestedStatusText.Text = BuildStatusLine("Tested", isTested);
-        DashboardMechanicalStatusText.Text = BuildStatusLine("Mechanical Data", hasDashboardData);
+        DashboardMechanicalStatusText.Text = BuildStatusLine("Mechanical Data", hasDashboardData || hasFlexible);
         DashboardWebsiteStatusText.Text = BuildStatusLine("Website Profile", HasAnyValue(row, "Website Display Name", "Material Key", "Slug", "Product Page"));
         DashboardVideoStatusText.Text = BuildStatusLine("YouTube Review", IsTruthy(DataTableHelpers.FirstValue(row, "YouTube Available", "Video Available")) || HasAnyValue(row, "YouTube Review URL", "YouTube URL"));
 
-        DashboardStatusText.Text = hasDashboardData
+        DashboardStatusText.Text = hasDashboardData || hasFlexible
             ? "Engineering values come from canonical SQLite measurement rows linked by MaterialID. Canonical metric details remain available below."
             : "No mechanical results are currently linked to this material.";
     }
@@ -3267,6 +3270,7 @@ public partial class MainWindow : Window
         GroupedDetailsPanel.Children.Clear();
         var materialId = GetCell(row, "Material ID", "MaterialID").Trim();
         var groups = _detailService.BuildGroupedFields(row).ToList();
+        groups.Add(BuildFlexibleMaterialDetailGroup(materialId));
         var measurementDateFields = BuildMeasurementDateDetailFields(materialId);
         var testInformationIndex = groups.FindIndex(group => string.Equals(group.Name, "Test Information", StringComparison.Ordinal));
         if (testInformationIndex >= 0)
@@ -3293,6 +3297,9 @@ public partial class MainWindow : Window
                 BorderThickness = new Thickness(1)
             };
 
+            if (group.Name == "Flexible Material Testing")
+                AutomationProperties.SetAutomationId(groupBorder, "MaterialDetailsFlexibleEvidence");
+
             var groupPanel = new StackPanel();
             groupPanel.Children.Add(new TextBlock
             {
@@ -3308,7 +3315,8 @@ public partial class MainWindow : Window
                 Orientation = Orientation.Horizontal
             };
 
-            var useFullWidthRows = string.Equals(group.Name, "Notes", StringComparison.Ordinal) ||
+            var useFullWidthRows = string.Equals(group.Name, "Flexible Material Testing", StringComparison.Ordinal) ||
+                                   string.Equals(group.Name, "Notes", StringComparison.Ordinal) ||
                                    string.Equals(group.Name, "Other", StringComparison.Ordinal);
 
             foreach (var field in group.Fields)
@@ -3541,6 +3549,7 @@ public partial class MainWindow : Window
         DashboardImpactFlatText.Text = "—";
         DashboardImpactUprightText.Text = "—";
         DashboardStiffnessText.Text = "—";
+        RenderFlexibleEngineeringDashboard(null);
         DashboardTensileConsistencyText.Text = "—";
         DashboardTensileSamplesText.Text = "—";
         DashboardImpactConsistencyText.Text = "—";
@@ -3584,6 +3593,7 @@ public partial class MainWindow : Window
         ResetChartScores();
         ComparisonMetricsList.ItemsSource = null;
         ComparisonScoresList.ItemsSource = null;
+        FlexibleComparisonPanel.Children.Clear();
         ComparisonStatusText.Text = "Select materials to compare.";
         AnalyticsResultsList.ItemsSource = null;
         _currentAnalyticsRows = Array.Empty<AnalyticsDisplayRow>();
@@ -3593,8 +3603,7 @@ public partial class MainWindow : Window
         AnalyticsRadarLegend.ItemsSource = null;
         AnalyticsRadarSubtitle.Text = "Top visible radar profiles";
         if (VideoPlannerList is not null) VideoPlannerList.ItemsSource = null;
-        if (RecommendationVideoIdeaList is not null) RecommendationVideoIdeaList.ItemsSource = null;
-        _recommendationVideoIdeas.Clear();
+        // Saved ideas belong to the global queue, not the selected Material Detail.
         UpdateProductionDashboard();
         if (VideoPlannerStatusText is not null) VideoPlannerStatusText.Text = "Load Materials data to build the video planner.";
         if (PerformanceRecommendationList is not null) PerformanceRecommendationList.ItemsSource = null;
@@ -3672,6 +3681,7 @@ public partial class MainWindow : Window
         var visibleRows = GetCanonicalVisibleMaterialRows();
         var thermalResults = _database.GetThermalDeflectionResults();
         var mode = (AnalyticsChartMode.SelectedItem as AnalyticsChartModeOption)?.Key ?? "samples";
+        UpdateFlexibleAnalytics(visibleRows, mode);
         var scores = visibleRows
             .Select(row => BuildAnalyticsMaterialScore(row, thermalResults))
             .Where(score => score.Profile.OverallScore.HasValue)
@@ -3711,7 +3721,7 @@ public partial class MainWindow : Window
         AnalyticsResultsList.SelectedItems.Clear();
         _isUpdatingAnalyticsGrid = false;
 
-        AnalyticsStatusText.Text = $"{modeLabel}: {rows.Count} row{(rows.Count == 1 ? string.Empty : "s")} from {visibleRows.Count} visible material{(visibleRows.Count == 1 ? string.Empty : "s")}. Select one or more rows to control the radar overlay.";
+        AnalyticsStatusText.Text = $"{modeLabel}: {rows.Count} radar row{(rows.Count == 1 ? string.Empty : "s")} from {visibleRows.Count} visible material{(visibleRows.Count == 1 ? string.Empty : "s")}. Select one or more rows to control the radar overlay.";
         RenderAnalyticsRadar(rows, modeLabel);
     }
 
@@ -4151,11 +4161,17 @@ public partial class MainWindow : Window
         UpdateComparisonColumnHeaders(snapshots);
         ComparisonMetricsList.ItemsSource = BuildComparisonMetricRows(snapshots);
         ComparisonScoresList.ItemsSource = BuildComparisonScoreRows(snapshots);
+        FlexibleComparisonPanel.Children.Clear();
+        FlexibleComparisonPanel.Children.Add(BuildFlexibleComparisonContent(snapshots.Select((snapshot, index) =>
+        {
+            _flexibleMaterialEvidence.TryGetValue(snapshot?.MaterialId ?? string.Empty, out var evidence);
+            return ($"{(char)(65 + index)} · {snapshot?.Label ?? "—"}", evidence);
+        }).ToArray()));
 
         var selectedCount = snapshots.Count(snapshot => snapshot is not null);
         ComparisonStatusText.Text = selectedCount == 0
             ? "Select two or more materials to compare."
-            : $"Comparing {selectedCount} material{(selectedCount == 1 ? string.Empty : "s")}. Winning cells are highlighted; non-winning values show their delta versus the best value.";
+            : $"Comparing {selectedCount} material{(selectedCount == 1 ? string.Empty : "s")}. Legacy measurement and score rows highlight winners; Flexible rows show condition-matched measurements.";
     }
 
     private ComparisonSnapshot BuildComparisonSnapshot(DataRow row)
@@ -4397,6 +4413,7 @@ public partial class MainWindow : Window
 
     private void ResetRankingFilters_Click(object sender, RoutedEventArgs e)
     {
+        if (FlexibleRankingCategoryFilter is not null) FlexibleRankingCategoryFilter.SelectedIndex = 0;
         SelectComboValue(RankingMetricFilter, "Overall");
         SelectComboValue(RankingBaseMaterialFilter, "All");
         SelectComboValue(RankingManufacturerFilter, "All");
@@ -4407,6 +4424,7 @@ public partial class MainWindow : Window
 
     private void UpdateRankings()
     {
+        UpdateFlexibleRankings("rankings");
         if (RankingsGrid is null) return;
 
         var visibleRows = GetCanonicalVisibleMaterialRows();
@@ -4637,6 +4655,7 @@ public partial class MainWindow : Window
 
     private void ResetCategoryRankingFilters_Click(object sender, RoutedEventArgs e)
     {
+        if (FlexibleCategoryCategoryFilter is not null) FlexibleCategoryCategoryFilter.SelectedIndex = 0;
         SelectComboValue(CategoryRankingMetricFilter, "All categories");
         SelectComboValue(CategoryRankingGroupFilter, "Overall top lists");
         SelectComboValue(CategoryRankingBaseMaterialFilter, "All");
@@ -4648,6 +4667,7 @@ public partial class MainWindow : Window
 
     private void UpdateCategoryRankings()
     {
+        UpdateFlexibleRankings("categories");
         if (CategoryRankingsGrid is null) return;
 
         var visibleRows = GetCanonicalVisibleMaterialRows();
@@ -4911,6 +4931,7 @@ public partial class MainWindow : Window
 
     private void ResetAwardsFilters_Click(object sender, RoutedEventArgs e)
     {
+        if (FlexibleAwardCategoryFilter is not null) FlexibleAwardCategoryFilter.SelectedIndex = 0;
         SelectComboValue(AwardsSetFilter, "All awards");
         SelectComboValue(AwardsBaseMaterialFilter, "All");
         SelectComboValue(AwardsManufacturerFilter, "All");
@@ -4920,6 +4941,7 @@ public partial class MainWindow : Window
 
     private void UpdateAwards()
     {
+        UpdateFlexibleRankings("awards");
         if (AwardsGrid is null) return;
 
         var visibleRows = GetCanonicalVisibleMaterialRows();
@@ -5098,6 +5120,7 @@ public partial class MainWindow : Window
         public string ProductLine { get; init; } = string.Empty;
         public bool HasVideo { get; init; }
         public bool HasMechanical { get; init; }
+        public bool HasFlexible { get; init; }
         public double? OverallScore { get; init; }
         public double? TensileScore { get; init; }
         public double? ImpactScore { get; init; }
@@ -5219,6 +5242,7 @@ public partial class MainWindow : Window
 
     private void UpdateVideoPlanner()
     {
+        UpdateFlexibleOpportunities("Video");
         if (VideoPlannerList is null) return;
 
         var visibleRows = GetCanonicalVisibleMaterialRows();
@@ -5242,10 +5266,20 @@ public partial class MainWindow : Window
             .Take(80)
             .ToList();
 
+        var flexibleOpportunities = FlexibleOpportunities(visibleRows);
+        var flexibleRows = BuildFlexibleResearchCandidates(flexibleOpportunities, allRows);
+        rows.RemoveAll(row => !row.HasMechanical && flexibleRows.Any(flex => flex.MaterialId == row.MaterialId));
+        rows.AddRange(flexibleRows.Where(RowMatchesVideoPlannerFilters).Take(80));
         VideoPlannerList.ItemsSource = rows;
         var comparisonIdeas = BuildAutomaticComparisonSuggestions(allRows)
             .Take(25)
             .ToList();
+        comparisonIdeas.AddRange(BuildFlexibleDiscovery(flexibleOpportunities).Select(item => new VideoComparisonSuggestion
+        {
+            Priority = item.Score, Title = item.VideoAngle, Group = "Flexible measurement", Winner = "—",
+            Reason = item.Reason, SuggestedTitleAngle = item.VideoAngle, SuggestedTitle = item.VideoAngle,
+            TalkingPoints = item.CopyBlock, Materials = item.MaterialA + " / " + item.MaterialB
+        }));
         VideoComparisonIdeasList.ItemsSource = comparisonIdeas;
 
         var noVideo = rows.Count(r => r.Status.Contains("No video", StringComparison.OrdinalIgnoreCase));
@@ -5256,7 +5290,7 @@ public partial class MainWindow : Window
     private bool RowMatchesVideoPlannerFilters(VideoPlannerRow row)
     {
         if (VideoNoYoutubeOnlyCheck?.IsChecked == true && !row.Status.Contains("No video", StringComparison.OrdinalIgnoreCase)) return false;
-        if (VideoReadyOnlyCheck?.IsChecked == true && !row.Status.Contains("Mechanical ready", StringComparison.OrdinalIgnoreCase)) return false;
+        if (VideoReadyOnlyCheck?.IsChecked == true && !row.HasMechanical && !row.HasFlexible) return false;
 
         var category = VideoCategoryFilter?.SelectedItem as string;
         if (!string.IsNullOrWhiteSpace(category) && category != "All" && !row.MaterialType.Contains(category, StringComparison.OrdinalIgnoreCase)) return false;
@@ -6480,6 +6514,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             .ToList();
         var peerPosition = _engineeringPeerPositionService.Analyze(materialId, peerCandidates);
 
+        RenderSelectedFlexibleHandoffs(row);
         SelectedMaterialIntelligenceTitle.Text = material.Label;
         SelectedMaterialIntelligenceScore.Text = $"Overall engineering profile: {FormatScoreValue(profile.OverallScore)}/100 · Verified summary: {material.VerifiedSummary?.SummaryStatus ?? "unavailable"}";
         SelectedMaterialIntelligenceEvidence.Text = BuildSelectedMaterialEvidence(profile);
@@ -6517,6 +6552,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
     private void ResetSelectedMaterialIntelligence()
     {
         if (SelectedMaterialIntelligenceTitle is null) return;
+        RenderSelectedFlexibleHandoffs(null);
         SelectedMaterialIntelligenceTitle.Text = "Select a material in Materials.";
         SelectedMaterialIntelligenceScore.Text = "—";
         SelectedMaterialIntelligenceEvidence.Text = "—";
@@ -6557,6 +6593,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
     private void UpdateRecommendations()
     {
+        UpdateFlexibleOpportunities("Recommendation");
         if (PerformanceRecommendationList is null || ApplicationRecommendationList is null) return;
 
         if (GetCanonicalVisibleMaterialRows().Count == 0)
@@ -9501,6 +9538,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                             ConsistencyScore = item.ConsistencyScore, LayerAdhesionScore = item.LayerAdhesionScore,
                             ThermalScore = item.ThermalScore, ThermalResultTemperatureC = item.ThermalResultTemperatureC,
                             ThermalMethodVersion = item.ThermalMethodVersion, ThermalLimitation = item.ThermalLimitation,
+                            FlexibleResults = item.FlexibleResults,
                             MsrpUsdPerKg = item.MsrpUsdPerKg
                         }).ToList()
                 })
@@ -9591,7 +9629,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                     return new PublicManufacturerCategoryPositionModel { BaseMaterial = baseMaterial, Position = index >= 0 ? $"{index + 1} of {benchmark.Count}" : "n/a", AverageOverallScore = index >= 0 ? own.Average.ToString("0.#", CultureInfo.CurrentCulture) + "/100" : "n/a", ScoredProducts = index >= 0 ? own.Count : 0 };
                 }).ToList();
                 var globalIndex = manufacturerBenchmark.FindIndex(x => string.Equals(x.Manufacturer, group.Key, StringComparison.CurrentCultureIgnoreCase));
-                return new PublicManufacturerReportModel { ManufacturerSlug = PublicComparisonReportPublishingService.SafeSlug(group.Key), Manufacturer = group.Key, ManufacturerWebsite = values.Select(x => x.Model.ManufacturerWebsite).FirstOrDefault(x => !string.IsNullOrWhiteSpace(x)) ?? string.Empty, ProductLines = values.Select(x => x.Model.ProductLine).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.CurrentCultureIgnoreCase).Count(), MaterialTypes = categories.Count, MaterialsWithResults = values.Count(x => x.Model.VerifiedEngineeringAxes > 0), CompleteProfiles = values.Count(x => x.Model.VerifiedEngineeringAxes == 5), MaterialsWithMsrp = values.Count(x => !string.IsNullOrWhiteSpace(x.Model.MsrpUsdPerKg)), MaterialsWithVideo = values.Count(x => !string.IsNullOrWhiteSpace(x.Model.VideoReviewUrl)), PublicBenchmarkManufacturers = manufacturerBenchmark.Count, GlobalManufacturerRank = globalIndex >= 0 ? $"{globalIndex + 1} of {manufacturerBenchmark.Count}" : "n/a", AverageOverallScore = scored.Count == 0 ? "n/a" : scored.Average(x => x.Score!.Value).ToString("0.#", CultureInfo.CurrentCulture) + "/100", PortfolioLeader = leader.Model?.MaterialName ?? string.Empty, StrongestAxis = leader.Model?.BestAxis ?? string.Empty, CategoryPositions = categories, Materials = values.OrderBy(x => x.Model.BaseMaterial).ThenBy(x => x.Model.MaterialName).Select(x => new PublicManufacturerMaterialModel { MaterialId = x.Model.MaterialId, MaterialName = x.Model.MaterialName, ProductLine = x.Model.ProductLine, BaseMaterial = x.Model.BaseMaterial, Reinforcement = x.Model.Reinforcement, TestCoverage = x.Model.TestCoverage, EngineeringAxes = x.Model.VerifiedEngineeringAxes, OverallScore = x.Model.OverallScore, TensileScore = x.Model.TensileScore, ImpactScore = x.Model.ImpactScore, StiffnessScore = x.Model.StiffnessScore, ConsistencyScore = x.Model.ConsistencyScore, LayerAdhesionScore = x.Model.LayerAdhesionScore, StrongestAxis = x.Model.BestAxis, MsrpUsdPerKg = x.Model.MsrpUsdPerKg, ProductUrl = GetCell(x.Row, "Manufacturer Website", "Product Page", "Product URL"), VideoReviewUrl = x.Model.VideoReviewUrl }).ToList() };
+                return new PublicManufacturerReportModel { ManufacturerSlug = PublicComparisonReportPublishingService.SafeSlug(group.Key), Manufacturer = group.Key, ManufacturerWebsite = values.Select(x => x.Model.ManufacturerWebsite).FirstOrDefault(x => !string.IsNullOrWhiteSpace(x)) ?? string.Empty, ProductLines = values.Select(x => x.Model.ProductLine).Where(x => !string.IsNullOrWhiteSpace(x)).Distinct(StringComparer.CurrentCultureIgnoreCase).Count(), MaterialTypes = categories.Count, MaterialsWithResults = values.Count(x => x.Model.VerifiedEngineeringAxes > 0), CompleteProfiles = values.Count(x => x.Model.VerifiedEngineeringAxes == 5), MaterialsWithMsrp = values.Count(x => !string.IsNullOrWhiteSpace(x.Model.MsrpUsdPerKg)), MaterialsWithVideo = values.Count(x => !string.IsNullOrWhiteSpace(x.Model.VideoReviewUrl)), PublicBenchmarkManufacturers = manufacturerBenchmark.Count, GlobalManufacturerRank = globalIndex >= 0 ? $"{globalIndex + 1} of {manufacturerBenchmark.Count}" : "n/a", AverageOverallScore = scored.Count == 0 ? "n/a" : scored.Average(x => x.Score!.Value).ToString("0.#", CultureInfo.CurrentCulture) + "/100", PortfolioLeader = leader.Model?.MaterialName ?? string.Empty, StrongestAxis = leader.Model?.BestAxis ?? string.Empty, CategoryPositions = categories, Materials = values.OrderBy(x => x.Model.BaseMaterial).ThenBy(x => x.Model.MaterialName).Select(x => new PublicManufacturerMaterialModel { FlexibleResults = x.Model.FlexibleResults, MaterialId = x.Model.MaterialId, MaterialName = x.Model.MaterialName, ProductLine = x.Model.ProductLine, BaseMaterial = x.Model.BaseMaterial, Reinforcement = x.Model.Reinforcement, TestCoverage = x.Model.TestCoverage, EngineeringAxes = x.Model.VerifiedEngineeringAxes, OverallScore = x.Model.OverallScore, TensileScore = x.Model.TensileScore, ImpactScore = x.Model.ImpactScore, StiffnessScore = x.Model.StiffnessScore, ConsistencyScore = x.Model.ConsistencyScore, LayerAdhesionScore = x.Model.LayerAdhesionScore, StrongestAxis = x.Model.BestAxis, MsrpUsdPerKg = x.Model.MsrpUsdPerKg, ProductUrl = GetCell(x.Row, "Manufacturer Website", "Product Page", "Product URL"), VideoReviewUrl = x.Model.VideoReviewUrl }).ToList() };
             }).OrderBy(x => x.Manufacturer).ToList();
             var at = DateTime.Now; var output = string.IsNullOrWhiteSpace(ReportOutputFolderBox.Text) ? GetDefaultReportOutputFolder() : ReportOutputFolderBox.Text.Trim(); var root = System.IO.Path.Combine(output, PublicReportPublishingService.PreviewRootFolderName); var built = new List<(PublicManufacturerReportModel Model, PublicManufacturerPublicationResult Result)>();
             foreach (var model in models) { var result = _publicManufacturerReportPublishingService.Build(model, at, BuildInfo.ShortLabel, BuildInfo.ReleaseTitle); var verification = _publicManufacturerReportPublishingService.Verify(model, result); if (!verification.Passed) throw new InvalidOperationException(verification.Detail); var folder = result.RelativeDirectory.Split('/', StringSplitOptions.RemoveEmptyEntries).Aggregate(root, System.IO.Path.Combine); var assets = System.IO.Path.Combine(folder, "assets"); Directory.CreateDirectory(assets); CopyReportPackageAssets(assets); var html = System.IO.Path.Combine(folder, "index.html"); SafeFileOperations.WriteAllTextAtomic(html, result.Html, Encoding.UTF8); SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder, "manifest.txt"), result.Manifest, Encoding.UTF8); SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder, "report-metadata.json"), result.MetadataJson, Encoding.UTF8); await WriteReportPdfFromCanonicalHtmlAsync(System.IO.Path.Combine(folder, "report.pdf"), html); built.Add((model, result)); }
@@ -9614,7 +9652,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
             AutomationRuntimeProfile.DemandReportGenerationAuthorized();
             var summaries=GetCanonicalVerifiedSummaryMap(); var tensile=_nativeTensileRows.Where(x=>!string.IsNullOrWhiteSpace(x.MaterialID)).GroupBy(x=>x.MaterialID.Trim(),StringComparer.OrdinalIgnoreCase).ToDictionary(x=>x.Key,x=>x.First(),StringComparer.OrdinalIgnoreCase); var impact=_nativeImpactRows.Where(x=>!string.IsNullOrWhiteSpace(x.MaterialID)).GroupBy(x=>x.MaterialID.Trim(),StringComparer.OrdinalIgnoreCase).ToDictionary(x=>x.Key,x=>x.First(),StringComparer.OrdinalIgnoreCase); var stiffness=_nativeStiffnessRows.Where(x=>!string.IsNullOrWhiteSpace(x.MaterialID)).GroupBy(x=>x.MaterialID.Trim(),StringComparer.OrdinalIgnoreCase).ToDictionary(x=>x.Key,x=>x.First(),StringComparer.OrdinalIgnoreCase);
             PublicTestModuleQualityModel Q(string module,string orientation,MeasurementSetResult? x,string unit,string? validation)=>new(){Module=module,Orientation=orientation,Average=x?.Average is double a?a.ToString("0.###",CultureInfo.CurrentCulture)+" "+unit:"n/a",StandardDeviation=x?.StandardDeviation is double s?s.ToString("0.###",CultureInfo.CurrentCulture)+" "+unit:"n/a",CoefficientOfVariation=x?.CoefficientOfVariation is double c?c.ToString("0.###",CultureInfo.CurrentCulture)+"%":"n/a",Samples=x?.SampleCount??0,Confidence=x?.Confidence is int confidence?confidence+"/10":"n/a",Validation=validation??"No native record"};
-            var models=_nativeMaterialRows.Where(x=>!x.IsArchived&&x.PublishPublicReports&&!string.IsNullOrWhiteSpace(x.MaterialID)).Select(row=>{var id=row.MaterialID.Trim();summaries.TryGetValue(id,out var summary);tensile.TryGetValue(id,out var tr);impact.TryGetValue(id,out var ir);stiffness.TryGetValue(id,out var sr);var approved=row.PublishPublicTestDetails;var quality=new List<PublicTestModuleQualityModel>{Q("Tensile","Upright",summary?.Tensile?.Upright,"MPa",tr?.ValidationSummary),Q("Tensile","Flat",summary?.Tensile?.Flat,"MPa",tr?.ValidationSummary),Q("Impact","Upright",summary?.Impact?.Upright,"kJ/m²",ir?.ValidationSummary),Q("Impact","Flat",summary?.Impact?.Flat,"kJ/m²",ir?.ValidationSummary),new(){Module="Stiffness",Orientation="Three-point bend",Average=summary?.Stiffness?.ModulusMpa is double sm?sm.ToString("0.###",CultureInfo.CurrentCulture)+" MPa":"n/a",Samples=summary?.HasStiffnessResults==true?1:0,Confidence=summary?.Stiffness?.CompletenessRating.Label??"n/a",Validation=sr?.ValidationSummary??"No native record"}};var raw=approved?new[]{new PublicTestRawInputModel{Module="Tensile",InputSet="Upright force inputs (N)",RecordedValues=string.Join(", ",tr?.SampleValues(true)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Tensile",InputSet="Flat force inputs (N)",RecordedValues=string.Join(", ",tr?.SampleValues(false)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Impact",InputSet="Upright needle inputs (%)",RecordedValues=string.Join(", ",ir?.SampleValues(true)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Impact",InputSet="Flat needle inputs (%)",RecordedValues=string.Join(", ",ir?.SampleValues(false)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Stiffness",InputSet="Revolutions / degrees",RecordedValues=sr is null?"n/a":JoinNonEmpty(" / ",sr.Revolutions,sr.Degrees)}}:Array.Empty<PublicTestRawInputModel>();var notes=approved?new[]{("Tensile",tr?.TestNotes),("Impact",ir?.TestNotes),("Stiffness",sr?.TestNotes)}.Where(x=>!string.IsNullOrWhiteSpace(x.Item2)).Select(x=>new PublicTestNoteModel{Module=x.Item1,Note=x.Item2!}).ToList():new List<PublicTestNoteModel>();return new PublicTestSessionReportModel{MaterialId=id,MaterialName=string.IsNullOrWhiteSpace(row.WebsiteDisplayName)?id:row.WebsiteDisplayName,Manufacturer=row.Manufacturer,SummaryStatus=summary?.SummaryStatus??"No native results",ResultModules=summary?.ResultModuleCount??0,SpecimenResultRecords=quality.Sum(x=>x.Samples),PublicDetailsApproved=approved,VerifiedMeasurements=PublicVerifiedMeasurementsFromSummary(summary),MeasurementDates=BuildPublicMeasurementDateProvenance(id),QualityRows=quality,RawInputs=raw,ApprovedNotes=notes};}).OrderBy(x=>x.MaterialName).ToList();
+            var models=_nativeMaterialRows.Where(x=>!x.IsArchived&&x.PublishPublicReports&&!string.IsNullOrWhiteSpace(x.MaterialID)).Select(row=>{var id=row.MaterialID.Trim();summaries.TryGetValue(id,out var summary);tensile.TryGetValue(id,out var tr);impact.TryGetValue(id,out var ir);stiffness.TryGetValue(id,out var sr);var approved=row.PublishPublicTestDetails;var quality=new List<PublicTestModuleQualityModel>{Q("Tensile","Upright",summary?.Tensile?.Upright,"MPa",tr?.ValidationSummary),Q("Tensile","Flat",summary?.Tensile?.Flat,"MPa",tr?.ValidationSummary),Q("Impact","Upright",summary?.Impact?.Upright,"kJ/m²",ir?.ValidationSummary),Q("Impact","Flat",summary?.Impact?.Flat,"kJ/m²",ir?.ValidationSummary),new(){Module="Stiffness",Orientation="Three-point bend",Average=summary?.Stiffness?.ModulusMpa is double sm?sm.ToString("0.###",CultureInfo.CurrentCulture)+" MPa":"n/a",Samples=summary?.HasStiffnessResults==true?1:0,Confidence=summary?.Stiffness?.CompletenessRating.Label??"n/a",Validation=sr?.ValidationSummary??"No native record"}};var raw=approved?new[]{new PublicTestRawInputModel{Module="Tensile",InputSet="Upright force inputs (N)",RecordedValues=string.Join(", ",tr?.SampleValues(true)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Tensile",InputSet="Flat force inputs (N)",RecordedValues=string.Join(", ",tr?.SampleValues(false)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Impact",InputSet="Upright needle inputs (%)",RecordedValues=string.Join(", ",ir?.SampleValues(true)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Impact",InputSet="Flat needle inputs (%)",RecordedValues=string.Join(", ",ir?.SampleValues(false)??Array.Empty<string>())},new PublicTestRawInputModel{Module="Stiffness",InputSet="Revolutions / degrees",RecordedValues=sr is null?"n/a":JoinNonEmpty(" / ",sr.Revolutions,sr.Degrees)}}:Array.Empty<PublicTestRawInputModel>();var notes=approved?new[]{("Tensile",tr?.TestNotes),("Impact",ir?.TestNotes),("Stiffness",sr?.TestNotes)}.Where(x=>!string.IsNullOrWhiteSpace(x.Item2)).Select(x=>new PublicTestNoteModel{Module=x.Item1,Note=x.Item2!}).ToList():new List<PublicTestNoteModel>();return new PublicTestSessionReportModel{FlexibleResults=GetFlexibleReportResults(id),MaterialId=id,MaterialName=string.IsNullOrWhiteSpace(row.WebsiteDisplayName)?id:row.WebsiteDisplayName,Manufacturer=row.Manufacturer,SummaryStatus=summary?.SummaryStatus??"No native results",ResultModules=summary?.ResultModuleCount??0,SpecimenResultRecords=quality.Sum(x=>x.Samples),PublicDetailsApproved=approved,VerifiedMeasurements=PublicVerifiedMeasurementsFromSummary(summary),MeasurementDates=BuildPublicMeasurementDateProvenance(id),QualityRows=quality,RawInputs=raw,ApprovedNotes=notes};}).OrderBy(x=>x.MaterialName).ToList();
             if(models.Count==0){ReportPreviewLog.Text="Select one or more active MaterialIDs with Public reports.";return;}var at=DateTime.Now;var output=string.IsNullOrWhiteSpace(ReportOutputFolderBox.Text)?GetDefaultReportOutputFolder():ReportOutputFolderBox.Text.Trim();var root=System.IO.Path.Combine(output,PublicReportPublishingService.PreviewRootFolderName);foreach(var model in models){var result=_publicTestSessionReportPublishingService.Build(model,at,BuildInfo.ShortLabel,BuildInfo.ReleaseTitle);var verification=_publicTestSessionReportPublishingService.Verify(model,result);if(!verification.Passed)throw new InvalidOperationException(verification.Detail);var folder=result.RelativeDirectory.Split('/',StringSplitOptions.RemoveEmptyEntries).Aggregate(root,System.IO.Path.Combine);var assets=System.IO.Path.Combine(folder,"assets");Directory.CreateDirectory(assets);CopyReportPackageAssets(assets);var html=System.IO.Path.Combine(folder,"index.html");SafeFileOperations.WriteAllTextAtomic(html,result.Html,Encoding.UTF8);SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder,"manifest.txt"),result.Manifest,Encoding.UTF8);SafeFileOperations.WriteAllTextAtomic(System.IO.Path.Combine(folder,"report-metadata.json"),result.MetadataJson,Encoding.UTF8);await WriteReportPdfFromCanonicalHtmlAsync(System.IO.Path.Combine(folder,"report.pdf"),html);}Directory.CreateDirectory(root);var index=System.IO.Path.Combine(root,"test-sessions.html");SafeFileOperations.WriteAllTextAtomic(index,PublicTestSessionReportPublishingService.BuildPreviewIndex(models,at),Encoding.UTF8);ReportExportSummaryText.Text=$"Public test-session previews built: {models.Count}";ReportPreviewLog.Text=$"Built {models.Count} public Test Session reports; {models.Count(x=>x.PublicDetailsApproved)} include explicitly approved raw inputs/notes.\n\nIndex: {index}\n\nLocal preview only. Nothing was uploaded.";
         }
         catch(Exception ex){ReportExportSummaryText.Text="Public test-session preview failed";ReportPreviewLog.Text+="\n\n"+ex.Message;}finally{if(BuildPublicTestSessionReportPreviewButton is not null)BuildPublicTestSessionReportPreviewButton.IsEnabled=true;}
@@ -9718,6 +9756,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                     DecisionGuidance = BuildDecisionGuidanceItems(ranking, alternatives.Count),
                     Alternatives = alternatives,
                     ManufacturerWebsite = source.ManufacturerWebsite,
+                    FlexibleResults = source.FlexibleResults,
                     BaseMaterialGuidance = BuildPublicBaseMaterialPrintingGuidance(material, _nativeBaseMaterialRows)
                 };
             }).OrderBy(model => model.MaterialName).ToList();
@@ -9830,6 +9869,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
                 ManufacturerDistribution = source.GroupBy(item => DisplayText(item.Material.Manufacturer), StringComparer.CurrentCultureIgnoreCase).Select(group => new PublicSummaryDistributionModel { Label = group.Key, Materials = group.Count() }).OrderByDescending(item => item.Materials).ThenBy(item => item.Label).ToList(),
                 Materials = source.Select(item => new PublicMaterialSummaryRowModel
                 {
+                    FlexibleResults = item.Material.FlexibleResults,
                     MaterialId = item.Material.MaterialId,
                     MaterialName = item.Material.MaterialName,
                     Manufacturer = item.Material.Manufacturer,
@@ -10159,6 +10199,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
 
         return new PublicMaterialEngineeringReportModel
         {
+            FlexibleResults = GetFlexibleReportResults(video.MaterialId),
             MaterialId = video.MaterialId,
             MaterialName = video.Label,
             Manufacturer = video.Manufacturer,
@@ -10845,6 +10886,14 @@ private void OpenReportOutputFolder_Click(object sender, RoutedEventArgs e)
         }
 
         sb.AppendLine();
+        var flexibleReportRows = key == "comparison"
+            ? ResolveComparisonReportMaterials(reportRows, visibleRows, useSelectedMaterialScope).Select(item => item.Source).ToList()
+            : key == "manufacturer"
+                ? ResolveManufacturerReportPortfolios(reportRows, visibleRows, useSelectedMaterialScope).SelectMany(item => item.Materials).Select(item => item.Source).ToList()
+                : reportRows;
+        if (key is "rankings" or "awards") sb.AppendLine(FlexibleRankingExportService.RenderText(BuildFlexibleRankingGroups(flexibleReportRows), key == "awards"));
+        else if (key == "youtube") sb.AppendLine(BuildFlexibleIntelligenceText(flexibleReportRows, null));
+        else AppendFlexibleReportText(sb, flexibleReportRows);
         sb.AppendLine("Foundation status:");
         sb.AppendLine("- Native report template selector: ready");
         sb.AppendLine("- Output folder workflow: ready");
@@ -11120,7 +11169,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                $"<div class=\"card\"><div class=\"card-label\">Active materials in database</div><div class=\"card-value\">{totalRows}</div></div>" +
                "<div class=\"card\"><div class=\"card-label\">Report engine</div><div class=\"card-value\">Unified HTML</div></div>" +
                "</div>\n" +
-               bodyHtml +
+               bodyHtml + (key is "rankings" or "awards" ? FlexibleRankingExportService.RenderHtml(BuildFlexibleRankingGroups(rows), key == "awards") : key == "youtube" ? BuildFlexibleIntelligenceReportHtml(rows) : BuildFlexibleReportHtml(rows)) +
                $"<div class=\"footer\">{brandDisplayName} document generated with 3DPIceland Engineering Platform v{Html(BuildInfo.Version)}. HTML is the canonical report layout shared by preview and PDF export.</div>\n" +
                "</div>\n</body>\n</html>\n";
     }
@@ -15776,9 +15825,99 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             flexibleTestingReady
                 ? "Schema v44, MaterialID-linked sessions, nullable formulas, specimen/cycle raw rows, separate Shore scales and standalone UI pass"
                 : "Flexible-test schema, formulas, specimen-aware editors or comparable-results surface failed"));
+        var compressionRetentionReady = CompressionPointsGrid.Columns.OfType<DataGridTextColumn>().Any(column =>
+            column.IsReadOnly && column.Header?.ToString() == "Force retention %" &&
+            column.Binding is Binding binding && binding.Path?.Path == nameof(CompressionPointRecord.ForceRetentionPercent)) &&
+            typeof(System.ComponentModel.INotifyPropertyChanged).IsAssignableFrom(typeof(CompressionPointRecord)) &&
+            FlexibleRelaxationTab.Header?.ToString() == "Saved Stress Relaxation" &&
+            FlexibleRelaxationTab.Visibility == (_selectedFlexibleSpecimen is not null &&
+                _stressRelaxationPoints.Any(row => row.SpecimenId == _selectedFlexibleSpecimen.SpecimenId)
+                    ? Visibility.Visible : Visibility.Collapsed) &&
+            typeof(MainWindow).GetMethod("AddRelaxationPoint_Click",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic) is null;
+        checks.Add(new VerificationCheck(
+            "v66.0.0 Compression retention surface contract",
+            compressionRetentionReady,
+            compressionRetentionReady ? "Read-only compression retention, dependent notification and retired create action pass"
+                : "Compression retention surface ownership failed"));
+        var recoveryTvlReady = RecoveryMeasurementsGrid.Columns.OfType<DataGridTextColumn>().Any(column =>
+            !column.IsReadOnly && column.Header?.ToString() == "TVL contact offset mm" &&
+            column.Binding is Binding binding && binding.Path?.Path == nameof(RecoveryMeasurementRecord.TvlContactOffsetMm) &&
+            binding.UpdateSourceTrigger == UpdateSourceTrigger.PropertyChanged) &&
+            typeof(System.ComponentModel.INotifyPropertyChanged).IsAssignableFrom(typeof(RecoveryMeasurementRecord));
+        checks.Add(new VerificationCheck(
+            "v66.0.1 Recovery TVL input contract", recoveryTvlReady,
+            recoveryTvlReady ? "TVL alternate height input and dependent notifications are registered"
+                : "Recovery TVL input ownership failed"));
         var flexibleBuiltInDefaults = GetDefaultNativeSettingsRows()
             .Where(row => string.Equals(row.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase))
             .ToList();
+        var recoveryDefaultSnapshot = CreateRecoveryMeasurement("CHECK", "SPEC", "10", "30");
+        var changedRecoveryDefaultSnapshot = CreateRecoveryMeasurement("CHECK2", "SPEC", "10", "60");
+        var recoveryHoldDefaultReady = TryGetRecoveryHoldDefault(out var recoveryHoldDefault, out _) &&
+            flexibleBuiltInDefaults.Single(row => row.Parameter == FlexibleRecoveryHoldParameter).Value == "30" &&
+            _nativeSettingsRows.Count(row => row.Section == FlexibleSettingsSection && row.Parameter == FlexibleRecoveryHoldParameter) == 1 &&
+            CreateRecoveryMeasurement("CURRENT", "SPEC", "10", recoveryHoldDefault).CompressionHoldSeconds == recoveryHoldDefault &&
+            recoveryDefaultSnapshot.CompressionHoldSeconds == "30" && changedRecoveryDefaultSnapshot.CompressionHoldSeconds == "60" &&
+            recoveryDefaultSnapshot.RestTimeSeconds == "60" && recoveryDefaultSnapshot.CompressionPercent == "20" &&
+            new[] { "0", "30", "30,5" }.All(IsValidRecoveryHoldSeconds) &&
+            new[] { "", "-1", "NaN", "Infinity", "text" }.All(value => !IsValidRecoveryHoldSeconds(value));
+        checks.Add(new VerificationCheck("v66.0.2 Recovery hold default contract", recoveryHoldDefaultReady,
+            recoveryHoldDefaultReady ? "Persisted Recovery hold setting, 30 s built-in, validation and new-row snapshots pass"
+                : "Recovery hold default validation or snapshot ownership failed"));
+        var flexibleEvidenceProbe = new FlexibleMaterialEvidenceSnapshot("PROBE",
+            new[] { new FlexibleMetricGroupSummary(FlexibleMetricKind.ResidualHeightLoss,
+                "Residual height loss after recovery", "saved method", "20% compression; 30 s hold; 60 s rest", "probe",
+                1, 1.4, null, null, 1.4, 1.4, "%", 0) }, 1, 1, 0);
+        var flexibleDetailProbe = BuildFlexibleMaterialDetailGroup(flexibleEvidenceProbe);
+        var flexibleDashboardProbe = BuildFlexibleDashboardContent(flexibleEvidenceProbe);
+        var flexibleTableProbe = flexibleDashboardProbe.Children.OfType<ScrollViewer>().Single().Content as Grid;
+        var flexibleEvidenceReady = LocalDatabase.RunFlexibleMaterialEvidenceContractVerification() &&
+            flexibleDetailProbe.Fields.Count == 2 && flexibleDetailProbe.Fields.All(field => !field.Value.Contains("saved method")) &&
+            flexibleDashboardProbe.Children.OfType<Expander>().Count() == 1 &&
+            !flexibleDashboardProbe.Children.OfType<Expander>().Single().IsExpanded &&
+            flexibleTableProbe is { ColumnDefinitions.Count: 7, RowDefinitions.Count: 2 } &&
+            flexibleTableProbe.Children.OfType<Border>().Select(cell => (cell.Child as TextBlock)?.Text).Contains("—") &&
+            DashboardFlexiblePanel is not null &&
+            BuildFlexibleDashboardContent(null).Children.Count == 1 &&
+            BuildFlexibleMaterialDetailGroup((FlexibleMaterialEvidenceSnapshot?)null).Fields.Any(field =>
+                field.Value.Contains("No comparable Flexible results", StringComparison.Ordinal));
+        checks.Add(new VerificationCheck("v66.0.3 Saved Flexible evidence and Material Detail contract", flexibleEvidenceReady,
+            flexibleEvidenceReady ? "Canonical evidence, compact General summary, grouped Mechanical tables and one collapsed setup per method pass"
+                : "Canonical Flexible evidence or Material Detail dashboard contract failed"));
+        var flexibleHandoffsReady = RunFlexibleComparisonContractVerification() && RunFlexibleDetailHandoffContractVerification() &&
+            FlexibleComparisonPanel is not null && SelectedFlexibleVideoPanel is not null && SelectedFlexibleRecommendationPanel is not null;
+        checks.Add(new VerificationCheck("v66.0.3.1 Flexible Material Detail handoff contract", flexibleHandoffsReady,
+            flexibleHandoffsReady ? "Exact-condition comparison, unique matching peers, measured-topic video briefs and scoped guidance pass"
+                : "Flexible Material Detail comparison or guidance contract failed"));
+        var flexibleReportProbe = FlexibleReportEvidenceService.Build(new FlexibleMaterialEvidenceSnapshot("REPORT-CHECK",
+            new[] { new FlexibleMetricGroupSummary(FlexibleMetricKind.CompressionForce, "Compression Force at 20% Strain",
+                "private setup", "30 s hold · 2 mm displacement · cycle 1", "private key", 2, 120, 1, 0.8, 119, 121, "N", 0) }, 1, 2, 0));
+        var flexibleReportsReady = FlexibleReportEvidenceService.VerifyContract() && FlexibleReportEvidenceService.VerifyPublishersContract() &&
+            ReportGeneratorService.VerifyFlexibleEvidenceContract(flexibleReportProbe) && PublicReportSourceFingerprintService.VerifyFlexibleSourceFreshness();
+        checks.Add(new VerificationCheck("v66.0.4 Flexible report projection and PDF continuation contract", flexibleReportsReady,
+            flexibleReportsReady ? "Safe aggregate fields, original Overall/completeness, report templates and complete paginated PDF results pass"
+                : "Flexible report projection or PDF continuation failed"));
+        var flexibleRankingsReady = FlexibleMaterialRankingService.VerifyContract() && FlexibleRankingExportService.VerifyContract() &&
+            FlexibleRankingPanel is not null && FlexibleCategoryPanel is not null && FlexibleAwardPanel is not null &&
+            FlexibleRankingCategoryFilter is not null && FlexibleCategoryCategoryFilter is not null && FlexibleAwardCategoryFilter is not null;
+        checks.Add(new VerificationCheck("v66.0.5 Flexible rankings and exports contract", flexibleRankingsReady,
+            flexibleRankingsReady ? "Exact conditions, independent peers, ties, missing/zero, directional awards and safe scoped exports pass"
+                : "Flexible ranking, award or export contract failed"));
+        var flexibleIntelligenceReady = FlexibleMaterialIntelligenceService.VerifyContract() && VerifyFlexibleIdeaSnapshot() &&
+            OpenAiAssistantPilotService.VerifyFlexiblePreviewContract() && FlexibleVideoChoice is not null &&
+            FlexibleRecommendationChoice is not null && FlexibleResearchChoice is not null;
+        checks.Add(new VerificationCheck("v66.0.6 Flexible intelligence and snapshot contract", flexibleIntelligenceReady,
+            flexibleIntelligenceReady ? "Scoped measured topics, exact peers, immutable idea snapshots and safe explicit AI payload hashes pass"
+                : "Flexible intelligence, snapshot or AI preview contract failed"));
+        var flexibleAnalyticsReady = VerifyFlexibleAnalyticsContract() && RunFlexibleComparisonContractVerification() && FlexibleAnalyticsPanel is not null;
+        checks.Add(new VerificationCheck("v66.0.7 Flexible analytics and comparison contract", flexibleAnalyticsReady,
+            flexibleAnalyticsReady ? "Scoped condition charts preserve native units, missing/zero, independent samples and separate manufacturers"
+                : "Flexible analytics or comparison parity failed"));
+        var flexibleResearchReady = VerifyFlexibleResearchOutputs();
+        checks.Add(new VerificationCheck("v66.0.8 Flexible research output coverage", flexibleResearchReady,
+            flexibleResearchReady ? "Flexible-only planning, exact pairs, coverage gaps, calendar and playlist facts pass without Overall"
+                : "Flexible research output coverage failed"));
         var flexibleSavedDefaults = _nativeSettingsRows
             .Where(row => string.Equals(row.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase))
             .ToList();
@@ -15813,9 +15952,9 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             visibleDeletionProbe);
         var flexibleDirectEditAndDisplacementReady =
             FlexibleMaterialTestingService.ParseOptional(defaultDisplacement) is > 0 &&
-            flexibleSavedDefaults.Count == 4 &&
+            flexibleSavedDefaults.Count == 5 &&
             flexibleSavedDefaults.Count(row => string.Equals(row.Parameter, FlexibleDefaultDisplacementParameter, StringComparison.OrdinalIgnoreCase)) == 1 &&
-            flexibleBuiltInDefaults.Count == 4 &&
+            flexibleBuiltInDefaults.Count == 5 &&
             flexibleBuiltInDefaults.Single(row => row.Parameter == FlexibleDefaultDisplacementParameter).Value == "2" &&
             compressionDefaultProbe.SpecimenId == "VERIFY-V64-SPECIMEN" &&
             compressionDefaultProbe.DisplacementMm == "2" &&
@@ -21552,7 +21691,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 .Select(item => new ReportingMaterialInput(
                     item.MaterialId,
                     BuildWebsiteTemplateCommonFields(item.Material),
-                    summaries[item.MaterialId]))
+                    summaries[item.MaterialId]) { FlexibleResults = GetFlexibleReportResults(item.MaterialId) })
                 .ToList();
 
             var payload = _reportingDataPipelineService.BuildPayload(reportInputs);
@@ -22662,6 +22801,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             sb.AppendLine($"Face/reaction: {best.ThumbnailFaceDirection}");
             sb.AppendLine($"Avoid: {best.ThumbnailRiskNote}");
             sb.AppendLine($"Reason: {best.ThumbnailRecommendationReason}");
+            if (best.HasFlexible) sb.AppendLine(best.TalkingPoints);
 
             Clipboard.SetText(sb.ToString());
             if (YouTubeResearchStatusText != null) YouTubeResearchStatusText.Text = $"Copied best thumbnail brief: {best.ThumbnailMainText}.";
@@ -22843,6 +22983,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private void UpdateYouTubeResearch()
     {
+        UpdateFlexibleOpportunities("Research");
         try
         {
             if (YouTubeResearchTitleList is null) return;
@@ -22877,11 +23018,17 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
                 .Take(50)
                 .ToList();
 
+            var flexibleOpportunities = FlexibleOpportunities(GetCanonicalVisibleMaterialRows());
+            var flexibleCandidates = BuildFlexibleResearchCandidates(flexibleOpportunities, rows);
+            candidates.AddRange(flexibleCandidates.Take(50));
+            candidates = candidates.OrderByDescending(row => row.ThumbnailScore).ThenByDescending(row => row.Priority)
+                .ThenBy(row => row.Label, StringComparer.CurrentCultureIgnoreCase).ToList();
             var comparisonCandidates = BuildComparisonDiscoveryRows(rows);
             var contentPlan = BuildContentCalendarRows(candidates, 30);
             var channelGaps = BuildChannelGapRows(rows);
             var playlists = BuildPlaylistDiscoveryRows(rows, candidates, contentPlan, channelGaps);
 
+            AppendFlexibleResearchOutputs(flexibleOpportunities, flexibleCandidates, comparisonCandidates, channelGaps, playlists);
             YouTubeResearchTitleList.ItemsSource = candidates;
             if (ComparisonDiscoveryList != null) ComparisonDiscoveryList.ItemsSource = comparisonCandidates;
             if (ContentCalendarList != null) ContentCalendarList.ItemsSource = contentPlan;
@@ -23253,7 +23400,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
     private static List<ContentCalendarRow> BuildContentCalendarRows(List<VideoPlannerRow> candidates, int maxWeeks)
     {
         var remaining = candidates
-            .Where(row => row.HasMechanical)
+            .Where(row => row.HasMechanical || row.HasFlexible)
             .GroupBy(row => NormalizeComparisonKey(row.Manufacturer, row.SuggestedTitle))
             .Select(group => group.First())
             .ToList();
@@ -23266,7 +23413,8 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         {
             var best = remaining
                 .Select(row => new { Row = row, Score = CalculateCalendarPriority(row, recentManufacturers, recentFamilies) })
-                .OrderByDescending(item => item.Score)
+                .OrderByDescending(item => week % 3 == 1 && item.Row.HasFlexible)
+                .ThenByDescending(item => item.Score)
                 .ThenByDescending(item => item.Row.ThumbnailScore)
                 .ThenBy(item => item.Row.Manufacturer, StringComparer.CurrentCultureIgnoreCase)
                 .ThenBy(item => item.Row.Label, StringComparer.CurrentCultureIgnoreCase)
@@ -23320,6 +23468,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
     private static string BuildCalendarReason(VideoPlannerRow row, IEnumerable<string> recentManufacturers, IEnumerable<string> recentFamilies, int score, string family)
     {
+        if (row.HasFlexible) return "Flexible editorial candidate. " + row.DataReason;
         var parts = new List<string>();
         if (!row.HasVideo) parts.Add("no current video coverage");
         if (HasReinforcementText(row.Reinforcement)) parts.Add("clear reinforced-material angle");
@@ -24046,7 +24195,7 @@ private void UpdateDashboardInsights()
                 $"     Suggested angle: {x.Video.SuggestedAngle}")
             .ToList();
 
-        DashboardInsightsText.Text =
+        DashboardInsightsText.Text = BuildFlexibleCoverageText() + "\r\n\r\n" +
             "DATABASE OVERVIEW\r\n" +
             "=================\r\n" +
             $"Materials tested: {totalMaterials}\r\n" +
@@ -24589,7 +24738,7 @@ private void UpdateDashboardInsights()
                     projection?.ResultTemperatureC,
                     projection?.Score,
                     measurement?.MethodVersion ?? string.Empty,
-                    projection is null ? string.Empty : BuildAiThermalLimitationText());
+                    projection is null ? string.Empty : BuildAiThermalLimitationText()) { FlexibleResults = GetFlexibleReportResults(materialId) };
             })
             .ToList();
         var configuration = _workflowPreferencesService.GetAiAssistantProviderConfiguration();
@@ -26278,6 +26427,7 @@ private List<string> GetVisibleAiMaterialLabels()
             "Then generate this again and save the result as a research session."
         };
         AppendAiThermalContext(lines, rows);
+        lines.Add(BuildFlexibleIntelligenceText(rows));
 
         if (mode == "next-video")
         {
@@ -26635,6 +26785,7 @@ private List<string> GetVisibleAiMaterialLabels()
             sampleMaterials.Count > 0 ? string.Join("\r\n", sampleMaterials) : "No sample materials found."
         };
         AppendAiThermalContext(lines, rows);
+        lines.Add(BuildFlexibleIntelligenceText(rows));
 
         if (mode is "video" or "full")
         {
@@ -26987,6 +27138,7 @@ private List<string> GetVisibleAiMaterialLabels()
             new NativeSettingRow { Section = "Flexible Material Testing", Parameter = "Default specimen height", Value = "10", Unit = "mm", UsedBy = "Flexible Material Testing", Notes = "Applied only when a new specimen is created; accepted TPU compression v1.0 height" },
             new NativeSettingRow { Section = "Flexible Material Testing", Parameter = "Default specimen thickness", Value = "9", Unit = "mm", UsedBy = "Flexible Material Testing", Notes = "Applied only when a new specimen is created; used by Shore readings" },
             new NativeSettingRow { Section = "Flexible Material Testing", Parameter = "Default compression displacement", Value = "2", Unit = "mm", UsedBy = "Flexible Material Testing", Notes = "Applied only to newly created compression points; saved readings are unchanged" },
+            new NativeSettingRow { Section = FlexibleSettingsSection, Parameter = FlexibleRecoveryHoldParameter, Value = "30", Unit = "s", UsedBy = "Recovery", Notes = "Nonnegative compressed hold time; applied only to newly created Recovery rows, not rest time or existing readings" },
             new NativeSettingRow { Section = "Impact", Parameter = "Hammer mass", Value = "0.52300000000000002", Unit = "kg", UsedBy = "Impact", Notes = "Measured hammer mass" },
             new NativeSettingRow { Section = "Impact", Parameter = "Hammer start height", Value = "0.63", Unit = "m", UsedBy = "Impact", Notes = "Height at release position" },
             new NativeSettingRow { Section = "Impact", Parameter = "Hammer impact height", Value = "7.0000000000000007E-2", Unit = "m", UsedBy = "Impact", Notes = "Height at impact position" },
@@ -27082,7 +27234,8 @@ private List<string> GetVisibleAiMaterialLabels()
 
     private void SaveNativeSettings_Click(object sender, RoutedEventArgs e)
     {
-        if (!TryGetFlexibleDefaults(out _, out _, out _, out _, out var flexibleDefaultsError))
+        if (!TryGetFlexibleDefaults(out _, out _, out _, out _, out var flexibleDefaultsError) ||
+            !TryGetRecoveryHoldDefault(out _, out flexibleDefaultsError))
         {
             MessageBox.Show(this, flexibleDefaultsError, "Flexible Material Testing Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
@@ -27606,6 +27759,11 @@ private List<string> GetVisibleAiMaterialLabels()
             try
             {
                 if (_nativeMaterialRows.Count == 0) return;
+                if (_currentMaterialDetailRow is not null)
+                {
+                    RenderGroupedDetails(_currentMaterialDetailRow);
+                    RenderMechanicalTab(_currentMaterialDetailRow);
+                }
                 RefreshCanonicalMaterialConsumerFilters();
                 UpdateAnalyticsFramework();
                 UpdateRankings();

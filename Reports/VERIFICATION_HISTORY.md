@@ -1,3 +1,185 @@
+# v66.0.8 - Flexible Integration Acceptance
+
+- Owner accepted final v66.0.8 research lists on 2026-09-12; all recorded v66 increments now accepted.
+- Closure dependency audit found no vulnerable packages; README stable installer/portable HEAD requests returned 200.
+- Preserve tested runtime bytes and 457/457 evidence below; source closure does not establish Production package acceptance.
+
+- Owner accepted prior Settings default, saved-idea restart, Analytics and unified Compare; final research-list review pending.
+- Closure audit found main planner/research coverage gaps; direct measured candidates now feed titles/thumbnails, pairs, gaps,
+  calendar and playlist outputs. Legacy score engines/Overall and saved workflow records remain unchanged.
+- Final profile `20260912020243-90444968`: disposable smoke exit 0; Full Verification 457/457 PASS.
+- Exact database recovery SHA-256: `4C13055B6BB985D19613E152F6B0F2CFFDEFF81F005B62CA14429B0355990FF0`.
+- Exact business-state recovery: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88`.
+- Initial profile `20260912015913-f8fbf1e1` retained: 456/457, handwritten fixture omitted a condition. Canonical projector fixes test.
+- Final Debug/Release builds pass, zero warnings/errors. Owner lock required isolated builds first; normal Release updated after close.
+- Grade label shortened after smoke for column fit; no behavioral change. Final actual-XAML visual and pure contract pass.
+- Help 801/801, documentation and diff checks pass. Synthetic visual evidence retained under final profile evidence/research-review.
+- No commit/push or publication: final owner review is still required. README keeps v65.0.0 as accepted baseline.
+
+# v66.0.7 - Flexible Comparison and Analytics
+
+- Unified Compare correction: profile `20260912014555-8b282f28` smoke exit 0, Full Verification 456/456 PASS.
+- Exact database recovery: `DEFE4C59E067DCF006560BA860DD78A4948F5B9B8967C9662870B0EE1FC20EDA`.
+- Business-state recovery: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88`.
+- Debug/Release zero warnings/errors; Help/docs/diff pass. Three-material actual renderer inspected with differing metadata and n.
+- Evidence retained in this profile's evidence/unified-compare; retired setup controls removed, source snapshots preserved.
+- Owner acceptance of the unified table remains pending; existing ranking/report matching policy is unchanged.
+
+- Owner requested the next recorded increment; earlier outstanding acceptance remains open.
+- Debug and Release build with zero warnings/errors. Help coverage remains 801/801; documentation and diff checks pass.
+- Profile `20260912012154-8c93dc53`: disposable smoke exit 0, Full Verification 456/456 PASS, no network request.
+- Exact database SHA-256 recovery: `D1B4AE3707FD7F2A7316D74AB78FCB2B88798EEBAB11C950E1E01F1F36D5AD73`.
+- Exact business-state recovery: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88`.
+- Final presentation review adds radar-specific count text, unreached context and true zero-length bars after this smoke.
+  Both final builds pass; standalone analytics/comparison contracts pass. No data or selection contract changed after smoke.
+- Actual renderer PNGs inspected at 1100px for long labels, native-unit bars, zero/missing/unreached, empty and Compare statistics.
+  Source, PNGs, result and SHA-256 manifest retained under the profile evidence/flexible-analytics-visual directory.
+- Subagent map/review confirmed refresh before Overall filtering and independent per-material statistics under Chart Mode groups.
+- No measurement edits, seed/schema change, normalized radar change or external report publication. Owner visual acceptance pending.
+
+# v66.0.6 - Flexible Research and Intelligence
+
+- 2026-09-12: owner screenshot accepts the simplified single-line dropdown layout. Remaining workflow review stays pending.
+
+- Owner simplification: all three selectors show material/topic only, NoWrap with ellipsis. Exact-condition keys remain unchanged.
+- Actual styled dropdown render inspected closed/open: selected height 34px, popup 320px with scrolling and single-line rows.
+- Evidence: final profile evidence/flexible-dropdown-single-line. Help updated; builds and coverage/documentation checks pass.
+- Presentation-only change; existing 455/455 verification baseline retained, owner visual acceptance still pending.
+
+- Owner dropdown correction: Debug/Release pass; actual XAML plus global ComboBox style rendered with 35 long Recovery choices.
+- Selected height 37.92px, popup 320px with scrollbar; closed/open PNGs inspected. Owner runtime recheck remains pending.
+- Evidence retained under final profile evidence/flexible-dropdown-correction. Existing 455/455 baseline predates sizing-only fix.
+- No data/handler change; no additional full smoke or Help text change warranted for local layout sizing.
+
+- Owner accepted v66.0.5 ranking/category/award results and layout; continuing the recorded sequence.
+- Debug/Release pass with zero warnings/errors. Help coverage 801 controls, documentation and diff checks pass.
+- Final profile `20260912005251-23d41f48`: disposable smoke exits 0; Full Verification 455/455 PASS with exact-state recovery.
+- Database SHA-256: `3B76950FC86297DADE7AF1CFB692ED5ED09660E07E41A7B7E14A9E39D3F2F8FD` (PASS).
+- Business-state SHA-256: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88` (PASS).
+- Pure gates cover exact peers, missing/zero/nonfinite values, private notes exclusion, saved idea roundtrip and AI request hashes.
+  AI tests use store=false/tools-empty, sanitized12-field aggregate shape and no network. No existing idea/session is regenerated.
+- Review found the global queue cleared by selected-detail reset. Removed that state mutation/rebind; intentional load/clear remain.
+  New save commits existing grid edits and persists transaction before replacing memory. Manual filter/save retention review required.
+- Subagent visual review found clipped long choices and indistinguishable methods; wrapped templates and stable method IDs resolve both.
+- Actual WPF content at800px inspected for retention, recovery and empty states. All three standalone contracts pass.
+  PNG/fixture/text evidence and SHA-256 manifest retained in the final profile's evidence/flexible-intelligence-visual folder.
+- Earlier pre-correction profile `20260912004849-61ea8d80` also passed455/455; final rerun follows queue/commit/discoverability fixes.
+- Existing persistence, measurement input handlers, saved history and explicit external consent remain; no seed or schema change.
+- Owner opportunity selection/filter/copy/save review remains pending. v66.0.2 Settings and v66.0.7-.8 remain open.
+
+# v66.0.5 - Flexible Rankings, Categories and Awards
+
+- Owner accepted v66.0.4 report data and HTML/PDF layout on 2026-09-12; continuing the recorded increment sequence.
+- Debug/Release zero warnings/errors; Help coverage 792 controls and documentation/diff checks pass.
+- Profile `20260912003327-0cfad714`: Full Verification 454/454 PASS; disposable smoke exits 0 with exact recovery.
+- Database SHA-256: `8A5D2918A0E5890DD1181F62D06EFB43EC11E43B3C80B847D1A3D94A0DCFC8CB` (PASS).
+- Business-state SHA-256: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88` (PASS).
+- Pure contracts cover exact method/condition keys, duplicate/conflicting IDs, independent peers, ties, missing/nonfinite/zero,
+  directional awards, singleton visibility and matching CSV/HTML/text scope. Original Overall data is not an input to the service.
+- Subagent research identified the score-eligibility early return, distinct export action, tied cutoff and HTML-header spacing issues.
+- Actual WPF synthetic Rankings/Awards renders at 1100 px inspected: long labels wrap and compact columns preserve ties and blanks.
+  The final HTML header-spacing-only correction was rebuilt after smoke; layout rechecked without repeating unrelated tests.
+- No new editable grid, owner database write, seed migration, AI call, public publishing or release closure.
+- Visual fixtures/PNG/HTML/CSV and SHA-256 manifest retained under the final profile's evidence/flexible-ranking-visual folder.
+- All consumers finished; exact repository artifacts contents cleaned after evidence hash parity. Owner Release directory preserved.
+- Owner category/filter/scroll/export acceptance remains pending. v66.0.2 Settings and v66.0.6-.8 remain open.
+
+# v66.0.4 - Flexible Reports and PDF Exports
+
+- Debug/Release pass with zero warnings/errors; Help coverage and release-documentation checks pass.
+- Final Full Verification: profile `20260912001436-525fe4d1`, 453/453 PASS. Reports scenario exits 0; 699 catalog entries and 2103 artifacts verified.
+- Exact database SHA-256: `4AAE77EFA6AD3ED00C7BBB86A2E7C9C4CD025F2FC10F794AD2BEDDDDC8609CB1` (PASS).
+- Business-state SHA-256: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88` (PASS).
+- Safe aggregate projection covers all six public publishers, exact material scope, missing values and unchanged Overall/completeness.
+- In-memory freshness verification exercises every Flexible source table, edits, nulls, active-state changes, deletion and restore parity.
+- Synthetic visual evidence: 24 rows/two methods, canonical PDF 9 pages, fallback PDF 4 pages, one material/one certificate.
+  All rows retained; no clipping, overlap, split rows or replacement glyphs. Evidence is retained in the final profile's
+  `evidence/flexible-report-visual` folder with HTML/PDF/PNG/text, source fixture and SHA-256 manifest.
+- Subagent review identified stable method references, rigid-only coverage labels, PDF glyphs and row-preserving pagination fixes.
+- Failed profile `20260912001159-04ced758` retained: an old exact-heading assertion caused one primary and eight dependent failures.
+  Updated the assertion to the clarified heading; final Full Verification passes. No approval or data-boundary checks were weakened.
+- Existing report scenario, AutomationIds and disposable authorization retained; no seed migration or owner-data mutation.
+- Public templates approved 2026-09-12. No live publishing, Production, FTPS, commit/push or major-release closure.
+- All consumers finished; retained visual evidence hashes match. Exact repository artifacts directory emptied; Release preserved.
+- Owner report scope and HTML/PDF readability acceptance remains pending; v66.0.2 Settings review also remains open.
+
+# v66.0.3.1 - Flexible Material Detail Handoffs
+
+- Debug/Release pass with zero warnings/errors; Help, documentation and diff checks pass.
+- Profile `20260911234829-81ae08d6`: Full Verification 452/452 PASS; runner exits 0 with exact-state recovery.
+- Database SHA-256: `897338DBAD25644A6898E1C1CCB9B2259A3FA26CFA56B235CDAB9DE1B28F18AF` (PASS).
+- Business-state SHA-256: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88` (PASS).
+- New contract covers method/condition isolation, unmatched peers, distinct IDs, measured zero and measured-topic guidance.
+- Subagent comparison implementation/review informed the empty-reset fix and winner-wording correction; scores remain unchanged.
+- Actual WPF synthetic Compare/video/guidance renders inspected at 1300 px. PNGs retained in the profile evidence folder.
+  Synthetic images verify layout only; owner identity-switch, scroll/navigation and readability acceptance remains pending.
+- No new editable field, tester authorization, schema, seed, saved idea mutation or external call. Existing smoke owns coverage.
+- Build-only preview artifacts removed after all consumers completed; latest disposable profile retained for owner review.
+# v66.0.3 - Canonical Flexible Evidence and Material Details
+
+Date: 2026-09-11
+
+## Owner layout correction verification
+
+- General now shows compact coverage; Mechanical Engineering Dashboard owns the Flexible result table and collapsed Test setup.
+- Debug/Release: zero warnings/errors. Help and documentation gates pass. No measurement-input or Overall changes.
+- Profile `20260911230648-cd4b8e83`: Full Verification PASS 451/451 and disposable runner exits 0.
+- Exact database SHA-256: `905692953C5D2C10C2FC4F60E918E307CE011B5FDD1D40E24A3FCC6B11D29408` (PASS).
+- Exact business-state SHA-256: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88` (PASS).
+- Actual WPF renderer inspected at 1100 px using synthetic multi-result inputs; readable table, shared conditions and no repeated setup.
+  Retained preview: the profile evidence folder / flexible-dashboard-synthetic.png. This is synthetic layout evidence, not owner data.
+- Owner layout acceptance remains pending; no commit/push or external publication. All build consumers finished before artifacts cleanup.
+
+
+- Debug and Release pass with zero warnings/errors after final comparison-key and assembly-identity corrections.
+- Help coverage and release-documentation gates pass; 786 XAML candidates retain their governed owners.
+- Independent review found missing target strain in comparison keys; fixed by including the metric and tested across 20%/25%.
+- Initial profile `20260911222917-5ad0cd64` passed new Flexible contracts but failed assembly release-code alignment,
+  cascading to dependent historical release gates (335/451). Corrected informational version; failed profile retained.
+- Final profile `20260911223150-70e446de`: Full Data Verification PASS 451/451; disposable runner exits 0.
+- Exact database SHA-256: `3E7BD6322BD5B8C952CB6A83CB28C1FD0EE2BDD758E979EEFCC1B60FCA4B39C5` (PASS).
+- Exact business-state SHA-256: `E8BCF04B15DCFC77D4E5228FC96DB76A257887F40C67EA3BB08170F05AE2CC88` (PASS).
+- Final/failed disposable profiles retained for owner acceptance; disposable build probe removed from artifacts after all consumers.
+- Owner review remains required for General-group wrapping, session/material scope and saved refresh.
+- No schema/seed migration, owner-data automation, external publication, commit or push.
+# v66.0.2 - Recovery Hold-time Default
+
+Date: 2026-09-10
+
+- Debug/Release pass with zero warnings/errors; Help and documentation/diff gates pass.
+- Initial profile `20260910182611-cf9bb4db` passed the new hold-setting contract but found the old exact four-setting count.
+  The existing gate now expects five settings; it retains geometry, displacement, input and deletion checks. Failure evidence retained.
+- Profile `20260910182851-e2f30af3` passes Full Data Verification 450/450 and exact database/business-state recovery.
+- Owner accepted prior TVL input; the Settings/new-row default needs owner acceptance.
+- No schema/seed refresh, Production, FTPS, commit or push. Disposable profiles retained pending final acceptance.
+
+# v66.0.1 - Recovery TVL Contact Entry
+
+Date: 2026-09-10
+
+- Debug/Release pass with zero warnings/errors; Help inventory 786 candidates and documentation/diff checks pass.
+- TVL same-zero input uses decimal conversion to the existing canonical recovered height. No schema or seed refresh is needed.
+- Existing calculation/persistence Verification adds local numeric, invalid-input, notification, historical and roundtrip contracts.
+- Canonical raw-string/shared focus handlers are retained; no exception-driven binding or rebind is added. Owner runtime is required.
+- Profile `20260910181732-9500d441` passes Full Data Verification 449/449 and exact database/business-state recovery.
+- Sequential initial-height correction tests pass. No commit, push or publication; latest profile retained for owner review.
+
+# v66.0.0 - Compression Force Retention
+
+Recovery-default follow-up: Debug/Release pass with zero warnings/errors; Help/docs and diff checks pass.
+New Recovery rows start at 20%; existing rows stay unchanged. Prior 448/448 evidence predates this literal default/Help correction.
+
+Date: 2026-09-10
+
+- Candidate adds read-only Compression retention and removes the duplicate create action while preserving historical data.
+- Debug/Release pass with zero warnings/errors; Help coverage 785 candidates, release-documentation audit and diff checks pass.
+- Current configured NuGet sources report no vulnerable direct/transitive packages across all four solution projects.
+- Initial profile `20260910172427-f7038342` passed new calculation/UI checks but failed release identity; BuildInfo was corrected
+  and both configurations rebuilt. The failed profile is retained.
+- Profile `20260910173647-74918792` passes Full Data Verification 448/448 and exact database/business-state recovery.
+- Owner acceptance remains pending; the latest successful profile is retained for review.
+- Canonical release remains v65.0.0; no commit, push or publication performed.
+
 # v65.0.0 - Catalog-driven Material Entry Choices
 
 Date: 2026-09-10
@@ -3656,3 +3838,12 @@ Date: 2026-08-14
   explicit blank-clear and final-state recovery.
 - Owner runtime/visual acceptance passes on 2026-08-14, covering entry,
   invalid-value rejection, restart persistence, clear and Help readability.
+
+### Wide-window spacing correction
+
+Flexible tables use bounded 330/220 px text columns plus compact numeric columns, aligned left (950 px total).
+Long conditions wrap; narrow viewports retain horizontal scrolling. Enlarging the window no longer expands the columns.
+Debug/Release pass with zero warnings/errors. Actual WPF synthetic renders inspected at 1100 and 1900 px; spacing remains identical.
+Cosmetic-only change: no data, calculations, entry behavior, Help labels or scenario authorization changed; no new tester test warranted.
+Existing Help ownership remains valid. Owner visual acceptance of the new spacing is pending.
+Synthetic renders retained in C:\Users\maddi\AppData\Local\Temp\3DPIceland-FlexibleLayout-20260911.

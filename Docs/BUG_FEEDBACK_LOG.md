@@ -1,4 +1,4 @@
-﻿# Bug / Feedback Log
+# Bug / Feedback Log
 
 Use this during the usage-mode period.
 
@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 0 |
 | Partially solved | 0 |
-| Solved | 124 |
+| Solved | 128 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **130** |
+| **Total tracked findings** | **134** |
 
 ## Triage categories
 
@@ -70,6 +70,59 @@ No active findings.
 ## In-progress findings — newest first
 
 No active findings.
+
+## Resolved findings — newest first
+
+### 2026-09-11 — Flexible evidence throughout material analysis and exports
+
+- **Status:** Solved — v66.0.3 through v66.0.8 accepted on 2026-09-12.
+- **Request:** Show Comparable Results in Material Details, reports/PDF, rankings, categories, awards and YouTube/research.
+- **Owner decision:** Separate Flexible comparisons and categories; existing Overall remains unchanged.
+- **Scope:** Canonical active-material evidence including Recovery; all downstream consumers and safe export projections.
+- **Evidence:** v66.0.3 implemented; Debug/Release and Help/docs pass. Profile `20260911223150-70e446de` passes 451/451.
+- **Owner feedback:** General repeats excessive method/explanation text; requests a Flexible Mechanical Engineering Dashboard section.
+- **Correction in v66.0.3:** Compact General summary and grouped dashboard results with one expandable setup per method.
+- **Follow-up:** Owner screenshot shows stretched columns on a wide window; use bounded left-aligned columns with wrapped conditions.
+- **Owner acceptance:** v66.0.3.1 detail handoffs accepted; continuing the recorded sequence.
+- **Owner acceptance:** v66.0.4 report results and layout accepted 2026-09-12; no live publishing.
+- **Owner acceptance:** v66.0.5 rankings/categories/awards accepted; v66.0.6 research/intelligence now implemented for review.
+- **Owner correction:** v66.0.6 single-line material/topic dropdown accepted by owner screenshot on 2026-09-12.
+- **Evidence:** v66.0.7 analytics/Compare accepted; 456/456 disposable verification passes. Final v66.0.8 research review pending.
+- **Owner acceptance:** Unified Compare table accepted on 2026-09-12; continuing to v66.0.8 closure audit.
+- **Final evidence:** Owner accepts v66.0.8 research lists; profile `20260912020243-90444968` passes 457/457 with exact recovery.
+- **Completion:** All recorded integration increments accepted; source release closure complete. No report publication.
+
+
+### 2026-09-10 — Recovery compressed-hold setting
+
+- **Status:** Solved — v66.0.2 default accepted by owner on 2026-09-12.
+- **Request:** Settings-controlled Compressed hold s default, initially 30, to avoid repeated manual entry.
+- **Scope:** New Recovery rows copy the setting; existing rows stay unchanged. Validate seconds and update Help/Verification.
+- **Evidence:** Debug/Release and Help/docs pass; profile `20260910182851-e2f30af3` passes 450/450 and exact recovery.
+- **Completion:** Owner confirms the requested setting/default checks are correct on 2026-09-12.
+
+### 2026-09-10 — Recovery TVL contact-offset input
+
+- **Status:** Solved — v66.0.1; owner confirms TVL entry works on 2026-09-10.
+- **Owner request:** Enter TVL reading 0.14 mm at re-contact after 60 s rest; zero was set before loading and retained throughout.
+- **Scope:** Alternate contact-offset input computes recovered height from the initial height; preserve canonical saved heights and
+  direct-height entry, historical compatibility, shared keyboard/focus and explicit validation. No schema or seed change.
+- **Evidence:** Debug/Release, Help/docs pass; profile `20260910181732-9500d441` passes Verification 449/449 and exact recovery.
+- **Completion:** Owner runtime acceptance received; retained 449/449 evidence supports the accepted implementation.
+
+
+### 2026-09-10 — Consolidate Compression and force retention
+
+- **Status:** Solved — v66.0.0; owner accepts corrected tab/summary workflow.
+- **Owner request:** Put Force retention % in Compression and remove Add Relaxation Point because the same fixed-displacement
+  test already records 10 s and 30 s forces.
+- **Scope:** Calculate retention from compatible Compression holds, refresh dependent results without stealing focus, remove the
+  redundant create action, and preserve supported historical relaxation records. Update Help and Full Verification contracts.
+- **Owner follow-up:** Empty Stress Relaxation tab must disappear; add force-retention summaries to Comparable Results.
+- **Evidence:** Revised Debug/Release and Help/docs pass; profile `20260910173647-74918792` passes 448/448 and exact recovery.
+  Same v66.0.0 scope; owner runtime acceptance received.
+- **Owner acceptance:** Tab/summary behavior accepted. Follow-up changes new Recovery defaults from 25% to 20%; older rows retained.
+- **Completion:** Default correction builds and Help/docs pass; owner proceeded successfully through Recovery and TVL entry.
 
 # 2026-07-28 - v59.0 navigation inventory and tab-order ownership
 

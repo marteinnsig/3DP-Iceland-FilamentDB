@@ -765,6 +765,10 @@ internal static class HelpContentCatalog
             specimen buttons copy current geometry into that new specimen; prepared and manually added compression rows copy the
             displacement default. Existing specimens and readings remain unchanged. Reload Saved Settings restores the last saved
             values, and Restore Built-in Defaults restores 9 mm diameter, 10 mm height, 9 mm thickness and 2 mm displacement.
+            Default recovery compressed hold is a nonnegative time in seconds, initially 30. Save Settings after changing it;
+            Add Recovery copies it into Compressed hold s for that new row only. It does not change Rest time s (60 s default).
+            Existing readings retain their recorded hold time. Invalid input is rejected; Reload Saved Settings restores the saved
+            value and Restore Built-in Defaults returns this setting to 30 s.
 
             Currency and purchasing values
             Governed currency values are the offline/manual fallback and remain owner-editable. ECB is optional reference data for
@@ -1187,10 +1191,44 @@ internal static class HelpContentCatalog
             The two prepared rows may remain completely blank until the physical test is performed. Once force is entered on a reached
             row, measured displacement is required; clear Target reached only for a genuine force-limited outcome.
 
-            Select the specimen before adding Compression, Stress Relaxation, Recovery or Shore rows. Compression calculates strain
+            Select the specimen before adding Compression, Recovery or Shore rows. Compression calculates strain
             as displacement / initial height and apparent stress as N / gross cylinder area in mm2. Every named target result includes
             its actual hold time. A force-limited target is Target reached off with force/displacement left factual or blank—never zero
-            or estimated. Relaxation uses actual times; recovery is Residual Height Loss and must not be described as Compression Set.
+            or estimated. Compression also shows read-only Force retention %: later force / earliest force x 100, for the same specimen,
+            cycle, target strain and measured displacement. Keep displacement fixed and enter actual Hold s values. The earliest row
+            is the reference and stays blank; 100 N at 10 s followed by 85 N at 30 s gives 85% retention. Missing inputs, an unreached
+            target, zero reference force or duplicate earliest times leave retention blank. Use a new Cycle for a separate loading.
+            Editing the reference updates dependent retention cells after commit without moving keyboard focus. Tab and Shift+Tab skip
+            calculated columns. Values save on edit commit; reopening recalculates retention from the saved raw readings.
+            Use Add Compression Point for additional hold times; Add Relaxation Point has been removed. Saved Stress Relaxation
+            appears only for a selected specimen with historical relaxation readings, for inspection and correction. Otherwise the
+            tab is hidden. Its original retention calculation remains available; deleting its final row returns to Compression.
+            Comparable Results includes Force retention at the target strain, in %, with mean, sample SD, CV, range and independent
+            specimen n. Each row identifies the actual reference-to-later interval, displacement and cycle; methods remain separate.
+            Retention is calculated per specimen before averaging, using unrounded raw forces. Repeated readings do not increase n.
+            Add Recovery starts with 20% compression, 60 s rest and the Settings Manager > Flexible Material Testing value
+            Default recovery compressed hold (initially 30 s). Edit the row to match the actual test; existing readings are unchanged.
+            In Recovery, TVL contact offset mm accepts the contact reading after fully unloading and resting the specimen. Zero TVL at
+            initial contact before compression, keep that zero throughout, and use positive readings for downward travel/height loss.
+            Enter the actual Initial height mm first. For 10 mm initial height, TVL 0.14 mm gives Height after rest 9.86 mm and
+            Residual height loss 1.40%. Decimal comma is accepted. Rest time s starts when compression is fully released.
+            Height after rest remains an editable alternative for a direct height measurement; either entry updates the other field.
+            Initial-height corrections preserve the recovered height and update the displayed offset. Correct invalid TVL text or
+            explicitly enter a direct height before saving. Blank TVL clears recovered height; zero is a measured full height recovery.
+            Negative offsets represent height above the initial contact level; offsets exceeding initial height cannot be saved.
+            The saved heights remain authoritative; on older records the TVL value is an equivalent calculated offset, not evidence
+            that TVL was originally used. No repeat measurement is needed to inspect an existing record. Values save after valid
+            edit commit without rebinding; Tab/Shift+Tab and arrows use the shared entry behavior. Partial text stays available to edit.
+            Recovery is Residual Height Loss and must not be described as Compression Set.
+            Comparable Results includes residual height loss by saved method, compression %, compressed hold, rest time, initial
+            height and cycle. It derives results from saved initial/recovered heights; repetitions within a specimen do not increase n.
+            Material Detail > Mechanical > Engineering Dashboard > Flexible Material Testing uses the same calculations across all active saved sessions for
+            the selected MaterialID. The session-level Comparable Results tab remains scoped to its selected session, including
+            an inactive session when deliberately inspected. Material Detail excludes inactive sessions and unsaved edits.
+            Read the condition and saved method alongside each mean, sample SD, CV, range and n; n=1 has no sample SD or CV.
+            Compression force/stress separates measured displacement as well as target, hold and cycle. Force reduction requires
+            a unique 10 s / 30 s pair at the same displacement. Historical relaxation is counted separately, not merged into retention.
+            Material Detail updates after a successful save; restart reloads the same saved evidence. Existing Overall stays unchanged.
             Shore values are measured records distinct from manufacturer hardness. A and D are neither converted nor averaged together.
             To remove an accidental reading, click any cell in that row, then click Delete Selected Reading. If no reading is selected,
             the status line explains what must be selected; specimen and session deletion are separate actions.
@@ -1199,6 +1237,12 @@ internal static class HelpContentCatalog
             range, clear Target reached and preserve factual values; never enter an invented 500 N result. Comparable Results reports
             independent-specimen n, mean, sample SD (n−1), CV and range. Force reduction is only from 10 s to 30 s, not from peak force.
 
+            Reports and PDF exports include saved active-session Flexible aggregates for the report's actual material scope.
+            Each method/condition stays separate, with mean, independent n, SD, CV and range. Missing statistics remain unavailable.
+            Public report templates include these aggregates only for materials with Publish public reports enabled. Private setup
+            notes, raw comparison keys and specimen identities are excluded; method groups use stable, shortened identifiers.
+            Public test-detail approval remains separate; no raw Flexible readings are added. Export generation does not itself publish.
+            Long fallback PDFs continue across pages so later results are retained. Existing Overall is unchanged.
             Comparable Results includes only an identical saved method/condition group. Multiple readings or cycles on one specimen do
             not inflate independent specimen n. The UI does not add TPU results to the legacy Experimental Overall score or publish them.
             """,
@@ -1247,7 +1291,14 @@ internal static class HelpContentCatalog
             "material-detail.general", "Material detail", "Material Detail — General reference",
             "Selected MaterialID identity and dynamically grouped read-only fields.",
             """
-            Material Detail follows the selected Materials row and repeats its MaterialID. General groups available identity, catalog,
+            Material Detail follows the selected Materials row and repeats its MaterialID.
+            Video Planner includes Flexible video brief for the material selected in Materials, with measured topics, result tables and
+            matching comparison candidates in the current Materials filter. Recommendations includes Flexible guidance for that same
+            material, linking measured load, retention, recovery or hardness to comparison decisions. Expand either panel to inspect it.
+            Their headers identify the material; these sections do not follow the selected global planner row or global recommendation.
+            No new score, saved idea or external AI request is created. Saved measurement corrections refresh the panels after commit.
+            General includes a compact Flexible summary; results are under Mechanical > Engineering Dashboard. See Flexible Material
+            Testing Help for condition matching, independent specimen statistics, Recovery and missing-value meaning. General groups available identity, catalog,
             pricing, Inventory, media and governance fields. Edit values at Materials, Manufacturers, Base Materials, Purchasing or
             Inventory; this projection is read-only.
             """, "material detail", "general", "MaterialID", "grouped", "read-only"),
@@ -1267,7 +1318,11 @@ internal static class HelpContentCatalog
             """
             Mechanical shows identity/status plus canonical Tensile, Impact, Stiffness and fixture-specific Thermal outputs. Orientation metrics, consistency,
             counts and reliability come from native measurements and ResultsService. Expand Canonical mechanical data for source rows.
-            Correct raw inputs on measurement tabs; this view never edits them.
+            Flexible Material Testing shows a compact result table per saved method: condition, result/unit, mean, n, SD, CV % and range.
+            Test setup expands the saved method once; it is collapsed initially. Shared conditions appear once for adjacent results.
+            Active sessions are included, n counts independent specimens, and missing statistics display an em dash.
+            A Flexible-only material has Mechanical Data available; existing Tested Status and Overall calculation remain unchanged.
+            General has only a short coverage summary and the Mechanical location. Correct inputs on measurement tabs; both views are read-only.
             """, "mechanical", "tensile", "impact", "stiffness", "reliability"),
         new(
             "material-detail.charts", "Material detail", "Material Detail — Charts reference",
@@ -1283,11 +1338,19 @@ internal static class HelpContentCatalog
             Chart Mode groups visible Materials into radar rows. Select one or Ctrl-click multiple rows; Clear radar selection removes
             local selection only. Materials search/filters define scope. Analytics uses six axes; Thermal is independent of Overall.
             Missing axes stay unavailable and render at the center rather than becoming evidence. This view changes no data.
+            Flexible Material Testing shows separate native-unit bars and mean/n/SD/CV/range for visible materials, even without Overall.
+            Chart Mode groups these rows by manufacturer, material type or the other selected category; it does not pool their statistics.
+            Each test condition has its own labelled bar scale. Zero stays measured; missing values have no bar. Expand Test setup for details.
             """, "analytics", "chart mode", "radar", "multi-select", "thermal", "clear"),
         new(
             "material-detail.compare", "Material detail", "Material Detail — Compare reference",
             "A–D Material selectors, selected-Material handoff, winners and deltas.",
             """
+            Flexible comparison aligns selected A–D materials by measurement, unit and measurement-point condition in one table.
+            Specimen metadata, method notes and different sample counts do not split the table. Mean, n, SD, CV and range stay intact.
+            Multiple saved summaries for one material/condition remain separate blocks within its cell; they are not pooled.
+            A dash means no measured result; a dagger marks no matching peer among distinct selected MaterialIDs.
+            Different hold/rest times, targets, displacements and Shore scales remain separate rows. No score conversion is applied.
             Choose up to four canonical Materials in A–D. Use Selected copies the current identity into a slot without changing source
             data. Winners/deltas appear only for comparable canonical results; missing results stay missing and the view is read-only.
             """, "compare", "A-D", "use selected", "winner", "delta"),
@@ -1295,17 +1358,26 @@ internal static class HelpContentCatalog
             "material-detail.video-planner", "Material detail", "Material Detail — Video Planner reference",
             "Local creator-planning filters, idea lifecycle, dashboard and prompt handoff.",
             """
+            Flexible video brief follows the material displayed in Material Detail, even when it has no Overall score. Its header
+            identifies the selected material. It shows measured video topics, active-session result tables and matching candidates from
+            the current Materials filter. Test setup expands each method once. This read-only brief does not create or update saved ideas.
             Video Planner derives candidates from visible Materials. Filters, Refresh and Clear affect planning only. Idea actions own
             separate local records. Copy prompt writes owner-review text to the clipboard; it calls no external service and publishes
             nothing.
+            Flexible integration: Flexible opportunities — filtered materials lists measured topics across the filtered dataset, independently of Overall. Category, Manufacturer, Base material and No-video filters apply; Mechanical data only includes measured Flexible candidates in the main planner list as well. The dropdown shows material and topic on one line; test conditions appear below the selection. Copy Flexible brief copies the selected topic locally. Save Flexible idea saves its current facts and peers in Video Planner → Video ideas from recommendations. Later measurements do not rewrite saved ideas. Re-saving the identical snapshot creates no duplicate; failed saves keep the previous queue. These actions do not send externally.
             """, "video planner", "filters", "refresh", "ideas", "copy prompt"),
         new(
             "material-detail.recommendations", "Material detail", "Material Detail — Recommendations reference",
             "Evidence, alternatives, cautions, prompt and Video Planner handoff.",
             """
+            Flexible guidance follows the material displayed in Material Detail, separately from the global winner lists. It shows
+            load/retention/recovery/hardness guidance only for available measured topics, plus saved statistics and exact-condition peers.
+            No matching candidate means no material with an identical measured comparison key in the current Materials filter.
+            Neither the Flexible brief nor guidance changes Overall or certifies application suitability.
             Recommendations project verified results in visible scope. Filters/Refresh choose guidance; details expose evidence,
             alternatives and cautions. Copy prompt is local; Send to Video Planner transfers planning context only. Neither action edits
             measurements, certifies suitability or publishes.
+            Flexible integration: Flexible opportunities — filtered materials uses Category and Base material filters for measured guidance and exact-condition comparison candidates. The recommendation use-case selector continues to control the existing score-based lists. The dropdown shows material and topic on one line; test conditions appear below the selection. Copy Flexible brief copies the selected topic locally. Save Flexible idea saves its current facts and peers in Video Planner → Video ideas from recommendations. Later measurements do not rewrite saved ideas. Re-saving the identical snapshot creates no duplicate; failed saves keep the previous queue. These actions do not send externally.
             """, "recommendations", "evidence", "alternatives", "cautions", "video planner"),
         new(
             "material-detail.notes", "Material detail", "Material Detail — Notes reference",
@@ -1323,6 +1395,10 @@ internal static class HelpContentCatalog
 
             Reset restores defaults, Refresh rebuilds read-only rows and Export CSV writes displayed scope. Clear Materials filters
             before whole-database interpretation.
+            Flexible Material Testing has its own category selector and Export Flexible CSV. Visible Materials and Base Material,
+            Manufacturer and Reinforcement filters apply. Rows limits apply within matching groups and retain tied ranks.
+            Two measured materials with identical methods/conditions are required for a rank; singleton values remain visible.
+            Force, apparent stress and Shore are high-to-low descriptive lists, without best-material claims. Overall is unchanged.
             """, "rankings", "top 25", "filters", "refresh", "CSV"),
         new(
             "analysis.category-rankings", "Analysis and decisions", "Category Rankings reference",
@@ -1330,6 +1406,8 @@ internal static class HelpContentCatalog
             """
             Choose a performance Category, including Best Thermal Resistance, and Overall/Base Material/Manufacturer grouping, then optional scope filters. Rows per group
             defaults to 10; 5, 50, 100 and All are available. Reset, Refresh and Export CSV operate on this read-only projection.
+            Flexible Material Testing uses its own category selector and Export Flexible CSV. The same visible-material/scope filters,
+            grouping and rows limit apply independently to each exact method/condition. Tied ranks share place; Overall is unchanged.
             """, "category rankings", "winner", "rows per group", "10", "CSV"),
         new(
             "analysis.awards", "Analysis and decisions", "Awards & Winners reference",
@@ -1339,6 +1417,11 @@ internal static class HelpContentCatalog
             fixture-specific Best Thermal Resistance award. Rows show Winner, score,
             Runner Up, Use Case, Why and Status. Reset/Refresh rebuild read-only awards and Export CSV writes them; this view does not
             publish.
+            Flexible Material Testing uses its own category selector and Export Flexible CSV with the same visible-material and
+            Base Material/Manufacturer/Reinforcement filters. Two measured materials with matching conditions are required.
+            Highest retention, lowest 10-30 s force reduction and lowest residual height loss preserve all tied winners.
+            Force, stress and Shore have no universal winner award. Expand Test setup to inspect the saved method.
+            Reset Filters resets the Flexible selector too. Overall is unchanged; CSV export writes only the displayed Flexible scope.
             """, "awards", "winner", "runner up", "why", "CSV"),
         new(
             "analysis.dashboard-insights", "Analysis and decisions", "Dashboard Insights reference",
@@ -1346,6 +1429,7 @@ internal static class HelpContentCatalog
             """
             Insights summarizes tested Materials, Manufacturers, Material/Reinforcement Types and highest Overall, Tensile, Impact,
             Stiffness and Thermal results. Narrative derives from canonical calculated results, edits nothing and has no separate Save.
+            Flexible integration: Flexible coverage counts measured materials, topics and topics with matching peers in the visible scope. Open YouTube Research → Flexible opportunities for details; Overall and existing leader scores remain unchanged.
             """, "dashboard insights", "counts", "highest overall", "highest thermal", "read-only"),
         new(
             "reports-website",
@@ -1419,6 +1503,8 @@ internal static class HelpContentCatalog
             validates the same template/scope and writes its governed HTML/PDF/text/metadata/manifest artifacts locally. Export
             Engineering Package builds the six accepted engineering report families as one local indexed package; it is distinct from
             the selected purchasing report. None of these actions perform FTPS or publish a website.
+            Engineering reports include saved Flexible results for their material scope: conditions, mean, n, SD, CV and range.
+            Missing statistics stay blank; long fallback PDFs continue on additional pages. Overall remains unchanged.
 
             Public build actions
             Build Public Material, Comparison, Manufacturer, Test Session, Printing Recommendation and Material Summary Reports each
@@ -1886,6 +1972,7 @@ internal static class HelpContentCatalog
             file names, hashes, notes, paths and timestamps are excluded from both preview and provider payload.
             Secret-safe operational evidence remains in memory until explicitly copied. Exact payload previews cannot be saved as
             sessions. Assistant output never replaces measurements or Verification.
+            Flexible integration: Flexible measured topics and exact-condition candidates are included in local generated briefs for their processed material scope. Output states any topic limit. OpenAI payload preview includes safe Flexible aggregates and matching hashes; private setup notes and raw keys are excluded. Editing a result changes the request hash; preview and explicit consent are still required before sending.
             """, "AI Assistant", "visible scope", "sessions", "collections", "output"),
         new(
             "ai.visible-scope", "AI Assistant", "AI visible scope reference",
@@ -2010,6 +2097,11 @@ internal static class HelpContentCatalog
 
             Seven copy actions place owner-review text on the clipboard. Review scope and claims before external use; clipboard success
             is not publication or evidence that a video was produced.
+            Flexible measurements also feed the main title/thumbnail, matching-pair discovery, channel-gap, calendar and playlist lists.
+            One representative topic per material is shown in the main list; the opportunity selector retains every measured topic.
+            Flexible editorial priorities use measurement readiness and recorded video coverage, never an Overall or material-quality score.
+            Calendar reserves every third slot for a Flexible candidate when available. Copy actions retain measured conditions and facts.
+            Flexible integration: Expand Flexible opportunities — filtered materials to choose a measured topic and inspect exact-condition comparison candidates from visible Materials. Generate YouTube Research and saved-data refresh rebuild this section; no Overall score is required. The dropdown shows material and topic on one line; test conditions appear below the selection. Copy Flexible brief copies the selected topic locally. Save Flexible idea saves its current facts and peers in Video Planner → Video ideas from recommendations. Later measurements do not rewrite saved ideas. Re-saving the identical snapshot creates no duplicate; failed saves keep the previous queue. These actions do not send externally.
             """, "YouTube", "generate", "titles", "thumbnail", "calendar", "playlist"),
         new(
             "youtube.generate", "YouTube Research", "Generate YouTube Research reference",

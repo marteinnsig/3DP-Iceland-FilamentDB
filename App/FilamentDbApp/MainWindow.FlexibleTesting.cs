@@ -18,6 +18,7 @@ public partial class MainWindow
     private const string FlexibleDefaultHeightParameter = "Default specimen height";
     private const string FlexibleDefaultThicknessParameter = "Default specimen thickness";
     private const string FlexibleDefaultDisplacementParameter = "Default compression displacement";
+    private const string FlexibleRecoveryHoldParameter = "Default recovery compressed hold";
     private static readonly string[] FlexibleEditableGridNames =
     {
         "FlexibleSessionsGrid",
@@ -48,6 +49,7 @@ public partial class MainWindow
         foreach (var row in graph.Recovery) _recoveryMeasurements.Add(row);
         foreach (var row in graph.Shore) _shoreHardnessReadings.Add(row);
         FlexibleMaterialTestingService.Recalculate(_flexibleSpecimens, _compressionPoints, _stressRelaxationPoints, _recoveryMeasurements);
+        RefreshSavedFlexibleMaterialEvidence();
         FlexibleSessionsGrid.ItemsSource = _flexibleTestSessions;
         FlexibleSessionMaterialColumn.ItemsSource = _nativeMaterialRows
             .Where(x => !x.IsArchived && !string.IsNullOrWhiteSpace(x.MaterialID))
@@ -155,12 +157,22 @@ public partial class MainWindow
             SetRows("StressRelaxationGrid", _stressRelaxationPoints.Where(x => x.SpecimenId == id).OrderBy(x => x.CycleNumber).ThenBy(x => FlexibleMaterialTestingService.ParseOptional(x.ElapsedTimeSeconds)).ToList());
             SetRows("RecoveryMeasurementsGrid", _recoveryMeasurements.Where(x => x.SpecimenId == id).OrderBy(x => x.CycleNumber).ToList());
             SetRows("ShoreHardnessGrid", _shoreHardnessReadings.Where(x => x.SpecimenId == id).OrderBy(x => x.ShoreScale).ToList());
+            RefreshSavedRelaxationTabVisibility(specimen);
         }
         catch (InvalidOperationException)
         {
             SetFlexibleStatus("Finish or correct the active reading before changing specimen or session.", true);
         }
         void SetRows(string name, System.Collections.IEnumerable rows) { if (FindName(name) is DataGrid grid) grid.ItemsSource = rows; }
+    }
+
+    private void RefreshSavedRelaxationTabVisibility(FlexibleTestSpecimenRecord? specimen)
+    {
+        var hasSavedReadings = specimen is not null &&
+            _stressRelaxationPoints.Any(row => row.SpecimenId == specimen.SpecimenId);
+        if (!hasSavedReadings && FlexibleRelaxationTab.IsSelected)
+            FlexibleTestingTabs.SelectedIndex = 0;
+        FlexibleRelaxationTab.Visibility = hasSavedReadings ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private bool TryCloseFlexibleReadingEditsForRebind()
@@ -294,8 +306,34 @@ public partial class MainWindow
         DisplacementMm = displacement,
         HoldTimeSeconds = holdSeconds
     };
-    private void AddRelaxationPoint_Click(object sender, RoutedEventArgs e) => AddChild(_stressRelaxationPoints, new StressRelaxationPointRecord { RelaxationPointId=Id("REL"),SpecimenId=SelectedSpecimenId(),CycleNumber=1,CompressionPercent="25",ElapsedTimeSeconds="10" });
-    private void AddRecoveryMeasurement_Click(object sender, RoutedEventArgs e) => AddChild(_recoveryMeasurements, new RecoveryMeasurementRecord { RecoveryMeasurementId=Id("RCV"),SpecimenId=SelectedSpecimenId(),CycleNumber=1,InitialHeightMm=_selectedFlexibleSpecimen?.InitialHeightMm??string.Empty,RestTimeSeconds="60",CompressionPercent="25" });
+    private void AddRecoveryMeasurement_Click(object sender, RoutedEventArgs e)
+    {
+        if (!TryGetRecoveryHoldDefault(out var holdSeconds, out var error))
+        {
+            SetFlexibleStatus(error, true);
+            return;
+        }
+        AddChild(_recoveryMeasurements, CreateRecoveryMeasurement(
+            Id("RCV"), SelectedSpecimenId(), _selectedFlexibleSpecimen?.InitialHeightMm ?? string.Empty, holdSeconds));
+    }
+
+    private static RecoveryMeasurementRecord CreateRecoveryMeasurement(string id, string specimenId, string initialHeight, string hold) => new()
+    {
+        RecoveryMeasurementId = id, SpecimenId = specimenId, CycleNumber = 1,
+        InitialHeightMm = initialHeight, RestTimeSeconds = "60", CompressionPercent = "20", CompressionHoldSeconds = hold
+    };
+
+    private static bool IsValidRecoveryHoldSeconds(string value) => FlexibleMaterialTestingService.ParseOptional(value) is >= 0d;
+
+    private bool TryGetRecoveryHoldDefault(out string holdSeconds, out string error)
+    {
+        holdSeconds = _nativeSettingsRows.FirstOrDefault(row =>
+            string.Equals(row.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(row.Parameter, FlexibleRecoveryHoldParameter, StringComparison.OrdinalIgnoreCase))?.Value?.Trim() ?? string.Empty;
+        error = IsValidRecoveryHoldSeconds(holdSeconds)
+            ? string.Empty : "Default recovery compressed hold must be a nonnegative number in seconds.";
+        return error.Length == 0;
+    }
     private void AddShoreReading_Click(object sender, RoutedEventArgs e) => AddChild(_shoreHardnessReadings, new ShoreHardnessReadingRecord { ShoreReadingId=Id("SHR"),SpecimenId=SelectedSpecimenId(),ShoreScale="A",SpecimenThicknessMm=_selectedFlexibleSpecimen?.ThicknessMm??string.Empty });
 
     private void AddChild<T>(ObservableCollection<T> collection, T row)
@@ -395,7 +433,14 @@ public partial class MainWindow
         if (sender is not DataGrid grid || e.Row.Item is not { } editedRow) return;
         Dispatcher.BeginInvoke(new Action(() =>
         {
-            if (SaveFlexibleTesting()) RefreshFlexibleCalculatedCells(grid, editedRow);
+            if (SaveFlexibleTesting())
+            {
+                if (editedRow is RecoveryMeasurementRecord recovery && e.EditAction == DataGridEditAction.Commit &&
+                    GetBoundPropertyName(e.Column) == nameof(RecoveryMeasurementRecord.InitialHeightMm) &&
+                    e.Column.GetCellContent(e.Row) is not TextBox)
+                    recovery.AcceptInputCommit();
+                RefreshFlexibleCalculatedCells(grid, editedRow);
+            }
         }), DispatcherPriority.ContextIdle);
     }
 
@@ -428,7 +473,10 @@ public partial class MainWindow
             SetFlexibleStatus($"Save failed: {ex.Message}", true);
             return false;
         }
+        RefreshSavedFlexibleMaterialEvidence();
         RefreshFlexibleComparisons(_selectedFlexibleSession);
+        RefreshSavedRelaxationTabVisibility(_selectedFlexibleSpecimen);
+        QueueNativeMaterialDependentIntelligenceRefresh();
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: false);
         SetFlexibleStatus($"Saved {_flexibleTestSessions.Count} session(s) and {_flexibleSpecimens.Count} specimen(s); raw readings and method snapshots preserved.", false);
         return true;
@@ -440,7 +488,7 @@ public partial class MainWindow
         if (session is null) return;
         var specimens = _flexibleSpecimens.Where(x => x.FlexibleTestSessionId == session.FlexibleTestSessionId).ToList();
         var ids = specimens.Select(x => x.SpecimenId).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        foreach (var row in FlexibleMaterialTestingService.BuildComparisons(specimens, _compressionPoints.Where(x => ids.Contains(x.SpecimenId)).ToList(), _shoreHardnessReadings.Where(x => ids.Contains(x.SpecimenId)).ToList())) _flexibleComparisonRows.Add(row);
+        foreach (var row in FlexibleMaterialTestingService.BuildComparisons(specimens, _compressionPoints.Where(x => ids.Contains(x.SpecimenId)).ToList(), _shoreHardnessReadings.Where(x => ids.Contains(x.SpecimenId)).ToList(), _recoveryMeasurements.Where(x => ids.Contains(x.SpecimenId)).ToList())) _flexibleComparisonRows.Add(row);
     }
 
     private void RemoveFlexibleSpecimenRows(string id)

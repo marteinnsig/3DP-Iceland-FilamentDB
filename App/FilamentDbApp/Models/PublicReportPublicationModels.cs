@@ -2,6 +2,7 @@ namespace FilamentDbApp.Models;
 
 public sealed class PublicMaterialEngineeringReportModel
 {
+    public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty;
     public string MaterialName { get; init; } = string.Empty;
     public string Manufacturer { get; init; } = string.Empty;
@@ -149,6 +150,7 @@ public sealed class PublicComparisonReportModel
 
 public sealed class PublicComparisonMaterialModel
 {
+    public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty;
     public string MaterialName { get; init; } = string.Empty;
     public string Manufacturer { get; init; } = string.Empty;
@@ -214,6 +216,7 @@ public sealed class PublicManufacturerCategoryPositionModel
 
 public sealed class PublicManufacturerMaterialModel
 {
+    public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty;
     public string MaterialName { get; init; } = string.Empty;
     public string ProductLine { get; init; } = string.Empty;
@@ -243,6 +246,7 @@ public sealed class PublicManufacturerPublicationResult
 
 public sealed class PublicTestSessionReportModel
 {
+    public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty;
     public string MaterialName { get; init; } = string.Empty;
     public string Manufacturer { get; init; } = string.Empty;
@@ -262,6 +266,7 @@ public sealed class PublicTestNoteModel { public string Module { get; init; } = 
 public sealed class PublicTestSessionPublicationResult { public string RelativeDirectory { get; init; } = string.Empty; public string Html { get; init; } = string.Empty; public string Manifest { get; init; } = string.Empty; public string MetadataJson { get; init; } = string.Empty; }
 public sealed class PublicPrintingRecommendationReportModel
 {
+    public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty; public string MaterialName { get; init; } = string.Empty; public string Manufacturer { get; init; } = string.Empty; public string BaseMaterial { get; init; } = string.Empty; public string TestCoverage { get; init; } = string.Empty; public int EngineeringAxes { get; init; }
     public string OverallScore { get; init; } = "n/a"; public string TensileScore { get; init; } = "n/a"; public string ImpactScore { get; init; } = "n/a"; public string StiffnessScore { get; init; } = "n/a"; public string ConsistencyScore { get; init; } = "n/a"; public string LayerAdhesionScore { get; init; } = "n/a"; public string OverallRank { get; init; } = string.Empty; public string MsrpUsdPerKg { get; init; } = string.Empty;
     public IReadOnlyList<string> RecommendedApplications { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> Strengths { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> Limitations { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> Tradeoffs { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> WorkflowChecks { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> DecisionGuidance { get; init; } = Array.Empty<string>(); public IReadOnlyList<PublicAlternativeModel> Alternatives { get; init; } = Array.Empty<PublicAlternativeModel>(); public string ManufacturerWebsite { get; init; } = string.Empty;
@@ -320,6 +325,7 @@ public sealed class PublicSummaryDistributionModel
 
 public sealed class PublicMaterialSummaryRowModel
 {
+    public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty;
     public string MaterialName { get; init; } = string.Empty;
     public string Manufacturer { get; init; } = string.Empty;

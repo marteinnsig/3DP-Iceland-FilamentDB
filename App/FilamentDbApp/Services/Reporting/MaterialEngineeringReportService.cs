@@ -1,4 +1,4 @@
-﻿namespace FilamentDbApp.Services.Reporting;
+namespace FilamentDbApp.Services.Reporting;
 
 public sealed class MaterialEngineeringReportService
 {
@@ -18,7 +18,10 @@ public sealed class MaterialEngineeringReportService
                 "Verified Material Summary",
                 "ReportPdfRendererService",
                 true,
-                global::FilamentDbApp.Services.EngineeringIntelligenceHandoffService.GovernanceStatement))
+                global::FilamentDbApp.Services.EngineeringIntelligenceHandoffService.GovernanceStatement)
+            {
+                FlexibleMetricGroupCount = report.FlexibleResults.Count
+            })
             .ToList();
 
         return new MaterialEngineeringReportPayload(
@@ -86,7 +89,10 @@ public sealed record MaterialEngineeringReportOutput(
     string Source,
     string RenderOwner,
     bool HasGovernedIntelligenceHandoff,
-    string IntelligenceSourceStatement);
+    string IntelligenceSourceStatement)
+{
+    public int FlexibleMetricGroupCount { get; init; }
+}
 
 public sealed class MaterialEngineeringReportVerificationResult
 {

@@ -1,4 +1,4 @@
-using FilamentDbApp.Models;
+﻿using FilamentDbApp.Models;
 using System.Globalization;
 
 namespace FilamentDbApp.Services;
@@ -96,6 +96,7 @@ public sealed class FlexibleMaterialTestingService
         foreach (var row in recovery)
         {
             ValidateParent(row.SpecimenId, specimenIds, errors);
+            if (row.TvlContactOffsetError.Length != 0) errors.Add(row.TvlContactOffsetError);
             ValidatePositiveOptional(row.InitialHeightMm, "Recovery initial height", errors);
             ValidateNonNegativeOptional(row.HeightAfterRestMm, "Recovered height", errors);
             ValidateNonNegativeOptional(row.RestTimeSeconds, "Recovery rest time", errors);
@@ -134,6 +135,11 @@ public sealed class FlexibleMaterialTestingService
                     ? $"Compression Force at {target:0.##}% Strain — {FormatHold(point.HoldTimeSeconds)} (N)"
                     : string.Empty;
         }
+        // Use factual, constant-displacement holds only. Numeric keys accept equivalent localized input.
+        // Calculated-property notification refreshes dependent rows without rebinding the active editor.
+        foreach (var point in compression) point.ForceRetentionPercent = string.Empty;
+        foreach (var result in CalculateCompressionRetentions(compression))
+            result.Point.ForceRetentionPercent = Format(result.Retention);
         foreach (var group in relaxation.GroupBy(x => new { x.SpecimenId, x.CycleNumber, x.CompressionPercent }))
         {
             var ordered = group.Where(x => ParseOptional(x.ElapsedTimeSeconds).HasValue && ParseOptional(x.ForceN).HasValue)
@@ -145,57 +151,114 @@ public sealed class FlexibleMaterialTestingService
                     : Format(CalculateForceRetentionPercent(point.ForceN, reference.ForceN));
         }
         foreach (var row in recovery)
-            row.ResidualHeightLossPercent = Format(CalculateResidualHeightLossPercent(row.InitialHeightMm, row.HeightAfterRestMm));
+            row.ResidualHeightLossPercent = row.TvlContactOffsetError.Length == 0
+                ? Format(CalculateResidualHeightLossPercent(row.InitialHeightMm, row.HeightAfterRestMm)) : string.Empty;
+    }
+
+    private static IEnumerable<(CompressionPointRecord Point, CompressionPointRecord Reference, double Retention)>
+        CalculateCompressionRetentions(IEnumerable<CompressionPointRecord> compression)
+    {
+        var retentionPoints = compression.Where(x => x.TargetReached && x.CycleNumber > 0 &&
+            ParseOptional(x.TargetStrainPercent) > 0d && ParseOptional(x.TargetStrainPercent) <= 100d &&
+            ParseOptional(x.DisplacementMm) > 0d && ParseOptional(x.HoldTimeSeconds) >= 0d && ParseOptional(x.ForceN) >= 0d);
+        foreach (var group in retentionPoints.GroupBy(x => new
+        {
+            x.SpecimenId, x.CycleNumber,
+            Target = ParseOptional(x.TargetStrainPercent), Displacement = ParseOptional(x.DisplacementMm)
+        }))
+        {
+            var ordered = group.OrderBy(x => ParseOptional(x.HoldTimeSeconds)).ToList();
+            var reference = ordered[0];
+            var referenceTime = ParseOptional(reference.HoldTimeSeconds);
+            // Duplicate earliest readings are ambiguous; do not choose one arbitrarily.
+            if (ordered.Count(x => ParseOptional(x.HoldTimeSeconds) == referenceTime) != 1) continue;
+            foreach (var point in ordered.Skip(1))
+                if (CalculateForceRetentionPercent(point.ForceN, reference.ForceN) is double retention)
+                    yield return (point, reference, retention);
+        }
     }
 
     public static IReadOnlyList<FlexibleComparisonRow> BuildComparisons(
         IReadOnlyCollection<FlexibleTestSpecimenRecord> specimens,
         IReadOnlyCollection<CompressionPointRecord> compression,
-        IReadOnlyCollection<ShoreHardnessReadingRecord> shore)
+        IReadOnlyCollection<ShoreHardnessReadingRecord> shore,
+        IReadOnlyCollection<RecoveryMeasurementRecord>? recovery = null) =>
+        BuildMetricGroups(specimens, compression, shore, recovery).Select(x => new FlexibleComparisonRow(
+            x.Metric, x.MethodGroup, x.Condition, x.SpecimenCount, Format(x.Mean, "0.###"),
+            Format(x.StandardDeviation, "0.###"), Format(x.CoefficientOfVariation, "0.###"),
+            Format(x.Minimum, "0.###"), Format(x.Maximum, "0.###"), x.Unit, x.NotReachedCount)).ToList();
+
+    internal static IReadOnlyList<FlexibleMetricGroupSummary> BuildMetricGroups(
+        IReadOnlyCollection<FlexibleTestSpecimenRecord> specimens,
+        IReadOnlyCollection<CompressionPointRecord> compression,
+        IReadOnlyCollection<ShoreHardnessReadingRecord> shore, IReadOnlyCollection<RecoveryMeasurementRecord>? recovery = null)
     {
-        var specimenById = specimens.ToDictionary(x => x.SpecimenId, StringComparer.OrdinalIgnoreCase);
-        var rows = new List<FlexibleComparisonRow>();
-        var compressionGroups = compression.Where(x => ParseOptional(x.TargetStrainPercent).HasValue)
+        var specimenById = specimens.Where(x => !string.IsNullOrWhiteSpace(x.SpecimenId)).GroupBy(x => x.SpecimenId, StringComparer.OrdinalIgnoreCase).Where(x => x.Count() == 1).ToDictionary(x => x.Key, x => x.Single(), StringComparer.OrdinalIgnoreCase);
+        compression = compression.Where(x => specimenById.ContainsKey(x.SpecimenId)).ToArray();
+        shore = shore.Where(x => specimenById.ContainsKey(x.SpecimenId)).ToArray();
+        var rows = new List<FlexibleMetricGroupSummary>();
+        var compressionGroups = compression.Where(x => x.CycleNumber > 0 && ParseOptional(x.TargetStrainPercent) is > 0d and <= 100d && ParseOptional(x.HoldTimeSeconds) >= 0d)
             .GroupBy(x =>
             {
                 specimenById.TryGetValue(x.SpecimenId, out var s);
-                return new { Method = MethodKey(s), Target = NumericKey(x.TargetStrainPercent), Hold = NumericKey(x.HoldTimeSeconds), x.CycleNumber };
+                return new { Method = MethodKey(s), Target = NumericKey(x.TargetStrainPercent), Hold = NumericKey(x.HoldTimeSeconds), Displacement = NumericKey(x.DisplacementMm), x.CycleNumber };
             });
         foreach (var group in compressionGroups)
         {
             var notReached = group.Count(x => !x.TargetReached);
-            var specimenForces = group.Where(x => x.TargetReached && ParseOptional(x.ForceN).HasValue)
+            var specimenForces = group.Where(x => x.TargetReached && ParseOptional(x.ForceN) >= 0d)
                 .GroupBy(x => x.SpecimenId, StringComparer.OrdinalIgnoreCase)
                 .Select(x => x.Average(p => ParseOptional(p.ForceN)!.Value)).ToList();
             AddSummary(rows, $"Compression Force at {group.Key.Target}% Strain", group.Key.Method,
-                $"{group.Key.Hold} s hold · cycle {group.Key.CycleNumber}", specimenForces, "N", notReached);
-            var specimenStresses = group.Where(x => x.TargetReached && ParseOptional(x.ApparentStressMpa).HasValue)
+                $"{group.Key.Hold} s hold · {group.Key.Displacement} mm displacement · cycle {group.Key.CycleNumber}", specimenForces, "N", notReached);
+            var specimenStresses = group.Where(x => x.TargetReached && CalculateApparentStressMpa(x.ForceN, specimenById[x.SpecimenId].DiameterMm).HasValue)
                 .GroupBy(x => x.SpecimenId, StringComparer.OrdinalIgnoreCase)
-                .Select(x => x.Average(p => ParseOptional(p.ApparentStressMpa)!.Value)).ToList();
+                .Select(x => x.Average(p => CalculateApparentStressMpa(p.ForceN, specimenById[p.SpecimenId].DiameterMm)!.Value)).ToList();
             AddSummary(rows, $"Apparent Compressive Stress at {group.Key.Target}% Strain", group.Key.Method,
-                $"{group.Key.Hold} s hold · cycle {group.Key.CycleNumber}", specimenStresses, "MPa", notReached);
+                $"{group.Key.Hold} s hold · {group.Key.Displacement} mm displacement · cycle {group.Key.CycleNumber}", specimenStresses, "MPa", notReached);
+        }
+        var retentionGroups = CalculateCompressionRetentions(compression)
+            .Where(x => specimenById.ContainsKey(x.Point.SpecimenId))
+            .GroupBy(x => new
+            {
+                Method = MethodKey(specimenById[x.Point.SpecimenId]),
+                Target = NumericKey(x.Point.TargetStrainPercent),
+                Displacement = NumericKey(x.Point.DisplacementMm),
+                x.Point.CycleNumber,
+                ReferenceTime = NumericKey(x.Reference.HoldTimeSeconds),
+                LaterTime = NumericKey(x.Point.HoldTimeSeconds)
+            });
+        foreach (var group in retentionGroups)
+        {
+            var perSpecimen = group.GroupBy(x => x.Point.SpecimenId, StringComparer.OrdinalIgnoreCase)
+                .Select(x => x.Average(reading => reading.Retention)).ToList();
+            AddSummary(rows, $"Force retention at {group.Key.Target}% Strain", group.Key.Method,
+                $"{group.Key.ReferenceTime}–{group.Key.LaterTime} s · {group.Key.Displacement} mm displacement · cycle {group.Key.CycleNumber}",
+                perSpecimen, "%", 0);
         }
         var reductionGroups = compression
-            .Where(x => x.TargetReached && x.CycleNumber == 1 && ParseOptional(x.ForceN).HasValue)
+            .Where(x => x.TargetReached && x.CycleNumber == 1 && ParseOptional(x.ForceN) >= 0d && ParseOptional(x.TargetStrainPercent) is > 0d and <= 100d)
             .GroupBy(x =>
             {
                 specimenById.TryGetValue(x.SpecimenId, out var specimen);
-                return new { Method = MethodKey(specimen), Target = NumericKey(x.TargetStrainPercent) };
+                return new { Method = MethodKey(specimen), Target = NumericKey(x.TargetStrainPercent), Displacement = NumericKey(x.DisplacementMm) };
             });
         foreach (var group in reductionGroups)
         {
             var reductions = group.GroupBy(x => x.SpecimenId, StringComparer.OrdinalIgnoreCase)
                 .Select(specimenRows =>
                 {
-                    var at10 = specimenRows.FirstOrDefault(x => ParseOptional(x.HoldTimeSeconds) == 10d);
-                    var at30 = specimenRows.FirstOrDefault(x => ParseOptional(x.HoldTimeSeconds) == 30d);
-                    return CalculateForceReductionPercent(at10?.ForceN, at30?.ForceN);
+                    var at10 = specimenRows.Where(x => ParseOptional(x.HoldTimeSeconds) == 10d).ToList();
+                    var at30 = specimenRows.Where(x => ParseOptional(x.HoldTimeSeconds) == 30d).ToList();
+                    return at10.Count == 1 && at30.Count == 1 && ParseOptional(at10[0].DisplacementMm) > 0d &&
+                        ParseOptional(at10[0].DisplacementMm) == ParseOptional(at30[0].DisplacementMm)
+                        ? CalculateForceReductionPercent(at10[0].ForceN, at30[0].ForceN) : null;
                 })
                 .Where(x => x.HasValue).Select(x => x!.Value).ToList();
             AddSummary(rows, $"Force reduction from 10 s to 30 s at {group.Key.Target}% Strain", group.Key.Method,
-                "first compression only", reductions, "%", 0);
+                $"first compression only · {group.Key.Displacement} mm displacement", reductions, "%", 0);
         }
-        var shoreGroups = shore.Where(x => ParseOptional(x.HardnessValue).HasValue && x.ShoreScale is "A" or "D")
+        var shoreGroups = shore.Where(x => ParseOptional(x.HardnessValue) is >= 0d and <= 100d && x.ShoreScale is "A" or "D")
             .GroupBy(x =>
             {
                 specimenById.TryGetValue(x.SpecimenId, out var s);
@@ -207,6 +270,21 @@ public sealed class FlexibleMaterialTestingService
                 .Select(x => x.Average(p => ParseOptional(p.HardnessValue)!.Value)).ToList();
             AddSummary(rows, $"Shore {group.Key.ShoreScale} Hardness", group.Key.Method,
                 $"{group.Key.Time} s reading · {group.Key.Thickness} mm", independentSpecimens, $"Shore {group.Key.ShoreScale}", 0);
+        }
+        var recoveryGroups = (recovery ?? []).Where(x => specimenById.ContainsKey(x.SpecimenId) &&
+            x.CycleNumber > 0 && x.TvlContactOffsetError.Length == 0 && ParseOptional(x.CompressionPercent) is > 0d and <= 100d &&
+            ParseOptional(x.CompressionHoldSeconds) >= 0d && ParseOptional(x.RestTimeSeconds) >= 0d &&
+            CalculateResidualHeightLossPercent(x.InitialHeightMm, x.HeightAfterRestMm).HasValue)
+            .GroupBy(x => new { Method = MethodKey(specimenById[x.SpecimenId]),
+                Compression = NumericKey(x.CompressionPercent), Hold = NumericKey(x.CompressionHoldSeconds),
+                Rest = NumericKey(x.RestTimeSeconds), Height = NumericKey(x.InitialHeightMm), x.CycleNumber });
+        foreach (var group in recoveryGroups)
+        {
+            var values = group.GroupBy(x => x.SpecimenId, StringComparer.OrdinalIgnoreCase)
+                .Select(x => x.Average(p => CalculateResidualHeightLossPercent(p.InitialHeightMm, p.HeightAfterRestMm)!.Value)).ToList();
+            AddSummary(rows, "Residual height loss after recovery", group.Key.Method,
+                $"{group.Key.Compression}% compression · {group.Key.Hold} s compressed hold · {group.Key.Rest} s rest · {group.Key.Height} mm initial height · cycle {group.Key.CycleNumber}",
+                values, "%", 0);
         }
         return rows.OrderBy(x => x.Metric, StringComparer.CurrentCultureIgnoreCase).ThenBy(x => x.MethodGroup).ToList();
     }
@@ -240,26 +318,35 @@ public sealed class FlexibleMaterialTestingService
         $"{s.Shape} {NumericKey(s.DiameterMm)} x {NumericKey(s.InitialHeightMm)} mm; " +
         $"{NumericKey(s.InfillPercent)}% {s.InfillPattern}; nozzle {NumericKey(s.NozzleDiameterMm)} mm; layer {NumericKey(s.LayerHeightMm)} mm; " +
         $"walls {NumericKey(s.Perimeters)}; top/bottom {NumericKey(s.TopLayers)}/{NumericKey(s.BottomLayers)}; " +
-        $"temp {NumericKey(s.PrintTemperatureC)} C; EM {NumericKey(s.ExtrusionMultiplier)}; settings {Normalize(s.PrintSettings)}; {s.MethodVersion}";
+        $"temp {NumericKey(s.PrintTemperatureC)} C; EM {NumericKey(s.ExtrusionMultiplier)}; settings {Normalize(s.PrintSettings)}; {s.MethodVersion}; " +
+        $"thickness {NumericKey(s.ThicknessMm)} mm; method notes {Normalize(s.MethodNotes)}";
 
-    private static void AddSummary(List<FlexibleComparisonRow> rows, string metric, string method, string condition,
+    private static void AddSummary(List<FlexibleMetricGroupSummary> rows, string metric, string method, string condition,
         IReadOnlyList<double> values, string unit, int notReached)
     {
-        if (values.Count == 0 && notReached == 0) return;
-        var mean = values.Count == 0 ? string.Empty : values.Average().ToString("0.###", CultureInfo.CurrentCulture);
-        var sd = values.Count < 2 ? string.Empty : Math.Sqrt(values.Sum(x => Math.Pow(x - values.Average(), 2d)) / (values.Count - 1))
-            .ToString("0.###", CultureInfo.CurrentCulture);
-        var cv = values.Count < 2 || values.Average() == 0d ? string.Empty :
-            (Math.Sqrt(values.Sum(x => Math.Pow(x - values.Average(), 2d)) / (values.Count - 1)) / values.Average() * 100d)
-            .ToString("0.###", CultureInfo.CurrentCulture);
-        var minimum = values.Count == 0 ? string.Empty : values.Min().ToString("0.###", CultureInfo.CurrentCulture);
-        var maximum = values.Count == 0 ? string.Empty : values.Max().ToString("0.###", CultureInfo.CurrentCulture);
-        rows.Add(new FlexibleComparisonRow(metric, method, condition, values.Count, mean, sd, cv, minimum, maximum, unit, notReached));
+        var finite = values.Where(double.IsFinite).ToArray();
+        if (finite.Length == 0 && notReached == 0) return;
+        double? mean = finite.Length == 0 ? null : finite.Average();
+        double? sd = finite.Length < 2 ? null : Math.Sqrt(finite.Sum(x => Math.Pow(x - mean!.Value, 2d)) / (finite.Length - 1));
+        double? cv = mean is null or 0d ? null : sd / Math.Abs(mean.Value) * 100d;
+        if (mean.HasValue && !double.IsFinite(mean.Value)) mean = null;
+        if (sd.HasValue && !double.IsFinite(sd.Value)) sd = null;
+        if (cv.HasValue && !double.IsFinite(cv.Value)) cv = null;
+        var kind = metric.StartsWith("Compression Force", StringComparison.Ordinal) ? FlexibleMetricKind.CompressionForce :
+            metric.StartsWith("Apparent", StringComparison.Ordinal) ? FlexibleMetricKind.ApparentCompressiveStress :
+            metric.StartsWith("Force retention", StringComparison.Ordinal) ? FlexibleMetricKind.ForceRetention :
+            metric.StartsWith("Force reduction", StringComparison.Ordinal) ? FlexibleMetricKind.ForceReduction :
+            metric.StartsWith("Residual", StringComparison.Ordinal) ? FlexibleMetricKind.ResidualHeightLoss :
+            unit == "Shore A" ? FlexibleMetricKind.ShoreA : FlexibleMetricKind.ShoreD;
+        var key = string.Concat(new[] { "flexible-v1", kind.ToString(), metric, method, condition, unit }
+            .Select(value => value.Length.ToString(CultureInfo.InvariantCulture) + ":" + value));
+        rows.Add(new FlexibleMetricGroupSummary(kind, metric, method, condition, key, finite.Length,
+            mean, sd, cv, finite.Length == 0 ? null : finite.Min(), finite.Length == 0 ? null : finite.Max(), unit, notReached));
     }
 
     private static string Normalize(string? value) => string.IsNullOrWhiteSpace(value) ? "not recorded" : value.Trim();
     private static string NumericKey(string? value) => ParseOptional(value) is double parsed
-        ? parsed.ToString("G17", CultureInfo.InvariantCulture)
+        ? parsed.ToString("R", CultureInfo.InvariantCulture)
         : Normalize(value);
     private static string Format(double? value, string format = "0.00") => value.HasValue ? value.Value.ToString(format, CultureInfo.CurrentCulture) : string.Empty;
     private static string FormatHold(string? seconds) => ParseOptional(seconds) is double value ? $"{value:0.##} s hold" : "hold not recorded";

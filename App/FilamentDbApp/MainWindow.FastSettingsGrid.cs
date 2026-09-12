@@ -255,6 +255,15 @@ public partial class MainWindow
 
     private bool ApplyFastNativeSettingsChanges(IReadOnlyList<MaterialsPrototypeChange> changes)
     {
+        if (changes.Any(change => change.Row.Source is NativeSettingRow row &&
+                string.Equals(row.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(row.Parameter, FlexibleRecoveryHoldParameter, StringComparison.OrdinalIgnoreCase) &&
+                !IsValidRecoveryHoldSeconds(change.NewValue)))
+        {
+            MessageBox.Show(this, "Default recovery compressed hold must be a nonnegative number in seconds.",
+                "Flexible Material Testing Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return false;
+        }
         foreach (var change in changes)
         {
             SetPropertyValue(change.Row.Source, change.Column.PropertyName!, change.NewValue);

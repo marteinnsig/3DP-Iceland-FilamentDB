@@ -1,6 +1,40 @@
 # Help Control and Field Ledger
 
-Version: v65.0.0 catalog-driven Material-entry coverage
+Version: v66.0.6 Flexible intelligence candidate coverage
+
+Compare / FlexibleComparisonEvidence aligns A-D results by metric/unit/measurement condition in one table.
+Video Planner / SelectedFlexibleVideoEvidence and Recommendations / SelectedFlexibleRecommendationEvidence are read-only expanders
+for the currently displayed Material Detail identity; their panels carry saved evidence and matching visible-scope peer candidates.
+Help material-detail.compare, material-detail.general and material-detail.controls-fields own these destinations. No editable input
+or persistence command is added. Existing reset, selection and successful-save refresh update them without changing Overall.
+
+Material Detail / General / Flexible Material Testing is a compact coverage summary (AutomationId MaterialDetailsFlexibleEvidence).
+Mechanical / Engineering Dashboard / Flexible Material Testing owns the result tables (MaterialDetailsFlexibleDashboard).
+DashboardFlexiblePanel renders one table and collapsed Test setup per method; FlexibleDashboardSetup1..N expose setup expanders.
+Help material-detail.mechanical owns these read-only controls. Statistics are aligned once per table; conditions are shared.
+Saved refresh and reset update the Mechanical section without touching Flexible measurement editors or legacy Overall.
+Help material-detail.general and flexible-testing.overview own scope, units, missing values and save/refresh guidance.
+Saved active MaterialID sessions feed detached typed summaries; no editor, new input handler or persistence action is introduced.
+Comparable Results adds Recovery and shares the same calculations; it remains selected-session scoped, including history inspection.
+Full Verification owns projection/format contracts; owner accepts readability and General/Comparable navigation.
+
+Compression / Force retention % is read-only, owned by FlexibleMaterialTestingService and Help's flexible-testing reference.
+It uses saved factual force/hold values in the same specimen, cycle, target and displacement group; the first point stays blank.
+Dependent values update after commit through property notification without replacing ItemsSource. Raw readings remain authoritative.
+Add Relaxation Point is retired. Saved Stress Relaxation appears only for a specimen with older rows; otherwise the tab is hidden;
+its model, storage, export/recovery and existing delete ownership remain supported, not a temporary replacement adapter.
+Comparable Results owns read-only retention summaries by method, target, displacement, cycle and actual time interval.
+Full Verification covers independent n and statistics; owner acceptance covers focus, readability, visibility and Help navigation.
+
+Recovery / TVL contact offset mm is an alternate editable representation of initial minus recovered height, under flexible-testing.overview.
+Zero is initial contact before loading; positive offsets mean downward travel. Decimal comma/dot input retains partial/invalid text.
+Invalid TVL blocks saving; blank clears height and zero means full height recovery. Direct height entry is a supported alternative.
+Property notifications synchronize the two inputs without rebind. Existing saved heights are authoritative, and historical offsets
+are derived equivalents. No schema, input handler registration, scenario authorization or seed changes are needed.
+
+Settings Manager / Flexible Material Testing / Default recovery compressed hold is an editable nonnegative seconds value,
+initially 30. Existing Settings editing and Save/Reload/default restoration own persistence; Add Recovery snapshots it into new rows.
+Old readings and the separate rest-time default remain unchanged. Help settings.reference and flexible-testing.overview own guidance.
 
 Purpose: authoritative control-level inventory for the mandatory v50.4
 exhaustive Help audit. `Docs/HELP_COVERAGE_MATRIX.md` remains the accepted
@@ -41,14 +75,14 @@ Source snapshot: canonical runtime-accepted v55.0.6 on 2026-07-28.
 |---|---:|---|
 | Top-level tabs | 24 | Preserve accepted overview and contextual mappings, including Flexible Material Testing |
 | Nested tabs | 16 | Preserve accepted Experimental and Material Detail nested-aware mappings |
-| XAML buttons | 170 | Map visible action, handler, owner and Help subsection |
+| XAML buttons | 169 | Map visible action, handler, owner and Help subsection |
 | XAML menu items | 60 | Separate headings/separators from invoked commands |
 | XAML text boxes | 35 | Determine editable, read-only, multiline and generated output |
 | XAML password boxes | 2 | Record secret ownership and non-persistence boundary |
 | XAML combo boxes | 49 | Record source, allowed choice, default and save timing |
 | XAML checkboxes | 10 | Record true/false effect, persistence and dependent states |
 | XAML data grids | 38 | Reconcile grid-level read-only state and runtime columns |
-| XAML grid-column declarations | 420 | Resolve binding, grid owner and actual editability |
+| XAML grid-column declarations | 425 | Resolve binding, grid owner and actual editability |
 | Runtime-built windows/dialogs | open | Inventory constructors, generated controls and confirmations |
 | Owner-drawn/custom grids | 6 known | Reconcile column builders and supported edit interactions |
 
@@ -202,3 +236,31 @@ not misclassified as a user-editable XAML field.
 The registry format and complete candidate rows are the remaining v50.4.0
 implementation work. No exhaustive Help content is accepted until that ledger
 can detect missing additions.
+
+Report previews, HTML/TXT/PDF exports and opted-in public report templates now carry safe Flexible aggregates for actual scope.
+Existing report controls and help destinations own generation; flexible-testing.overview explains statistics, method groups and privacy.
+No new editable controls; fallback PDF continuation preserves all results. Existing scenario authorization and publish opt-ins remain.
+
+v66.0.5: Rankings Dashboard, Category Rankings and Awards & Winners add Flexible read-only evidence sections.
+FlexibleRanking/Category/AwardCategoryFilter and ExportFlexibleRanking/Category/AwardCsv belong to analysis.rankings,
+analysis.category-rankings and analysis.awards. Each uses its own category; physical/visible scope filters remain shared.
+Test setup expanders expose saved internal methods only; CSV/report renderers project safe identifiers and numerical conditions.
+No editable grid or measurement field is added. Standard noneditable ComboBoxes retain native keyboard navigation.
+Reset restores All Flexible categories; refresh/empty-scope clearing and successful saved-measurement refresh own recalculation.
+
+v66.0.6: FlexibleVideo/Recommendation/ResearchChoice, CopyFlexible*Brief and SaveFlexible*Idea use stable AutomationIds.
+Help material-detail.video-planner, material-detail.recommendations and youtube.overview own the dataset opportunity selectors,
+single-line material/topic choices, method details in the result panel, clipboard action and explicit saved-idea snapshot action. Existing selected-material panels stay.
+Dashboard/AI topics cover visible/processed scope, declared topic limits, safe aggregate preview and unchanged consent boundary.
+No new editable grid is introduced. Before saving, the existing idea grid commits cell/row edits through the accepted shared flow.
+Detail clearing neither clears nor rebinds the global saved queue; existing editable-grid handlers/persistence remain supported.
+
+## v66.0.7 Flexible analytics
+material-detail.analytics owns FlexibleAnalyticsEvidence and the generated native-unit charts, scoped by existing Chart Mode.
+material-detail.compare owns additional SD/CV/range in the accepted read-only comparison. No new editing or persistence controls.
+
+v66.0.7 Compare correction: material-detail.compare owns one condition table; FlexibleCompareSetup expanders are retired.
+Saved method snapshots remain supported by data entry, Mechanical detail, analytics and report consumers.
+
+v66.0.8: material-detail.video-planner and youtube.overview own Flexible candidates in the existing read-only discovery grids.
+No controls/IDs or editing path added. Copy actions use current generated facts; saved records are not rewritten.

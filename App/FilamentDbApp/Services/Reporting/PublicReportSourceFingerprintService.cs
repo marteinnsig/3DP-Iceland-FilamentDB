@@ -33,6 +33,12 @@ public sealed class PublicReportSourceFingerprintService
             FROM BaseMaterialCatalog
             ORDER BY BaseMaterialId
             """),
+        ("FlexibleTestSessions", "SELECT * FROM FlexibleTestSessions ORDER BY FlexibleTestSessionId"),
+        ("FlexibleTestSpecimens", "SELECT * FROM FlexibleTestSpecimens ORDER BY SpecimenId"),
+        ("CompressionMeasurementPoints", "SELECT * FROM CompressionMeasurementPoints ORDER BY CompressionPointId"),
+        ("StressRelaxationPoints", "SELECT * FROM StressRelaxationPoints ORDER BY RelaxationPointId"),
+        ("RecoveryMeasurements", "SELECT * FROM RecoveryMeasurements ORDER BY RecoveryMeasurementId"),
+        ("ShoreHardnessReadings", "SELECT * FROM ShoreHardnessReadings ORDER BY ShoreReadingId"),
         ("NativeTensileResults", "SELECT * FROM NativeTensileResults ORDER BY MaterialId COLLATE NOCASE"),
         ("NativeTensileSamples", """
             SELECT * FROM NativeTensileSamples
@@ -55,7 +61,9 @@ public sealed class PublicReportSourceFingerprintService
     public static bool CanonicalQueriesUseNativeTables() =>
         CanonicalQueries.All(query =>
             query.Name.StartsWith("Native", StringComparison.Ordinal) ||
-            string.Equals(query.Name, "BaseMaterialCatalog", StringComparison.Ordinal));
+            string.Equals(query.Name, "BaseMaterialCatalog", StringComparison.Ordinal) ||
+            query.Name is "FlexibleTestSessions" or "FlexibleTestSpecimens" or "CompressionMeasurementPoints" or
+                "StressRelaxationPoints" or "RecoveryMeasurements" or "ShoreHardnessReadings");
 
     public string Compute(string databasePath, IEnumerable<string> publicMaterialIds, string canonicalReportProjection)
     {
@@ -83,7 +91,17 @@ public sealed class PublicReportSourceFingerprintService
         using var connection = new SqliteConnection(connectionString);
         connection.Open();
 
-        foreach (var query in CanonicalQueries)
+        AppendQueryRows(canonical, connection, CanonicalQueries);
+        return Digest(canonical);
+    }
+
+    private static string Digest(StringBuilder canonical) =>
+        Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical.ToString()))).ToLowerInvariant();
+
+    private static void AppendQueryRows(StringBuilder canonical, SqliteConnection connection,
+        IEnumerable<(string Name, string Sql)> queries)
+    {
+        foreach (var query in queries)
         {
             canonical.Append("Table:").Append(query.Name).Append('\n');
             using var command = connection.CreateCommand();
@@ -92,16 +110,61 @@ public sealed class PublicReportSourceFingerprintService
             while (reader.Read())
             {
                 for (var index = 0; index < reader.FieldCount; index++)
-                {
                     AppendValue(canonical, reader.GetName(index), DatabaseValue(reader, index));
-                }
                 canonical.Append("RowEnd\n");
             }
         }
-
-        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonical.ToString()))).ToLowerInvariant();
     }
 
+    /// <summary>Exercises actual Flexible SELECT queries and canonical hashing with synthetic in-memory SQLite only.</summary>
+    public static bool VerifyFlexibleSourceFreshness()
+    {
+        (string Name, string Id)[] tables =
+        [
+            ("FlexibleTestSessions", "FlexibleTestSessionId"), ("FlexibleTestSpecimens", "SpecimenId"),
+            ("CompressionMeasurementPoints", "CompressionPointId"), ("StressRelaxationPoints", "RelaxationPointId"),
+            ("RecoveryMeasurements", "RecoveryMeasurementId"), ("ShoreHardnessReadings", "ShoreReadingId")
+        ];
+        var queries = CanonicalQueries.Where(query => tables.Any(table => table.Name == query.Name)).ToArray();
+        if (queries.Length != tables.Length) return false;
+        using var connection = new SqliteConnection("Data Source=:memory:");
+        connection.Open();
+        void Execute(string sql)
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = sql;
+            command.ExecuteNonQuery();
+        }
+        string Fingerprint()
+        {
+            var canonical = new StringBuilder();
+            AppendQueryRows(canonical, connection, queries);
+            return Digest(canonical);
+        }
+        foreach (var table in tables)
+        {
+            Execute($"CREATE TABLE {table.Name} ({table.Id} TEXT PRIMARY KEY, RawValue TEXT, IsActive INTEGER);");
+            Execute($"INSERT INTO {table.Name} VALUES ('synthetic', '10', 1);");
+        }
+        var baseline = Fingerprint();
+        foreach (var table in tables)
+        {
+            Execute($"UPDATE {table.Name} SET RawValue = '11';");
+            if (Fingerprint() == baseline) return false;
+            Execute($"UPDATE {table.Name} SET RawValue = '10';");
+            if (Fingerprint() != baseline) return false;
+        }
+        Execute("UPDATE FlexibleTestSessions SET IsActive = 0;");
+        if (Fingerprint() == baseline) return false;
+        Execute("UPDATE FlexibleTestSessions SET IsActive = 1;");
+        Execute("DELETE FROM RecoveryMeasurements;");
+        if (Fingerprint() == baseline) return false;
+        Execute("INSERT INTO RecoveryMeasurements VALUES ('synthetic', '10', 1);");
+        Execute("UPDATE ShoreHardnessReadings SET RawValue = NULL;");
+        if (Fingerprint() == baseline) return false;
+        Execute("UPDATE ShoreHardnessReadings SET RawValue = '10';");
+        return Fingerprint() == baseline;
+    }
     public string BuildMetadataJson(string fingerprint, int publicMaterials, DateTime generatedAt) =>
         JsonSerializer.Serialize(new PublicReportSourceFingerprintRecord
         {

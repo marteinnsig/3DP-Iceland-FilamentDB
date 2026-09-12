@@ -8,10 +8,10 @@
     <ApplicationIcon>Assets\3dp-iceland-labs-icon.ico</ApplicationIcon>
     <AssemblyName>3DPIcelandFilamentDB</AssemblyName>
     <RootNamespace>FilamentDbApp</RootNamespace>
-    <Version>65.0.0</Version>
-    <AssemblyVersion>65.0.0.0</AssemblyVersion>
-    <FileVersion>65.0.0.0</FileVersion>
-    <InformationalVersion>65.0.0-CATALOG-MATERIAL-CHOICES</InformationalVersion>
+    <Version>66.0.8</Version>
+    <AssemblyVersion>66.0.8.0</AssemblyVersion>
+    <FileVersion>66.0.8.0</FileVersion>
+    <InformationalVersion>66.0.8-FLEXIBLE-INTEGRATION-CANDIDATE</InformationalVersion>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Copyright>Copyright © 2026 Marteinn Sigurðsson / 3DPIceland Labs</Copyright>
   </PropertyGroup>

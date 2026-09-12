@@ -1,3 +1,6 @@
+using FilamentDbApp.Models;
+using FilamentDbApp.Services.Reporting;
+using System.Text.RegularExpressions;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -19,7 +22,10 @@ public sealed record OpenAiPilotMaterial(
     double? ThermalResultTemperatureC = null,
     double? ThermalScore = null,
     string ThermalMethodVersion = "",
-    string ThermalLimitation = "");
+    string ThermalLimitation = "")
+{
+    public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
+}
 
 public sealed record OpenAiPilotInput(
     string Template,
@@ -104,7 +110,7 @@ public sealed class OpenAiAssistantPilotService
 {
     public const string Endpoint = "https://api.openai.com/v1/responses";
     public const string PayloadSchema = "3dpiceland.openai-material-pilot.v1";
-    public const string PromptVersion = "v61.0.6-thermal-advisory-v3";
+    public const string PromptVersion = "v66.0.6-flexible-advisory-v4";
     public const int MaximumMaterials = 40;
     public const int MaximumPlanningNoteCharacters = 2000;
 
@@ -184,6 +190,10 @@ public sealed class OpenAiAssistantPilotService
                 "Use only the supplied material records. Never invent evidence IDs. Treat every recommendation as advisory. " +
                 "Thermal values are nearby probe-indicated fixture temperatures from a non-standard comparative method; " +
                 "never describe them as ASTM D648, ISO 75, specimen temperature, certified HDT or manufacturer limits. " +
+                "Flexible results are comparative in-house aggregates, not certified ASTM or ISO results. " +
+                "Compare Flexible values only when groupId and methodId match exactly; n counts independent specimens. " +
+                "Missing values are unknown, never zero. Higher force or Shore hardness is descriptive, not universally better. " +
+                "Keep Flexible evidence separate from Overall; do not calculate a combined score. " +
                 "Do not request tools, files, URLs, purchasing, inventory, customer, quote, path or credential data.",
             input = governedInputJson,
             text = new
@@ -490,8 +500,75 @@ public sealed class OpenAiAssistantPilotService
         material.ThermalResultTemperatureC,
         material.ThermalScore,
         Limit(material.ThermalMethodVersion, 120),
-        Limit(material.ThermalLimitation, 360));
+        Limit(material.ThermalLimitation, 360))
+    {
+        FlexibleResults = NormalizeFlexibleResults(material.FlexibleResults)
+    };
 
+    private static IReadOnlyList<PublicFlexibleMetricGroup> NormalizeFlexibleResults(IReadOnlyList<PublicFlexibleMetricGroup> results)
+    {
+        var normalized = new List<PublicFlexibleMetricGroup>();
+        foreach (var row in results)
+        {
+            if (!Regex.IsMatch(row.GroupId, "^[a-f0-9]{64}$", RegexOptions.CultureInvariant) ||
+                !Regex.IsMatch(row.MethodId, "^[a-f0-9]{64}$", RegexOptions.CultureInvariant)) continue;
+            FlexibleMetricKind? kind = row.Unit switch
+            {
+                "N" => FlexibleMetricKind.CompressionForce,
+                "MPa" => FlexibleMetricKind.ApparentCompressiveStress,
+                "Shore A" => FlexibleMetricKind.ShoreA,
+                "Shore D" => FlexibleMetricKind.ShoreD,
+                "%" when row.Metric.StartsWith("Force retention", StringComparison.Ordinal) => FlexibleMetricKind.ForceRetention,
+                "%" when row.Metric.StartsWith("Force reduction", StringComparison.Ordinal) => FlexibleMetricKind.ForceReduction,
+                "%" when row.Metric.StartsWith("Residual height loss", StringComparison.Ordinal) => FlexibleMetricKind.ResidualHeightLoss,
+                _ => null
+            };
+            if (!kind.HasValue) continue;
+            var summary = new FlexibleMetricGroupSummary(kind.Value, row.Metric, row.MethodId, row.Condition, row.GroupId,
+                row.SpecimenCount, row.Mean, row.StandardDeviation, row.CoefficientOfVariation,
+                row.Minimum, row.Maximum, row.Unit, row.NotReachedCount);
+            var safe = FlexibleReportEvidenceService.Build(new("", [summary], 0, 0, 0))[0];
+            normalized.Add(safe with { GroupId = row.GroupId, MethodId = row.MethodId });
+        }
+        return normalized;
+    }
+
+    /// <summary>Pure preview-only acceptance; never invokes the network execution path.</summary>
+    public static bool VerifyFlexiblePreviewContract()
+    {
+        var summary = new FlexibleMetricGroupSummary(FlexibleMetricKind.CompressionForce,
+            "Compression Force at 20% Strain", "PRIVATE-AI-METHOD-NOTES", "30 s hold · 2 mm displacement · cycle 1",
+            "PRIVATE-AI-COMPARISON-KEY", 3, 0, null, null, 0, 0, "N", 0);
+        var groups = FlexibleReportEvidenceService.Build(new("MAT-AI-TEST", [summary], 1, 3, 0));
+        var material = new OpenAiPilotMaterial("MAT-AI-TEST", "Synthetic", "", "", "TPU", "", "", "")
+        {
+            FlexibleResults = groups
+        };
+        var service = new OpenAiAssistantPilotService();
+        OpenAiPilotPreview Preview(OpenAiPilotMaterial value) => service.BuildPreview("gpt-5-mini", new("Comparison", "", [value]));
+        var initial = Preview(material);
+        var changed = Preview(material with { FlexibleResults = [groups[0] with { Mean = 2 }] });
+        var missing = Preview(material with { FlexibleResults = [groups[0] with { Mean = double.NaN, Condition = "PRIVATE-AI-PATH.sqlite" }] });
+        using var request = JsonDocument.Parse(initial.RequestBodyJson);
+        using var payload = JsonDocument.Parse(request.RootElement.GetProperty("input").GetString()!);
+        var result = payload.RootElement.GetProperty("materials")[0].GetProperty("flexibleResults")[0];
+        using var missingRequest = JsonDocument.Parse(missing.RequestBodyJson);
+        using var missingPayload = JsonDocument.Parse(missingRequest.RootElement.GetProperty("input").GetString()!);
+        var missingResult = missingPayload.RootElement.GetProperty("materials")[0].GetProperty("flexibleResults")[0];
+        var allowedFields = new[] { "groupId", "methodId", "metric", "condition", "specimenCount", "mean",
+            "standardDeviation", "coefficientOfVariation", "minimum", "maximum", "unit", "notReachedCount" };
+        var shapeAllowed = result.EnumerateObject().Select(property => property.Name).OrderBy(name => name, StringComparer.Ordinal)
+            .SequenceEqual(allowedFields.OrderBy(name => name, StringComparer.Ordinal));
+        return shapeAllowed && initial.RequestSha256 != changed.RequestSha256 &&
+            initial.RequestSha256 == Preview(material).RequestSha256 &&
+            !request.RootElement.GetProperty("store").GetBoolean() && request.RootElement.GetProperty("tools").GetArrayLength() == 0 &&
+            result.GetProperty("mean").GetDouble() == 0 && result.GetProperty("standardDeviation").ValueKind == JsonValueKind.Null &&
+            result.GetProperty("specimenCount").GetInt32() == 3 && result.GetProperty("groupId").GetString() == groups[0].GroupId &&
+            missingResult.GetProperty("mean").ValueKind == JsonValueKind.Null &&
+            !initial.RequestBodyJson.Contains("PRIVATE-AI", StringComparison.Ordinal) &&
+            !missing.RequestBodyJson.Contains("PRIVATE-AI", StringComparison.Ordinal) &&
+            initial.AllowedMaterialIds.SetEquals(new[] { "MAT-AI-TEST" });
+    }
     private static string Limit(string? value, int maximum) =>
         string.IsNullOrWhiteSpace(value)
             ? string.Empty

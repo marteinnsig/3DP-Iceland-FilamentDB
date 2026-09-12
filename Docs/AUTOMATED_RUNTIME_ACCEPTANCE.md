@@ -1,5 +1,58 @@
 # Automated Runtime Acceptance
 
+## v66.0.3 - Saved Flexible evidence candidate
+
+- Extend existing Full Verification with active MaterialID/parent isolation, Recovery condition/statistics, raw nonmutation,
+  displacement separation, ambiguous reduction rejection and read-only detail/missing-statistics formatting.
+- MaterialDetailsFlexibleEvidence is a stable read-only AutomationId; no editable surface or new input handler is added.
+- Existing disposable smoke and exact-state recovery remain the scenario owners. No new authorization or seed change is needed.
+- Material Detail visual wrapping and all-group readability remain owner acceptance, not a reflection-only usability claim.
+- Later report/ranking/research increments must extend their owning scenarios in their own recorded increments.
+- Debug/Release pass; profile `20260911223150-70e446de` passes Full Verification 451/451 and exact database/business-state recovery.
+- Owner visual/runtime review is pending; no owner-data automation or external publication.
+### Owner layout correction
+
+Owner rejected repetitive General method/statistics prose and requested Mechanical dashboard parity.
+General now contains coverage and the Mechanical location only. Mechanical / Engineering Dashboard has a Flexible table per method,
+with condition, result/unit, mean, n, SD, CV and range. Each saved method appears once in collapsed Test setup; shared conditions
+are shown once. The original verbose field builder is replaced, with no unused adapter retained. Saved cache and raw inputs persist.
+Selected-material dashboard scope moved forward from v66.0.7; other analytics remain planned. Overall remains unchanged.
+Existing Verification checks the revised read-only renderer, setup grouping and empty results; no new editable grid or scenario.
+Help, field ownership, Debug/Release and documentation gates pass. Profile `20260911230648-cd4b8e83` passes Full Verification 451/451 and exact database/business-state recovery.
+Synthetic WPF table rendering inspected; owner review of the revised Mechanical dashboard remains pending.
+
+## v66.0.2 - Recovery hold-default candidate
+
+- Existing Full Verification checks the 30 s built-in, one loaded setting, numeric validation and isolated new-row snapshots.
+- Existing Settings persistence/default completion and disposable smoke remain the owners; no new scenario or authorization is needed.
+- Fast Settings input uses its existing renderer/commit handler with a bounded pre-validation check before applying this value.
+- Recovery keeps accepted shared input/focus/commit paths. Owner checks Save Settings, Add Recovery and historical-row preservation.
+- Debug/Release and Help/docs pass; profile `20260910182851-e2f30af3` passes 450/450 and exact business-state recovery.
+- Owner acceptance pending; no Production, FTPS or owner-data automation.
+
+## v66.0.1 - Recovery TVL contact entry candidate
+
+- Existing Full Verification owns numeric conversion, pending-invalid blocking, dependent notifications, direct-height override,
+  historical raw preservation, SQLite roundtrip and editable binding ownership.
+- TVL input uses the same raw-string PropertyChanged and deferred save path as accepted Flexible/Tensile entry, avoiding a new
+  exception-driven binding mode. Partial text is preserved; invalid TVL blocks graph save. No ItemsSource refresh is introduced.
+- No new runner scenario, AutomationId authorization or seed refresh is warranted. Existing smoke owns isolated Full Verification.
+- Manual acceptance covers one-click 0,14 entry, Tab/Shift+Tab/arrows, focus, field synchronization and Help readability.
+- Debug/Release and Help/docs pass; profile `20260910181732-9500d441` passes 449/449 and exact business-state recovery.
+- Sequential initial-height repair tests pass; pending offset ownership ends only after valid initial-height commit.
+- Owner runtime acceptance pending. No owner-data automation, Production, FTPS or schema changes.
+
+## v66.0.0 - Compression retention candidate
+
+- Existing Full Verification owns compatible holds, dependent notifications, conditional saved-tab visibility and summary statistics.
+- Summary contracts cover independent specimen n, repeated reads, raw precision and method/interval/displacement/cycle separation.
+- Existing smoke owns disposable navigation and exact business-state recovery; no new scenario or authorization is required.
+- Canonical Tensile/shared input handlers were inspected. Flexible retains its accepted editor-focus branch and ContextIdle save.
+  Property notification updates dependent results without rebinding. Owner input and visual acceptance remain mandatory.
+- Historical relaxation storage and correction remain supported. Debug/Release and Help/docs gates pass.
+- Profile `20260910173647-74918792` passes Full Data Verification 448/448 and exact database/business-state recovery.
+- Owner acceptance remains pending; use Docs/V66_COMPRESSION_RETENTION_ACCEPTANCE.md.
+
 ## v65.0.0 - Catalog-driven Material entry choices accepted
 
 - Full Data Verification checks the Add Material preparation hook and complete canonical Base Material choice coverage.
@@ -1348,3 +1401,72 @@ business-state hash `4FBCF6A2656678875A6692C0A7AA30CD0CDC3F4AAB83003B3BB2C77081B
 - Owner runtime acceptance confirms exact order, saved/reset restart behavior,
   Purchase Price/Currency adjacency and No/Escape/window-close cancellation.
   Owner Full Data Verification passes.
+
+### Wide-window spacing correction
+
+Flexible tables use bounded 330/220 px text columns plus compact numeric columns, aligned left (950 px total).
+Long conditions wrap; narrow viewports retain horizontal scrolling. Enlarging the window no longer expands the columns.
+Debug/Release pass with zero warnings/errors. Actual WPF synthetic renders inspected at 1100 and 1900 px; spacing remains identical.
+Cosmetic-only change: no data, calculations, entry behavior, Help labels or scenario authorization changed; no new tester test warranted.
+Existing Help ownership remains valid. Owner visual acceptance of the new spacing is pending.
+## v66.0.3.1 - Flexible Material Detail Handoffs
+
+Owner accepted the compact v66.0.3 layout. Adds saved Flexible information to Material Detail Compare, Video Planner and Recommendations.
+Compare uses the exact method/condition key, A-D identities, mean/unit/n and an unmatched-peer marker; no universal winner or score.
+Selected-material video briefs use measured topics; guidance relates recorded load/retention/recovery/hardness to comparison choices.
+Matching candidates require shared measured keys and distinct MaterialIDs within the current Materials scope. Empty data remains empty.
+Both panels identify the displayed material, work without Overall and refresh from saved evidence; saved ideas remain immutable.
+Existing Overall and global ranking/planner/research/export contracts remain owned by the recorded later increments.
+Help and existing Full Verification cover isolation, matching, missing/zero and measured-topic guidance. No new input or scenario.
+Debug/Release, Help and documentation gates pass. Profile `20260911234829-81ae08d6` passes Full Verification 452/452 and exact recovery.
+Synthetic WPF renders inspected; owner runtime review pending. Canonical remains v65.0.0; no publication or release closure.
+
+### v66.0.4 Flexible report acceptance
+
+The existing disposable smoke/Full Verification runs a synthetic aggregate projection through all six public publishers and
+report pipeline/template/PDF contracts. It checks private canary exclusion, closed DTO shape, missing statistics, multi-page
+continuation and one certificate per material. Existing report controls retain their AutomationIds and authorization boundaries.
+No new runner scenario or owner-data mutation is required. Table wrapping and owner export readability remain visual acceptance.
+
+### v66.0.5 Flexible rankings and awards acceptance
+
+Existing disposable smoke/Full Verification owns new pure ranking/export contracts: exact method/condition grouping, distinct peers,
+conflicting duplicate rejection, ties, missing/nonfinite/zero, directional awards and private method/key exclusion from exports.
+Stable AutomationIds cover three Flexible category selectors, CSV actions and read-only output panels. No editable data-entry grid,
+new seed, mutation scenario or external authorization is needed. Existing refresh routing owns successful saved-data changes.
+Owner review covers selecting categories, physical filters, empty scope, grouped rows, scrolling and CSV parity.
+
+### v66.0.6 Flexible intelligence and snapshots
+
+Existing smoke/Full Verification adds measured-topic/exact-peer/privacy tests, VideoIdeaRecord snapshot roundtrip with immutable
+facts and null Overall, plus OpenAI exact12-field aggregate payload validation/hash-change/store=false/tools-empty checks.
+Nine new stable XAML control IDs cover selectors and explicit clipboard/save actions. Existing saved-queue persistence schema is reused.
+Tester performs no new owner mutation or live external request. Pure fixtures exercise serialization without creating invented source data.
+Manual runtime acceptance covers filter-away/select-again/save retention of existing ideas and committing an existing Notes edit before
+saving another idea. This UI sequence is not claimed covered by the pure snapshot test. No new data-entry grid or runner scenario.
+
+## v66.0.7 - Flexible analytics
+
+Existing disposable smoke/Full Verification owns the new analytics contract. It checks scope/condition partitioning, duplicate
+MaterialID handling, unchanged independent counts, zero/missing/invalid exclusion and signed native-unit axis bounds.
+FlexibleAnalyticsEvidence is read-only and uses the existing Analytics Chart Mode; no new editing, CRUD or authorization surface.
+Visual bar scale, long-label wrapping, scrolling and grouping acceptance remain manual. No seed/schema or public publisher change.
+
+### v66.0.7 unified Compare correction
+
+Owner removed setup-metadata partitioning from selected-material Compare. Existing Full Verification checks alignment despite
+method notes/dimensions and different n, separate hold conditions, no fabricated peers, zero/missing, and preservation of every
+saved summary when multiple summaries share a cell. No pooling or source mutation. Numbered setup renderer has no remaining
+runtime caller; snapshots remain supported by other consumers. Read-only layout still requires owner acceptance.
+
+## v66.0.8 research coverage
+
+Closure audit adds pure coverage tests to existing Full Verification: Flexible-only candidate readiness, untouched legacy profiles,
+exact-pair deduplication, material-video coverage, condition facts in calendar/playlist copy and no source-row mutation.
+No new editable control or schema; existing read-only lists and copy actions own the output. Disposable smoke remains the scenario.
+Normal Release build initially encountered an owner-process file lock; isolated Debug/Release passed, then normal Release passed
+once the owner closed the app. No owner process was stopped. Owner accepted earlier Settings/research-save/Analytics checks.
+
+Owner accepted final v66.0.8 research integration on 2026-09-12. All earlier acceptance checkpoints are complete.
+Successful v66 profiles are retained with file-hash parity under .private/acceptance/v66; latest/failed temp profiles remain.
+Older successful temp profiles may be cleaned after accepted commit/push; owner data and Release output are excluded.

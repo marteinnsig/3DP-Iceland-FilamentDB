@@ -1,4 +1,6 @@
-﻿namespace FilamentDbApp.Services.Reporting;
+using FilamentDbApp.Models;
+
+namespace FilamentDbApp.Services.Reporting;
 
 public sealed class ReportGeneratorService
 {
@@ -12,7 +14,10 @@ public sealed class ReportGeneratorService
                 row.Manufacturer,
                 row.ProductLine,
                 row.BaseMaterial,
-                BuildSections(row)))
+                BuildSections(row))
+            {
+                FlexibleResults = row.FlexibleResults.ToArray()
+            })
             .ToList();
 
         return new ReportingReportModel(reports);
@@ -50,6 +55,48 @@ public sealed class ReportGeneratorService
         return result;
     }
 
+    public static bool VerifyFlexibleEvidenceContract(IReadOnlyList<PublicFlexibleMetricGroup> groups)
+    {
+        if (groups.Count == 0) return false;
+        var input = new ReportingMaterialInput("FLEX-REPORT-CONTRACT", new Dictionary<string, object?>(),
+            new global::FilamentDbApp.Services.Calculations.MaterialResults("FLEX-REPORT-CONTRACT", null, null, null, DateTime.UnixEpoch))
+        {
+            FlexibleResults = groups
+        };
+        var payload = new ReportingDataPipelineService().BuildPayload(new[] { input });
+        var report = new ReportGeneratorService().BuildReport(payload);
+        var material = report.MaterialReports.Single();
+        var engineering = new MaterialEngineeringReportService().Build(report).Outputs.Single();
+        var continuationReport = new ReportingReportModel(new[]
+        {
+            material with
+            {
+                Sections = material.Sections.Concat(new[]
+                {
+                    new ReportingReportSection("Continuation fixture", ReportingSectionType.FlexibleMetrics,
+                        new Dictionary<string, string?> { ["Results"] = string.Join("\n", Enumerable.Range(0, 80).Select(i => "Condition " + i)) })
+                }).ToArray()
+            }
+        });
+        var continuationPdf = new ReportPdfRendererService().Render(continuationReport);
+        var certificateService = new ReportCertificateGeneratorService();
+        var certificates = certificateService.BuildCertificates(continuationReport, continuationPdf);
+        return continuationPdf.PageCount > 1 && continuationPdf.MaterialReportsRendered == 1 &&
+            certificates.Certificates.Count == 1 && certificateService.Verify(continuationReport, continuationPdf).Passed &&
+            !certificateService.Verify(continuationReport, continuationPdf with { MaterialReportsRendered = 0 }).Passed &&
+            !certificateService.Verify(continuationReport, continuationPdf with
+            {
+                Payload = new ReportingPdfPayload(continuationPdf.Payload.Pages.Select(page => page with { MaterialId = "WRONG-MATERIAL" }).ToArray())
+            }).Passed &&
+            !payload.Rows.Single().IsComplete &&
+            payload.Rows.Single().FlexibleResults.SequenceEqual(groups) &&
+            material.FlexibleResults.SequenceEqual(groups) &&
+            material.Sections.Single(section => section.SectionType == ReportingSectionType.FlexibleMetrics).Fields["Results"] ==
+                FlexibleReportEvidenceService.RenderText(groups) &&
+            !engineering.HasMechanicalMetricSection && engineering.FlexibleMetricGroupCount == groups.Count &&
+            new ReportTemplateService().BuildTemplates(report).Outputs.All(output => output.ReadyForRender) &&
+            ReportPdfRendererService.VerifyContinuationContract();
+    }
     private static IReadOnlyList<ReportingReportSection> BuildSections(ReportingMaterialSummaryRow row)
     {
         var sections = new List<ReportingReportSection>
@@ -78,6 +125,15 @@ public sealed class ReportGeneratorService
         AddMetricSection(sections, "Impact Upright", "kJ/m²", row.ImpactUprightKjM2);
         AddMetricSection(sections, "Stiffness", "MPa", row.StiffnessMpa);
 
+        if (row.FlexibleResults.Count > 0)
+        {
+            sections.Add(new ReportingReportSection("Flexible Material Testing", ReportingSectionType.FlexibleMetrics,
+                new Dictionary<string, string?>
+                {
+                    ["Results"] = FlexibleReportEvidenceService.RenderText(row.FlexibleResults)
+                }));
+        }
+
         return sections;
     }
 
@@ -104,7 +160,10 @@ public sealed record ReportingMaterialReportModel(
     string? Manufacturer,
     string? ProductLine,
     string? BaseMaterial,
-    IReadOnlyList<ReportingReportSection> Sections);
+    IReadOnlyList<ReportingReportSection> Sections)
+{
+    public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
+}
 
 public sealed record ReportingReportSection(
     string Title,
@@ -115,7 +174,8 @@ public enum ReportingSectionType
 {
     MaterialOverview,
     EngineeringSummary,
-    MechanicalMetric
+    MechanicalMetric,
+    FlexibleMetrics
 }
 
 public sealed class ReportingReportGeneratorVerificationResult
