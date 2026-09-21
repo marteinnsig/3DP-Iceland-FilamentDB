@@ -24,7 +24,14 @@ public sealed class ReportingDataPipelineService
                 Number(material.Summary.Stiffness?.ModulusMpa),
                 IsComplete(material.Summary))
             {
-                FlexibleResults = material.FlexibleResults.ToArray()
+                FlexibleResults = material.FlexibleResults.ToArray(),
+                PendulumResults = material.PendulumResults.ToArray(),
+                IzodMeanKjM2 = Number(material.Summary.Izod?.MeanKjM2),
+                CharpyMeanKjM2 = Number(material.Summary.Charpy?.MeanKjM2),
+                IzodScore = Number(material.Summary.Izod?.Score),
+                CharpyScore = Number(material.Summary.Charpy?.Score),
+                HeatTemperatureC = Number(material.Summary.HeatTemperatureC),
+                ResultModuleCount = material.Summary.ResultModuleCount
             })
             .ToList();
 
@@ -56,8 +63,7 @@ public sealed class ReportingDataPipelineService
                         result.ReportRows == result.InputRows &&
                         result.MaterialIdCoverage &&
                         result.NoDuplicateMaterialIds &&
-                        result.UsesVerifiedMaterialSummary &&
-                        result.CompleteRows > 0;
+                        result.UsesVerifiedMaterialSummary;
 
         return result;
     }
@@ -84,6 +90,7 @@ public sealed record ReportingMaterialInput(
     MaterialResults Summary)
 {
     public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
+    public IReadOnlyList<PublicPendulumImpactGroup> PendulumResults { get; init; } = Array.Empty<PublicPendulumImpactGroup>();
 }
 
 public sealed record ReportingDataPipelinePayload(
@@ -104,7 +111,14 @@ public sealed record ReportingMaterialSummaryRow(
     double? StiffnessMpa,
     bool IsComplete)
 {
+    public double? IzodMeanKjM2 { get; init; }
+    public double? CharpyMeanKjM2 { get; init; }
+    public double? IzodScore { get; init; }
+    public double? CharpyScore { get; init; }
+    public double? HeatTemperatureC { get; init; }
+    public int ResultModuleCount { get; init; }
     public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
+    public IReadOnlyList<PublicPendulumImpactGroup> PendulumResults { get; init; } = Array.Empty<PublicPendulumImpactGroup>();
 }
 
 public sealed class ReportingDataPipelineVerificationResult

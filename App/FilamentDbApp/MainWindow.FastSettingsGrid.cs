@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using FilamentDbApp.Services;
 
 namespace FilamentDbApp;
 
@@ -255,6 +256,20 @@ public partial class MainWindow
 
     private bool ApplyFastNativeSettingsChanges(IReadOnlyList<MaterialsPrototypeChange> changes)
     {
+        if (changes.Any(change => change.Row.Source is NativeSettingRow row && row.Section == PendulumSettingsSection) && !ValidatePendulumSettings(changes))
+        {
+            MessageBox.Show(this, "Specimen dimensions must be positive; notch depth must be nonnegative and smaller than the width.", "Izod / Charpy Settings");
+            return false;
+        }
+        foreach (var change in changes)
+            if (change.Row.Source is NativeSettingRow setting && setting.Section == FlexibleSettingsSection &&
+                change.Column.PropertyName == nameof(NativeSettingRow.Value) &&
+                FlexibleSessionTemplateService.Defaults.Any(x => x.Name == setting.Parameter) &&
+                !FlexibleSessionTemplateService.ValidateSetting(setting.Parameter, change.NewValue))
+            {
+                MessageBox.Show(this, $"{setting.Parameter} has an invalid value.", "Flexible Material Testing Settings");
+                return false;
+            }
         if (changes.Any(change => change.Row.Source is NativeSettingRow row &&
                 string.Equals(row.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(row.Parameter, FlexibleRecoveryHoldParameter, StringComparison.OrdinalIgnoreCase) &&

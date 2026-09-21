@@ -95,7 +95,7 @@ public sealed class WebsiteVerificationService
         result.HtmlGenerated = !string.IsNullOrWhiteSpace(templateHtml) && !string.IsNullOrWhiteSpace(dataJson);
         result.DataBlockValid = !string.IsNullOrWhiteSpace(dataJson) && dataJson.Contains("\"tensile\"") &&
                                 dataJson.Contains("\"impact\"") && dataJson.Contains("\"stiffness\"") &&
-                                dataJson.Contains("\"thermal\"");
+                                dataJson.Contains("\"thermal\"") && dataJson.Contains("\"izod\"") && dataJson.Contains("\"charpy\"");
         result.JsonValid = IsValidJson(dataJson);
         result.RequiredCssPresent = ContainsAny(templateHtml, "<style", "stylesheet");
         result.RequiredJavaScriptPresent = ContainsAny(templateHtml, "<script", "const DATA");
@@ -107,6 +107,7 @@ public sealed class WebsiteVerificationService
             "Fixture thermal temperature, °C",
             "3DP-THERMAL-PUBLIC-v61.0.7-r3",
             "<th>Stiffness</th><th>Thermal</th><th>Layer adhesion</th>",
+            "3DP-DIRECT-PENDULUM-v68.0.3", "DATA.izod", "DATA.charpy",
             "performanceProfileChart");
         var tensileSection = GetChartSection(templateHtml, "tensileChart");
         var impactSection = GetChartSection(templateHtml, "impactChart");
@@ -135,6 +136,7 @@ public sealed class WebsiteVerificationService
                                    payload.Tensile.Count == payload.Impact.Count &&
                                    payload.Tensile.Count == payload.Stiffness.Count &&
                                    payload.Tensile.Count == payload.Thermal.Count &&
+                                   payload.Tensile.Count == payload.Izod.Count && payload.Tensile.Count == payload.Charpy.Count &&
                                    payload.Tensile.Any(row => HasAnyNumeric(row, "upright", "flat")) &&
                                    payload.Thermal.Any(row => HasAnyNumeric(row, "value"));
         result.RadarPayloadValid = radar.Passed && radar.SelectedRadarRows == payload.Tensile.Count;

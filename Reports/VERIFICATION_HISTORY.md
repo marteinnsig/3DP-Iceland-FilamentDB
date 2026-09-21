@@ -1,3 +1,113 @@
+# v68.0.3 Izod and Charpy Ranking Integration candidate
+
+2026-09-21: Debug/Release zero warnings/errors; 477/477 Full Verification PASS.
+CRUD profile 20260921152732-53888720 passes persistence/restarts and exact business-state recovery.
+Final-binary smoke profile 20260921153054-62901854 passes updated recommendation contracts and UI selectors.
+Browser runtime, Help 807 candidates/429 columns, vulnerability, documentation and diff gates PASS.
+Evidence: Reports/V68_RANKING_INTEGRATION_EVIDENCE.md. Owner display/ranking acceptance pending; no ZIP or publication.
+
+# v68.0.2 Izod and Charpy Results Integration candidate
+
+2026-09-21: Debug/Release zero warnings/errors; Full Data Verification 475/475 and disposable CRUD PASS.
+Profile 20260921142945-cdff34bb; exact business-state recovery and unchanged canonical seed.
+Help coverage, browser presentation, vulnerability and documentation gates PASS.
+Final wording-only rebuild follows the full functional run; exact identities are retained in the evidence record.
+Evidence: Reports/V68_RESULTS_INTEGRATION_EVIDENCE.md. Owner display acceptance pending; no ZIP or live publication.
+
+# v68.0.1 Direct Izod and Charpy Entry candidate
+
+2026-09-21: Debug/Release zero warnings/errors; final Full Data Verification 472/472 and disposable CRUD PASS.
+Profile 20260921133555-613feb80; exact business-state recovery. Evidence: Reports/V68_DIRECT_CANDIDATE_EVIDENCE.md.
+Help, security, documentation and diff gates PASS; owner immediate typing/keyboard acceptance pending.
+
+# v68.0.0 Izod and Charpy Measurement Foundation candidate
+
+2026-09-21: Debug/Release zero warnings/errors; Full Data Verification 472/472 PASS.
+Exact normal Release CRUD profile: 20260921130621-53b8281e; method-specific create/edit/two restarts and cleanup PASS.
+Baseline/final business hash: 177F36F2E04451F190D9935B7FEA3A0B28B1BD7D392B9AD4E560FFD386C23D5E.
+Release DLL SHA-256: E5F8C185C2B252F5F3FEC4079ABB8B8DF17234462957B41F84539F7FAC04532A.
+Help 803/803 plus programmatic registration, documentation/diff and vulnerability gates PASS.
+Populated Izod/Charpy screenshots and synthetic HTML/PDF wrapping/pagination visually inspected.
+Evidence: .private/v68-izod-charpy; owner input/visual acceptance pending. No owner DB or canonical seed modified.
+Candidate handoff and exact click-by-click tests: Docs/V68_IZOD_CHARPY_ACCEPTANCE.md.
+No commit/push, Production promotion or live publication. Prior v67 owner decisions remain unchanged.
+
+# v67.0.10 owner-requested rollback
+Owner rollback final evidence: disposable smoke 20260912183352-f481d9e6; Full Verification 468/468 PASS.
+Baseline/final SQLite SHA-256: 482B2283089DBFCEE0C9FD53ABB313BA98CFAA484826A699E0F919A4CCFDB6C4.
+Baseline/final business hash: 2BA7E47D106B59B77AC10BC97508C96AD49C05095CB9EBA13778DDBD26B77FEF.
+Evidence: .private/v67-fast-flexible-entry/owner-rollback. Debug/Release, Help/docs/diff PASS. artifacts empty.
+Normal Release contains the restored deferred-focus editor. Further latency and bridge-retirement work stopped by owner.
+No commit/push/publication or owner data mutation. Earlier synchronous-focus candidates are superseded by this rollback.
+# v67.0.10 loaded-focus follow-up
+Loaded-focus final evidence: disposable smoke 20260912182755-602c25ec; Full Verification 468/468 PASS.
+Automation-only loaded WPF fixture passed immediate keyboard focus, first-digit text composition and explicit commit.
+Baseline/final SQLite SHA-256: C3BF2E3E98D23E412FA2859886FE9107EC7041B657B62F2A23057239CD2A3C74.
+Baseline/final business hash: 2BA7E47D106B59B77AC10BC97508C96AD49C05095CB9EBA13778DDBD26B77FEF.
+Evidence: .private/v67-fast-flexible-entry/loaded-focus. Debug/Release zero warnings/errors; Help/docs/diff PASS.
+Normal Release updated; artifacts empty. Owner immediate-click timing acceptance remains pending. No commit/push/publication.
+# v67.0.10 editor-restoration follow-up
+Editor-restoration final evidence: disposable smoke 20260912182018-6378fb7a; Full Verification 468/468 PASS.
+Includes layout-only ScrollChanged retaining the active editor and real scrolling committing it.
+Baseline/final SQLite SHA-256: 8F96C38CEF897FB75044148A87F50A6ABFD91470AFEFA4598226CB2478111322.
+Baseline/final business hash: 2BA7E47D106B59B77AC10BC97508C96AD49C05095CB9EBA13778DDBD26B77FEF.
+Evidence: .private/v67-fast-flexible-entry/editor-restoration. Debug/Release zero warnings/errors; Help/docs/diff PASS.
+Normal Release updated; artifacts empty. Owner typing acceptance pending; no commit/push/publication or owner data mutation.
+# v67.0.10 first-character follow-up
+First-character correction final evidence: disposable smoke 20260912181341-0bd7db20, Full Verification 468/468 PASS.
+Baseline/final SQLite SHA-256: 24367E0657072EE774CC13B81EFC7F487C60F69378588A5E20EA69EF3CFBE9CF.
+Baseline/final business hash: 2BA7E47D106B59B77AC10BC97508C96AD49C05095CB9EBA13778DDBD26B77FEF.
+Evidence: .private/v67-fast-flexible-entry/first-character. Normal Release updated; artifacts empty.
+Owner first-character timing test remains pending; no commit/push/publication or owner database mutation.
+# v67.0.10 - Fast Flexible Entry
+
+Final v67.0.10 candidate evidence (2026-09-12):
+Debug and Release builds: zero warnings/errors. Help coverage 801/801, documentation and git diff audits PASS.
+Disposable final smoke 20260912180523-813d1d7c: Full Verification 468/468 PASS, including the new fast-input contract.
+Baseline/final database SHA-256: B3447DB0420DB2039C868ECB3F366C8479032EFB7FBB75A933FF002EDBC3B09C.
+Baseline/final business hash: 2BA7E47D106B59B77AC10BC97508C96AD49C05095CB9EBA13778DDBD26B77FEF.
+Evidence retained in .private/v67-fast-flexible-entry. artifacts is empty; normal Release remains runnable.
+Independent review corrected same-parent selection reset, material-name sorting and detached Recovery event subscriptions.
+No real owner UI timing is claimed from these deterministic checks. Owner input/switch/restart acceptance remains pending.
+No owner data mutation, commit, push or publication in this increment. v67.0.11 retirement waits for runtime acceptance.
+# v67.0.9 - Flexible Selection Isolation
+
+Final candidate: Debug/Release zero warnings/errors; Help 801/801; documentation and diff audits PASS.
+Disposable smoke 20260912174014-cb93c4aa: Full Verification 467/467 PASS, including synthetic WPF selection isolation.
+Exact baseline/final database SHA-256: 3C4F9F5BC17BAB4A72AE753CE1AE478E77C91551F6438601654B0A03B1B82A10.
+Exact baseline/final business hash: 2BA7E47D106B59B77AC10BC97508C96AD49C05095CB9EBA13778DDBD26B77FEF.
+Evidence retained in .private/v67-selection-isolation. Normal Release updated; owner switch/edit/restart acceptance pending.
+No reassignment or repair of owner measurement associations performed. No push; earlier automatic-review block unresolved.
+# v67.0.8 - Shore Template Defaults
+
+Final candidate: normal Debug/Release zero warnings/errors; Help 801/801 and documentation/diff audits PASS.
+Disposable smoke 20260912170558-8c239b14: Full Verification 466/466 PASS, including repair scope, rollback and idempotence.
+Exact baseline/final database SHA-256: 384149A60DA7836E71EFECE2208566AA99BC161D97BF5D0D8F84694804858F78.
+Exact baseline/final business hash: 2BA7E47D106B59B77AC10BC97508C96AD49C05095CB9EBA13778DDBD26B77FEF.
+Evidence: .private/v67-shore-defaults. Owner app closed during work; normal Release updated. Repair runs at next owner startup.
+Owner runtime acceptance pending; no commit/push attempted. Isolated build artifacts removed after all consumers completed.
+# v67.0.7 - Flexible Session Ordering
+
+Final candidate: Debug/Release zero warnings/errors, Help 801/801, documentation/diff checks PASS.
+Disposable smoke 20260912165525-62152996: Full Verification 465/465 PASS, including numeric session/specimen adapters.
+Exact baseline/final database SHA-256: 15889CF1756DAA5E08E55C28AB3166D80C9AA23B302C4C4208E7CE656C2ECB73.
+Exact baseline/final business hash: 3E50F76D28278A24D9AF6DB0C72919074422D6336E4848FC1211928946A2E263.
+Evidence retained in .private/v67-session-ordering. Release directory updated; owner sorting/visual acceptance pending.
+# v67.0.6 - Flexible Control Cleanup
+
+Final candidate: Debug/Release zero warnings/errors; Help 801/801; release documentation and diff audits PASS.
+Disposable smoke profile 20260912155030-144fe9c2: Full Verification 465/465 PASS, including retirement and historical roundtrips.
+Exact baseline/final database SHA-256: 95ED75DD6FAB499009A3C64070376CB4772294ABCA8211926517C7975BD1EFE2.
+Exact baseline/final business hash: 3E50F76D28278A24D9AF6DB0C72919074422D6336E4848FC1211928946A2E263.
+Evidence: .private/v67-control-cleanup. Normal Release directory updated; owner visual acceptance pending.
+# v67.0.5 - Flexible Session Templates
+
+Final candidate verification: Debug/Release zero warnings/errors; Help 803/803 and release-documentation/diff audits PASS.
+Disposable smoke profile 20260912153714-70198f24: Full Verification 464/464 PASS, including template and SQLite rollback checks.
+Exact baseline/final database SHA-256: 1D0A209E39A8CCF147291456E9C3AF722B4F7F9A2D1DACE9B9A8073B6D215330.
+Exact baseline/final business hash: 3E50F76D28278A24D9AF6DB0C72919074422D6336E4848FC1211928946A2E263.
+Evidence retained in .private/v67-session-templates. Normal Release directory updated; owner runtime acceptance pending.
+Existing owner specimens have not been bulk-corrected yet: the authorized backup-first action is ready in the UI.
 # v67.0.4 - Flexible List Layout and Ordering
 
 Final verification: Debug/Release zero warnings/errors. Disposable smoke and Full Verification 463/463 PASS.
@@ -3912,3 +4022,12 @@ Debug/Release pass with zero warnings/errors. Actual WPF synthetic renders inspe
 Cosmetic-only change: no data, calculations, entry behavior, Help labels or scenario authorization changed; no new tester test warranted.
 Existing Help ownership remains valid. Owner visual acceptance of the new spacing is pending.
 Synthetic renders retained in C:\Users\maddi\AppData\Local\Temp\3DPIceland-FlexibleLayout-20260911.
+
+2026-09-21 v68.0.2 display correction: Debug/Release and smoke 475/475 PASS, profile 20260921145446-51b35ed6.
+Column order, Test Information grouping and mean-only Compare are covered; owner display acceptance pending.
+
+2026-09-21 v68.0.2 saved-layout v3 correction: Debug/Release, smoke and 475/475 Verification PASS.
+Profile 20260921145941-3074cf92; old appended-column layout, preserved widths and idempotent migration verified.
+
+2026-09-21 owner closure: v68.0.3 application accepted; v68.0.2 display follow-up accepted; commit/push authorized.
+Accepted Release DLL remains 52201B4B0341DF8A014A830E7A168B69610B50D1984D6BF6EE226215356EEE4D.

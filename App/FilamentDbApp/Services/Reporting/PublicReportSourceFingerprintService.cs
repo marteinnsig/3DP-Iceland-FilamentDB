@@ -34,6 +34,8 @@ public sealed class PublicReportSourceFingerprintService
             ORDER BY BaseMaterialId
             """),
         ("FlexibleTestSessions", "SELECT * FROM FlexibleTestSessions ORDER BY FlexibleTestSessionId"),
+        ("PendulumImpactRuns", "SELECT * FROM PendulumImpactRuns ORDER BY RunId"),
+        ("PendulumImpactSpecimens", "SELECT * FROM PendulumImpactSpecimens ORDER BY SpecimenId"),
         ("FlexibleTestSpecimens", "SELECT * FROM FlexibleTestSpecimens ORDER BY SpecimenId"),
         ("CompressionMeasurementPoints", "SELECT * FROM CompressionMeasurementPoints ORDER BY CompressionPointId"),
         ("StressRelaxationPoints", "SELECT * FROM StressRelaxationPoints ORDER BY RelaxationPointId"),
@@ -63,7 +65,8 @@ public sealed class PublicReportSourceFingerprintService
             query.Name.StartsWith("Native", StringComparison.Ordinal) ||
             string.Equals(query.Name, "BaseMaterialCatalog", StringComparison.Ordinal) ||
             query.Name is "FlexibleTestSessions" or "FlexibleTestSpecimens" or "CompressionMeasurementPoints" or
-                "StressRelaxationPoints" or "RecoveryMeasurements" or "ShoreHardnessReadings");
+                "StressRelaxationPoints" or "RecoveryMeasurements" or "ShoreHardnessReadings" or
+                "PendulumImpactRuns" or "PendulumImpactSpecimens");
 
     public string Compute(string databasePath, IEnumerable<string> publicMaterialIds, string canonicalReportProjection)
     {
@@ -116,14 +119,15 @@ public sealed class PublicReportSourceFingerprintService
         }
     }
 
-    /// <summary>Exercises actual Flexible SELECT queries and canonical hashing with synthetic in-memory SQLite only.</summary>
+    /// <summary>Exercises Flexible and pendulum SELECT queries and canonical hashing with synthetic in-memory SQLite only.</summary>
     public static bool VerifyFlexibleSourceFreshness()
     {
         (string Name, string Id)[] tables =
         [
             ("FlexibleTestSessions", "FlexibleTestSessionId"), ("FlexibleTestSpecimens", "SpecimenId"),
             ("CompressionMeasurementPoints", "CompressionPointId"), ("StressRelaxationPoints", "RelaxationPointId"),
-            ("RecoveryMeasurements", "RecoveryMeasurementId"), ("ShoreHardnessReadings", "ShoreReadingId")
+            ("RecoveryMeasurements", "RecoveryMeasurementId"), ("ShoreHardnessReadings", "ShoreReadingId"),
+            ("PendulumImpactRuns", "RunId"), ("PendulumImpactSpecimens", "SpecimenId")
         ];
         var queries = CanonicalQueries.Where(query => tables.Any(table => table.Name == query.Name)).ToArray();
         if (queries.Length != tables.Length) return false;

@@ -175,10 +175,12 @@ internal static class HelpContentCatalog
             Variant / Finish, Reinforcement and Color are editable text. Category is derived/read-only. Public reports and Public test
             details are independent checkboxes: the first controls linked public report artifacts, the second permits eligible raw test
             detail. Manufacturer Website and YouTube Review URL accept reviewed URLs. Video, Tested Status and In Tensile/Impact/
-            Stiffness/Heat/Flexible are read-only state. In Heat is Yes only while the Material ID has a valid Heat Deflection result.
+            Stiffness/Heat/Izod/Charpy/Flexible are read-only state. In Heat is Yes only while the Material ID has a valid Heat Deflection result.
             In Flexible is Yes only when a linked Flexible specimen has at least one factual compression, relaxation, recovery or Shore
             measurement; an empty prepared row is not enough. Tested Status remains independent of In Flexible: it is Not tested with
-            zero Tensile/Impact/Stiffness/Heat modules, Partially tested with one to three, and Fully tested only with all four. Adding
+            zero Tensile/Impact/Stiffness/Heat/Izod/Charpy modules, Partially tested with one to five, and Fully tested only with all six.
+            In Izod and In Charpy follow In Flexible in Materials and require a valid numeric reading;
+            blank and NB alone do not qualify. Adding
             or clearing a qualifying result refreshes its membership field. Notes is editable multiline content.
             Website Display Name, Material Key and Validation are
             read-only derived output. Duplicate Website Display Name values are advisory because separate Materials can share public
@@ -723,8 +725,14 @@ internal static class HelpContentCatalog
             Flexible Material Testing owns editable default specimen diameter, height, Shore thickness and compression displacement
             values in mm. Save Settings stores them in SQLite. Each value must be greater than zero. Geometry is copied only when a new
             flexible-test specimen is created; displacement is copied only when a new compression point is created. Changing a default
-            never rewrites saved specimens or readings. Built-ins are 9 mm diameter, 10 mm height, 9 mm Shore thickness and 2 mm
+            never rewrites saved specimens or readings. Built-ins are 9 mm diameter, 10 mm height, 8 mm Shore thickness and 2 mm
             compression displacement.
+
+            Izod / Charpy specimen settings
+            The Izod / Charpy section stores Specimen length (80 mm), Specimen width (10 mm), Specimen thickness (4 mm) and
+            Notch depth (2 mm). Save Settings stores the prospective defaults; each material/method row snapshots them on its
+            first saved edit. Existing saved geometry stays unchanged. The default remaining fracture section is 4 x 8 mm.
+            Direct instrument kJ/m² readings are already normalized: geometry settings do not recalculate these values.
 
             Document branding
             The Document Branding group owns an optional Brand / Organization Name and PNG for generated documents only. Save Brand Name
@@ -973,7 +981,7 @@ internal static class HelpContentCatalog
 
             Analytics
             Chart Mode chooses the visible-scope grouping. Select one row or Ctrl-click multiple Analytics Results rows to control the
-            radar overlay. Clear radar selection clears local selection only. Group, Count, Tensile, Impact, Stiffness, Consistency,
+            radar overlay. Clear radar selection clears local selection only. Group, Count, Tensile, Impact, Izod, Charpy, Stiffness, Consistency,
             Layer Adhesion, Thermal, Overall Profile and Radar are read-only calculated display columns. Thermal is the fixture result
             divided by the fixed 200 °C reference; it never changes legacy Overall.
 
@@ -1019,7 +1027,7 @@ internal static class HelpContentCatalog
             Rankings Dashboard
             Metric selects the rank basis. Manufacturer, Base Material and Reinforcement narrow scope. Rows defaults to Top 25 and also
             offers Top 10, 50, 100 and All. The read-only grid shows rank number, Material, Manufacturer, Type, Reinforcement, Tensile,
-            Impact, Stiffness, Consistency, Layer Adhesion, Thermal, Overall, Rank Score, Best Axis and Status. Rows missing the selected metric
+            Impact, Izod, Charpy, Stiffness, Consistency, Layer Adhesion, Thermal, Overall, Rank Score, Best Axis and Status. Rows missing the selected metric
             are omitted rather than assigned invented scores.
 
             Category Rankings
@@ -1163,6 +1171,42 @@ internal static class HelpContentCatalog
             """,
             "experimental stiffness", "revolutions", "degrees", "deflection", "modulus", "auto-save"),
         new(
+            "measurements.pendulum-impact", "Testing and engineering", "Izod and Charpy Measurements",
+            "Ten direct instrument readings per visible material, with automatic sample statistics.",
+            """
+            Where: Measurements & Testing > Izod Measurements or Charpy Measurements in the application navigation menu.
+            Each material visible under the current Materials filters automatically has a row. Click a Sample 1–10 cell and enter
+            the instrument reading in kJ/m². There is no run selection or setup form. Material identity columns are read-only.
+            These Fast tables reuse the Materials/Tensile editor: click once, type immediately, then Tab or Shift+Tab to commit
+            and move between editable cells. Arrow keys navigate cells; calculated columns are skipped.
+
+            Enter a finite nonnegative number, using a decimal comma or point. Values above 100 are allowed. Leave unused cells
+            blank; blank is not zero. Enter NB or No break for an unbroken specimen; it does not contribute a numeric value.
+            Invalid input stays in the editor for correction or Escape cancellation. Valid committed edits save to SQLite.
+            Test Notes and Measured date are editable. The first nonblank sample sets today's date if the date is empty;
+            correct or clear Measured date when necessary. Reopening the application retains committed readings and notes.
+
+            Mean and Std Dev are in kJ/m². Std Dev is sample standard deviation and requires at least two numeric samples.
+            CV % is 100 times SD divided by mean; it is blank when the mean is zero or SD is unavailable.
+            Samples counts valid numeric readings, including explicit zero, and excludes blanks and NB.
+            Confidence is the numeric sample count capped at 10; it is not a confidence interval.
+            Summary columns and Validation are read-only. Materials shows read-only In Izod and In Charpy membership.
+            Each method contributes independently to Tested Status: all six required methods give Fully tested; one to five give
+            Partially tested; none gives Not tested. A valid numeric zero counts; an empty row or NB alone does not.
+            Material Detail shows saved summaries above every inner tab, statistics in Mechanical and separate axes in Charts,
+            Analytics and Compare. Izod and Charpy remain separate methods from legacy Impact; their normalized scores now contribute
+            to Overall and their valid CV% and sample counts contribute to Consistency. Missing method scores are not zero.
+
+            Settings Manager > Izod / Charpy holds Specimen length, Specimen width, Specimen thickness and Notch depth in mm.
+            Defaults are 80 x 4 x 10 mm with a 2 mm notch, leaving a 4 x 8 mm fracture section.
+            Save Settings stores these values for newly saved rows; existing saved geometry is preserved.
+            These settings describe the specimen; the entered kJ/m² value needs no energy, hammer or area conversion.
+            Existing saved energy-based history is retained separately and never reinterpreted as direct instrument readings.
+            Materials with saved Izod/Charpy data cannot be deleted; Archive preserves their history.
+            Reports identify direct instrument readings and sample statistics. Measurements remain comparative;
+            no ISO conformity or equivalence with another laboratory is inferred.
+            """, "Izod", "Charpy", "pendulum", "no break", "kJ/m²", "sample SD", "Confidence", "ten samples"),
+        new(
             "flexible-testing.overview", "Testing and engineering", "Flexible Material Testing",
             "Record manual TPU compression, relaxation, recovery and Shore readings without mixing methods or specimens.",
             """
@@ -1171,20 +1215,47 @@ internal static class HelpContentCatalog
             numerically (1, 2, ... 9, 10); click the Specimen header to toggle ascending or descending order.
             Where: Flexible Material Testing. Add a MaterialID-linked Test Session; the Material selector shows MaterialID together with
             Website Display Name. Use the specimen buttons above the specimen table, then select a specimen and use the reading buttons
-            below that table. Edit its actual geometry and print/method snapshot. A migrated session may show its former Experimental Run as read-only
-            provenance, but new sessions do not require an Experimental Series or Run. Diameter, height and Shore thickness are copied
+            below that table. Edit its actual geometry and print/method snapshot. New sessions do not require an Experimental Series or Run. Diameter, height and Shore thickness are copied
             from the Flexible Material Testing rows in Settings Manager when each new specimen is created; built-ins are 9 mm diameter,
-            10 mm height and 9 mm Shore thickness. A separate 2 mm displacement default is copied into each newly prepared or manually
-            added compression point. Changing Settings never rewrites an existing specimen or reading. One plain click creates and
+            10 mm height and 8 mm Shore thickness. A separate 2 mm displacement default is copied into each newly prepared or manually
+            added compression point. Changing Settings never rewrites an existing specimen or reading. The tables use the Materials
+            fast editor. One plain click creates and
             focuses the editor in an editable cell, including Force N. Tab and Shift+Tab move horizontally through editable cells;
             arrow keys commit and move left, right, up or down while calculated result cells remain read-only and are skipped.
-            Calculated values refresh without rebuilding the reading tables or taking focus from the next editable cell. Before a
+            Typing stays in the editor until commit; calculated cells refresh on commit. SQLite and report/intelligence refresh wait
+            until no editor is active (about 0.8 s). Enter or click outside to finish; Escape cancels the current edit. A pending/save-error
+            status remains visible until saved. Parent switches, reading actions and application close flush changes; failures block them.
+            Before a
             specimen or Test Session switch replaces the visible rows, the active measurement cell and row are committed and their
             edit transaction is closed. If an invalid value prevents that, the current rows remain visible and the red status asks you
             to finish or correct the reading instead of discarding the edit or closing the application. Geometry plus
             the 100% rectilinear, 0.4 mm nozzle, 0.20 mm
-            layer, two-wall and three-top/bottom values remain editable starting values, not method requirements.
+            layer, two-wall and five-top/three-bottom values remain editable starting values, not method requirements.
 
+            Test Sessions open in numeric label order (1, 2, ... 9, 10). Click Session to toggle descending/ascending numeric order.
+            Other session headers keep their normal sorting; active edits are committed before session sorting.
+
+            Add Shore Reading takes its time and thickness from the dedicated Shore defaults, not the parent compression geometry.
+            On the first v67.0.8 opening, unused legacy Shore rows with blank hardness/time and blank or 9/10 mm thickness receive
+            10 s and 8 mm after a verified Manual Backup. Measured rows, other custom values and subsequent edits are preserved.
+            If backup/repair fails, the original rows stay available and the red status reports the error; repair retries next startup.
+
+            Session/specimen selection is synchronized for mouse, row-header and keyboard navigation. Reading edits commit before
+            switching; a blocked edit keeps the previous parent and readings together. Reading actions use only a specimen belonging
+            to the selected session. Switching the displayed session never reassigns saved measurement IDs or values.
+
+            New-session template
+            Add Test Session prepares 10 Compression specimens and one separate Shore Specimen 1. Each Compression specimen has
+            empty 10 s/30 s force rows and one Recovery row (20%, 60 s rest, Settings compressed hold). The Shore coupon is
+            50 x 50 mm and 8 mm thick with five empty readings, Corner 1-4 and Center, each with 10 s dwell. These are prepared
+            input rows, not measured results; blank force, recovered height and hardness do not contribute to result counts.
+            Settings Manager > Flexible Material Testing controls Compression specimens per session (whole number 1-100),
+            Default print temperature (230 C), Default extrusion multiplier (1.1), Default perimeters (2), Default top layers (5),
+            Default bottom layers (3), Default Shore reading time (10 s) and Default Shore thickness (8 mm).
+            Layer counts are whole numbers 0-100, temperature/extrusion/thickness positive, dwell nonnegative. Changes apply only to
+            new rows. The older Default specimen thickness remains the compression specimen field; Shore has its own default.
+            Add Compression Specimen prepares two compression rows and one Recovery row; Add Shore Specimen prepares five readings.
+            Select A or D in the Shore Scale column for the instrument actually used; the prepared value is A.
             Accepted TPU compression method v1.0
             Add Compression Specimen creates editable 20% strain rows for 10 s and 30 s holds under 3DPIceland Labs TPU Compression
             Test v1.0. The nominal specimen is Ø9 x 10 mm, 100% rectilinear, printed on its circular base and compressed in Z on the
@@ -1324,7 +1395,9 @@ internal static class HelpContentCatalog
             "material-detail.mechanical", "Material detail", "Material Detail — Mechanical reference",
             "Canonical test status, calculated properties, reliability and expanded evidence.",
             """
-            Mechanical shows identity/status plus canonical Tensile, Impact, Stiffness and fixture-specific Thermal outputs. Orientation metrics, consistency,
+            Mechanical shows identity/status plus canonical Tensile, Impact, Izod, Charpy, Stiffness and fixture-specific Thermal outputs.
+            Izod and Charpy cards show mean kJ/m², sample SD, CV%, numeric sample count and Confidence. The shared summary above
+            every inner tab follows the selected MaterialID. Correct readings in the corresponding measurement tab. Orientation metrics, consistency,
             counts and reliability come from native measurements and ResultsService. Expand Canonical mechanical data for source rows.
             Flexible Material Testing shows a compact result table per saved method: condition, result/unit, mean, n, SD, CV % and range.
             Test setup expands the saved method once; it is collapsed initially. Shared conditions appear once for adjacent results.
@@ -1334,17 +1407,22 @@ internal static class HelpContentCatalog
             """, "mechanical", "tensile", "impact", "stiffness", "reliability"),
         new(
             "material-detail.charts", "Material detail", "Material Detail — Charts reference",
-            "Six normalized decision axes and the unchanged legacy overall profile.",
+            "Eight normalized decision axes and the available seven-component Overall profile.",
             """
-            Charts shows normalized 0–100 Tensile, Impact, Stiffness, Consistency, Layer Adhesion and Thermal. Thermal uses raw fixture
-            °C divided by the fixed 200 °C reference. Overall retains only the five legacy axes. Missing results remain unavailable.
+            Charts shows normalized 0–100 Tensile, Impact, Izod, Charpy, Stiffness, Consistency, Layer Adhesion and Thermal.
+            Izod and Charpy use their own method mean relative to the same-method comparison cohort. These comparative axes
+            do not convert instrument readings or make different methods interchangeable. Thermal uses raw fixture
+            °C divided by the fixed 200 °C reference. Overall averages the available Tensile, Impact, Izod, Charpy, Stiffness,
+            Consistency and Layer Adhesion scores with equal weight. Thermal remains independent. Missing results remain unavailable.
+            Consistency includes valid Izod/Charpy CV% and sample counts; their CV% is already a percentage, not a fractional ratio.
             """, "charts", "0-100", "consistency", "layer adhesion", "thermal", "200 °C"),
         new(
             "material-detail.analytics", "Material detail", "Material Detail — Analytics reference",
             "Visible-scope grouping, multi-select radar overlay and selection controls.",
             """
             Chart Mode groups visible Materials into radar rows. Select one or Ctrl-click multiple rows; Clear radar selection removes
-            local selection only. Materials search/filters define scope. Analytics uses six axes; Thermal is independent of Overall.
+            local selection only. Materials search/filters define scope. Analytics uses eight axes, including separate Izod and Charpy
+            same-method cohort comparisons. Izod and Charpy contribute to Overall; Thermal remains an independent axis.
             Missing axes stay unavailable and render at the center rather than becoming evidence. This view changes no data.
             Flexible Material Testing shows separate native-unit bars and mean/n/SD/CV/range for visible materials, even without Overall.
             Chart Mode groups these rows by manufacturer, material type or the other selected category; it does not pool their statistics.
@@ -1355,6 +1433,9 @@ internal static class HelpContentCatalog
             "A–D Material selectors, selected-Material handoff, winners and deltas.",
             """
             Flexible comparison aligns selected A–D materials by measurement, unit and measurement-point condition in one table.
+            Izod and Charpy show only their mean in kJ/m² in the comparison table; detailed statistics remain in Mechanical
+            and their measurement tabs. General > Test Information contains their membership alongside the other methods.
+            The former Other group is hidden without deleting underlying data.
             Specimen metadata, method notes and different sample counts do not split the table. Mean, n, SD, CV and range stay intact.
             Multiple saved summaries for one material/condition remain separate blocks within its cell; they are not pooled.
             A dash means no measured result; a dagger marks no matching peer among distinct selected MaterialIDs.
@@ -1382,8 +1463,10 @@ internal static class HelpContentCatalog
             load/retention/recovery/hardness guidance only for available measured topics, plus saved statistics and exact-condition peers.
             No matching candidate means no material with an identical measured comparison key in the current Materials filter.
             Neither the Flexible brief nor guidance changes Overall or certifies application suitability.
-            Recommendations project verified results in visible scope. Filters/Refresh choose guidance; details expose evidence,
-            alternatives and cautions. Copy prompt is local; Send to Video Planner transfers planning context only. Neither action edits
+            Recommendations project verified results in visible scope. Filters/Refresh choose guidance, including Highest Izod and
+            Highest Charpy; details expose evidence, alternatives and cautions. Method scores contribute to Overall, relevant use-case
+            scores, best-axis comparisons and alternative trade-offs. Each method retains its own normalization and missing-data boundary.
+            Copy prompt is local; Send to Video Planner transfers planning context only. Neither action edits
             measurements, certifies suitability or publishes.
             Flexible integration: Flexible opportunities — filtered materials uses Category and Base material filters for measured guidance and exact-condition comparison candidates. The recommendation use-case selector continues to control the existing score-based lists. The dropdown shows material and topic on one line; test conditions appear below the selection. Copy Flexible brief copies the selected topic locally. Save Flexible idea saves its current facts and peers in Video Planner → Video ideas from recommendations. Later measurements do not rewrite saved ideas. Re-saving the identical snapshot creates no duplicate; failed saves keep the previous queue. These actions do not send externally.
             """, "recommendations", "evidence", "alternatives", "cautions", "video planner"),
@@ -1398,11 +1481,15 @@ internal static class HelpContentCatalog
             "analysis.rankings", "Analysis and decisions", "Rankings Dashboard reference",
             "Visible-scope metric ranking, filters, Top 25 default, refresh and CSV.",
             """
-            Choose Overall, Tensile, Impact, Stiffness, Consistency, Layer Adhesion or Thermal plus optional Base Material, Manufacturer and
+            Choose Overall, Tensile, Impact, Izod, Charpy, Stiffness, Consistency, Layer Adhesion or Thermal plus optional Base Material, Manufacturer and
             Reinforcement filters. Rows defaults to Top 25; Top 10/50/100 and All ranked are available. Missing scores are omitted.
 
             Reset restores defaults, Refresh rebuilds read-only rows and Export CSV writes displayed scope. Clear Materials filters
             before whole-database interpretation.
+            Overall is the equal-weight average of available Tensile, Impact, Izod, Charpy, Stiffness, Consistency and Layer Adhesion
+            scores. Missing scores are omitted, not zero. Thermal remains independent. Izod and Charpy each use their own canonical
+            same-method comparison reference; their kJ/m² means are never combined with another method's raw readings.
+            Consistency includes available direct-method CV percentages and numeric sample counts as well as Tensile and Impact.
             Flexible Material Testing has its own category selector and Export Flexible CSV. Visible Materials and Base Material,
             Manufacturer and Reinforcement filters apply. Rows limits apply within matching groups and retain tied ranks.
             Two measured materials with identical methods/conditions are required for a rank; singleton values remain visible.
@@ -1412,7 +1499,8 @@ internal static class HelpContentCatalog
             "analysis.category-rankings", "Analysis and decisions", "Category Rankings reference",
             "Winner-focused grouped rankings with 10 rows per group by default.",
             """
-            Choose a performance Category, including Best Thermal Resistance, and Overall/Base Material/Manufacturer grouping, then optional scope filters. Rows per group
+            Choose a performance Category, including Best Izod, Best Charpy and Best Thermal Resistance, and
+            Overall/Base Material/Manufacturer grouping, then optional scope filters. Rows per group
             defaults to 10; 5, 50, 100 and All are available. Reset, Refresh and Export CSV operate on this read-only projection.
             Flexible Material Testing uses its own category selector and Export Flexible CSV. The same visible-material/scope filters,
             grouping and rows limit apply independently to each exact method/condition. Tied ranks share place; Overall is unchanged.
@@ -1422,7 +1510,7 @@ internal static class HelpContentCatalog
             "Governed award sets, visible-scope filters, winner reasoning and CSV.",
             """
             Choose All, Performance, Material family or Reinforcement awards plus optional scope filters. Performance includes the
-            fixture-specific Best Thermal Resistance award. Rows show Winner, score,
+            Best Izod Material, Best Charpy Material and fixture-specific Best Thermal Resistance awards. Rows show Winner, score,
             Runner Up, Use Case, Why and Status. Reset/Refresh rebuild read-only awards and Export CSV writes them; this view does not
             publish.
             Flexible Material Testing uses its own category selector and Export Flexible CSV with the same visible-material and
@@ -1436,7 +1524,9 @@ internal static class HelpContentCatalog
             "Current counts, highest verified metrics and read-only narrative insights.",
             """
             Insights summarizes tested Materials, Manufacturers, Material/Reinforcement Types and highest Overall, Tensile, Impact,
-            Stiffness and Thermal results. Narrative derives from canonical calculated results, edits nothing and has no separate Save.
+            Izod, Charpy, Stiffness and Thermal results. Izod/Charpy evidence names independent method leaders, available kJ/m² means,
+            normalized scores and measured coverage in the current scope. These scores affect Overall and content-opportunity
+            relevance; missing readings remain unavailable. Narrative derives from canonical results, edits nothing and has no Save.
             Flexible integration: Flexible coverage counts measured materials, topics and topics with matching peers in the visible scope. Open YouTube Research → Flexible opportunities for details; Overall and existing leader scores remain unchanged.
             """, "dashboard insights", "counts", "highest overall", "highest thermal", "read-only"),
         new(
@@ -2024,6 +2114,9 @@ internal static class HelpContentCatalog
             Local briefs and material intelligence include available fixture thermal evidence. The wording always distinguishes nearby
             probe-indicated fixture temperature from ASTM D648, ISO 75, specimen temperature, certified HDT and manufacturer limits.
             Missing thermal results remain missing and are never inferred.
+            Izod and Charpy evidence shows separate same-method leaders, measured coverage, direct kJ/m² means and normalized scores.
+            Material intelligence uses those measurements in candidate relevance and reasons. It does not infer a missing method from
+            another impact method. A measured zero remains evidence; a blank or NB alone is not a numeric measurement.
 
             Every action consumes the reviewed visible MaterialID scope and canonical local summaries. Results are deterministic
             advisory text in the read-only output box. Check cited materials, missing evidence and scope before reusing a recommendation.
@@ -2063,6 +2156,8 @@ internal static class HelpContentCatalog
 
             Collection briefs show thermal coverage plus allowlisted raw °C, score and method version for measured members. Dashboards
             report measured thermal coverage without treating a workflow status as measurement evidence.
+            Collection briefs also show separate Izod/Charpy leaders, coverage, raw kJ/m² means and normalized scores for resolved
+            active members. Archived or missing members are not silently substituted with another material's results.
 
             Collection Dashboard and Video Pipeline Dashboard summarize local planning coverage. Review missing/legacy identity before
             treating their counts as complete, and re-preview visible rows before updating membership.
@@ -2110,6 +2205,8 @@ internal static class HelpContentCatalog
             """
             Generate YouTube Research derives local title, thumbnail, comparison, gap, calendar, playlist and candidate planning from
             canonical visible data. It changes no engineering measurement or public website.
+            Izod and Charpy scores and same-method comparisons inform titles, talking points, outliers, gaps and candidate relevance.
+            The evidence summary identifies method leaders and available raw kJ/m² means without treating missing values as zero.
 
             Seven copy actions place owner-review text on the clipboard. Review scope and claims before external use; clipboard success
             is not publication or evidence that a video was produced.
@@ -2125,7 +2222,8 @@ internal static class HelpContentCatalog
             """
             Generate YouTube Research rebuilds all creator-research sections from the current Materials filter projection and canonical
             local analysis signals. Inputs include no-video priority, the independent fixture-specific Thermal score/raw °C context,
-            score profile, reinforcement/variant hooks, comparison gaps and data outliers. Thermal never changes legacy Overall. The
+            score profile including independent Izod and Charpy, reinforcement/variant hooks, comparison gaps and data outliers.
+            Izod/Charpy scores contribute to Overall and valid CV%/sample counts to Consistency. Thermal never changes Overall. The
             status line reports the resulting candidate state.
 
             Generation refreshes Top Thumbnail, Comparison Discovery, the 12-week Content Calendar, Channel Gap Analysis, Playlist
@@ -2598,6 +2696,8 @@ internal static class HelpContentCatalog
         "Material Detail" => "material-detail.general",
         "Tensile Measurements" => "measurements.tensile",
         "Impact Measurements" => "measurements.impact",
+        "Izod Measurements" => "measurements.pendulum-impact",
+        "Charpy Measurements" => "measurements.pendulum-impact",
         "Stiffness Measurements" => "measurements.stiffness",
         "Heat Deflection" => "measurements.thermal-deflection",
         "Flexible Material Testing" => "flexible-testing.overview",

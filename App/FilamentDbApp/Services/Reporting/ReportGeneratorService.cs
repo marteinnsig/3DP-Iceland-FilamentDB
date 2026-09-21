@@ -16,7 +16,8 @@ public sealed class ReportGeneratorService
                 row.BaseMaterial,
                 BuildSections(row))
             {
-                FlexibleResults = row.FlexibleResults.ToArray()
+                FlexibleResults = row.FlexibleResults.ToArray(),
+                PendulumResults = row.PendulumResults.ToArray()
             })
             .ToList();
 
@@ -134,6 +135,10 @@ public sealed class ReportGeneratorService
                 }));
         }
 
+        if (row.PendulumResults.Count > 0)
+            sections.Add(new ReportingReportSection("Izod and Charpy Impact Strength", ReportingSectionType.PendulumMetrics,
+                new Dictionary<string, string?> { ["Results"] = PendulumImpactReportService.RenderText(row.PendulumResults) }));
+
         return sections;
     }
 
@@ -163,6 +168,7 @@ public sealed record ReportingMaterialReportModel(
     IReadOnlyList<ReportingReportSection> Sections)
 {
     public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
+    public IReadOnlyList<PublicPendulumImpactGroup> PendulumResults { get; init; } = Array.Empty<PublicPendulumImpactGroup>();
 }
 
 public sealed record ReportingReportSection(
@@ -175,7 +181,8 @@ public enum ReportingSectionType
     MaterialOverview,
     EngineeringSummary,
     MechanicalMetric,
-    FlexibleMetrics
+    FlexibleMetrics,
+    PendulumMetrics
 }
 
 public sealed class ReportingReportGeneratorVerificationResult

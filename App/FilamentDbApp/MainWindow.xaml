@@ -210,6 +210,10 @@
                     <MenuItem Header="Impact Measurements" Tag="ImpactMeasurementsTab"
                               Click="NavigateWorkspaceTab_Click"
                               AutomationProperties.AutomationId="NavigateImpactMeasurementsTab" />
+                    <MenuItem Header="Izod Measurements" Tag="IzodMeasurementsTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateIzodMeasurementsTab" />
+                    <MenuItem Header="Charpy Measurements" Tag="CharpyMeasurementsTab" Click="NavigateWorkspaceTab_Click"
+                              AutomationProperties.AutomationId="NavigateCharpyMeasurementsTab" />
                     <MenuItem Header="Stiffness Measurements" Tag="StiffnessMeasurementsTab"
                               Click="NavigateWorkspaceTab_Click"
                               AutomationProperties.AutomationId="NavigateStiffnessMeasurementsTab" />
@@ -550,6 +554,9 @@
                         </StackPanel>
                     </Border>
 
+<Border DockPanel.Dock="Top" Padding="14,8" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="0,0,0,1">
+    <TextBlock x:Name="PendulumDetailSummaryText" AutomationProperties.AutomationId="PendulumDetailSummaryText" Text="Izod: — | Charpy: —" TextWrapping="Wrap" Foreground="#1E3A8A" />
+</Border>
 <TabControl x:Name="MaterialDetailTabs" AutomationProperties.AutomationId="MaterialDetailTabs">
 <TabItem Header="General" AutomationProperties.AutomationId="MaterialDetailGeneralTab">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -671,7 +678,9 @@
                                                 <TextBlock Text="Canonical SQLite stiffness measurement" TextWrapping="Wrap" />
                                             </StackPanel>
                                         </Border>
-                                    </UniformGrid>
+                                    <Border Padding="12" CornerRadius="6" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Margin="4,8,4,8"><StackPanel><TextBlock Text="Izod Impact Strength" FontWeight="SemiBold" FontSize="15" /><TextBlock Text="Mean · kJ/m²" Foreground="#64748B" Margin="0,8,0,0" /><TextBlock x:Name="DashboardIzodMeanText" AutomationProperties.AutomationId="DashboardIzodMeanText" Text="—" FontSize="20" FontWeight="SemiBold" /><TextBlock x:Name="DashboardIzodStatisticsText" AutomationProperties.AutomationId="DashboardIzodStatisticsText" Text="No numeric readings" Foreground="#64748B" TextWrapping="Wrap" Margin="0,8,0,0" /></StackPanel></Border>
+<Border Padding="12" CornerRadius="6" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Margin="4,8,4,8"><StackPanel><TextBlock Text="Charpy Impact Strength" FontWeight="SemiBold" FontSize="15" /><TextBlock Text="Mean · kJ/m²" Foreground="#64748B" Margin="0,8,0,0" /><TextBlock x:Name="DashboardCharpyMeanText" AutomationProperties.AutomationId="DashboardCharpyMeanText" Text="—" FontSize="20" FontWeight="SemiBold" /><TextBlock x:Name="DashboardCharpyStatisticsText" AutomationProperties.AutomationId="DashboardCharpyStatisticsText" Text="No numeric readings" Foreground="#64748B" TextWrapping="Wrap" Margin="0,8,0,0" /></StackPanel></Border>
+</UniformGrid>
 
                                     <Border Padding="12" CornerRadius="6" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,12"
                                             AutomationProperties.AutomationId="MaterialDetailsFlexibleDashboard">
@@ -720,13 +729,13 @@
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="14">
                                     <TextBlock Text="Scoring Engine Foundation" FontSize="20" FontWeight="SemiBold" />
-                                    <TextBlock Text="Normalized 0–100 decision axes: Tensile, Impact, Stiffness, Consistency, Layer Adhesion and fixture-specific Thermal. Thermal uses a fixed 200 °C reference and does not alter legacy Overall." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,14" />
+                                    <TextBlock Text="Normalized 0–100 decision axes include separate Izod and Charpy results relative to the same-method comparison cohort. Thermal uses a fixed 200 °C reference. Overall averages the available seven components, including Izod and Charpy." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,14" />
 
                                     <Border Padding="14" CornerRadius="6" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,14">
                                         <StackPanel>
                                             <TextBlock Text="Engineering Profile" Foreground="#64748B" FontWeight="SemiBold" />
                                             <TextBlock x:Name="ChartOverallScoreText" Text="—" FontSize="28" FontWeight="SemiBold" Margin="0,4,0,0" />
-                                            <TextBlock Text="First-pass average of the five website radar axes. This is chart input, not a final scientific rating." Foreground="#334155" TextWrapping="Wrap" />
+                                            <TextBlock Text="Average of seven available components, including Izod and Charpy. Thermal remains a separate comparison axis." Foreground="#334155" TextWrapping="Wrap" />
                                         </StackPanel>
                                     </Border>
 
@@ -778,7 +787,9 @@
                                                 <TextBlock x:Name="ChartThermalSourceText" Text="Fixture-specific probe temperature / fixed 200 °C reference" Foreground="#64748B" TextWrapping="Wrap" />
                                             </StackPanel>
                                         </Border>
-                                    </UniformGrid>
+                                    <Border Padding="12" CornerRadius="6" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Margin="4,8,4,8"><StackPanel><TextBlock Text="Izod Score" FontWeight="SemiBold" FontSize="15" /><TextBlock x:Name="ChartIzodScoreText" AutomationProperties.AutomationId="ChartIzodScoreText" Text="—" FontSize="24" FontWeight="SemiBold" Margin="0,8,0,0" /><TextBlock x:Name="ChartIzodSourceText" Text="Mean relative to the same-method comparison cohort" Foreground="#64748B" TextWrapping="Wrap" /></StackPanel></Border>
+<Border Padding="12" CornerRadius="6" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Margin="4,8,4,8"><StackPanel><TextBlock Text="Charpy Score" FontWeight="SemiBold" FontSize="15" /><TextBlock x:Name="ChartCharpyScoreText" AutomationProperties.AutomationId="ChartCharpyScoreText" Text="—" FontSize="24" FontWeight="SemiBold" Margin="0,8,0,0" /><TextBlock x:Name="ChartCharpySourceText" Text="Mean relative to the same-method comparison cohort" Foreground="#64748B" TextWrapping="Wrap" /></StackPanel></Border>
+</UniformGrid>
 
                                     <Border Padding="12" CornerRadius="6" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" Margin="0,12,0,0">
                                         <TextBlock x:Name="ChartScoreNoteText" Text="Select a material to calculate score inputs." TextWrapping="Wrap" Foreground="#1E3A8A" />
@@ -791,7 +802,7 @@
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Margin="14">
                                     <TextBlock Text="Analytics &amp; Radar Framework" FontSize="20" FontWeight="SemiBold" />
-                                    <TextBlock Text="Uses six decision axes: Tensile, Impact, Stiffness, Consistency, Layer Adhesion and fixture-specific Thermal. Thermal uses the fixed 200 °C contract; legacy Overall remains the five-axis score." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,14" />
+                                    <TextBlock Text="Eight decision axes include independent Izod and Charpy results normalized against each method's active-material maximum. Thermal uses the fixed 200 °C reference. Overall averages the available seven components, including Izod and Charpy." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,14" />
 
                                     <Border Padding="12" CornerRadius="6" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,14">
                                     <Grid>
@@ -861,6 +872,8 @@
                                                     <DataGridTextColumn Header="Count" Binding="{Binding Count}" Width="70" />
                                                     <DataGridTextColumn Header="Tensile" Binding="{Binding TensileDisplay}" Width="90" />
                                                     <DataGridTextColumn Header="Impact" Binding="{Binding ImpactDisplay}" Width="90" />
+                                                    <DataGridTextColumn Header="Izod" Binding="{Binding IzodDisplay}" Width="90" />
+                                                    <DataGridTextColumn Header="Charpy" Binding="{Binding CharpyDisplay}" Width="90" />
                                                     <DataGridTextColumn Header="Stiffness" Binding="{Binding StiffnessDisplay}" Width="90" />
                                                     <DataGridTextColumn Header="Consistency" Binding="{Binding ConsistencyDisplay}" Width="105" />
                                                     <DataGridTextColumn Header="Layer Adhesion" Binding="{Binding LayerAdhesionDisplay}" Width="120" />
@@ -872,7 +885,7 @@
                                     </Grid>
 
                                     <Border Padding="12" CornerRadius="6" Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" Margin="0,12,0,0">
-                                        <TextBlock Text="The radar preview uses six axes: Tensile, Impact, Stiffness, Consistency, Layer Adhesion and Thermal. Missing values remain unavailable and render at the center; they never become score evidence. Overall remains the legacy five-axis score." TextWrapping="Wrap" Foreground="#1E3A8A" />
+                                        <TextBlock Text="The radar preview uses eight axes: Tensile, Impact, Izod, Charpy, Stiffness, Consistency, Layer Adhesion and Thermal. Izod and Charpy compare only with the same method in the comparison cohort. Missing values remain unavailable and render at the center; they never become score evidence. Overall includes Izod and Charpy; missing components are omitted." TextWrapping="Wrap" Foreground="#1E3A8A" />
                                     </Border>
                                 </StackPanel>
                             </ScrollViewer>
@@ -1322,6 +1335,8 @@
                                                 <ComboBoxItem Content="Best overall" />
                                                 <ComboBoxItem Content="Strongest" />
                                                 <ComboBoxItem Content="Highest impact" />
+                                                <ComboBoxItem Content="Highest Izod" />
+                                                <ComboBoxItem Content="Highest Charpy" />
                                                 <ComboBoxItem Content="Stiffest" />
                                                 <ComboBoxItem Content="Most consistent" />
                                                 <ComboBoxItem Content="Best layer adhesion" />
@@ -1625,6 +1640,12 @@
                     </GroupBox>
                 </Grid>
             </TabItem>
+            <TabItem Header="Izod Measurements" AutomationProperties.AutomationId="IzodMeasurementsTab">
+                <ContentControl Name="IzodImpactViewHost" AutomationProperties.AutomationId="IzodImpactViewHost" Margin="12"/>
+            </TabItem>
+            <TabItem Header="Charpy Measurements" AutomationProperties.AutomationId="CharpyMeasurementsTab">
+                <ContentControl Name="CharpyImpactViewHost" AutomationProperties.AutomationId="CharpyImpactViewHost" Margin="12"/>
+            </TabItem>
             <TabItem Header="Stiffness Measurements" AutomationProperties.AutomationId="StiffnessMeasurementsTab">
                 <Grid Margin="12">
                     <Grid.RowDefinitions>
@@ -1870,13 +1891,12 @@
         <Button Content="Delete Test Session" AutomationProperties.AutomationId="FlexibleDeleteSession" Click="DeleteFlexibleSession_Click" Padding="9,4"/>
       </WrapPanel>
     </StackPanel>
-    <DataGrid Grid.Row="1" Name="FlexibleSessionsGrid" MinHeight="125" MaxHeight="625" RowHeight="24" ColumnHeaderHeight="32" AutomationProperties.AutomationId="FlexibleSessionsGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single" SelectionUnit="CellOrRowHeader" SelectionChanged="FlexibleSessionsGrid_SelectionChanged" CellEditEnding="FlexibleTestingGrid_CellEditEnding" HorizontalScrollBarVisibility="Auto">
+    <DataGrid Grid.Row="1" Name="FlexibleSessionsGrid" MinHeight="125" MaxHeight="625" RowHeight="24" ColumnHeaderHeight="32" AutomationProperties.AutomationId="FlexibleSessionsGrid" Style="{StaticResource HighPerformanceDataGrid}" AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single" SelectionUnit="CellOrRowHeader" Sorting="FlexibleSessionsGrid_Sorting" SelectionChanged="FlexibleSessionsGrid_SelectionChanged" CellEditEnding="FlexibleTestingGrid_CellEditEnding" HorizontalScrollBarVisibility="Auto">
       <DataGrid.Columns>
         <DataGridTextColumn Header="Session" Binding="{Binding SessionLabel,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="150"/>
         <DataGridComboBoxColumn x:Name="FlexibleSessionMaterialColumn" Header="Material" SelectedValueBinding="{Binding MaterialID,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="MaterialID" DisplayMemberPath="DisplayName" Width="320"/>
         <DataGridTextColumn Header="Measured date" Binding="{Binding MeasuredDate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="110"/>
         <DataGridCheckBoxColumn Header="Active" Binding="{Binding IsActive,Mode=TwoWay}" Width="65"/>
-        <DataGridTextColumn Header="Legacy Experimental Run" Binding="{Binding LegacyExperimentalRunId}" IsReadOnly="True" Width="155"/>
         <DataGridTextColumn Header="Session notes" Binding="{Binding Notes,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="*"/>
       </DataGrid.Columns>
     </DataGrid>
@@ -3031,7 +3051,7 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel>
                                     <TextBlock Text="Rankings Dashboard" FontSize="22" FontWeight="SemiBold" />
-                                    <TextBlock Text="Top material rankings from the currently visible dataset. Thermal is an independent fixture-specific axis; legacy Overall remains unchanged." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
+                                    <TextBlock Text="Top material rankings from the currently visible dataset. Thermal is an independent fixture-specific axis; Overall includes Izod and Charpy." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
                                 </StackPanel>
                                 <TextBlock Grid.Column="1" x:Name="RankingSummaryText" Text="Rankings use the current visible Materials scope." Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
                             </Grid>
@@ -3055,6 +3075,8 @@
                                         <ComboBoxItem Content="Overall" />
                                         <ComboBoxItem Content="Tensile" />
                                         <ComboBoxItem Content="Impact" />
+                                        <ComboBoxItem Content="Izod" />
+                                        <ComboBoxItem Content="Charpy" />
                                         <ComboBoxItem Content="Stiffness" />
                                         <ComboBoxItem Content="Consistency" />
                                         <ComboBoxItem Content="Layer Adhesion" />
@@ -3134,6 +3156,8 @@
                                 <DataGridTextColumn Header="Overall" Binding="{Binding OverallText}" Width="82" />
                                 <DataGridTextColumn Header="Tensile" Binding="{Binding TensileText}" Width="82" />
                                 <DataGridTextColumn Header="Impact" Binding="{Binding ImpactText}" Width="82" />
+                                <DataGridTextColumn Header="Izod" Binding="{Binding IzodText}" Width="82" />
+                                <DataGridTextColumn Header="Charpy" Binding="{Binding CharpyText}" Width="82" />
                                 <DataGridTextColumn Header="Stiffness" Binding="{Binding StiffnessText}" Width="82" />
                                 <DataGridTextColumn Header="Consistency" Binding="{Binding ConsistencyText}" Width="95" />
                                 <DataGridTextColumn Header="Layer Adhesion" Binding="{Binding LayerAdhesionText}" Width="110" />
@@ -3156,7 +3180,7 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel>
                                     <TextBlock Text="Category Rankings" FontSize="22" FontWeight="SemiBold" />
-                                    <TextBlock Text="Winner-focused rankings by performance category, including independent fixture-specific Thermal resistance. Legacy Overall remains unchanged." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
+                                    <TextBlock Text="Winner-focused rankings by performance category, including independent fixture-specific Thermal resistance. Overall includes Izod and Charpy." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,0" />
                                 </StackPanel>
                                 <TextBlock Grid.Column="1" x:Name="CategoryRankingSummaryText" Text="Category rankings use the current visible Materials scope." Foreground="#2563EB" FontWeight="SemiBold" VerticalAlignment="Center" />
                             </Grid>
@@ -3182,6 +3206,8 @@
                                         <ComboBoxItem Content="Best Overall" />
                                         <ComboBoxItem Content="Strongest Materials" />
                                         <ComboBoxItem Content="Toughest Materials" />
+                                        <ComboBoxItem Content="Best Izod" />
+                                        <ComboBoxItem Content="Best Charpy" />
                                         <ComboBoxItem Content="Stiffest Materials" />
                                         <ComboBoxItem Content="Most Consistent Materials" />
                                         <ComboBoxItem Content="Best Layer Adhesion" />

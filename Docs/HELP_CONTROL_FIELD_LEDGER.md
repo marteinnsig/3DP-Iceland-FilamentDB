@@ -1,5 +1,46 @@
 # Help Control and Field Ledger
 
+v68.0.3 extends existing read-only analysis owners without adding editing or external-send actions.
+Rankings adds Izod and Charpy metric choices and score columns (429 DataGrid columns total).
+analysis.rankings, analysis.category-rankings and analysis.awards own separate method rankings and awards.
+material-detail.charts/analytics and analysis.rankings explain the equal-weight available seven-component Overall:
+Tensile, Impact, Izod, Charpy, Stiffness, Consistency and Layer Adhesion. Thermal and Flexible remain independent.
+Consistency now includes valid direct-method CV percentages and sample counts, preserving missing and measured-zero semantics.
+analysis.dashboard-insights, ai.planning-briefs, ai.collections and youtube.overview/generate own method evidence and
+candidate relevance. Same-method leaders, kJ/m² means and normalized scores respect each caller's current material scope.
+Existing navigation destinations and read-only boundaries remain stable. Full Verification covers score propagation,
+independent method leaders, missing/zero values and suggestions; owner readability/navigation acceptance remains required.
+
+v68.0.2 Material Detail result integration: PendulumDetailSummaryText is a read-only selected-material summary above
+every inner tab. DashboardIzodMeanText/StatisticsText and DashboardCharpyMeanText/StatisticsText show canonical
+method statistics. ChartIzodScoreText/SourceText and ChartCharpyScoreText/SourceText own separate comparative axes;
+Analytics exposes IzodDisplay and CharpyDisplay. Help material-detail.mechanical, material-detail.charts,
+material-detail.analytics and measurements.pendulum-impact own units, missing values, cohort normalization and refresh.
+Materials Help owns In Izod/In Charpy after In Flexible and six-method Tested Status; Flexible remains independent.
+General Test Information groups all coverage flags; the Other presentation is hidden without deleting source fields.
+Compare Help specifies only direct method means in kJ/m². Existing IDs and read-only boundaries remain unchanged.
+The existing disposable tester and Full Verification need status, method independence, restart and display-owner checks.
+Owner display acceptance remains required. v68.0.1 layout/speed/input were accepted on 2026-09-21.
+Future owner handoffs use the local runnable application rather than a ZIP.
+
+v68.0.1 runtime.pendulum-impact: IzodImpactViewHost / CharpyImpactViewHost contain the shared Fast views
+IzodImpactMeasurementsGrid / CharpyImpactMeasurementsGrid. Every currently visible material receives one row automatically.
+Help measurements.pendulum-impact owns Sample1-10 (direct instrument kJ/m²), TestNotes, MeasuredDateText and read-only
+Mean, StdDev, Cv, Samples, Confidence and Validation. Blank is unmeasured; NB is nonnumeric; explicit zero remains a sample.
+CV % is 100 times sample SD divided by mean; Confidence is numeric sample count capped at 10.
+SQLite save follows successful cell commit; the shared editor preserves click/type, Tab/Shift+Tab and arrow behavior.
+Current Help retires run selectors, run creation, profile editors, specimen creation and diagram-window destinations.
+Saved historical energy graphs remain supported for persistence and reporting, separate from direct readings.
+Settings Help owns specimen geometry defaults: 80 x 4 x 10 mm, 2 mm notch and 4 x 8 mm remaining fracture section.
+Geometry supplies context only; direct kJ/m² readings are not converted. Full Verification covers direct data and navigation;
+owner runtime acceptance covers typing, focus, filtering, save/restart and Help readability/navigation.
+
+v67.0.10 Fast Flexible entry: FastFlexibleSessionsGrid, FastFlexibleSpecimensGrid, FastCompressionPointsGrid,
+FastStressRelaxationGrid, FastRecoveryMeasurementsGrid and FastShoreHardnessGrid use the shared Materials renderer.
+Help flexible-testing.overview owns inherited columns, units, validation, pending/save status and keyboard behavior.
+Existing XAML DataGrids are hidden column/selection bridges, retained until runtime acceptance then retired in v67.0.11.
+Full Verification covers host ownership, detached TVL input and keyboard/sort rules. No schema or statistics change.
+
 Version: v66.0.6 Flexible intelligence candidate coverage
 
 Compare / FlexibleComparisonEvidence aligns A-D results by metric/unit/measurement condition in one table.
@@ -286,3 +327,24 @@ No editable field or input handler changes. Existing Shore rows retain their sav
 flexible-testing.overview owns the larger bounded Session and specimen lists, page scrolling and numeric Specimen header sorting.
 No new input field or AutomationId. Existing shared click/keyboard handlers and deferred save path remain; sort commits edits first.
 Owner visual/input acceptance is required; pure numeric ordering is added to Full Verification without pixel assertions.
+
+### v67.0.5 — Flexible session templates
+flexible-testing.overview owns the 10 Compression + 1 Shore template, prepared blank rows and FlexibleCorrectPrintLayers.
+settings.controls-fields owns eight new default rows and validation; no new input editor or keyboard contract.
+The print-layer action confirms its all-session scope, backs up first and preserves measured values; no automatic startup mutation.
+
+### v67.0.6 — Retired Flexible controls
+flexible-testing.overview no longer exposes FlexibleCorrectPrintLayers or the Legacy Experimental Run column.
+The previous v67.0.5 correction ownership is historical; no Help action remains. Saved legacy metadata stays database-owned.
+
+### v67.0.7 — Session numeric ordering
+flexible-testing.overview owns initial numeric Session order and numeric header toggling; no new control or editor.
+The specimen numeric comparer and shared edit-commit helpers are reused. Other headers retain ordinary WPF sorting.
+
+### v67.0.8 — Shore template defaults
+flexible-testing.overview covers dedicated Shore defaults and the one-time backup-first repair of unused legacy rows.
+Existing editors and Settings handlers remain; no new control or AutomationId. Measured/custom rows are preserved.
+
+### v67.0.9 — Flexible selection isolation
+flexible-testing.overview owns synchronized Session/specimen selection, keyboard navigation and commit-before-switch behavior.
+Existing six grids, input controls and AutomationIds retained. Reading actions reject stale/out-of-session specimen selections.

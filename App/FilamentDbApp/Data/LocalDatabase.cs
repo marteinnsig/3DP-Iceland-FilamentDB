@@ -29,6 +29,7 @@ public sealed partial class LocalDatabase
         "Manufacturers", "BaseMaterialCatalog", "NativeMaterialManagerRows", "ThermalDeflectionMethods", "NativeSettingsRows", "DeploymentSettings", "WebsiteTemplates", "VideoIdeaQueue", "Suppliers",
         "PurchaseOrders", "PurchaseOrderLines", "InventorySpoolItems", "PurchaseDocuments", "ExperimentDefinitions", "MaterialExperiments", "ExperimentalRuns", "ExperimentalMeasurements",
         "FlexibleTestSessions", "FlexibleTestSpecimens", "CompressionMeasurementPoints", "StressRelaxationPoints", "RecoveryMeasurements", "ShoreHardnessReadings",
+        "PendulumImpactRuns", "PendulumImpactSpecimens",
         "NativeTensileSamples", "NativeTensileResults", "NativeImpactSamples", "NativeStiffnessMeasurements", "NativeThermalDeflectionMeasurements", "NativeMeasurementNotes",
         "PrinterProfiles", "PrintJobQuotes", "UsageEvents"
     };
@@ -39,6 +40,7 @@ public sealed partial class LocalDatabase
         "TensileSamples", "TensileResults", "MaterialAttributes", "LookupValues",
         "Materials", "Imports"
     };
+    public static IReadOnlyList<string> ExcelRecoveryTableNames => Array.AsReadOnly(ExcelRecoveryTableInsertOrder);
     public string DatabasePath { get; }
 
     public LocalDatabase()
@@ -1031,6 +1033,8 @@ public sealed partial class LocalDatabase
                 "RecoveryMeasurements", "ShoreHardnessReadings"]);
         if (snapshot.SourceSchemaVersion < 44)
             allowedMissingTables.Add("FlexibleTestSessions");
+        if (snapshot.SourceSchemaVersion < 45)
+            allowedMissingTables.AddRange(["PendulumImpactRuns", "PendulumImpactSpecimens"]);
         var compatibleLegacyPackage =
             missingTables.Count == allowedMissingTables.Count &&
             missingTables.All(missing =>
@@ -1075,6 +1079,14 @@ public sealed partial class LocalDatabase
                             "UsageEvents" => "DR24 UsageEvents",
                             "ThermalDeflectionMethods" => "DR Thermal Methods",
                             "NativeThermalDeflectionMeasurements" => "DR Thermal Results",
+                            "FlexibleTestSessions" => "DR Flexible Sessions",
+                            "FlexibleTestSpecimens" => "DR Flexible Specimens",
+                            "CompressionMeasurementPoints" => "DR Compression Points",
+                            "StressRelaxationPoints" => "DR Relaxation Points",
+                            "RecoveryMeasurements" => "DR Recovery Measurements",
+                            "ShoreHardnessReadings" => "DR Shore Readings",
+                            "PendulumImpactRuns" => "DR Pendulum Runs",
+                            "PendulumImpactSpecimens" => "DR Pendulum Specimens",
                             _ => throw new InvalidOperationException(
                                 "No compatible legacy recovery mapping exists for " + tableName)
                         },
@@ -1910,6 +1922,7 @@ VALUES (1, '', 21, '', CURRENT_TIMESTAMP);
 DROP TABLE IF EXISTS MaterialsImport;";
         command.ExecuteNonQuery();
         EnsureFlexibleTestingSchema(connection);
+        EnsurePendulumImpactSchema(connection);
         EnsureNativeSettingsRowsKeySchema(connection);
         EnsureColumn(connection, "Manufacturers", "DisplayName", "TEXT");
         EnsureColumn(connection, "Manufacturers", "Country", "TEXT");

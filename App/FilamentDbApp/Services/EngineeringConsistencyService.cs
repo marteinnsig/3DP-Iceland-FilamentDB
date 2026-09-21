@@ -24,7 +24,7 @@ public sealed class EngineeringConsistencyService
             .ToList();
         if (sets.Count == 0)
         {
-            return Unavailable("Verified Material Summary contains no repeated tensile or impact measurement sets.", usesVerifiedSummary: true);
+            return Unavailable("Verified Material Summary contains no repeated tensile, impact, Izod or Charpy measurement sets.", usesVerifiedSummary: true);
         }
 
         var cvSets = sets
@@ -111,6 +111,14 @@ public sealed class EngineeringConsistencyService
         {
             sets.Add(("Impact upright", summary.Impact.Upright));
             sets.Add(("Impact flat", summary.Impact.Flat));
+        }
+        foreach (var (name, method) in new[] { ("Izod", summary.Izod), ("Charpy", summary.Charpy) })
+        {
+            if (method?.HasResults != true) continue;
+            var statistics = method.Statistics;
+            sets.Add((name, new MeasurementSetResult(statistics.Mean, statistics.SampleStdDev,
+                statistics.CvPercent / 100d, statistics.ValidCount, statistics.Confidence,
+                new RatingResult(0, string.Empty, string.Empty))));
         }
         return sets;
     }

@@ -38,9 +38,13 @@ public partial class MainWindow
     private readonly Dictionary<string, object> _lastSelectedFlexibleReadingByGrid = new(StringComparer.Ordinal);
     private FlexibleTestSessionRecord? _selectedFlexibleSession;
     private FlexibleTestSpecimenRecord? _selectedFlexibleSpecimen;
+    private bool _bindingFlexibleSelection;
 
     private void InitializeFlexibleMaterialTesting()
     {
+        string? shoreRepairError = null;
+        try { _database.RepairUnusedShoreTemplateDefaults(); }
+        catch (Exception ex) { shoreRepairError = $"Shore defaults could not be repaired: {ex.Message}. Existing rows are retained; retry on next startup."; }
         var graph = _database.LoadFlexibleTestingGraph();
         foreach (var row in graph.Sessions) { row.MaterialDisplayName = FlexibleMaterialDisplayName(row.MaterialID); _flexibleTestSessions.Add(row); }
         foreach (var row in graph.Specimens) _flexibleSpecimens.Add(row);
@@ -51,6 +55,11 @@ public partial class MainWindow
         FlexibleMaterialTestingService.Recalculate(_flexibleSpecimens, _compressionPoints, _stressRelaxationPoints, _recoveryMeasurements);
         RefreshSavedFlexibleMaterialEvidence();
         FlexibleSessionsGrid.ItemsSource = _flexibleTestSessions;
+        if (CollectionViewSource.GetDefaultView(_flexibleTestSessions) is ListCollectionView sessionView)
+        {
+            sessionView.CustomSort = FlexibleSpecimenLabelComparer.Ascending;
+            FlexibleSessionsGrid.Columns[0].SortDirection = ListSortDirection.Ascending;
+        }
         FlexibleSessionMaterialColumn.ItemsSource = _nativeMaterialRows
             .Where(x => !x.IsArchived && !string.IsNullOrWhiteSpace(x.MaterialID))
             .Select(x => new FlexibleMaterialChoice(
@@ -64,6 +73,8 @@ public partial class MainWindow
         RegisterFlexibleFirstClickEditing();
         RefreshNativeMaterialTestStatusFromNativeInputTabs(markDirty: false);
         BindFlexibleTestingSession(_flexibleTestSessions.FirstOrDefault(x => x.IsActive) ?? _flexibleTestSessions.FirstOrDefault());
+        ActivateFastFlexibleViews();
+        if (shoreRepairError is not null) SetFlexibleStatus(shoreRepairError, true);
     }
 
     private void RegisterFlexibleFirstClickEditing()
@@ -86,6 +97,19 @@ public partial class MainWindow
 
     private void FlexibleReadingGrid_CurrentCellChanged(object? sender, EventArgs e)
     {
+        if (_bindingFlexibleSelection) return;
+        if (sender is DataGrid parent && parent.Name == "FlexibleSessionsGrid" &&
+            parent.CurrentCell.Item is FlexibleTestSessionRecord session && parent.Items.Contains(session))
+        {
+            if (!ReferenceEquals(session, _selectedFlexibleSession)) BindFlexibleTestingSession(session);
+            return;
+        }
+        if (sender is DataGrid specimens && specimens.Name == "FlexibleSpecimensGrid" &&
+            specimens.CurrentCell.Item is FlexibleTestSpecimenRecord specimen && specimens.Items.Contains(specimen))
+        {
+            if (!ReferenceEquals(specimen, _selectedFlexibleSpecimen)) SelectFlexibleSpecimen(specimen);
+            return;
+        }
         if (sender is DataGrid grid && IsFlexibleReadingGrid(grid.Name) && grid.CurrentCell.Item is { } item)
             _lastSelectedFlexibleReadingByGrid[grid.Name] = item;
     }
@@ -102,20 +126,18 @@ public partial class MainWindow
 
     private void FlexibleParentGrid_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+        if (_bindingFlexibleSelection) return;
         if (sender is not DataGrid grid) return;
         var cell = FindVisualParent<DataGridCell>(e.OriginalSource as DependencyObject);
         if (cell?.DataContext is FlexibleTestSessionRecord session && grid.Name == "FlexibleSessionsGrid")
         {
-            if (!ReferenceEquals(_selectedFlexibleSession, session)) BindFlexibleTestingSession(session);
+            if (!ReferenceEquals(_selectedFlexibleSession, session) && !BindFlexibleTestingSession(session)) e.Handled = true;
             return;
         }
         if (cell?.DataContext is FlexibleTestSpecimenRecord specimen && grid.Name == "FlexibleSpecimensGrid")
         {
             if (!ReferenceEquals(_selectedFlexibleSpecimen, specimen))
-            {
-                _selectedFlexibleSpecimen = specimen;
-                BindFlexibleSpecimenRows(specimen);
-            }
+                if (!SelectFlexibleSpecimen(specimen)) e.Handled = true;
             return;
         }
         if (cell?.DataContext is not null && IsFlexibleReadingGrid(grid.Name))
@@ -128,30 +150,51 @@ public partial class MainWindow
         return row is null ? materialId : BuildNativeMaterialDisplayName(row);
     }
 
-    private void BindFlexibleTestingSession(FlexibleTestSessionRecord? session)
+    private bool BindFlexibleTestingSession(FlexibleTestSessionRecord? session)
     {
-        _selectedFlexibleSession = session;
-        if (FlexibleSessionsGrid.SelectedItem != session) FlexibleSessionsGrid.SelectedItem = session;
+        if (_bindingFlexibleSelection) return false;
+        if (!TryPrepareFlexibleParentSwitch())
+        { RestoreFlexibleParentSelection(); return false; }
         var specimens = session is null ? [] : _flexibleSpecimens
             .Where(x => string.Equals(x.FlexibleTestSessionId, session.FlexibleTestSessionId, StringComparison.OrdinalIgnoreCase))
             .OrderBy(x => x.SpecimenLabel, FlexibleSpecimenLabelComparer.Ascending).ToList();
-        FlexibleSpecimensGrid.ItemsSource = specimens;
-        foreach (var column in FlexibleSpecimensGrid.Columns) column.SortDirection = null;
-        _selectedFlexibleSpecimen = specimens.FirstOrDefault();
-        FlexibleSpecimensGrid.SelectedItem = _selectedFlexibleSpecimen;
-        BindFlexibleSpecimenRows(_selectedFlexibleSpecimen);
-        RefreshFlexibleComparisons(session);
+        var selected = specimens.FirstOrDefault();
+        var oldSpecimens = FlexibleSpecimensGrid.ItemsSource;
+        var applied = false;
+        _bindingFlexibleSelection = true;
+        try
+        {
+            FlexibleSpecimensGrid.ItemsSource = specimens;
+            if (!BindFlexibleSpecimenRows(selected))
+            { FlexibleSpecimensGrid.ItemsSource = oldSpecimens; return false; }
+            _selectedFlexibleSession = session;
+            _selectedFlexibleSpecimen = selected;
+            SetFlexibleParentSelection(FlexibleSessionsGrid, session);
+            SetFlexibleParentSelection(FlexibleSpecimensGrid, selected);
+            foreach (var column in FlexibleSpecimensGrid.Columns) column.SortDirection = null;
+            RefreshFlexibleComparisons(session);
+            applied = true;
+            return true;
+        }
+        finally
+        {
+            _bindingFlexibleSelection = false;
+            if (!applied) RestoreFlexibleParentSelection();
+            SyncFastFlexibleViews();
+        }
     }
 
-    private void BindFlexibleSpecimenRows(FlexibleTestSpecimenRecord? specimen)
+    private bool BindFlexibleSpecimenRows(FlexibleTestSpecimenRecord? specimen)
     {
         if (!TryCloseFlexibleReadingEditsForRebind())
         {
             SetFlexibleStatus("Finish or correct the active reading before changing specimen or session.", true);
-            return;
+            return false;
         }
         _lastSelectedFlexibleReadingByGrid.Clear();
         var id = specimen?.SpecimenId;
+        var previous = FlexibleEditableGridNames.Where(IsFlexibleReadingGrid)
+            .Select(name => FindName(name)).OfType<DataGrid>().ToDictionary(grid => grid, grid => grid.ItemsSource);
         try
         {
             SetRows("CompressionPointsGrid", _compressionPoints.Where(x => x.SpecimenId == id).OrderBy(x => x.CycleNumber).ToList());
@@ -159,12 +202,84 @@ public partial class MainWindow
             SetRows("RecoveryMeasurementsGrid", _recoveryMeasurements.Where(x => x.SpecimenId == id).OrderBy(x => x.CycleNumber).ToList());
             SetRows("ShoreHardnessGrid", _shoreHardnessReadings.Where(x => x.SpecimenId == id).OrderBy(x => x.ShoreScale).ToList());
             RefreshSavedRelaxationTabVisibility(specimen);
+            SyncFastFlexibleViews();
+            return true;
         }
         catch (InvalidOperationException)
         {
+            foreach (var entry in previous) entry.Key.ItemsSource = entry.Value;
             SetFlexibleStatus("Finish or correct the active reading before changing specimen or session.", true);
+            return false;
         }
         void SetRows(string name, System.Collections.IEnumerable rows) { if (FindName(name) is DataGrid grid) grid.ItemsSource = rows; }
+    }
+
+    private bool SelectFlexibleSpecimen(FlexibleTestSpecimenRecord specimen)
+    {
+        if (_bindingFlexibleSelection || !IsCurrentFlexibleSpecimen(specimen)) return false;
+        if (!TryPrepareFlexibleParentSwitch()) { RestoreFlexibleParentSelection(); return false; }
+        var applied = false;
+        _bindingFlexibleSelection = true;
+        try
+        {
+            if (!BindFlexibleSpecimenRows(specimen)) return false;
+            _selectedFlexibleSpecimen = specimen;
+            SetFlexibleParentSelection(FlexibleSpecimensGrid, specimen);
+            applied = true;
+            return true;
+        }
+        finally
+        {
+            _bindingFlexibleSelection = false;
+            if (!applied) RestoreFlexibleParentSelection();
+            SyncFastFlexibleViews();
+        }
+    }
+
+    private bool IsCurrentFlexibleSpecimen(FlexibleTestSpecimenRecord specimen) =>
+        BelongsToFlexibleSession(specimen, _selectedFlexibleSession) &&
+        _flexibleSpecimens.Contains(specimen) && FlexibleSpecimensGrid.Items.Contains(specimen);
+
+    private bool TryPrepareFlexibleParentSwitch()
+    {
+        if (!FlushFastFlexibleChanges()) return false;
+        _bindingFlexibleSelection = true;
+        try
+        {
+            if (!TryCloseFlexibleReadingEditsForRebind() || !TryCommitFlexibleGridEdits(FlexibleSpecimensGrid) ||
+                !TryCommitFlexibleGridEdits(FlexibleSessionsGrid)) return false;
+            if (_selectedFlexibleSpecimen is not { } current || !_flexibleSpecimens.Contains(current)) return true;
+            var id = current.SpecimenId;
+            return FlexibleMaterialTestingService.Validate([current], _compressionPoints.Where(x => x.SpecimenId == id),
+                _stressRelaxationPoints.Where(x => x.SpecimenId == id), _recoveryMeasurements.Where(x => x.SpecimenId == id),
+                _shoreHardnessReadings.Where(x => x.SpecimenId == id)).Count == 0;
+        }
+        finally { _bindingFlexibleSelection = false; }
+    }
+
+    private static bool BelongsToFlexibleSession(FlexibleTestSpecimenRecord specimen, FlexibleTestSessionRecord? session) =>
+        session is not null && string.Equals(specimen.FlexibleTestSessionId, session.FlexibleTestSessionId, StringComparison.OrdinalIgnoreCase);
+
+    private static T? ResolveFlexibleParentSelection<T>(DataGrid grid, SelectionChangedEventArgs e) where T : class =>
+        e.AddedItems.OfType<T>().FirstOrDefault() ?? grid.SelectedItem as T;
+
+    private static void SetFlexibleParentSelection(DataGrid grid, object? row)
+    {
+        grid.SelectedItem = row;
+        grid.CurrentCell = row is null ? default : new DataGridCellInfo(row,
+            grid.CurrentCell.Column is { } column && grid.Columns.Contains(column) ? column : grid.Columns[0]);
+    }
+
+    private void RestoreFlexibleParentSelection()
+    {
+        _bindingFlexibleSelection = true;
+        try
+        {
+            SetFlexibleParentSelection(FlexibleSessionsGrid, _selectedFlexibleSession);
+            SetFlexibleParentSelection(FlexibleSpecimensGrid, _selectedFlexibleSpecimen);
+            SetFlexibleStatus("Finish or correct the active reading before changing specimen or session.", true);
+        }
+        finally { _bindingFlexibleSelection = false; SyncFastFlexibleViews(); }
     }
 
     private void RefreshSavedRelaxationTabVisibility(FlexibleTestSpecimenRecord? specimen)
@@ -178,6 +293,7 @@ public partial class MainWindow
 
     private bool TryCloseFlexibleReadingEditsForRebind()
     {
+        if (!CommitFastFlexibleEditors()) return false;
         foreach (var gridName in FlexibleEditableGridNames.Where(IsFlexibleReadingGrid))
         {
             if (FindName(gridName) is not DataGrid grid) continue;
@@ -217,28 +333,42 @@ public partial class MainWindow
         e.Column.SortDirection = descending ? ListSortDirection.Descending : ListSortDirection.Ascending;
     }
 
+    private void FlexibleSessionsGrid_Sorting(object sender, DataGridSortingEventArgs e)
+    {
+        if (sender is not DataGrid grid || e.Column.SortMemberPath != nameof(FlexibleTestSessionRecord.SessionLabel)) return;
+        e.Handled = true;
+        foreach (var name in FlexibleEditableGridNames)
+            if (FindName(name) is DataGrid editable && !TryCommitFlexibleGridEdits(editable))
+            { SetFlexibleStatus("Finish or correct the edit before sorting sessions.", true); return; }
+        if (CollectionViewSource.GetDefaultView(grid.ItemsSource) is not ListCollectionView view) return;
+        var descending = e.Column.SortDirection == ListSortDirection.Ascending;
+        view.CustomSort = new FlexibleSpecimenLabelComparer(descending);
+        foreach (var column in grid.Columns) column.SortDirection = null;
+        e.Column.SortDirection = descending ? ListSortDirection.Descending : ListSortDirection.Ascending;
+    }
+
     private void FlexibleSessionsGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (sender is not DataGrid grid) return;
-        var session = grid.CurrentCell.Item as FlexibleTestSessionRecord ??
-                      grid.SelectedItem as FlexibleTestSessionRecord ??
-                      e.AddedItems.OfType<FlexibleTestSessionRecord>().FirstOrDefault();
+        if (_bindingFlexibleSelection || sender is not DataGrid grid) return;
+        var session = ResolveFlexibleParentSelection<FlexibleTestSessionRecord>(grid, e);
         if (session is not null && !ReferenceEquals(_selectedFlexibleSession, session)) BindFlexibleTestingSession(session);
     }
 
     private void FlexibleSpecimensGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (sender is not DataGrid grid) return;
-        var specimen = grid.CurrentCell.Item as FlexibleTestSpecimenRecord ??
-                       grid.SelectedItem as FlexibleTestSpecimenRecord ??
-                       e.AddedItems.OfType<FlexibleTestSpecimenRecord>().FirstOrDefault();
+        if (_bindingFlexibleSelection || sender is not DataGrid grid) return;
+        var specimen = ResolveFlexibleParentSelection<FlexibleTestSpecimenRecord>(grid, e);
         if (specimen is null || ReferenceEquals(_selectedFlexibleSpecimen, specimen)) return;
-        _selectedFlexibleSpecimen = specimen;
-        BindFlexibleSpecimenRows(specimen);
+        SelectFlexibleSpecimen(specimen);
     }
 
     private void AddFlexibleSession_Click(object sender, RoutedEventArgs e)
     {
+        if (!FlushFastFlexibleChanges()) return;
+        if (!TryGetFlexibleTemplateSettings(out var settings, out var error))
+        { SetFlexibleStatus(error, true); return; }
+        foreach (var name in FlexibleEditableGridNames)
+            if (FindName(name) is DataGrid grid && !TryCommitFlexibleGridEdits(grid)) return;
         var material = _lastSelectedNativeMaterial is { IsArchived: false } selected ? selected
             : _nativeMaterialRows.FirstOrDefault(x => !x.IsArchived && !string.IsNullOrWhiteSpace(x.MaterialID));
         if (material is null) { MessageBox.Show(this, "Create or select an active MaterialID first.", "Flexible Material Testing"); return; }
@@ -250,12 +380,22 @@ public partial class MainWindow
             CreatedAtUtc = now, UpdatedAtUtc = now
         };
         _flexibleTestSessions.Add(row);
-        if (!SaveFlexibleTesting()) { _flexibleTestSessions.Remove(row); return; }
+        var count = (int)FlexibleMaterialTestingService.ParseOptional(settings["Compression specimens per session"])!.Value;
+        for (var i = 1; i <= count; i++)
+            AddFlexibleTemplateRows(row.FlexibleTestSessionId, $"Specimen {i}", false, settings);
+        AddFlexibleTemplateRows(row.FlexibleTestSessionId, "Shore Specimen 1", true, settings);
+        if (!SaveFlexibleTesting())
+        {
+            foreach (var specimen in _flexibleSpecimens.Where(x => x.FlexibleTestSessionId == row.FlexibleTestSessionId).ToList())
+            { RemoveFlexibleSpecimenRows(specimen.SpecimenId); _flexibleSpecimens.Remove(specimen); }
+            _flexibleTestSessions.Remove(row); return;
+        }
         BindFlexibleTestingSession(row); FlexibleSessionsGrid.ScrollIntoView(row);
     }
 
     private void DeleteFlexibleSession_Click(object sender, RoutedEventArgs e)
     {
+        if (!FlushFastFlexibleChanges()) return;
         if (IsAutomationActionBlocked("Flexible test session deletion") || _selectedFlexibleSession is null) return;
         if (MessageBox.Show(this, $"Delete test session '{_selectedFlexibleSession.SessionLabel}' and all specimens and readings?", "Flexible Material Testing", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
         foreach (var specimen in _flexibleSpecimens.Where(x => x.FlexibleTestSessionId == _selectedFlexibleSession.FlexibleTestSessionId).ToList())
@@ -271,33 +411,24 @@ public partial class MainWindow
 
     private void AddFlexibleSpecimen(string intendedTest)
     {
+        if (!FlushFastFlexibleChanges()) return;
         if (_selectedFlexibleSession is null) { MessageBox.Show(this, "Select or add a test session first.", "Flexible Material Testing"); return; }
-        if (!TryGetFlexibleDefaults(out var diameter, out var height, out var thickness, out var displacement, out var error))
+        if (!TryGetFlexibleTemplateSettings(out var settings, out var error))
         {
             MessageBox.Show(this, error, "Flexible Material Testing Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
-        var number = _flexibleSpecimens.Count(x => x.FlexibleTestSessionId == _selectedFlexibleSession.FlexibleTestSessionId) + 1;
-        var row = new FlexibleTestSpecimenRecord
-        {
-            SpecimenId = Id("TPU"), FlexibleTestSessionId = _selectedFlexibleSession.FlexibleTestSessionId,
-            SpecimenLabel = $"Specimen {number}", IntendedTest = intendedTest,
-            DiameterMm = diameter, InitialHeightMm = height, ThicknessMm = thickness,
-            MethodVersion = intendedTest == "Shore" ? "SHORE-v1" : FlexibleMaterialTestingService.CompressionMethodVersion,
-            MethodNotes = intendedTest == "Shore" ? "Comparative in-house test; not ASTM/ISO." : FlexibleMaterialTestingService.CompressionMethodNotes,
-            CreatedAtUtc = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture)
-        };
-        _flexibleSpecimens.Add(row); _selectedFlexibleSpecimen = row;
-        var methodPoints = new List<CompressionPointRecord>();
-        if (string.Equals(intendedTest, "Compression", StringComparison.Ordinal))
-        {
-            methodPoints.Add(CreateCompressionPoint(row.SpecimenId, displacement, "10"));
-            methodPoints.Add(CreateCompressionPoint(row.SpecimenId, displacement, "30"));
-            foreach (var point in methodPoints) _compressionPoints.Add(point);
-        }
+        foreach (var name in FlexibleEditableGridNames)
+            if (FindName(name) is DataGrid grid && !TryCommitFlexibleGridEdits(grid)) return;
+        var shore = intendedTest == "Shore";
+        var prefix = shore ? "Shore Specimen " : "Specimen ";
+        var number = 1;
+        while (_flexibleSpecimens.Any(x => x.FlexibleTestSessionId == _selectedFlexibleSession.FlexibleTestSessionId &&
+                   x.SpecimenLabel == prefix + number)) number++;
+        var row = AddFlexibleTemplateRows(_selectedFlexibleSession.FlexibleTestSessionId, prefix + number, shore, settings);
         if (!SaveFlexibleTesting())
         {
-            foreach (var point in methodPoints) _compressionPoints.Remove(point);
+            RemoveFlexibleSpecimenRows(row.SpecimenId);
             _flexibleSpecimens.Remove(row); _selectedFlexibleSpecimen = null; BindFlexibleTestingSession(_selectedFlexibleSession); return;
         }
         BindFlexibleTestingSession(_selectedFlexibleSession);
@@ -306,6 +437,7 @@ public partial class MainWindow
 
     private void AddCompressionPoint_Click(object sender, RoutedEventArgs e)
     {
+        if (!FlushFastFlexibleChanges()) return;
         if (!TryGetFlexibleDefaults(out _, out _, out _, out var displacement, out var error))
         {
             MessageBox.Show(this, error, "Flexible Material Testing Settings", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -325,6 +457,7 @@ public partial class MainWindow
     };
     private void AddRecoveryMeasurement_Click(object sender, RoutedEventArgs e)
     {
+        if (!FlushFastFlexibleChanges()) return;
         if (!TryGetRecoveryHoldDefault(out var holdSeconds, out var error))
         {
             SetFlexibleStatus(error, true);
@@ -351,7 +484,36 @@ public partial class MainWindow
             ? string.Empty : "Default recovery compressed hold must be a nonnegative number in seconds.";
         return error.Length == 0;
     }
-    private void AddShoreReading_Click(object sender, RoutedEventArgs e) => AddChild(_shoreHardnessReadings, new ShoreHardnessReadingRecord { ShoreReadingId=Id("SHR"),SpecimenId=SelectedSpecimenId(),ShoreScale="A",SpecimenThicknessMm=_selectedFlexibleSpecimen?.ThicknessMm??string.Empty });
+    private void AddShoreReading_Click(object sender, RoutedEventArgs e)
+    {
+        if (!FlushFastFlexibleChanges()) return;
+        if (!TryGetFlexibleTemplateSettings(out var settings, out var error)) { SetFlexibleStatus(error, true); return; }
+        var specimen = ResolveSelectedFlexibleSpecimen();
+        var reading = FlexibleSessionTemplateService.CreateShore(specimen?.SpecimenId ?? string.Empty, settings);
+        AddChild(_shoreHardnessReadings, reading);
+    }
+
+    private FlexibleTestSpecimenRecord AddFlexibleTemplateRows(string sessionId, string label, bool shore,
+        IReadOnlyDictionary<string, string> settings)
+    {
+        var rows = FlexibleSessionTemplateService.CreateRows(sessionId, label, shore, settings);
+        _flexibleSpecimens.Add(rows.Specimen);
+        foreach (var row in rows.Compression) _compressionPoints.Add(row);
+        foreach (var row in rows.Recovery) _recoveryMeasurements.Add(row);
+        foreach (var row in rows.Shore) _shoreHardnessReadings.Add(row);
+        return rows.Specimen;
+    }
+
+    private bool TryGetFlexibleTemplateSettings(out Dictionary<string, string> settings, out string error)
+    {
+        settings = _nativeSettingsRows.Where(x => x.Section == FlexibleSettingsSection)
+            .GroupBy(x => x.Parameter).ToDictionary(x => x.Key, x => x.First().Value.Trim());
+        if (!TryGetFlexibleDefaults(out _, out _, out _, out _, out error) || !TryGetRecoveryHoldDefault(out _, out error)) return false;
+        foreach (var entry in FlexibleSessionTemplateService.Defaults)
+            if (!settings.TryGetValue(entry.Name, out var value) || !FlexibleSessionTemplateService.ValidateSetting(entry.Name, value))
+            { error = $"{entry.Name} has an invalid value in Settings Manager."; return false; }
+        return true;
+    }
 
     private void AddChild<T>(ObservableCollection<T> collection, T row)
     {
@@ -362,6 +524,7 @@ public partial class MainWindow
 
     private void DeleteFlexibleSpecimen_Click(object sender, RoutedEventArgs e)
     {
+        if (!FlushFastFlexibleChanges()) return;
         if (IsAutomationActionBlocked("Flexible specimen deletion")) return;
         var specimen = ResolveSelectedFlexibleSpecimen();
         if (specimen is null) return;
@@ -373,13 +536,14 @@ public partial class MainWindow
 
     private void DeleteFlexibleReading_Click(object sender, RoutedEventArgs e)
     {
+        if (!FlushFastFlexibleChanges()) return;
         if (IsAutomationActionBlocked("Flexible reading deletion")) return;
         var removed = FlexibleTestingTabs.SelectedIndex switch
         {
             0 => RemoveSelected("CompressionPointsGrid", _compressionPoints), 1 => RemoveSelected("StressRelaxationGrid", _stressRelaxationPoints),
             2 => RemoveSelected("RecoveryMeasurementsGrid", _recoveryMeasurements), 3 => RemoveSelected("ShoreHardnessGrid", _shoreHardnessReadings), _ => false
         };
-        if (removed) SaveFlexibleTesting();
+        if (removed) { SaveFlexibleTesting(); SyncFastFlexibleViews(); }
         else SetFlexibleStatus("Select a reading cell in the current measurement tab before deleting.", true);
     }
 
@@ -490,6 +654,9 @@ public partial class MainWindow
             SetFlexibleStatus($"Save failed: {ex.Message}", true);
             return false;
         }
+        _flexibleEditDirty = false;
+        _flexibleSaveTimer?.Stop();
+        foreach (var recovery in _recoveryMeasurements) recovery.AcceptInputCommit();
         RefreshSavedFlexibleMaterialEvidence();
         RefreshFlexibleComparisons(_selectedFlexibleSession);
         RefreshSavedRelaxationTabVisibility(_selectedFlexibleSpecimen);
@@ -518,11 +685,7 @@ public partial class MainWindow
 
     private FlexibleTestSpecimenRecord? ResolveSelectedFlexibleSpecimen()
     {
-        var specimen = FlexibleSpecimensGrid.CurrentCell.Item as FlexibleTestSpecimenRecord ??
-                       FlexibleSpecimensGrid.SelectedItem as FlexibleTestSpecimenRecord ??
-                       _selectedFlexibleSpecimen;
-        if (specimen is not null) _selectedFlexibleSpecimen = specimen;
-        return specimen;
+        return _selectedFlexibleSpecimen is { } specimen && IsCurrentFlexibleSpecimen(specimen) ? specimen : null;
     }
 
     private string SelectedSpecimenId() => ResolveSelectedFlexibleSpecimen()?.SpecimenId ?? string.Empty;
@@ -533,6 +696,13 @@ public partial class MainWindow
     private void EnsureFlexibleTestingDefaultSettings()
     {
         var added = false;
+        var oldThickness = _nativeSettingsRows.FirstOrDefault(x => x.Section == FlexibleSettingsSection &&
+            x.Parameter == FlexibleDefaultThicknessParameter);
+        if (oldThickness is not null && oldThickness.Notes.Contains("used by Shore readings", StringComparison.Ordinal))
+        {
+            oldThickness.Notes = "New compression specimen metadata only; Shore uses Default Shore thickness";
+            added = true;
+        }
         foreach (var defaultRow in GetDefaultNativeSettingsRows().Where(x =>
                      string.Equals(x.Section, FlexibleSettingsSection, StringComparison.OrdinalIgnoreCase)))
         {

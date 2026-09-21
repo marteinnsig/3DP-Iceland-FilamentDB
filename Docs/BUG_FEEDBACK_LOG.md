@@ -14,13 +14,13 @@ idea.
 | Status | Items |
 |---|---:|
 | Open | 0 |
-| In progress | 0 |
+| In progress | 2 |
 | Partially solved | 0 |
-| Solved | 134 |
+| Solved | 142 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **140** |
+| **Total tracked findings** | **150** |
 
 ## Triage categories
 
@@ -69,9 +69,113 @@ No active findings.
 
 ## In-progress findings — newest first
 
-No active findings.
+### 2026-09-12 — Flexible typing is delayed
+
+- **Status:** In progress — v67.0.10.
+- **Request:** Use the same immediate editor as Materials throughout Flexible Material Testing.
+- **Follow-up:** Immediate-focus correction blocked typing; reverted it and fixed layout-triggered editor closure.
+- **Diagnosis:** Owner confirms no digit delay after waiting 2-3 s after click; activation/focus path is the target.
+- **Decision:** Owner requests rollback to writable input and accepts retaining the delay; further latency work deferred.
+- **Delivery:** Latest immediate-focus block and isolated focus fixture removed; prior deferred focus restored.
+- **Scope:** Shared fast renderer, commit-bound validation and coalesced save; preserve specimen ownership.
+- **Completion:** Builds, deterministic checks, Full Verification and owner keyboard/restart acceptance.
+
+### 2026-09-12 — Shore readings appear under another session
+
+- **Status:** In progress — v67.0.9.
+- **Request:** Keep Shore readings associated with their specimen/session during parent navigation.
+- **Cause:** Stale CurrentCell wins reentrant selection; parent keyboard movement ignored; commit occurs after parent mutation.
+- **Scope:** Guarded selection, fresh row precedence, keyboard navigation and session membership checks; no raw-data reassignment.
+- **Completion:** Two-session regression, builds, Full Verification, Help and owner switch/edit/restart acceptance.
 
 ## Resolved findings — newest first
+
+### 2026-09-21 — Include Izod and Charpy in every intelligence tab and calculation
+
+- Date: 2026-09-21
+- Area: Rankings Dashboard, Category Rankings, Awards & Winners, Dashboard Insights, YouTube Research and AI Assistant
+- Type: Workflow friction / Report idea
+- Severity: Important
+- What happened: New methods were visible in detail/radar but absent from ranking choices and downstream decisions.
+- Expected behavior: Independent methods participate alongside existing tests in rankings, Overall and generated insights.
+- Status: Solved
+- Resolution: v68.0.3 adds method categories, awards, available-component Overall, Consistency and derived suggestions.
+  Missing is not zero; units and cohort references remain separate. Help, exports and tester contracts are updated.
+- Verification evidence: Docs/V68_RANKING_INTEGRATION_ACCEPTANCE.md; owner runtime acceptance received 2026-09-21; commit/push authorized.
+
+### 2026-09-21 — Integrate Izod and Charpy coverage and result views
+
+- Date: 2026-09-21
+- Area: Materials, Material Detail, radar, reports and website projections
+- Type: Workflow friction / Report idea
+- Severity: Important
+- What happened: Accepted direct entry needs the same coverage and downstream visibility as existing Impact results.
+- Expected behavior: In Izod/In Charpy flags, six-method Fully/Partially/Not tested status, summaries on every detail tab,
+  and independent results in corresponding radar and comparison views.
+- Status: Solved
+- Resolution: v68.0.2 integrates canonical direct results, explicit method/cohort scores, Help and disposable acceptance.
+  Overall retains its existing weights; no ZIP handoff is required in subsequent increments.
+  Owner follow-up: flags follow In Flexible, all coverage flags belong in Test Information, Other is removed from view,
+  and Compare shows only Izod/Charpy means in kJ/m². Implemented within the pending v68.0.2 candidate.
+  Follow-up screenshot found existing v2 layouts skipped migration; advance layout contract to v3 and test appended columns.
+- Verification evidence: Docs/V68_RESULT_INTEGRATION_ACCEPTANCE.md; owner result/status/radar acceptance received with v68.0.3 on 2026-09-21.
+
+### 2026-09-21 — Simplify Izod and Charpy to direct Impact-style entry
+
+- Date: 2026-09-21
+- Area: Izod Measurements, Charpy Measurements, Settings and Fast input
+- Type: Workflow friction
+- Severity: Important
+- What happened: Owner rejects the run/metadata process as too complex; the instrument already reports kJ/m².
+- Expected behavior: Automatic visible-material rows, ten direct readings, Std Dev, CV%, Samples and Confidence.
+  Keep 80 x 4 x 10 mm specimen and 2 mm notch information in Settings, outside measurement entry.
+- Status: Solved
+- Resolution: v68.0.1 owns replacement of the unaccepted run UI, direct statistics, Settings, Help and tester changes.
+  v68.0.0 is superseded before acceptance. Existing historical saved graphs retain units and recovery support.
+- Verification evidence: Docs/V68_DIRECT_IMPACT_ACCEPTANCE.md; Debug/Release and 472/472 PASS; owner accepted layout, speed and normal input on 2026-09-21.
+
+### 2026-09-21 — Separate Izod and Charpy measurements with accepted Fast input behavior
+
+- Date: 2026-09-21
+- Area: Measurements, SQLite, verified summaries, reports and website exports
+- Type: Workflow friction / Data issue
+- Severity: Important
+- What happened: Owner is starting HT-5D-CM Izod and Charpy tests and needs two independent measurement tabs.
+- Expected behavior: Reuse accepted Fast entry; retain run/specimen/method identity, raw J, measured section and break outcomes.
+  Ten-sample targets, unfinished runs, condition/batch summaries and honest non-certified method references are required.
+- Status: Solved
+- Resolution: v68.0.0 owns the additive foundation; legacy Impact and prior v67 input follow-ups remain independent.
+- Verification evidence: See Docs/V68_IZOD_CHARPY_ACCEPTANCE.md; Superseded by revised v68.0.1 direct-entry scope; owner accepted layout, speed and input on 2026-09-21.
+
+### 2026-09-12 — Empty Shore rows retain missing/default geometry
+
+- **Status:** Solved — v67.0.8; owner confirmed corrected Shore display on 2026-09-12.
+- **Request:** Shore rows should have 10 s reading time and 8 mm thickness; screenshot shows blank time and 10 mm.
+- **Scope:** Dedicated defaults for new rows; backup-first once-only repair of unused legacy templates.
+- **Preserve:** Measured hardness, custom conditions, subsequent edits and all other test data.
+- **Completion:** Repair regression, builds, Full Verification, Help and owner runtime acceptance.
+
+### 2026-09-12 — Session labels sort lexically
+
+- **Status:** Solved — v67.0.7; owner confirms correct ordering on 2026-09-12.
+- **Request:** Session 10 must follow 9 rather than 1, including when sorting by Session header.
+- **Scope:** Numeric view comparer at startup and header toggling; preserve input commits and saved identities.
+- **Completion:** Builds, numeric adapter regression, Full Verification, Help and owner ordering acceptance.
+
+### 2026-09-12 — Remove completed Flexible correction and legacy display
+
+- **Status:** Solved — v67.0.6; owner screenshot and final review confirm controls removed.
+- **Request:** Remove the completed print-layer correction button and empty Legacy Experimental Run column.
+- **Scope:** Delete action/handler/display and stale Help; preserve supported historical database metadata.
+- **Completion:** Debug/Release, Full Verification, Help/docs and owner visual acceptance.
+
+### 2026-09-12 — Flexible session templates and print defaults
+
+- **Status:** Solved — v67.0.5; owner confirmed correct templates and successful existing-layer correction.
+- **Request:** New session prepares 10 Compression specimens and one Shore coupon, with blank reading rows.
+- **Defaults:** 230 C, extrusion 1.1, 2/5/3 print layers, Shore 10 s/8 mm; configurable in Settings.
+- **Existing data:** Correct only walls/top/bottom to 2/5/3 with verified backup and transactional save.
+- **Completion:** Builds, blank/statistics/persistence/rollback verification, Help and owner runtime acceptance.
 
 ### 2026-09-12 — Flexible list capacity and numeric specimen ordering
 

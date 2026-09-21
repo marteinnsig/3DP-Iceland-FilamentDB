@@ -2,6 +2,7 @@ namespace FilamentDbApp.Models;
 
 public sealed class PublicMaterialEngineeringReportModel
 {
+    public IReadOnlyList<PublicPendulumImpactGroup> PendulumResults { get; init; } = Array.Empty<PublicPendulumImpactGroup>();
     public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty;
     public string MaterialName { get; init; } = string.Empty;
@@ -16,6 +17,8 @@ public sealed class PublicMaterialEngineeringReportModel
     public string OverallScore { get; init; } = "n/a";
     public string TensileScore { get; init; } = "n/a";
     public string ImpactScore { get; init; } = "n/a";
+    public string IzodScore { get; init; } = "n/a";
+    public string CharpyScore { get; init; } = "n/a";
     public string StiffnessScore { get; init; } = "n/a";
     public string ConsistencyScore { get; init; } = "n/a";
     public string LayerAdhesionScore { get; init; } = "n/a";
@@ -54,6 +57,8 @@ public sealed class PublicVerifiedMeasurementsModel
     public PublicMeasurementSetModel TensileFlat { get; init; } = new();
     public PublicMeasurementSetModel ImpactUpright { get; init; } = new();
     public PublicMeasurementSetModel ImpactFlat { get; init; } = new();
+    public PublicMeasurementSetModel Izod { get; init; } = new();
+    public PublicMeasurementSetModel Charpy { get; init; } = new();
     public double? StiffnessModulusMpa { get; init; }
     public double? StiffnessDeflectionMm { get; init; }
     public double? ThermalResultTemperatureC { get; init; }
@@ -72,6 +77,8 @@ public sealed class PublicMeasurementDateProvenanceModel
 {
     public string Tensile { get; init; } = "Not recorded";
     public string Impact { get; init; } = "Not recorded";
+    public string Izod { get; init; } = "Not recorded";
+    public string Charpy { get; init; } = "Not recorded";
     public string Stiffness { get; init; } = "Not recorded";
     public string Thermal { get; init; } = "Not recorded";
 }
@@ -92,6 +99,8 @@ public sealed class PublicAlternativeModel
     public string OverallScore { get; init; } = "n/a";
     public string TensileScore { get; init; } = "n/a";
     public string ImpactScore { get; init; } = "n/a";
+    public string IzodScore { get; init; } = "n/a";
+    public string CharpyScore { get; init; } = "n/a";
 }
 
 public sealed class PublicEngineeringScoreProfile
@@ -100,6 +109,8 @@ public sealed class PublicEngineeringScoreProfile
     public string OverallScore { get; init; } = "n/a";
     public string TensileScore { get; init; } = "n/a";
     public string ImpactScore { get; init; } = "n/a";
+    public string IzodScore { get; init; } = "n/a";
+    public string CharpyScore { get; init; } = "n/a";
     public string StiffnessScore { get; init; } = "n/a";
     public string ConsistencyScore { get; init; } = "n/a";
     public string LayerAdhesionScore { get; init; } = "n/a";
@@ -114,6 +125,8 @@ public sealed class PublicMaterialPeerModel
     public string OverallScore { get; init; } = "n/a";
     public string TensileScore { get; init; } = "n/a";
     public string ImpactScore { get; init; } = "n/a";
+    public string IzodScore { get; init; } = "n/a";
+    public string CharpyScore { get; init; } = "n/a";
 }
 
 public sealed class PublicReportPublicationResult
@@ -150,6 +163,7 @@ public sealed class PublicComparisonReportModel
 
 public sealed class PublicComparisonMaterialModel
 {
+    public IReadOnlyList<PublicPendulumImpactGroup> PendulumResults { get; init; } = Array.Empty<PublicPendulumImpactGroup>();
     public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty;
     public string MaterialName { get; init; } = string.Empty;
@@ -162,6 +176,8 @@ public sealed class PublicComparisonMaterialModel
     public string OverallScore { get; init; } = "n/a";
     public string TensileScore { get; init; } = "n/a";
     public string ImpactScore { get; init; } = "n/a";
+    public string IzodScore { get; init; } = "n/a";
+    public string CharpyScore { get; init; } = "n/a";
     public string StiffnessScore { get; init; } = "n/a";
     public string ConsistencyScore { get; init; } = "n/a";
     public string LayerAdhesionScore { get; init; } = "n/a";
@@ -216,6 +232,7 @@ public sealed class PublicManufacturerCategoryPositionModel
 
 public sealed class PublicManufacturerMaterialModel
 {
+    public IReadOnlyList<PublicPendulumImpactGroup> PendulumResults { get; init; } = Array.Empty<PublicPendulumImpactGroup>();
     public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty;
     public string MaterialName { get; init; } = string.Empty;
@@ -227,6 +244,8 @@ public sealed class PublicManufacturerMaterialModel
     public string OverallScore { get; init; } = "n/a";
     public string TensileScore { get; init; } = "n/a";
     public string ImpactScore { get; init; } = "n/a";
+    public string IzodScore { get; init; } = "n/a";
+    public string CharpyScore { get; init; } = "n/a";
     public string StiffnessScore { get; init; } = "n/a";
     public string ConsistencyScore { get; init; } = "n/a";
     public string LayerAdhesionScore { get; init; } = "n/a";
@@ -246,6 +265,7 @@ public sealed class PublicManufacturerPublicationResult
 
 public sealed class PublicTestSessionReportModel
 {
+    public IReadOnlyList<PublicPendulumImpactGroup> PendulumResults { get; init; } = Array.Empty<PublicPendulumImpactGroup>();
     public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty;
     public string MaterialName { get; init; } = string.Empty;
@@ -266,9 +286,12 @@ public sealed class PublicTestNoteModel { public string Module { get; init; } = 
 public sealed class PublicTestSessionPublicationResult { public string RelativeDirectory { get; init; } = string.Empty; public string Html { get; init; } = string.Empty; public string Manifest { get; init; } = string.Empty; public string MetadataJson { get; init; } = string.Empty; }
 public sealed class PublicPrintingRecommendationReportModel
 {
+    public IReadOnlyList<PublicPendulumImpactGroup> PendulumResults { get; init; } = Array.Empty<PublicPendulumImpactGroup>();
     public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty; public string MaterialName { get; init; } = string.Empty; public string Manufacturer { get; init; } = string.Empty; public string BaseMaterial { get; init; } = string.Empty; public string TestCoverage { get; init; } = string.Empty; public int EngineeringAxes { get; init; }
-    public string OverallScore { get; init; } = "n/a"; public string TensileScore { get; init; } = "n/a"; public string ImpactScore { get; init; } = "n/a"; public string StiffnessScore { get; init; } = "n/a"; public string ConsistencyScore { get; init; } = "n/a"; public string LayerAdhesionScore { get; init; } = "n/a"; public string OverallRank { get; init; } = string.Empty; public string MsrpUsdPerKg { get; init; } = string.Empty;
+    public string OverallScore { get; init; } = "n/a"; public string TensileScore { get; init; } = "n/a"; public string ImpactScore { get; init; } = "n/a";
+    public string IzodScore { get; init; } = "n/a";
+    public string CharpyScore { get; init; } = "n/a"; public string StiffnessScore { get; init; } = "n/a"; public string ConsistencyScore { get; init; } = "n/a"; public string LayerAdhesionScore { get; init; } = "n/a"; public string OverallRank { get; init; } = string.Empty; public string MsrpUsdPerKg { get; init; } = string.Empty;
     public IReadOnlyList<string> RecommendedApplications { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> Strengths { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> Limitations { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> Tradeoffs { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> WorkflowChecks { get; init; } = Array.Empty<string>(); public IReadOnlyList<string> DecisionGuidance { get; init; } = Array.Empty<string>(); public IReadOnlyList<PublicAlternativeModel> Alternatives { get; init; } = Array.Empty<PublicAlternativeModel>(); public string ManufacturerWebsite { get; init; } = string.Empty;
     public PublicBaseMaterialPrintingGuidanceModel BaseMaterialGuidance { get; init; } = new();
 }
@@ -325,6 +348,7 @@ public sealed class PublicSummaryDistributionModel
 
 public sealed class PublicMaterialSummaryRowModel
 {
+    public IReadOnlyList<PublicPendulumImpactGroup> PendulumResults { get; init; } = Array.Empty<PublicPendulumImpactGroup>();
     public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty;
     public string MaterialName { get; init; } = string.Empty;
@@ -335,6 +359,8 @@ public sealed class PublicMaterialSummaryRowModel
     public string OverallScore { get; init; } = "n/a";
     public string TensileScore { get; init; } = "n/a";
     public string ImpactScore { get; init; } = "n/a";
+    public string IzodScore { get; init; } = "n/a";
+    public string CharpyScore { get; init; } = "n/a";
     public string StiffnessScore { get; init; } = "n/a";
     public string ConsistencyScore { get; init; } = "n/a";
     public string LayerAdhesionScore { get; init; } = "n/a";

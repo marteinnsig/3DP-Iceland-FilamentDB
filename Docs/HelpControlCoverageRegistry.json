@@ -1,10 +1,10 @@
 {
   "Schema": "3dpiceland.help-control-coverage.v1",
-  "Release": "v67.0.4",
+  "Release": "v68.0.3",
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
   "XamlCounts": {
     "Button": 178,
-    "MenuItem": 60,
+    "MenuItem": 62,
     "TextBox": 36,
     "PasswordBox": 2,
     "ComboBox": 52,
@@ -12,13 +12,23 @@
     "RadioButton": 0,
     "DatePicker": 0,
     "DataGrid": 38,
-    "DataGridColumn": 426
+    "DataGridColumn": 429
   },
   "SurfaceCounts": {
-    "TopLevelTab": 24,
+    "TopLevelTab": 26,
     "NestedTab": 16
   },
   "CoveredOwnerIncrements": [
+    "v68.0.3",
+    "v68.0.2",
+    "v68.0.1",
+    "v68.0.0",
+    "v67.0.10",
+    "v67.0.9",
+    "v67.0.8",
+    "v67.0.7",
+    "v67.0.6",
+    "v67.0.5",
     "v67.0.4",
     "v67.0.2",
     "v67.0.1",
@@ -80,6 +90,15 @@
     "v64.0.4"
   ],
   "CustomColumnRegistries": [
+    {
+      "Key": "flexible.fast-input",
+      "Builder": "ActivateFastFlexibleViews",
+      "KeyContract": "PropertyName",
+      "Columns": 54,
+      "OwnerIncrement": "v67.0.10",
+      "HelpDestination": "flexible-testing.overview",
+      "Status": "covered"
+    },
     {
       "Key": "materials.fast-grid",
       "Builder": "BuildFastMaterialsColumns",
@@ -145,6 +164,29 @@
     }
   ],
   "RuntimeSurfaces": [
+    {
+      "Key": "runtime.pendulum-details",
+      "EntryPoint": "RenderMechanicalTab",
+      "OwnerIncrement": "v68.0.2",
+      "HelpDestination": "material-detail.mechanical",
+      "Status": "covered",
+      "Controls": [
+        "PendulumDetailSummaryText", "DashboardIzodMeanText", "DashboardIzodStatisticsText",
+        "DashboardCharpyMeanText", "DashboardCharpyStatisticsText", "ChartIzodScoreText",
+        "ChartIzodSourceText", "ChartCharpyScoreText", "ChartCharpySourceText", "IzodDisplay", "CharpyDisplay"
+      ]
+    },
+    {
+      "Key": "runtime.pendulum-impact",
+      "EntryPoint": "InitializePendulumImpact",
+      "OwnerIncrement": "v68.0.1",
+      "HelpDestination": "measurements.pendulum-impact",
+      "Status": "covered",
+      "Controls": [
+        "IzodImpactViewHost", "CharpyImpactViewHost", "IzodImpactMeasurementsGrid", "CharpyImpactMeasurementsGrid",
+        "Sample1-10", "TestNotes", "MeasuredDateText", "Mean", "StdDev", "Cv", "Samples", "Confidence", "Validation"
+      ]
+    },
     {
       "Key": "runtime.bulk-update",
       "EntryPoint": "WorkflowBulkUpdateDialog",

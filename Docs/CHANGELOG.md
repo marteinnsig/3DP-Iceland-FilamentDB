@@ -3,6 +3,168 @@
 > implementation history.
 
 
+## v68.0.3 - Izod and Charpy Ranking Integration
+
+Owner runtime accepted 2026-09-21; commit/push authorized. Rankings, category winners and awards expose both methods.
+Overall averages seven available components including Izod/Charpy; Consistency includes their actual CV/sample evidence.
+Dashboard Insights, local AI context, YouTube stories, alternatives and recommendations use independent method evidence.
+Missing values stay unavailable; contextual impact weights are shared across available methods without pooling raw units.
+Help and existing disposable acceptance cover the new read-only selectors and calculations. No new external authorization.
+No ZIP, schema change, owner fixture mutation or live publication. Existing saved production descriptions remain historical.
+Debug/Release, 477/477 Verification with CRUD/restarts, browser runtime, Help, vulnerability and documentation gates PASS.
+Acceptance: Docs/V68_RANKING_INTEGRATION_ACCEPTANCE.md. Evidence: Reports/V68_RANKING_INTEGRATION_EVIDENCE.md.
+
+## v68.0.2 - Izod and Charpy Results Integration
+
+Accepted with v68.0.3 on 2026-09-21. Materials gains read-only In Izod and In Charpy.
+Owner display correction: flags follow In Flexible, Test Information includes all coverage flags, and Other is hidden.
+Saved-layout contract v3 ensures existing v2 layouts receive that placement on startup; widths are retained.
+Compare shows only Izod/Charpy means in kJ/m²; detailed statistics remain in Mechanical and measurement tabs.
+Tested Status requires six methods: Tensile, Impact, Stiffness, Heat, Izod and Charpy; fewer measured methods are partial.
+Material Detail exposes saved summaries across all inner tabs, statistics in Mechanical, and separate comparison/radar axes.
+Izod and Charpy normalize against their own comparison cohort; raw kJ/m² and legacy Impact retain their meaning.
+Overall retains its existing formula pending an explicit owner decision about weighting the additional methods.
+Help and the authorized disposable tester cover status transitions, independent method evidence and refresh.
+No new ZIP handoff, owner database fixture mutation, Production promotion or FTPS publication is included.
+Debug/Release, 475/475 Full Verification, disposable CRUD and Help/security/docs gates PASS.
+Owner display acceptance received 2026-09-21; see Docs/V68_RESULT_INTEGRATION_ACCEPTANCE.md.
+Exact tested and final wording-only rebuilt identities: Reports/V68_RESULTS_INTEGRATION_EVIDENCE.md.
+
+## v68.0.1 - Direct Izod and Charpy Entry
+
+Owner runtime accepted 2026-09-21 for layout, speed and normal input; supersedes the unaccepted v68.0.0 run-oriented entry workflow.
+Each method now has one automatic row per visible material, ten direct instrument kJ/m² samples, notes and measured date.
+Mean, sample SD, actual CV%, Samples and Confidence are read-only; blank/no-break entries are not numeric zeros.
+Settings hold the 80 x 4 x 10 mm specimen and 2 mm notch; direct readings require no energy/section calculation.
+The shared Fast editor retains canonical source identity after SQLite-first validated commits and follows material filters.
+The unaccepted run/metadata UI is removed. Historical energy records, recovery and report interpretation remain supported.
+Help and the existing disposable CRUD/smoke contracts change with the workflow; no new destructive authority is introduced.
+Debug/Release, 472/472 Verification, disposable CRUD and Help/security/docs gates PASS; owner input acceptance received.
+Evidence: Reports/V68_DIRECT_CANDIDATE_EVIDENCE.md; tests: Docs/V68_DIRECT_IMPACT_ACCEPTANCE.md.
+Canonical runtime-accepted release is v68.0.1. Prior v67 input deferrals remain independent; no major closure or publication is claimed.
+The owner requests local application handoffs rather than new ZIP files from this point forward.
+
+## v68.0.0 - Izod and Charpy Measurement Foundation
+
+Candidate, not runtime accepted. Two direct Fast input tabs store separate MaterialID-linked SQLite runs and specimens.
+Schema 45 adds raw energy/hammer, measured geometry, break/validity, print batches and run-condition snapshots with diagrams.
+Unknown dimensions remain blank; complete-break statistics, sample SD/CV and condition/batch separation share one calculator.
+Separate saved summaries feed Material Detail, reports/PDF and local website exports; legacy Impact and scores retain their meaning.
+Help, tester navigation, synthetic input/calculation/persistence/recovery and source-fingerprint contracts extend in this increment.
+The existing guarded CRUD scenario also exercises actual new-run/edit/restart paths for its authorized disposable material.
+Prior v67 work remains preserved. Candidate evidence and exact owner tests: Docs/V68_IZOD_CHARPY_ACCEPTANCE.md.
+Build/Verification evidence is recorded there; owner click/typing/keyboard/restart and visual acceptance remain required.
+No canonical release closure, commit/push, Production promotion or live publication.
+
+## v67.0.10 - Fast Flexible Entry
+
+The Flexible tab used WPF DataGrid property-change bindings and synchronous graph/evidence work on each cell completion.
+It now shares the Materials/Tensile painted table and overlay editor across sessions, specimens and all four reading types.
+Typed text stays local until commit; detached validation protects coupled Recovery heights and source event subscribers.
+Calculated values refresh on commit. Graph/evidence saves coalesce after 0.8 s with no editor active; parent switches,
+reading actions and close flush pending changes. Rejected input remains available for correction; save failures block navigation.
+Natural labels, same-parent selection, read-only skipping and specimen IDs are preserved. Defaults/statistics/schema are unchanged.
+Help and Full Verification own the six fast hosts, detached TVL validation, numeric navigation and rejection/retry contracts.
+The existing disposable smoke scenario executes these checks; no new owner-data or destructive automation authority.
+Hidden DataGrid column/selection bridges have an explicit v67.0.11 retirement after owner accepts this replacement.
+Debug/Release and owner runtime evidence are recorded below. No commit/push or publication; prior push approval remains unresolved.
+
+
+
+Final v67.0.10 candidate evidence (2026-09-12):
+Debug and Release builds: zero warnings/errors. Help coverage 801/801, documentation and git diff audits PASS.
+Disposable final smoke 20260912180523-813d1d7c: Full Verification 468/468 PASS, including the new fast-input contract.
+Baseline/final database SHA-256: B3447DB0420DB2039C868ECB3F366C8479032EFB7FBB75A933FF002EDBC3B09C.
+Baseline/final business hash: 2BA7E47D106B59B77AC10BC97508C96AD49C05095CB9EBA13778DDBD26B77FEF.
+Evidence retained in .private/v67-fast-flexible-entry. artifacts is empty; normal Release remains runnable.
+Independent review corrected same-parent selection reset, material-name sorting and detached Recovery event subscriptions.
+No real owner UI timing is claimed from these deterministic checks. Owner input/switch/restart acceptance remains pending.
+No owner data mutation, commit, push or publication in this increment. v67.0.11 retirement waits for runtime acceptance.
+
+
+v67.0.10 follow-up (2026-09-12): owner reports remaining first-character delay.
+Flexible now reuses its text editor and focuses/activates synchronously, including Tab/arrow destinations.
+The existing rejection/retry Verification contract also checks reuse of exactly one editor across activations.
+Debug/Release zero warnings/errors; Help coverage 801/801 and diff audit PASS. Owner timing acceptance remains pending.
+See Docs/V67_FAST_FLEXIBLE_ENTRY_ACCEPTANCE.md for final disposable evidence; earlier candidate bytes are superseded.
+
+
+v67.0.10 regression correction (2026-09-12): owner could not type after immediate-focus follow-up.
+Restored prior deferred focus/editor creation. Flexible ScrollChanged now ignores extent/layout-only notifications.
+New regression covers editor retention on layout and commit on real scroll; prior reuse-only acceptance is superseded.
+Debug/Release and Help audit pass. Owner single-click typing remains required before closure or bridge retirement.
+
+
+v67.0.10 timing follow-up: owner confirms first digit is immediate after waiting 2-3 seconds after click.
+Flexible now attempts keyboard focus before queued rendering, with no forced layout or editor reuse.
+Disposable Verification adds a loaded WPF fixture asserting immediate focus, first-digit text composition and commit.
+This synthetic fixture is automation-profile-only; it does not claim owner timing or hardware keyboard acceptance.
+Existing Help/input/save ownership is unchanged. Runtime immediate-click typing remains pending.
+
+
+v67.0.10 owner-requested rollback (2026-09-12): removed the latest synchronous-focus change and loaded-focus-only fixture.
+Restored the prior writable deferred-focus editor, preserving selection, save and layout-only scroll protections.
+Owner reports the first-character delay in Materials too and explicitly stops further latency work.
+Debug/Release zero warnings/errors; Help and diff gates PASS. No further focus optimization or bridge retirement in this batch.
+The existing bridge remains a supported column/selection adapter; v67.0.11 is deferred by this owner decision.
+
+## v67.0.9 - Flexible Selection Isolation
+
+Owner reports Shore values appearing to move between sessions. Old parent CurrentCell could override a new selected row during
+reentrant binding, while keyboard-only parent cell movement was ignored. Reading edits were also committed after parent changes.
+Guard parent transitions, prefer added/selected rows, synchronize current cells and handle keyboard parent navigation.
+Commit and validate the outgoing specimen before switching; reject stale/out-of-session specimens for reading actions.
+Saved measurement IDs and values are not reassigned. Existing incorrect historical associations are not guessed or rewritten.
+Full Verification adds synthetic STA WPF two-session/same-label Shore selection and ID/value isolation checks using real helpers.
+The fixture does not claim actual owner edit-validation or restart coverage; existing SQLite contracts remain and owner test follows.
+Help and existing AutomationId ownership updated; no new UI field, schema, seed or automated mutation authority.
+Owner switch/edit/restart acceptance pending. Previous GitHub push approval block remains unresolved; no push attempted.
+Debug/Release, Help 801/801, documentation/diff audit and disposable Full Verification 467/467 PASS.
+
+## v67.0.8 - Shore Template Defaults
+
+Owner reports empty Shore rows with blank time and inherited 10 mm thickness despite new templates already using 10 s/8 mm.
+Add Shore Reading now uses the dedicated saved Shore defaults rather than inheriting the selected parent specimen thickness.
+Once per database, unused rows with blank hardness/time and blank or legacy 9/10 mm thickness receive 10 s/8 mm.
+A verified Manual Backup precedes changes; row updates and AppMeta completion marker commit together. No schema version change.
+Measured rows and other custom values are excluded; subsequent deliberate edits are not reset on restart.
+Full Verification tests correction scope, preservation and idempotence; existing editor/keyboard/save handlers are unchanged.
+Help covers defaults and one-time repair. Owner app was open; builds use isolated ArtifactsPath until Release can be updated.
+Owner accepted the corrected Shore defaults on 2026-09-12. No GitHub push; prior push approval remains unresolved.
+Normal Debug/Release zero warnings/errors; Help 801/801, documentation and disposable Full Verification 466/466 PASS.
+
+## v67.0.7 - Flexible Session Ordering
+
+Owner reported Session header sorting 1, 10, 2. Session startup and Session header toggling now use numeric label order.
+Reuse the accepted specimen comparer, extended for session records, with ascending/descending adapter regression coverage.
+Commit active Flexible edits before changing the session view. No saved labels, identities, dates or measurements are rewritten.
+Canonical click/keyboard/deferred-save behavior remains; no new editor, AutomationId, schema or tester mutation authority.
+Help covers startup/header sorting. Owner accepted final session ordering and completed control cleanup on 2026-09-12.
+Debug/Release, Help 801/801, documentation/diff audit and disposable Full Verification 465/465 PASS.
+
+## v67.0.6 - Flexible Control Cleanup
+
+Owner accepted the v67.0.5 session template and successful existing 2/5/3 print-layer correction on 2026-09-12.
+Remove the completed correction button/handler and Legacy Experimental Run display column from Flexible Material Testing.
+LegacyExperimentalRunId remains owned by saved model/database migration/read/write and historical roundtrip verification.
+The shared SQLite graph writer and forced-failure rollback tests remain supported persistence contracts, not retired UI code.
+No replacement editor, new input behavior, schema or owner-data mutation. Help and inventory remove the retired destinations.
+Retirement gate checks handler/column absence; disposable smoke retains its existing authorization. Owner visual acceptance recorded.
+Debug/Release, Help 801/801 and documentation checks PASS; disposable Full Verification 465/465 PASS with exact state recovery.
+
+## v67.0.5 - Flexible Session Templates
+
+Candidate implementation; owner runtime acceptance pending.
+New sessions prepare 10 compression specimens with 10/30 s compression and one Recovery row each, plus one separate Shore coupon.
+Shore coupon: 50 x 50 mm, default 8 mm thickness, five empty location readings at 10 s. Force/recovered height/hardness stay blank.
+Settings own sample count, 230 C, extrusion 1.1, 2 walls/5 top/3 bottom, Shore dwell/thickness; saved defaults remain snapshots.
+Eight new settings use existing Settings Manager validation/commit workflow; Flexible shared click/keyboard/save behavior is retained.
+Correct existing print layers (2/5/3) confirms all-session scope, creates a verified Manual Backup, then saves transactionally.
+Only print layers change on existing specimens; geometry, temperatures, extrusion and raw results remain unchanged.
+Full Verification extends template/statistics and actual SQLite graph persistence/rollback tests; no new tester mutation authority.
+Help and control inventory cover the template/defaults and correction action. No schema/seed refresh or website publication.
+Debug/Release zero warnings/errors; Help 803/803, documentation audit and disposable Full Verification 464/464 PASS.
+
 ## v67.0.4 - Flexible List Layout and Ordering
 
 Owner-requested bounded UI correction after accepted v67 closure. Sessions grow up to 625 px (formerly 125 px).

@@ -32,13 +32,14 @@ public sealed class WebsiteRadarGeneratorService
         result.NormalizationInputsAvailable = HasAnyMetric(chartPayload.Tensile, "upright", "flat") ||
                                               HasAnyMetric(chartPayload.Impact, "upright", "flat") ||
                                               HasAnyMetric(chartPayload.Stiffness, "value") ||
-                                              HasAnyMetric(chartPayload.Thermal, "value");
+                                              HasAnyMetric(chartPayload.Thermal, "value") || HasAnyMetric(chartPayload.Izod, "value") || HasAnyMetric(chartPayload.Charpy, "value");
         result.ThermalContractFieldsPresent = chartPayload.Tensile.All(row =>
             row.ContainsKey("thermalResultTemperatureC") && row.ContainsKey("thermalScore") &&
             row.ContainsKey("thermalMethodVersion") && row.ContainsKey("thermalLimitation"));
         result.RendererPayloadValid = result.TensileRows == result.ImpactRows &&
                                       result.TensileRows == result.StiffnessRows &&
                                       result.TensileRows == result.ThermalRows &&
+                                      chartPayload.Izod.Count == result.TensileRows && chartPayload.Charpy.Count == result.TensileRows &&
                                       result.SelectedRadarRows == result.TensileRows &&
                                       result.MaterialIds == result.TensileRows &&
                                       result.NormalizationInputsAvailable &&

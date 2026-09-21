@@ -4,9 +4,15 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v67.0.4 — Flexible List Layout and Ordering
+- **Current runtime-accepted release:** v68.0.3 — Izod and Charpy Ranking Integration
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v67 website and v67.0.4 Flexible list layout and ordering complete
+- **Current development focus:** v68.0.3 accepted; Izod/Charpy ranking, Overall and intelligence integration complete.
+- **Windows downloads:** [Installer](https://www.iskort.is/3dp/downloads/3DPIceland-Setup-x64.exe)
+  | [Portable ZIP](https://www.iskort.is/3dp/downloads/3DPIceland-Portable-x64.zip)
+
+Izod and Charpy each show automatic material rows with ten direct kJ/m² readings and sample statistics.
+It does not change the accepted legacy Impact measurements or claim ISO certification. Prior v67 input follow-ups retain
+their recorded acceptance/deferral state. See [current scope and tests](Docs/V68_RANKING_INTEGRATION_ACCEPTANCE.md).
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Your data stays yours

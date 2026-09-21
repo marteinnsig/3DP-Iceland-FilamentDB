@@ -40,7 +40,7 @@ public sealed class MaterialDetailService
         ["Supplier / Purchase"] = new[] { "Inventory ID", "Purchase ID", "Purchased From", "Supplier", "Vendor", "Supplier URL", "Purchase Date", "Order Number", "Batch", "Batch Number", "Lot", "Storage Location", "Inventory Status", "Quantity", "Spool Weight", "Remaining Weight", "Net Weight", "Weight" },
         ["Pricing"] = new[] { "Purchase Price", "Purchase Currency", "Shipping", "VAT", "MSRP Amount", "MSRP Currency", "MSRP USD", "MSRP USD/kg", "Landed Cost Amount", "Landed Cost Currency", "Landed Cost USD", "Landed Cost USD/kg", "Price Checked", "Price Checked Date" },
         ["Material Information"] = new[] { "Density", "Nozzle", "Nozzle Size", "Print Temperature", "Printing Temperature", "Bed Temperature", "Chamber Temperature", "Drying", "Drying Temperature", "Drying Time", "Spool Material" },
-        ["Test Information"] = new[] { "Tested Status", "Test Status", "Tensile", "Impact", "Stiffness", "Samples", "Rating", "Confidence" },
+        ["Test Information"] = new[] { "Tested Status", "Test Status", "In Tensile", "In Impact", "In Stiffness", "In Heat", "In Flexible", "In Izod", "In Charpy", "Tensile", "Impact", "Stiffness", "Samples", "Rating", "Confidence" },
         ["Website"] = new[] { "Website Display Name", "Website Hidden", "Website Visible", "Manufacturer Website", "Manufacturer Web", "YouTube URL", "YouTube Review URL", "YouTube Available", "Thumbnail URL" },
         ["Notes"] = new[] { "Notes", "Technical Notes", "Tech Notes", "Test Notes" }
     };
@@ -111,7 +111,7 @@ public sealed class MaterialDetailService
 
         return GroupOrder
             .Select(groupName => new MaterialDetailGroup(groupName, OrderFields(groupName, grouped[groupName])))
-            .Where(group => group.Fields.Count > 0)
+            .Where(group => group.Fields.Count > 0 && group.Name != "Other")
             .ToList();
     }
 
@@ -137,6 +137,7 @@ public sealed class MaterialDetailService
         var name = columnName.Trim();
         var lower = name.ToLowerInvariant();
 
+        if (lower is "in izod" or "in charpy" or "in heat" or "in flexible") return "Test Information";
         if (lower.Contains("note") || lower.Contains("comment") || lower.Contains("remark")) return "Notes";
         if (lower.Contains("website") || lower.Contains("youtube") || lower.Contains("thumbnail") || lower.Contains("url") || lower.Contains("web ")) return "Website";
         if (lower.Contains("msrp") || lower.Contains("price") || lower.Contains("cost") || lower.Contains("currency") || lower.Contains("landed")) return "Pricing";

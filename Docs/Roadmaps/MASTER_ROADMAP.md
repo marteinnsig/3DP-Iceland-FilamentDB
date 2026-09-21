@@ -2,15 +2,17 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v67.0.4 — Flexible List Layout and Ordering**
+Last runtime-accepted baseline: **v68.0.3 — Izod and Charpy Ranking Integration**
 
-Current canonical application release: **v67.0.4 — Flexible List Layout and Ordering**
+Current canonical application release: **v68.0.3 — Izod and Charpy Ranking Integration**
 
-Current roadmap increment: **v67.0.4 — Flexible list layout and numeric ordering**
+Current roadmap increment: **v68.0.3 — Izod and Charpy Ranking Integration**
 
-Current acceptance note: v67 website accepted and published; v67.0.4 list-layout refinement accepted on 2026-09-12.
+Current acceptance note: owner accepts the complete v68.0.3 application and authorizes commit/push on 2026-09-21.
 
-Next note: v67.0.4 UI correction is complete. Application distribution remains separately gated.
+Next note: no further feature work requested; application accepted. Installer packaging and publication are not this Git handoff.
+Delivery preference: update the runnable application; no candidate ZIP is required for subsequent increments.
+Prior v67.0.10 rollback and v67.0.11 deferral remain recorded; no earlier input issue is declared solved by v68.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
 Production/FTPS remain gated: no v66 installer/update package has received exact-byte runtime acceptance.
 
@@ -56,8 +58,57 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v65 | Catalog-driven Material Entry | ★★★★★ | Complete — canonical v65.0.0 runtime accepted |
 | v66 | Flexible Measurement Consolidation and Integration | ★★★★★ | Complete — canonical v66.0.8 runtime accepted |
 | v67 | Flexible Website Explorer | ★★★★★ | Complete — website published and owner accepted |
+| v68 | Izod and Charpy Measurement Foundation | ★★★★★ | Complete — v68.0.3 application runtime accepted |
 
 ## Reconciliation of the older plans
+
+## Current — v68 Izod and Charpy Measurement Foundation
+
+- **v68.0.3 — Izod and Charpy Ranking Integration**
+  - State: Complete; Debug/Release, 477/477 Verification and CRUD PASS; owner accepts application 2026-09-21.
+  - Scope: Rankings, Category Rankings, Awards, Dashboard Insights, YouTube Research and AI Assistant method evidence.
+  - Include available Izod/Charpy scores in Overall and their CV/sample evidence in Consistency; preserve missing values.
+  - Keep each method independent, kJ/m² raw units and cohort-scoped normalization; update derived recommendations/exports.
+  - Completion: Debug/Release, scoring and downstream gates, Full Verification, Help and owner rankings acceptance.
+  - No ZIP, owner fixture mutation or live publication. Owner acceptance also closes v68.0.2 display follow-up.
+
+- **v68.0.2 — Izod and Charpy Results Integration**
+  - State: Complete; Debug/Release, 475/475 Verification and CRUD PASS; accepted with v68.0.3 on 2026-09-21.
+  - Scope: Derived In Izod/In Charpy Materials flags and six-method Fully/Partially/Not tested status.
+  - Owner correction: place flags after In Flexible; group coverage in Test Information, remove Other, Compare means only.
+  - Follow-up: advance saved-layout contract to v3 so existing v2 owner layouts also receive the column move.
+  - Include independent direct results throughout Material Detail, comparison and corresponding radar/report/website views.
+  - Preserve units, blanks and method identity; missing results must not become measured zero or overwrite legacy Impact.
+  - Reuse current visualization conventions; document normalization and keep Overall weighting changes explicit.
+  - Update Help, coverage, deterministic verification and disposable tester contracts in this increment.
+  - Completion: Debug/Release, relevant gates and Full Verification PASS plus owner result/status/radar acceptance.
+  - No ZIP delivery or live publication; accepted Fast input lifecycle remains unchanged.
+
+- **v68.0.1 — Direct Izod and Charpy Entry**
+  - State: Complete; Debug/Release, 472/472 Verification and CRUD PASS; owner accepts layout, speed and input 2026-09-21.
+  - Scope: One automatic row per visible MaterialID per method; ten direct instrument kJ/m² readings,
+    mean, sample SD, CV%, Samples and Confidence, notes/date, shared Fast editing and filters.
+  - Settings hold 80 x 4 x 10 mm specimen and 2 mm notch (4 x 8 mm remaining section); no energy conversion.
+  - Retire unaccepted run/metadata controls and replace tester/Help ownership in this increment.
+    Retain old saved run/raw records for historical recovery and report interpretation; never relabel J as kJ/m².
+  - Completion: builds, direct-value/statistics/filter/restart/legacy-preservation gates, disposable CRUD,
+    simplified Help and owner immediate typing/keyboard acceptance. v68.0.0 is superseded, not accepted.
+
+Owner request received 2026-09-21. The existing v67 input follow-ups retain their recorded states and owner deferrals.
+This separately requested measurement milestone does not declare the v67 input issues solved.
+
+- **v68.0.0 — Izod and Charpy Measurement Foundation**
+  - State: Superseded before owner acceptance by v68.0.1; prior candidate evidence retained, not canonical.
+  - Scope: Separate Fast Izod/Charpy tabs, MaterialID-linked SQLite runs/specimens, ten-sample targets and partial runs.
+  - Preserve raw J readings, measured section dimensions, notch/break/validity, print batches and method/settings snapshots.
+  - Record specimen orientation explicitly, optional diagram, conditioning and unknown values without assumed dimensions.
+  - Calculate traceable native-unit results and complete-break sample statistics; retain no-break/excluded/invalid evidence.
+  - Feed separate verified summaries into reports and website output; preserve legacy Impact meaning and score boundaries.
+  - Reuse accepted Fast renderer and navigation; no new hidden-grid bridge or speculative shared focus optimization.
+  - Completion: calculation/persistence/recovery/consumer checks, Help/docs, Debug/Release and disposable Full Verification;
+    candidate ZIP and exact owner single-click/typing/Tab/arrows/save/restart plus report readability acceptance.
+  - Canonical release remains v67.0.8 until owner acceptance. Production promotion and live publication remain gated.
+
 
 Two earlier lists assigned different meanings to v39. The canonical meaning is
 now **Daily Workflow Optimization from real usage and BUG_FEEDBACK_LOG**.
@@ -3416,3 +3467,77 @@ blockers may change the order, but must be recorded here before implementation.
 - Completion: Debug/Release, deterministic sort and Full Verification checks, Help/docs and owner layout/input acceptance.
 
 Owner refinement: use 10 specimen rows and remove the gap above reading tabs. Auto-sized rows and top alignment prevent centering.
+
+## Completed follow-up — v67.0.5 Flexible session templates and specimen print defaults
+
+- State: Complete; owner accepted new sessions and confirmed successful print-layer correction on 2026-09-12.
+- Settings own new-session sample count, print temperature/extrusion, walls/top/bottom, and Shore dwell/thickness defaults.
+- Create blank measurement templates atomically; preserve independent specimen identity and exclude unmeasured rows from results.
+- Owner confirmed 10 Compression specimens and one separate Shore coupon with five readings per session.
+- Correct existing Flexible specimen walls/top/bottom to 2/5/3 through a bounded, recoverable action; preserve raw readings.
+- Completion: Debug/Release, template/persistence/statistics checks, Help/docs, Full Verification and owner runtime acceptance.
+
+## Completed follow-up — v67.0.6 Flexible temporary-control retirement
+
+- State: Complete; owner screenshot and final review confirm temporary controls removed on 2026-09-12.
+- Remove the completed print-layer correction button and handler, plus the Legacy Experimental Run display column.
+- Retain legacy session metadata in the model/database for supported migration and historical data roundtrips.
+- Update Help/coverage and retirement checks; Debug/Release, Full Verification and owner visual acceptance close the increment.
+
+## Completed follow-up — v67.0.7 Flexible session numeric ordering
+
+- State: Complete; owner confirmed corrected Session ordering on 2026-09-12.
+- Use the accepted numeric label comparer for session startup and ascending/descending Session header sorting.
+- Commit active grid edits before changing the view; preserve canonical editing and saved session identities.
+- Completion: numeric session regression, Debug/Release, Full Verification, Help/docs and owner ordering acceptance.
+
+## Completed follow-up — v67.0.8 Shore blank-template defaults
+
+- State: Complete; owner confirmed the corrected Shore defaults on 2026-09-12.
+- New Add Shore Reading uses the dedicated saved Shore defaults (10 s/8 mm built-ins), not unrelated parent thickness.
+- Once per database, repair only unused rows with blank hardness/time and blank or legacy 9/10 mm thickness to 10 s/8 mm.
+- Backup before repair; transactional AppMeta marker; preserve measured rows and custom/deliberate values after first repair.
+- Completion: repair idempotence/preservation/persistence tests, Debug/Release, Full Verification, Help and owner acceptance.
+
+## Current follow-up — v67.0.9 Flexible session/specimen selection isolation
+
+- State: In progress; Shore results appear to move between sessions after selection changes.
+- Commit before changing parent state; suppress reentrant parent events, honor newly selected rows and support keyboard cell changes.
+- Reject stale/out-of-session specimens for reading actions. Preserve stored IDs and raw measurements; no speculative data reassignment.
+- Completion: two-session selection/identity regression, Debug/Release, Full Verification, Help and owner switch/edit/restart acceptance.
+
+## Current follow-up — v67.0.10 Fast Flexible entry
+
+- State: Implemented; Debug/Release, Help and Full Verification 468/468 PASS; owner input/restart acceptance pending.
+- Scope: Reuse the Materials/Tensile renderer for all six Flexible input tables; commit-bound validation,
+  coalesced persistence and evidence refresh, explicit flush on navigation/close, stable session/specimen ownership.
+- Completion: Deterministic navigation/validation/save checks, Debug/Release, Help and Full Verification,
+  then owner single-click typing, Tab/Shift+Tab, arrows and restart acceptance.
+- Compatibility: Hidden DataGrids temporarily own column metadata and existing selection/action adapters only.
+  They are not an alternate visible editor. Remove this bridge in v67.0.11 after v67.0.10 runtime acceptance.
+
+## Planned follow-up — v67.0.11 Flexible input bridge retirement
+
+- State: Deferred by owner on 2026-09-12; stop after restoring writable input. Retained bridge remains supported.
+- Scope: Replace hidden grid metadata/selection adapters with explicit descriptors; retire old input handlers,
+  update Help/Verification ownership, preserve supported saved Stress Relaxation records and actions.
+- Completion: Caller/XAML/state/test review, builds, Full Verification and owner runtime acceptance.
+
+v67.0.10 owner follow-up: improved typing, but first character still delayed (2026-09-12).
+Keep increment open. Scope: reuse the Flexible text editor and focus it synchronously; eliminate idle Tab activation.
+Completion: editor reuse/rejection checks, Debug/Release, disposable Verification and owner first-character timing acceptance.
+
+v67.0.10 regression intake: owner cannot type; only the painted blue cell border remains after the focus follow-up.
+Restore the prior working deferred focus/editor lifecycle. Investigate layout-triggered ScrollChanged closing the new editor.
+Add a regression for extent-only layout notifications versus actual scroll; require builds, Verification and owner typing test.
+
+v67.0.10 timing diagnosis: owner confirms first digit is immediate after waiting 2-3 seconds following the click.
+Scope: focus the newly attached Flexible text editor before queued rendering, without forcing UpdateLayout or reusing editors.
+Keep deferred guarded fallback only when immediate focus cannot succeed; preserve the layout-only ScrollChanged correction.
+Completion: activation/scroll/validation regression, Debug/Release, disposable Verification and owner immediate-typing check.
+
+v67.0.10 owner-requested rollback (2026-09-12): removed the latest synchronous-focus change and loaded-focus-only fixture.
+Restored the prior writable deferred-focus editor, preserving selection, save and layout-only scroll protections.
+Owner reports the first-character delay in Materials too and explicitly stops further latency work.
+Debug/Release zero warnings/errors; Help and diff gates PASS. No further focus optimization or bridge retirement in this batch.
+The existing bridge remains a supported column/selection adapter; v67.0.11 is deferred by this owner decision.

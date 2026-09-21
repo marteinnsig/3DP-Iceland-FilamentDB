@@ -173,6 +173,14 @@ WHERE COALESCE(FlexibleTestSessionId,'')='' AND COALESCE(ExperimentalRunId,'')<>
     {
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
+        SynchronizeFlexibleTestingGraph(connection, sessions, specimens, compression, relaxation, recovery, shore);
+    }
+
+    private static void SynchronizeFlexibleTestingGraph(SqliteConnection connection,
+        IReadOnlyCollection<FlexibleTestSessionRecord> sessions, IReadOnlyCollection<FlexibleTestSpecimenRecord> specimens,
+        IReadOnlyCollection<CompressionPointRecord> compression, IReadOnlyCollection<StressRelaxationPointRecord> relaxation,
+        IReadOnlyCollection<RecoveryMeasurementRecord> recovery, IReadOnlyCollection<ShoreHardnessReadingRecord> shore)
+    {
         EnsureFlexibleTestingSchema(connection);
         using var transaction = connection.BeginTransaction();
         var now = DateTime.UtcNow.ToString("O", CultureInfo.InvariantCulture);

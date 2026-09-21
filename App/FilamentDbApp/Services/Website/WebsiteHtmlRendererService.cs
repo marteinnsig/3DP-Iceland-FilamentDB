@@ -47,6 +47,7 @@ public sealed class WebsiteHtmlRendererService
         updated = ApplyThermalPresentation(updated);
         updated = ApplyFlexibleCompressionPresentation(updated);
         updated = HorizontalWebsiteChartService.Apply(updated);
+        updated = PendulumWebsitePresentationService.Apply(updated);
         return generatedNote + updated;
     }
 
@@ -182,12 +183,12 @@ public sealed class WebsiteHtmlRendererService
         result.HasDataPayload = result.TensileRows > 0 && result.ImpactRows > 0 && result.StiffnessRows > 0 && result.ThermalRows > 0;
         result.PayloadRowsAligned = result.TensileRows == result.ImpactRows &&
                                     result.TensileRows == result.StiffnessRows &&
-                                    result.TensileRows == result.ThermalRows;
+                                    result.TensileRows == result.ThermalRows && payload.Izod.Count == result.TensileRows && payload.Charpy.Count == result.TensileRows;
         result.HasMaterialIds = payload.Tensile.All(row => row.TryGetValue("materialId", out var value) && !string.IsNullOrWhiteSpace(value?.ToString()));
         result.HasChartMetrics = HasAnyMetric(payload.Tensile, "upright", "flat") ||
                                  HasAnyMetric(payload.Impact, "upright", "flat") ||
                                  HasAnyMetric(payload.Stiffness, "value") ||
-                                 HasAnyMetric(payload.Thermal, "value");
+                                 HasAnyMetric(payload.Thermal, "value") || HasAnyMetric(payload.Izod, "value") || HasAnyMetric(payload.Charpy, "value");
         result.HasPricingFields = payload.Tensile.All(row => row.ContainsKey("msrpUsd") &&
                                                               row.ContainsKey("landedCostUsd") &&
                                                               row.ContainsKey("msrpUsdPerKg") &&

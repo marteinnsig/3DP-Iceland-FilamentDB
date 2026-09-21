@@ -11,7 +11,8 @@ namespace FilamentDbApp;
 
 public partial class MainWindow
 {
-    private const int FastMaterialsLayoutContractVersion = 2;
+    // Version 3 also migrates existing v2 layouts whose new method columns were appended.
+    private const int FastMaterialsLayoutContractVersion = 3;
     private static readonly IComparer<string> CanonicalMaterialIdComparer =
         Comparer<string>.Create(CompareCanonicalMaterialIds);
 
@@ -193,6 +194,8 @@ public partial class MainWindow
             FastMaterialsColumn("In Stiffness", 95, "InStiffness", true),
             FastMaterialsColumn("In Heat", 85, "InHeat", true),
             FastMaterialsColumn("In Flexible", 90, "InFlexible", true),
+            FastMaterialsColumn("In Izod", 85, "InIzod", true),
+            FastMaterialsColumn("In Charpy", 90, "InCharpy", true),
             FastMaterialsColumn("Notes", 220, "Notes", false),
             FastMaterialsColumn("Website Display Name", 240, "WebsiteDisplayName", true),
             FastMaterialsColumn("Manufacturer Website", 260, "ManufacturerWebsite", false),
@@ -426,6 +429,15 @@ public partial class MainWindow
                 string.Equals(item.Key, flexibleKey, StringComparison.Ordinal))?.Width ?? flexibleColumn.Width;
             orderedWithoutCoverage.Insert(stiffnessIndex + 2,
                 new WorkflowColumnLayout(flexibleKey, flexibleWidth, stiffnessIndex + 2));
+        }
+        foreach (var key in new[] { "binding:InCharpy", "binding:InIzod" })
+        {
+            var column = columns.FirstOrDefault(item => PrototypeColumnKey(item) == key);
+            if (column is null) continue;
+            var width = savedLayout.FirstOrDefault(item => item.Key == key)?.Width ?? column.Width;
+            orderedWithoutCoverage.RemoveAll(item => item.Key == key);
+            var flexibleIndex = orderedWithoutCoverage.FindIndex(item => item.Key == flexibleKey);
+            orderedWithoutCoverage.Insert(Math.Max(0, flexibleIndex + 1), new WorkflowColumnLayout(key, width, 0));
         }
         return orderedWithoutCoverage
             .Select((item, index) => item with { DisplayIndex = index })
@@ -695,6 +707,8 @@ public partial class MainWindow
         private readonly Action<object> _selectRow;
         private readonly bool _directCanonicalEditing;
         private readonly bool _reloadAfterApply;
+        private readonly bool _flexibleNavigation;
+        private readonly Func<object, string?, string>? _cellText;
         private readonly TextBlock _status;
         private readonly Button _applyButton;
         private readonly Button _reloadButton;
@@ -711,7 +725,10 @@ public partial class MainWindow
             Action<object> selectRow,
             bool directCanonicalEditing,
             bool reloadAfterApply = false,
-            bool showReloadButton = true)
+            bool showReloadButton = true,
+            bool flexibleNavigation = false,
+            Func<object, string?, string>? cellText = null,
+            bool showStatus = true)
         {
             _columns = columns as List<MaterialsPrototypeColumn> ?? columns.ToList();
             _rows = rows as List<MaterialsPrototypeRow> ?? rows.ToList();
@@ -721,6 +738,8 @@ public partial class MainWindow
             _selectRow = selectRow;
             _directCanonicalEditing = directCanonicalEditing;
             _reloadAfterApply = reloadAfterApply;
+            _flexibleNavigation = flexibleNavigation;
+            _cellText = cellText;
             var root = new DockPanel { Background = Brushes.White };
             var explanation = new TextBlock
             {
@@ -771,9 +790,10 @@ public partial class MainWindow
             };
             footer.Children.Add(_status);
             DockPanel.SetDock(footer, Dock.Bottom);
-            root.Children.Add(footer);
+            if (showStatus) root.Children.Add(footer);
 
-            _surface = new MaterialsRenderingSurface(columns, rows);
+            _surface = new MaterialsRenderingSurface(columns, rows, flexibleNavigation);
+            if (flexibleNavigation) _surface.CanInteract = () => CloseEditor(commit: true);
             _surface.FrameRendered += Surface_FrameRendered;
             _surface.CellActivated += Surface_CellActivated;
             _surface.SelectedRowChanged += Surface_SelectedRowChanged;
@@ -830,7 +850,7 @@ public partial class MainWindow
 
         public bool ConfirmCanClose()
         {
-            CloseEditor(commit: true);
+            if (!CloseEditor(commit: true)) return false;
             var changes = GetChanges();
             if (changes.Count == 0)
             {
@@ -867,10 +887,60 @@ public partial class MainWindow
             return true;
         }
 
+        public bool HasActiveEditor => _activeEditor is not null;
+
+        public static bool RunFlexibleNavigationContractVerification() =>
+            MaterialsRenderingSurface.RunFlexibleNavigationContractVerification() &&
+            RunFlexibleCommitRejectionVerification();
+
+        private static bool RunFlexibleCommitRejectionVerification()
+        {
+            var source = new object();
+            var columns = new List<MaterialsPrototypeColumn>
+            {
+                new("Value", 100, "Value", false, MaterialsPrototypeEditorKind.Text, [])
+            };
+            var rows = new List<MaterialsPrototypeRow> { new(source, "1", ["1"], ["1"], () => true) };
+            var accepted = false;
+            var view = new MaterialsRenderingPrototypeView(columns, rows, _ => accepted, _ => { },
+                _ => rows, _ => { }, directCanonicalEditing: true, flexibleNavigation: true,
+                cellText: (_, _) => "1", showStatus: false);
+            var editor = new TextBox
+            {
+                Text = "invalid",
+                Tag = new MaterialsPrototypeCellEventArgs(0, 0, new Rect(0, 32, 100, 25), false)
+            };
+            view._activeEditor = editor;
+            view._editorLayer.Children.Add(editor);
+            if (view.TryCommitActiveEditor() || !ReferenceEquals(view._activeEditor, editor) ||
+                editor.Text != "invalid" || rows[0].Cells[0] != "1" ||
+                view.SynchronizeFromCanonical("rejection test")) return false;
+            accepted = true;
+            editor.Text = "2";
+            if (!view.TryCommitActiveEditor() || view.HasActiveEditor) return false;
+            view.SelectCanonicalSource(source);
+            var activation = new MaterialsPrototypeCellEventArgs(0, 0, new Rect(0, 32, 100, 25), false);
+            view.Surface_CellActivated(null, activation);
+            var active = view._activeEditor;
+            // Opening an editor changes layout/extent without the user scrolling. It must stay open.
+            ScrollChangedEventArgs ScrollEvent(Vector offset, Vector change, Vector extentChange) =>
+                (ScrollChangedEventArgs)Activator.CreateInstance(typeof(ScrollChangedEventArgs),
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic,
+                    null, [offset, change, new Size(100, 100), extentChange, new Size(100, 100), new Vector()], null)!;
+            view.ScrollViewer_ScrollChanged(view._scrollViewer,
+                ScrollEvent(new Vector(), new Vector(), new Vector(10, 10)));
+            if (active is not TextBox || !ReferenceEquals(active, view._activeEditor)) return false;
+            view.ScrollViewer_ScrollChanged(view._scrollViewer,
+                ScrollEvent(new Vector(0, 10), new Vector(0, 10), new Vector()));
+            return !view.HasActiveEditor;
+        }
+
         public void CommitActiveEditor()
         {
             CloseEditor(commit: true);
         }
+
+        public bool TryCommitActiveEditor() => CloseEditor(commit: true);
 
         public void ResetViewportToOrigin()
         {
@@ -885,14 +955,15 @@ public partial class MainWindow
 
         public void ResetLayout(IReadOnlyList<MaterialsPrototypeColumn> defaultColumns)
         {
-            CloseEditor(commit: true);
+            if (!CloseEditor(commit: true)) return;
             _surface.ResetLayout(defaultColumns);
             _saveLayout(_surface.CaptureLayout());
         }
 
         private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            if (_activeEditor is not null)
+            if (_activeEditor is not null && (!_flexibleNavigation ||
+                Math.Abs(e.HorizontalChange) > 0.01 || Math.Abs(e.VerticalChange) > 0.01))
             {
                 CloseEditor(commit: true);
             }
@@ -923,7 +994,9 @@ public partial class MainWindow
 
         private void Surface_CellActivated(object? sender, MaterialsPrototypeCellEventArgs e)
         {
-            CloseEditor(commit: true);
+            if (!CloseEditor(commit: true)) return;
+            if (_flexibleNavigation && (e.RowIndex < 0 || e.RowIndex >= _rows.Count ||
+                !ReferenceEquals(_surface.SelectedSource, _rows[e.RowIndex].Source))) return;
             var column = _columns[e.ColumnIndex];
             if (column.IsReadOnly || string.IsNullOrWhiteSpace(column.PropertyName))
             {
@@ -989,7 +1062,8 @@ public partial class MainWindow
             Canvas.SetLeft(editor, editorPosition.X);
             Canvas.SetTop(editor, editorPosition.Y);
             Panel.SetZIndex(editor, 10);
-            _editorLayer.Children.Add(editor);
+            if (!_editorLayer.Children.Contains(editor)) _editorLayer.Children.Add(editor);
+            editor.Visibility = Visibility.Visible;
             _activeEditor = editor;
             _ = Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, () =>
             {
@@ -1009,6 +1083,12 @@ public partial class MainWindow
 
         private void Surface_SelectedRowChanged(int rowIndex)
         {
+            if (_flexibleNavigation && !CloseEditor(commit: true))
+            {
+                if (_activeEditor?.Tag is MaterialsPrototypeCellEventArgs previous)
+                    _surface.SelectSource(_rows[previous.RowIndex].Source, ensureVisible: false);
+                return;
+            }
             if (rowIndex >= 0 && rowIndex < _rows.Count)
             {
                 _selectRow(_rows[rowIndex].Source);
@@ -1057,7 +1137,7 @@ public partial class MainWindow
                 if (movement.Row != 0 || movement.Column != 0)
                 {
                     e.Handled = true;
-                    CloseEditor(commit: true);
+                    if (!CloseEditor(commit: true)) return;
                     _surface.MoveFromEditor(cell.RowIndex, cell.ColumnIndex, movement.Row, movement.Column);
                     return;
                 }
@@ -1066,7 +1146,7 @@ public partial class MainWindow
             {
                 e.Handled = true;
                 var currentCell = _activeEditor?.Tag as MaterialsPrototypeCellEventArgs;
-                CloseEditor(commit: true);
+                if (!CloseEditor(commit: true)) return;
                 if (e.Key == Key.Tab && currentCell is not null)
                 {
                     var direction = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? -1 : 1;
@@ -1085,9 +1165,9 @@ public partial class MainWindow
             }
         }
 
-        private void CloseEditor(bool commit)
+        private bool CloseEditor(bool commit)
         {
-            if (_activeEditor is null) return;
+            if (_activeEditor is null) return true;
             var editor = _activeEditor;
             _activeEditor = null;
             if (commit && editor.Tag is MaterialsPrototypeCellEventArgs cell)
@@ -1108,7 +1188,22 @@ public partial class MainWindow
             _editorLayer.Children.Remove(editor);
             _surface.InvalidateVisual();
             _surface.Focus();
-            HandleSnapshotChanged();
+            var applied = HandleSnapshotChanged();
+            if (!applied && commit && _flexibleNavigation)
+            {
+                // Keep the rejected input available for correction; never navigate to a different owner.
+                _activeEditor = editor;
+                if (!_editorLayer.Children.Contains(editor)) _editorLayer.Children.Add(editor);
+                editor.Visibility = Visibility.Visible;
+                _ = Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, () =>
+                {
+                    if (!ReferenceEquals(_activeEditor, editor)) return;
+                    editor.Focus();
+                    Keyboard.Focus(editor);
+                });
+                return false;
+            }
+            return true;
         }
 
         private void CloseEditorFromEvent(object? eventSource, bool commit)
@@ -1147,16 +1242,16 @@ public partial class MainWindow
                     activeEditor: null);
         }
 
-        private void HandleSnapshotChanged()
+        private bool HandleSnapshotChanged()
         {
             if (!_directCanonicalEditing)
             {
                 UpdateApplyState();
-                return;
+                return true;
             }
 
             var changes = GetChanges();
-            if (changes.Count == 0) return;
+            if (changes.Count == 0) return true;
             if (!_applyChanges(changes))
             {
                 foreach (var change in changes)
@@ -1166,7 +1261,7 @@ public partial class MainWindow
                 _surface.InvalidateVisual();
                 _status.Text = "Invalid value was not applied; the cell was restored.";
                 _explicitSameValueCommits.Clear();
-                return;
+                return false;
             }
             RefreshChangedRowsFromSources(changes);
             if (_reloadAfterApply)
@@ -1175,7 +1270,7 @@ public partial class MainWindow
                 _explicitSameValueCommits.Clear();
                 UpdateApplyState();
                 _status.Text = $"Saved {changes.Count:N0} changed field(s) through the canonical auto-save workflow.";
-                return;
+                return true;
             }
             foreach (var row in _rows)
             {
@@ -1184,27 +1279,34 @@ public partial class MainWindow
             _explicitSameValueCommits.Clear();
             UpdateApplyState();
             _status.Text = $"Saved {changes.Count:N0} changed field(s) through the canonical Materials auto-save workflow.";
+            return true;
         }
 
         private void RefreshChangedRowsFromSources(
             IReadOnlyList<MaterialsPrototypeChange> changes)
         {
             foreach (var row in changes.Select(change => change.Row).Distinct())
-                RefreshPrototypeRowFromSource(row, _columns);
+            {
+                if (_cellText is null) RefreshPrototypeRowFromSource(row, _columns);
+                else RefreshFormattedRow(row);
+            }
             _surface.InvalidateVisual();
+        }
+
+        private void RefreshFormattedRow(MaterialsPrototypeRow row)
+        {
+            for (var columnIndex = 0; columnIndex < _columns.Count; columnIndex++)
+            {
+                var property = _columns[columnIndex].PropertyName;
+                var value = _cellText is null ? PrototypeCellText(row.Source, property) : _cellText(row.Source, property);
+                row.Cells[columnIndex] = value;
+                row.OriginalCells[columnIndex] = value;
+            }
         }
 
         private void RefreshCurrentRowsFromSources()
         {
-            foreach (var row in _rows)
-            {
-                for (var columnIndex = 0; columnIndex < _columns.Count; columnIndex++)
-                {
-                    var value = PrototypeCellText(row.Source, _columns[columnIndex].PropertyName);
-                    row.Cells[columnIndex] = value;
-                    row.OriginalCells[columnIndex] = value;
-                }
-            }
+            foreach (var row in _rows) RefreshFormattedRow(row);
             _surface.InvalidateVisual();
         }
 
@@ -1245,6 +1347,8 @@ public partial class MainWindow
 
         public void SelectCanonicalSource(object source, bool ensureVisible = true)
         {
+            // Parent transitions commit explicitly; a background refresh must preserve the current editor.
+            if (_flexibleNavigation && _activeEditor is not null) return;
             _surface.SelectSource(source, ensureVisible);
         }
 
@@ -1263,7 +1367,7 @@ public partial class MainWindow
                 return true;
             }
 
-            CloseEditor(commit: true);
+            if (!CloseEditor(commit: true)) return false;
             var changes = GetChanges();
             if (changes.Count > 0)
             {
@@ -1354,6 +1458,7 @@ public partial class MainWindow
     {
         private const double HeaderHeight = 32;
         private const double RowHeight = 25;
+        private readonly bool _flexibleNavigation;
         private const double CellPadding = 5;
         private readonly TensileSampleValueBrushConverter _tensileBrushConverter = new();
         private readonly ImpactSampleValueBrushConverter _impactBrushConverter = new();
@@ -1383,11 +1488,14 @@ public partial class MainWindow
         public event EventHandler? LayoutChanged;
         public event Action<Rect>? EnsureCellVisible;
         public event Action<int>? SelectedRowChanged;
+        public Func<bool>? CanInteract { get; set; }
 
         public MaterialsRenderingSurface(
             IReadOnlyList<MaterialsPrototypeColumn> columns,
-            IReadOnlyList<MaterialsPrototypeRow> rows)
+            IReadOnlyList<MaterialsPrototypeRow> rows,
+            bool flexibleNavigation = false)
         {
+            _flexibleNavigation = flexibleNavigation;
             _columns = columns as List<MaterialsPrototypeColumn> ?? columns.ToList();
             _rows = rows as List<MaterialsPrototypeRow> ?? rows.ToList();
             _columnOffsets = new double[columns.Count + 1];
@@ -1435,13 +1543,30 @@ public partial class MainWindow
 
         public void MoveFromEditor(int rowIndex, int columnIndex, int rowDelta, int columnDelta)
         {
-            _selectedRow = Math.Clamp(rowIndex + rowDelta, 0, Math.Max(0, _rows.Count - 1));
-            _selectedColumn = Math.Clamp(columnIndex + columnDelta, 0, Math.Max(0, _columns.Count - 1));
+            if (_flexibleNavigation)
+            {
+                if (_rows.Count == 0 || _columns.Count == 0) return;
+                var destination = FindFlexibleDestination(rowIndex, columnIndex, rowDelta, columnDelta);
+                _selectedRow = destination.Row;
+                _selectedColumn = destination.Column;
+                if (_selectedRow != rowIndex) SelectedRowChanged?.Invoke(_selectedRow);
+            }
+            else
+            {
+                _selectedRow = Math.Clamp(rowIndex + rowDelta, 0, Math.Max(0, _rows.Count - 1));
+                _selectedColumn = Math.Clamp(columnIndex + columnDelta, 0, Math.Max(0, _columns.Count - 1));
+            }
+            if (_flexibleNavigation && (_selectedRow < 0 || _selectedRow >= _rows.Count ||
+                _selectedColumn < 0 || _selectedColumn >= _columns.Count)) return;
+            var navigationSource = SelectedSource;
+            var navigationColumn = _selectedColumn;
             var bounds = CurrentCellBounds();
             EnsureCellVisible?.Invoke(bounds);
             InvalidateVisual();
-            _ = Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, () =>
+            void ActivateDestination()
             {
+                if (_flexibleNavigation && (!ReferenceEquals(navigationSource, SelectedSource) ||
+                    navigationColumn != _selectedColumn || _selectedColumn < 0 || _selectedColumn >= _columns.Count)) return;
                 var column = _columns[_selectedColumn];
                 if (!column.IsReadOnly &&
                     !string.IsNullOrWhiteSpace(column.PropertyName) &&
@@ -1454,7 +1579,54 @@ public partial class MainWindow
                     Focus();
                     Keyboard.Focus(this);
                 }
-            });
+            }
+            _ = Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, ActivateDestination);
+        }
+
+        private (int Row, int Column) FindFlexibleDestination(int row, int column, int rowDelta, int columnDelta)
+        {
+            var original = (Row: row, Column: column);
+            if (rowDelta == 0 && columnDelta == 0) return original;
+            for (var attempt = 0; attempt < _rows.Count * _columns.Count; attempt++)
+            {
+                row += Math.Sign(rowDelta);
+                column += Math.Sign(columnDelta);
+                if (column >= _columns.Count) { column = 0; row++; }
+                else if (column < 0) { column = _columns.Count - 1; row--; }
+                if (row < 0 || row >= _rows.Count) return original;
+                var candidate = _columns[column];
+                if (!candidate.IsReadOnly && !string.IsNullOrWhiteSpace(candidate.PropertyName) &&
+                    candidate.CellKind is not (FastGridCellKind.Computed or FastGridCellKind.Spacer))
+                    return (row, column);
+            }
+            return original;
+        }
+
+        public static bool RunFlexibleNavigationContractVerification()
+        {
+            var columns = new List<MaterialsPrototypeColumn>
+            {
+                new("Session", 120, "SessionLabel", false, MaterialsPrototypeEditorKind.Text, []),
+                new("Computed", 80, "Computed", true, MaterialsPrototypeEditorKind.Text, [], FastGridCellKind.Computed),
+                new("Notes", 120, "Notes", false, MaterialsPrototypeEditorKind.Text, [])
+            };
+            var rows = new List<MaterialsPrototypeRow>
+            {
+                new(new object(), "B", ["Test Session 10", "", ""], ["Test Session 10", "", ""], () => true),
+                new(new object(), "A", ["Test Session 2", "", ""], ["Test Session 2", "", ""], () => true)
+            };
+            var surface = new MaterialsRenderingSurface(columns, rows, flexibleNavigation: true);
+            if (surface.FindFlexibleDestination(0, 0, 0, 1) != (0, 2) ||
+                surface.FindFlexibleDestination(0, 2, 0, 1) != (1, 0) ||
+                surface.FindFlexibleDestination(1, 0, 0, -1) != (0, 2) ||
+                surface.FindFlexibleDestination(0, 0, 1, 0) != (1, 0)) return false;
+            surface.ApplyCurrentSortOrDefault();
+            if (rows[0].MaterialId != "B") return false;
+            surface.SortRowsCore(0, ascending: true);
+            if (rows[0].Cells[0] != "Test Session 2") return false;
+            surface.SelectSource(rows[0].Source, ensureVisible: false);
+            surface.SelectSource(null);
+            return surface.SelectedSource is null;
         }
 
         public IReadOnlyList<WorkflowColumnLayout> CaptureLayout() =>
@@ -1501,7 +1673,16 @@ public partial class MainWindow
 
         public void SelectSource(object? source, bool ensureVisible = true)
         {
-            if (source is null) return;
+            if (source is null)
+            {
+                if (_flexibleNavigation)
+                {
+                    _selectedRow = -1;
+                    _selectedColumn = -1;
+                    InvalidateVisual();
+                }
+                return;
+            }
             var rowIndex = _rows.FindIndex(row => ReferenceEquals(row.Source, source));
             if (rowIndex < 0) return;
             _selectedRow = rowIndex;
@@ -1531,7 +1712,7 @@ public partial class MainWindow
             {
                 SortRowsCore(_sortColumn, _sortAscending);
             }
-            else
+            else if (!_flexibleNavigation)
             {
                 _rows.Sort((left, right) =>
                     CompareCanonicalMaterialIds(left.MaterialId, right.MaterialId));
@@ -1542,6 +1723,11 @@ public partial class MainWindow
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
+            if (_flexibleNavigation && CanInteract?.Invoke() == false)
+            {
+                e.Handled = true;
+                return;
+            }
             Focus();
             var position = e.GetPosition(this);
             if (position.Y >= _verticalOffset && position.Y < _verticalOffset + HeaderHeight)
@@ -1604,6 +1790,11 @@ public partial class MainWindow
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             base.OnPreviewKeyDown(e);
+            if (_flexibleNavigation && CanInteract?.Invoke() == false)
+            {
+                e.Handled = true;
+                return;
+            }
             if (_rows.Count == 0 || _columns.Count == 0) return;
             if (_selectedRow < 0) _selectedRow = 0;
             if (_selectedColumn < 0) _selectedColumn = 0;
@@ -1619,6 +1810,25 @@ public partial class MainWindow
                 PasteCurrentCell();
                 e.Handled = true;
                 return;
+            }
+
+            if (_flexibleNavigation)
+            {
+                var movement = e.Key switch
+                {
+                    Key.Left => (Row: 0, Column: -1),
+                    Key.Right => (Row: 0, Column: 1),
+                    Key.Up => (Row: -1, Column: 0),
+                    Key.Down => (Row: 1, Column: 0),
+                    Key.Tab => (Row: 0, Column: Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? -1 : 1),
+                    _ => (Row: 0, Column: 0)
+                };
+                if (movement.Row != 0 || movement.Column != 0)
+                {
+                    MoveFromEditor(_selectedRow, _selectedColumn, movement.Row, movement.Column);
+                    e.Handled = true;
+                    return;
+                }
             }
 
             var previousRow = _selectedRow;
@@ -1829,12 +2039,14 @@ public partial class MainWindow
         {
             _rows.Sort((left, right) =>
             {
-                var comparison = string.Equals(
+                var comparison = !_flexibleNavigation && string.Equals(
                     _columns[columnIndex].PropertyName,
                     "MaterialID",
                     StringComparison.Ordinal)
                     ? CompareCanonicalMaterialIds(left.MaterialId, right.MaterialId)
-                    : CompareCellValues(left.Cells[columnIndex], right.Cells[columnIndex]);
+                    : _flexibleNavigation && _columns[columnIndex].PropertyName is "SessionLabel" or "SpecimenLabel"
+                        ? FlexibleSpecimenLabelComparer.Ascending.Compare(left.Cells[columnIndex], right.Cells[columnIndex])
+                        : CompareCellValues(left.Cells[columnIndex], right.Cells[columnIndex]);
                 if (comparison == 0)
                     comparison = CompareCanonicalMaterialIds(left.MaterialId, right.MaterialId);
                 return ascending ? comparison : -comparison;

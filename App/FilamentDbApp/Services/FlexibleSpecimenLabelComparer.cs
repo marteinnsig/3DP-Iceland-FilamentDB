@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace FilamentDbApp.Services;
 
-/// <summary>Natural label order for the specimen view only; saved labels and identities remain unchanged.</summary>
+/// <summary>Natural label order for Flexible specimen and session views; saved labels and identities remain unchanged.</summary>
 public sealed class FlexibleSpecimenLabelComparer : IComparer<string>, IComparer
 {
     public static readonly FlexibleSpecimenLabelComparer Ascending = new();
@@ -34,14 +34,27 @@ public sealed class FlexibleSpecimenLabelComparer : IComparer<string>, IComparer
         return _descending ? -remaining : remaining;
     }
 
-    int IComparer.Compare(object? x, object? y) => Compare(
-        (x as FlexibleTestSpecimenRecord)?.SpecimenLabel, (y as FlexibleTestSpecimenRecord)?.SpecimenLabel);
+    int IComparer.Compare(object? x, object? y) => Compare(Label(x), Label(y));
+
+    private static string? Label(object? row) => row switch
+    {
+        FlexibleTestSpecimenRecord specimen => specimen.SpecimenLabel,
+        FlexibleTestSessionRecord session => session.SessionLabel,
+        _ => null
+    };
 
     public static bool Verify()
     {
         var labels = new[] { "Specimen 10", "Specimen 2", "Specimen 15", "Specimen 1", "Specimen 9" };
         var ordered = labels.OrderBy(x => x, Ascending).ToArray();
-        return ordered.SequenceEqual(new[] { "Specimen 1", "Specimen 2", "Specimen 9", "Specimen 10", "Specimen 15" }) &&
+        var sessions = new ArrayList(new[] { "Test Session 10", "Test Session 2", "Test Session 1", "Test Session 9" }
+            .Select(label => new FlexibleTestSessionRecord { SessionLabel = label }).ToArray());
+        sessions.Sort(Ascending);
+        var ascendingSessions = sessions.Cast<FlexibleTestSessionRecord>().Select(x => x.SessionLabel).ToArray();
+        sessions.Sort(new FlexibleSpecimenLabelComparer(true));
+        return ascendingSessions.SequenceEqual(new[] { "Test Session 1", "Test Session 2", "Test Session 9", "Test Session 10" }) &&
+            sessions.Cast<FlexibleTestSessionRecord>().Select(x => x.SessionLabel).SequenceEqual(ascendingSessions.Reverse()) &&
+            ordered.SequenceEqual(new[] { "Specimen 1", "Specimen 2", "Specimen 9", "Specimen 10", "Specimen 15" }) &&
             labels.OrderBy(x => x, new FlexibleSpecimenLabelComparer(true)).SequenceEqual(ordered.Reverse()) &&
             Ascending.Compare("Sample 2 point 9", "Sample 2 point 10") < 0 &&
             Ascending.Compare("Specimen 99999999999999999999", "Specimen 100000000000000000000") < 0 &&

@@ -120,7 +120,18 @@ public sealed class ReportPdfRendererService
             new[] { new ReportingReportSection("Flexible Material Testing", ReportingSectionType.FlexibleMetrics,
                 new Dictionary<string, string?> { ["Results"] = body + "\nFINAL-FLEXIBLE-RESULT" }) });
         var pages = BuildPages(report, "3DPIceland").ToList();
-        return pages.Count > 1 && pages.All(page => page.Lines.Skip(6).All(line => line.Length <= 92)) &&
+        var pendulumReport = report with
+        {
+            Sections = [new ReportingReportSection("Pendulum groups", ReportingSectionType.PendulumMetrics,
+                new Dictionary<string, string?> { ["Results"] =
+                    string.Join("\n", Enumerable.Range(0, 22).Select(i => "Preamble " + i)) +
+                    "\n\nIZOD-GROUP-HEADER\nIZOD-GROUP-RESULT\nIZOD-GROUP-END\n\nCHARPY-GROUP-HEADER\nCHARPY-GROUP-RESULT\nCHARPY-GROUP-END" })]
+        };
+        var pendulumPages = BuildPages(pendulumReport, "3DPIceland").ToList();
+        return pendulumPages.Count > 1 && pendulumPages.All(page => page.Lines.Count <= 32) &&
+            pendulumPages.Any(page => page.Lines.Contains("IZOD-GROUP-HEADER") && page.Lines.Contains("IZOD-GROUP-END")) &&
+            pendulumPages.Any(page => page.Lines.Contains("CHARPY-GROUP-HEADER") && page.Lines.Contains("CHARPY-GROUP-END")) &&
+            pages.Count > 1 && pages.All(page => page.Lines.Skip(6).All(line => line.Length <= 92)) &&
             pages.Last().Lines.Contains("FINAL-FLEXIBLE-RESULT") &&
             pages.SelectMany(page => page.Lines.Skip(6)).Count(line => line.StartsWith("Flexible condition ", StringComparison.Ordinal)) == 80;
     }
@@ -140,14 +151,30 @@ public sealed class ReportPdfRendererService
             "Calculation Owner: Engineering Platform"
         };
 
+        var keepTogether = new Dictionary<int, int>();
         foreach (var section in report.Sections)
         {
-            if (section.SectionType != ReportingSectionType.FlexibleMetrics)
+            if (section.SectionType is not (ReportingSectionType.FlexibleMetrics or ReportingSectionType.PendulumMetrics))
                 lines.Add(section.Title);
             foreach (var field in section.Fields)
             {
+                if (section.SectionType == ReportingSectionType.PendulumMetrics)
+                {
+                    // RenderText separates each run/condition/batch group with a blank line.
+                    // Keep a group on one page when it fits; oversized groups still continue without truncation.
+                    var firstBlock = true;
+                    foreach (var block in Clean(field.Value).Replace("\r", string.Empty, StringComparison.Ordinal).Split("\n\n", StringSplitOptions.None))
+                    {
+                        if (!firstBlock) lines.Add(string.Empty);
+                        firstBlock = false;
+                        var start = lines.Count;
+                        lines.AddRange(block.Split('\n'));
+                        keepTogether[start] = lines.Count - start;
+                    }
+                    continue;
+                }
                 foreach (var valueLine in Clean(field.Value).Replace("\r", string.Empty, StringComparison.Ordinal).Split('\n'))
-                    lines.Add(section.SectionType == ReportingSectionType.FlexibleMetrics
+                    lines.Add(section.SectionType is ReportingSectionType.FlexibleMetrics or ReportingSectionType.PendulumMetrics
                         ? valueLine
                         : "  " + field.Key + ": " + valueLine);
             }
@@ -156,9 +183,11 @@ public sealed class ReportPdfRendererService
         // Keep every result on continuation pages instead of silently truncating long reports.
         var header = lines.Take(6).ToArray();
         var body = new List<string>();
-        foreach (var line in lines.Skip(6))
+        for (var index = 6; index < lines.Count;)
         {
-            var wrapped = WrapForPdf(line, 92).ToArray();
+            var count = keepTogether.TryGetValue(index, out var blockLength) ? blockLength : 1;
+            var wrapped = lines.Skip(index).Take(count).SelectMany(line => WrapForPdf(line, 92)).ToArray();
+            index += count;
             if (body.Count > 0 && body.Count + wrapped.Length > 26)
             {
                 yield return new ReportingPdfPage(report.MaterialId, header.Concat(body).ToArray());

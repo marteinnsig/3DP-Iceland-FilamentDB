@@ -126,7 +126,8 @@ internal static class Program
             var topLevelTabIds = new[]
             {
                 "MaterialsTab", "MaterialDetailTab", "TensileMeasurementsTab",
-                "ImpactMeasurementsTab", "StiffnessMeasurementsTab", "ThermalDeflectionMeasurementsTab", "FlexibleMaterialTestingTab", "ExperimentalTestingTab",
+                "ImpactMeasurementsTab", "IzodMeasurementsTab", "CharpyMeasurementsTab",
+                "StiffnessMeasurementsTab", "ThermalDeflectionMeasurementsTab", "FlexibleMaterialTestingTab", "ExperimentalTestingTab",
                 "WebsiteExportTab", "ManufacturersTab", "BaseMaterialsTab", "PrintersTab",
                 "PurchaseOrdersTab", "InventoryTab", "UsageTab", "ReportsTab",
                 "PrintJobQuotesTab", "AiAssistantTab", "RankingsDashboardTab",
@@ -137,14 +138,14 @@ internal static class Program
             {
                 SelectTab(main, tabId, application.Id);
             }
-            Require(topLevelTabIds.Distinct(StringComparer.Ordinal).Count() == 24,
-                "Top-level tab registry is not exactly 24 unique AutomationIds.");
+            Require(topLevelTabIds.Distinct(StringComparer.Ordinal).Count() == 26,
+                "Top-level tab registry is not exactly 26 unique AutomationIds.");
             Record("top-level-tab-navigation", true,
-                $"Visited {topLevelTabIds.Length}/24 unique top-level tabs by AutomationId");
+                $"Visited {topLevelTabIds.Length}/26 unique top-level tabs by AutomationId");
 
             InvokeNavigateMenuNavigation(main, application.Id);
             Record("navigate-menu-navigation", true,
-                "Invoked 24/24 grouped Navigate commands and verified each stable tab destination");
+                "Invoked 26/26 grouped Navigate commands and verified each stable tab destination");
 
             SelectTab(main, "MaterialsTab", application.Id);
             var materialFacetIds = new[]
@@ -238,7 +239,18 @@ internal static class Program
                 "MaterialDetailNotesTab"
             };
             foreach (var tabId in materialDetailNestedTabIds)
+            {
                 SelectTab(main, tabId, application.Id);
+                FindById(main, "PendulumDetailSummaryText");
+                if (tabId == "MaterialDetailMechanicalTab")
+                    foreach (var id in new[] { "DashboardIzodMeanText", "DashboardIzodStatisticsText", "DashboardCharpyMeanText", "DashboardCharpyStatisticsText" })
+                        FindById(main, id);
+                if (tabId == "MaterialDetailChartsTab")
+                    foreach (var id in new[] { "ChartIzodScoreText", "ChartCharpyScoreText" })
+                        FindById(main, id);
+            }
+            Record("pendulum-detail-discovery", true,
+                "Shared Izod/Charpy summary is discoverable in all nine detail tabs; mechanical and chart summary AutomationIds resolve. Visual usability remains owner acceptance.");
             var nestedTabIds = experimentalNestedTabIds
                 .Concat(experimentalResultViewIds)
                 .Concat(materialDetailNestedTabIds)
@@ -250,9 +262,25 @@ internal static class Program
                 $"Visited {nestedTabIds.Length}/16 unique nested tabs by AutomationId");
 
             SelectTab(main, "RankingsDashboardTab", application.Id);
+            var rankingMetric = WaitForElement(main, new PropertyCondition(AutomationElement.AutomationIdProperty, "RankingMetricFilter"), "Ranking metric");
+            foreach (var method in new[] { "Izod", "Charpy", "Overall" })
+                SelectComboBoxItem(rankingMetric, method, application.Id);
+            CaptureWindow(main, IOPath.Combine(root, "evidence", "pendulum-rankings.png"));
+            SelectTab(main, "CategoryRankingsTab", application.Id);
+            var categoryMetric = WaitForElement(main, new PropertyCondition(AutomationElement.AutomationIdProperty, "CategoryRankingMetricFilter"), "Category metric");
+            foreach (var category in new[] { "Best Izod", "Best Charpy", "All categories" })
+                SelectComboBoxItem(categoryMetric, category, application.Id);
+            Record("pendulum-ranking-navigation", true,
+                "Izod/Charpy ranking and category selectors work in the disposable profile; calculations are verified by Full Verification.");
+            SelectTab(main, "RankingsDashboardTab", application.Id);
             OpenContextHelpAndRequireTitle(main, application.Id, "Rankings Dashboard reference");
             SelectTab(main, "FlexibleMaterialTestingTab", application.Id);
             OpenContextHelpAndRequireTitle(main, application.Id, "Flexible Material Testing");
+            foreach (var pendulumTab in new[] { "IzodMeasurementsTab", "CharpyMeasurementsTab" })
+            {
+                SelectTab(main, pendulumTab, application.Id);
+                OpenContextHelpAndRequireTitle(main, application.Id, "Izod and Charpy Measurements");
+            }
             SelectTab(main, "ExperimentalTestingTab", application.Id);
             SelectTab(main, "ExperimentalResultsTab", application.Id);
             SelectTab(main, "ExperimentalResultsTableTab", application.Id);
@@ -979,6 +1007,20 @@ internal static class Program
                 ValidateUsageWorkspace(main, application.Id, materialCrudId, 1);
                 ValidateUsageAnalytics(main, materialCrudId, 1, 1, "100.00 g", "1 h");
                 Record("crud-create-save", true, materialCrudId);
+                Record("crud-pendulum-coverage-and-consumers", true,
+                    "Authorized fixture exercised notes/NB-only absence, explicit-zero presence, per-method Materials filters, shared summaries and radar projections through Fast commit callbacks; this is not physical keyboard usability acceptance.");
+                foreach (var method in new[] { "Izod", "Charpy" })
+                {
+                    SelectTab(main, method + "MeasurementsTab", application.Id);
+                    FindById(main, method + "ImpactMeasurementsGrid");
+                    CaptureWindow(main, IOPath.Combine(root, "evidence", method.ToLowerInvariant() + "-crud-created.png"));
+                }
+                SelectTab(main, "MaterialDetailTab", application.Id);
+                foreach (var detailTab in new[] { "Mechanical", "Charts", "Analytics" })
+                {
+                    SelectTab(main, "MaterialDetail" + detailTab + "Tab", application.Id);
+                    CaptureWindow(main, IOPath.Combine(root, "evidence", "pendulum-detail-" + detailTab.ToLowerInvariant() + ".png"));
+                }
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudEdit", "EDITED");
                 RecordDatabaseEvidence(root, databasePath, "crud-after-edit");
@@ -987,6 +1029,8 @@ internal static class Program
                 ValidateUsageWorkspace(main, application.Id, materialCrudId, 3);
                 ValidateUsageAnalytics(main, materialCrudId, 1, 3, "80.00 g", "55 min");
                 Record("crud-restart-edit-save", true, materialCrudId);
+                Record("crud-pendulum-clear-last-reading", true,
+                    "After restart, clearing each method's last numeric readings removed coverage despite NB and notes; restoring one reading restored coverage, summary and radar evidence.");
                 (application, main) = RestartApplication(application, executable, markerPath);
                 RunCrudAction(main, application.Id, "AutomationCrudDelete", "DELETED");
                 RecordDatabaseEvidence(root, databasePath, "crud-after-delete");
@@ -1982,6 +2026,8 @@ internal static class Program
                 {
                     ("NavigateTensileMeasurementsTab", "TensileMeasurementsTab"),
                     ("NavigateImpactMeasurementsTab", "ImpactMeasurementsTab"),
+                    ("NavigateIzodMeasurementsTab", "IzodMeasurementsTab"),
+                    ("NavigateCharpyMeasurementsTab", "CharpyMeasurementsTab"),
                     ("NavigateStiffnessMeasurementsTab", "StiffnessMeasurementsTab"),
                     ("NavigateThermalDeflectionMeasurementsTab", "ThermalDeflectionMeasurementsTab"),
                     ("NavigateFlexibleMaterialTestingTab", "FlexibleMaterialTestingTab"),

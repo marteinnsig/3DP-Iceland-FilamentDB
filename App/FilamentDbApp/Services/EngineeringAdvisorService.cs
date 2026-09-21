@@ -4,12 +4,13 @@ namespace FilamentDbApp.Services;
 
 /// <summary>
 /// Creates deterministic explanations from an existing engineering score profile.
-/// This service never owns or recalculates tensile, impact, stiffness, consistency,
+/// This service never owns or recalculates tensile, impact, Izod, Charpy, stiffness, consistency,
 /// layer-adhesion or overall engineering values.
 /// </summary>
 public sealed class EngineeringAdvisorService
 {
-    private const int TotalAxisCount = 5;
+    // Thermal remains a fixture-specific decision axis outside this mechanical advisor.
+    private const int TotalAxisCount = 7;
     private readonly EngineeringValueIndexService _valueIndexService = new();
 
     public EngineeringAdvisorInsight Explain(
@@ -34,7 +35,7 @@ public sealed class EngineeringAdvisorService
         var tradeOff = available.Count == 0
             ? "No engineering axes are available, so trade-offs cannot yet be assessed."
             : $"Lowest available axis: {weakest.Name} {weakest.Score:0}/100."
-                + (missing.Count == 0 ? " All five engineering axes are represented." : $" Missing evidence: {string.Join(", ", missing)}.");
+                + (missing.Count == 0 ? " All seven engineering axes are represented." : $" Missing evidence: {string.Join(", ", missing)}.");
 
         return new EngineeringAdvisorInsight
         {
@@ -222,6 +223,8 @@ public sealed class EngineeringAdvisorService
     [
         ("Tensile", profile.TensileScore),
         ("Impact", profile.ImpactScore),
+        ("Izod", profile.IzodScore),
+        ("Charpy", profile.CharpyScore),
         ("Stiffness", profile.StiffnessScore),
         ("Consistency", profile.ConsistencyScore),
         ("Layer adhesion", profile.LayerAdhesionScore)
@@ -232,9 +235,9 @@ public sealed class EngineeringAdvisorService
         var consistency = profile.ConsistencyScore;
         var label = coveredAxes switch
         {
-            5 when consistency >= 75 => "High evidence coverage",
-            >= 4 when consistency >= 55 => "Moderate evidence coverage",
-            >= 4 => "Moderate coverage / variable results",
+            TotalAxisCount when consistency >= 75 => "High evidence coverage",
+            >= 6 when consistency >= 55 => "Moderate evidence coverage",
+            >= 6 => "Moderate coverage / variable results",
             _ => "Limited evidence coverage"
         };
 
