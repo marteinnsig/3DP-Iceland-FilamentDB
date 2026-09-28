@@ -51,8 +51,8 @@ function renderSingle(target,countId,rawRows,unit,metricName='Stiffness'){
 // END renderSingle
 // BEGIN renderCombined
 function renderCombined(){
- const rows=combinedRows(),el=$('combinedCount');if(el)el.textContent=`${rows.length} shown of ${Math.min(DATA.tensile.length,DATA.impact.length)} possible matched samples`;
- drawHorizontalMetrics('combinedChart',rows,[{key:'value',unit:'/ 100',color:'var(--combined)',tip:(r,val)=>`${esc(r.label)}<br>Overall score: ${fmt(val)} / 100${r.marketingName?`<br>Marketing Name: ${esc(r.marketingName)}`:''}<br>Tensile score: ${fmt(r.tensileScore)} / 100<br>Impact score: ${fmt(r.impactScore)} / 100`}],100);
+ const rows=combinedRows(),el=$('combinedCount');if(el)el.textContent=`${rows.length} complete profiles; incomplete profiles and pending method references are not ranked`;
+ drawHorizontalMetrics('combinedChart',rows,[{key:'value',unit:'/ 100',color:'var(--combined)',tip:(r,val)=>`${esc(r.label)}<br>Overall score: ${fmt(val)} / 100${r.marketingName?`<br>Marketing Name: ${esc(r.marketingName)}`:''}<br>Tensile score: ${fmt(r.tensileScore)} / 100<br>Izod / Charpy family: ${fmt(r.impactFamilyScore)} / 100<br>${esc(r.scoreCoverage||'Coverage unavailable')}<br>Policy: ${esc(r.scorePolicyVersion||'unavailable')}`}],100);
 }
 // END renderCombined
 // BEGIN renderConsistency

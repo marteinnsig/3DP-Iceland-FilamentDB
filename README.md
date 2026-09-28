@@ -4,15 +4,18 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v68.0.3 — Izod and Charpy Ranking Integration
+- **Current runtime-accepted release:** v70.0.1 — Legacy Impact Radar Reference
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v68.0.3 accepted; Izod/Charpy ranking, Overall and intelligence integration complete.
+- **Current development focus:** v70.0.1 accepted; gather additional Izod/Charpy measurements before selecting fixed score references.
 - **Windows downloads:** [Installer](https://www.iskort.is/3dp/downloads/3DPIceland-Setup-x64.exe)
   | [Portable ZIP](https://www.iskort.is/3dp/downloads/3DPIceland-Portable-x64.zip)
 
 Izod and Charpy each show automatic material rows with ten direct kJ/m² readings and sample statistics.
-It does not change the accepted legacy Impact measurements or claim ISO certification. Prior v67 input follow-ups retain
-their recorded acceptance/deferral state. See [current scope and tests](Docs/V68_RANKING_INTEGRATION_ACCEPTANCE.md).
+Legacy Impact uses the accepted energy/net-area correction and remains historical reference evidence. The accepted scoring implementation
+keeps raw values visible, shows legacy Impact as a separate percentage of its rig ceiling, excludes it from modern Overall,
+and waits for approved fixed Izod/Charpy references. The visual rig reference is not a standardized material score.
+It makes no ISO certification claim. Prior v67 input follow-ups retain their recorded acceptance/deferral state.
+See [current scope and tests](Docs/V70_LEGACY_RADAR_ACCEPTANCE.md).
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)
 
 ## Your data stays yours
@@ -180,10 +183,10 @@ The desktop application is Windows-specific because it targets `net9.0-windows` 
 
 ## Current development focus
 
-Version 65.0.0 is the current runtime-accepted application release. Canonical Base Materials are refreshed into the new-Material
-dropdown at the Add Material boundary, while the Materials filter remains occurrence-based. The v64 Flexible-material Comparative
-Testing milestone also remains complete and owner accepted. No new implementation increment is selected. Production and FTPS remain
-separately guarded.
+Version 69.0.0 is the current runtime-accepted application release, including corrected legacy Impact energy/area units.
+The v70.0.1 candidate retains legacy Impact on the radar as a visual percentage of matching rig capacity. It remains outside
+modern Overall, Consistency and recommendations. Izod/Charpy score references remain owner-deferred; raw values stay visible.
+Candidate runtime acceptance remains pending; Production and FTPS remain separately guarded.
 
 The v56.0.6.1 governed public-demo dataset is complete and owner accepted. Its
 36 fictional identities retain approved real comparative measurements; the

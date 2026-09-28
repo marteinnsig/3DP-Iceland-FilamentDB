@@ -1,3 +1,30 @@
+
+Owner acceptance 2026-09-28: approved the radar and requested promotion to the accepted application. Exact tested v70.0.1 bytes (54 manifest files) are now in App/FilamentDbApp/bin/Release/net9.0-windows; DLL SHA-256 F34FB9B2C5B56A1959CD877DDDF3914ECCEFB0F10F3AE723F0C227279EEFE80F. Full Verification 481/481 and reports 2,103 artifacts PASS; no rebuild or data mutation. Numeric method references remain deliberately deferred. Application acceptance does not publish installer/update packages; those packages have not received exact-byte acceptance.
+
+# v70.0.1 Legacy Impact Radar Reference candidate
+
+Separate rig-capacity percentage; modern scoring/reference deferral unchanged. Debug/Release and Full Verification 481/481 PASS. Reports 2,103 artifacts and exact business-state recovery PASS; profile 20260928165824-06666ab2. Evidence: Reports/V70_LEGACY_RADAR_EVIDENCE.md.
+Owner runtime/readability acceptance pending; v69.0.0 remains the accepted application.
+Acceptance: Docs/V70_LEGACY_RADAR_ACCEPTANCE.md. No schema, owner-data or publication mutation.
+
+# v70.0.0 Method-aware Engineering Scoring candidate
+
+Implementation candidate: numeric references deliberately deferred by owner; explicit coverage and five-family Overall.
+Final Debug/Release and smoke 480/480 PASS; reports 2,103 artifacts and exact business-state recovery PASS.
+Profile 20260928163536-620b51f2 is final smoke; 20260928162838-5372c4d9 is reports. Evidence: Reports/V70_METHOD_SCORING_EVIDENCE.md.
+Owner runtime/readability acceptance pending; v69.0.0 remains the accepted application.
+Acceptance: Docs/V70_METHOD_SCORING_ACCEPTANCE.md. No schema, owner-data or live publication mutation.
+
+# v69.0.0 Legacy Impact Unit Correction candidate
+
+2026-09-28: final Debug/Release zero warnings/errors; final-binary Full Verification 479/479 PASS.
+Smoke profile 20260928144034-c3736129; CRUD 20260928142921-e1f5fcf7 with exact business-state recovery.
+Reports profile 20260928143224-bdf0c9f7 validates/hashes 2103 artifacts; MAT0001 metadata matches corrected means.
+Disposable audit fixture proves backup/hash, raw identity, invalid/pending preservation, drift rejection and idempotence.
+Help 808 candidates, dependency vulnerability, documentation and diff gates PASS.
+Owner completed recalculation and confirmed corrected normal Release values on 2026-09-28; runtime accepted. No live publication by Codex.
+Evidence: Reports/V69_LEGACY_IMPACT_EVIDENCE.md; package: Reports/V69_LEGACY_IMPACT_PACKAGE.md.
+
 # v68.0.3 Izod and Charpy Ranking Integration candidate
 
 2026-09-21: Debug/Release zero warnings/errors; 477/477 Full Verification PASS.

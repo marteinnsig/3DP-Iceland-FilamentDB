@@ -1,4 +1,4 @@
-﻿namespace FilamentDbApp.Services.Calculations;
+namespace FilamentDbApp.Services.Calculations;
 
 public sealed class ResultsService : IResultsService
 {
@@ -27,25 +27,29 @@ public sealed class ResultsService : IResultsService
             DateTime.UtcNow);
     }
 
-    public ImpactResults CalculateImpact(IEnumerable<string?> uprightNeedlePercentSamples, IEnumerable<string?> flatNeedlePercentSamples, double noSampleAngleDegrees, double netCrossSectionAreaM2, double maxPossibleImpact)
+    public ImpactResults CalculateImpact(IEnumerable<string?> uprightNeedlePercentSamples, IEnumerable<string?> flatNeedlePercentSamples, double angleDegrees, double netAreaMm2, double availableEnergyJ)
     {
+        var settings = new LegacyImpactSettings(availableEnergyJ, netAreaMm2, angleDegrees);
         var uprightKj = ParseSamples(uprightNeedlePercentSamples)
-            .Select(percent => ConvertImpactNeedlePercentToKjM2(percent, noSampleAngleDegrees, netCrossSectionAreaM2, maxPossibleImpact))
+            .Select(percent => LegacyImpactCalculationService.TryCalculate(percent, settings)?.ImpactKjM2)
             .Where(value => value.HasValue)
             .Select(value => value!.Value);
 
         var flatKj = ParseSamples(flatNeedlePercentSamples)
-            .Select(percent => ConvertImpactNeedlePercentToKjM2(percent, noSampleAngleDegrees, netCrossSectionAreaM2, maxPossibleImpact))
+            .Select(percent => LegacyImpactCalculationService.TryCalculate(percent, settings)?.ImpactKjM2)
             .Where(value => value.HasValue)
             .Select(value => value!.Value);
 
         return new ImpactResults(
             BuildMeasurementSet(uprightKj),
             BuildMeasurementSet(flatKj),
-            noSampleAngleDegrees,
-            netCrossSectionAreaM2,
-            maxPossibleImpact,
-            DateTime.UtcNow);
+            double.IsFinite(angleDegrees) && angleDegrees > 0 ? angleDegrees : null,
+            double.IsFinite(netAreaMm2) && netAreaMm2 > 0 ? netAreaMm2 / 1_000_000d : null,
+            LegacyImpactCalculationService.TryCalculate(100d, settings)?.ImpactKjM2,
+            DateTime.UtcNow)
+        {
+            AvailableEnergyJ = double.IsFinite(availableEnergyJ) && availableEnergyJ > 0 ? availableEnergyJ : null
+        };
     }
 
     public StiffnessResults CalculateStiffness(string? revolutions, string? degrees, double mmPerRevolution, double spanLengthMm, double loadNewton, double secondMomentOfAreaMm4)
@@ -110,16 +114,6 @@ public sealed class ResultsService : IResultsService
             .Where(IsUsableNumber)
             .ToList();
     }
-
-    private static double? ConvertImpactNeedlePercentToKjM2(double needlePercent, double noSampleAngleDegrees, double netCrossSectionAreaM2, double maxPossibleImpact)
-    {
-        if (needlePercent < 0 || needlePercent > 100 || noSampleAngleDegrees <= 0 || netCrossSectionAreaM2 <= 0 || maxPossibleImpact <= 0) return null;
-
-        var fraction = 1 - ((1 - Math.Cos(DegreesToRadians(noSampleAngleDegrees * (1 - needlePercent / 100d)))) / (1 - Math.Cos(DegreesToRadians(noSampleAngleDegrees))));
-        return maxPossibleImpact * fraction / netCrossSectionAreaM2 / 1000d;
-    }
-
-    private static double DegreesToRadians(double degrees) => Math.PI * degrees / 180d;
 
     private static bool IsUsableNumber(double value) => !double.IsNaN(value) && !double.IsInfinity(value);
 }

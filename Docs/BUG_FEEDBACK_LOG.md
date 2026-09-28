@@ -16,11 +16,11 @@ idea.
 | Open | 0 |
 | In progress | 2 |
 | Partially solved | 0 |
-| Solved | 142 |
+| Solved | 144 |
 | Deferred | 3 |
 | Duplicate | 2 |
 | Not planned | 1 |
-| **Total tracked findings** | **150** |
+| **Total tracked findings** | **152** |
 
 ## Triage categories
 
@@ -69,6 +69,17 @@ No active findings.
 
 ## In-progress findings — newest first
 
+### 2026-09-28 — Method-aware engineering scoring
+
+- **Status:** Solved — v70.0.1 owner runtime accepted 2026-09-28.
+- **Request:** Replace cohort-dependent Izod/Charpy scores, retire legacy Impact score and prevent triple impact weighting.
+- **Resolution:** Five equal Overall families, fixed method references, explicit coverage and no unsupported partial ranking.
+- **Follow-up:** Owner requests a separate legacy radar reference using average corrected orientations / matching rig maximum; modern weighting stays unchanged.
+- **Authority:** Owner approves implementation and explicitly defers numeric references until more materials, including strong legacy performers, are measured.
+- **Verification evidence:** Debug/Release, 480/480 Full Verification, reports 2,103 artifacts, Help/documentation and vulnerability gates pass; owner runtime acceptance pending.
+- **Follow-up verification:** final Debug/Release, 481/481 Full Verification and reports PASS; owner accepts displayed radar and normal Release promotion 2026-09-28.
+
+
 ### 2026-09-12 — Flexible typing is delayed
 
 - **Status:** In progress — v67.0.10.
@@ -89,6 +100,14 @@ No active findings.
 - **Completion:** Two-session regression, builds, Full Verification, Help and owner switch/edit/restart acceptance.
 
 ## Resolved findings — newest first
+
+### 2026-09-28 — Correct legacy Impact energy/area units
+
+- **Status:** Solved — v69.0.0 owner runtime accepted.
+- **Request:** Correct legacy Impact conversion and derived results; preserve raw percentages and direct Izod/Charpy.
+- **Resolution:** Explicit available J and net mm² calculation; guarded backup/recalculation with JSON audit.
+- **Authority:** Owner confirms historical settings, completed recalculation and confirms corrected normal Release values.
+- **Verification evidence:** Debug/Release, final Full Verification 479/479, disposable CRUD/recovery and local reports PASS.
 
 ### 2026-09-21 — Include Izod and Charpy in every intelligence tab and calculation
 

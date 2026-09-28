@@ -25,7 +25,8 @@ public static class PendulumImpactProjectionVerification
         Add("Empty", "Izod", "", "NB");
         runs.Add(new() { RunId = "legacy", MaterialID = "Missing", Method = "Charpy", InputMode = "Energy", NotchType = "Notched" });
         specimens.Add(new() { RunId = "legacy", EnergyJ = "1", HammerJ = "2", WidthMm = "10", ThicknessMm = "4", RemainingLigamentMm = "8", BreakType = "Complete" });
-        var projected = PendulumImpactProjectionService.Build(runs, specimens, ["a", "B", "Empty", "Missing"]);
+        var policy = new ImpactScoreReferencePolicy("test-v1", 200, 100);
+        var projected = PendulumImpactProjectionService.Build(runs, specimens, ["a", "B", "Empty", "Missing"], policy);
         bool Near(double? actual, double expected) => actual is double value && Math.Abs(value - expected) < 1e-8;
         var a = projected["A"];
         if (projected.Count != 4 || projected.ContainsKey("Outside") || !Near(a.Izod?.MeanKjM2, 200) || !Near(a.Izod?.Score, 100) ||
@@ -33,8 +34,15 @@ public static class PendulumImpactProjectionVerification
             !Near(a.Izod?.Statistics.SampleStdDev, Math.Sqrt(20000)) || !Near(a.Izod?.Statistics.CvPercent, Math.Sqrt(20000) / 2)) return false;
         if (projected["Empty"].Izod?.HasResults != false || projected["Empty"].Izod?.Score is not null ||
             projected["Missing"].Charpy is not null || projected["Missing"].Izod is not null) return false;
-        var zeroOnly = PendulumImpactProjectionService.Build(runs, specimens, ["B"])["B"].Izod;
-        if (zeroOnly?.HasResults != true || zeroOnly.Score is not null || zeroOnly.Statistics.SampleStdDev is not null) return false;
+        var zeroOnly = PendulumImpactProjectionService.Build(runs, specimens, ["B"], policy)["B"].Izod;
+        if (zeroOnly?.HasResults != true || !Near(zeroOnly.Score, 0) || zeroOnly.Statistics.SampleStdDev is not null) return false;
+        var singleton = PendulumImpactProjectionService.Build(runs, specimens, ["A"], policy)["A"];
+        var withStrongerPeer = PendulumImpactProjectionService.Build(runs, specimens, ["A", "Outside"], policy)["A"];
+        if (singleton.Izod?.Score != a.Izod?.Score || withStrongerPeer.Izod?.Score != a.Izod?.Score ||
+            singleton.Charpy?.Score != a.Charpy?.Score || withStrongerPeer.Charpy?.Score != a.Charpy?.Score) return false;
+        var unconfigured = PendulumImpactProjectionService.Build(runs, specimens, ["A"])["A"];
+        if (unconfigured.Izod?.Score is not null || unconfigured.Charpy?.Score is not null ||
+            !Near(unconfigured.Izod?.MeanKjM2, 200) || unconfigured.Izod?.Statistics.ValidCount != 2) return false;
         var noResults = new MaterialResults("Missing", null, null, null, DateTime.UnixEpoch);
         var partial = noResults with { Izod = a.Izod };
         if (noResults.ResultModuleCount != 0 || noResults.HasAnyResults || partial.ResultModuleCount != 1 ||

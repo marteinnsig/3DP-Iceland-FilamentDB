@@ -2,16 +2,16 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v68.0.3 — Izod and Charpy Ranking Integration**
+Last runtime-accepted baseline: **v70.0.1 — Legacy Impact Radar Reference**
 
-Current canonical application release: **v68.0.3 — Izod and Charpy Ranking Integration**
+Current canonical application release: **v70.0.1 — Legacy Impact Radar Reference**
 
-Current roadmap increment: **v68.0.3 — Izod and Charpy Ranking Integration**
+Current roadmap increment: **v70.0.1 — Legacy Impact Radar Reference**
 
-Current acceptance note: owner accepts the complete v68.0.3 application and authorizes commit/push on 2026-09-21.
+Current acceptance note: owner accepted the displayed radar and explicitly requested normal Release promotion on 2026-09-28; exact tested v70.0.1 bytes promoted.
 
-Next note: no further feature work requested; application accepted. Installer packaging and publication are not this Git handoff.
-Delivery preference: update the runnable application; no candidate ZIP is required for subsequent increments.
+Next note: v70.0.0 replaces cohort-relative impact scoring with versioned references and explicit coverage.
+Delivery preference: provide the runnable candidate application; no ZIP is required for v70.
 Prior v67.0.10 rollback and v67.0.11 deferral remain recorded; no earlier input issue is declared solved by v68.
 The unreproduced Variant-edit crash becomes active only if new diagnostics make it reproducible.
 Production/FTPS remain gated: no v66 installer/update package has received exact-byte runtime acceptance.
@@ -59,10 +59,42 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v66 | Flexible Measurement Consolidation and Integration | ★★★★★ | Complete — canonical v66.0.8 runtime accepted |
 | v67 | Flexible Website Explorer | ★★★★★ | Complete — website published and owner accepted |
 | v68 | Izod and Charpy Measurement Foundation | ★★★★★ | Complete — v68.0.3 application runtime accepted |
+| v69 | Legacy Impact Unit Correction | ★★★★★ | Complete — v69.0.0 owner runtime accepted |
+| v70 | Method-aware Impact Scoring | ★★★★★ | Complete — v70.0.1 application runtime accepted; numeric references deferred |
 
 ## Reconciliation of the older plans
 
-## Current — v68 Izod and Charpy Measurement Foundation
+## Accepted — v70 Method-aware Impact Scoring
+
+- **v70.0.1 — Legacy Impact Radar Reference**
+  - State: Complete; owner accepts radar and normal Release promotion on 2026-09-28.
+  - Scope: mean of available corrected Flat/Upright values / matching rig maximum x 100; explicit percent labels.
+  - Separate display-only projection from modern ImpactScore; never alter Overall, Consistency, rankings or advice.
+  - Reuse the settings-derived physical maximum, not cohort maxima or an invented material-quality reference.
+  - Synchronize app and exported radar displays, Help and regression checks; preserve raw measurements and deferred references.
+  - Complete after Debug/Release, Full Verification, applicable export checks and owner radar acceptance.
+- **v70.0.0 — Method-aware Impact Scoring**
+  - State: Complete in accepted v70.0.1; numeric references explicitly deferred by owner.
+  - Scope: versioned independent Izod/Charpy references, no cohort-maximum normalization or invented baselines.
+  - Exclude legacy Impact from Overall and its indirect consistency/recommendation inputs; preserve historical measurements.
+  - One combined Izod/Charpy impact family in Overall; show measurement/calibration coverage and missing-score reasons.
+  - Synchronize app radar/rankings, advisors, public charts/reports, Help and deterministic/disposable acceptance.
+  - Owner explicitly defers numeric references until more materials are measured; unavailable scores are intentional.
+  - No singleton automatic 100 and no unsupported complete ranking; a later explicit fixed-reference policy needs owner selection.
+  - Complete after Debug/Release, verification, Help/export gates and owner runtime acceptance; no live publication.
+
+## Accepted — v69 Legacy Impact Unit Correction
+
+- **v69.0.0 — Legacy Impact Unit Correction**
+  - State: Complete; owner confirms normal Release values, performs repair and publishes corrected website on 2026-09-28.
+  - Scope: one unit-explicit legacy Impact calculation; raw needle percentage, angle, available J and net area mm².
+  - Correct live native/experimental summaries, downstream rankings/reports and Help without changing Izod/Charpy.
+  - Tools preview requires confirmation before backup, derived recalculation and retained JSON audit.
+  - Preserve raw samples, historical artifacts and dates; owner confirms the historical settings assumption.
+  - Complete after builds, deterministic/regression gates, disposable recovery, Help and owner runtime acceptance.
+  - Delivery includes the owner-requested candidate ZIP; no Production or FTPS publication is authorized by this request.
+
+## Accepted — v68 Izod and Charpy Measurement Foundation
 
 - **v68.0.3 — Izod and Charpy Ranking Integration**
   - State: Complete; Debug/Release, 477/477 Verification and CRUD PASS; owner accepts application 2026-09-21.

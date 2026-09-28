@@ -2146,16 +2146,17 @@ internal static class Program
         {
             var unexpected = FindUnexpectedOwnedWindow(processId, allowed);
             if (unexpected is null) return;
-            var (id, name) = unexpected.Value;
+            var (id, name, window) = unexpected.Value;
             var anonymousTransient = string.IsNullOrWhiteSpace(id) && string.IsNullOrWhiteSpace(name);
             if (!anonymousTransient || attempt == 10)
                 throw new InvalidOperationException(
-                    $"Unexpected dialog/window blocked the run: AutomationId '{id}', name '{name}'.");
+                    $"Unexpected dialog/window blocked the run: AutomationId '{id}', name '{name}'. " +
+                    DescribeUnexpectedWindow(window, processId));
             Thread.Sleep(100);
         }
     }
 
-    private static (string Id, string Name)? FindUnexpectedOwnedWindow(
+    private static (string Id, string Name, AutomationElement Window)? FindUnexpectedOwnedWindow(
         int processId,
         IReadOnlySet<string> allowedIds)
     {
@@ -2174,7 +2175,7 @@ internal static class Program
                 if (knownReportPrintHost)
                     continue;
                 if (!allowedIds.Contains(id))
-                    return (id, name);
+                    return (id, name, window);
             }
             catch (ElementNotAvailableException)
             {
@@ -2182,6 +2183,48 @@ internal static class Program
             }
         }
         return null;
+    }
+
+    private static string DescribeUnexpectedWindow(AutomationElement window, int processId)
+    {
+        // Read-only failure evidence, never an extra allowlist entry or an input action.
+        // Bound traversal and text size so a large WebView/document cannot flood the result.
+        const int maximumNodes = 24;
+        const int maximumDepth = 4;
+        var evidence = new List<string>();
+        var pending = new Stack<(AutomationElement Element, int Depth)>();
+        pending.Push((window, 0));
+        var timer = Stopwatch.StartNew();
+        static string Bounded(string? value)
+        {
+            var text = (value ?? string.Empty).Replace('\r', ' ').Replace('\n', ' ');
+            return text.Length <= 240 ? text : text[..240] + "…";
+        }
+        try
+        {
+            while (pending.Count > 0 && evidence.Count < maximumNodes && timer.ElapsedMilliseconds < 1000)
+            {
+                var (element, depth) = pending.Pop();
+                var current = element.Current;
+                if (current.ProcessId != processId) continue;
+                evidence.Add($"depth={depth}, handle=0x{current.NativeWindowHandle:X}, " +
+                    $"type='{Bounded(current.ControlType.ProgrammaticName)}', class='{Bounded(current.ClassName)}', " +
+                    $"id='{Bounded(current.AutomationId)}', text='{(current.IsPassword ? "[redacted]" : Bounded(current.Name))}'");
+                if (depth >= maximumDepth) continue;
+                var child = TreeWalker.ControlViewWalker.GetFirstChild(element);
+                while (child is not null && pending.Count + evidence.Count < maximumNodes && timer.ElapsedMilliseconds < 1000)
+                {
+                    pending.Push((child, depth + 1));
+                    child = TreeWalker.ControlViewWalker.GetNextSibling(child);
+                }
+            }
+        }
+        catch (Exception exception)
+        {
+            // A closing/unresponsive UIA provider must never replace the original blocking failure.
+            evidence.Add($"Diagnostic inspection unavailable: {exception.GetType().Name}.");
+        }
+        return "Owned-window diagnostic (bounded): " + string.Join(" | ", evidence);
     }
 
     private static void CaptureWindow(AutomationElement window, string path)

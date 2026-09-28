@@ -1,5 +1,26 @@
 # Help Control and Field Ledger
 
+v70.0.1 material-detail.charts/analytics and measurements.impact own the Legacy Impact visual radar reference.
+It averages available corrected Flat/Upright means over the matching rig maximum; 100% means rig ceiling, not material score.
+Historical partial break/drag limits are explicit. Missing/calibration-invalid references remain unavailable.
+The visual reference cannot affect Overall, modern score coverage, Consistency, recommendations or ranking.
+Existing read-only chart owners remain; no new editor/window/schema or owner-data mutation. Owner visual acceptance pending.
+
+v70.0.0 material-detail.charts/analytics owns method-aware scoring and read-only Score coverage.
+Analytics has 430 DataGrid columns in the full XAML inventory (one added column). Legacy Impact remains historical;
+its score is unavailable. Missing axes render gaps without zero markers or fill. Group coverage states eligible/total members.
+Five equal Overall families require both approved method scores; pending fixed references never fall back to cohort maxima.
+Raw Izod/Charpy means remain visible while references await owner approval. No new editable field, Settings row or window.
+Existing smoke rankings/selectors and Full Verification own policy, missing/reference, grouping and propagation checks.
+Owner readability/navigation acceptance is pending; the accepted v69 runtime and recalculation are recorded separately.
+
+v69.0.0 menu.tools-validation owns Tools → Legacy Impact Recalculation... (LegacyImpactRecalculation).
+A standard confirmation previews settings; Yes creates backup, recalculates derived results and retains JSON audit.
+No cancels; backup/validation failure stops. Raw percentages, notes and dates remain unchanged.
+measurements.impact documents explicit J/mm² conversion and independence from direct Izod/Charpy.
+No new editable input or runtime window is introduced. Owner readability/repair acceptance remains pending.
+The owner explicitly requests a candidate ZIP for this handoff.
+
 v68.0.3 extends existing read-only analysis owners without adding editing or external-send actions.
 Rankings adds Izod and Charpy metric choices and score columns (429 DataGrid columns total).
 analysis.rankings, analysis.category-rankings and analysis.awards own separate method rankings and awards.

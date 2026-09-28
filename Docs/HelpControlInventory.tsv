@@ -48,6 +48,7 @@ xaml.application-menu.menuitem.exit-click	Application menu	MenuItem	Exit_Click	a
 xaml.application-menu.menuitem.exportengineeringwhitepaper-click	Application menu	MenuItem	ExportEngineeringWhitepaper_Click	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.filemenu	Application menu	MenuItem	FileMenu	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.helpmenu	Application menu	MenuItem	HelpMenu	action	v50.4.3	menu-runtime.controls-fields	covered
+xaml.application-menu.menuitem.legacyimpactrecalculation	Application menu	MenuItem	LegacyImpactRecalculation	action	v69.0.0	menu.tools-validation	covered
 xaml.application-menu.menuitem.materials	Application menu	MenuItem	_Materials	action	v50.4.3	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigateaiassistanttab	Application menu	MenuItem	NavigateAiAssistantTab	action	v59.0.2	menu-runtime.controls-fields	covered
 xaml.application-menu.menuitem.navigateanalysisresearchmenu	Application menu	MenuItem	NavigateAnalysisResearchMenu	action	v59.0.2	menu-runtime.controls-fields	covered
@@ -406,10 +407,11 @@ xaml.material-detail-analytics.datagridtextcolumn.charpy	Material Detail > Analy
 xaml.material-detail-analytics.datagridtextcolumn.consistency	Material Detail > Analytics	DataGridTextColumn	Consistency	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-analytics.datagridtextcolumn.count	Material Detail > Analytics	DataGridTextColumn	Count	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-analytics.datagridtextcolumn.group	Material Detail > Analytics	DataGridTextColumn	Group	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
-xaml.material-detail-analytics.datagridtextcolumn.impact	Material Detail > Analytics	DataGridTextColumn	Impact	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-analytics.datagridtextcolumn.izod	Material Detail > Analytics	DataGridTextColumn	Izod	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-analytics.datagridtextcolumn.layer-adhesion	Material Detail > Analytics	DataGridTextColumn	Layer Adhesion	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtextcolumn.legacy-impact-rig-max	Material Detail > Analytics	DataGridTextColumn	Legacy Impact (% rig max)	editable-column-candidate	v70.0.1	material-detail.controls-fields	covered
 xaml.material-detail-analytics.datagridtextcolumn.overall-profile	Material Detail > Analytics	DataGridTextColumn	Overall Profile	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
+xaml.material-detail-analytics.datagridtextcolumn.score-coverage	Material Detail > Analytics	DataGridTextColumn	Score coverage	editable-column-candidate	v70.0.0	material-detail.controls-fields	covered
 xaml.material-detail-analytics.datagridtextcolumn.stiffness	Material Detail > Analytics	DataGridTextColumn	Stiffness	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-analytics.datagridtextcolumn.tensile	Material Detail > Analytics	DataGridTextColumn	Tensile	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered
 xaml.material-detail-analytics.datagridtextcolumn.thermal	Material Detail > Analytics	DataGridTextColumn	Thermal	editable-column-candidate	v50.4.2	material-detail.controls-fields	covered

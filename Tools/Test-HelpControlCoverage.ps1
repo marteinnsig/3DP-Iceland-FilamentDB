@@ -98,6 +98,15 @@ function Get-TopSurface([string]$SurfacePath) {
 }
 
 function Get-OwnerIncrement([string]$SurfacePath, [string]$Identity) {
+    if ($SurfacePath -eq "Material Detail > Analytics" -and $Identity -eq "Legacy Impact (% rig max)") {
+        return "v70.0.1"
+    }
+    if ($SurfacePath -eq "Material Detail > Analytics" -and $Identity -in @("Score coverage", "Legacy Impact")) {
+        return "v70.0.0"
+    }
+    if ($Identity -match "^LegacyImpactRecalculation") {
+        return "v69.0.0"
+    }
     if ($SurfacePath -eq "Flexible Material Testing > Comparable Results" -and $Identity -eq "Shore location statistics") {
         return "v67.0.2"
     }
@@ -150,7 +159,10 @@ function Get-OwnerIncrement([string]$SurfacePath, [string]$Identity) {
     return "v50.4.3"
 }
 
-function Get-HelpDestination([string]$SurfacePath) {
+function Get-HelpDestination([string]$SurfacePath, [string]$Identity = "") {
+    if ($Identity -match "^LegacyImpactRecalculation") {
+        return "menu.tools-validation"
+    }
     $topSurface = Get-TopSurface $SurfacePath
     $destinations = @{
         "Materials" = "materials.controls-fields"
@@ -274,7 +286,7 @@ function New-InventoryRows {
                 Identity = $identity
                 Classification = Get-ControlClassification $typeName $element
                 OwnerIncrement = $ownerIncrement
-                HelpDestination = Get-HelpDestination $surface
+                HelpDestination = Get-HelpDestination $surface $identity
                 Status = if ($coveredOwnerIncrements -contains $ownerIncrement) {
                     "covered"
                 } else {

@@ -2,6 +2,7 @@ namespace FilamentDbApp.Models;
 
 public sealed class PublicMaterialEngineeringReportModel
 {
+    public double? LegacyImpactRadarPercent { get; init; }
     public IReadOnlyList<PublicPendulumImpactGroup> PendulumResults { get; init; } = Array.Empty<PublicPendulumImpactGroup>();
     public IReadOnlyList<PublicFlexibleMetricGroup> FlexibleResults { get; init; } = Array.Empty<PublicFlexibleMetricGroup>();
     public string MaterialId { get; init; } = string.Empty;
@@ -105,6 +106,7 @@ public sealed class PublicAlternativeModel
 
 public sealed class PublicEngineeringScoreProfile
 {
+    public double? LegacyImpactRadarPercent { get; init; }
     public string Label { get; init; } = string.Empty;
     public string OverallScore { get; init; } = "n/a";
     public string TensileScore { get; init; } = "n/a";

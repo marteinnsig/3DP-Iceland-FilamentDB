@@ -4,13 +4,13 @@ namespace FilamentDbApp.Services;
 
 /// <summary>
 /// Creates deterministic explanations from an existing engineering score profile.
-/// This service never owns or recalculates tensile, impact, Izod, Charpy, stiffness, consistency,
+/// This service never owns or recalculates tensile, Izod, Charpy, stiffness, consistency,
 /// layer-adhesion or overall engineering values.
 /// </summary>
 public sealed class EngineeringAdvisorService
 {
     // Thermal remains a fixture-specific decision axis outside this mechanical advisor.
-    private const int TotalAxisCount = 7;
+    private const int TotalAxisCount = 6;
     private readonly EngineeringValueIndexService _valueIndexService = new();
 
     public EngineeringAdvisorInsight Explain(
@@ -35,7 +35,7 @@ public sealed class EngineeringAdvisorService
         var tradeOff = available.Count == 0
             ? "No engineering axes are available, so trade-offs cannot yet be assessed."
             : $"Lowest available axis: {weakest.Name} {weakest.Score:0}/100."
-                + (missing.Count == 0 ? " All seven engineering axes are represented." : $" Missing evidence: {string.Join(", ", missing)}.");
+                + (missing.Count == 0 ? " All six modern engineering axes are represented." : $" Missing evidence: {string.Join(", ", missing)}.");
 
         return new EngineeringAdvisorInsight
         {
@@ -222,7 +222,6 @@ public sealed class EngineeringAdvisorService
     private static IReadOnlyList<(string Name, double? Score)> GetAxes(EngineeringScoreProfile profile) =>
     [
         ("Tensile", profile.TensileScore),
-        ("Impact", profile.ImpactScore),
         ("Izod", profile.IzodScore),
         ("Charpy", profile.CharpyScore),
         ("Stiffness", profile.StiffnessScore),
@@ -236,8 +235,8 @@ public sealed class EngineeringAdvisorService
         var label = coveredAxes switch
         {
             TotalAxisCount when consistency >= 75 => "High evidence coverage",
-            >= 6 when consistency >= 55 => "Moderate evidence coverage",
-            >= 6 => "Moderate coverage / variable results",
+            >= TotalAxisCount - 1 when consistency >= 55 => "Moderate evidence coverage",
+            >= TotalAxisCount - 1 => "Moderate coverage / variable results",
             _ => "Limited evidence coverage"
         };
 
@@ -245,7 +244,7 @@ public sealed class EngineeringAdvisorService
             ? $" Consistency score: {consistency:0}/100."
             : " Consistency evidence is unavailable.";
 
-        return (label, $"{coveredAxes}/{TotalAxisCount} engineering axes available.{consistencyText} This is an advisor evidence indicator, not statistical confidence.");
+        return (label, $"{coveredAxes}/{TotalAxisCount} modern engineering axes available.{consistencyText} Legacy Impact is historical reference only. This is an advisor evidence indicator, not statistical confidence.");
     }
 
     private static (string Summary, double? ScoreDelta, string LeadAxis, double? LeadDelta, string TradeOffAxis, double? TradeOffDelta) BuildComparison(

@@ -3,6 +3,23 @@
 > Canonical role: product milestones and major delivery outcomes.
 > This is not the exhaustive build or release ledger.
 
+# v70 - Method-aware Engineering Scoring (accepted v70.0.1)
+
+v70.0.1 adds an owner-requested visual legacy radar reference: average available corrected Flat/Upright means over the
+matching rig ceiling. This is a percentage of device capacity, excluded from modern scoring, coverage and recommendations.
+Partial-break/drag interpretation is explicit. v70.0.0 evidence is retained; owner accepted v70.0.1 and normal Release promotion on 2026-09-28.
+
+Five equal Overall families prevent counting legacy Impact, Izod and Charpy as three independent weights.
+Legacy results remain historical; modern scoring requires independently approved fixed method references and explicit coverage.
+No numeric references are invented: method scores and Overall remain unavailable until an approved policy release.
+Raw readings, corrected physical results and database schema remain unchanged. Numeric references deliberately deferred by owner; application runtime acceptance complete.
+
+# v69 - Legacy Impact Unit Correction
+
+Owner completed the guarded recalculation and accepted corrected values in the normal Release application on 2026-09-28.
+Debug/Release, 479/479 Full Verification, disposable CRUD/recovery and report exports passed before handoff.
+Raw readings and direct Izod/Charpy results were preserved; the legacy calculation converts absorbed J to kJ/m² once.
+
 # v67 - Flexible Website Explorer
 
 Owner published and accepted the live website on 2026-09-12. Flexible Testing adds filtered native-unit charts, horizontal labels

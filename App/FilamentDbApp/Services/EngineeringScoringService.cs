@@ -6,12 +6,9 @@ namespace FilamentDbApp.Services;
 
 public sealed class EngineeringScoringService
 {
-    // These references are intentionally temporary app-side references until the full website
-    // ranking/radar dataset is imported. The radar axes and consistency/layer-adhesion logic
-    // govern the mechanical axes. Independent Izod / Charpy scores
-    // arrive already normalized within the caller's authorized comparison cohort.
+    // Fixed references; legacy Impact is excluded from every Overall input.
     private const double TensileReferenceMpa = 80.0;
-    private const double ImpactReferenceKjM2 = 1000.0;
+    public const string PolicyVersion = "engineering-score-v70-1";
     private const double StiffnessReferenceMpa = 3000.0;
 
     public EngineeringScoreProfile BuildProfile(
@@ -23,11 +20,7 @@ public sealed class EngineeringScoringService
         var tensileUpright = ParseMetric(tensile?.UprightMpa);
         var tensileMean = AverageAvailable(tensileFlat, tensileUpright);
         var tensileScore = Normalize(tensileMean, TensileReferenceMpa);
-
-        var impactFlat = ParseMetric(FindMetric(metrics, "Impact", "Flat", "kJ")?.MetricValue);
-        var impactUpright = ParseMetric(FindMetric(metrics, "Impact", "Upright", "kJ")?.MetricValue);
-        var impactMean = AverageAvailable(impactFlat, impactUpright);
-        var impactScore = Normalize(impactMean, ImpactReferenceKjM2);
+        double? impactScore = null; // Historical Impact has no modern engineering score.
 
         var stiffness = ParseMetric(FindMetric(metrics, "Stiffness", "Modulus")?.MetricValue);
         var stiffnessScore = Normalize(stiffness, StiffnessReferenceMpa);
@@ -38,26 +31,30 @@ public sealed class EngineeringScoringService
             new double?[]
             {
                 ParseCvPercent(tensile?.CvFlat), ParseCvPercent(tensile?.CvUpright),
-                ParseCvPercent(FindMetric(metrics, "Impact", "Flat", "CV")?.MetricValue),
-                ParseCvPercent(FindMetric(metrics, "Impact", "Upright", "CV")?.MetricValue),
                 ReadIndependentCv(metrics, "Izod"), ReadIndependentCv(metrics, "Charpy")
             },
             new double?[]
             {
                 PositiveSampleCount(ParseMetric(tensile?.SamplesFlat)), PositiveSampleCount(ParseMetric(tensile?.SamplesUpright)),
-                PositiveSampleCount(ParseMetric(FindMetric(metrics, "Impact", "Flat", "Samples")?.MetricValue)),
-                PositiveSampleCount(ParseMetric(FindMetric(metrics, "Impact", "Upright", "Samples")?.MetricValue)),
                 ReadIndependentSamples(metrics, "Izod"), ReadIndependentSamples(metrics, "Charpy")
             });
         var layerAdhesionScore = LayerAdhesionScore(tensileUpright, tensileFlat);
 
-        var overall = AverageAvailable(tensileScore, impactScore, stiffnessScore, consistencyScore, layerAdhesionScore, izodScore, charpyScore);
+        var impactFamily = CombineImpactScores(izodScore, charpyScore);
+        var overall = CompleteOverall(tensileScore, stiffnessScore, consistencyScore, layerAdhesionScore, impactFamily);
         var thermal = ThermalAnalyticsService.Project(thermalResultTemperatureC);
 
         return new EngineeringScoreProfile
         {
             TensileScore = tensileScore,
             ImpactScore = impactScore,
+            LegacyImpactRadarPercent = LegacyImpactRadarService.Calculate(
+                ParseMetric(FindMetric(metrics, "Impact", "Upright kJ")?.MetricValue),
+                PositiveSampleCount(ParseMetric(FindMetric(metrics, "Impact", "Upright Samples")?.MetricValue)) is null ? 0 : 1,
+                ParseMetric(FindMetric(metrics, "Impact", "Flat kJ")?.MetricValue),
+                PositiveSampleCount(ParseMetric(FindMetric(metrics, "Impact", "Flat Samples")?.MetricValue)) is null ? 0 : 1,
+                ParseMetric(FindMetric(metrics, "Impact", "Radar maximum kJ/m²")?.MetricValue)),
+            ImpactFamilyScore = impactFamily,
             IzodScore = izodScore,
             CharpyScore = charpyScore,
             StiffnessScore = stiffnessScore,
@@ -65,6 +62,7 @@ public sealed class EngineeringScoringService
             LayerAdhesionScore = layerAdhesionScore,
             ThermalScore = thermal?.Score,
             ThermalResultTemperatureC = thermal?.ResultTemperatureC,
+            MeasuredImpactMethodCount = (ReadIndependentSamples(metrics, "Izod").HasValue ? 1 : 0) + (ReadIndependentSamples(metrics, "Charpy").HasValue ? 1 : 0),
             OverallScore = overall
         };
     }
@@ -75,12 +73,10 @@ public sealed class EngineeringScoringService
 
         var tensileFlat = summary.Tensile?.Flat.SampleCount > 0 ? summary.Tensile.Flat.Average : null;
         var tensileUpright = summary.Tensile?.Upright.SampleCount > 0 ? summary.Tensile.Upright.Average : null;
-        var impactFlat = summary.Impact?.Flat.SampleCount > 0 ? summary.Impact.Flat.Average : null;
-        var impactUpright = summary.Impact?.Upright.SampleCount > 0 ? summary.Impact.Upright.Average : null;
         var stiffness = summary.HasStiffnessResults ? summary.Stiffness?.ModulusMpa : null;
 
         var tensileScore = Normalize(AverageAvailable(tensileFlat, tensileUpright), TensileReferenceMpa);
-        var impactScore = Normalize(AverageAvailable(impactFlat, impactUpright), ImpactReferenceKjM2);
+        double? impactScore = null; // Historical Impact is reference-only.
         var stiffnessScore = Normalize(stiffness, StiffnessReferenceMpa);
         var izodScore = summary.Izod?.Score;
         var charpyScore = summary.Charpy?.Score;
@@ -89,8 +85,6 @@ public sealed class EngineeringScoringService
             {
                 ToCvPercent(summary.Tensile?.Flat),
                 ToCvPercent(summary.Tensile?.Upright),
-                ToCvPercent(summary.Impact?.Flat),
-                ToCvPercent(summary.Impact?.Upright),
                 summary.Izod?.HasResults == true ? summary.Izod.Statistics.CvPercent : null,
                 summary.Charpy?.HasResults == true ? summary.Charpy.Statistics.CvPercent : null
             },
@@ -98,19 +92,22 @@ public sealed class EngineeringScoringService
             {
                 PositiveSampleCount(summary.Tensile?.Flat.SampleCount),
                 PositiveSampleCount(summary.Tensile?.Upright.SampleCount),
-                PositiveSampleCount(summary.Impact?.Flat.SampleCount),
-                PositiveSampleCount(summary.Impact?.Upright.SampleCount),
                 summary.Izod?.HasResults == true ? PositiveSampleCount(summary.Izod.Statistics.ValidCount) : null,
                 summary.Charpy?.HasResults == true ? PositiveSampleCount(summary.Charpy.Statistics.ValidCount) : null
             });
         var layerAdhesionScore = LayerAdhesionScore(tensileUpright, tensileFlat);
-        var overall = AverageAvailable(tensileScore, impactScore, stiffnessScore, consistencyScore, layerAdhesionScore, izodScore, charpyScore);
+        var impactFamily = CombineImpactScores(izodScore, charpyScore);
+        var overall = CompleteOverall(tensileScore, stiffnessScore, consistencyScore, layerAdhesionScore, impactFamily);
         var thermal = ThermalAnalyticsService.Project(thermalResultTemperatureC);
 
         return new EngineeringScoreProfile
         {
             TensileScore = tensileScore,
             ImpactScore = impactScore,
+            LegacyImpactRadarPercent = LegacyImpactRadarService.Calculate(summary.Impact?.Upright.Average,
+                summary.Impact?.Upright.SampleCount ?? 0, summary.Impact?.Flat.Average,
+                summary.Impact?.Flat.SampleCount ?? 0, summary.Impact?.MaxPossibleImpact),
+            ImpactFamilyScore = impactFamily,
             IzodScore = izodScore,
             CharpyScore = charpyScore,
             StiffnessScore = stiffnessScore,
@@ -118,18 +115,27 @@ public sealed class EngineeringScoringService
             LayerAdhesionScore = layerAdhesionScore,
             ThermalScore = thermal?.Score,
             ThermalResultTemperatureC = thermal?.ResultTemperatureC,
+            MeasuredImpactMethodCount = (summary.HasIzodResults ? 1 : 0) + (summary.HasCharpyResults ? 1 : 0),
             OverallScore = overall
         };
     }
 
+    public static double? CombineImpactScores(double? izod, double? charpy) =>
+        izod is >= 0 and <= 100 && charpy is >= 0 and <= 100 ? (izod.Value + charpy.Value) / 2d : null;
+
+    private static double? CompleteOverall(params double?[] families) =>
+        families.All(value => value is >= 0 and <= 100) ? families.Average(value => value!.Value) : null;
+
     private static double? ReadIndependentScore(IEnumerable<TestSummaryMetric> metrics, string method)
     {
-        var metric = metrics.FirstOrDefault(x => string.Equals(x.TestType, method, StringComparison.OrdinalIgnoreCase) &&
-            string.Equals(x.MetricName, "Score", StringComparison.OrdinalIgnoreCase));
-        var value = ParseMetric(metric?.MetricValue);
-        return value is >= 0 and <= 100 && double.IsFinite(value.Value) ? value : null;
+        var rows = metrics.Where(x => string.Equals(x.TestType, method, StringComparison.OrdinalIgnoreCase)).ToArray();
+        var policy = rows.FirstOrDefault(x => x.MetricName == "Score policy")?.MetricValue;
+        var reference = ParseMetric(rows.FirstOrDefault(x => x.MetricName == "Score reference")?.MetricValue);
+        var mean = ParseMetric(rows.FirstOrDefault(x => x.MetricName == "Mean kJ/m²")?.MetricValue);
+        if (string.IsNullOrWhiteSpace(policy) || reference is not > 0 || mean is not >= 0 ||
+            !double.IsFinite(reference.Value) || !double.IsFinite(mean.Value) || ReadIndependentSamples(rows, method) is null) return null;
+        return Math.Clamp(mean.Value / reference.Value * 100d, 0d, 100d);
     }
-
     private static double? ToCvPercent(MeasurementSetResult? result)
     {
         return result is { SampleCount: > 0, CoefficientOfVariation: { } cv } && double.IsFinite(cv)

@@ -50,7 +50,8 @@ public partial class MainWindow
             Add("Samples", result.Statistics.ValidCount, "");
             Add("Confidence", result.Statistics.Confidence, "");
             Add("Score", result.Score, "/100");
-            Add("Reference maximum", result.ReferenceMaximumKjM2, "kJ/m²");
+            Add("Score reference", result.ReferenceMaximumKjM2, "kJ/m²");
+            metrics.Add(new TestSummaryMetric { TestType = method, MetricName = "Score policy", MetricValue = result.ReferencePolicyVersion, Unit = "", SourceSheet = "Versioned scoring policy", SourceColumn = "Score policy" });
         }
     }
 
@@ -69,12 +70,12 @@ public partial class MainWindow
         DashboardCharpyStatisticsText.Text = PendulumDetailText("Charpy", p?.Charpy);
         ChartIzodScoreText.Text = FormatScore(p?.Izod?.Score);
         ChartCharpyScoreText.Text = FormatScore(p?.Charpy?.Score);
-        ChartIzodSourceText.Text = p?.Izod?.HasResults == true
-            ? $"Mean {PendulumNumber(p.Izod.MeanKjM2)} kJ/m² / active-material Izod maximum {PendulumNumber(p.Izod.ReferenceMaximumKjM2)} kJ/m²"
-            : "No numeric Izod result; comparison score unavailable.";
-        ChartCharpySourceText.Text = p?.Charpy?.HasResults == true
-            ? $"Mean {PendulumNumber(p.Charpy.MeanKjM2)} kJ/m² / active-material Charpy maximum {PendulumNumber(p.Charpy.ReferenceMaximumKjM2)} kJ/m²"
-            : "No numeric Charpy result; comparison score unavailable.";
+        ChartIzodSourceText.Text = p?.Izod?.Score.HasValue == true
+            ? $"Mean {PendulumNumber(p.Izod.MeanKjM2)} kJ/m² / fixed Izod reference {PendulumNumber(p.Izod.ReferenceMaximumKjM2)} kJ/m²"
+            : p?.Izod?.HasResults == true ? "Izod measured; score reference not configured." : "Izod not measured.";
+        ChartCharpySourceText.Text = p?.Charpy?.Score.HasValue == true
+            ? $"Mean {PendulumNumber(p.Charpy.MeanKjM2)} kJ/m² / fixed Charpy reference {PendulumNumber(p.Charpy.ReferenceMaximumKjM2)} kJ/m²"
+            : p?.Charpy?.HasResults == true ? "Charpy measured; score reference not configured." : "Charpy not measured.";
     }
 
     private void QueuePendulumConsumerRefresh()
@@ -152,9 +153,23 @@ public partial class MainWindow
             IntegratedRadarValues(new RankingRow { Izod = 25, Charpy = 75 }).SequenceEqual(new double?[] { null, null, 25, 75, null, null, null, null });
     }
 
-    private static readonly string[] IntegratedRadarAxes = ["Tensile", "Impact", "Izod", "Charpy", "Stiffness", "Thermal", "Layer", "Consistency"];
+    private static readonly string[] IntegratedRadarAxes = ["Tensile", "Legacy Impact (%)", "Izod", "Charpy", "Stiffness", "Thermal", "Layer", "Consistency"];
+
+    private static bool VerifyLegacyImpactRadarPresentation()
+    {
+        var row = new RankingRow { Impact = 99, LegacyImpactRadarPercent = 25 };
+        var groups = BuildGroupedAnalyticsRows(new[]
+        {
+            new AnalyticsMaterialScore { Label = "A", Manufacturer = "Fixture", Profile = new EngineeringScoreProfile { ImpactScore = 99, LegacyImpactRadarPercent = 20 } },
+            new AnalyticsMaterialScore { Label = "B", Manufacturer = "Fixture", Profile = new EngineeringScoreProfile { ImpactScore = 99, LegacyImpactRadarPercent = 40 } }
+        }, "manufacturer");
+        return IntegratedRadarValues(row)[1] == 25 &&
+            PublicEngineeringScoreProfileFromRanking(row).LegacyImpactRadarPercent == 25 &&
+            groups.Count == 1 && groups[0].Impact == 30 && groups[0].ImpactDisplay == "30%" &&
+            groups[0].Overall is null && FormatLegacyImpactPercent(0) == "0%" && FormatLegacyImpactPercent(null) == "—";
+    }
     private static double?[] IntegratedRadarValues(RankingRow row) =>
-        [row.Tensile, row.Impact, row.Izod, row.Charpy, row.Stiffness, row.Thermal, row.LayerAdhesion, row.Consistency];
+        [row.Tensile, row.LegacyImpactRadarPercent, row.Izod, row.Charpy, row.Stiffness, row.Thermal, row.LayerAdhesion, row.Consistency];
 
     private string BuildIntegratedRadarHtml(string title, RankingRow selected, RankingRow? materialAverage, RankingRow? manufacturerAverage)
     {
@@ -174,13 +189,32 @@ public partial class MainWindow
             sb.Append($"<text class=\"radar-label\" x=\"{label[0]}\" y=\"{label[1]}\" text-anchor=\"middle\">{IntegratedRadarAxes[i]}</text>");
         }
         foreach (var (row, style) in new[] { (materialAverage, "radar-poly-material-average"), (manufacturerAverage, "radar-poly-manufacturer-average"), (selected, "radar-poly-selected") })
-            if (row is not null) sb.Append($"<polygon class=\"{style}\" points=\"{BuildRadarPolygonPoints(row)}\"/>");
+        {
+            if (row is null) continue;
+            var values = IntegratedRadarValues(row);
+            if (values.All(value => value.HasValue))
+                sb.Append($"<polygon class=\"{style}\" points=\"{BuildRadarPolygonPoints(row)}\"/>");
+            else
+                for (var index = 0; index < values.Length; index++)
+                {
+                    var next = (index + 1) % values.Length;
+                    if (!values[index].HasValue || !values[next].HasValue) continue;
+                    sb.Append($"<polyline class=\"{style}\" style=\"fill:none\" points=\"{Point(index, Math.Clamp(values[index]!.Value, 0, 100))} {Point(next, Math.Clamp(values[next]!.Value, 0, 100))}\"/>");
+                }
+            for (var index = 0; index < values.Length; index++)
+            {
+                if (!values[index].HasValue) continue;
+                var point = Point(index, Math.Clamp(values[index]!.Value, 0, 100)).Split(',');
+                sb.Append($"<circle class=\"{style}\" cx=\"{point[0]}\" cy=\"{point[1]}\" r=\"3\"/>");
+            }
+        }
         sb.Append("</svg><div class=\"legend\">Selected material");
         if (materialAverage is not null) sb.Append("; ").Append(Html(materialAverage.Label));
         if (manufacturerAverage is not null) sb.Append("; ").Append(Html(manufacturerAverage.Label));
         sb.Append("</div>");
-        sb.Append("<p>Izod and Charpy use separate same-method cohort maxima. Missing results are n/a; central placeholder points are not measured zero.</p>");
-        sb.Append("<p>").Append(string.Join("; ", IntegratedRadarAxes.Zip(IntegratedRadarValues(selected), (axis, value) => Html(axis + ": " + FormatScore(value))))).Append("</p></div>");
+        sb.Append("<p>").Append(Html(LegacyImpactRadarService.Description)).Append("</p>");
+        sb.Append("<p>Izod and Charpy use independently approved fixed method references; pending references leave their scores unavailable. Legacy Impact is historical reference only. Overall requires all five families and both method scores. Missing axes leave gaps; measured zero retains a marker.</p>");
+        sb.Append("<p>").Append(string.Join("; ", IntegratedRadarAxes.Zip(IntegratedRadarValues(selected), (axis, value) => Html(axis + ": " + (axis == "Legacy Impact (%)" ? FormatLegacyImpactPercent(value) : FormatScore(value)))))).Append("</p></div>");
         return sb.ToString();
     }
 }

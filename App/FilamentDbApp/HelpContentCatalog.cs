@@ -716,6 +716,8 @@ internal static class HelpContentCatalog
             changes layout only.
 
             Prospective boundary
+            Save Settings rejects invalid legacy Impact Available Joules, net area mm² and no-sample rebound angle.
+            Missing or invalid calibration produces no calculated legacy Impact result; there is no built-in fallback.
             Settings feed ResultsService calculations, offline purchasing currency fallback, Printer rates, quote drafts and guarded
             deployment. Changes apply prospectively and may refresh current calculated views/drafts. They never rewrite saved Purchase
             Order rates, received Inventory provenance, Usage history or saved quote snapshots. ECB remains an optional reference for
@@ -981,9 +983,10 @@ internal static class HelpContentCatalog
 
             Analytics
             Chart Mode chooses the visible-scope grouping. Select one row or Ctrl-click multiple Analytics Results rows to control the
-            radar overlay. Clear radar selection clears local selection only. Group, Count, Tensile, Impact, Izod, Charpy, Stiffness, Consistency,
-            Layer Adhesion, Thermal, Overall Profile and Radar are read-only calculated display columns. Thermal is the fixture result
-            divided by the fixed 200 °C reference; it never changes legacy Overall.
+            radar overlay. Clear radar selection clears local selection only. Group, Count, Tensile, Legacy Impact, Izod, Charpy, Stiffness, Consistency,
+            Layer Adhesion, Thermal, Overall Profile, Score coverage and Radar are read-only calculated display columns. Thermal is the fixture result
+            divided by the fixed 200 °C reference; it never changes Overall. Score coverage explains eligibility and pending method references.
+            Legacy Impact on the radar is a visual percentage of the matching rig limit, not a modern score or Overall component.
 
             Compare
             Material A-D selectors choose up to four canonical Materials. Use Selected copies the current Materials selection into the
@@ -1028,7 +1031,8 @@ internal static class HelpContentCatalog
             Metric selects the rank basis. Manufacturer, Base Material and Reinforcement narrow scope. Rows defaults to Top 25 and also
             offers Top 10, 50, 100 and All. The read-only grid shows rank number, Material, Manufacturer, Type, Reinforcement, Tensile,
             Impact, Izod, Charpy, Stiffness, Consistency, Layer Adhesion, Thermal, Overall, Rank Score, Best Axis and Status. Rows missing the selected metric
-            are omitted rather than assigned invented scores.
+            are omitted rather than assigned invented scores. Legacy Impact is reference-only; approved fixed method references
+            and complete five-family coverage are required for the modern Overall ranking.
 
             Category Rankings
             Group chooses category grouping and Metric chooses score basis. Manufacturer, Base Material and Reinforcement narrow scope.
@@ -1070,6 +1074,18 @@ internal static class HelpContentCatalog
             A valid commit invokes ResultsService with governed impact Settings and auto-saves SQLite. The first input assigns today only
             if the date is blank. Invalid values remain errors. Reset Columns changes layout only; correct source percentages or Settings
             at their owner instead of calculated energy.
+            Legacy Impact uses fraction = 1 - (1 - cos(angle × (1 - percent / 100))) / (1 - cos(angle)).
+            Convert degrees to radians for cosine. kJ/m² = fraction × Available Joules × 1000 / net area mm².
+            The maximum is already kJ/m² and is never divided by area again. Invalid settings produce no result.
+            Direct Izod and Charpy readings do not use this legacy conversion.
+            The legacy radar reference averages available corrected Flat/Upright means, divides by the matching rig maximum
+            (Available Joules × 1000 / Net area mm²), and multiplies by 100. With the accepted settings the maximum is about
+            56.9735 kJ/m². A missing orientation is omitted, not zero; missing or invalid calibration leaves the reference unavailable.
+            This percentage describes proximity to the rig ceiling, not standardized material strength. Partial break, bending and
+            hammer drag can raise observed energy loss; values near the ceiling do not establish a clean-break strength ranking.
+            Save Settings rejects invalid legacy Available Joules, net area mm² or rebound angle; missing calibration has no fallback.
+            Experimental views project corrected results read-only. Ordinary saves preserve stored historical derived values when
+            the raw input is unchanged; use the explicit Tools command to apply audited corrections to those stored values.
             """, "impact", "percentage", "kJ/m²", "Settings", "CV", "validation", "auto-save"),
         new(
             "measurements.stiffness", "Testing and engineering", "Stiffness Measurements reference",
@@ -1194,8 +1210,9 @@ internal static class HelpContentCatalog
             Each method contributes independently to Tested Status: all six required methods give Fully tested; one to five give
             Partially tested; none gives Not tested. A valid numeric zero counts; an empty row or NB alone does not.
             Material Detail shows saved summaries above every inner tab, statistics in Mechanical and separate axes in Charts,
-            Analytics and Compare. Izod and Charpy remain separate methods from legacy Impact; their normalized scores now contribute
-            to Overall and their valid CV% and sample counts contribute to Consistency. Missing method scores are not zero.
+            Analytics and Compare. Izod and Charpy remain separate methods from legacy Impact. Their scores require independently approved
+            fixed method references; this release has no approved numeric references, so scores remain unavailable while measured kJ/m² stays visible.
+            Their valid CV% and sample counts contribute to Consistency. Missing method scores are not zero; legacy Impact is historical only.
 
             Settings Manager > Izod / Charpy holds Specimen length, Specimen width, Specimen thickness and Notch depth in mm.
             Defaults are 80 x 4 x 10 mm with a 2 mm notch, leaving a 4 x 8 mm fracture section.
@@ -1407,23 +1424,35 @@ internal static class HelpContentCatalog
             """, "mechanical", "tensile", "impact", "stiffness", "reliability"),
         new(
             "material-detail.charts", "Material detail", "Material Detail — Charts reference",
-            "Eight normalized decision axes and the available seven-component Overall profile.",
+            "Method-specific scores, explicit coverage and a five-family comparable Overall profile.",
             """
-            Charts shows normalized 0–100 Tensile, Impact, Izod, Charpy, Stiffness, Consistency, Layer Adhesion and Thermal.
-            Izod and Charpy use their own method mean relative to the same-method comparison cohort. These comparative axes
-            do not convert instrument readings or make different methods interchangeable. Thermal uses raw fixture
-            °C divided by the fixed 200 °C reference. Overall averages the available Tensile, Impact, Izod, Charpy, Stiffness,
-            Consistency and Layer Adhesion scores with equal weight. Thermal remains independent. Missing results remain unavailable.
-            Consistency includes valid Izod/Charpy CV% and sample counts; their CV% is already a percentage, not a fractional ratio.
+            Charts retains separate Izod and Charpy axes. Each method needs an independently approved fixed kJ/m² reference;
+            the method score is its measured mean divided by that reference, times 100, bounded to 0–100. References never follow filters
+            or the highest measured peer. No numeric method references are approved in this release: measured values remain visible,
+            but method scores and comparable Overall remain unavailable pending a later approved, versioned policy release.
+            Overall has five equal families: Tensile, combined Izod/Charpy impact, Stiffness, Consistency and Layer Adhesion.
+            Both method scores are required for the combined impact family, where they have equal weight. All five families must be
+            available before Overall is ranked. Legacy Impact raw results remain historical; its retired score and CV evidence do not
+            influence Overall, Consistency or current recommendations. Thermal remains independent, using the fixed 200 °C reference.
+            Legacy Impact may appear as a separate visual radar reference: average available corrected Flat/Upright means divided
+            by the matching rig maximum, times 100. 100% means the rig energy ceiling, not a modern material score. The reference
+            does not fill missing Izod/Charpy scores, add score coverage, rank materials or change Overall eligibility.
+            Measurement coverage and score coverage are distinct. Missing scores are unavailable, never zero. Settings Manager has no
+            score-reference editor in this release. Izod/Charpy CV% is already a percentage, not a fractional ratio.
             """, "charts", "0-100", "consistency", "layer adhesion", "thermal", "200 °C"),
         new(
             "material-detail.analytics", "Material detail", "Material Detail — Analytics reference",
             "Visible-scope grouping, multi-select radar overlay and selection controls.",
             """
             Chart Mode groups visible Materials into radar rows. Select one or Ctrl-click multiple rows; Clear radar selection removes
-            local selection only. Materials search/filters define scope. Analytics uses eight axes, including separate Izod and Charpy
-            same-method cohort comparisons. Izod and Charpy contribute to Overall; Thermal remains an independent axis.
-            Missing axes stay unavailable and render at the center rather than becoming evidence. This view changes no data.
+            local selection only. Materials search/filters define scope, without changing the fixed score policy. Izod and Charpy retain
+            separate axes; their scores require approved method references. Legacy Impact is a separate visual percentage of its
+            matching rig maximum, averaging available corrected Flat/Upright means. It remains outside modern scores and coverage.
+            100% describes the rig ceiling; partial breaks and hammer drag limit clean-break interpretation.
+            Score coverage reports available families and method scores. Group rows state how many member profiles are eligible for
+            Overall; individual axes average only their available evidence, while group Overall averages only eligible profiles.
+            Missing axes leave gaps with no invented zero markers or filled polygon. Measured zero keeps its marker. Partial profiles
+            remain visible even without Overall. Thermal remains independent. This view changes no data.
             Flexible Material Testing shows separate native-unit bars and mean/n/SD/CV/range for visible materials, even without Overall.
             Chart Mode groups these rows by manufacturer, material type or the other selected category; it does not pool their statistics.
             Each test condition has its own labelled bar scale. Zero stays measured; missing values have no bar. Expand Test setup for details.
@@ -1465,7 +1494,8 @@ internal static class HelpContentCatalog
             Neither the Flexible brief nor guidance changes Overall or certifies application suitability.
             Recommendations project verified results in visible scope. Filters/Refresh choose guidance, including Highest Izod and
             Highest Charpy; details expose evidence, alternatives and cautions. Method scores contribute to Overall, relevant use-case
-            scores, best-axis comparisons and alternative trade-offs. Each method retains its own normalization and missing-data boundary.
+            scores, best-axis comparisons and alternative trade-offs only after approved fixed references exist. Both methods share
+            one impact-family weight; legacy Impact contributes no modern recommendation score. Missing data remains unavailable.
             Copy prompt is local; Send to Video Planner transfers planning context only. Neither action edits
             measurements, certifies suitability or publishes.
             Flexible integration: Flexible opportunities — filtered materials uses Category and Base material filters for measured guidance and exact-condition comparison candidates. The recommendation use-case selector continues to control the existing score-based lists. The dropdown shows material and topic on one line; test conditions appear below the selection. Copy Flexible brief copies the selected topic locally. Save Flexible idea saves its current facts and peers in Video Planner → Video ideas from recommendations. Later measurements do not rewrite saved ideas. Re-saving the identical snapshot creates no duplicate; failed saves keep the previous queue. These actions do not send externally.
@@ -1486,10 +1516,11 @@ internal static class HelpContentCatalog
 
             Reset restores defaults, Refresh rebuilds read-only rows and Export CSV writes displayed scope. Clear Materials filters
             before whole-database interpretation.
-            Overall is the equal-weight average of available Tensile, Impact, Izod, Charpy, Stiffness, Consistency and Layer Adhesion
-            scores. Missing scores are omitted, not zero. Thermal remains independent. Izod and Charpy each use their own canonical
-            same-method comparison reference; their kJ/m² means are never combined with another method's raw readings.
-            Consistency includes available direct-method CV percentages and numeric sample counts as well as Tensile and Impact.
+            Overall requires all five equal families: Tensile, combined Izod/Charpy impact, Stiffness, Consistency and Layer Adhesion.
+            Both approved method scores are required for the impact family; unavailable evidence blocks Overall rather than improving
+            a partial mean. This release has no approved numeric method references, so Izod/Charpy scores and Overall are pending.
+            Their measured kJ/m² remains available. Fixed references never follow filters or cohort maxima. Thermal remains independent.
+            Consistency includes valid direct-method and Tensile CV/sample evidence; legacy Impact is excluded from current scoring.
             Flexible Material Testing has its own category selector and Export Flexible CSV. Visible Materials and Base Material,
             Manufacturer and Reinforcement filters apply. Rows limits apply within matching groups and retain tied ranks.
             Two measured materials with identical methods/conditions are required for a rank; singleton values remain visible.
@@ -1512,7 +1543,7 @@ internal static class HelpContentCatalog
             Choose All, Performance, Material family or Reinforcement awards plus optional scope filters. Performance includes the
             Best Izod Material, Best Charpy Material and fixture-specific Best Thermal Resistance awards. Rows show Winner, score,
             Runner Up, Use Case, Why and Status. Reset/Refresh rebuild read-only awards and Export CSV writes them; this view does not
-            publish.
+            publish. Pending method references or incomplete Overall coverage cannot produce a winner for those scores.
             Flexible Material Testing uses its own category selector and Export Flexible CSV with the same visible-material and
             Base Material/Manufacturer/Reinforcement filters. Two measured materials with matching conditions are required.
             Highest retention, lowest 10-30 s force reduction and lowest residual height loss preserve all tied winners.
@@ -1525,8 +1556,8 @@ internal static class HelpContentCatalog
             """
             Insights summarizes tested Materials, Manufacturers, Material/Reinforcement Types and highest Overall, Tensile, Impact,
             Izod, Charpy, Stiffness and Thermal results. Izod/Charpy evidence names independent method leaders, available kJ/m² means,
-            normalized scores and measured coverage in the current scope. These scores affect Overall and content-opportunity
-            relevance; missing readings remain unavailable. Narrative derives from canonical results, edits nothing and has no Save.
+            approved method scores and measured coverage in the current scope. Pending references leave scores unavailable while
+            preserving raw means; legacy Impact is historical evidence. Narrative derives from canonical results, edits nothing and has no Save.
             Flexible integration: Flexible coverage counts measured materials, topics and topics with matching peers in the visible scope. Open YouTube Research → Flexible opportunities for details; Overall and existing leader scores remain unchanged.
             """, "dashboard insights", "counts", "highest overall", "highest thermal", "read-only"),
         new(
@@ -2389,11 +2420,20 @@ internal static class HelpContentCatalog
             repairing rows. Rebuild Computed Fields is different: after confirmation it recalculates persisted computed Material display
             fields from their canonical inputs. Create a backup and review the validation result before using that mutating command.
 
+            Tools → Legacy Impact Recalculation... previews the correction and its current settings before changing data.
+            No cancels. Yes creates a backup, recalculates derived legacy Impact results and retains a JSON audit.
+            Raw percentages, notes and measured dates remain unchanged. Historical exported files are not rewritten.
+            The owner has confirmed that the stated settings apply to historical samples. Review the preview and backup path.
+            A backup or validation failure stops the operation; keep the error and audit evidence for review.
+            This local action does not publish reports or change direct Izod/Charpy measurements.
+            The historical attestation covers only 2.743860924 J, 48.1603 mm² and 105.411 degrees. A different future calibration
+            is not authorized for this historical repair. Unsupported raw units or orientation stay pending for review.
+
             The former snapshot-only Materials Rendering Prototype command is retired. Supported owner-drawn rendering remains embedded
             in Materials, measurement, Settings and Base Materials tabs. Update, release-publishing and storage commands in the Tools
             menu have separate safety ownership and are documented in v50.3.
             """,
-            "Tools", "Validate Materials", "Rebuild Computed Fields", "retired prototype", "mutating"),
+            "Tools", "Validate Materials", "Rebuild Computed Fields", "Legacy Impact Recalculation", "mutating"),
         new(
             "menu.help", "Menus and support", "Help menu reference",
             "Choose whole-system, contextual, evidence and packaged support destinations.",

@@ -270,6 +270,7 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Tools" AutomationProperties.AutomationId="ToolsMenu">
+                <MenuItem Header="Legacy Impact Recalculation..." Click="LegacyImpactRecalculation_Click" AutomationProperties.AutomationId="LegacyImpactRecalculation" />
                 <MenuItem Header="Validate Materials" Click="ValidateNativeMaterials_Click" />
                 <MenuItem Header="Rebuild Computed Fields" Click="RebuildNativeMaterialDisplayNames_Click" />
                 <MenuItem Header="Update Readiness..." Click="UpdateReadiness_Click"
@@ -735,7 +736,7 @@
                                         <StackPanel>
                                             <TextBlock Text="Engineering Profile" Foreground="#64748B" FontWeight="SemiBold" />
                                             <TextBlock x:Name="ChartOverallScoreText" Text="—" FontSize="28" FontWeight="SemiBold" Margin="0,4,0,0" />
-                                            <TextBlock Text="Average of seven available components, including Izod and Charpy. Thermal remains a separate comparison axis." Foreground="#334155" TextWrapping="Wrap" />
+                                            <TextBlock Text="Five equally weighted families; Izod and Charpy share one impact family. All five families and both methods are required. Legacy Impact and Thermal remain separate." Foreground="#334155" TextWrapping="Wrap" />
                                         </StackPanel>
                                     </Border>
 
@@ -750,9 +751,9 @@
 
                                         <Border Padding="12" CornerRadius="6" Background="White" BorderBrush="#E2E8F0" BorderThickness="1" Margin="8,0,0,8">
                                             <StackPanel>
-                                                <TextBlock Text="Impact Score" FontWeight="SemiBold" FontSize="15" />
+                                                <TextBlock Text="Legacy Impact (% of rig maximum)" FontWeight="SemiBold" FontSize="15" TextWrapping="Wrap" />
                                                 <TextBlock x:Name="ChartImpactScoreText" Text="—" FontSize="24" FontWeight="SemiBold" Margin="0,8,0,0" />
-                                                <TextBlock x:Name="ChartImpactSourceText" Text="Impact flat/upright kJ/m²" Foreground="#64748B" TextWrapping="Wrap" />
+                                                <TextBlock x:Name="ChartImpactSourceText" Text="Historical rig-capacity reference; excluded from Overall." Foreground="#64748B" TextWrapping="Wrap" />
                                             </StackPanel>
                                         </Border>
 
@@ -853,7 +854,7 @@
 
                                         <StackPanel Grid.Column="2">
                                             <TextBlock Text="Radar score groups" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,6" />
-                                            <TextBlock Text="Select one or more rows to control the radar overlay. Ctrl-click for multiple groups." Foreground="#64748B" TextWrapping="Wrap" Margin="0,0,0,6" />
+                                            <TextBlock Text="Select rows to control the radar overlay. Legacy Impact (%) is the mean of available Flat/Upright results as a percentage of rig maximum; it does not affect Overall. Ctrl-click for multiple groups." Foreground="#64748B" TextWrapping="Wrap" Margin="0,0,0,6" />
                                             <DataGrid x:Name="AnalyticsResultsList" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderBrush="#E2E8F0" BorderThickness="1" SelectionMode="Extended" SelectionUnit="FullRow" SelectionChanged="AnalyticsResultsList_SelectionChanged">
                                                 <DataGrid.RowStyle>
                                                     <Style TargetType="DataGridRow">
@@ -871,7 +872,7 @@
                                                     <DataGridTextColumn Header="Group" Binding="{Binding Label}" Width="260" />
                                                     <DataGridTextColumn Header="Count" Binding="{Binding Count}" Width="70" />
                                                     <DataGridTextColumn Header="Tensile" Binding="{Binding TensileDisplay}" Width="90" />
-                                                    <DataGridTextColumn Header="Impact" Binding="{Binding ImpactDisplay}" Width="90" />
+                                                    <DataGridTextColumn Header="Legacy Impact (% rig max)" Binding="{Binding ImpactDisplay}" Width="155" />
                                                     <DataGridTextColumn Header="Izod" Binding="{Binding IzodDisplay}" Width="90" />
                                                     <DataGridTextColumn Header="Charpy" Binding="{Binding CharpyDisplay}" Width="90" />
                                                     <DataGridTextColumn Header="Stiffness" Binding="{Binding StiffnessDisplay}" Width="90" />
@@ -879,6 +880,7 @@
                                                     <DataGridTextColumn Header="Layer Adhesion" Binding="{Binding LayerAdhesionDisplay}" Width="120" />
                                                     <DataGridTextColumn Header="Thermal" Binding="{Binding ThermalDisplay}" Width="90" />
                                                     <DataGridTextColumn Header="Overall Profile" Binding="{Binding OverallDisplay}" Width="120" />
+                                                    <DataGridTextColumn Header="Score coverage" Binding="{Binding CoverageDisplay}" Width="420" />
                                                 </DataGrid.Columns>
                                             </DataGrid>
                                         </StackPanel>
@@ -1607,7 +1609,7 @@
                             <TextBlock Name="NativeTensileSummaryText" Text="Tensile measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
                         </DockPanel>
                     </Border>
-                    <GroupBox Grid.Row="2" Header="Native Tensile Measurements - editable raw samples with computed Excel-style outputs">
+                    <GroupBox Grid.Row="2" Header="Native Tensile Measurements - editable raw samples with computed energy/area outputs">
                         <Grid>
                             <ContentControl Name="FastTensileViewHost" AutomationProperties.AutomationId="FastTensileViewHost" Margin="8"/>
                         </Grid>
@@ -1623,7 +1625,7 @@
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0" Margin="0,0,0,10">
                         <TextBlock Text="Impact Measurements" FontSize="22" FontWeight="SemiBold" Foreground="#0F172A" Margin="0,0,0,4"/>
-                        <TextBlock Name="NativeImpactHelpText" Text="Enter the raw needle percentage values from the impact rig. kJ/m², standard deviation, CV, samples and confidence are computed read-only using the Excel impact formula and Settings Manager values." Foreground="#64748B" TextWrapping="Wrap"/>
+                        <TextBlock Name="NativeImpactHelpText" Text="Enter the raw needle percentage values from the impact rig. kJ/m², standard deviation, CV, samples and confidence are computed read-only from absorbed energy in J and net area in mm² using Settings Manager values." Foreground="#64748B" TextWrapping="Wrap"/>
                     </StackPanel>
                     <Border Grid.Row="1" Margin="0,0,0,10" Padding="8" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1">
                         <DockPanel>
@@ -1633,7 +1635,7 @@
                             <TextBlock Name="NativeImpactSummaryText" Text="Impact measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
                         </DockPanel>
                     </Border>
-                    <GroupBox Grid.Row="2" Header="Native Impact Measurements - editable raw needle percentage samples with computed Excel-style outputs">
+                    <GroupBox Grid.Row="2" Header="Native Impact Measurements - editable raw needle percentage samples with computed energy/area outputs">
                         <Grid>
                             <ContentControl Name="FastImpactViewHost" AutomationProperties.AutomationId="FastImpactViewHost" Margin="8"/>
                         </Grid>
@@ -1665,7 +1667,7 @@
                             <TextBlock Name="NativeStiffnessSummaryText" Text="Stiffness measurements load automatically and save automatically after edits." VerticalAlignment="Center" Foreground="#64748B"/>
                         </DockPanel>
                     </Border>
-                    <GroupBox Grid.Row="2" Header="Native Stiffness Measurements - editable revolutions/degrees with computed Excel-style outputs">
+                    <GroupBox Grid.Row="2" Header="Native Stiffness Measurements - editable revolutions/degrees with computed energy/area outputs">
                         <Grid>
                             <ContentControl Name="FastStiffnessViewHost" AutomationProperties.AutomationId="FastStiffnessViewHost" Margin="8"/>
                         </Grid>

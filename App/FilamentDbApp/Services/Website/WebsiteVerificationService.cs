@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
 namespace FilamentDbApp.Services.Website;
 
@@ -107,7 +107,8 @@ public sealed class WebsiteVerificationService
             "Fixture thermal temperature, °C",
             "3DP-THERMAL-PUBLIC-v61.0.7-r3",
             "<th>Stiffness</th><th>Thermal</th><th>Layer adhesion</th>",
-            "3DP-DIRECT-PENDULUM-v68.0.3", "DATA.izod", "DATA.charpy",
+            "3DP-DIRECT-PENDULUM-v70.0.1", "DATA.izod", "DATA.charpy",
+            "canonicalScoreRows", "scoreCoverage", "scorePolicyVersion", "isOverallComparable",
             "performanceProfileChart");
         var tensileSection = GetChartSection(templateHtml, "tensileChart");
         var impactSection = GetChartSection(templateHtml, "impactChart");

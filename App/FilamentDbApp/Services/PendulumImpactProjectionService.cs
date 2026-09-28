@@ -3,13 +3,13 @@ using FilamentDbApp.Services.Calculations;
 
 namespace FilamentDbApp.Services;
 
-/// <summary>Direct instrument results and method-specific comparison references for a canonical material cohort.</summary>
+/// <summary>Direct instrument results and fixed versioned method references; material selection never changes the score scale.</summary>
 public static class PendulumImpactProjectionService
 {
     public static IReadOnlyDictionary<string, PendulumMaterialProjection> Build(
         IEnumerable<PendulumImpactRunRecord> runs,
         IEnumerable<PendulumImpactSpecimenRecord> specimens,
-        IEnumerable<string> materialIds)
+        IEnumerable<string> materialIds, ImpactScoreReferencePolicy? referencePolicy = null)
     {
         var ids = materialIds.Where(id => !string.IsNullOrWhiteSpace(id)).Select(id => id.Trim())
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -19,10 +19,9 @@ public static class PendulumImpactProjectionService
                 PendulumImpactService.Summarize(run, specimenLookup[run.RunId]), null, run.Date)))
             .Where(row => PendulumImpactService.Methods.Contains(row.Method))
             .ToArray();
-        double? Maximum(string method) => results.Where(row => row.Method == method && row.Result.HasResults)
-            .Select(row => row.Result.MeanKjM2).DefaultIfEmpty(null).Max();
-        var izodMaximum = Maximum("Izod");
-        var charpyMaximum = Maximum("Charpy");
+        var policy = referencePolicy ?? ImpactScoreReferencePolicy.Current;
+        var izodMaximum = policy.ReferenceFor("Izod");
+        var charpyMaximum = policy.ReferenceFor("Charpy");
         var grouped = results.ToLookup(row => row.Id, StringComparer.OrdinalIgnoreCase);
         return ids.ToDictionary(id => id, id =>
         {
@@ -30,7 +29,7 @@ public static class PendulumImpactProjectionService
             {
                 // Persistence guarantees one direct row per material/method. Never merge duplicate historical runs.
                 var matches = grouped[id].Where(row => row.Method == method).ToArray();
-                return matches.Length == 1 ? matches[0].Result with { ReferenceMaximumKjM2 = maximum } : null;
+                return matches.Length == 1 ? matches[0].Result with { ReferenceMaximumKjM2 = maximum, ReferencePolicyVersion = policy.Version } : null;
             }
             return new PendulumMaterialProjection(Method("Izod", izodMaximum), Method("Charpy", charpyMaximum));
         }, StringComparer.OrdinalIgnoreCase);

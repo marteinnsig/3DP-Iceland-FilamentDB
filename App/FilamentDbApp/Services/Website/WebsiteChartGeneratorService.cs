@@ -20,8 +20,6 @@ public sealed class WebsiteChartGeneratorService
     public WebsiteChartPayload BuildPayload(IEnumerable<WebsiteChartMaterialInput> materials)
     {
         var source = materials.ToList();
-        var izodMaximum = source.Select(x => x.Summary.Izod?.MeanKjM2).Where(x => x.HasValue).DefaultIfEmpty().Max();
-        var charpyMaximum = source.Select(x => x.Summary.Charpy?.MeanKjM2).Where(x => x.HasValue).DefaultIfEmpty().Max();
         var izodRows = new List<Dictionary<string, object?>>();
         var charpyRows = new List<Dictionary<string, object?>>();
         var tensileRows = new List<Dictionary<string, object?>>();
@@ -33,12 +31,25 @@ public sealed class WebsiteChartGeneratorService
         {
             var common = new Dictionary<string, object?>(material.CommonFields);
             var summary = material.Summary;
+            var profile = new EngineeringScoringService().BuildProfile(summary, FiniteCommonNumber(common, "thermalResultTemperatureC"));
             common["izodMeanKjM2"] = summary.Izod?.MeanKjM2;
             common["charpyMeanKjM2"] = summary.Charpy?.MeanKjM2;
-            common["izodScore"] = ScopedScore(summary.Izod?.MeanKjM2, izodMaximum);
-            common["charpyScore"] = ScopedScore(summary.Charpy?.MeanKjM2, charpyMaximum);
-            izodRows.Add(BuildPendulumRow(common, summary.Izod, izodMaximum));
-            charpyRows.Add(BuildPendulumRow(common, summary.Charpy, charpyMaximum));
+            common["izodScore"] = profile.IzodScore;
+            common["charpyScore"] = profile.CharpyScore;
+            common["tensileScore"] = profile.TensileScore;
+            common["impactScore"] = profile.ImpactScore;
+            common["legacyImpactRadarPercent"] = profile.LegacyImpactRadarPercent;
+            common["legacyImpactRadarSource"] = profile.LegacyImpactRadarSource;
+            common["impactFamilyScore"] = profile.ImpactFamilyScore;
+            common["stiffnessScore"] = profile.StiffnessScore;
+            common["consistencyScore"] = profile.ConsistencyScore;
+            common["layerAdhesionScore"] = profile.LayerAdhesionScore;
+            common["overallScore"] = profile.OverallScore;
+            common["scoreCoverage"] = profile.CoverageSummary;
+            common["isOverallComparable"] = profile.IsOverallComparable;
+            common["scorePolicyVersion"] = profile.ScorePolicyVersion;
+            izodRows.Add(BuildPendulumRow(common, summary.Izod, profile.IzodScore));
+            charpyRows.Add(BuildPendulumRow(common, summary.Charpy, profile.CharpyScore));
 
             tensileRows.Add(new Dictionary<string, object?>(common)
             {
@@ -82,11 +93,8 @@ public sealed class WebsiteChartGeneratorService
         return new WebsiteChartPayload(tensileRows, impactRows, stiffnessRows, thermalRows) { Izod = izodRows, Charpy = charpyRows };
     }
 
-    private static double? ScopedScore(double? mean, double? maximum) =>
-        mean.HasValue && maximum is > 0 ? Math.Clamp(mean.Value / maximum.Value * 100, 0, 100) : null;
-
     private static Dictionary<string, object?> BuildPendulumRow(Dictionary<string, object?> common,
-        PendulumMethodResults? result, double? maximum) => new(common)
+        PendulumMethodResults? result, double? score) => new(common)
     {
         ["value"] = result?.MeanKjM2,
         ["standardDeviation"] = result?.Statistics.SampleStdDev,
@@ -94,8 +102,10 @@ public sealed class WebsiteChartGeneratorService
         ["samples"] = result?.Statistics.ValidCount ?? 0,
         ["confidence"] = result?.Statistics.Confidence,
         ["measuredDate"] = result?.Date,
-        ["score"] = ScopedScore(result?.MeanKjM2, maximum),
-        ["referenceMaximumKjM2"] = maximum
+        ["score"] = score,
+        ["referenceMaximumKjM2"] = result?.ReferenceMaximumKjM2,
+        ["referencePolicyVersion"] = result?.ReferencePolicyVersion,
+        ["scoreStatus"] = result?.ScoreStatus ?? "Not measured"
     };
 
     private static double? FiniteCommonNumber(IReadOnlyDictionary<string, object?> fields, string key)

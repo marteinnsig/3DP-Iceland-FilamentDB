@@ -1,5 +1,26 @@
 # Automated Runtime Acceptance
 
+## v70.0.0 - Method-aware Engineering Scoring
+
+Full Verification covers fixed references, filter independence, five-family Overall, explicit coverage,
+legacy isolation, valid zero and unavailable-score guidance. Website probes cover canonical score projection,
+grouping parity and radar gaps versus genuine zero. No measurement editor or schema change requires CRUD extension.
+Existing disposable smoke/reports scenarios own runtime and local export acceptance; owner data/Production/FTPS stay blocked.
+A failed reports run exposed an unidentified owned window. Runner diagnostics now retain bounded owned-window
+class/handle/control/text evidence before rejecting it; allowlists and the fail-closed unexpected-dialog rule are unchanged.
+Numeric references are deliberately deferred by the owner until more materials are measured; this is the tested default.
+Evidence and final candidate identity: Reports/V70_METHOD_SCORING_EVIDENCE.md.
+## v69.0.0 - Legacy Impact Unit Correction
+
+Extend existing Full Verification and disposable smoke/CRUD/reports ownership; no new scenario authorization is needed.
+Pure checks cover units, endpoints, mean/SD/CV parity and unchanged direct Izod/Charpy. A disposable backup/audit fixture
+checks raw/notes/date identity, invalid calibration, stale preview, unsupported unit/orientation and repeated-apply behavior.
+Tools → Legacy Impact Recalculation... has AutomationId LegacyImpactRecalculation and a standard explicit confirmation.
+No new editor or runtime window is added. Owner readability and actual repair acceptance remain manual.
+Production, FTPS, owner-database mutation, unexpected-dialog and owned-process input boundaries remain unchanged.
+Final smoke/Full Verification passes 479/479; CRUD and local reports PASS. Owner acceptance is tracked in
+Reports/V69_LEGACY_IMPACT_EVIDENCE.md. The active owner application/database are not the automated test target.
+
 ## v67.0.2 - Shore location statistics
 
 Existing disposable smoke gains a synthetic Shore regression: one five-point specimen, unequal reading counts across specimens,

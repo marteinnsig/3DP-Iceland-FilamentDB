@@ -3,6 +3,51 @@
 > ledger.
 
 
+## v70.0.1 - Legacy Impact Radar Reference
+
+Owner acceptance 2026-09-28: approved the radar and requested promotion to the accepted application. Exact tested v70.0.1 bytes (54 manifest files) are now in App/FilamentDbApp/bin/Release/net9.0-windows; DLL SHA-256 F34FB9B2C5B56A1959CD877DDDF3914ECCEFB0F10F3AE723F0C227279EEFE80F. Full Verification 481/481 and reports 2,103 artifacts PASS; no rebuild or data mutation. Numeric method references remain deliberately deferred. Application acceptance does not publish installer/update packages; those packages have not received exact-byte acceptance.
+
+
+Accepted application v70.0.1; prior v69.0.0 and v70.0.0 evidence/history is retained.
+Owner requests legacy Impact as a separate visual percentage: average available corrected Flat/Upright means / matching rig maximum × 100.
+The matching maximum is AvailableEnergyJ × 1000 / NetAreaMm2, about 56.9735 kJ/m² with accepted settings.
+This is rig capacity reference, not a modern material score. Missing orientations are omitted; invalid calibration remains unavailable.
+Partial break, bending and hammer drag can raise observed loss; near-ceiling readings are not a clean-break strength ranking.
+Overall, Consistency, modern recommendations and score coverage exclude the legacy visual reference.
+Owner continues to defer fixed Izod/Charpy score references; raw instrument values remain unchanged and visible.
+No schema, owner-data, new editing, ZIP, Production or FTPS change. Existing disposable scenarios own acceptance.
+Debug/Release, Help/documentation gates and Full Verification 481/481 PASS. Reports PASS: 2,103 artifacts with exact business-state recovery. Owner runtime acceptance received 2026-09-28. Evidence: Reports/V70_LEGACY_RADAR_EVIDENCE.md.
+Acceptance checklist: Docs/V70_LEGACY_RADAR_ACCEPTANCE.md.
+
+## v70.0.0 - Method-aware Engineering Scoring
+
+Candidate only; accepted application is v69.0.0. Owner explicitly defers numeric references until more materials are measured; runtime acceptance remains pending.
+Legacy Impact is retained as historical raw/physical evidence but excluded from modern score, Consistency and recommendations.
+Overall requires five equal families, with both Izod and Charpy scores sharing one impact family. Thermal remains independent.
+Independent versioned fixed references replace cohort maxima; no numeric references are guessed or automatically calibrated.
+Raw instrument means remain visible while method scores and Overall await approved references. Missing is never zero.
+Analytics shows score coverage and eligible/total group membership; missing radar axes render gaps.
+No schema change, owner data write, new editable control, Settings reference field, ZIP or live publication is included.
+Existing disposable smoke/report scenarios and Full Verification cover deterministic scoring and downstream contracts.
+Debug/Release, final-binary Full Verification 480/480, disposable reports 2,103 artifacts, Help and dependency gates PASS.
+Owner runtime acceptance remains pending. Evidence: Reports/V70_METHOD_SCORING_EVIDENCE.md.
+Acceptance checklist: Docs/V70_METHOD_SCORING_ACCEPTANCE.md.
+
+## v69.0.0 - Legacy Impact Unit Correction
+
+Owner runtime accepted 2026-09-28: recalculation completed and corrected values confirmed in normal Release.
+Correct legacy needle-percent conversion to angular fraction × available J × 1000 / net area mm².
+Do not divide the already normalized maximum by area again. Direct Izod/Charpy remain unchanged.
+Tools → Legacy Impact Recalculation... previews settings and asks before backup, recalculation and JSON audit.
+Raw percentages, notes, measured dates and historical exported artifacts remain intact.
+Owner confirms that the stated settings apply to historical samples. Invalid calibration stops numeric results.
+Help and disposable acceptance cover calculation parity, raw integrity and the explicit repair boundary.
+Debug/Release report zero warnings/errors; initial smoke and Full Verification pass 479/479.
+CRUD and local report-export scenarios PASS; final-binary Full Verification PASS 479/479.
+Requested candidate ZIP and runnable copy are recorded in Reports/V69_LEGACY_IMPACT_PACKAGE.md.
+Evidence: Reports/V69_LEGACY_IMPACT_EVIDENCE.md. The normal Release application was updated and accepted by the owner.
+No Production or FTPS publication is included. See Docs/V69_LEGACY_IMPACT_ACCEPTANCE.md.
+
 ## v68.0.3 - Izod and Charpy Ranking Integration
 
 Owner runtime accepted 2026-09-21; commit/push authorized. Rankings, category winners and awards expose both methods.

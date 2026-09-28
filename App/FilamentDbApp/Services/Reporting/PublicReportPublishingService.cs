@@ -21,7 +21,7 @@ public sealed class PublicReportPublishingService
     {
         "MaterialID", "MaterialName", "FlexibleResults", "PendulumResults", "Manufacturer", "ProductLine", "BaseMaterial",
         "MaterialCategory", "VariantFinish", "Reinforcement", "Color", "TestCoverage",
-        "OverallScore", "TensileScore", "ImpactScore", "IzodScore", "CharpyScore", "StiffnessScore", "ConsistencyScore",
+        "OverallScore", "TensileScore", "ImpactScore", "LegacyImpactRadarPercent", "IzodScore", "CharpyScore", "StiffnessScore", "ConsistencyScore",
         "LayerAdhesionScore", "ThermalScore", "ThermalResultTemperatureC", "ThermalMethodVersion",
         "ThermalLimitation", "BestAxis", "MsrpUsdPerKg", "ManufacturerWebsite",
         "VideoReviewUrl", "VerifiedEngineeringAxes", "EngineeringSummary", "ExecutiveReview",
@@ -85,7 +85,7 @@ public sealed class PublicReportPublishingService
         var expectedPath = $"reports/materials/{SafeMaterialIdSegment(model.MaterialId)}";
         var materialIdPathPassed = string.Equals(publication.RelativeDirectory, expectedPath, StringComparison.Ordinal) &&
                                    publication.Html.Contains(WebUtility.HtmlEncode(model.MaterialId), StringComparison.Ordinal);
-        var publicFieldAllowlistPassed = PublicFieldAllowlist.Count == 52 &&
+        var publicFieldAllowlistPassed = PublicFieldAllowlist.Count == 53 &&
                                          publication.MetadataJson.Contains("publicFieldAllowlist", StringComparison.Ordinal) &&
                                          PublicFieldAllowlist.All(field => publication.MetadataJson.Contains($"\"{field}\"", StringComparison.Ordinal));
         var publicPayload = string.Join("\n", publication.Html, publication.Manifest, publication.MetadataJson, publication.PreviewIndexHtml);
@@ -329,8 +329,8 @@ public sealed class PublicReportPublishingService
     }
     private static string RadarHtml(PublicMaterialEngineeringReportModel model)
     {
-        var labels = new[] { "Tensile", "Impact", "Izod", "Charpy", "Stiffness", "Thermal", "Layer adhesion", "Consistency" };
-        var selected = new[] { model.TensileScore, model.ImpactScore, model.IzodScore, model.CharpyScore, model.StiffnessScore, model.ThermalScore, model.LayerAdhesionScore, model.ConsistencyScore };
+        var labels = new[] { "Tensile", "Legacy Impact %", "Izod", "Charpy", "Stiffness", "Thermal", "Layer adhesion", "Consistency" };
+        var selected = new[] { model.TensileScore, Number(model.LegacyImpactRadarPercent, "%"), model.IzodScore, model.CharpyScore, model.StiffnessScore, model.ThermalScore, model.LayerAdhesionScore, model.ConsistencyScore };
         var material = ProfileScores(model.MaterialAverage);
         var manufacturer = ProfileScores(model.ManufacturerAverage);
         var grid = string.Join("", new[] { 25d, 50d, 75d, 100d }.Select(level => $"<polygon class=\"radar-grid\" points=\"{RadarPoints(Enumerable.Repeat(level, 8))}\"/>"));
@@ -341,17 +341,43 @@ public sealed class PublicReportPublishingService
             var anchor = labelPoint.X < 196 ? "end" : labelPoint.X > 224 ? "start" : "middle";
             return $"<line class=\"radar-axis\" x1=\"210\" y1=\"200\" x2=\"{SvgNumber(point.X)}\" y2=\"{SvgNumber(point.Y)}\"/><text class=\"radar-label\" x=\"{SvgNumber(labelPoint.X)}\" y=\"{SvgNumber(labelPoint.Y)}\" text-anchor=\"{anchor}\">{H(labels[index])}</text>";
         }));
-        var svg = $"<svg class=\"radar-svg\" viewBox=\"-70 0 490 410\" role=\"img\" aria-label=\"Engineering radar comparing selected material with material and manufacturer averages\">{grid}{axes}<polygon class=\"radar-poly-manufacturer\" points=\"{RadarPoints(manufacturer)}\"/><polygon class=\"radar-poly-material\" points=\"{RadarPoints(material)}\"/><polygon class=\"radar-poly-selected\" points=\"{RadarPoints(selected.Select(value => ScoreValue(value) ?? 0))}\"/></svg>";
+        var svg = $"<svg class=\"radar-svg\" viewBox=\"-70 0 490 410\" role=\"img\" aria-label=\"Engineering radar comparing selected material with material and manufacturer averages\">{grid}{axes}{RadarSeries(manufacturer, "radar-poly-manufacturer")}{RadarSeries(material, "radar-poly-material")}{RadarSeries(selected.Select(ScoreValue), "radar-poly-selected")}</svg>";
         var legend = "<div><div class=\"legend-item\"><span class=\"legend-line\" style=\"background:#0f172a\"></span><strong>Selected material</strong></div>" +
                      $"<div class=\"legend-item\"><span class=\"legend-line\" style=\"background:#2563eb\"></span><span>{Value(model.MaterialAverage.Label)}</span></div>" +
                      $"<div class=\"legend-item\"><span class=\"legend-line\" style=\"background:#0ea5e9\"></span><span>{Value(model.ManufacturerAverage.Label)}</span></div>" +
-                     "<p class=\"muted\">Izod and Charpy are independent comparative axes, normalized to the maximum measured mean in the public comparison cohort; both participate in the available-component Overall average. Missing axes are drawn at the centre and remain listed as n/a, rather than measured zero, elsewhere in the report.</p></div>";
+                     $"<p class=\"muted\">Legacy Impact radar: {Number(model.LegacyImpactRadarPercent, "% of legacy rig capacity")}. This historical visual reference is the mean corrected Flat/Upright result divided by the matching rig capacity; it is not a modern engineering score.</p>" +
+                     "<p class=\"muted\">Izod and Charpy use versioned method references and together form one equally weighted impact family. Overall requires all five families and both calibrated methods; incomplete profiles are not ranked. Legacy Impact and thermal are outside Overall. Missing axes have gaps with no marker or filled polygon; measured zero retains a centre marker.</p></div>";
         return svg + legend;
     }
-    private static IEnumerable<double> ProfileScores(PublicEngineeringScoreProfile profile) => new[]
+    private static IEnumerable<double?> ProfileScores(PublicEngineeringScoreProfile profile) => new[]
     {
-        profile.TensileScore, profile.ImpactScore, profile.IzodScore, profile.CharpyScore, profile.StiffnessScore, profile.ThermalScore, profile.LayerAdhesionScore, profile.ConsistencyScore
-    }.Select(value => ScoreValue(value) ?? 0);
+        profile.TensileScore, Number(profile.LegacyImpactRadarPercent, "%"), profile.IzodScore, profile.CharpyScore, profile.StiffnessScore, profile.ThermalScore, profile.LayerAdhesionScore, profile.ConsistencyScore
+    }.Select(ScoreValue);
+    private static string RadarSeries(IEnumerable<double?> source, string cssClass)
+    {
+        var values = source.Select(value => value.HasValue && double.IsFinite(value.Value)
+            ? (double?)Math.Clamp(value.Value, 0, 100) : null).ToArray();
+        var pieces = new List<string>();
+        if (values.All(value => value.HasValue))
+            pieces.Add($"<polygon class=\"{cssClass}\" points=\"{RadarPoints(values.Select(value => value!.Value))}\"/>");
+        else
+            for (var i = 0; i < values.Length; i++)
+            {
+                var next = (i + 1) % values.Length;
+                if (!values[i].HasValue || !values[next].HasValue) continue;
+                var a = RadarPoint(i, values[i]!.Value);
+                var b = RadarPoint(next, values[next]!.Value);
+                pieces.Add($"<line class=\"{cssClass}\" x1=\"{SvgNumber(a.X)}\" y1=\"{SvgNumber(a.Y)}\" x2=\"{SvgNumber(b.X)}\" y2=\"{SvgNumber(b.Y)}\" style=\"fill:none\"/>");
+            }
+        var color = cssClass == "radar-poly-selected" ? "#0f172a" : cssClass == "radar-poly-material" ? "#2563eb" : "#0ea5e9";
+        for (var i = 0; i < values.Length; i++)
+        {
+            if (!values[i].HasValue) continue;
+            var p = RadarPoint(i, values[i]!.Value);
+            pieces.Add($"<circle class=\"{cssClass}\" cx=\"{SvgNumber(p.X)}\" cy=\"{SvgNumber(p.Y)}\" r=\"3\" style=\"fill:{color};fill-opacity:1\"/>");
+        }
+        return string.Concat(pieces);
+    }
     private static string RadarPoints(IEnumerable<double> values) => string.Join(" ", values.Select((value, index) =>
     {
         var point = RadarPoint(index, Math.Clamp(value, 0, 100));
