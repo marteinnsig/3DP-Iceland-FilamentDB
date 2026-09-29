@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "LARGER-ANALYTICS-RADAR";
-    public const string ReleaseTitle = "Larger Analytics Radar";
+    public const string ReleaseCode = "DIRECT-IMPACT-METHODOLOGY";
+    public const string ReleaseTitle = "Izod and Charpy Methodology";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 45;
 

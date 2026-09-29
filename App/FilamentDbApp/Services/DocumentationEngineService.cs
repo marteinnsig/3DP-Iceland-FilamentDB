@@ -23,7 +23,7 @@ public sealed class DocumentationEngineService
             "3DPIceland Labs maintains a comparative database of fused-filament-fabrication materials. The purpose of the programme is to print specimens under controlled and repeatable conditions, measure their mechanical response with the same equipment and calculation path, and make the resulting comparisons understandable to makers, designers and filament manufacturers.",
             "The project is designed around consistency rather than accreditation. A result is most useful when it can be compared directly with other results produced by the same workflow. Every specimen therefore passes through a common chain: material preparation, controlled slicing, printing, specimen identification, physical testing, native calculation, verification and publication.",
             "## What the whitepaper covers",
-            "This document describes the current printing standard, specimen handling, tensile and layer-adhesion testing, pendulum impact testing, stiffness testing, flexible-material compression, Recovery, Shore A/D hardness measurements, fixture-specific Heat Deflection testing, statistical processing, confidence indicators, data governance and publication pipeline. It also documents known limitations and the conditions under which results should be interpreted.",
+            "This document describes the current printing standard, specimen handling, tensile and layer-adhesion testing, legacy pendulum impact testing, direct Izod and Charpy impact testing, stiffness testing, flexible-material compression, Recovery, Shore A/D hardness measurements, fixture-specific Heat Deflection testing, statistical processing, confidence indicators, data governance and publication pipeline. It also documents known limitations and the conditions under which results should be interpreted.",
             "## What the whitepaper does not claim",
             "The equipment is not represented as an accredited ISO or ASTM laboratory system. The specimen geometries, fixtures and calculations are optimized for internal comparison and practical repeatability. Values should not be substituted automatically for certified material-datasheet values, structural design allowables or safety-critical engineering calculations.",
             "NOTE: A published number should always be read together with print orientation, sample count, spread and methodology version."),
@@ -47,7 +47,7 @@ public sealed class DocumentationEngineService
             "## Printer and slicer control",
             "Specimens are produced on a known printer configuration using a controlled slicer profile. The objective is not to force every polymer into one temperature profile, but to keep geometry and structural settings stable while selecting sensible material-specific thermal settings.",
             "## Standard structural settings",
-            "The standard test-print framework uses a 0.4 mm nozzle for unfilled materials and may use a 0.6 mm hardened nozzle for abrasive carbon-fibre or glass-fibre materials. Typical geometry settings are 0.20 mm layer height, two perimeters, two top layers, two bottom layers and zero percent infill. Any deviation that changes the effective section or failure mechanism must be documented.",
+            "The standard test-print framework uses a 0.4 mm nozzle for unfilled materials and may use a 0.6 mm hardened nozzle for abrasive carbon-fibre or glass-fibre materials. For the historical in-house specimens, typical geometry settings are 0.20 mm layer height, two perimeters, two top layers, two bottom layers and zero percent infill. Any deviation that changes the effective section or failure mechanism must be documented. Do not apply this historical hollow-specimen recipe to the new Izod/Charpy coupons without their own recorded print settings.",
             "## Thermal settings",
             "Nozzle temperature, bed temperature, chamber conditions and cooling are selected to produce a reliable specimen for the tested material. They are held stable within a test batch. Temperature changes are not used casually to chase a better individual result after testing has begun, because that would reduce comparability.",
             "## Drying and moisture",
@@ -98,7 +98,7 @@ public sealed class DocumentationEngineService
             "The practical tensile-test demonstration is available at https://www.youtube.com/watch?v=kax8Ha_AGcQ. The video shows the homemade tester, specimen development, peak-force recording, flat/upright workflow and conversion to MPa.",
             "NOTE: Tensile Strength and Layer Adhesion Strength are separate engineering outputs. They must not be relabelled as interchangeable orientations in consumer-facing reports."),
 
-        S("impact", "6. Pendulum impact testing",
+        S("impact", "6. Legacy pendulum impact testing",
             "How the custom pendulum tester compares fracture and deformation energy across orientations.",
             "## Equipment concept",
             "The impact tester uses a pendulum hammer, a controlled starting position, a specimen fixture and an indicator that records remaining travel after impact. The difference between reference travel and post-impact travel is converted through the native calculation path into impact resistance.",
@@ -117,6 +117,43 @@ public sealed class DocumentationEngineService
             "Potential errors include inconsistent starting angle, pointer friction, specimen movement, fixture wear, off-centre impact and transcription mistakes. Repeated specimens and periodic empty/reference checks help identify drift.",
             "## Video reference",
             "The impact-test demonstration is available at https://www.youtube.com/watch?v=ibjS_tWL6sg. It documents the pendulum concept, locking fixture, prototype iterations, statistical workflow and orientation effects."),
+
+        S("izod", "6a. Izod impact testing",
+            "Direct notched-specimen readings, separate from Charpy and legacy results.",
+            "## Method and fixture",
+            "The operator identifies the instrument's Izod method with ISO 180. The specimen is clamped at one end and the pendulum strikes its free portion, unlike Charpy's supported beam. The standard name alone does not establish conformity of the complete workflow.",
+            "## Current specimen and instrument",
+            "The operator's current specimens are printed flat, 80 x 10 x 4 mm, with a 2 mm notch. The remaining geometric section is 4 x 8 mm = 32 mm2. Nominal Izod hammer energy is 2.75 J, as reported by the operator. This is equipment context, not the score reference or proof of a valid measuring range.",
+            "Print orientation is separate from how a specimen is mounted in the impact fixture. Do not infer infill, internal voids, notch radius, conditioning or instrument calibration from these dimensions. The historical hollow-specimen net area is not the new specimen's area. Record actual preparation and instrument configuration when comparing batches.",
+            "## Test and data-entry sequence",
+            "Identify the specimen, inspect the notch and clamp, and follow the instrument's Izod setup checks. Enter each displayed kJ/m2 result directly in Izod Measurements. Ten reading positions are available per material; incomplete sets retain their actual sample count. Do not convert from joules or divide by area again.",
+            "Use NB for no break; it is not zero or an assumed maximum strength. Record partial fracture, bending or hammer drag in test notes and retain the original reading. A non-clean fracture must not be silently treated as a directly comparable clean-break result.",
+            "## Standards context",
+            "ISO 180 context: https://www.iso.org/standard/84394.html. Exact edition, specimen subtype, notch preparation and calibration remain unverified; no certified conformity is claimed."),
+
+        S("charpy", "6b. Charpy impact testing",
+            "Supported-specimen impact testing with separate direct kJ/m2 results.",
+            "## Method and fixture",
+            "The operator identifies the new instrument's Charpy method with ISO 179. Charpy uses a specimen supported at both ends and struck between the supports, rather than Izod's cantilever clamp. The non-instrumented method is described by ISO 179-1. Different support, notch and loading conditions can produce different values for the same printed material.",
+            "## Current specimen and instrument",
+            "The current Charpy specimens are also printed flat, 80 x 10 x 4 mm, with a 2 mm notch and a remaining geometric section of 4 x 8 mm = 32 mm2. Nominal Charpy hammer energy is 2 J, as reported by the operator. Follow the instrument's configured span, strike direction and notch placement; those detailed settings are not inferred from this summary.",
+            "## Test and data-entry sequence",
+            "Identify and inspect each specimen, check its seating and the instrument's Charpy configuration, then record each displayed kJ/m2 result directly in Charpy Measurements. Ten reading positions are available per material. The application does not apply the legacy angle formula or a second energy/area conversion to these values.",
+            "NB means no break and is excluded from numerical mean, SD and CV rather than substituted with zero. Keep fracture observations and original readings; the nominal hammer energy does not justify reporting a no-break specimen as a measured maximum.",
+            "## Standards context and comparability",
+            "ISO 179-1: https://www.iso.org/standard/91071.html. This reference supplies method context, not confirmation that the instrument was operated to that particular edition. Exact span, notch radius, impact velocity, conditioning, print structure and calibration records remain necessary for a defensible conformity claim.",
+            "Do not convert Charpy into Izod or compare either directly with legacy Flat/Upright values as if they were the same test. Compare materials within the same method and compatible preparation, print orientation, notch and instrument conditions."),
+
+        S("direct-impact-statistics", "6c. Direct impact statistics and scores",
+            "Separate method summaries and fixed-reference comparison scores.",
+            "## Samples and variability",
+            "Each method uses its valid numerical specimen readings. Blank, invalid, excluded and NB entries do not become zero; an actual numerical zero remains a measurement. The app reports mean, sample SD, CV%, sample count and its internal confidence indicator. Confidence is not a 95% statistical confidence interval or a calibration certificate.",
+            "FORMULA: Mean = sum / n. Sample SD = sqrt(sum((value - mean)^2) / (n - 1)). CV% = sample SD / abs(mean) x 100. Sample SD needs at least two valid readings; CV is unavailable when the mean is zero.",
+            "## Fixed comparison scores",
+            "Policy impact-reference-v2-80-kjm2 uses 80 kJ/m2 = 100 points independently for Izod and Charpy. Score = mean / 80 x 100, capped at 100. Thus 40 kJ/m2 gives 50 points. A measured 120 kJ/m2 remains 120 in the raw/result data but gives 100 points on radar. This owner-approved comparison scale is not an ISO rating, material limit or hammer-energy limit; it does not change with filters or stronger peers.",
+            "Overall requires five equally weighted families: Tensile, Stiffness, Consistency, Layer Adhesion and the combined Izod/Charpy family. Both method scores are required for that impact family, whose value is their mean. Missing evidence blocks Overall instead of becoming zero. Thermal and Legacy Impact do not contribute to Overall.",
+            "Legacy Impact remains historical comparative evidence. Its radar axis shows the mean of available corrected Flat/Upright results divided by the matching rig maximum, expressed as percent. Partial fracture, bending and hammer drag can consume energy without clean fracture, especially near the rig ceiling; these values must not be calibrated to match the new tests.",
+            "The operator approved the 80 kJ/m2 references on 2026-09-29 after testing more materials. A later reference change must receive a new documented policy version; raw readings and historical published artifacts are preserved."),
 
         S("stiffness", "7. Stiffness testing",
             "Known-load deflection testing and conversion to an engineering stiffness value.",
@@ -198,7 +235,7 @@ public sealed class DocumentationEngineService
             "The coefficient of variation expresses standard deviation relative to the mean. It is useful when comparing consistency between properties with different magnitudes.",
             "FORMULA: CV percent = standard deviation / mean x 100.",
             "## Internal repeatability score",
-            "FORMULA: Consistency score = 100 - average available tensile/impact CV percent - incomplete-sample penalty.",
+            "FORMULA: Consistency score = 100 - average available Tensile Flat/Upright, Izod and Charpy CV percent - incomplete-sample penalty.",
             $"The {ConsistencyCalibrationService.ScaleName} uses these score bands: {ConsistencyCalibrationService.ScoreBandSummary}",
             "With complete ten-specimen sets, the score bands correspond approximately to average CV ranges of 0-10%, 10-15%, 15-20%, 20-30%, 30-40% and above 40%. The sample penalty means score and average CV are not always exact inverses.",
             "This is an internal comparative scale derived from the established 3DPIceland workflow. It is not an industry standard, an accredited uncertainty budget or proof of absolute instrument accuracy.",
@@ -255,7 +292,7 @@ public sealed class DocumentationEngineService
         S("limitations", "14. Known limitations and uncertainty",
             "Transparent boundaries of the equipment, samples, environment and interpretation.",
             "## Equipment class",
-            "The tensile and impact systems are custom or small-scale devices. They do not provide the calibration traceability, environmental control, extensometry or automated acquisition of an accredited laboratory. Their value comes from consistent internal comparison and documented use.",
+            "The tensile and legacy impact systems are custom or small-scale devices. The newer Izod/Charpy instrument has separate setup and calibration requirements. They do not provide the calibration traceability, environmental control, extensometry or automated acquisition of an accredited laboratory. Their value comes from consistent internal comparison and documented use.",
             "## Environmental conditions",
             "Room temperature and humidity are not equivalent to a fully controlled chamber. Moisture-sensitive polymers may change during storage, printing or testing. Results therefore represent the recorded practical conditions rather than every possible service environment.",
             "## Impact pointer and fixture sensitivity",
@@ -325,7 +362,7 @@ public sealed class DocumentationEngineService
             "Platform v41.6 - Calibrated repeatability interpretation to the internal 3DPIceland score scale and documented known impact-pointer, tensile low-force and stiffness-angle limitations. The established consistency-score formula and historic rankings were preserved.",
             "Platform v63.0.1 - Added the already governed v61 Heat Deflection fixture, endpoint, method-version and limitation contract to public methodology documentation. No measurement constant, stored result or score calculation changed.",
             "Platform v67.0.2 - Documented Recovery using unchanged TVL zero and the established Shore A/D procedure: 50 x 50 x 8 mm, 24 hours rest, five locations and 10 seconds per reading. Added within-specimen location statistics; stored raw readings and Overall are unchanged.",
-            "Platform implementation: v40.15.3 - Manufacturer Edit Transaction Safety.",
+            "Platform v70.0.4 (2026-09-29) - Added separate Izod/Charpy method descriptions, specimen geometry, direct-input statistics, fixed 80 kJ/m2 score references and historical Impact separation to website methodology and this whitepaper. No measurement values or calculations changed; the stable v1.0 download filename is retained for existing links.",
             "Future revisions must state the date, affected test, reason for change, whether constants changed and whether historic results were migrated or remain under an earlier methodology version.")
     };
 
@@ -483,7 +520,7 @@ public sealed class DocumentationEngineService
         Text(sb, "ENGINEERING WHITEPAPER", 46, 477, 12, true, 0.05, 0.39, 0.82);
         Text(sb, "Mechanical Testing Methodology", 46, 432, 27, true, 0.10, 0.12, 0.15);
         Text(sb, "Comparative testing of FFF filament specimens", 46, 397, 14, false, 0.25, 0.29, 0.33);
-        Text(sb, "Tensile strength  |  Layer adhesion  |  Impact resistance  |  Stiffness", 46, 368, 10, false, 0.25, 0.29, 0.33);
+        Text(sb, "Tensile  |  Layer adhesion  |  Izod  |  Charpy  |  Legacy Impact  |  Stiffness", 46, 368, 10, false, 0.25, 0.29, 0.33);
         Text(sb, "Version " + document.Version, 46, 158, 13, true, 0.10, 0.12, 0.15);
         Text(sb, "Platform implementation: " + BuildInfo.ShortLabel, 46, 135, 10, false, 0.25, 0.29, 0.33);
         Text(sb, "Generated " + document.GeneratedAt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture), 46, 116, 10, false, 0.25, 0.29, 0.33);
@@ -503,7 +540,7 @@ public sealed class DocumentationEngineService
             Text(sb, index.ToString("00", CultureInfo.InvariantCulture), 48, y, 9, true, 0.05, 0.39, 0.82);
             Text(sb, line.Text, 78, y, 10, false, 0.12, 0.14, 0.17);
             sb.AppendLine($"0.84 0.87 0.90 RG 48 {y - 7} m 564 {y - 7} l S");
-            y -= 31;
+            y -= 27;
             index++;
         }
         Footer(sb, pageNumber, pageCount, document);
@@ -535,7 +572,7 @@ public sealed class DocumentationEngineService
         Text(sb, "The programme separates properties, orientations, inputs and verified outputs.", 48, 680, 10, false, 0.25, 0.29, 0.33);
         var xs = new[] { 48, 152, 272, 386, 564 };
         var yTop = 638;
-        var rowH = 50;
+        var rowH = 40;
         sb.AppendLine($"0.09 0.16 0.24 rg 48 {yTop} 516 34 re f");
         var headers = new[] { "Test", "Primary input", "Orientation", "Published output" };
         for (var i = 0; i < headers.Length; i++) Text(sb, headers[i], xs[i] + 8, yTop + 12, 9, true, 1, 1, 1);
@@ -543,7 +580,9 @@ public sealed class DocumentationEngineService
         {
             new[] { "Tensile", "Peak force (N)", "Flat", "Tensile strength (MPa)" },
             new[] { "Tensile", "Peak force (N)", "Upright", "Layer adhesion (MPa)" },
-            new[] { "Impact", "Pendulum return (%)", "Flat / upright", "Impact resistance (kJ/m2)" },
+            new[] { "Legacy Impact", "Pendulum return (%)", "Flat / upright", "Historical kJ/m2" },
+            new[] { "Izod", "Direct kJ/m2", "Printed flat", "Izod mean, SD, CV" },
+            new[] { "Charpy", "Direct kJ/m2", "Printed flat", "Charpy mean, SD, CV" },
             new[] { "Stiffness", "Revolutions + angle", "Beam fixture", "Stiffness index (MPa)" },
             new[] { "Compression", "Timed force (N)", "Printed cylinder", "Stress, reduction, retention" },
             new[] { "Recovery", "TVL contact offset", "After unloaded rest", "Residual height loss (%)" },
@@ -558,7 +597,7 @@ public sealed class DocumentationEngineService
             for (var c = 0; c < 4; c++)
             {
                 foreach (var (part, k) in Wrap(rows[r][c], c == 3 ? 24 : 18).Select((v, k) => (v, k)))
-                    Text(sb, part, xs[c] + 8, y + 37 - k * 13, 9, c == 0, 0.15, 0.17, 0.20);
+                    Text(sb, part, xs[c] + 8, y + 27 - k * 13, 9, c == 0, 0.15, 0.17, 0.20);
             }
         }
         for (var i = 0; i < xs.Length; i++) sb.AppendLine($"0.72 0.76 0.80 RG {xs[i]} {yTop - rows.Length * rowH} m {xs[i]} {yTop + 34} l S");
@@ -614,7 +653,7 @@ public sealed class DocumentationEngineService
             Text(sb, ranges[i] + " score", 166 + w, y + 13, 10, true, 0.12, 0.14, 0.17);
         }
         Text(sb, "Interpretation", 48, 218, 13, true, 0.10, 0.12, 0.15);
-        Text(sb, "Score = 100 - average tensile/impact CV% - incomplete-sample penalty.", 48, 192, 10, false, 0.20, 0.23, 0.27);
+        Text(sb, "Consistency = 100 - mean Tensile/Izod/Charpy CV% - sample penalty.", 48, 192, 10, false, 0.20, 0.23, 0.27);
         Text(sb, "Read scores with sample count, fixture limits, orientation and fracture notes.", 48, 171, 10, false, 0.20, 0.23, 0.27);
         Footer(sb, pageNumber, pageCount, document);
         return sb.ToString();

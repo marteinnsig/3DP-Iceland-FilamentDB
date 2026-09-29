@@ -2,13 +2,13 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v70.0.3 — Larger Analytics Radar**
+Last runtime-accepted baseline: **v70.0.4 — Izod and Charpy Methodology**
 
-Current canonical application release: **v70.0.3 — Larger Analytics Radar**
+Current canonical application release: **v70.0.4 — Izod and Charpy Methodology**
 
-Current roadmap increment: **v70.0.3 — Larger Analytics Radar**
+Current roadmap increment: **v70.0.4 — Izod and Charpy Methodology**
 
-Current acceptance note: owner accepted the fixed 80 kJ/m² scores and enlarged radar on 2026-09-29; exact v70.0.3 bytes promoted to normal Release.
+Current acceptance note: owner accepted website methodology and whitepaper content on 2026-09-29; exact tested v70.0.4 bytes promoted to normal Release.
 
 Next note: v70.0.0 replaces cohort-relative impact scoring with versioned references and explicit coverage.
 Delivery preference: provide the runnable candidate application; no ZIP is required for v70.
@@ -63,6 +63,13 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v70 | Method-aware Impact Scoring | ★★★★★ | Complete — v70.0.1 application runtime accepted; numeric references deferred |
 
 ## Reconciliation of the older plans
+
+## Accepted — v70.0.4 Izod and Charpy Methodology
+
+- State: Complete; owner accepts updated methodology and whitepaper on 2026-09-29.
+- Scope: dedicated method descriptions, direct kJ/m² input, geometry, statistics, fixed80 references, legacy separation and documented limits.
+- Synchronize portal and native PDF, extend Verification, render/review PDF, build both configurations and run disposable reports.
+- Complete after owner content/visual acceptance; no live publication or owner-data changes in this increment.
 
 ## Accepted — v70.0.3 Larger Analytics Radar
 

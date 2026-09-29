@@ -18850,6 +18850,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         var documentationEngineProbe = new DocumentationEngineService();
         var documentationDocumentProbe = documentationEngineProbe.BuildDocument(DateTime.Now);
         var documentationPdfProbe = documentationEngineProbe.RenderPdf(documentationDocumentProbe);
+        var directImpactSections = documentationDocumentProbe.Sections.Where(section =>
+            section.Id is "izod" or "charpy" or "direct-impact-statistics").ToArray();
+        var directImpactText = string.Join("\n", directImpactSections.SelectMany(section => section.Details));
+        checks.Add(new VerificationCheck("Izod and Charpy methodology coverage", directImpactSections.Length == 3 &&
+            new[] { "ISO 180", "ISO 179", "80 x 10 x 4 mm", "32 mm2", "2.75 J", "2 J", "NB", "80 kJ/m2", "impact-reference-v2-80-kjm2", "Legacy Impact" }
+                .All(value => directImpactText.Contains(value, StringComparison.Ordinal)) &&
+            new[] { "ISO 180", "ISO 179", "Izod", "Charpy", "80", "NB" }.All(value => portalProbe.Contains(value, StringComparison.Ordinal)),
+            "Both published methodology sources document direct methods, specimen geometry, missing evidence and separate comparison scores"));
         checks.Add(new VerificationCheck("Native documentation model", documentationDocumentProbe.Sections.Count >= 7 && documentationDocumentProbe.Sections.All(section => !string.IsNullOrWhiteSpace(section.Id) && !string.IsNullOrWhiteSpace(section.Title)),
             "Methodology sections are owned by the native Documentation Engine model"));
         var documentationThermalProbe = documentationDocumentProbe.Sections.FirstOrDefault(section => section.Id == "thermal-deflection");

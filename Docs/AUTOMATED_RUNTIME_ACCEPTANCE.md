@@ -1,3 +1,7 @@
+## v70.0.4 Methodology coverage
+
+Full Verification now checks both portal and whitepaper method descriptions. Existing reports scenario covers downstream regression; it does not publish the website. Exact embedded portal is independently rendered at desktop/mobile widths, and native PDF pages visually reviewed. No new editor or scenario authorization. Evidence: Reports/V70_METHODOLOGY_EVIDENCE.md.
+
 ## v70.0.2 Fixed Izod and Charpy Score References
 
 Existing reports and Full Verification cover the fixed 80 kJ/m² default, endpoints, capping, default projection,

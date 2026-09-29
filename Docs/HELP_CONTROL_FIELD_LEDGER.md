@@ -375,3 +375,6 @@ Existing Izod/Charpy, Charts and Rankings Help now explains 80 kJ/m² references
 
 ## v70.0.3
 Analytics radar scales uniformly to double size; horizontal/vertical scrolling supports smaller windows. No new controls or Help destinations. Existing scoring Help remains accurate; stale on-screen introductory scoring text corrected. Visual readability acceptance required.
+
+## v70.0.4
+Existing Engineering Whitepaper Help documents Izod/Charpy coverage and website companion PDF regeneration. No control or AutomationId changes.

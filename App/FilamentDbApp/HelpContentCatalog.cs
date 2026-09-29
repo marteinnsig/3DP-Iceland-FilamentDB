@@ -2385,7 +2385,7 @@ internal static class HelpContentCatalog
             procedure: 50 x 50 x 8 mm specimens, 24 hours rest, four corner positions 10 mm from both edges plus the centre,
             and 10 seconds per reading. Location SD/CV describe each specimen; independent-specimen statistics remain separate.
 
-            The whitepaper explains governed methodology; it is not a database backup, Verification report or live website action.
+            The whitepaper includes separate Izod and Charpy methods, direct kJ/m² readings, specimen geometry, statistics, 80 kJ/m² comparison references and legacy Impact limitations. Website export regenerates the companion PDF alongside Methodology content. The whitepaper explains governed methodology; it is not a database backup, Verification report or live website action.
             Export writes only the selected local PDF and does not alter SQLite, measurements or publishing state.
             """,
             "whitepaper", "methodology", "PDF", "local destination"),

@@ -1,3 +1,23 @@
+## v70.0.4 - Izod and Charpy Methodology
+Owner acceptance 2026-09-29: approved the updated methodology and whitepaper and requested continuation.
+Exact v70.0.4 tested bytes promoted to App/FilamentDbApp/bin/Release/net9.0-windows without rebuilding.
+All 54 files match the accepted manifest; previous Release retained at .private/v70-methodology/pre-promotion-release.
+DLL SHA-256 B7B813A25CC8AC29B3D27040F5E486F98FE0DD6D45FDC7DEEF0BCD47581E44CA.
+Debug/Release, 482/482 Full Verification, final reports (2,103 artifacts), Help/docs and PDF/portal visual checks PASS.
+Final reports profile 20260929130815-41c0b3f6 preserves exact business state; prior failed run remains retained.
+Normal website export now regenerates the accepted portal and companion PDF together. Live website, installer/update
+packages and FTPS remain unchanged; this local application acceptance is not evidence of external publication.
+
+
+Dedicated website and native-whitepaper method coverage: direct kJ/m² readings, confirmed specimen geometry,
+operator-reported hammer energies, method distinction, valid-sample statistics, NB and fixed 80 kJ/m² scoring.
+Historical hollow specimens and legacy energy/angle results are separated from new direct instrument values.
+Standards are contextual references; unknown setup/calibration details are not invented or claimed certified.
+Whitepaper contents, test matrix and revision history updated; stable v1.0 PDF filename retained for existing links.
+A deterministic Full Verification gate covers both sources; existing disposable reports scenario owns export acceptance.
+No data/schema/calculation changes or new editor. Help describes export coverage; PDF render and owner visual review required.
+Owner accepted v70.0.4; exact build promoted to normal Release. No live website or FTPS publication performed.
+
 ## v70.0.3 - Larger Analytics Radar
 Owner runtime acceptance 2026-09-29: fixed 80 kJ/m² scores and enlarged radar accepted.
 Exact v70.0.3 build promoted to App/FilamentDbApp/bin/Release/net9.0-windows without rebuilding.
