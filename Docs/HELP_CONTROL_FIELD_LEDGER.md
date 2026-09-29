@@ -369,3 +369,9 @@ Existing editors and Settings handlers remain; no new control or AutomationId. M
 ### v67.0.9 — Flexible selection isolation
 flexible-testing.overview owns synchronized Session/specimen selection, keyboard navigation and commit-before-switch behavior.
 Existing six grids, input controls and AutomationIds retained. Reading actions reject stale/out-of-session specimen selections.
+
+## v70.0.2
+Existing Izod/Charpy, Charts and Rankings Help now explains 80 kJ/m² references, score capping and unchanged raw results. No control/AutomationId or editor changes. Coverage gate and owner readability check required.
+
+## v70.0.3
+Analytics radar scales uniformly to double size; horizontal/vertical scrolling supports smaller windows. No new controls or Help destinations. Existing scoring Help remains accurate; stale on-screen introductory scoring text corrected. Visual readability acceptance required.

@@ -2,13 +2,13 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v70.0.1 — Legacy Impact Radar Reference**
+Last runtime-accepted baseline: **v70.0.3 — Larger Analytics Radar**
 
-Current canonical application release: **v70.0.1 — Legacy Impact Radar Reference**
+Current canonical application release: **v70.0.3 — Larger Analytics Radar**
 
-Current roadmap increment: **v70.0.1 — Legacy Impact Radar Reference**
+Current roadmap increment: **v70.0.3 — Larger Analytics Radar**
 
-Current acceptance note: owner accepted the displayed radar and explicitly requested normal Release promotion on 2026-09-28; exact tested v70.0.1 bytes promoted.
+Current acceptance note: owner accepted the fixed 80 kJ/m² scores and enlarged radar on 2026-09-29; exact v70.0.3 bytes promoted to normal Release.
 
 Next note: v70.0.0 replaces cohort-relative impact scoring with versioned references and explicit coverage.
 Delivery preference: provide the runnable candidate application; no ZIP is required for v70.
@@ -63,6 +63,20 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v70 | Method-aware Impact Scoring | ★★★★★ | Complete — v70.0.1 application runtime accepted; numeric references deferred |
 
 ## Reconciliation of the older plans
+
+## Accepted — v70.0.3 Larger Analytics Radar
+
+- State: Complete; owner accepts double-sized radar on 2026-09-29.
+- Scope: display radar at 860 x 860 instead of 430 x 430; preserve geometry, score calculation and selection behavior.
+- Complete after Debug/Release, Help/layout checks and owner visual acceptance. No new automated scenario: cosmetic scaling only.
+
+## Accepted — v70.0.2 Fixed Izod and Charpy Score References
+
+- State: Complete; owner confirms 80 kJ/m² and accepts runtime scoring on 2026-09-29.
+- Scope: versioned fixed reference of 80 kJ/m² = 100 points for each method; clamp scores to 0–100, preserve raw results.
+- Apply shared policy to radar, rankings, Overall and exports; legacy rig-percent and modern weights remain unchanged.
+- Update Help and deterministic/default-policy projection checks; no new editor, schema or owner-data mutation.
+- Complete after Debug/Release, Full Verification, disposable export acceptance and owner runtime acceptance.
 
 ## Accepted — v70 Method-aware Impact Scoring
 

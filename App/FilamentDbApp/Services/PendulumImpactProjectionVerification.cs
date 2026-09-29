@@ -40,7 +40,11 @@ public static class PendulumImpactProjectionVerification
         var withStrongerPeer = PendulumImpactProjectionService.Build(runs, specimens, ["A", "Outside"], policy)["A"];
         if (singleton.Izod?.Score != a.Izod?.Score || withStrongerPeer.Izod?.Score != a.Izod?.Score ||
             singleton.Charpy?.Score != a.Charpy?.Score || withStrongerPeer.Charpy?.Score != a.Charpy?.Score) return false;
-        var unconfigured = PendulumImpactProjectionService.Build(runs, specimens, ["A"])["A"];
+        var current = PendulumImpactProjectionService.Build(runs, specimens, ["A"])["A"];
+        if (!Near(current.Izod?.Score, 100) || !Near(current.Charpy?.Score, 62.5) ||
+            current.Izod?.ReferenceMaximumKjM2 != 80 || current.Charpy?.ReferenceMaximumKjM2 != 80) return false;
+        var unconfigured = PendulumImpactProjectionService.Build(runs, specimens, ["A"],
+            new ImpactScoreReferencePolicy("test-unconfigured", null, null))["A"];
         if (unconfigured.Izod?.Score is not null || unconfigured.Charpy?.Score is not null ||
             !Near(unconfigured.Izod?.MeanKjM2, 200) || unconfigured.Izod?.Statistics.ValidCount != 2) return false;
         var noResults = new MaterialResults("Missing", null, null, null, DateTime.UnixEpoch);

@@ -1211,7 +1211,7 @@ internal static class HelpContentCatalog
             Partially tested; none gives Not tested. A valid numeric zero counts; an empty row or NB alone does not.
             Material Detail shows saved summaries above every inner tab, statistics in Mechanical and separate axes in Charts,
             Analytics and Compare. Izod and Charpy remain separate methods from legacy Impact. Their scores require independently approved
-            fixed method references; this release has no approved numeric references, so scores remain unavailable while measured kJ/m² stays visible.
+            fixed method references: 80 kJ/m² = 100 points for each method (impact-reference-v2-80-kjm2). Score = mean / 80 × 100, capped at 100; measured kJ/m² remains unchanged. These owner-approved comparison references are not ISO ratings or hammer capacities.
             Their valid CV% and sample counts contribute to Consistency. Missing method scores are not zero; legacy Impact is historical only.
 
             Settings Manager > Izod / Charpy holds Specimen length, Specimen width, Specimen thickness and Notch depth in mm.
@@ -1518,7 +1518,7 @@ internal static class HelpContentCatalog
             before whole-database interpretation.
             Overall requires all five equal families: Tensile, combined Izod/Charpy impact, Stiffness, Consistency and Layer Adhesion.
             Both approved method scores are required for the impact family; unavailable evidence blocks Overall rather than improving
-            a partial mean. This release has no approved numeric method references, so Izod/Charpy scores and Overall are pending.
+            a partial mean. Izod and Charpy each use 80 kJ/m² = 100 points; Overall is available only when all five families have evidence.
             Their measured kJ/m² remains available. Fixed references never follow filters or cohort maxima. Thermal remains independent.
             Consistency includes valid direct-method and Tensile CV/sample evidence; legacy Impact is excluded from current scoring.
             Flexible Material Testing has its own category selector and Export Flexible CSV. Visible Materials and Base Material,

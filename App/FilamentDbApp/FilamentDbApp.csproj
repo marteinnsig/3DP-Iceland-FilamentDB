@@ -8,10 +8,10 @@
     <ApplicationIcon>Assets\3dp-iceland-labs-icon.ico</ApplicationIcon>
     <AssemblyName>3DPIcelandFilamentDB</AssemblyName>
     <RootNamespace>FilamentDbApp</RootNamespace>
-    <Version>70.0.1</Version>
-    <AssemblyVersion>70.0.1.0</AssemblyVersion>
-    <FileVersion>70.0.1.0</FileVersion>
-    <InformationalVersion>70.0.1-LEGACY-IMPACT-RADAR</InformationalVersion>
+    <Version>70.0.3</Version>
+    <AssemblyVersion>70.0.3.0</AssemblyVersion>
+    <FileVersion>70.0.3.0</FileVersion>
+    <InformationalVersion>70.0.3-LARGER-ANALYTICS-RADAR</InformationalVersion>
     <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <Copyright>Copyright © 2026 Marteinn Sigurðsson / 3DPIceland Labs</Copyright>
   </PropertyGroup>

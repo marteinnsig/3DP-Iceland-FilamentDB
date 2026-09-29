@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "LEGACY-IMPACT-RADAR";
-    public const string ReleaseTitle = "Legacy Impact Radar Reference";
+    public const string ReleaseCode = "LARGER-ANALYTICS-RADAR";
+    public const string ReleaseTitle = "Larger Analytics Radar";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 45;
 

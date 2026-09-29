@@ -4,16 +4,16 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v70.0.1 — Legacy Impact Radar Reference
+- **Current runtime-accepted release:** v70.0.3 — Larger Analytics Radar
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v70.0.1 accepted; gather additional Izod/Charpy measurements before selecting fixed score references.
+- **Current development focus:** v70.0.3 accepted: enlarged radar and fixed 80 kJ/m² Izod/Charpy score references.
 - **Windows downloads:** [Installer](https://www.iskort.is/3dp/downloads/3DPIceland-Setup-x64.exe)
   | [Portable ZIP](https://www.iskort.is/3dp/downloads/3DPIceland-Portable-x64.zip)
 
 Izod and Charpy each show automatic material rows with ten direct kJ/m² readings and sample statistics.
 Legacy Impact uses the accepted energy/net-area correction and remains historical reference evidence. The accepted scoring implementation
 keeps raw values visible, shows legacy Impact as a separate percentage of its rig ceiling, excludes it from modern Overall,
-and waits for approved fixed Izod/Charpy references. The visual rig reference is not a standardized material score.
+and uses the owner-approved fixed 80 kJ/m² reference for each Izod/Charpy score. The visual rig reference is not a standardized material score.
 It makes no ISO certification claim. Prior v67 input follow-ups retain their recorded acceptance/deferral state.
 See [current scope and tests](Docs/V70_LEGACY_RADAR_ACCEPTANCE.md).
 - **Manufacturer enquiries and material submissions:** [iskort@iskort.is](mailto:iskort@iskort.is)

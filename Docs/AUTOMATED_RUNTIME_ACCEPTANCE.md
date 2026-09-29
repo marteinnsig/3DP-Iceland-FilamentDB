@@ -1,3 +1,10 @@
+## v70.0.2 Fixed Izod and Charpy Score References
+
+Existing reports and Full Verification cover the fixed 80 kJ/m² default, endpoints, capping, default projection,
+missing evidence and unchanged legacy exclusion. No editor or AutomationId changes require a new scenario.
+Exact candidate probe also verifies default-policy direct projection into website score/reference/version payload.
+Evidence: Reports/V70_FIXED_REFERENCES_EVIDENCE.md; owner checklist: Docs/V70_FIXED_REFERENCES_ACCEPTANCE.md.
+
 # Automated Runtime Acceptance
 
 ## v70.0.0 - Method-aware Engineering Scoring

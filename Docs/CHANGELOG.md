@@ -1,3 +1,33 @@
+## v70.0.3 - Larger Analytics Radar
+Owner runtime acceptance 2026-09-29: fixed 80 kJ/m² scores and enlarged radar accepted.
+Exact v70.0.3 build promoted to App/FilamentDbApp/bin/Release/net9.0-windows without rebuilding.
+All 54 target files match the accepted manifest; prior Release files backed up in .private/v70-large-radar/pre-promotion-release.
+DLL SHA-256: 0D5C7B37488BD6124E3D4D31B63191FAD1562CBA2826105500E824D0CFEDA6C8.
+Debug/Release and Help/documentation gates PASS. v70.0.2 Full Verification 481/481 and reports PASS remain
+calculation evidence; v70.0.3 cosmetic scaling is owner visually accepted, not claimed as a fresh Full Verification run.
+No owner-data mutation or external publication. Installer/update packages remain outside this local promotion.
+
+
+Owner accepted the v70.0.2 score display and requests a radar twice as wide and high.
+Analytics now scales the existing 430 x 430 canvas uniformly to 860 x 860, including labels and markers.
+The radar column is 900 wide; scrolling keeps the larger content accessible on smaller windows.
+Corrected a stale Analytics introduction to the already-approved fixed 80 kJ/m² / five-family scoring contract.
+No scoring, data-entry or persistence changes. Existing AutomationIds and underlying canvas coordinates remain intact.
+Cosmetic scaling needs owner visual acceptance, not a new automated scenario. Existing v70.0.2 Full Verification
+481/481 and reports PASS remain calculation evidence; final Debug/Release and Help/docs gates apply here.
+Normal Release is now the owner-accepted v70.0.3.
+
+## v70.0.2 - Fixed Izod and Charpy Score References
+
+Owner confirms 80 kJ/m² (not kJ/mm²) for 100 points in both methods, 2026-09-29.
+Policy impact-reference-v2-80-kjm2 scores mean / 80 * 100, clamped 0–100. Raw means above 80 stay unchanged.
+Shared projection supplies radar, rankings, Overall and exports. Legacy reference and five-family weighting are unchanged.
+Missing measurements remain missing; complete five-family evidence is still required for Overall.
+No schema, database recalculation or editor change. Existing disposable reports and Full Verification own acceptance.
+Tests cover zero, 3.218 -> 4.0225, 40 -> 50, 80 -> 100, above-reference capping and default projection.
+Help explains the owner-approved comparison scale. References can change later under a new policy version.
+Debug/Release and Full Verification 481/481 PASS. Reports PASS (2,103 artifacts, exact business-state recovery); owner runtime acceptance pending; v70.0.1 remains the accepted normal Release. Evidence: Reports/V70_FIXED_REFERENCES_EVIDENCE.md.
+
 > Canonical role: chronological implementation and acceptance record.
 > `RELEASES.md` is the curated release ledger; this file retains detailed
 > implementation history.

@@ -1,3 +1,25 @@
+## v70.0.3 - Larger Analytics Radar
+
+Owner accepted the v70.0.2 score display and requests a radar twice as wide and high.
+Analytics now scales the existing 430 x 430 canvas uniformly to 860 x 860, including labels and markers.
+The radar column is 900 wide; scrolling keeps the larger content accessible on smaller windows.
+Corrected a stale Analytics introduction to the already-approved fixed 80 kJ/m² / five-family scoring contract.
+No scoring, data-entry or persistence changes. Existing AutomationIds and underlying canvas coordinates remain intact.
+Cosmetic scaling needs owner visual acceptance, not a new automated scenario. Existing v70.0.2 Full Verification
+481/481 and reports PASS remain calculation evidence; final Debug/Release and Help/docs gates apply here.
+Normal Release remains v70.0.1 pending visual acceptance/promotion of this candidate.
+
+## v70.0.2 - Fixed Izod and Charpy Score References
+
+Owner confirms 80 kJ/m² (not kJ/mm²) for 100 points in both methods, 2026-09-29.
+Policy impact-reference-v2-80-kjm2 scores mean / 80 * 100, clamped 0–100. Raw means above 80 stay unchanged.
+Shared projection supplies radar, rankings, Overall and exports. Legacy reference and five-family weighting are unchanged.
+Missing measurements remain missing; complete five-family evidence is still required for Overall.
+No schema, database recalculation or editor change. Existing disposable reports and Full Verification own acceptance.
+Tests cover zero, 3.218 -> 4.0225, 40 -> 50, 80 -> 100, above-reference capping and default projection.
+Help explains the owner-approved comparison scale. References can change later under a new policy version.
+Debug/Release and Full Verification 481/481 PASS. Reports PASS (2,103 artifacts, exact business-state recovery); owner runtime acceptance pending; v70.0.1 remains the accepted normal Release. Evidence: Reports/V70_FIXED_REFERENCES_EVIDENCE.md.
+
 
 Owner acceptance 2026-09-28: approved the radar and requested promotion to the accepted application. Exact tested v70.0.1 bytes (54 manifest files) are now in App/FilamentDbApp/bin/Release/net9.0-windows; DLL SHA-256 F34FB9B2C5B56A1959CD877DDDF3914ECCEFB0F10F3AE723F0C227279EEFE80F. Full Verification 481/481 and reports 2,103 artifacts PASS; no rebuild or data mutation. Numeric method references remain deliberately deferred. Application acceptance does not publish installer/update packages; those packages have not received exact-byte acceptance.
 
@@ -4058,3 +4080,13 @@ Profile 20260921145941-3074cf92; old appended-column layout, preserved widths an
 
 2026-09-21 owner closure: v68.0.3 application accepted; v68.0.2 display follow-up accepted; commit/push authorized.
 Accepted Release DLL remains 52201B4B0341DF8A014A830E7A168B69610B50D1984D6BF6EE226215356EEE4D.
+
+v70.0.3 final Debug/Release PASS (zero warnings/errors); Help and documentation gates PASS. Candidate DLL 0D5C7B37488BD6124E3D4D31B63191FAD1562CBA2826105500E824D0CFEDA6C8. Checklist: Docs/V70_LARGER_RADAR_ACCEPTANCE.md. Cosmetic-only scaling; previous calculation/report evidence retained, not relabeled as a fresh runtime run.
+
+Owner runtime acceptance 2026-09-29: fixed 80 kJ/m² scores and enlarged radar accepted.
+Exact v70.0.3 build promoted to App/FilamentDbApp/bin/Release/net9.0-windows without rebuilding.
+All 54 target files match the accepted manifest; prior Release files backed up in .private/v70-large-radar/pre-promotion-release.
+DLL SHA-256: 0D5C7B37488BD6124E3D4D31B63191FAD1562CBA2826105500E824D0CFEDA6C8.
+Debug/Release and Help/documentation gates PASS. v70.0.2 Full Verification 481/481 and reports PASS remain
+calculation evidence; v70.0.3 cosmetic scaling is owner visually accepted, not claimed as a fresh Full Verification run.
+No owner-data mutation or external publication. Installer/update packages remain outside this local promotion.

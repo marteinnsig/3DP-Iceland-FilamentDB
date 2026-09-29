@@ -25,10 +25,17 @@ public static class ImpactScorePolicyVerification
         }
         if (new ImpactScoreReferencePolicy(" ", 200, 100).ReferenceFor("Izod") is not null ||
             policy.ReferenceFor("Unknown") is not null ||
-            ImpactScoreReferencePolicy.Current.ReferenceFor("Izod") is not null ||
-            ImpactScoreReferencePolicy.Current.ReferenceFor("Charpy") is not null) return false;
-        var unconfigured = izod with { ReferenceMaximumKjM2 = ImpactScoreReferencePolicy.Current.ReferenceFor("Izod"),
-            ReferencePolicyVersion = ImpactScoreReferencePolicy.Current.Version };
+            ImpactScoreReferencePolicy.Current.ReferenceFor("Izod") != 80 ||
+            ImpactScoreReferencePolicy.Current.ReferenceFor("Charpy") != 80) return false;
+        foreach (var method in new[] { "Izod", "Charpy" })
+        foreach (var sample in new[] { (Mean: 0d, Score: 0d), (Mean: 3.218, Score: 4.0225), (Mean: 40d, Score: 50d), (Mean: 80d, Score: 100d), (Mean: 120d, Score: 100d) })
+        {
+            var current = Method(sample.Mean, method) with
+            { ReferenceMaximumKjM2 = ImpactScoreReferencePolicy.Current.ReferenceFor(method), ReferencePolicyVersion = ImpactScoreReferencePolicy.Current.Version };
+            if (!Near(current.Score, sample.Score) || current.MeanKjM2 != sample.Mean) return false;
+        }
+        var unconfigured = izod with { ReferenceMaximumKjM2 = null,
+            ReferencePolicyVersion = "test-unconfigured" };
         if (!unconfigured.HasResults || unconfigured.MeanKjM2 != 100 || unconfigured.Score is not null ||
             unconfigured.Statistics.ValidCount != 10) return false;
 

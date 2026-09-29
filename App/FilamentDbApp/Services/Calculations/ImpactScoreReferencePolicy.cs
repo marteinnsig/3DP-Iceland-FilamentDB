@@ -4,7 +4,8 @@ namespace FilamentDbApp.Services.Calculations;
 /// Null means no approved reference exists; measured strength remains available.</summary>
 public sealed record ImpactScoreReferencePolicy(string Version, double? IzodKjM2, double? CharpyKjM2)
 {
-    public static ImpactScoreReferencePolicy Current { get; } = new("impact-reference-v1-unconfigured", null, null);
+    // Owner-approved comparison references (2026-09-29), not ISO ratings or hammer limits.
+    public static ImpactScoreReferencePolicy Current { get; } = new("impact-reference-v2-80-kjm2", 80, 80);
 
     public double? ReferenceFor(string method)
     {

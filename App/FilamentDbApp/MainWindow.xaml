@@ -800,10 +800,10 @@
                         </TabItem>
 
 <TabItem Header="Analytics" AutomationProperties.AutomationId="MaterialDetailAnalyticsTab">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                                 <StackPanel Margin="14">
                                     <TextBlock Text="Analytics &amp; Radar Framework" FontSize="20" FontWeight="SemiBold" />
-                                    <TextBlock Text="Eight decision axes include independent Izod and Charpy results normalized against each method's active-material maximum. Thermal uses the fixed 200 °C reference. Overall averages the available seven components, including Izod and Charpy." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,14" />
+                                    <TextBlock Text="Izod and Charpy each use 80 kJ/m² = 100 points. Legacy Impact shows percent of rig capacity and is excluded from Overall. Overall requires all five equal score families, including both impact methods. Thermal uses the fixed 200 °C reference." Foreground="#64748B" TextWrapping="Wrap" Margin="0,4,0,14" />
 
                                     <Border Padding="12" CornerRadius="6" Background="#F8FAFC" BorderBrush="#E2E8F0" BorderThickness="1" Margin="0,0,0,14">
                                     <Grid>
@@ -829,7 +829,7 @@
                                     </Expander>
                                     <Grid Margin="0,4,0,0">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="470" />
+                                            <ColumnDefinition Width="900" />
                                             <ColumnDefinition Width="12" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
@@ -838,7 +838,9 @@
                                             <StackPanel>
                                                 <TextBlock Text="Radar preview" Foreground="#E5E7EB" FontSize="16" FontWeight="SemiBold" />
                                                 <TextBlock x:Name="AnalyticsRadarSubtitle" Text="Top visible radar profiles" Foreground="#94A3B8" Margin="0,3,0,8" TextWrapping="Wrap" />
-                                                <Canvas x:Name="AnalyticsRadarCanvas" Width="430" Height="430" Background="#0B1120" />
+                                                <Viewbox Width="860" Height="860" Stretch="Uniform">
+                                                    <Canvas x:Name="AnalyticsRadarCanvas" Width="430" Height="430" Background="#0B1120" />
+                                                </Viewbox>
                                                 <ItemsControl x:Name="AnalyticsRadarLegend" Margin="0,10,0,0">
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
