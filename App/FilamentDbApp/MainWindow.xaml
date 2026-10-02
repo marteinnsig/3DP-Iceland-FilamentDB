@@ -409,6 +409,9 @@
         </Border>
 
         <StatusBar DockPanel.Dock="Bottom" Background="White" BorderBrush="{StaticResource PanelBorderBrush}" BorderThickness="1,1,1,0">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
             <StatusBarItem>
                 <TextBlock x:Name="FooterText" Text="Storage: not loaded" TextTrimming="CharacterEllipsis" />
             </StatusBarItem>
@@ -422,7 +425,9 @@
             </StatusBarItem>
             <Separator />
             <StatusBarItem>
-                <TextBlock x:Name="NativeCountStatusText" Text="Native workflow" />
+                <TextBlock x:Name="NativeCountStatusText" Text="Native workflow" TextWrapping="Wrap"
+                           AutomationProperties.AutomationId="NativeCountStatusText"
+                           ToolTip="Loaded totals, independent of filters. Materials/Tensile/Impact/Stiffness: existing row counts. Izod/Charpy: materials with recorded readings (including historical energy readings). Heat: rows with measurement data. Flexible: all test sessions, including inactive sessions. Counts do not certify valid results." />
             </StatusBarItem>
         </StatusBar>
 

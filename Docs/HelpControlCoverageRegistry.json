@@ -1,6 +1,14 @@
 {
   "Schema": "3dpiceland.help-control-coverage.v1",
   "Release": "v70.0.4",
+  "ReadOnlyStatusOwners": [
+    {
+      "EntryPoint": "NativeCountStatusText",
+      "HelpDestination": "start-here",
+      "Status": "manual-only",
+      "Scope": "Loaded measurement footer totals; tooltip explains row, measured-material and session units. Owner runtime/visual acceptance 2026-10-02."
+    }
+  ],
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
   "XamlCounts": {
     "Button": 178,

@@ -1,10 +1,14 @@
 # Help Control and Field Ledger
 
+Accepted footer coverage: start-here owns NativeCountStatusText (read-only loaded counts).
+Izod/Charpy count materials with readings, Heat counts measurement rows, Flexible counts sessions.
+No editor or persistence change; startup/save refresh paths own updates. Owner runtime/visual acceptance 2026-10-02.
+
 v70.0.1 material-detail.charts/analytics and measurements.impact own the Legacy Impact visual radar reference.
 It averages available corrected Flat/Upright means over the matching rig maximum; 100% means rig ceiling, not material score.
 Historical partial break/drag limits are explicit. Missing/calibration-invalid references remain unavailable.
 The visual reference cannot affect Overall, modern score coverage, Consistency, recommendations or ranking.
-Existing read-only chart owners remain; no new editor/window/schema or owner-data mutation. Owner visual acceptance pending.
+Existing read-only chart owners remain; no new editor/window/schema or owner-data mutation. Owner runtime/visual acceptance 2026-10-02.
 
 v70.0.0 material-detail.charts/analytics owns method-aware scoring and read-only Score coverage.
 Analytics has 430 DataGrid columns in the full XAML inventory (one added column). Legacy Impact remains historical;

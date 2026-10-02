@@ -654,6 +654,7 @@ public partial class MainWindow
             SetFlexibleStatus($"Save failed: {ex.Message}", true);
             return false;
         }
+        RefreshMeasurementFooterCounts();
         _flexibleEditDirty = false;
         _flexibleSaveTimer?.Stop();
         foreach (var recovery in _recoveryMeasurements) recovery.AcceptInputCommit();

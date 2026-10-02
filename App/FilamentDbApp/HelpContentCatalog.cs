@@ -20,6 +20,12 @@ internal static class HelpContentCatalog
             "Start-to-finish workflow",
             "The safe order for moving work from a purchase to verified engineering output.",
             """
+            Bottom status bar
+            The footer shows loaded totals independent of filters. Materials, Tensile, Impact and Stiffness retain their row counts.
+            Izod and Charpy count distinct materials with recorded readings, including historical energy readings; empty sample slots
+            do not count. Heat counts rows with measurement data. Flexible sessions counts all test sessions, including inactive ones.
+            These counts are not valid-result or individual-specimen totals. Hover over the counts for the same explanation.
+
             1. Create the Purchase Order
             Click New Order. The Draft order is saved immediately and later grid edits auto-save. Enter supplier, order number/date,
             currency, tax treatment, charges and allocation method. Choosing Currency refreshes rate and provenance when the grid

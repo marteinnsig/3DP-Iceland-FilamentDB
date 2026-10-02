@@ -1818,9 +1818,22 @@ public partial class MainWindow : Window
             lastSavedText.Text = $"Last saved: {DateTime.Now:HH:mm:ss}";
         }
 
+        RefreshMeasurementFooterCounts();
+    }
+
+    private void RefreshMeasurementFooterCounts()
+    {
         if (FindName("NativeCountStatusText") is TextBlock countText)
         {
-            countText.Text = $"Materials: {_nativeMaterialRows.Count} | Tensile: {_nativeTensileRows.Count} | Impact: {_nativeImpactRows.Count} | Stiffness: {_nativeStiffnessRows.Count}";
+            var measuredRunIds = _pendulumSpecimens
+                .Where(row => !string.IsNullOrWhiteSpace(row.StrengthKjM2Raw) || !string.IsNullOrWhiteSpace(row.EnergyJ))
+                .Select(row => row.RunId).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            int PendulumMaterials(string method) => _pendulumRuns
+                .Where(row => row.Method == method && measuredRunIds.Contains(row.RunId))
+                .Select(row => row.MaterialID).Distinct(StringComparer.OrdinalIgnoreCase).Count();
+            countText.Text = $"Materials: {_nativeMaterialRows.Count} | Tensile: {_nativeTensileRows.Count} | Impact: {_nativeImpactRows.Count} | Stiffness: {_nativeStiffnessRows.Count}" +
+                $" | Izod: {PendulumMaterials("Izod")} | Charpy: {PendulumMaterials("Charpy")}" +
+                $" | Heat: {_nativeThermalDeflectionRows.Count(row => row.HasMeasurementData())} | Flexible sessions: {_flexibleTestSessions.Count}";
         }
     }
 

@@ -170,6 +170,7 @@ public partial class MainWindow
                 var existing = _pendulumSpecimens.SingleOrDefault(item => item.SpecimenId == specimen.SpecimenId);
                 if (existing is null) _pendulumSpecimens.Add(specimen); else CopyPendulum(specimen, existing);
             }
+            RefreshMeasurementFooterCounts();
             workspace.Status.Text = "Saved to SQLite";
             QueuePendulumConsumerRefresh();
             return true;

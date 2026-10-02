@@ -64,6 +64,12 @@ This file is the canonical strategic roadmap. Completed build details belong in
 
 ## Reconciliation of the older plans
 
+## Accepted — Measurement footer coverage
+
+- Scope: add Izod, Charpy, Heat and Flexible counts and wrap the footer at narrower widths.
+- Complete 2026-10-02: Debug/Release and Help/docs checks PASS; owner confirms runtime/visual acceptance and batch closure.
+- Read-only display: no new editor, persistence contract or automated acceptance scenario required.
+
 ## Accepted — v70.0.4 Izod and Charpy Methodology
 
 - State: Complete; owner accepts updated methodology and whitepaper on 2026-09-29.

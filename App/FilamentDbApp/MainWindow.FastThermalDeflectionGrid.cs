@@ -139,6 +139,7 @@ public partial class MainWindow
 
     private void RefreshNativeThermalDeflectionSummary()
     {
+        RefreshMeasurementFooterCounts();
         if (FindName("NativeThermalDeflectionSummaryText") is not TextBlock text) return;
         var measured = _nativeThermalDeflectionRows.Count(row => row.HasMeasurementData());
         var invalid = _nativeThermalDeflectionRows.Count(row => row.ValidationSummary != "OK");

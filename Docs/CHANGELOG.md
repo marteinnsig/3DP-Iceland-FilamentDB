@@ -1,3 +1,18 @@
+## Accepted 2026-10-02 - Measurement footer coverage
+
+Added Izod/Charpy materials with readings, Heat measurement rows and Flexible sessions to the footer.
+Existing Materials/Tensile/Impact/Stiffness totals retain their meaning. Counts are independent of filters.
+Footer wraps at narrower widths; tooltip and Start here Help explain count units and historical data.
+Refresh after module saves without rebinding editors. No schema, calculation or data changes.
+Automation assessment: stable read-only count AutomationId; no new scenario for display-only coverage.
+Validation 2026-10-02: Debug and Release PASS (zero warnings/errors), Help coverage, release documentation
+and git diff --check PASS. Normal Release output updated; artifacts directory is empty.
+Read-only owner check: in the main application window, inspect the bottom status bar and resize the window;
+expect all eight totals visible and wrapping. Hover over totals for their units. In Help, open Start here
+and read Bottom status bar. Do not click Delete, Restore, Recalculate, Production or FTPS for this check.
+Owner runtime/visual acceptance 2026-10-02: confirmed the footer works and authorized closing this batch.
+Display-only change: no new Full Data Verification run required; no data, schema or calculation contract changed.
+
 ## v70.0.4 - Izod and Charpy Methodology
 Owner acceptance 2026-09-29: approved the updated methodology and whitepaper and requested continuation.
 Exact v70.0.4 tested bytes promoted to App/FilamentDbApp/bin/Release/net9.0-windows without rebuilding.
