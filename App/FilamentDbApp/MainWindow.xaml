@@ -417,7 +417,8 @@
             </StatusBarItem>
             <Separator />
             <StatusBarItem>
-                <TextBlock x:Name="AutoSaveStatusText" Text="Auto-save: ready" FontWeight="SemiBold" />
+                <TextBlock x:Name="AutoSaveStatusText" Text="Auto-save: ready" FontWeight="SemiBold"
+                           AutomationProperties.AutomationId="AutoSaveStatusText" TextWrapping="Wrap" />
             </StatusBarItem>
             <Separator />
             <StatusBarItem>

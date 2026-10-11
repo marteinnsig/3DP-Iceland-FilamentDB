@@ -4,6 +4,15 @@ Existing disposable smoke owns the new blank/zero/orientation regression; no new
 Full Data Verification 483/483 and smoke PASS; baseline/final byte and business-state hashes match.
 Evidence: Reports/MeasurementFooter/2026-10-11. Owner confirms counts correct.
 
+## Accepted Materials periodic autosave — 2026-10-11
+
+Existing authorized CRUD fixture invokes the production five-minute retry callback on its disposable MaterialID.
+Assert SQLite notes persistence, reject missing Product Line without changing SQLite, preserve failure text across
+statistics refresh and unrelated measurement success, then restore valid data and original notes via the same callback.
+The timer must be running at five-minute intervals. Existing CRUD restarts and exact final business-state recovery remain.
+No new scenario, UI action or authority. Owner confirms active-editor focus and actual five-minute scheduling.
+Disposable CRUD and Full Verification 483/483 PASS; exact business-state recovery. Evidence: Reports/MaterialAutosave/2026-10-11.
+
 ## v70.0.4 Methodology coverage
 
 Full Verification now checks both portal and whitepaper method descriptions. Existing reports scenario covers downstream regression; it does not publish the website. Exact embedded portal is independently rendered at desktop/mobile widths, and native PDF pages visually reviewed. No new editor or scenario authorization. Evidence: Reports/V70_METHODOLOGY_EVIDENCE.md.

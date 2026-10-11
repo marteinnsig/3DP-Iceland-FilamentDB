@@ -3,6 +3,12 @@
   "Release": "v70.0.4",
   "ReadOnlyStatusOwners": [
     {
+      "EntryPoint": "AutoSaveStatusText",
+      "HelpDestination": "start-here",
+      "Status": "manual-only",
+      "Scope": "450 ms committed Material edit autosave, five-minute pending Materials retry, retained failure reasons and close-time warning. Owner save/restart/retry/focus/Help acceptance 2026-10-11; CRUD and Full Verification 483/483 PASS."
+    },
+    {
       "EntryPoint": "NativeCountStatusText",
       "HelpDestination": "start-here",
       "Status": "manual-only",

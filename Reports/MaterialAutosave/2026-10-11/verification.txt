@@ -1,0 +1,822 @@
+3DPIceland Engineering Platform - Verification Center
+Version: v70.0.4 DIRECT-IMPACT-METHODOLOGY - Izod and Charpy Methodology
+Generated: 2026-10-11 18:06:56
+
+Purpose
+-------
+The Verification Center is the approval gate for the Native Calculation Engine.
+Every migrated calculation must be visible here before it is considered complete.
+
+Architecture Ownership
+----------------------
+UI: MainWindow verification surfaces only
+Calculation Engine: Services/Calculations
+Source of truth: SQLite and MaterialID-based native rows
+Validation source: Excel workbook imports/exports only
+
+Runtime Profile
+---------------
+Identity: VERIFICATION / DISPOSABLE — 20261011180607-c8ed4367
+Kind: DisposableVerification
+Profile ID: 20261011180607-c8ed4367
+Disposable: True
+Database ownership: Disposable manifest database folder
+Database path: C:\Users\maddi\AppData\Local\Temp\3DPIceland-Automation\20261011180607-c8ed4367\database\filamentdb.sqlite
+Preferences ownership: Disposable manifest preferences folder
+Output ownership: Disposable manifest output folder
+Credential ownership: Owner credentials inaccessible
+Update transaction ownership: Disposable runner/profile transaction evidence only
+Evidence ownership: Disposable manifest evidence folder
+Cleanup ownership: Runner-owned dry-run plan; hash-reviewed apply removes only obsolete unpinned PASS profiles
+Capabilities: Owner database: BLOCKED; Production/FTPS: BLOCKED; updates: BLOCKED
+Profile identity does not weaken crash, recovery, security, updater transaction or support evidence.
+
+Verification Summary
+--------------------
+Runtime profile: VERIFICATION / DISPOSABLE — 20261011180607-c8ed4367
+Runtime kind: DisposableVerification
+Runtime capabilities: Owner database: BLOCKED; Production/FTPS: BLOCKED; updates: BLOCKED
+Data profile: Full Data Verification
+Profile reason: 221 active canonical Materials require every verification check to pass
+Counts: applicable 483; pass 483; fail 0; not applicable 0; total 483
+Classification: mandatory 383; mandatory evidence 17; mandatory evidence fail 0; mandatory N/A 0; canonical-data N/A 0
+
+PASS            Mandatory               v51.1 governed runtime profile identity and capability contractVERIFICATION / DISPOSABLE — 20261011180607-c8ed4367; Owner database: BLOCKED; Production/FTPS: BLOCKED; updates: BLOCKED; database ownership: Disposable manifest database folder
+PASS            Mandatory               v51.2 seedless Clean Readiness profile contractClean Readiness is manifest-contained, seedless and blocks owner database, Production/FTPS and updates
+PASS            Mandatory               v51.3 Verification classification and mandatory evidence contractRuntime/data profiles are distinct; exact-name applicability prevents detail text from granting N/A; path, recovery and updater evidence remain mandatory
+PASS            Mandatory               v51.4 profile ownership and retirement reconciliation contractStartup, diagnostics, credentials, update history, evidence and cleanup ownership are explicit; caller-free identity/network adapters are retired
+PASS            Mandatory               Automated runtime acceptance safety foundationDisposable-path validation, hard Production/FTPS/update locks, stable UI Automation IDs and TXT/JSON evidence are present
+PASS            Mandatory               Automated report acceptance safety foundationScenario authorization, disposable output binding, stable report completion IDs and artifact evidence contracts are present
+PASS            Mandatory               Disposable CRUD acceptance safety foundationExact-ID scenario authorization, profile-only commands and stable CRUD persistence evidence IDs are present
+PASS            Mandatory               v61.0.8 disposable thermal persistence acceptance foundationExact-MaterialID thermal authorization and stable create, update, clear and absent evidence controls are present
+PASS            Mandatory               Disposable backup and recovery acceptance safety foundationScenario authorization, legacy/new backup discovery, governed Excel restore and pre/post evidence contracts are present
+PASS            Mandatory               Guarded updater acceptance safety foundationExplicit disposable updater authorization, profile forwarding, transaction rollback and health contracts are present
+PASS            Mandatory               v59.0.1 canonical workspace tab order       All 26 top-level tabs match the owner-approved canonical sequence
+PASS            Mandatory               v59.0.2 grouped Navigate menu destination contractSix ordered groups map 26 unique menu commands to 26 stable top-level tab AutomationIds
+PASS            Mandatory               v59.0.3 redundant navigation and prototype retirement contractLegacy Website/prototype handlers are absent; Navigate and embedded rendering ownership remain
+PASS            Mandatory               v59.0.1 Inventory referenced-spool save and restricted-delete contractReferenced spools update without delete/reinsert; restricted deletion rolls back atomically
+PASS            Mandatory               v60.0.1 Purchase Material parent/link transaction and rollback contractParent Material and Purchase Order link commit atomically; rejected links preserve landed cost and retry cleanly
+PASS            Mandatory               v60.0.2 Fast Materials editor ownership and deferred-refresh contractStale focus events cannot close the active editor; background canonical refresh defers only while editing
+PASS            Mandatory               v60.0.3 Material identity field-independent measurement refresh contractBlack/Yellow/Black Color-only changes reach all measurement rows by MaterialID without changing samples or notes
+PASS            Mandatory               v61.0.1 Thermal deflection schema, method and persistence contractSchema v41, immutable method v1 and manual add/update/clear persistence pass
+PASS            Mandatory               v61.0.2 Native Heat Deflection workspace, Help and persistence contract23-tab navigation, 15-column Fast grid, 25-300 °C validation, manual auto-save/clear and method Help pass
+PASS            Mandatory               v61.0.3 Supported thermal provenance and retired transition UI contractRetained workbook/manual results have canonical method, range, MaterialID and provenance; one-time import/export surfaces are retired
+PASS            Mandatory               v61.0.5 Thermal analytics projection and legacy Overall invariance contractFixed 200 °C thermal score, missing/saturation rules and independent app decision surfaces pass without changing legacy Overall
+PASS            Mandatory               v62.0.0 Inventory canonical Material-name projection contractCanonical Website Display Name is reused once; computed-name and MaterialID fallbacks plus Inventory/Low Stock reports pass
+PASS            Mandatory               v62.0.1 Materials pricing derived-field immediate refresh contractCommitted MSRP/Landed amount, currency and spool-weight dependencies refresh canonical USD and USD/kg snapshot cells immediately
+PASS            Mandatory               v62.0.2 Purchase-order line first-click and keyboard navigation contractSingle-cell first-click plus Enter/Tab/Shift+Tab/arrows use editable columns and skip locked landed-cost inputs
+PASS            Mandatory               v62.0.3 Materials Heat coverage and six-module Tested Status contractSchema v42, read-only In Heat, saved-layout placement and six-module Tested Status match canonical Heat Deflection results
+PASS            Mandatory               v64.0.7 Materials Flexible membership and Tested Status isolation contractRead-only In Flexible follows factual MaterialID-linked readings after In Heat; Tested Status requires six mechanical/thermal methods, independently of Flexible
+PASS            Mandatory               v64.0.8 Flexible edit-transaction rebind safety contractFour reading grids share close-before-ItemsSource-rebind ownership and failed edit closure remains contained
+PASS            Mandatory               v67.0.5 Flexible session template contract  Ten compression specimens plus one Shore coupon; blank results, independent n and settings snapshots
+PASS            Mandatory               v67.0.6 Flexible retired-control contract   Temporary correction handler and legacy display column removed; legacy database roundtrip remains supported
+PASS            Mandatory               v67.0.8 unused Shore template repair        Unused legacy rows receive 10 s/8 mm once; measured/custom rows and later edits are preserved
+PASS            Mandatory               v67.0.9 Flexible selection isolation        Synthetic WPF stale-current/new-selection and keyboard transitions keep same-label Shore specimens isolated
+PASS            Mandatory               v67.0.10 Fast Flexible input                Six shared-renderer input hosts; detached TVL validation preserves source and notifications; numeric navigation
+PASS            Mandatory               v68.0.3 method intelligence contract        Independent method leaders, rankings, awards, suggestions and missing-value handling
+PASS            Mandatory               v68.0.3 advisor method coverage             Seven-axis explanation, alternatives and missing evidence
+PASS            Mandatory               v68.0.2 integrated Materials and radar contractSix-method transitions, read-only flags, actual CV percent and eight-axis order
+PASS            Mandatory               v68.0.2 Izod and Charpy presentation        Eight-axis public radar, allowed cohort references and missing/zero chart values
+PASS            Mandatory               Legacy Impact auditable recalculation       {
+  "Status": "PASS",
+  "Folder": "C:\\Users\\maddi\\AppData\\Local\\Temp\\3DPIceland-LegacyImpact-5ccc694badc14296bbf1fe848befb152",
+  "SeedSha256": null,
+  "SeedNativeGroups": 0,
+  "SeedPendingGroups": 0,
+  "SeedValidReadings": 0,
+  "SeedTrace": null,
+  "BackupPath": "C:\\Users\\maddi\\AppData\\Local\\Temp\\3DPIceland-LegacyImpact-5ccc694badc14296bbf1fe848befb152\\3DPIceland-Manual-2026-10-11_180659_119.bak",
+  "BackupSha256": "6224ED7EC5237B783A842DF278660017874D63D0347BB779528F1E907CA0542C",
+  "AuditPath": "C:\\Users\\maddi\\AppData\\Local\\Temp\\3DPIceland-LegacyImpact-5ccc694badc14296bbf1fe848befb152\\3DPIceland-Manual-2026-10-11_180659_119.bak.impact-recalculation.json",
+  "UpdatedExperimentalRows": 1,
+  "PendingGroups": 1,
+  "Checks": "backup/hash, raw/notes/time identity, stale preview rejection, invalid/future calibration rejection, unknown units/orientation pending and cache protection, derived persistence, idempotent repeated apply"
+}
+PASS            Mandatory               Legacy Impact energy and area units         Percent endpoints, independent midpoint, invalid calibration, nonfinite raw validation and service parity
+PASS            Mandatory               v70.0.1 legacy radar reference              Rig-capacity percent, typed/metric parity, grouped and exported radar binding, modern scoring isolation
+PASS            Mandatory               v70 method-aware score policy               Fixed references, five equal families, coverage, zero and legacy isolation
+PASS            Mandatory               v68.0.2 Izod and Charpy projection          Direct method statistics, six-module completeness, explicit cohort isolation and missing/zero semantics
+PASS            Mandatory               v68.0.1 Izod and Charpy calculations        Direct instrument kJ/m², ten slots, sample SD/CV/confidence, blank/no-break and legacy energy isolation
+PASS            Mandatory               v68.0.1 Izod and Charpy persistence         Disposable SQLite raw graph/image roundtrip, canonical foreign keys and legacy Impact preservation
+PASS            Mandatory               v68.0.1 Izod and Charpy Fast input          Two direct shared Fast hosts, detached rejection/source preservation and editable-cell navigation
+PASS            Mandatory               v68.0.1 Izod and Charpy report projection   Separate direct-value summaries, public field allowlist and preserved legacy energy/score projections
+PASS            Mandatory               v64.0.1 standalone flexible-material testing contractSchema v44, MaterialID-linked sessions, nullable formulas, specimen/cycle raw rows, separate Shore scales and standalone UI pass
+PASS            Mandatory               v66.0.0 Compression retention surface contractRead-only compression retention, dependent notification and retired create action pass
+PASS            Mandatory               v66.0.1 Recovery TVL input contract         TVL alternate height input and dependent notifications are registered
+PASS            Mandatory               v66.0.2 Recovery hold default contract      Persisted Recovery hold setting, 30 s built-in, validation and new-row snapshots pass
+PASS            Mandatory               v66.0.3 Saved Flexible evidence and Material Detail contractCanonical evidence, compact General summary, grouped Mechanical tables and one collapsed setup per method pass
+PASS            Mandatory               v66.0.3.1 Flexible Material Detail handoff contractExact-condition comparison, unique matching peers, measured-topic video briefs and scoped guidance pass
+PASS            Mandatory               v66.0.4 Flexible report projection and PDF continuation contractSafe aggregate fields, original Overall/completeness, report templates and complete paginated PDF results pass
+PASS            Mandatory               v66.0.5 Flexible rankings and exports contractExact conditions, independent peers, ties, missing/zero, directional awards and safe scoped exports pass
+PASS            Mandatory               v67.0.4 Flexible specimen numeric ordering  Natural ascending/descending labels preserve multiple digit groups and avoid numeric overflow
+PASS            Mandatory               v66.0.6 Flexible intelligence and snapshot contractScoped measured topics, exact peers, immutable idea snapshots and safe explicit AI payload hashes pass
+PASS            Mandatory               v66.0.7 Flexible analytics and comparison contractScoped condition charts preserve native units, missing/zero, independent samples and separate manufacturers
+PASS            Mandatory               v66.0.8 Flexible research output coverage   Flexible-only planning, exact pairs, coverage gaps, calendar and playlist facts pass without Overall
+PASS            Mandatory               v67.0.1 Horizontal website presentation contractFour vertical renderers replaced once; source data/helpers preserved; unsupported template fails closed
+PASS            Mandatory               v67.0.0 Flexible website public chart projectionSafe scope, native means, SD/CV fidelity, missing/zero, no N/min/max/private metadata and embedded page pass
+PASS            Mandatory               v64.0.2 configurable flexible-specimen defaults contractThree positive SQLite-canonical geometry defaults exist, compression defaults are 9 x 10 mm with separate Shore thickness, and snapshots remain editable
+PASS            Mandatory               v64.0.5 flexible-grid direct editing and displacement default contractPrepared points snapshot 2 mm; direct editing and immediate canonical/visible-row deletion pass
+PASS            Mandatory               v64.0.6 flexible cell-entry and keyboard-navigation contractFlexible cell-mode grids preserve editor focus without row rebinding, expose shared Tab/Shift+Tab/arrow routing, and keep Compression Force N editable
+PASS            Mandatory               v64.0.3 TPU Compression Method v1.0 contractAccepted 9 x 10 mm method, 10 s / primary 30 s readings, corrected ten-specimen statistics and non-standard public wording pass
+PASS            Mandatory               v64.0.4 pending compression-row validation contractBlank prepared 10 s / 30 s rows are valid; measured reached rows require displacement and force-limited rows remain explicit
+PASS            Mandatory               v59.0.9 Inventory restricted-delete recovery coordination contractCollection-change saves and canonical reloads have distinct guarded phases
+PASS            Mandatory               v59.0.10 selected-Material Usage history cleanup contractScoped chain deletion preserves other Materials, spools and remaining weight; default-No UI is present
+PASS            Mandatory               Canonical material projection               221 visible and 221 active unique MaterialIDs come from the native SQLite-backed Materials view; legacy tab absent
+PASS            Mandatory               v54 Materials OR-within AND-between filter contractOR-within, AND-between, search, archived, unlinked and Clear contracts pass
+PASS            Mandatory               v54 Materials filter persistence compatibilityMaterial filter state round-trip and legacy empty-default contracts pass
+PASS            Mandatory               v54 canonical visible MaterialID snapshot parity221 exact visible MaterialID(s), stable SHA-256 9B68121538A4
+PASS            Mandatory               v54 Materials multi-select stable control contractSix no-modifier facet surfaces and Materials search expose stable AutomationIds
+PASS            Mandatory               v54 website and public publication scope isolation221 website candidate(s) and 221 opted-in public report ID(s) remain filter-independent
+PASS            Mandatory               Local AI Assistant scope clarity            221 canonical visible row(s), read-only collection preview and explicit Create/Update state are exposed
+PASS            Mandatory               Optional AI provider foundation             Disposable runtime resolves the deterministic fake provider, uses no network and cannot access owner credentials
+PASS            Mandatory               OpenAI read-only pilot contract             Exact store=false/no-tools payload preview, allowlisted thermal fields, privacy exclusions, cancellation and unknown-MaterialID rejection pass
+PASS            Mandatory               OpenAI deterministic transport and operational evidence contractScripted no-network success, safe API error, timeout, parser failures, 40-row limit, evidence allowlist and preview-save block pass
+PASS            Mandatory               AI collection cancel-state honesty          Cancelled update reports persisted membership separately and discards the current-filter proposal
+PASS            Mandatory               Stable AI coverage identity                 CollectionID/MaterialID lookup wins; one unique exact legacy match binds and unmatched legacy remains unchanged
+PASS            Mandatory               Base material printing settings foundation  Schema v34; 18 SQLite-canonical base-material identities and baselines; per-MaterialID printing columns absent
+PASS            Mandatory               Printing settings public allowlist boundary Base-material printing settings remain internal until explicit runtime-approved public allowlisting
+PASS            Mandatory               Release identity alignment                  v70.0.4 DIRECT-IMPACT-METHODOLOGY Izod and Charpy Methodology; assembly 70.0.4.0; informational 70.0.4-DIRECT-IMPACT-METHODOLOGY
+PASS            Mandatory               Public HTML malicious-input encoding        HTML-significant public text is encoded and javascript-scheme links are not rendered
+PASS            Mandatory               Public report stable MaterialID routing     Static reports/materials/MaterialID route carries canonical HTML, companion PDF and metadata links
+PASS            Mandatory               Public report field allowlist               53 explicit public fields; operational and sensitive fields excluded
+PASS            Mandatory               Public report methodology contract          Public report links to platform methodology and engineering whitepaper with measurement limitations
+PASS            Mandatory               Public report engineering content           Public report carries governed interpretation, strengths, limitations, trade-offs, applications and peer context
+PASS            Mandatory               Public report radar layout                  Radar coordinates are locale-independent and the SVG viewport preserves full axis labels
+PASS            Mandatory               Public report JPEG branding                 Canonical public HTML/PDF contract uses assets/3dp-iceland-labs-logo-pdf.jpg
+PASS            Mandatory               Public report local preview UI              Reports tab builds local-only allowlisted Material Engineering HTML/PDF packages for every opted-in MaterialID
+PASS            Mandatory               v67.0.0 Public comparison missing-score contractFlexible-only and partial-score comparisons pass; zero remains measured and missing required charts fail
+PASS            Mandatory               Public Comparison Report route and allowlistStable reports/comparisons/material-family-pla route; 27 explicit fields; local preview only
+PASS            Mandatory               Public Manufacturer Report route and allowlistStable reports/manufacturers/verification-manufacturer route; 38 explicit fields; public-only portfolio context
+PASS            Mandatory               Public Test Session detail approval boundaryAggregate traceability is public; raw inputs and approved notes require the separate SQLite-backed detail approval
+PASS            Mandatory               Public Printing Recommendation BaseMaterialId guidanceLinked base-material values, explicit units, partial Not recorded fallback, escaped references, manifest and metadata allowlist pass
+PASS            Mandatory               Public Material Summary route, parity and allowlistStable reports/material-summary route; full REPORT-110 public scope and 29 allowlisted fields
+PASS            Mandatory               Public Engineering Report Package catalog contractAll six public report types have safe stable routes in one canonical index, manifest and JSON catalog
+PASS            Mandatory               Public report website dark theme and print separationAll six report types and the portal share one screen-only dark theme, the engineering radar has dark-screen contrast, and canonical light base styles remain available to PDF printing
+PASS            Mandatory               Public report reusable batch PDF engine     One hardened WebView2 print host can be reused across the batch; unexpected navigation, popups and permissions are blocked
+PASS            Mandatory               Public report bounded multitasking          Four bounded workers validate immutable artifact routes concurrently; WebView2 printing remains STA-safe with dynamic page readiness
+PASS            Mandatory               Public report HTML/PDF print layout parity  Comparison, Manufacturer and Material Summary preserve desktop grids in landscape PDF; per-MaterialID reports remain portrait
+PASS            Mandatory               Public report internal-content parity       Material Engineering, Comparison and Manufacturer public reports retain accepted internal engineering depth while typed allowlists remove non-public fields
+PASS            Mandatory               Explicit public report HTML routes          Website buttons use explicit /index.html HTML targets for direct local-file browsing while PDF targets remain report.pdf
+PASS            Mandatory               Canonical public material selection         Materials exposes an explicit opt-in checkbox and preserves its value through the canonical SQLite record mapping
+PASS            Mandatory               Public website report-link selection        Only opted-in MaterialIDs receive stable canonical Engineering, Recommendation, Test and Manufacturer report links in the shared website renderer
+PASS            Mandatory               Public website report portal and staging contractPreview and Production share one catalog-driven portal renderer; staging validates every linked HTML/PDF/metadata artifact
+PASS            Mandatory               v60.0.5 Engineering Reports main-site navigationShared server-rendered portfolio content, #reports history routing, stable standalone routes and no iframe/client fetch passed
+PASS            Mandatory               v60.0.6 locale-aware application date contractis-IS/en-US display and input, ISO persistence/propagation, leap-day, invalid-input and legacy Icelandic compatibility passed
+PASS            Mandatory               Automatic website public-report prerequisitesPreview, Production and the manual package action share one async missing-or-stale report ensure flow
+PASS            Mandatory               Canonical public report data freshness      A deterministic SQLite and canonical-render-projection fingerprint distinguishes current, changed and missing public report data revisions
+PASS            Mandatory               Startup performance instrumentation         40 timestamped startup phases available in System Diagnostics
+PASS            Mandatory               Startup material refresh coalescing         Bulk native Material collection replacement produced one coalesced downstream UI refresh path
+PASS            Mandatory               Deferred measurement workspace warm-up      Legacy DataGrid visual-tree warm-up is absent; Fast measurement views initialize directly
+PASS            Mandatory               v67.0.2 Flexible whitepaper methodology     Recovery contact-offset formula, Shore A/D geometry, five locations, independent n, established protocol and location statistics present
+PASS            Mandatory               v67.0.2 Shore location statistics           Per-specimen sample SD/CV, independent n, scale/time separation and safe website/report projection
+PASS            Mandatory               Explainable engineering advisor             High evidence coverage; 6/6 axes; strongest-axis evidence is deterministic
+PASS            Mandatory               Engineering advisor comparison              Compared with Advisor probe B, this recommendation leads by 4,0 points (clearest axis lead: Layer adhesion +6,0; clearest axis trade-off: Stiffness -12,0).
+PASS            Mandatory               Engineering advisor missing-data honesty    1/6 modern engineering axes available. Consistency evidence is unavailable. Legacy Impact is historical reference only. This is an advisor evidence indicator, not statistical confidence.
+PASS            Mandatory               Engineering advisor UI                      Recommendation Detail exposes evidence coverage, strongest evidence, comparison and trade-offs
+PASS            Mandatory               Governed intelligence handoff               Existing advisor, repeatability, context, positioning and alternative outputs are composed without recalculation
+PASS            Mandatory               Video Planner intelligence handoff          Canonical MaterialID, existing score axes and governed evidence travel with recommendation-created video ideas
+PASS            Mandatory               Whitepaper intelligence governance          The methodology whitepaper documents report and Video Planner calculation boundaries
+PASS            Mandatory               Repeatability methodology calibration       Whitepaper and website Methodology document the internal score scale and purpose-built equipment limitations
+PASS            Mandatory               Consistency intelligence source boundary    Consistency score 93,8/100 on the 3DPIceland internal comparative repeatability scale. 4/4 verified measurement sets provide CV; average CV 6,3% and highest Impact flat 8,0%. 4/4 sets contain at least 5 specimens.
+PASS            Mandatory               3DPIceland consistency calibration          CV 7.8% maps to 92.2/100, CV 19.4% maps to 80.6/100, and app/website labels share the internal scale
+PASS            Mandatory               Consistency interpretation                  Excellent repeatability
+PASS            Mandatory               Outlier review honesty                      Review Impact upright (42,0% CV). At least one set exceeds the internal 40% high-variation boundary. High CV is a review signal, not proof that any specimen is an outlier; values require a test-specific failure reason before exclusion.
+PASS            Mandatory               Limited repeatability evidence              1 verified measurement set available, but CV requires at least two valid specimens per set. 0/1 sets contain at least 5 specimens.
+PASS            Mandatory               Consistency intelligence UI                 Recommendation Detail exposes repeatability, CV/sample coverage and outlier review context
+PASS            Mandatory               Selected material intelligence              Displayed Material Detail takes precedence over stale grid selections and receives its own score, evidence, repeatability, outlier review and peer-position surface
+PASS            Mandatory               Report selected material binding            Selected Material Only follows the material currently displayed in Material Detail and exposes its name beside the scope selector
+PASS            Mandatory               Report verified-summary propagation         Selected Material Engineering Report carries the matching Verified Material Summary into repeatability and outlier intelligence
+PASS            Mandatory               Manufacturer-facing report presentation     Current platform version, explicit radar comparison legends and deterministic review disclosure are present
+PASS            Mandatory               Engineering context source boundary         MSRP uses Materials without landed-cost or stale-projection fallback; stock uses InventoryEngineService output; manufacturer context uses active SQLite records
+PASS            Mandatory               Recommendation price identity clarity       Recommendation MSRP identifies the exact recommended MaterialID and cannot be mistaken for the selected Materials row
+PASS            Mandatory               Canonical pricing provenance                Configured rates convert explicitly; missing/unsupported currency and missing canonical MSRP remain Not recorded without landed-cost or 1:1 fallback
+PASS            Mandatory               Governed engineering value index            Overall score/MSRP index exposes both governed inputs, comparison scope and honest missing-data reasons
+PASS            Mandatory               Usage event pure-domain validation          Required canonical MaterialID, exact inventory identity, UTC evidence, measured/slicer provenance and seconds-based duration validate without persistence
+PASS            Mandatory               Usage event reversal and replacement        Correction appends one exact reversal plus one replacement; duplicate reversal is rejected
+PASS            Mandatory               Usage event nullable projections            Read-only totals project accepted event/reversal/replacement facts while missing evidence remains Not recorded rather than zero
+PASS            Mandatory               Usage event atomic inventory delta          Exact linked spool delta is negative for usage and equal/opposite for reversal; cross-Material inventory linkage is rejected
+PASS            Mandatory               Selected material recommendation scope      Material selection synchronizes Recommendation, alternatives, hidden-gem pricing and value-index calculations to the exact canonical Base Material without fuzzy remapping
+PASS            Mandatory               Engineering cross-context interpretation    Public MSRP reference: $32.50 USD/kg. In stock; 2 spools linked; 1250 g remaining across Shelf C.
+PASS            Mandatory               Engineering cross-context UI                Recommendation Detail exposes canonical price, inventory and manufacturer context
+PASS            Mandatory               Manufacturer peer positioning               Manufacturer position: #1 of 3 for Maker A; overall 80/100 is 5 points above the 75/100 group average in the active dataset.
+PASS            Mandatory               Category peer positioning                   Category position: #2 of 3 for Engineering; overall 80/100 is 1,7 points below the 81,7/100 group average in the active dataset.
+PASS            Mandatory               Peer-position missing-data honesty          Manufacturer position is unavailable because the material has no manufacturer classification. Category position is unavailable because the material has no category classification.
+PASS            Mandatory               Manufacturer and category position UI       Selected Material Intelligence and Recommendation Detail expose manufacturer/category rank, peer count and group-average context
+PASS            Mandatory               Comparable alternatives engine              Selected material is excluded; closest alternative stays inside the active recommendation context
+PASS            Mandatory               Value hidden-gem discovery                  Comparable performance with 40% lower MSRP per kg.
+PASS            Mandatory               Specialist alternative trade-off            Gains 30,0 points in Stiffness. Gives up 12,0 points in Consistency.
+PASS            Mandatory               Recommendation alternatives UI              Recommendation Detail exposes closest, value and specialist alternatives with score, MSRP, gain and trade-off
+PASS            CanonicalDataDependent  Recommendation startup pricing hydration    Price-aware Recommendation, Video Planner and YouTube Research surfaces refreshed after canonical native material load
+PASS            Mandatory               Calculation services loaded                 StatisticsService, RatingService, ResultsService
+PASS            CanonicalDataDependent  Native material source loaded               221 native materials
+PASS            CanonicalDataDependent  MaterialID coverage                         221 / 221 rows have MaterialID
+PASS            Mandatory               Measurement row alignment                   Tensile 221, Impact 221, Stiffness 221
+PASS            Mandatory               Cross-section calculation                   6,5016 mm²
+PASS            Mandatory               Tensile native calculations                 211 rows with samples
+PASS            Mandatory               Impact constants available                  Angle 105,411°, Area 0,00004816 m²
+PASS            Mandatory               Impact native calculations                  211 rows with samples
+PASS            Mandatory               Stiffness constants available               mm/rev 1,058774, span 118,2 mm
+PASS            Mandatory               Stiffness native calculations               208 rows with samples
+PASS            CanonicalDataDependent  Material summaries built                    221 summaries from 221 materials
+PASS            CanonicalDataDependent  Complete engineering summaries              0 complete, 219 partial, 2 empty
+PASS            CanonicalDataDependent  Pricing completeness                        218 / 221 active materials complete (98.6%). Optional pricing missing: Spectrum The Filament Vivid Red PLA Hight Temp Red [MAT0224]; Spectrum Greeney Pro Real Green PLA Green [MAT0226]; Spectrum Premium Iceland Blue PETG Blue [MAT0225]
+PASS            Mandatory               Pricing normalization                       Missing weight for priced rows 0, invalid price values 0, invalid USD/kg 0
+PASS            Mandatory               Pricing metadata                            Invalid currency 0, optional checked date missing 3
+PASS            Mandatory               Inventory engine                            InventoryEngineService calculated 12 active spool rows from 221 active materials; orphaned spool rows 0
+PASS            Mandatory               Inventory status totals                     Spools 12, unopened 12, opened 0, empty 0
+PASS            Mandatory               Inventory validation                        Quantity, status and remaining-weight rules passed
+PASS            Mandatory               Inventory summary UI                        Inventory tab exposes totals, value groups and row-level validation
+PASS            Mandatory               Purchasing category architecture            Valid category lines 12, invalid categories 0, non-filament material links 0
+PASS            Mandatory               Purchase order foundation                   1 order(s), 12 line(s), orphaned lines 0, invalid material links 0
+PASS            Mandatory               Purchase inventory linkage                  Linked inventory rows 12, invalid purchase-line links 0
+PASS            Mandatory               Cost allocation strict weight validation    By weight blocks calculation when any included line has no weight
+PASS            Mandatory               Purchase-to-material pricing sync           Purchase price/MSRP, supplier metadata, storage location and landed cost sync to the linked material
+PASS            Mandatory               Inventory report generation                 Canonical Inventory Report HTML/text payload generated
+PASS            Mandatory               Purchase report generation                  Canonical Purchase Report HTML/text payload generated
+PASS            Mandatory               Supplier report generation                  Canonical Supplier Report HTML/text payload generated
+PASS            Mandatory               Low stock report generation                 Canonical Low Stock Report HTML/text payload generated
+PASS            Mandatory               Inventory verification report generation    6 purchasing reports generated from SQLite-backed data
+PASS            Mandatory               Purchasing intelligence generation          Supplier, spend, category, price-history and recommendation intelligence generated from SQLite-backed purchasing data
+PASS            Mandatory               Measured material footer counts             Footer uses shared raw-measurement predicates: blank rows excluded, numeric zero included, either orientation sufficient
+PASS            Mandatory               Daily workflow live counts                  Material header, native grid and footer counts are derived from the current SQLite-backed collections and filtered view
+PASS            Mandatory               Daily workflow entry contrast               Tensile and impact entry cells use readable dark text across yellow and green value bands
+PASS            Mandatory               Materials workflow column layout            High-use website, video and test-status columns appear directly after Color; Diameter is hidden from the daily grid
+PASS            Mandatory               Fast Materials view activation contract     Fast Materials is the only Materials grid UI; the retired DataGrid XAML is absent
+PASS            Mandatory               Experimental definition foundation          Definitions 10, active 10; generic parameter catalog is SQLite-backed
+PASS            Mandatory               Experimental MaterialID integrity           Experiment rows 1, orphaned materials 0, invalid definitions 0
+PASS            Mandatory               Experimental material manager UI            Experimental CRUD grid, filters and MaterialID selectors are available
+PASS            Mandatory               Experimental grid editability               Material, experiment, value, unit, baseline, active and notes cells use direct editable WPF bindings
+PASS            CanonicalDataDependent  Experimental add workflow safety            Add Experiment has valid MaterialID/definition defaults and does not depend on DataGrid focus or selection transactions
+PASS            Mandatory               Experimental post-add UI safety             Add and Duplicate rely on ObservableCollection display updates without forced SelectedItem, ScrollIntoView or BeginEdit callbacks
+PASS            Mandatory               Experimental ComboBox edit safety           Material, experiment and baseline choices use stable ItemsSource collections; CellEditEnding does not rebuild columns or refresh the active ListCollectionView
+PASS            Mandatory               Experimental row selection and filter safetyDelete resolves the selected/current record, and filter refresh is deferred until the DataGrid edit transaction is complete
+PASS            Mandatory               Experimental active notification            Active and Updated UTC publish property changes immediately without requiring a filter refresh
+PASS            Mandatory               Experimental test series and runs           Runs 3, baseline runs 1, multi-run series 1, orphaned series 0
+PASS            Mandatory               Experimental run CRUD integrity             RunID and SeriesID are canonical and the run manager is available
+PASS            Mandatory               Experimental workflow integrity contract    Active-only comparison, explicit inactive-history review, publication readiness and graph persistence wiring are available
+PASS            Mandatory               Experimental baseline ownership             Every Series has at most one canonical baseline Run
+PASS            Mandatory               Experimental publication confirmation decisionIncomplete publication defaults to No, explicit confirmation enables it, ready publication proceeds and hiding needs no confirmation
+PASS            Mandatory               Experimental measurement entry              Measurement rows 15, runs with measurements 3, orphaned runs 0
+PASS            Mandatory               Experimental measurement row shape          Every initialized RunID has exactly five canonical rows
+PASS            Mandatory               Experimental measurement uniqueness         MeasurementID and RunID/type/orientation keys are unique
+PASS            Mandatory               Experimental RunID data isolation           Every measurement belongs to one existing RunID
+PASS            Mandatory               Experimental input-limit integrity          Stored values satisfy Tensile 505, Impact 100, revolutions 10 and degrees 359 limits
+PASS            Mandatory               Experimental native sample capacity         Ten raw inputs are available for statistical tests; Stiffness uses revolutions and degrees for one specimen
+PASS            Mandatory               Experimental native calculation alignment   Stored averages and sample counts match fresh ResultsService calculations
+PASS            Mandatory               Experimental editor redesign                Generic measurement grid removed; measurement-specific editors expose the correct raw inputs
+PASS            Mandatory               Experimental edit transaction safety        Editors use fixed per-RunID row lists; calculations are deferred until the DataGrid edit transaction is committed
+PASS            Mandatory               Experimental results engine                 Series results table exposes native averages, CV values, baseline markers and Δ% without duplicating calculations
+PASS            Mandatory               Experimental analytics service              Best-result detection and weighted ranking are generated from native run metrics
+PASS            Mandatory               Experimental analytics baseline integrity   Analytics preserves the canonical baseline Run
+PASS            Mandatory               Experimental analytics summary UI           Results exposes baseline, best metrics, recommendation, rank and overall score
+PASS            Mandatory               Experimental engineering dashboard          Dashboard consumes canonical Experimental Results and Analytics outputs
+PASS            Mandatory               Experimental charts and visualization       Five live chart surfaces consume native Results and Analytics outputs
+PASS            Mandatory               Experimental chart analytics alignment      Combined score chart follows the canonical ExperimentalAnalyticsService ranking
+PASS            Mandatory               Experimental Impact Flat delta display      Impact Flat Δ Baseline uses its dedicated display property and deterministic percentage calculation
+PASS            Mandatory               Experimental persistence alignment          SQLite rows 1, loaded manager rows 1
+PASS            Mandatory               Experimental CRUD integrity                 All experimental records contain canonical IDs required for create, edit, duplicate and delete
+PASS            CanonicalDataDependent  Website pipeline source                     221 native MaterialID rows consume 221 verified summaries
+PASS            CanonicalDataDependent  Website chart generator                     WebsiteChartGeneratorService owns chart payload rows
+PASS            CanonicalDataDependent  Website payload coverage                    Tensile 221, Impact 221, Stiffness 221
+PASS            CanonicalDataDependent  Website radar generator                     WebsiteRadarGeneratorService owns radar payload validation and average groups
+PASS            CanonicalDataDependent  Website radar payload coverage              Selected 221, material groups 16, reinforcement groups 36
+PASS            CanonicalDataDependent  Website HTML renderer                       WebsiteHtmlRendererService owns template DATA injection and render validation
+PASS            CanonicalDataDependent  Website renderer payload                    Rows aligned, MaterialID present, chart/radar metrics and pricing fields available
+PASS            CanonicalDataDependent  Website verification suite                  WebsiteVerificationService validates HTML, DATA, JSON and publish readiness
+PASS            Mandatory               Website template import trust boundary      New imports require a bounded replaceable DATA object and explicit default-No executable-content trust confirmation
+PASS            CanonicalDataDependent  Native website template database            Active v36.0; 2 stored version(s); SHA-256 recorded
+PASS            CanonicalDataDependent  Website master template identity            Active SQLite template matches the approved v36 Pricing & Value master surface
+PASS            Mandatory               Website chart terminology contract          Tensile and Impact chart legends/tooltips use distinct chart-owned orientation labels
+PASS            CanonicalDataDependent  Website publish readiness                   READY FOR PUBLISH
+PASS            Mandatory               Experimental website publication control    Series-level Website checkbox publishes or hides experiments without deleting SQLite history
+PASS            Mandatory               Experimental website data pipeline          Published series 0, active published runs 0; hidden and archived series remain stored
+PASS            Mandatory               Experimental website payload identity       Canonical series/run IDs: 0 series, 0 runs
+PASS            Mandatory               Experimental website baseline and value safetyAt most one baseline per series; all exported chart values are finite
+PASS            Mandatory               Experimental website analytics parity       Rankings and five-metric baseline indexes consume the canonical Experimental Analytics output
+PASS            Mandatory               Experimental website chart contract         Deterministic two-run probe validates payload serialization, analytics ranking, baseline indexes and all five chart types
+PASS            Mandatory               Experimental website renderer               Renderer emits an empty canonical marker because no series are selected for publication
+PASS            Mandatory               Experimental website dashboard and charts   No series selected; chart renderer remains dormant
+PASS            Mandatory               Experimental website browser calculation boundaryBrowser JavaScript visualizes exported canonical values without owning engineering formulas
+PASS            Mandatory               Native website portal navigation            Single-file portal navigation is injected into preview and production exports
+PASS            Mandatory               Website portal page foundation              Filament Database, Pricing & Value, Flexible Testing, Experimental Lab, Manufacturers, calculator and Methodology surfaces are present
+PASS            Mandatory               Website hash navigation                     Direct hash links and browser Back/Forward routing are available
+PASS            Mandatory               Printing price calculator parity contract   The scoped calculator retains fields/formulas/quote attribution, omits route clutter and consumes no website DATA
+PASS            Mandatory               Canonical website branding contract         Canonical Labs wordmark replaces the header brand text; favicon and wrapping navigation use governed relative styling
+PASS            Mandatory               Pricing & Value portal placement            Pricing Explorer, Performance vs Price and Value Rankings live only in the dedicated #pricing page
+PASS            Mandatory               Pricing filter synchronization              Pricing tab mirrors the canonical Filament Database filter state without duplicating calculation ownership
+PASS            Mandatory               Pricing filter interaction parity           Pricing controls publish through the canonical input event and multi-select options toggle without requiring Ctrl/Cmd
+PASS            Mandatory               Pricing filter visual parity                Database and Pricing share eight top-row filters, with Reset above Search, Sort between Search and pricing, and pricing controls bottom-aligned right
+PASS            Mandatory               Database methodology summary retirement     The obsolete Database summary is removed; the governed Methodology tab remains canonical
+PASS            Mandatory               Native manufacturers portal                 Manufacturers tab is generated inside the canonical single-file website export
+PASS            Mandatory               Manufacturer outreach and submission portal Manufacturer participation, submission CTA, platform scope, methodology and whitepaper handoffs are present
+PASS            Mandatory               Manufacturer structured submission form     Company, contact, material, sample, link and independent-testing acknowledgement fields are present
+PASS            Mandatory               Manufacturer email handoff and fallback     Browser-only mailto handoff, reference ID and copy-details fallback are present without a server API
+PASS            Mandatory               Manufacturer submission Preview/Production parityPreview and Production consume the same deterministic manufacturer portal renderer
+PASS            Mandatory               Manufacturer profile website binding        Active SQLite manufacturer profiles are available to the website portal renderer
+PASS            CanonicalDataDependent  Manufacturer engineering intelligence       Verified Material Summary and EngineeringScoreProfile outputs drive manufacturer leaders, coverage and top-material summaries
+PASS            Mandatory               Methodology portal content                  Level 2 Engineering methodology sections are embedded in the single-file portal export
+PASS            Mandatory               Methodology procedure videos                Tensile, impact and stiffness procedure videos are linked from their test cards
+PASS            Mandatory               Methodology technical constants             Public technical details align with the native tensile, impact and stiffness calculation constants
+PASS            Mandatory               Methodology thermal contract                Public Heat Deflection content matches the immutable v61 fixture/result contract without a certified-standard claim
+PASS            Mandatory               Izod and Charpy methodology coverage        Both published methodology sources document direct methods, specimen geometry, missing evidence and separate comparison scores
+PASS            Mandatory               Native documentation model                  Methodology sections are owned by the native Documentation Engine model
+PASS            Mandatory               Engineering whitepaper thermal contract     Governed whitepaper source carries the same Heat Deflection fixture, endpoint, method and interpretation boundaries
+PASS            Mandatory               Engineering whitepaper TPU compression contractGoverned whitepaper source carries the accepted TPU method, corrected validation evidence and non-standard boundaries
+PASS            Mandatory               Engineering whitepaper generation           Generated 194459 PDF bytes from methodology version 1.0
+PASS            Mandatory               Methodology and whitepaper governance       Website methodology links to the whitepaper generated from the governed native documentation model
+PASS            Mandatory               SQLite-governed explicit FTPS publishing contractSQLite endpoint 3dpicelandweb@www.iskort.is:21; explicit TLS/passive mode and safety paths remain governed
+PASS            Mandatory               Catalog-driven Production publish readiness Generate Production creates an exact SHA-256 allowlist with preview routes excluded and the root index activated last
+PASS            Mandatory               Isolated website test publishing            Publish Website Test uses only /preview/ plus /index-test.html last and cannot pass the Production plan contract
+PASS            Mandatory               Manifest-driven Production backup restore   Completed Production backups carry original existence, byte and SHA-256 metadata; restore creates a recovery snapshot and preserves root-index-last ordering
+PASS            Mandatory               Host-compatible FTPS staging with bounded local multitaskingFour local workers validate governed artifacts in parallel; one runtime-proven retry-capable FTPS session performs safe remote backup/staging before the sequential activation barrier
+PASS            Mandatory               Manifest-driven incremental FTPS publishing Completed Test/Production manifests carry full route, byte and SHA-256 state; unchanged live-size-matched artifacts are skipped with safe full-publish fallback
+PASS            Mandatory               Guarded catalog-driven public-report FTPS deploymentThe exact Test or Production allowlist is backed up and fully staged before ordered activation, with size verification, entry index last and rollback coverage for replaced and newly added files
+PASS            Mandatory               v63.0.0 Website chart-scoped orientation terminologyTensile and Impact headings, legends and tooltips retain their owning terminology without cross-chart leakage
+PASS            Mandatory               Website pricing terminology mapping         Performance vs Price and Value Rankings use the public tensile terminology
+PASS            CanonicalDataDependent  Website Preview/Production renderer parity  Preview and Production differ only by their explicit output-mode header and safe reports index filename
+PASS            CanonicalDataDependent  Website portal release contract             Release identity, five portal routes and mode-aware manufacturer redirects are present
+PASS            CanonicalDataDependent  Website export package contract             Preview/Production manifests cover main HTML, manufacturer redirect, whitepaper, report portal staging and safety behavior
+PASS            CanonicalDataDependent  Reporting pipeline source                   221 native MaterialID rows consume 221 verified summaries
+PASS            CanonicalDataDependent  Reporting summary coverage                  Report rows 221, complete 0, partial 221
+PASS            CanonicalDataDependent  Report generator                            ReportGeneratorService owns report model generation
+PASS            CanonicalDataDependent  Report payload coverage                     Generated reports 221, metric sections 1051
+PASS            CanonicalDataDependent  Report model validation                     Overview + engineering summary sections present
+PASS            CanonicalDataDependent  PDF renderer                                WebView2 HTML Print Engine exclusively owns user PDF export
+PASS            CanonicalDataDependent  PDF payload validation                      PDF payload pages 430, bytes 1359094
+PASS            CanonicalDataDependent  PDF render readiness                        Canonical HTML can be printed to PDF from the report package
+PASS            CanonicalDataDependent  Certificate generator                       ReportCertificateGeneratorService owns certificate payload generation
+PASS            CanonicalDataDependent  Certificate payload validation              Certificates 221, source PDF pages 430
+PASS            CanonicalDataDependent  Certificate issue readiness                 Certificates are ready from verified report models and PDF payload
+PASS            CanonicalDataDependent  Report template service                     ReportTemplateService owns native report template payloads
+PASS            CanonicalDataDependent  Report template payload validation          Templates 6, outputs 6
+PASS            CanonicalDataDependent  Report template render readiness            Template outputs are ready for PDF renderer consumption
+PASS            CanonicalDataDependent  Report export UI                            Reports / PDF Export tab exposes native template preview/export workflow
+PASS            CanonicalDataDependent  Report export UI payload                    Template options 6, verified template payloads consumed
+PASS            CanonicalDataDependent  Report export UI readiness                  Preview and HTML print-to-PDF workflows are ready
+PASS            CanonicalDataDependent  Material engineering report                 MaterialEngineeringReportService owns production material engineering report payloads
+PASS            CanonicalDataDependent  Material engineering payload                Engineering reports 221, metric sections 1051
+PASS            CanonicalDataDependent  Material engineering render readiness       Material Engineering Report is ready for PDF renderer consumption
+PASS            CanonicalDataDependent  Material engineering intelligence handoff   Canonical report payload declares the governed Engineering Intelligence source boundary
+PASS            CanonicalDataDependent  Branded PDF renderer                        PDF output is generated by printing the canonical HTML layout
+PASS            CanonicalDataDependent  Report logo asset                           3DPIceland Labs logo is available to native PDF renderer
+PASS            Mandatory               Canonical report branding selection         Canonical HTML embeds the selected normalized PNG; package/native PDF use its stable JPEG derivative
+PASS            Mandatory               Canonical report material scope             All Visible Materials uses the filtered native Materials view and the active SQLite material total
+PASS            Mandatory               REPORT-110 Material Summary identity        Material Summary has distinct identity, scope, coverage and material content
+PASS            Mandatory               REPORT-110 native test coverage parity      Material Summary module counts match native Materials test flags and Verified Material Summary presence
+PASS            Mandatory               REPORT-120 Comparison Report identity       Comparison Report has distinct selected-anchor and all-visible comparison contracts
+PASS            Mandatory               REPORT-130 Manufacturer Report identity     Manufacturer Report has distinct selected-manufacturer portfolio and all-visible manufacturer contracts
+PASS            Mandatory               REPORT-140 Test Session Report identity     Test Session Report has distinct selected-record detail, all-visible ledger and honest traceability boundaries
+PASS            Mandatory               REPORT-150 Printing Recommendation Report identityPrinting Recommendation Report has distinct selected guidance, all-visible ledger, settings boundary and no Video Planner hooks
+PASS            Mandatory               Engineering Report Package contract         Six accepted reports export as independent canonical HTML/PDF packages with an indexed manifest and metadata
+PASS            Mandatory               Concise report package naming               Report folders use report-name-yyyyMMdd-HHmmss without duplicate key/type/title segments
+PASS            CanonicalDataDependent  Application icon asset                      Taskbar/application icon asset refreshed from provided logo
+PASS            CanonicalDataDependent  Unified report renderer                     UnifiedReportRenderingService owns canonical HTML report package flow
+PASS            CanonicalDataDependent  Canonical HTML layout                       HTML report is the master layout for preview/export packages
+PASS            CanonicalDataDependent  HTML/PDF shared assets                      Logo/image assets are shared by HTML report and PDF workflow
+PASS            CanonicalDataDependent  HTML-to-PDF package readiness               PDF export prints the companion canonical HTML and writes a manifest
+PASS            Mandatory               HTML print engine                           WebView2 PrintToPdf engine is available for user-facing PDF export
+PASS            Mandatory               PDF visual parity path                      Export PDF uses the same canonical HTML file that preview/package export writes
+PASS            Mandatory               Legacy PDF layout bypassed                  User-facing Export PDF no longer uses the hand-drawn native PDF layout
+PASS            CanonicalDataDependent  Report asset pipeline                       ReportAssetPipelineService owns report asset discovery/copy readiness
+PASS            CanonicalDataDependent  Report asset coverage                       Assets available 2, shared HTML/PDF assets 1
+PASS            CanonicalDataDependent  Report asset manifest readiness             Canonical report package manifest can reference shared logo/image assets
+PASS            CanonicalDataDependent  Report package folder standard              Exports use a dedicated package folder with report.html, manifest.txt, metadata JSON, and assets/
+PASS            CanonicalDataDependent  Report package metadata                     Report metadata JSON can describe report type, material counts, canonical HTML, and PDF artifact
+PASS            CanonicalDataDependent  Report package naming                       Timestamped package folder names are generated from report key and report title
+PASS            CanonicalDataDependent  Report chart renderer                       Canonical HTML report renders radar, score bars, and average comparison charts
+PASS            CanonicalDataDependent  Engineering chart payload                   Metric sections available for chart rendering: 1051
+PASS            CanonicalDataDependent  Report chart asset validation               Charts use inline HTML/CSS/SVG and shared report package assets
+PASS            CanonicalDataDependent  Interactive report readiness                HTML preview and WebView2 PDF export share the same engineering chart layout
+PASS            CanonicalDataDependent  Engineering intelligence layer              Engineering summaries, badges, recommendations, ranks and percentiles are generated from verified report data
+PASS            CanonicalDataDependent  Recommendation engine                       Recommended applications can be derived from engineering score profiles
+PASS            CanonicalDataDependent  Ranking and percentile engine               Rank and percentile context available for 221 materials
+PASS            CanonicalDataDependent  AI engineering review                       Executive summaries, strengths, weaknesses and trade-offs are generated from verified report context
+PASS            CanonicalDataDependent  Better alternatives engine                  Alternative recommendations can be selected from 221 verified materials
+PASS            CanonicalDataDependent  Review decision guidance                    Decision guidance is derived from the selected material score profile and report context
+PASS            CanonicalDataDependent  Reporting platform readiness                Canonical HTML reporting, PDF print path and verified engineering payloads are ready
+PASS            CanonicalDataDependent  Long-term stability baseline                Daily-use baseline validated across Engineering, Website and Reporting platforms
+PASS            CanonicalDataDependent  Website production workflow preserved       Website export remains ready for publish from verified Material Summary data
+PASS            Mandatory               Database path diagnostics                   SQLite C:\Users\maddi\AppData\Local\Temp\3DPIceland-Automation\20261011180607-c8ed4367\database\filamentdb.sqlite | Modified 2026-10-11 18:06:51
+PASS            Mandatory               Executable path diagnostics                 Executable C:\3DPIceland-App-Codex\App\FilamentDbApp\bin\Release\net9.0-windows\3DPIcelandFilamentDB.exe
+PASS            Mandatory               Storage folder diagnostics                  Storage C:\Users\maddi\AppData\Local\Temp\3DPIceland-Automation\20261011180607-c8ed4367\database
+PASS            Mandatory               Legacy snapshot path governance             Legacy JSON snapshots remain beside SQLite but are not canonical working stores
+PASS            CanonicalDataDependent  v40 local integration release gate          Engineering, Experimental, Website, Reporting, workspace and release identity gates passed; production FTPS was operationally validated on 2026-07-21
+PASS            Mandatory               v41 explainable advisor release gate        Deterministic evidence, comparison, missing-data honesty, UI and release identity gates passed
+PASS            CanonicalDataDependent  v41.1 alternatives release gate             Comparable, value, specialist, filter-context, UI, advisor and release identity gates passed
+PASS            CanonicalDataDependent  v41.2 consistency and outlier release gate  Verified-summary repeatability, variation review, outlier honesty, UI, advisor, alternatives and release identity gates passed
+PASS            CanonicalDataDependent  v41.3 engineering context release gate      Canonical price, inventory and manufacturer context, UI, prior engineering intelligence and release identity gates passed
+PASS            CanonicalDataDependent  v41.4 manufacturer and category position release gateManufacturer/category rank, peer count, group average, missing-data honesty, UI, prior engineering intelligence and release identity gates passed
+PASS            CanonicalDataDependent  v41.5 governed intelligence handoff release gateCanonical report, whitepaper, Video Planner, prior intelligence and release identity gates passed
+PASS            CanonicalDataDependent  v41.6 internal repeatability calibration release gateInternal score bands, CV review boundaries, app, website, report, whitepaper and release identity gates passed
+PASS            CanonicalDataDependent  v41.7.1 Material Summary report release gateCanonical native scope, distinct REPORT-110 content, HTML/PDF export and release identity gates passed
+PASS            CanonicalDataDependent  v41.7.2 canonical material projection release gateMaterials, analytics, rankings, awards, advisor, reporting, website and AI scopes share the native MaterialID projection
+PASS            CanonicalDataDependent  v41.7.3 Comparison Report release gate      REPORT-120 selected-anchor/all-visible comparison, canonical scope, HTML/PDF and prior report gates passed
+PASS            CanonicalDataDependent  v41.7.4 concise report package naming release gateConcise folder naming, REPORT-120, canonical report scope, HTML/PDF and prior gates passed
+PASS            CanonicalDataDependent  v41.7.5 Manufacturer Report release gate    REPORT-130 manufacturer portfolios, global/category position, product context, canonical scope, HTML/PDF and prior gates passed
+PASS            CanonicalDataDependent  v41.7.6 Test Session Report release gate    REPORT-140 native test records, specimen/result quality, method context, honest traceability limits and prior report gates passed
+PASS            CanonicalDataDependent  v41.7.7 Printing Recommendation Report release gateREPORT-150 governed application guidance, print-workflow checks, settings honesty, all-visible ledger and prior report gates passed
+PASS            CanonicalDataDependent  v41.7.8 Combined Engineering Report Package release gateAll six accepted report contracts, canonical HTML/PDF subpackages, package index, manifest, metadata and prior gates passed
+PASS            Mandatory               v41.8.0 startup instrumentation release gateCold/warm startup phase diagnostics are recorded without changing canonical data ownership or startup scheduling
+PASS            Mandatory               v41.8.1 startup refresh coalescing release gateRepeated bulk-load collection callbacks are suppressed and replaced by one measured downstream refresh
+PASS            Mandatory               v41.8.2 deferred measurement warm-up release gateAccepted Fast measurement views initialize directly; retired DataGrid pre-realization is absent
+PASS            Mandatory               v42.1 public report publishing foundation release gateAllowlisted selected-Material Engineering static preview, stable MaterialID route, canonical HTML/PDF contract and safety checks passed
+PASS            Mandatory               v42.2 canonical public material selection release gateExplicit SQLite-backed MaterialID opt-in, shared Preview/Production report links and prior public-report safety gates passed
+PASS            Mandatory               v42.2.1 public report content expansion release gateGoverned engineering interpretation, public peer context, locale-safe radar, canonical JPEG branding and prior publication-selection gates passed
+PASS            Mandatory               v42.3 public Comparison Report release gate Stable Material Family routes, explicit comparison allowlist, canonical HTML/PDF, public MaterialID selection and prior public-report gates passed
+PASS            Mandatory               v42.4 public Manufacturer Report release gateStable manufacturer routes, explicit manufacturer allowlist, public-only portfolio/category context, canonical HTML/PDF and prior public-report gates passed
+PASS            Mandatory               v42.5 public Test Session Report release gateMaterialID routes, full aggregate traceability, explicit raw-detail approval, canonical HTML/PDF and prior public-report gates passed
+PASS            Mandatory               v42.6 public Printing Recommendation Report release gateFull recommendation parity, public-only alternatives, settings honesty and prior gates passed
+PASS            Mandatory               v42.7 public Material Summary Report release gateStable public dataset summary, REPORT-110 coverage parity, public-only MaterialID membership, canonical HTML/PDF and prior gates passed
+PASS            Mandatory               v42.8 Public Engineering Report Package release gateCanonical public portfolio index, six report types, safe artifact catalog, manifest and all prior public-report gates passed
+PASS            Mandatory               v42.8.1 Public Report Batch Performance release gateReusable STA-safe WebView2 batch printing, elapsed-time diagnostics, canonical PDF parity and all prior public-report gates passed
+PASS            Mandatory               v42.8.2 Public Report Bounded Multitasking release gateBounded four-worker artifact validation, dynamic page readiness, reusable canonical PDF printing and all prior public-report gates passed
+PASS            Mandatory               v42.8.3 Public Report PDF Layout Parity release gateCanonical print grids, landscape wide-report rendering, portrait per-MaterialID rendering and all prior public-report gates passed
+PASS            CanonicalDataDependent  v42.9 Public Website Report Portal release gateCatalog-driven local website staging, contextual public-only links, Preview/Production portal parity and all prior public-report gates passed
+PASS            CanonicalDataDependent  v42.9.1 Automatic Website Report Prerequisites release gatePreview and Production automatically ensure missing or stale public reports through the shared canonical package pipeline
+PASS            Mandatory               v42.9.2 Public Report Data Freshness release gateCanonical SQLite report inputs and public selection are fingerprinted so changed measurements automatically invalidate and rebuild the public package
+PASS            Mandatory               v42.10 Production Publish Readiness release gateGenerate Production emits a verified catalog-derived deployment allowlist with explicit local-compatible HTML targets after ensuring the complete data-fresh public report package
+PASS            Mandatory               v42.11 Guarded Public Report FTPS Deployment release gateTest and Production publishing use exact isolated SHA-256 allowlists, and completed Production backups support recovery-snapshotted one-click restore with root index last
+PASS            Mandatory               v42.11.1 Host-Compatible FTPS Staging release gateFour bounded local workers validate artifacts concurrently; one runtime-proven retry-capable FTPS session preserves the complete-transfer barrier, sequential activation, entry-index-last and rollback contracts
+PASS            Mandatory               v42.12 Incremental FTPS Publishing release gateFull allowlists remain locally verified while completed remote state limits backup, staging and activation to changed artifacts with Restore-aware fallback
+PASS            Mandatory               v42.13 Material Printing Settings Foundation release gateCanonical SQLite/UI/import-export printing settings passed while public report allowlists remain unchanged
+PASS            Mandatory               v42.14 Base Material Printing Profiles release gateCanonical baseline profile identity, cooling/drying units, slicer identity, provenance, source and checked-date contracts passed; public allowlists unchanged
+PASS            Mandatory               v42.15 Deployment Settings Governance release gateSQLite owns 3dpicelandweb@www.iskort.is:21; password remains host/user-scoped in Windows Credential Manager
+PASS            Mandatory               v42.16 SQLite Native Measurements release gateSQLite canonical parity: tensile 4.066, impact 4.172, stiffness 209, notes 631
+PASS            Mandatory               v42.17 SQLite Canonical Working Stores release gateSQLite owns 221 Materials rows and 71 general Settings rows; legacy JSON is snapshot-only
+PASS            CanonicalDataDependent  v43.1 Local SQLite Backup and Restore release gateVerified online backup, compatibility inspection, pre-restore recovery snapshot, atomic replacement, rollback and controlled restart are available; 3DPIceland-Automatic-2026-10-11_180608_717.bak: integrity ok, schema v45, materials 221
+PASS            CanonicalDataDependent  v43.2 Excel Disaster Recovery release gate  Format v1; 34 canonical tables; 9.888 rows; lossless typed chunk encoding, per-table SHA-256, transactional restore and SQLite recovery backup
+PASS            Mandatory               v48.1.1 Printer and Pricing Settings Foundation release gateSchema v35; 3 canonical printers; seven governed Pricing defaults; deterministic 50.02 ISK/hour probe; PrinterProfiles is governed by Excel recovery
+PASS            Mandatory               v48.1.2 Print Job Quote Workflow release gateSchema v36; 0 immutable quote snapshots; exact grams-per-part × quantity probe; Material/manual provenance, Printer/settings/rates and calculation v1 are snapshotted
+PASS            Mandatory               v48.2 Optional Official Exchange-rate Reference Catalog release gateSchema v37; deterministic ECB EUR cross-rate parser; Purchase Order provenance recovery; loaded orders are excluded from reference refresh
+PASS            Mandatory               v58 document branding validation and persistence foundationSchema v45; PNG limits/source/cache, brand validation, backup/restart and fallback/default pass.
+PASS            Mandatory               v58.0.2 Document branding foundation retained contractSchema v39+ and governed PNG validation/persistence foundation remain aligned
+PASS            Mandatory               v58.0.3 Document branding Settings workflow retained contractSchema v39+; Select, Preview, default-No Restore, status and image preview align
+PASS            Mandatory               v58.0.4 Canonical document branding renderer retained contractDefault; source SHA-256 D54CA2096912; embedded PNG and stable JPEG derivative align
+PASS            Mandatory               v58.0.4.1 Governed document brand identity retained contractSchema v40; brand '3DPIceland Labs' is normalized, encoded and renderer-aligned
+PASS            Mandatory               v58.0.5 Document branding migration and recovery retained contractSchema v45; PNG limits/source/cache, brand validation, backup/restart and fallback/default pass.
+PASS            Mandatory               v58.0.6 Governed document branding closure release gateSchema v41, image/name renderers, migration/recovery and release identity align
+PASS            Mandatory               v53.0.1 Governed Landed-cost Currency additive schema release gateSchema v37 fixture migrated to v45 with exact monetary values and explicit 1:1 legacy metadata.
+PASS            Mandatory               v53.0.2 Landed-cost Currency Settings default and Draft override release gateGoverned default; invoice-ISK / landed-ISK cross-rate direction; restart-stable uncalculated Draft override; legacy lock and explicit UI contract pass
+PASS            Mandatory               v53.0.3 Cross-currency calculation and downstream snapshot release gateInvoice allocations remain EUR; landed outputs convert to USD; report ISK factor, one-time stamp, Inventory provenance and non-destructive failure pass
+PASS            Mandatory               v53.0.4.1 Landed-cost acceptance authorization and control surface gateExact safe PO/Material/Inventory authorization matches only the approved triplet; invalid/duplicate IDs fail; required real controls are discoverable
+PASS            Mandatory               v53.0.4.2 Disposable landed-cost lifecycle surface gateSix exact-ID lifecycle checkpoints and the hidden authorized status surface are present
+PASS            Mandatory               v53.0.4.3 Migration, recovery and historical stability gateSchema-v38 landed-cost migration and exact authorized Excel-recovery mutation contracts are present
+PASS            Mandatory               v53.0.4.4 Diagnostics and Help reconciliation gateSecret-safe landed-cost snapshot aggregates, migration/recovery boundaries and matching Help markers are present
+PASS            Mandatory               v53.0.5 Post-v50 Help reconciliation gate   v51 runtime profiles, v52 OpenAI boundaries and v53 Inventory provenance have exact Help markers
+PASS            Mandatory               v54.0.5 Materials multi-select and exact-scope candidate gatev54 identity, OR/AND persistence Help and honest AI scope-limit markers are aligned
+PASS            Mandatory               v54.0.6 Runtime acceptance and scalar-filter retirement gateOwner-accepted six-facet workflow is canonical and hidden scalar filter controls/matcher are absent
+PASS            Mandatory               v57.0.5 Website calculator and branding retained contractAccepted default-No deletion and reviewed cleanup ownership remain intact
+PASS            Mandatory               v49.0 Experimental Workflow Integrity release gateActive-only comparison with explicit history review; duplicate reset, readiness, baseline ownership and persistence wiring are verified
+PASS            Mandatory               v48.0.5 Canonical Usage Persistence release gateSchema v34; 0 immutable usage events; 0 reversals; 0 replacements; zero relationship/duplicate-reversal defects; UsageEvents is governed by Excel recovery
+PASS            Mandatory               v48.0.6 Bounded Usage Workspace release gateExact MaterialID selector, same-Material optional Inventory selector, immutable ledger, append-only record/correction actions and stable automation identities are present; no Print Job/Test Session or public-output surface is added
+PASS            Mandatory               v48.0.7 Internal Usage Analytics release gatePrivate selected-Material projection distinguishes 3 immutable ledger rows from 1 effective event, nets correction to 80 g/3,300 seconds and exposes honest evidence coverage with stable AutomationIds
+PASS            Mandatory               v44.5 Retired Original Excel Import Surface release gateUnreachable original-Excel database import UI/service surface is absent; governed Excel disaster-recovery export, verification and guarded restore remain available
+PASS            CanonicalDataDependent  v44.5.1 Active SQLite preservation release gateCanonical schema and supported migration shapes remain available; malformed canonical, newer and unreadable active databases are blocked unchanged with retained evidence copies.
+PASS            Mandatory               v44.5.2 Canonical SQLite UI boundaries release gateMisleading cache UI, legacy-material sync/fallback and dead Excel-default reset are absent; MaterialsImport is retired after verified backup while canonical SQLite, storage-folder UI and lower-level compatibility storage remain available
+PASS            CanonicalDataDependent  v44.5.3 Canonical storage terminology release gateVisible storage terminology identifies SQLite as canonical while supported JSON empty-database migration, governed Excel disaster recovery and explicit SQLite restore remain available
+PASS            Mandatory               v44.5.4 Measurement help clarity release gateTensile, Impact and Stiffness each expose one concise instruction followed by their unchanged read-only calculation guidance
+PASS            CanonicalDataDependent  v44.5.5 Retired legacy write entry points release gateCaller-free workbook/material/cache replacement entry points are absent while legacy-table readers, schema compatibility, governed Excel disaster recovery and explicit SQLite restore remain available
+PASS            CanonicalDataDependent  v44.5.6 Retired workbook metadata readers release gateOriginal-workbook sheet metadata is absent from Material Detail, Tools and diagnostics while supported-schema inspection, governed Excel disaster recovery and explicit SQLite restore remain available
+PASS            CanonicalDataDependent  v44.5.7 Legacy workbook schema retirement release gateSchema v34 contains no original-workbook tables; engineering metrics use canonical measurement rows while supported migration inspection, governed Excel disaster recovery and explicit SQLite restore remain available
+PASS            CanonicalDataDependent  v44.5.8 Retired transition UI residue release gateCaller-free load/import-sync handlers and unused JSON save-state allocations are absent while supported empty-canonical JSON migration readers and governed recovery remain available
+PASS            CanonicalDataDependent  v44.5.9 Supported migration naming release gateInternal names distinguish canonical SQLite projection, supported empty-target JSON migration and built-in defaults; whole-revolution/degree-only stiffness and close-time measurement persistence are covered
+PASS            CanonicalDataDependent  v43.3 Recovery Compatibility Center release gate3 local SQLite backups classified; older supported schemas require isolated dry-run, current schema ready, legacy/newer/corrupt blocked; verify-only and guarded restore UI available
+PASS            CanonicalDataDependent  v43.3.1 Backup and Recovery Center UI release gateManual SQLite backup, compatibility verify/restore, SQLite-backup restore, governed Excel backup/restore and one storage-folder action share the consolidated center
+PASS            Mandatory               v43.4.0 Signed Update Readiness Foundation release gateSigned fixture accepted; tampered payload, downgrade, path traversal, wrong production key and missing trust root blocked. Package inspection remains read-only.
+PASS            Mandatory               v43.4.1 Governed Signed Release Packaging release gateProduction ECDSA P-256 trust root fingerprint 87D407FEA230D484D8F436A4BA4958BF7F70336B968FFEC7F3966C15DFDFF1EA; wrong-key and unsigned packages blocked; apply remains disabled
+PASS            Mandatory               v43.5.0 Transactional Updater Engine release gateIsolated success committed; injected partial install and failed health rolled back; Prepared safely restarted; SnapshotReady, Installed, RollingBack and RollbackFailed restored; read-only history classified; traversal blocked; SQLite backup reference preserved. Isolated transaction-engine foundation remains intact.
+PASS            Mandatory               v43.5.1 Guarded Application Update release gateVerified re-inspection/extraction, SQLite backup, external process wait, durable snapshot/install, version/schema health acknowledgement and rollback/relaunch contracts are wired behind default-No Apply
+PASS            Mandatory               v43.6.0 Update and Deployment Diagnostics release gateRead-only durable history, startup detection and default-No external recovery cover Prepared, SnapshotReady, Installed, RollingBack and RollbackFailed; evidence/backups retained; SQLite restore prohibited
+PASS            Mandatory               v57.0.1 Public Demo Download deployment contractExact one-ZIP allowlist, bytes/SHA-256, immutable versioned route and stable demo route passed; unrelated routes blocked. Guarded owner UI and install/remove Help are present; Production remains explicit and default-No.
+PASS            Mandatory               v57.0.2.1 Restored Public Demo profile classification contractOnly the exact governed AppMeta marker enables the existing 12 website-publication N/A checks; every other check remains mandatory.
+PASS            Mandatory               v43.7.0 Installer and Portable Deployment release gateExact installer/portable allowlist, local bytes/SHA-256, versioned downloads and stable-route-last separation passed; website routes blocked. Clean-profile material seed and private FTPS identity defaults are empty; splash icon and header logo are distinct embedded WPF resources; per-user install/uninstall preserves external SQLite, backups, configuration and transaction evidence; publish remains explicit default-No.
+PASS            Mandatory               v43.8.0 Remote Signed Update Delivery release gateGoverned HTTPS feed, trusted manifest before download, bounded bytes/SHA-256, full package re-verification, delayed/manual discovery, default-No apply and isolated update publishing are wired to the accepted helper.
+PASS            Mandatory               v49.0.0 application release compatibility contractSigned updates support the governed schema-v29 public baseline through current schema v45.
+PASS            Mandatory               v50.2.1 data, cost and configuration Help reference contract118 unique offline topics retain the accepted workflow and cover nine mapped data, cost and configuration surfaces.
+PASS            Mandatory               v50.2.2 testing and analysis Help reference contract22 stable testing/analysis Help destinations, exact top-level mappings and representative scope/save/lifecycle markers are present.
+PASS            Mandatory               v50.2.3 output and creator-tool Help reference contract34 substantive multi-paragraph Reports, Website, AI, YouTube and packaged Help destinations preserve control, write and safety boundaries.
+PASS            Mandatory               v50.2.4 contextual Help entry-point and coverage contract26 unique top-level and 16 unique nested tab AutomationIds resolve to stable central Help destinations; current-view F1/menu, Tools validation Help and Website menu retirement contracts are present.
+PASS            Mandatory               v50.3 safety, recovery and troubleshooting Help contract18 substantive safety/recovery Help destinations preserve read-only versus mutating, default-No, no-auto-SQLite-restore, application/Website publishing and secret-safe evidence boundaries.
+PASS            Mandatory               v50.4.1 data and configuration control/field Help contractNine substantive control/field destinations cover Materials, Manufacturers, Purchase Orders, Inventory, Usage, Printers, Quotes, Base Materials and Settings with units, validation, save timing and historical boundaries.
+PASS            Mandatory               v50.4.2 measurement, experimental and analysis control/field Help contractFour substantive destinations cover native Measurements, Experimental Testing, interactive Material Detail and global Analysis controls/fields with units, read-only projections, persistence and scope.
+PASS            Mandatory               v50.4.3 output, creator and runtime control/field Help contractFive substantive destinations cover Reports, Website, AI, YouTube, menus and runtime windows with local/external, read-only/mutating, credential, confirmation and automation-only boundaries.
+PASS            Mandatory               v50.4.4 hierarchical Help navigation contractCentral Help exposes a stable category/topic TreeView model with expandable and selected-node state.
+PASS            Mandatory               v44.1 Verification profiles and diagnostic honesty release gateZero-data dependencies map to Not applicable with exact reasons; unexpected readiness failures remain FAIL; full-data checks remain mandatory; successful SQLite restore records verified post-restore evidence; compiled seeds and deployment identity remain empty
+PASS            Mandatory               v44.2 Daily-use UI state and MaterialID clarity release gateWindow and keyed grid layout remain machine-local; saved column order and visible canonical MaterialID selection restore fail-safe; Materials, Material Detail and Reports expose the same selected identity
+PASS            Mandatory               v44.3 Backup and recovery evidence clarity release gateHealthy schema-current zero-data backups are explicit restore-ready empty profiles; transaction, health acknowledgement, application rollback snapshot and SQLite backup evidence are separate read-only boundaries; guarded/default-No restore boundaries remain intact
+PASS            CanonicalDataDependent  v44.6.0 Recovery Center clarity release gateRecovery Center shows one concise compatibility summary and selected-backup details; verbose update evidence remains available through diagnostics without weakening guarded restore
+PASS            CanonicalDataDependent  v44.7.8 Backup Filename Compatibility release gateNew SQLite backups use readable collision-safe .bak names; legacy .sqlite discovery/restore, explicit recovery snapshots, updater evidence and no-automatic-SQLite-restore boundaries remain intact
+PASS            Mandatory               v44.7.9 Public Measurement Date Provenance release gateMaterial Engineering and Test Session reports publish allowlisted canonical ISO measured dates; missing dates remain Not recorded and internal edit timestamps stay excluded
+PASS            Mandatory               v44.7.10 Canonical MaterialID Default Row Order release gateFast Materials, Tensile, Impact and Stiffness use natural numeric MaterialID default order; active sorts reapply after source changes, and close commits editors plus parent Materials before FK-child measurements
+PASS            Mandatory               v44.7.11 Settings Manager Command Clarity release gateReload Saved Settings is default-No and SQLite-owned; built-in restore is General-only, and Reset Columns changes only both Settings layouts
+PASS            Mandatory               v44.6.2 Canonical measurement date foundation release gateSchema v31 stores nullable ISO measurement dates for native Tensile, Impact and Stiffness metadata plus Experimental runs; first-input assignment preserves existing dates and Excel disaster recovery includes both columns
+PASS            Mandatory               v44.7.1 Category Rankings scope controls release gateCategory Rankings supports safe 5, 10, 50, 100 and All row scopes while preserving the existing score selectors, ordering and canonical visible MaterialID source
+PASS            Mandatory               v44.7.2 Material row Validation help clarity release gateMaterials explains the five required row-identity fields and OK meaning while the established ValidationSummary rules remain unchanged
+PASS            Mandatory               v44.7.3 Fast Workflow Grid - Tensile candidate release gateFast Tensile owns separate keyed layout state and canonical measurement apply/save integration
+PASS            Mandatory               v44.7.4 Fast Workflow Grid - Impact candidate release gateFast Impact owns separate keyed layout state, bounded canonical measurement apply/save and non-negative input
+PASS            Mandatory               v44.7.5 Fast Workflow Grid - Stiffness candidate release gateFast Stiffness owns separate keyed layout state and bounded canonical input/save integration
+PASS            Mandatory               v44.7.6 Fast Workflow Grid - Settings candidate release gateFast Settings owns separate general/Base Material layouts and canonical apply contracts as the only activatable UI
+PASS            Mandatory               v44.7.7 Legacy Grid Retirement UI-stage release gateLegacy/preview switches are absent or hidden while accepted Fast contracts and temporary adapters remain intact
+PASS            Mandatory               v44.7.7 Measurement Fast-contract retirement stage gateTensile, Impact and Stiffness Fast schemas and visible rows come from explicit contracts and canonical collections
+PASS            Mandatory               v44.7.7 Materials Fast-contract retirement stage gateMaterials Fast schema and visible rows come from an explicit contract and the canonical filtered collection
+PASS            Mandatory               v45.1 canonical Manufacturer selection contractNullable ManufacturerId links resolve exact catalog names; 0 unlinked rows are filterable; legacy text and delete guards remain
+PASS            Mandatory               v44.7.7 Settings Fast-contract retirement stage gateGeneral Settings and Base Materials use explicit Fast schemas and canonical row collections
+PASS            Mandatory               v45.2 Base Materials workspace contract     Dedicated Base Materials tab owns Add, Duplicate, Delete, editable Fast catalog and independent layout reset
+PASS            Mandatory               v55.0.2 default-No Base Material delete contractNamed Yes/No warning defaults to No; every non-Yes result preserves state and deletion is bounded by BaseMaterialID
+PASS            Mandatory               v55.0.5.1 shared safe-delete dialog contractMaterial and Base Material use one named default-No dialog with Escape and close mapped to safe cancellation
+PASS            Mandatory               v59.0.6 default-No Materials column reset contractReset Columns uses the shared named warning; No, Escape and close preserve layout and only Yes resets
+PASS            Mandatory               v45.2.1 canonical Base Material identity contractNullable BaseMaterialId links resolve canonical names; 0 legacy rows remain explicit and filterable
+PASS            Mandatory               v65.0.0 catalog-driven new-Material Base Material choices contractAdd Material refreshes its long-lived dropdown choices from every non-empty canonical Base Material
+PASS            Mandatory               v44.7.7 Measurement fallback-code retirement stage gateMeasurement legacy toggle controls, handlers and fallback state are absent
+PASS            Mandatory               v44.7.7 Tensile legacy-grid deletion stage gateTensile legacy DataGrid XAML and grid-specific edit/commit lifecycle are absent
+PASS            Mandatory               v44.7.7 Impact legacy-grid deletion stage gateImpact legacy DataGrid XAML and grid-specific edit/commit lifecycle are absent
+PASS            Mandatory               v44.7.7 Stiffness legacy-grid deletion stage gateStiffness legacy DataGrid XAML, grid lifecycle and obsolete measurement warm-up are absent
+PASS            Mandatory               v44.7.7 Settings legacy-grid deletion stage gateSettings legacy DataGrid XAML and grid-specific bind/edit/selection lifecycle are absent
+PASS            Mandatory               v44.7.7 Materials canonical selection ownership stage gateMaterials selection and CRUD resolve through canonical Fast-owned selection without a DataGrid parameter
+PASS            Mandatory               v44.7.7 Materials canonical filter/report ownership stage gateMaterials filters, visible reports and governed column boundaries use canonical Fast contracts
+PASS            Mandatory               v44.7.7 Materials legacy edit/recovery lifecycle stage gateMaterials edit, validation, recovery and close/save paths no longer require DataGrid commit lifecycle
+PASS            Mandatory               v44.7.7 Materials residual caller retirement stage gateFast/canonical selection and refresh own Materials; no residual legacy grid caller remains
+PASS            Mandatory               v44.7.7 Materials legacy XAML deletion stage gateThe retired Materials DataGrid and its duplicate columns are absent; Fast Materials is the sole grid host
+PASS            CanonicalDataDependent  v44.7.12 Clean baseline retirement release gateCaller-free PDF, workbook-write, legacy template and retired workflow residue is absent; canonical owners remain
+
+Full Data Verification: PASS
+Overall Verification: PASS
+483 / 483 applicable verification tests passed; 0 not applicable
+Build verified: v70.0.4 DIRECT-IMPACT-METHODOLOGY
+Last verification run: 2026-10-11 18:07:06
+
+
+Startup Performance
+-------------------
+Process started: 2026-10-11 18:06:07.245
+Instrumentation started: 2026-10-11 18:06:07.529
+Process to instrumentation: 283.5 ms
+Recorded phases: 40
+      2,6 ms        marker  Startup instrumentation active
+      2,7 ms        marker  Application.OnStartup entered
+    659,7 ms        marker  Splash Show invoked
+    879,9 ms        marker  Splash rendered
+   1381,5 ms      155.4 ms  MainWindow.InitializeComponent
+   1391,7 ms        9.5 ms  Website template manager
+   1392,5 ms        0.8 ms  Analytics controls
+   1463,2 ms       70.7 ms  Saved video ideas
+   1465,6 ms        2.4 ms  AI Assistant workspace
+   1466,6 ms        1.0 ms  AI provider foundation
+   1498,0 ms       31.3 ms  Native settings initialization
+   1500,8 ms        2.8 ms  Printer workspace initialization
+   2116,8 ms      616.1 ms  Native Materials initialization
+   2119,9 ms        3.1 ms  Print Job Quote workspace initialization
+   2154,9 ms       35.0 ms  Fast Materials default view
+   2223,7 ms       68.7 ms  Manufacturer workspace initialization
+   2300,9 ms       77.3 ms  Inventory workspace initialization
+   2437,1 ms      136.1 ms  Usage workspace initialization
+   2703,3 ms      266.3 ms  Experimental workspace initialization
+   3206,6 ms      503.2 ms  Flexible Material Testing workspace initialization
+   3345,2 ms      138.6 ms  Purchasing workspace initialization
+   3380,7 ms       35.5 ms  Tensile workspace initialization
+   3387,9 ms        7.2 ms  Fast Tensile candidate view
+   3487,5 ms       99.6 ms  Impact workspace initialization
+   3498,1 ms       10.6 ms  Fast Impact candidate view
+   3506,9 ms        8.8 ms  Izod and Charpy measurements
+   3782,9 ms      275.9 ms  Stiffness workspace initialization
+   3787,8 ms        4.9 ms  Fast Stiffness candidate view
+   4556,0 ms      768.1 ms  Heat Deflection workspace initialization
+   4560,6 ms        4.6 ms  Fast Heat Deflection view
+   4694,0 ms      133.0 ms  Application statistics refresh
+   4694,3 ms        marker  MainWindow constructor completed
+   4694,3 ms     3814.3 ms  MainWindow construction
+   5252,0 ms      546.2 ms  Consolidated native material collection refresh
+   8049,2 ms        marker  MainWindow Loaded workflow completed
+   8049,2 ms      516.3 ms  MainWindow Loaded workflow
+   8050,9 ms        marker  MainWindow Show invoked
+   8748,3 ms        marker  First usable Materials view rendered
+  10876,1 ms        marker  Startup deferred intelligence completed
+  10876,1 ms     2054.4 ms  Deferred engineering intelligence refresh
+Note: Visual Studio Debug startup includes debugger/JIT overhead; compare repeated cold and warm Release EXE runs separately.
+
+
+Native Calculation Engine Modules
+---------------------------------
+StatisticsService: Loaded
+RatingService: Loaded
+ResultsService: Loaded
+Tensile migration: Active and verifiable
+Impact migration: Active and verifiable
+Stiffness migration: Active and verifiable
+Material Summary Engine: Active and verifiable
+Reporting Data Pipeline: Active and verifiable
+Experimental Testing Framework: Definition foundation active and verifiable
+
+Project Row Counts
+------------------
+Native materials: 221
+Native tensile rows: 221
+Native impact rows: 221
+Native stiffness rows: 221
+Experimental series: 1
+Experimental runs: 3
+Experimental measurements: 15
+
+Tensile Calculation Verification
+--------------------------------
+Cross-section area: 6,5016 mm²
+Rows with tensile samples: 211
+Computed-field source: ResultsService.CalculateTensile
+Verification target: visible native tensile computed fields
+Status: MATCH
+
+
+Impact Calculation Verification
+-------------------------------
+No-sample angle: 105,411°
+Net cross-section area: 0,00004816 m²
+Max possible impact: 56,974
+Rows with impact samples: 211
+Computed-field source: ResultsService.CalculateImpact
+Verification target: visible native impact computed fields
+Status: MATCH
+
+
+Stiffness Calculation Verification
+----------------------------------
+mm per revolution: 1,058774
+Span length: 118,2 mm
+Load: 5,47 N
+Second moment of area: 34,679467 mm^4
+Rows with stiffness input: 208
+Computed-field source: ResultsService.CalculateStiffness
+Verification target: visible native stiffness computed fields
+Status: MATCH
+
+
+Material Summary Engine Verification
+------------------------------------
+Material rows: 221
+Summaries built: 221
+Complete summaries: 0
+Partial summaries: 219
+Empty summaries: 2
+Computed-field source: ResultsService.CalculateMaterialResults
+Verification target: one native summary per MaterialID
+Status: MATCH
+
+
+Inventory Engine Verification
+-----------------------------
+Inventory engine owner: InventoryEngineService
+Active inventory material rows: 12
+Total spools: 12
+Unopened / Opened / Empty: 12 / 0 / 0
+Total remaining weight: 11,600 g
+Complete inventory rows: 12 / 12
+Validation issues: 0
+Estimated value currencies: USD
+Status: MATCH
+
+Purchase Order Foundation Verification
+--------------------------------------
+Purchase orders: 1
+Purchase order lines: 12
+Filament lines: 12
+Non-filament lines: 0
+Supported categories: Filament / Printer / Equipment / Spare Parts / Consumables / Other
+Inventory spools linked to purchase lines: 12
+Tax treatments: VAT included / import VAT separately / tax exempt
+Landed cost allocation: Deferred to Cost Intelligence milestone
+
+
+Website Platform Verification
+-----------------------------
+Candidate native materials: 221
+Verified summaries consumed: 221
+Website tensile payload rows: 221
+Website impact payload rows: 221
+Website stiffness payload rows: 221
+Computed-field source: ResultsService.CalculateMaterialResults
+Chart payload owner: WebsiteChartGeneratorService
+Radar payload owner: WebsiteRadarGeneratorService
+Radar selected rows: 221
+Radar material average groups: 16
+Radar reinforcement average groups: 36
+Radar normalization inputs: Available
+HTML renderer owner: WebsiteHtmlRendererService
+HTML renderer payload: Valid
+HTML payload rows aligned: Yes
+HTML payload MaterialID coverage: Yes
+HTML payload chart/radar metrics: Available
+Website verification owner: WebsiteVerificationService
+HTML generated: Yes
+DATA block valid: Yes
+JSON serialization: Valid
+Required CSS: Present
+Required JavaScript: Present
+Required sections: Present
+Chart terminology: PASS
+Bundled master template identity: MATCH
+MaterialID integrity: PASS
+Duplicate MaterialID check: PASS
+Missing product URLs: 0
+Missing YouTube URLs: 124
+Publish readiness: READY FOR PUBLISH
+Downstream target: Website DATA payload
+Raw measurement consumption: BLOCKED for Website Generator
+Status: MATCH
+
+
+Reporting Platform Verification
+-------------------------------
+Candidate native materials: 221
+Verified summaries consumed: 221
+Reporting payload rows: 221
+Complete report rows: 0
+Partial report rows: 221
+Computed-field source: ResultsService.CalculateMaterialResults
+Pipeline owner: ReportingDataPipelineService
+Report generator owner: ReportGeneratorService
+Generated report models: 221
+Material overview sections: 221
+Engineering summary sections: 221
+Mechanical metric sections: 1051
+PDF export owner: WebView2 HTML Print Engine
+Certificate generator owner: ReportCertificateGeneratorService
+PDF pages rendered: 430
+PDF byte payload: 1359094
+PDF payload validation: PASS
+PDF render readiness: READY
+Generated certificates: 221
+Certificate payload validation: PASS
+Certificate issue readiness: READY
+Report template owner: ReportTemplateService
+Report templates available: 6
+Report template outputs: 6
+Report template payload validation: PASS
+Report template render readiness: READY
+Report export UI owner: Reports / PDF Export tab
+Report export template selector: ReportTemplateService
+Report export owner: UnifiedReportRenderingService -> WebView2 HTML Print Engine
+Report export template options: 6
+Report export UI payload validation: PASS
+Report preview workflow readiness: READY
+Report PDF export workflow readiness: READY
+Material engineering report owner: MaterialEngineeringReportService
+Material engineering reports generated: 221
+Material engineering payload validation: PASS
+Material engineering render readiness: READY
+Branded PDF renderer: PASS
+Report logo asset: PASS
+Application icon asset: PASS
+Unified report renderer owner: UnifiedReportRenderingService
+Canonical report format: HTML report package
+PDF export strategy: PDF exports are generated from the same report foundation and ship with the canonical HTML source
+Canonical HTML layout: PASS
+HTML/PDF shared assets: PASS
+HTML-to-PDF package readiness: READY
+HTML print engine: AVAILABLE
+PDF visual parity path: Export PDF prints the same canonical HTML file used for preview/package export
+Legacy PDF layout bypassed for user export: YES
+Report asset pipeline owner: ReportAssetPipelineService
+Report assets available: 2 / 2
+Shared HTML/PDF report assets: 1
+Report asset manifest readiness: READY
+Report package folder standard: READY
+Report package metadata: READY
+Report package naming: timestamped report-key/report-title folder names
+Report chart renderer: PASS
+Engineering chart payloads: 1051
+Report chart asset validation: PASS
+Interactive report readiness: READY
+Engineering intelligence layer: PASS
+Recommendation engine: PASS
+Ranking and percentile engine: PASS
+AI engineering review: PASS
+Better alternatives engine: PASS
+Review decision guidance: PASS
+Report asset strategy: Copy report assets to output and expose them through the canonical HTML/PDF report package manifest
+Report model validation: PASS
+MaterialID coverage: PASS
+Verified Material Summary consumption: PASS
+Downstream target: Reporting Platform report model
+Raw measurement consumption: BLOCKED for Reporting Platform
+Calculation boundary: reports consume Verified Material Summary and canonical reporting outputs; raw measurements are not recalculated here
+Status: MATCH
+
+
+Release Acceptance Diagnostics
+------------------------------
+Database path: C:\Users\maddi\AppData\Local\Temp\3DPIceland-Automation\20261011180607-c8ed4367\database\filamentdb.sqlite
+Database modified: 2026-10-11 18:07:05
+Database folder: C:\Users\maddi\AppData\Local\Temp\3DPIceland-Automation\20261011180607-c8ed4367\database
+Executable path: C:\3DPIceland-App-Codex\App\FilamentDbApp\bin\Release\net9.0-windows\3DPIcelandFilamentDB.exe
+Executable folder: C:\3DPIceland-App-Codex\App\FilamentDbApp\bin\Release\net9.0-windows\
+Legacy materials snapshot: C:\Users\maddi\AppData\Local\Temp\3DPIceland-Automation\20261011180607-c8ed4367\database\native-materials-manager.json
+Legacy tensile migration snapshot: C:\Users\maddi\AppData\Local\Temp\3DPIceland-Automation\20261011180607-c8ed4367\database\native-tensile-measurements.json
+Legacy impact migration snapshot: C:\Users\maddi\AppData\Local\Temp\3DPIceland-Automation\20261011180607-c8ed4367\database\native-impact-measurements.json
+Legacy stiffness migration snapshot: C:\Users\maddi\AppData\Local\Temp\3DPIceland-Automation\20261011180607-c8ed4367\database\native-stiffness-measurements.json
+Legacy settings snapshot: C:\Users\maddi\AppData\Local\Temp\3DPIceland-Automation\20261011180607-c8ed4367\database\native-settings-manager.json
+Legacy snapshot folder governance: PASS
+Multi-instance editing: Not supported; use one app instance when editing data.
+
+Regression Safety
+-----------------
+This build extends the existing diagnostics/verification architecture instead of replacing working modules.
+No material storage, import/export, auto-save, backup, or native measurement input workflow is intentionally changed.

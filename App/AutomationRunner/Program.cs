@@ -1007,6 +1007,8 @@ internal static class Program
                 ValidateUsageWorkspace(main, application.Id, materialCrudId, 1);
                 ValidateUsageAnalytics(main, materialCrudId, 1, 1, "100.00 g", "1 h");
                 Record("crud-create-save", true, materialCrudId);
+                Record("crud-material-periodic-autosave", true,
+                    "Authorized fixture exercised the five-minute callback: pending notes persisted, validation blocked invalid Product Line, error survived statistics refresh and unrelated save, corrected data saved and original notes restored. No wall-clock wait or owner data access.");
                 Record("crud-pendulum-coverage-and-consumers", true,
                     "Authorized fixture exercised notes/NB-only absence, explicit-zero presence, per-method Materials filters, shared summaries and radar projections through Fast commit callbacks; this is not physical keyboard usability acceptance.");
                 foreach (var method in new[] { "Izod", "Charpy" })

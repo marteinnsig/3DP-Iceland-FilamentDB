@@ -235,6 +235,7 @@ public partial class MainWindow : Window
         RunStartupPhase("Fast Heat Deflection view", ActivateDefaultFastThermalDeflectionView);
         UpdateNativeWorkflowStatus("Auto-save ready");
         RunStartupPhase("Application statistics refresh", RefreshApplicationStatistics);
+        InitializeMaterialAutosaveRetry();
         App.StartupPerformance.Mark("MainWindow constructor completed");
     }
 
@@ -420,6 +421,7 @@ public partial class MainWindow : Window
         });
         SavePrinters();
         RequireAutomationCrudSave("CREATED");
+        VerifyAuthorizedMaterialAutosaveRetry(materialId);
         _database.InsertPrintJobQuote(new PrintJobQuoteRecord
         {
             QuoteId = "AUT-Q-" + materialId,
@@ -1810,7 +1812,8 @@ public partial class MainWindow : Window
     {
         if (FindName("AutoSaveStatusText") is TextBlock autoSaveText)
         {
-            autoSaveText.Text = message;
+            autoSaveText.Text = MaterialAutosaveStatus(message);
+            autoSaveText.ToolTip = autoSaveText.Text;
         }
 
         if (saved && FindName("LastSavedText") is TextBlock lastSavedText)
@@ -1844,11 +1847,14 @@ public partial class MainWindow : Window
 
     private void ShowNativeSavedStatus(string moduleName)
     {
+        _otherAutosaveFailures.Remove(moduleName);
         UpdateNativeWorkflowStatus($"Auto-saved {moduleName} ✓", saved: true);
     }
 
     private void ShowNativeSaveBlockedStatus(string moduleName, string reason)
     {
+        if (moduleName == "Materials") _materialAutosaveFailure = reason;
+        else _otherAutosaveFailures[moduleName] = reason;
         UpdateNativeWorkflowStatus($"Auto-save paused for {moduleName}: {reason}");
     }
 
@@ -22962,7 +22968,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
             StatusText.Text = $"SQLite live data: {_nativeMaterialRows.Count} materials ({active} active, {archived} archived).";
         }
 
-        UpdateNativeWorkflowStatus(_nativeMaterialDirty ? "Unsaved material edit pending" : "Auto-save ready");
+        UpdateNativeWorkflowStatus("Auto-save ready");
         UpdateDashboardInsights();
     }
 
@@ -28986,6 +28992,7 @@ private List<string> GetVisibleAiMaterialLabels()
     private void SetNativeMaterialsDirty(bool isDirty)
     {
         _nativeMaterialDirty = isDirty;
+        if (!isDirty) _materialAutosaveFailure = null;
         if (FindName("SaveNativeMaterialsButton") is Button saveButton)
         {
             saveButton.IsEnabled = true;
@@ -32734,7 +32741,9 @@ private List<string> GetVisibleAiMaterialLabels()
             {
                 sqliteBlockedReason = !NativeMaterialIdsAreSqliteSafe()
                     ? "SQLite save blocked: missing or duplicate Material IDs"
-                    : "SQLite save blocked: validation issues";
+                    : "Check Materials: " + string.Join("; ", _nativeMaterialRows
+                        .Where(row => !row.IsRowValid).Take(3)
+                        .Select(row => $"{row.MaterialID}: {row.ValidationSummary}"));
             }
 
             if (sqliteUpdated)
@@ -33200,10 +33209,17 @@ private List<string> GetVisibleAiMaterialLabels()
     private static bool ShouldAssignMeasuredDate(DateTime? currentDate, IEnumerable<string> inputs) =>
         currentDate is null && inputs.Any(value => !string.IsNullOrWhiteSpace(value));
 
-    private void SaveNativeMeasurementsToSqlite() => _database.MigrateNativeMeasurementsToSqlite(
-        _nativeTensileRows.Select(ToTensilePersistence).ToList(),
-        _nativeImpactRows.Select(ToImpactPersistence).ToList(),
-        _nativeStiffnessRows.Select(ToStiffnessPersistence).ToList(), replaceCanonical: true);
+    private void SaveNativeMeasurementsToSqlite()
+    {
+        _database.MigrateNativeMeasurementsToSqlite(
+            _nativeTensileRows.Select(ToTensilePersistence).ToList(),
+            _nativeImpactRows.Select(ToImpactPersistence).ToList(),
+            _nativeStiffnessRows.Select(ToStiffnessPersistence).ToList(), replaceCanonical: true);
+        // This transaction persists all three modules together. Clear their retained
+        // failures only after SQLite succeeds, including the combined-save failure.
+        foreach (var module in new[] { "Tensile", "Impact", "Stiffness", "Measurements" })
+            _otherAutosaveFailures.Remove(module);
+    }
 
     private void InitializeNativeTensileMeasurements()
     {

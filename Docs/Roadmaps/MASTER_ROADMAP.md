@@ -65,6 +65,12 @@ This file is the canonical strategic roadmap. Completed build details belong in
 
 ## Reconciliation of the older plans
 
+## Accepted — Materials autosave status and periodic retry
+
+- Scope: preserve Materials save-failure reasons; explain pending committed changes and retry dirty Materials every five minutes without disturbing editors.
+- Keep 450 ms edit autosave, validation and close-time safeguards; no schema or measurement calculation changes.
+- Complete 2026-10-11: solution Debug/Release, Help/docs, disposable CRUD persistence/error/recovery and Full Verification 483/483 PASS; owner confirms save/restart, actual retry, focus and Help.
+
 ## Accepted — Measurement footer coverage
 
 - Scope: add Izod, Charpy, Heat and Flexible counts and wrap the footer at narrower widths.

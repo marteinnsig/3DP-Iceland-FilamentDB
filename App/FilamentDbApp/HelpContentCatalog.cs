@@ -21,6 +21,15 @@ internal static class HelpContentCatalog
             "The safe order for moving work from a purchase to verified engineering output.",
             """
             Bottom status bar
+            Materials edits normally auto-save about 450 ms after committing a cell (Tab, Enter or leaving the cell).
+            Pending Materials changes can also be derived test-status updates after measurements have already saved.
+            Every five minutes the app retries pending committed Materials changes, without closing the active editor or moving focus.
+            Text still being typed must be committed first. Invalid data is never bypassed; Materials not saved shows the reason
+            until a successful Materials save. Hover over the status to read the full reason. Correct the named fields in Materials.
+            Last saved is the latest reported save, not confirmation that every module or active editor is saved.
+            Normal window close commits editors and attempts pending saves; Auto-Save Blocked warns if a save fails.
+            Choose No in that warning to keep the app open and correct the problem. Forced termination cannot run close-time saving.
+
             The footer shows loaded totals independent of filters. Materials counts all rows. Tensile, Impact and Stiffness count
             material rows with numeric raw readings; empty rows are excluded, zero counts and either orientation is sufficient.
             Izod and Charpy count distinct materials with recorded readings, including historical energy readings; empty sample slots

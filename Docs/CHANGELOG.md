@@ -6,6 +6,17 @@ Owner confirms correct counts. Debug/Release, Help/docs and disposable smoke PAS
 Database byte and business-state hashes unchanged. Evidence: Docs/MEASUREMENT_FOOTER_COUNTS_ACCEPTANCE.md.
 Initial sandbox screenshot failure retained; interactive desktop rerun passed.
 
+## Accepted 2026-10-11 - Materials autosave status and periodic retry
+
+Measurement saves can leave derived Materials coverage pending. Added a five-minute retry for dirty committed
+Materials without committing editors, rebuilding filters or rebinding grids. Existing 450 ms editing saves remain.
+Materials save errors now survive statistics refresh and unrelated save messages; missing fields show affected IDs.
+Start here Help explains pending data, active cells, retry timing, Last saved and normal close warnings.
+Existing disposable CRUD scenario checks callback persistence, validation blocking, sticky errors and recovery;
+no new authorization or owner-database access. Solution Debug/Release PASS; disposable CRUD and Full Verification 483/483 PASS.
+Final profile 20261011180607-c8ed4367 restores exact baseline business state; evidence in Reports/MATERIAL_AUTOSAVE_EVIDENCE.md.
+Exact tested normal Release retained. Owner confirms save/restart, real five-minute retry, focus and Help on 2026-10-11.
+
 ## Accepted 2026-10-02 - Measurement footer coverage
 
 Added Izod/Charpy materials with readings, Heat measurement rows and Flexible sessions to the footer.

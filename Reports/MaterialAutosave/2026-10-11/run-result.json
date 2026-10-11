@@ -1,0 +1,312 @@
+{
+  "schema": "3dpiceland-automation-run-v1",
+  "status": "PASS",
+  "scenario": "crud",
+  "safetyPolicy": {
+    "productionBlocked": true,
+    "ftpsBlocked": true,
+    "updatesBlocked": true,
+    "ownerDatabaseAutoSelection": false,
+    "unexpectedDialogsBlocked": true,
+    "inputConfinedToOwnedProcess": true,
+    "reportGenerationAuthorized": false,
+    "materialCrudAuthorized": true,
+    "thermalPersistenceAuthorized": false,
+    "landedCostWorkflowAuthorized": false,
+    "recoveryAuthorized": false,
+    "updaterAuthorized": false
+  },
+  "executable": "C:\\3DPIceland-App-Codex\\App\\FilamentDbApp\\bin\\Release\\net9.0-windows\\3DPIcelandFilamentDB.exe",
+  "seedDatabase": "C:\\Seed-Database\\filamentdb.sqlite",
+  "seedDatabaseHash": "CEF1F9D5142578BBFE91D37A79BF11A6255CE550B8CA388D8582BF2D7D332D09",
+  "databaseHashBefore": "6D3AD9835A97574529C873CF9CB31186BB893FBE5E4C58C550ADD642D2E56978",
+  "databaseHashAfter": "A977E2293DD65F9D3A04F5503D9FF23FE0E62D5DB9A74905BE407037011D64EA",
+  "databaseBusinessHashBefore": "2B09F8539C2B3481ED1969B28F513D5E245C53B08765BAE5F99D4354F55DE4CF",
+  "databaseBusinessHashAfter": "2B09F8539C2B3481ED1969B28F513D5E245C53B08765BAE5F99D4354F55DE4CF",
+  "steps": [
+    {
+      "Name": "startup",
+      "Status": "PASS",
+      "Detail": "Main window found for PID 24564",
+      "AtUtc": "2026-10-11T18:06:16.2687355+00:00"
+    },
+    {
+      "Name": "database-runtime-baseline",
+      "Status": "PASS",
+      "Detail": "6D3AD9835A97574529C873CF9CB31186BB893FBE5E4C58C550ADD642D2E56978",
+      "AtUtc": "2026-10-11T18:06:18.6250069+00:00"
+    },
+    {
+      "Name": "profile-identity",
+      "Status": "PASS",
+      "Detail": "VERIFICATION / DISPOSABLE \u2014 20261011180607-c8ed4367",
+      "AtUtc": "2026-10-11T18:06:18.8619598+00:00"
+    },
+    {
+      "Name": "top-level-tab-navigation",
+      "Status": "PASS",
+      "Detail": "Visited 26/26 unique top-level tabs by AutomationId",
+      "AtUtc": "2026-10-11T18:06:29.2109893+00:00"
+    },
+    {
+      "Name": "navigate-menu-navigation",
+      "Status": "PASS",
+      "Detail": "Invoked 26/26 grouped Navigate commands and verified each stable tab destination",
+      "AtUtc": "2026-10-11T18:06:35.3496891+00:00"
+    },
+    {
+      "Name": "materials-multi-select-discovery",
+      "Status": "PASS",
+      "Detail": "Six no-modifier facets expose open, selection summary and per-filter Clear controls; global Clear is stable",
+      "AtUtc": "2026-10-11T18:06:36.3525596+00:00"
+    },
+    {
+      "Name": "pendulum-detail-discovery",
+      "Status": "PASS",
+      "Detail": "Shared Izod/Charpy summary is discoverable in all nine detail tabs; mechanical and chart summary AutomationIds resolve. Visual usability remains owner acceptance.",
+      "AtUtc": "2026-10-11T18:06:44.7252769+00:00"
+    },
+    {
+      "Name": "nested-tab-navigation",
+      "Status": "PASS",
+      "Detail": "Visited 16/16 unique nested tabs by AutomationId",
+      "AtUtc": "2026-10-11T18:06:44.7260367+00:00"
+    },
+    {
+      "Name": "pendulum-ranking-navigation",
+      "Status": "PASS",
+      "Detail": "Izod/Charpy ranking and category selectors work in the disposable profile; calculations are verified by Full Verification.",
+      "AtUtc": "2026-10-11T18:06:46.8417167+00:00"
+    },
+    {
+      "Name": "contextual-help-navigation",
+      "Status": "PASS",
+      "Detail": "Current-view menu resolved representative top-level and nested tabs in the central Help window",
+      "AtUtc": "2026-10-11T18:06:50.7459434+00:00"
+    },
+    {
+      "Name": "recovery-center-read-only-inspection",
+      "Status": "PASS",
+      "Detail": "Opened and inspected catalog, verify, backup and restore controls without invoking a mutating action",
+      "AtUtc": "2026-10-11T18:06:51.0262295+00:00"
+    },
+    {
+      "Name": "system-diagnostics-read-only-inspection",
+      "Status": "PASS",
+      "Detail": "Verified disposable database/preferences/output/credential/update/evidence/cleanup ownership plus read-only controls",
+      "AtUtc": "2026-10-11T18:06:51.4231173+00:00"
+    },
+    {
+      "Name": "experimental-workflow-integrity",
+      "Status": "PASS",
+      "Detail": "Publication readiness: select a Series.",
+      "AtUtc": "2026-10-11T18:06:51.8228975+00:00"
+    },
+    {
+      "Name": "ecb-reference-offline-boundary",
+      "Status": "PASS",
+      "Detail": "ECB reference not cached. Manual governed Settings remain available.",
+      "AtUtc": "2026-10-11T18:06:52.125756+00:00"
+    },
+    {
+      "Name": "landed-cost-draft-ui-contract",
+      "Status": "PASS",
+      "Detail": "ECB reference rates, derived through EUR derived ISK cross-rate; observation 2026-07-29 Allocation fields use USD; Landed result fields use ISK. Snapshot is locked because this is not an uncalculated v53 Draft.",
+      "AtUtc": "2026-10-11T18:06:52.9670669+00:00"
+    },
+    {
+      "Name": "ai-provider-foundation-isolation",
+      "Status": "PASS",
+      "Detail": "Foundation test completed. No network request or data transfer occurred. Deterministic fake provider is ready; no network or credential is permitted. Provider: fake; model: deterministic-fake; network used: no.",
+      "AtUtc": "2026-10-11T18:06:53.5755571+00:00"
+    },
+    {
+      "Name": "ai-assistant-local-scope",
+      "Status": "PASS",
+      "Detail": "Current visible MaterialID scope: 221 active row(s), 221 unique MaterialID(s). Scope SHA-256: 9B68121538A4. MaterialID preview: MAT0102, MAT0068, MAT0080, MAT0092, MAT0112, MAT0122, MAT0132, MAT0142, MAT0153, MAT0163, MAT0173, MAT0064 \u2026 and 209 more.",
+      "AtUtc": "2026-10-11T18:06:54.134376+00:00"
+    },
+    {
+      "Name": "openai-pilot-payload-isolation",
+      "Status": "PASS",
+      "Detail": "OpenAI pilot: exact payload prepared for 40 MaterialID(s); SHA-256 453D25D229E4\u2026; no network used.",
+      "AtUtc": "2026-10-11T18:06:54.6290745+00:00"
+    },
+    {
+      "Name": "openai-pilot-preview-persistence-guard",
+      "Status": "PASS",
+      "Detail": "Exact payload preview was rejected by Save Session; operational evidence remained unavailable without live network",
+      "AtUtc": "2026-10-11T18:06:54.629077+00:00"
+    },
+    {
+      "Name": "ai-collection-preview",
+      "Status": "PASS",
+      "Detail": "Action: Create a new collection from the current visible MaterialIDs.",
+      "AtUtc": "2026-10-11T18:06:54.8805291+00:00"
+    },
+    {
+      "Name": "ai-coverage-identity",
+      "Status": "PASS",
+      "Detail": "Coverage identity: 0 stable CollectionID/MaterialID, 0 legacy; 0 unique exact legacy binding candidate(s).",
+      "AtUtc": "2026-10-11T18:06:54.9513823+00:00"
+    },
+    {
+      "Name": "central-help",
+      "Status": "PASS",
+      "Detail": "Opened hierarchical overview \u0027Start-to-finish workflow\u0027, verified highlighting plus v50.2.1-v51.1 reference searches",
+      "AtUtc": "2026-10-11T18:06:56.4467219+00:00"
+    },
+    {
+      "Name": "verification-window",
+      "Status": "PASS",
+      "Detail": "Verification Center opened",
+      "AtUtc": "2026-10-11T18:07:26.131164+00:00"
+    },
+    {
+      "Name": "verification-export",
+      "Status": "PASS",
+      "Detail": "TXT/JSON evidence exported",
+      "AtUtc": "2026-10-11T18:07:36.6202715+00:00"
+    },
+    {
+      "Name": "crud-after-create",
+      "Status": "PASS",
+      "Detail": "logical=C28C28F3EEF05674D4E8AED3DE9F46B0E85092A8F959899F15C100D8836DF9D3; business=1BCD1F589E678D7567B4EC540D0C7353FA9029F20F61B92F4E8255BFD6A07724",
+      "AtUtc": "2026-10-11T18:07:44.858786+00:00"
+    },
+    {
+      "Name": "quote-persistence-1",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367: immutable v1 snapshot count=1",
+      "AtUtc": "2026-10-11T18:07:44.8628813+00:00"
+    },
+    {
+      "Name": "usage-persistence-1",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367: events=1; reversals=0; replacements=0; remaining=900",
+      "AtUtc": "2026-10-11T18:07:44.8639681+00:00"
+    },
+    {
+      "Name": "usage-workspace-1",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367: bounded controls present; cleanup blocked by automation; 1 immutable event row(s); 1 exact linked inventory spool choice(s). Usage remains private and is not included in public reports or website output.",
+      "AtUtc": "2026-10-11T18:07:45.5265408+00:00"
+    },
+    {
+      "Name": "usage-analytics-1",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367: effective=1; ledger=1; filament=100,00 g; print=1 h; coverage=Grams 1/1\nPrint 1/1\nHands-on 0/1",
+      "AtUtc": "2026-10-11T18:07:45.7944353+00:00"
+    },
+    {
+      "Name": "crud-create-save",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367",
+      "AtUtc": "2026-10-11T18:07:45.794437+00:00"
+    },
+    {
+      "Name": "crud-material-periodic-autosave",
+      "Status": "PASS",
+      "Detail": "Authorized fixture exercised the five-minute callback: pending notes persisted, validation blocked invalid Product Line, error survived statistics refresh and unrelated save, corrected data saved and original notes restored. No wall-clock wait or owner data access.",
+      "AtUtc": "2026-10-11T18:07:45.7944384+00:00"
+    },
+    {
+      "Name": "crud-pendulum-coverage-and-consumers",
+      "Status": "PASS",
+      "Detail": "Authorized fixture exercised notes/NB-only absence, explicit-zero presence, per-method Materials filters, shared summaries and radar projections through Fast commit callbacks; this is not physical keyboard usability acceptance.",
+      "AtUtc": "2026-10-11T18:07:45.7944393+00:00"
+    },
+    {
+      "Name": "crud-after-edit",
+      "Status": "PASS",
+      "Detail": "logical=3274CFC6F53017F105F0B9BF749053C88011301DC94694DCE042399399F5424F; business=2CA46579B5EAB1497C61EE7A54A64714A2F7EAA6143368874F65DFD2E1436D3E",
+      "AtUtc": "2026-10-11T18:08:07.3584078+00:00"
+    },
+    {
+      "Name": "quote-persistence-1",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367: immutable v1 snapshot count=1",
+      "AtUtc": "2026-10-11T18:08:07.3593677+00:00"
+    },
+    {
+      "Name": "usage-persistence-3",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367: events=3; reversals=1; replacements=1; remaining=920",
+      "AtUtc": "2026-10-11T18:08:07.3603757+00:00"
+    },
+    {
+      "Name": "usage-workspace-3",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367: bounded controls present; cleanup blocked by automation; 3 immutable event row(s); 1 exact linked inventory spool choice(s). Usage remains private and is not included in public reports or website output.",
+      "AtUtc": "2026-10-11T18:08:08.0935623+00:00"
+    },
+    {
+      "Name": "usage-analytics-3",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367: effective=1; ledger=3; filament=80,00 g; print=55 min; coverage=Grams 1/1\nPrint 1/1\nHands-on 0/1",
+      "AtUtc": "2026-10-11T18:08:08.326591+00:00"
+    },
+    {
+      "Name": "crud-restart-edit-save",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367",
+      "AtUtc": "2026-10-11T18:08:08.3265924+00:00"
+    },
+    {
+      "Name": "crud-pendulum-clear-last-reading",
+      "Status": "PASS",
+      "Detail": "After restart, clearing each method\u0027s last numeric readings removed coverage despite NB and notes; restoring one reading restored coverage, summary and radar evidence.",
+      "AtUtc": "2026-10-11T18:08:08.3265925+00:00"
+    },
+    {
+      "Name": "crud-after-delete",
+      "Status": "PASS",
+      "Detail": "logical=5E9BC3FD7491FEFEFD17AB234BBD0E9634EE1944C4784CC45157502FD8580862; business=2B09F8539C2B3481ED1969B28F513D5E245C53B08765BAE5F99D4354F55DE4CF",
+      "AtUtc": "2026-10-11T18:08:23.9409195+00:00"
+    },
+    {
+      "Name": "quote-persistence-0",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367: immutable v1 snapshot count=0",
+      "AtUtc": "2026-10-11T18:08:23.942001+00:00"
+    },
+    {
+      "Name": "crud-restart-delete-save",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367",
+      "AtUtc": "2026-10-11T18:08:23.9420754+00:00"
+    },
+    {
+      "Name": "usage-persistence-0",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367: events=0; reversals=0; replacements=0; remaining=absent",
+      "AtUtc": "2026-10-11T18:08:35.6515858+00:00"
+    },
+    {
+      "Name": "crud-restart-verify-absent",
+      "Status": "PASS",
+      "Detail": "AUTc8ed4367",
+      "AtUtc": "2026-10-11T18:08:35.6516662+00:00"
+    },
+    {
+      "Name": "ai-storage-isolation",
+      "Status": "PASS",
+      "Detail": "Disposable preferences remained free of AI session/collection files",
+      "AtUtc": "2026-10-11T18:08:35.9412185+00:00"
+    },
+    {
+      "Name": "database-hash",
+      "Status": "PASS",
+      "Detail": "A977E2293DD65F9D3A04F5503D9FF23FE0E62D5DB9A74905BE407037011D64EA",
+      "AtUtc": "2026-10-11T18:08:36.0127299+00:00"
+    },
+    {
+      "Name": "database-business-state-hash",
+      "Status": "PASS",
+      "Detail": "2B09F8539C2B3481ED1969B28F513D5E245C53B08765BAE5F99D4354F55DE4CF",
+      "AtUtc": "2026-10-11T18:08:36.0127331+00:00"
+    }
+  ],
+  "error": null,
+  "completedAtUtc": "2026-10-11T18:08:36.0137751+00:00"
+}
