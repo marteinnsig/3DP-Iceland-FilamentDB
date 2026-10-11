@@ -1,5 +1,7 @@
 # Help Control and Field Ledger
 
+Footer correction accepted 2026-10-11: start-here owns NativeCountStatusText. Tensile/Impact/Stiffness count material rows with numeric raw readings; blanks excluded, zero included. Other units unchanged. Full Verification 483/483 PASS.
+
 Accepted footer coverage: start-here owns NativeCountStatusText (read-only loaded counts).
 Izod/Charpy count materials with readings, Heat counts measurement rows, Flexible counts sessions.
 No editor or persistence change; startup/save refresh paths own updates. Owner runtime/visual acceptance 2026-10-02.

@@ -1,3 +1,11 @@
+## Accepted 2026-10-11 - Measurement footer counts
+
+Tensile/Impact/Stiffness count material rows with numeric raw readings instead of all placeholder rows.
+Blanks excluded; zero/either orientation included. Other units unchanged. Help and Verification regression updated.
+Owner confirms correct counts. Debug/Release, Help/docs and disposable smoke PASS; Full Verification 483/483 PASS.
+Database byte and business-state hashes unchanged. Evidence: Docs/MEASUREMENT_FOOTER_COUNTS_ACCEPTANCE.md.
+Initial sandbox screenshot failure retained; interactive desktop rerun passed.
+
 ## Accepted 2026-10-02 - Measurement footer coverage
 
 Added Izod/Charpy materials with readings, Heat measurement rows and Flexible sessions to the footer.

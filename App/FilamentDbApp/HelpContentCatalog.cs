@@ -21,7 +21,8 @@ internal static class HelpContentCatalog
             "The safe order for moving work from a purchase to verified engineering output.",
             """
             Bottom status bar
-            The footer shows loaded totals independent of filters. Materials, Tensile, Impact and Stiffness retain their row counts.
+            The footer shows loaded totals independent of filters. Materials counts all rows. Tensile, Impact and Stiffness count
+            material rows with numeric raw readings; empty rows are excluded, zero counts and either orientation is sufficient.
             Izod and Charpy count distinct materials with recorded readings, including historical energy readings; empty sample slots
             do not count. Heat counts rows with measurement data. Flexible sessions counts all test sessions, including inactive ones.
             These counts are not valid-result or individual-specimen totals. Hover over the counts for the same explanation.

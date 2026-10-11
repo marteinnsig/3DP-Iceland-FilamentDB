@@ -1,0 +1,192 @@
+{
+  "schema": "3dpiceland-automation-run-v1",
+  "status": "PASS",
+  "scenario": "smoke",
+  "safetyPolicy": {
+    "productionBlocked": true,
+    "ftpsBlocked": true,
+    "updatesBlocked": true,
+    "ownerDatabaseAutoSelection": false,
+    "unexpectedDialogsBlocked": true,
+    "inputConfinedToOwnedProcess": true,
+    "reportGenerationAuthorized": false,
+    "materialCrudAuthorized": false,
+    "thermalPersistenceAuthorized": false,
+    "landedCostWorkflowAuthorized": false,
+    "recoveryAuthorized": false,
+    "updaterAuthorized": false
+  },
+  "executable": "C:\\3DPIceland-App-Codex\\App\\FilamentDbApp\\bin\\Release\\net9.0-windows\\3DPIcelandFilamentDB.exe",
+  "seedDatabase": "C:\\Seed-Database\\filamentdb.sqlite",
+  "seedDatabaseHash": "CEF1F9D5142578BBFE91D37A79BF11A6255CE550B8CA388D8582BF2D7D332D09",
+  "databaseHashBefore": "F9BBDF397B0B91CDBE11C6DF83AD5A4AD504F78B52BD15D87F4E2D9E01FC7105",
+  "databaseHashAfter": "F9BBDF397B0B91CDBE11C6DF83AD5A4AD504F78B52BD15D87F4E2D9E01FC7105",
+  "databaseBusinessHashBefore": "2B09F8539C2B3481ED1969B28F513D5E245C53B08765BAE5F99D4354F55DE4CF",
+  "databaseBusinessHashAfter": "2B09F8539C2B3481ED1969B28F513D5E245C53B08765BAE5F99D4354F55DE4CF",
+  "steps": [
+    {
+      "Name": "startup",
+      "Status": "PASS",
+      "Detail": "Main window found for PID 126488",
+      "AtUtc": "2026-10-11T15:45:06.067139+00:00"
+    },
+    {
+      "Name": "database-runtime-baseline",
+      "Status": "PASS",
+      "Detail": "F9BBDF397B0B91CDBE11C6DF83AD5A4AD504F78B52BD15D87F4E2D9E01FC7105",
+      "AtUtc": "2026-10-11T15:45:06.6097878+00:00"
+    },
+    {
+      "Name": "profile-identity",
+      "Status": "PASS",
+      "Detail": "VERIFICATION / DISPOSABLE \u2014 20261011154457-00d6048d",
+      "AtUtc": "2026-10-11T15:45:08.9041173+00:00"
+    },
+    {
+      "Name": "top-level-tab-navigation",
+      "Status": "PASS",
+      "Detail": "Visited 26/26 unique top-level tabs by AutomationId",
+      "AtUtc": "2026-10-11T15:45:18.6744203+00:00"
+    },
+    {
+      "Name": "navigate-menu-navigation",
+      "Status": "PASS",
+      "Detail": "Invoked 26/26 grouped Navigate commands and verified each stable tab destination",
+      "AtUtc": "2026-10-11T15:45:24.9266528+00:00"
+    },
+    {
+      "Name": "materials-multi-select-discovery",
+      "Status": "PASS",
+      "Detail": "Six no-modifier facets expose open, selection summary and per-filter Clear controls; global Clear is stable",
+      "AtUtc": "2026-10-11T15:45:25.8564884+00:00"
+    },
+    {
+      "Name": "pendulum-detail-discovery",
+      "Status": "PASS",
+      "Detail": "Shared Izod/Charpy summary is discoverable in all nine detail tabs; mechanical and chart summary AutomationIds resolve. Visual usability remains owner acceptance.",
+      "AtUtc": "2026-10-11T15:45:34.0574907+00:00"
+    },
+    {
+      "Name": "nested-tab-navigation",
+      "Status": "PASS",
+      "Detail": "Visited 16/16 unique nested tabs by AutomationId",
+      "AtUtc": "2026-10-11T15:45:34.0579525+00:00"
+    },
+    {
+      "Name": "pendulum-ranking-navigation",
+      "Status": "PASS",
+      "Detail": "Izod/Charpy ranking and category selectors work in the disposable profile; calculations are verified by Full Verification.",
+      "AtUtc": "2026-10-11T15:45:36.1985226+00:00"
+    },
+    {
+      "Name": "contextual-help-navigation",
+      "Status": "PASS",
+      "Detail": "Current-view menu resolved representative top-level and nested tabs in the central Help window",
+      "AtUtc": "2026-10-11T15:45:40.1617501+00:00"
+    },
+    {
+      "Name": "recovery-center-read-only-inspection",
+      "Status": "PASS",
+      "Detail": "Opened and inspected catalog, verify, backup and restore controls without invoking a mutating action",
+      "AtUtc": "2026-10-11T15:45:40.4525179+00:00"
+    },
+    {
+      "Name": "system-diagnostics-read-only-inspection",
+      "Status": "PASS",
+      "Detail": "Verified disposable database/preferences/output/credential/update/evidence/cleanup ownership plus read-only controls",
+      "AtUtc": "2026-10-11T15:45:40.9100339+00:00"
+    },
+    {
+      "Name": "experimental-workflow-integrity",
+      "Status": "PASS",
+      "Detail": "Publication readiness: select a Series.",
+      "AtUtc": "2026-10-11T15:45:41.2923066+00:00"
+    },
+    {
+      "Name": "ecb-reference-offline-boundary",
+      "Status": "PASS",
+      "Detail": "ECB reference not cached. Manual governed Settings remain available.",
+      "AtUtc": "2026-10-11T15:45:41.5546854+00:00"
+    },
+    {
+      "Name": "landed-cost-draft-ui-contract",
+      "Status": "PASS",
+      "Detail": "ECB reference rates, derived through EUR derived ISK cross-rate; observation 2026-07-29 Allocation fields use USD; Landed result fields use ISK. Snapshot is locked because this is not an uncalculated v53 Draft.",
+      "AtUtc": "2026-10-11T15:45:42.3954994+00:00"
+    },
+    {
+      "Name": "ai-provider-foundation-isolation",
+      "Status": "PASS",
+      "Detail": "Foundation test completed. No network request or data transfer occurred. Deterministic fake provider is ready; no network or credential is permitted. Provider: fake; model: deterministic-fake; network used: no.",
+      "AtUtc": "2026-10-11T15:45:42.980269+00:00"
+    },
+    {
+      "Name": "ai-assistant-local-scope",
+      "Status": "PASS",
+      "Detail": "Current visible MaterialID scope: 221 active row(s), 221 unique MaterialID(s). Scope SHA-256: 9B68121538A4. MaterialID preview: MAT0102, MAT0068, MAT0080, MAT0092, MAT0112, MAT0122, MAT0132, MAT0142, MAT0153, MAT0163, MAT0173, MAT0064 \u2026 and 209 more.",
+      "AtUtc": "2026-10-11T15:45:43.5460455+00:00"
+    },
+    {
+      "Name": "openai-pilot-payload-isolation",
+      "Status": "PASS",
+      "Detail": "OpenAI pilot: exact payload prepared for 40 MaterialID(s); SHA-256 453D25D229E4\u2026; no network used.",
+      "AtUtc": "2026-10-11T15:45:44.0093679+00:00"
+    },
+    {
+      "Name": "openai-pilot-preview-persistence-guard",
+      "Status": "PASS",
+      "Detail": "Exact payload preview was rejected by Save Session; operational evidence remained unavailable without live network",
+      "AtUtc": "2026-10-11T15:45:44.009371+00:00"
+    },
+    {
+      "Name": "ai-collection-preview",
+      "Status": "PASS",
+      "Detail": "Action: Create a new collection from the current visible MaterialIDs.",
+      "AtUtc": "2026-10-11T15:45:44.2116123+00:00"
+    },
+    {
+      "Name": "ai-coverage-identity",
+      "Status": "PASS",
+      "Detail": "Coverage identity: 0 stable CollectionID/MaterialID, 0 legacy; 0 unique exact legacy binding candidate(s).",
+      "AtUtc": "2026-10-11T15:45:44.2624001+00:00"
+    },
+    {
+      "Name": "central-help",
+      "Status": "PASS",
+      "Detail": "Opened hierarchical overview \u0027Start-to-finish workflow\u0027, verified highlighting plus v50.2.1-v51.1 reference searches",
+      "AtUtc": "2026-10-11T15:45:45.6725052+00:00"
+    },
+    {
+      "Name": "verification-window",
+      "Status": "PASS",
+      "Detail": "Verification Center opened",
+      "AtUtc": "2026-10-11T15:46:14.9669293+00:00"
+    },
+    {
+      "Name": "verification-export",
+      "Status": "PASS",
+      "Detail": "TXT/JSON evidence exported",
+      "AtUtc": "2026-10-11T15:46:24.8178849+00:00"
+    },
+    {
+      "Name": "ai-storage-isolation",
+      "Status": "PASS",
+      "Detail": "Disposable preferences remained free of AI session/collection files",
+      "AtUtc": "2026-10-11T15:46:25.283884+00:00"
+    },
+    {
+      "Name": "database-hash",
+      "Status": "PASS",
+      "Detail": "F9BBDF397B0B91CDBE11C6DF83AD5A4AD504F78B52BD15D87F4E2D9E01FC7105",
+      "AtUtc": "2026-10-11T15:46:25.3684302+00:00"
+    },
+    {
+      "Name": "database-business-state-hash",
+      "Status": "PASS",
+      "Detail": "2B09F8539C2B3481ED1969B28F513D5E245C53B08765BAE5F99D4354F55DE4CF",
+      "AtUtc": "2026-10-11T15:46:25.368431+00:00"
+    }
+  ],
+  "error": null,
+  "completedAtUtc": "2026-10-11T15:46:25.3690573+00:00"
+}

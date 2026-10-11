@@ -1831,7 +1831,7 @@ public partial class MainWindow : Window
             int PendulumMaterials(string method) => _pendulumRuns
                 .Where(row => row.Method == method && measuredRunIds.Contains(row.RunId))
                 .Select(row => row.MaterialID).Distinct(StringComparer.OrdinalIgnoreCase).Count();
-            countText.Text = $"Materials: {_nativeMaterialRows.Count} | Tensile: {_nativeTensileRows.Count} | Impact: {_nativeImpactRows.Count} | Stiffness: {_nativeStiffnessRows.Count}" +
+            countText.Text = $"Materials: {_nativeMaterialRows.Count} | Tensile: {_nativeTensileRows.Count(NativeTensileRowHasMeasurementData)} | Impact: {_nativeImpactRows.Count(NativeImpactRowHasMeasurementData)} | Stiffness: {_nativeStiffnessRows.Count(NativeStiffnessRowHasMeasurementData)}" +
                 $" | Izod: {PendulumMaterials("Izod")} | Charpy: {PendulumMaterials("Charpy")}" +
                 $" | Heat: {_nativeThermalDeflectionRows.Count(row => row.HasMeasurementData())} | Flexible sessions: {_flexibleTestSessions.Count}";
         }
@@ -18468,6 +18468,14 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
         checks.Add(new VerificationCheck("Low stock report generation", purchasingReports.Passed, "Canonical Low Stock Report HTML/text payload generated"));
         checks.Add(new VerificationCheck("Inventory verification report generation", purchasingReports.Passed, purchasingReports.ReportsGenerated + " purchasing reports generated from SQLite-backed data"));
         checks.Add(new VerificationCheck("Purchasing intelligence generation", purchasingReports.Passed && purchasingReports.ReportsGenerated == 6, "Supplier, spend, category, price-history and recommendation intelligence generated from SQLite-backed purchasing data"));
+        checks.Add(new VerificationCheck("Measured material footer counts",
+            !NativeTensileRowHasMeasurementData(new NativeTensileMeasurementRow()) &&
+            NativeTensileRowHasMeasurementData(new NativeTensileMeasurementRow { Flat1 = "0" }) &&
+            !NativeImpactRowHasMeasurementData(new NativeImpactMeasurementRow()) &&
+            NativeImpactRowHasMeasurementData(new NativeImpactMeasurementRow { Upright1 = "25" }) &&
+            !NativeStiffnessRowHasMeasurementData(new NativeStiffnessMeasurementRow()) &&
+            NativeStiffnessRowHasMeasurementData(new NativeStiffnessMeasurementRow { Revolutions = "0" }),
+            "Footer uses shared raw-measurement predicates: blank rows excluded, numeric zero included, either orientation sufficient"));
         checks.Add(new VerificationCheck("Daily workflow live counts", true, "Material header, native grid and footer counts are derived from the current SQLite-backed collections and filtered view"));
         checks.Add(new VerificationCheck("Daily workflow entry contrast", true, "Tensile and impact entry cells use readable dark text across yellow and green value bands"));
         checks.Add(new VerificationCheck("Materials workflow column layout", true, "High-use website, video and test-status columns appear directly after Color; Diameter is hidden from the daily grid"));

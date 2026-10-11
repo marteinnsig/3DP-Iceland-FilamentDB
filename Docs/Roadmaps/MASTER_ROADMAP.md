@@ -10,6 +10,7 @@ Current roadmap increment: **v70.0.4 — Izod and Charpy Methodology**
 
 Current acceptance note: owner accepted website methodology and whitepaper content on 2026-09-29; exact tested v70.0.4 bytes promoted to normal Release.
 
+Footer correction accepted 2026-10-11: measured Tensile/Impact/Stiffness material counts; owner acceptance, Debug/Release, Help/docs and Full Verification 483/483 PASS. Evidence: Docs/MEASUREMENT_FOOTER_COUNTS_ACCEPTANCE.md.
 Next note: v70.0.0 replaces cohort-relative impact scoring with versioned references and explicit coverage.
 Delivery preference: provide the runnable candidate application; no ZIP is required for v70.
 Prior v67.0.10 rollback and v67.0.11 deferral remain recorded; no earlier input issue is declared solved by v68.

@@ -427,7 +427,7 @@
             <StatusBarItem>
                 <TextBlock x:Name="NativeCountStatusText" Text="Native workflow" TextWrapping="Wrap"
                            AutomationProperties.AutomationId="NativeCountStatusText"
-                           ToolTip="Loaded totals, independent of filters. Materials/Tensile/Impact/Stiffness: existing row counts. Izod/Charpy: materials with recorded readings (including historical energy readings). Heat: rows with measurement data. Flexible: all test sessions, including inactive sessions. Counts do not certify valid results." />
+                           ToolTip="Loaded totals, independent of filters. Materials: all material rows. Tensile/Impact/Stiffness: material rows with numeric raw readings; empty rows excluded, zero included. Izod/Charpy: materials with recorded readings (including historical energy readings). Heat: rows with measurement data. Flexible: all test sessions, including inactive sessions. Counts do not certify valid results." />
             </StatusBarItem>
         </StatusBar>
 

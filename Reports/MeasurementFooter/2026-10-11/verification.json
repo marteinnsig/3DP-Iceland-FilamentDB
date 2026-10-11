@@ -1,0 +1,3407 @@
+{
+  "schema": "3dpiceland-automation-verification-v1",
+  "profileId": "20261011154457-00d6048d",
+  "runtimeProfileKind": "DisposableVerification",
+  "runtimeProfileIdentity": "VERIFICATION / DISPOSABLE \u2014 20261011154457-00d6048d",
+  "runtimeCapabilities": "Owner database: BLOCKED; Production/FTPS: BLOCKED; updates: BLOCKED",
+  "releaseVersion": "70.0.4",
+  "releaseCode": "DIRECT-IMPACT-METHODOLOGY",
+  "releaseTitle": "Izod and Charpy Methodology",
+  "profile": "Full Data Verification",
+  "Passed": true,
+  "ApplicableCount": 483,
+  "PassedCount": 483,
+  "FailedCount": 0,
+  "NotApplicableCount": 0,
+  "MandatoryCount": 383,
+  "MandatoryEvidenceCount": 17,
+  "MandatoryEvidenceFailedCount": 0,
+  "MandatoryNotApplicableCount": 0,
+  "CanonicalDataNotApplicableCount": 0,
+  "checks": [
+    {
+      "Name": "v51.1 governed runtime profile identity and capability contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "VERIFICATION / DISPOSABLE \u2014 20261011154457-00d6048d; Owner database: BLOCKED; Production/FTPS: BLOCKED; updates: BLOCKED; database ownership: Disposable manifest database folder"
+    },
+    {
+      "Name": "v51.2 seedless Clean Readiness profile contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Clean Readiness is manifest-contained, seedless and blocks owner database, Production/FTPS and updates"
+    },
+    {
+      "Name": "v51.3 Verification classification and mandatory evidence contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Runtime/data profiles are distinct; exact-name applicability prevents detail text from granting N/A; path, recovery and updater evidence remain mandatory"
+    },
+    {
+      "Name": "v51.4 profile ownership and retirement reconciliation contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Startup, diagnostics, credentials, update history, evidence and cleanup ownership are explicit; caller-free identity/network adapters are retired"
+    },
+    {
+      "Name": "Automated runtime acceptance safety foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Disposable-path validation, hard Production/FTPS/update locks, stable UI Automation IDs and TXT/JSON evidence are present"
+    },
+    {
+      "Name": "Automated report acceptance safety foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Scenario authorization, disposable output binding, stable report completion IDs and artifact evidence contracts are present"
+    },
+    {
+      "Name": "Disposable CRUD acceptance safety foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Exact-ID scenario authorization, profile-only commands and stable CRUD persistence evidence IDs are present"
+    },
+    {
+      "Name": "v61.0.8 disposable thermal persistence acceptance foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Exact-MaterialID thermal authorization and stable create, update, clear and absent evidence controls are present"
+    },
+    {
+      "Name": "Disposable backup and recovery acceptance safety foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Scenario authorization, legacy/new backup discovery, governed Excel restore and pre/post evidence contracts are present"
+    },
+    {
+      "Name": "Guarded updater acceptance safety foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Explicit disposable updater authorization, profile forwarding, transaction rollback and health contracts are present"
+    },
+    {
+      "Name": "v59.0.1 canonical workspace tab order",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "All 26 top-level tabs match the owner-approved canonical sequence"
+    },
+    {
+      "Name": "v59.0.2 grouped Navigate menu destination contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Six ordered groups map 26 unique menu commands to 26 stable top-level tab AutomationIds"
+    },
+    {
+      "Name": "v59.0.3 redundant navigation and prototype retirement contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Legacy Website/prototype handlers are absent; Navigate and embedded rendering ownership remain"
+    },
+    {
+      "Name": "v59.0.1 Inventory referenced-spool save and restricted-delete contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Referenced spools update without delete/reinsert; restricted deletion rolls back atomically"
+    },
+    {
+      "Name": "v60.0.1 Purchase Material parent/link transaction and rollback contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Parent Material and Purchase Order link commit atomically; rejected links preserve landed cost and retry cleanly"
+    },
+    {
+      "Name": "v60.0.2 Fast Materials editor ownership and deferred-refresh contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Stale focus events cannot close the active editor; background canonical refresh defers only while editing"
+    },
+    {
+      "Name": "v60.0.3 Material identity field-independent measurement refresh contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Black/Yellow/Black Color-only changes reach all measurement rows by MaterialID without changing samples or notes"
+    },
+    {
+      "Name": "v61.0.1 Thermal deflection schema, method and persistence contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v41, immutable method v1 and manual add/update/clear persistence pass"
+    },
+    {
+      "Name": "v61.0.2 Native Heat Deflection workspace, Help and persistence contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "23-tab navigation, 15-column Fast grid, 25-300 \u00B0C validation, manual auto-save/clear and method Help pass"
+    },
+    {
+      "Name": "v61.0.3 Supported thermal provenance and retired transition UI contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Retained workbook/manual results have canonical method, range, MaterialID and provenance; one-time import/export surfaces are retired"
+    },
+    {
+      "Name": "v61.0.5 Thermal analytics projection and legacy Overall invariance contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Fixed 200 \u00B0C thermal score, missing/saturation rules and independent app decision surfaces pass without changing legacy Overall"
+    },
+    {
+      "Name": "v62.0.0 Inventory canonical Material-name projection contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical Website Display Name is reused once; computed-name and MaterialID fallbacks plus Inventory/Low Stock reports pass"
+    },
+    {
+      "Name": "v62.0.1 Materials pricing derived-field immediate refresh contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Committed MSRP/Landed amount, currency and spool-weight dependencies refresh canonical USD and USD/kg snapshot cells immediately"
+    },
+    {
+      "Name": "v62.0.2 Purchase-order line first-click and keyboard navigation contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Single-cell first-click plus Enter/Tab/Shift\u002BTab/arrows use editable columns and skip locked landed-cost inputs"
+    },
+    {
+      "Name": "v62.0.3 Materials Heat coverage and six-module Tested Status contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v42, read-only In Heat, saved-layout placement and six-module Tested Status match canonical Heat Deflection results"
+    },
+    {
+      "Name": "v64.0.7 Materials Flexible membership and Tested Status isolation contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Read-only In Flexible follows factual MaterialID-linked readings after In Heat; Tested Status requires six mechanical/thermal methods, independently of Flexible"
+    },
+    {
+      "Name": "v64.0.8 Flexible edit-transaction rebind safety contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Four reading grids share close-before-ItemsSource-rebind ownership and failed edit closure remains contained"
+    },
+    {
+      "Name": "v67.0.5 Flexible session template contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Ten compression specimens plus one Shore coupon; blank results, independent n and settings snapshots"
+    },
+    {
+      "Name": "v67.0.6 Flexible retired-control contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Temporary correction handler and legacy display column removed; legacy database roundtrip remains supported"
+    },
+    {
+      "Name": "v67.0.8 unused Shore template repair",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Unused legacy rows receive 10 s/8 mm once; measured/custom rows and later edits are preserved"
+    },
+    {
+      "Name": "v67.0.9 Flexible selection isolation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Synthetic WPF stale-current/new-selection and keyboard transitions keep same-label Shore specimens isolated"
+    },
+    {
+      "Name": "v67.0.10 Fast Flexible input",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Six shared-renderer input hosts; detached TVL validation preserves source and notifications; numeric navigation"
+    },
+    {
+      "Name": "v68.0.3 method intelligence contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Independent method leaders, rankings, awards, suggestions and missing-value handling"
+    },
+    {
+      "Name": "v68.0.3 advisor method coverage",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Seven-axis explanation, alternatives and missing evidence"
+    },
+    {
+      "Name": "v68.0.2 integrated Materials and radar contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Six-method transitions, read-only flags, actual CV percent and eight-axis order"
+    },
+    {
+      "Name": "v68.0.2 Izod and Charpy presentation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Eight-axis public radar, allowed cohort references and missing/zero chart values"
+    },
+    {
+      "Name": "Legacy Impact auditable recalculation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "{\r\n  \u0022Status\u0022: \u0022PASS\u0022,\r\n  \u0022Folder\u0022: \u0022C:\\\\Users\\\\maddi\\\\AppData\\\\Local\\\\Temp\\\\3DPIceland-LegacyImpact-7ff60fd1badc4929ae495d43b6079b91\u0022,\r\n  \u0022SeedSha256\u0022: null,\r\n  \u0022SeedNativeGroups\u0022: 0,\r\n  \u0022SeedPendingGroups\u0022: 0,\r\n  \u0022SeedValidReadings\u0022: 0,\r\n  \u0022SeedTrace\u0022: null,\r\n  \u0022BackupPath\u0022: \u0022C:\\\\Users\\\\maddi\\\\AppData\\\\Local\\\\Temp\\\\3DPIceland-LegacyImpact-7ff60fd1badc4929ae495d43b6079b91\\\\3DPIceland-Manual-2026-10-11_154618_033.bak\u0022,\r\n  \u0022BackupSha256\u0022: \u00224E9747812F5DECEB8C9178BA4A5A08D83886E886D1B6557B9D8E35E3B339E585\u0022,\r\n  \u0022AuditPath\u0022: \u0022C:\\\\Users\\\\maddi\\\\AppData\\\\Local\\\\Temp\\\\3DPIceland-LegacyImpact-7ff60fd1badc4929ae495d43b6079b91\\\\3DPIceland-Manual-2026-10-11_154618_033.bak.impact-recalculation.json\u0022,\r\n  \u0022UpdatedExperimentalRows\u0022: 1,\r\n  \u0022PendingGroups\u0022: 1,\r\n  \u0022Checks\u0022: \u0022backup/hash, raw/notes/time identity, stale preview rejection, invalid/future calibration rejection, unknown units/orientation pending and cache protection, derived persistence, idempotent repeated apply\u0022\r\n}"
+    },
+    {
+      "Name": "Legacy Impact energy and area units",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Percent endpoints, independent midpoint, invalid calibration, nonfinite raw validation and service parity"
+    },
+    {
+      "Name": "v70.0.1 legacy radar reference",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Rig-capacity percent, typed/metric parity, grouped and exported radar binding, modern scoring isolation"
+    },
+    {
+      "Name": "v70 method-aware score policy",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Fixed references, five equal families, coverage, zero and legacy isolation"
+    },
+    {
+      "Name": "v68.0.2 Izod and Charpy projection",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Direct method statistics, six-module completeness, explicit cohort isolation and missing/zero semantics"
+    },
+    {
+      "Name": "v68.0.1 Izod and Charpy calculations",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Direct instrument kJ/m\u00B2, ten slots, sample SD/CV/confidence, blank/no-break and legacy energy isolation"
+    },
+    {
+      "Name": "v68.0.1 Izod and Charpy persistence",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Disposable SQLite raw graph/image roundtrip, canonical foreign keys and legacy Impact preservation"
+    },
+    {
+      "Name": "v68.0.1 Izod and Charpy Fast input",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Two direct shared Fast hosts, detached rejection/source preservation and editable-cell navigation"
+    },
+    {
+      "Name": "v68.0.1 Izod and Charpy report projection",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Separate direct-value summaries, public field allowlist and preserved legacy energy/score projections"
+    },
+    {
+      "Name": "v64.0.1 standalone flexible-material testing contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v44, MaterialID-linked sessions, nullable formulas, specimen/cycle raw rows, separate Shore scales and standalone UI pass"
+    },
+    {
+      "Name": "v66.0.0 Compression retention surface contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Read-only compression retention, dependent notification and retired create action pass"
+    },
+    {
+      "Name": "v66.0.1 Recovery TVL input contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "TVL alternate height input and dependent notifications are registered"
+    },
+    {
+      "Name": "v66.0.2 Recovery hold default contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Persisted Recovery hold setting, 30 s built-in, validation and new-row snapshots pass"
+    },
+    {
+      "Name": "v66.0.3 Saved Flexible evidence and Material Detail contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical evidence, compact General summary, grouped Mechanical tables and one collapsed setup per method pass"
+    },
+    {
+      "Name": "v66.0.3.1 Flexible Material Detail handoff contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Exact-condition comparison, unique matching peers, measured-topic video briefs and scoped guidance pass"
+    },
+    {
+      "Name": "v66.0.4 Flexible report projection and PDF continuation contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Safe aggregate fields, original Overall/completeness, report templates and complete paginated PDF results pass"
+    },
+    {
+      "Name": "v66.0.5 Flexible rankings and exports contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Exact conditions, independent peers, ties, missing/zero, directional awards and safe scoped exports pass"
+    },
+    {
+      "Name": "v67.0.4 Flexible specimen numeric ordering",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Natural ascending/descending labels preserve multiple digit groups and avoid numeric overflow"
+    },
+    {
+      "Name": "v66.0.6 Flexible intelligence and snapshot contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Scoped measured topics, exact peers, immutable idea snapshots and safe explicit AI payload hashes pass"
+    },
+    {
+      "Name": "v66.0.7 Flexible analytics and comparison contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Scoped condition charts preserve native units, missing/zero, independent samples and separate manufacturers"
+    },
+    {
+      "Name": "v66.0.8 Flexible research output coverage",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Flexible-only planning, exact pairs, coverage gaps, calendar and playlist facts pass without Overall"
+    },
+    {
+      "Name": "v67.0.1 Horizontal website presentation contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Four vertical renderers replaced once; source data/helpers preserved; unsupported template fails closed"
+    },
+    {
+      "Name": "v67.0.0 Flexible website public chart projection",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Safe scope, native means, SD/CV fidelity, missing/zero, no N/min/max/private metadata and embedded page pass"
+    },
+    {
+      "Name": "v64.0.2 configurable flexible-specimen defaults contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Three positive SQLite-canonical geometry defaults exist, compression defaults are 9 x 10 mm with separate Shore thickness, and snapshots remain editable"
+    },
+    {
+      "Name": "v64.0.5 flexible-grid direct editing and displacement default contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Prepared points snapshot 2 mm; direct editing and immediate canonical/visible-row deletion pass"
+    },
+    {
+      "Name": "v64.0.6 flexible cell-entry and keyboard-navigation contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Flexible cell-mode grids preserve editor focus without row rebinding, expose shared Tab/Shift\u002BTab/arrow routing, and keep Compression Force N editable"
+    },
+    {
+      "Name": "v64.0.3 TPU Compression Method v1.0 contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Accepted 9 x 10 mm method, 10 s / primary 30 s readings, corrected ten-specimen statistics and non-standard public wording pass"
+    },
+    {
+      "Name": "v64.0.4 pending compression-row validation contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Blank prepared 10 s / 30 s rows are valid; measured reached rows require displacement and force-limited rows remain explicit"
+    },
+    {
+      "Name": "v59.0.9 Inventory restricted-delete recovery coordination contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Collection-change saves and canonical reloads have distinct guarded phases"
+    },
+    {
+      "Name": "v59.0.10 selected-Material Usage history cleanup contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Scoped chain deletion preserves other Materials, spools and remaining weight; default-No UI is present"
+    },
+    {
+      "Name": "Canonical material projection",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "221 visible and 221 active unique MaterialIDs come from the native SQLite-backed Materials view; legacy tab absent"
+    },
+    {
+      "Name": "v54 Materials OR-within AND-between filter contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "OR-within, AND-between, search, archived, unlinked and Clear contracts pass"
+    },
+    {
+      "Name": "v54 Materials filter persistence compatibility",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Material filter state round-trip and legacy empty-default contracts pass"
+    },
+    {
+      "Name": "v54 canonical visible MaterialID snapshot parity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "221 exact visible MaterialID(s), stable SHA-256 9B68121538A4"
+    },
+    {
+      "Name": "v54 Materials multi-select stable control contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Six no-modifier facet surfaces and Materials search expose stable AutomationIds"
+    },
+    {
+      "Name": "v54 website and public publication scope isolation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "221 website candidate(s) and 221 opted-in public report ID(s) remain filter-independent"
+    },
+    {
+      "Name": "Local AI Assistant scope clarity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "221 canonical visible row(s), read-only collection preview and explicit Create/Update state are exposed"
+    },
+    {
+      "Name": "Optional AI provider foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Disposable runtime resolves the deterministic fake provider, uses no network and cannot access owner credentials"
+    },
+    {
+      "Name": "OpenAI read-only pilot contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Exact store=false/no-tools payload preview, allowlisted thermal fields, privacy exclusions, cancellation and unknown-MaterialID rejection pass"
+    },
+    {
+      "Name": "OpenAI deterministic transport and operational evidence contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Scripted no-network success, safe API error, timeout, parser failures, 40-row limit, evidence allowlist and preview-save block pass"
+    },
+    {
+      "Name": "AI collection cancel-state honesty",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Cancelled update reports persisted membership separately and discards the current-filter proposal"
+    },
+    {
+      "Name": "Stable AI coverage identity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "CollectionID/MaterialID lookup wins; one unique exact legacy match binds and unmatched legacy remains unchanged"
+    },
+    {
+      "Name": "Base material printing settings foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v34; 18 SQLite-canonical base-material identities and baselines; per-MaterialID printing columns absent"
+    },
+    {
+      "Name": "Printing settings public allowlist boundary",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Base-material printing settings remain internal until explicit runtime-approved public allowlisting"
+    },
+    {
+      "Name": "Release identity alignment",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "v70.0.4 DIRECT-IMPACT-METHODOLOGY Izod and Charpy Methodology; assembly 70.0.4.0; informational 70.0.4-DIRECT-IMPACT-METHODOLOGY"
+    },
+    {
+      "Name": "Public HTML malicious-input encoding",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "HTML-significant public text is encoded and javascript-scheme links are not rendered"
+    },
+    {
+      "Name": "Public report stable MaterialID routing",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Static reports/materials/MaterialID route carries canonical HTML, companion PDF and metadata links"
+    },
+    {
+      "Name": "Public report field allowlist",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "53 explicit public fields; operational and sensitive fields excluded"
+    },
+    {
+      "Name": "Public report methodology contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Public report links to platform methodology and engineering whitepaper with measurement limitations"
+    },
+    {
+      "Name": "Public report engineering content",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Public report carries governed interpretation, strengths, limitations, trade-offs, applications and peer context"
+    },
+    {
+      "Name": "Public report radar layout",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Radar coordinates are locale-independent and the SVG viewport preserves full axis labels"
+    },
+    {
+      "Name": "Public report JPEG branding",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical public HTML/PDF contract uses assets/3dp-iceland-labs-logo-pdf.jpg"
+    },
+    {
+      "Name": "Public report local preview UI",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Reports tab builds local-only allowlisted Material Engineering HTML/PDF packages for every opted-in MaterialID"
+    },
+    {
+      "Name": "v67.0.0 Public comparison missing-score contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Flexible-only and partial-score comparisons pass; zero remains measured and missing required charts fail"
+    },
+    {
+      "Name": "Public Comparison Report route and allowlist",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Stable reports/comparisons/material-family-pla route; 27 explicit fields; local preview only"
+    },
+    {
+      "Name": "Public Manufacturer Report route and allowlist",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Stable reports/manufacturers/verification-manufacturer route; 38 explicit fields; public-only portfolio context"
+    },
+    {
+      "Name": "Public Test Session detail approval boundary",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Aggregate traceability is public; raw inputs and approved notes require the separate SQLite-backed detail approval"
+    },
+    {
+      "Name": "Public Printing Recommendation BaseMaterialId guidance",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Linked base-material values, explicit units, partial Not recorded fallback, escaped references, manifest and metadata allowlist pass"
+    },
+    {
+      "Name": "Public Material Summary route, parity and allowlist",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Stable reports/material-summary route; full REPORT-110 public scope and 29 allowlisted fields"
+    },
+    {
+      "Name": "Public Engineering Report Package catalog contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "All six public report types have safe stable routes in one canonical index, manifest and JSON catalog"
+    },
+    {
+      "Name": "Public report website dark theme and print separation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "All six report types and the portal share one screen-only dark theme, the engineering radar has dark-screen contrast, and canonical light base styles remain available to PDF printing"
+    },
+    {
+      "Name": "Public report reusable batch PDF engine",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "One hardened WebView2 print host can be reused across the batch; unexpected navigation, popups and permissions are blocked"
+    },
+    {
+      "Name": "Public report bounded multitasking",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Four bounded workers validate immutable artifact routes concurrently; WebView2 printing remains STA-safe with dynamic page readiness"
+    },
+    {
+      "Name": "Public report HTML/PDF print layout parity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Comparison, Manufacturer and Material Summary preserve desktop grids in landscape PDF; per-MaterialID reports remain portrait"
+    },
+    {
+      "Name": "Public report internal-content parity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Material Engineering, Comparison and Manufacturer public reports retain accepted internal engineering depth while typed allowlists remove non-public fields"
+    },
+    {
+      "Name": "Explicit public report HTML routes",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Website buttons use explicit /index.html HTML targets for direct local-file browsing while PDF targets remain report.pdf"
+    },
+    {
+      "Name": "Canonical public material selection",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Materials exposes an explicit opt-in checkbox and preserves its value through the canonical SQLite record mapping"
+    },
+    {
+      "Name": "Public website report-link selection",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Only opted-in MaterialIDs receive stable canonical Engineering, Recommendation, Test and Manufacturer report links in the shared website renderer"
+    },
+    {
+      "Name": "Public website report portal and staging contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Preview and Production share one catalog-driven portal renderer; staging validates every linked HTML/PDF/metadata artifact"
+    },
+    {
+      "Name": "v60.0.5 Engineering Reports main-site navigation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Shared server-rendered portfolio content, #reports history routing, stable standalone routes and no iframe/client fetch passed"
+    },
+    {
+      "Name": "v60.0.6 locale-aware application date contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "is-IS/en-US display and input, ISO persistence/propagation, leap-day, invalid-input and legacy Icelandic compatibility passed"
+    },
+    {
+      "Name": "Automatic website public-report prerequisites",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Preview, Production and the manual package action share one async missing-or-stale report ensure flow"
+    },
+    {
+      "Name": "Canonical public report data freshness",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "A deterministic SQLite and canonical-render-projection fingerprint distinguishes current, changed and missing public report data revisions"
+    },
+    {
+      "Name": "Startup performance instrumentation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "40 timestamped startup phases available in System Diagnostics"
+    },
+    {
+      "Name": "Startup material refresh coalescing",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Bulk native Material collection replacement produced one coalesced downstream UI refresh path"
+    },
+    {
+      "Name": "Deferred measurement workspace warm-up",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Legacy DataGrid visual-tree warm-up is absent; Fast measurement views initialize directly"
+    },
+    {
+      "Name": "v67.0.2 Flexible whitepaper methodology",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Recovery contact-offset formula, Shore A/D geometry, five locations, independent n, established protocol and location statistics present"
+    },
+    {
+      "Name": "v67.0.2 Shore location statistics",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Per-specimen sample SD/CV, independent n, scale/time separation and safe website/report projection"
+    },
+    {
+      "Name": "Explainable engineering advisor",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "High evidence coverage; 6/6 axes; strongest-axis evidence is deterministic"
+    },
+    {
+      "Name": "Engineering advisor comparison",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Compared with Advisor probe B, this recommendation leads by 4,0 points (clearest axis lead: Layer adhesion \u002B6,0; clearest axis trade-off: Stiffness -12,0)."
+    },
+    {
+      "Name": "Engineering advisor missing-data honesty",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "1/6 modern engineering axes available. Consistency evidence is unavailable. Legacy Impact is historical reference only. This is an advisor evidence indicator, not statistical confidence."
+    },
+    {
+      "Name": "Engineering advisor UI",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Recommendation Detail exposes evidence coverage, strongest evidence, comparison and trade-offs"
+    },
+    {
+      "Name": "Governed intelligence handoff",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Existing advisor, repeatability, context, positioning and alternative outputs are composed without recalculation"
+    },
+    {
+      "Name": "Video Planner intelligence handoff",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical MaterialID, existing score axes and governed evidence travel with recommendation-created video ideas"
+    },
+    {
+      "Name": "Whitepaper intelligence governance",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "The methodology whitepaper documents report and Video Planner calculation boundaries"
+    },
+    {
+      "Name": "Repeatability methodology calibration",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Whitepaper and website Methodology document the internal score scale and purpose-built equipment limitations"
+    },
+    {
+      "Name": "Consistency intelligence source boundary",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Consistency score 93,8/100 on the 3DPIceland internal comparative repeatability scale. 4/4 verified measurement sets provide CV; average CV 6,3% and highest Impact flat 8,0%. 4/4 sets contain at least 5 specimens."
+    },
+    {
+      "Name": "3DPIceland consistency calibration",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "CV 7.8% maps to 92.2/100, CV 19.4% maps to 80.6/100, and app/website labels share the internal scale"
+    },
+    {
+      "Name": "Consistency interpretation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Excellent repeatability"
+    },
+    {
+      "Name": "Outlier review honesty",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Review Impact upright (42,0% CV). At least one set exceeds the internal 40% high-variation boundary. High CV is a review signal, not proof that any specimen is an outlier; values require a test-specific failure reason before exclusion."
+    },
+    {
+      "Name": "Limited repeatability evidence",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "1 verified measurement set available, but CV requires at least two valid specimens per set. 0/1 sets contain at least 5 specimens."
+    },
+    {
+      "Name": "Consistency intelligence UI",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Recommendation Detail exposes repeatability, CV/sample coverage and outlier review context"
+    },
+    {
+      "Name": "Selected material intelligence",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Displayed Material Detail takes precedence over stale grid selections and receives its own score, evidence, repeatability, outlier review and peer-position surface"
+    },
+    {
+      "Name": "Report selected material binding",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Selected Material Only follows the material currently displayed in Material Detail and exposes its name beside the scope selector"
+    },
+    {
+      "Name": "Report verified-summary propagation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Selected Material Engineering Report carries the matching Verified Material Summary into repeatability and outlier intelligence"
+    },
+    {
+      "Name": "Manufacturer-facing report presentation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Current platform version, explicit radar comparison legends and deterministic review disclosure are present"
+    },
+    {
+      "Name": "Engineering context source boundary",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "MSRP uses Materials without landed-cost or stale-projection fallback; stock uses InventoryEngineService output; manufacturer context uses active SQLite records"
+    },
+    {
+      "Name": "Recommendation price identity clarity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Recommendation MSRP identifies the exact recommended MaterialID and cannot be mistaken for the selected Materials row"
+    },
+    {
+      "Name": "Canonical pricing provenance",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Configured rates convert explicitly; missing/unsupported currency and missing canonical MSRP remain Not recorded without landed-cost or 1:1 fallback"
+    },
+    {
+      "Name": "Governed engineering value index",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Overall score/MSRP index exposes both governed inputs, comparison scope and honest missing-data reasons"
+    },
+    {
+      "Name": "Usage event pure-domain validation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Required canonical MaterialID, exact inventory identity, UTC evidence, measured/slicer provenance and seconds-based duration validate without persistence"
+    },
+    {
+      "Name": "Usage event reversal and replacement",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Correction appends one exact reversal plus one replacement; duplicate reversal is rejected"
+    },
+    {
+      "Name": "Usage event nullable projections",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Read-only totals project accepted event/reversal/replacement facts while missing evidence remains Not recorded rather than zero"
+    },
+    {
+      "Name": "Usage event atomic inventory delta",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Exact linked spool delta is negative for usage and equal/opposite for reversal; cross-Material inventory linkage is rejected"
+    },
+    {
+      "Name": "Selected material recommendation scope",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Material selection synchronizes Recommendation, alternatives, hidden-gem pricing and value-index calculations to the exact canonical Base Material without fuzzy remapping"
+    },
+    {
+      "Name": "Engineering cross-context interpretation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Public MSRP reference: $32.50 USD/kg. In stock; 2 spools linked; 1250 g remaining across Shelf C."
+    },
+    {
+      "Name": "Engineering cross-context UI",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Recommendation Detail exposes canonical price, inventory and manufacturer context"
+    },
+    {
+      "Name": "Manufacturer peer positioning",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Manufacturer position: #1 of 3 for Maker A; overall 80/100 is 5 points above the 75/100 group average in the active dataset."
+    },
+    {
+      "Name": "Category peer positioning",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Category position: #2 of 3 for Engineering; overall 80/100 is 1,7 points below the 81,7/100 group average in the active dataset."
+    },
+    {
+      "Name": "Peer-position missing-data honesty",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Manufacturer position is unavailable because the material has no manufacturer classification. Category position is unavailable because the material has no category classification."
+    },
+    {
+      "Name": "Manufacturer and category position UI",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Selected Material Intelligence and Recommendation Detail expose manufacturer/category rank, peer count and group-average context"
+    },
+    {
+      "Name": "Comparable alternatives engine",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Selected material is excluded; closest alternative stays inside the active recommendation context"
+    },
+    {
+      "Name": "Value hidden-gem discovery",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Comparable performance with 40% lower MSRP per kg."
+    },
+    {
+      "Name": "Specialist alternative trade-off",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Gains 30,0 points in Stiffness. Gives up 12,0 points in Consistency."
+    },
+    {
+      "Name": "Recommendation alternatives UI",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Recommendation Detail exposes closest, value and specialist alternatives with score, MSRP, gain and trade-off"
+    },
+    {
+      "Name": "Recommendation startup pricing hydration",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Price-aware Recommendation, Video Planner and YouTube Research surfaces refreshed after canonical native material load"
+    },
+    {
+      "Name": "Calculation services loaded",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "StatisticsService, RatingService, ResultsService"
+    },
+    {
+      "Name": "Native material source loaded",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "221 native materials"
+    },
+    {
+      "Name": "MaterialID coverage",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "221 / 221 rows have MaterialID"
+    },
+    {
+      "Name": "Measurement row alignment",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Tensile 221, Impact 221, Stiffness 221"
+    },
+    {
+      "Name": "Cross-section calculation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "6,5016 mm\u00B2"
+    },
+    {
+      "Name": "Tensile native calculations",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "211 rows with samples"
+    },
+    {
+      "Name": "Impact constants available",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Angle 105,411\u00B0, Area 0,00004816 m\u00B2"
+    },
+    {
+      "Name": "Impact native calculations",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "211 rows with samples"
+    },
+    {
+      "Name": "Stiffness constants available",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "mm/rev 1,058774, span 118,2 mm"
+    },
+    {
+      "Name": "Stiffness native calculations",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "208 rows with samples"
+    },
+    {
+      "Name": "Material summaries built",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "221 summaries from 221 materials"
+    },
+    {
+      "Name": "Complete engineering summaries",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "0 complete, 219 partial, 2 empty"
+    },
+    {
+      "Name": "Pricing completeness",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "218 / 221 active materials complete (98.6%). Optional pricing missing: Spectrum The Filament Vivid Red PLA Hight Temp Red [MAT0224]; Spectrum Greeney Pro Real Green PLA Green [MAT0226]; Spectrum Premium Iceland Blue PETG Blue [MAT0225]"
+    },
+    {
+      "Name": "Pricing normalization",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Missing weight for priced rows 0, invalid price values 0, invalid USD/kg 0"
+    },
+    {
+      "Name": "Pricing metadata",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Invalid currency 0, optional checked date missing 3"
+    },
+    {
+      "Name": "Inventory engine",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "InventoryEngineService calculated 12 active spool rows from 221 active materials; orphaned spool rows 0"
+    },
+    {
+      "Name": "Inventory status totals",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Spools 12, unopened 12, opened 0, empty 0"
+    },
+    {
+      "Name": "Inventory validation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Quantity, status and remaining-weight rules passed"
+    },
+    {
+      "Name": "Inventory summary UI",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Inventory tab exposes totals, value groups and row-level validation"
+    },
+    {
+      "Name": "Purchasing category architecture",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Valid category lines 12, invalid categories 0, non-filament material links 0"
+    },
+    {
+      "Name": "Purchase order foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "1 order(s), 12 line(s), orphaned lines 0, invalid material links 0"
+    },
+    {
+      "Name": "Purchase inventory linkage",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Linked inventory rows 12, invalid purchase-line links 0"
+    },
+    {
+      "Name": "Cost allocation strict weight validation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "By weight blocks calculation when any included line has no weight"
+    },
+    {
+      "Name": "Purchase-to-material pricing sync",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Purchase price/MSRP, supplier metadata, storage location and landed cost sync to the linked material"
+    },
+    {
+      "Name": "Inventory report generation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical Inventory Report HTML/text payload generated"
+    },
+    {
+      "Name": "Purchase report generation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical Purchase Report HTML/text payload generated"
+    },
+    {
+      "Name": "Supplier report generation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical Supplier Report HTML/text payload generated"
+    },
+    {
+      "Name": "Low stock report generation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical Low Stock Report HTML/text payload generated"
+    },
+    {
+      "Name": "Inventory verification report generation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "6 purchasing reports generated from SQLite-backed data"
+    },
+    {
+      "Name": "Purchasing intelligence generation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Supplier, spend, category, price-history and recommendation intelligence generated from SQLite-backed purchasing data"
+    },
+    {
+      "Name": "Measured material footer counts",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Footer uses shared raw-measurement predicates: blank rows excluded, numeric zero included, either orientation sufficient"
+    },
+    {
+      "Name": "Daily workflow live counts",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Material header, native grid and footer counts are derived from the current SQLite-backed collections and filtered view"
+    },
+    {
+      "Name": "Daily workflow entry contrast",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Tensile and impact entry cells use readable dark text across yellow and green value bands"
+    },
+    {
+      "Name": "Materials workflow column layout",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "High-use website, video and test-status columns appear directly after Color; Diameter is hidden from the daily grid"
+    },
+    {
+      "Name": "Fast Materials view activation contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Fast Materials is the only Materials grid UI; the retired DataGrid XAML is absent"
+    },
+    {
+      "Name": "Experimental definition foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Definitions 10, active 10; generic parameter catalog is SQLite-backed"
+    },
+    {
+      "Name": "Experimental MaterialID integrity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Experiment rows 1, orphaned materials 0, invalid definitions 0"
+    },
+    {
+      "Name": "Experimental material manager UI",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Experimental CRUD grid, filters and MaterialID selectors are available"
+    },
+    {
+      "Name": "Experimental grid editability",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Material, experiment, value, unit, baseline, active and notes cells use direct editable WPF bindings"
+    },
+    {
+      "Name": "Experimental add workflow safety",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Add Experiment has valid MaterialID/definition defaults and does not depend on DataGrid focus or selection transactions"
+    },
+    {
+      "Name": "Experimental post-add UI safety",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Add and Duplicate rely on ObservableCollection display updates without forced SelectedItem, ScrollIntoView or BeginEdit callbacks"
+    },
+    {
+      "Name": "Experimental ComboBox edit safety",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Material, experiment and baseline choices use stable ItemsSource collections; CellEditEnding does not rebuild columns or refresh the active ListCollectionView"
+    },
+    {
+      "Name": "Experimental row selection and filter safety",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Delete resolves the selected/current record, and filter refresh is deferred until the DataGrid edit transaction is complete"
+    },
+    {
+      "Name": "Experimental active notification",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Active and Updated UTC publish property changes immediately without requiring a filter refresh"
+    },
+    {
+      "Name": "Experimental test series and runs",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Runs 3, baseline runs 1, multi-run series 1, orphaned series 0"
+    },
+    {
+      "Name": "Experimental run CRUD integrity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "RunID and SeriesID are canonical and the run manager is available"
+    },
+    {
+      "Name": "Experimental workflow integrity contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Active-only comparison, explicit inactive-history review, publication readiness and graph persistence wiring are available"
+    },
+    {
+      "Name": "Experimental baseline ownership",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Every Series has at most one canonical baseline Run"
+    },
+    {
+      "Name": "Experimental publication confirmation decision",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Incomplete publication defaults to No, explicit confirmation enables it, ready publication proceeds and hiding needs no confirmation"
+    },
+    {
+      "Name": "Experimental measurement entry",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Measurement rows 15, runs with measurements 3, orphaned runs 0"
+    },
+    {
+      "Name": "Experimental measurement row shape",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Every initialized RunID has exactly five canonical rows"
+    },
+    {
+      "Name": "Experimental measurement uniqueness",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "MeasurementID and RunID/type/orientation keys are unique"
+    },
+    {
+      "Name": "Experimental RunID data isolation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Every measurement belongs to one existing RunID"
+    },
+    {
+      "Name": "Experimental input-limit integrity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Stored values satisfy Tensile 505, Impact 100, revolutions 10 and degrees 359 limits"
+    },
+    {
+      "Name": "Experimental native sample capacity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Ten raw inputs are available for statistical tests; Stiffness uses revolutions and degrees for one specimen"
+    },
+    {
+      "Name": "Experimental native calculation alignment",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Stored averages and sample counts match fresh ResultsService calculations"
+    },
+    {
+      "Name": "Experimental editor redesign",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Generic measurement grid removed; measurement-specific editors expose the correct raw inputs"
+    },
+    {
+      "Name": "Experimental edit transaction safety",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Editors use fixed per-RunID row lists; calculations are deferred until the DataGrid edit transaction is committed"
+    },
+    {
+      "Name": "Experimental results engine",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Series results table exposes native averages, CV values, baseline markers and \u0394% without duplicating calculations"
+    },
+    {
+      "Name": "Experimental analytics service",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Best-result detection and weighted ranking are generated from native run metrics"
+    },
+    {
+      "Name": "Experimental analytics baseline integrity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Analytics preserves the canonical baseline Run"
+    },
+    {
+      "Name": "Experimental analytics summary UI",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Results exposes baseline, best metrics, recommendation, rank and overall score"
+    },
+    {
+      "Name": "Experimental engineering dashboard",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Dashboard consumes canonical Experimental Results and Analytics outputs"
+    },
+    {
+      "Name": "Experimental charts and visualization",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Five live chart surfaces consume native Results and Analytics outputs"
+    },
+    {
+      "Name": "Experimental chart analytics alignment",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Combined score chart follows the canonical ExperimentalAnalyticsService ranking"
+    },
+    {
+      "Name": "Experimental Impact Flat delta display",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Impact Flat \u0394 Baseline uses its dedicated display property and deterministic percentage calculation"
+    },
+    {
+      "Name": "Experimental persistence alignment",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "SQLite rows 1, loaded manager rows 1"
+    },
+    {
+      "Name": "Experimental CRUD integrity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "All experimental records contain canonical IDs required for create, edit, duplicate and delete"
+    },
+    {
+      "Name": "Website pipeline source",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "221 native MaterialID rows consume 221 verified summaries"
+    },
+    {
+      "Name": "Website chart generator",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "WebsiteChartGeneratorService owns chart payload rows"
+    },
+    {
+      "Name": "Website payload coverage",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Tensile 221, Impact 221, Stiffness 221"
+    },
+    {
+      "Name": "Website radar generator",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "WebsiteRadarGeneratorService owns radar payload validation and average groups"
+    },
+    {
+      "Name": "Website radar payload coverage",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Selected 221, material groups 16, reinforcement groups 36"
+    },
+    {
+      "Name": "Website HTML renderer",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "WebsiteHtmlRendererService owns template DATA injection and render validation"
+    },
+    {
+      "Name": "Website renderer payload",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Rows aligned, MaterialID present, chart/radar metrics and pricing fields available"
+    },
+    {
+      "Name": "Website verification suite",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "WebsiteVerificationService validates HTML, DATA, JSON and publish readiness"
+    },
+    {
+      "Name": "Website template import trust boundary",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "New imports require a bounded replaceable DATA object and explicit default-No executable-content trust confirmation"
+    },
+    {
+      "Name": "Native website template database",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Active v36.0; 2 stored version(s); SHA-256 recorded"
+    },
+    {
+      "Name": "Website master template identity",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Active SQLite template matches the approved v36 Pricing \u0026 Value master surface"
+    },
+    {
+      "Name": "Website chart terminology contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Tensile and Impact chart legends/tooltips use distinct chart-owned orientation labels"
+    },
+    {
+      "Name": "Website publish readiness",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "READY FOR PUBLISH"
+    },
+    {
+      "Name": "Experimental website publication control",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Series-level Website checkbox publishes or hides experiments without deleting SQLite history"
+    },
+    {
+      "Name": "Experimental website data pipeline",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Published series 0, active published runs 0; hidden and archived series remain stored"
+    },
+    {
+      "Name": "Experimental website payload identity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical series/run IDs: 0 series, 0 runs"
+    },
+    {
+      "Name": "Experimental website baseline and value safety",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "At most one baseline per series; all exported chart values are finite"
+    },
+    {
+      "Name": "Experimental website analytics parity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Rankings and five-metric baseline indexes consume the canonical Experimental Analytics output"
+    },
+    {
+      "Name": "Experimental website chart contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Deterministic two-run probe validates payload serialization, analytics ranking, baseline indexes and all five chart types"
+    },
+    {
+      "Name": "Experimental website renderer",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Renderer emits an empty canonical marker because no series are selected for publication"
+    },
+    {
+      "Name": "Experimental website dashboard and charts",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "No series selected; chart renderer remains dormant"
+    },
+    {
+      "Name": "Experimental website browser calculation boundary",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Browser JavaScript visualizes exported canonical values without owning engineering formulas"
+    },
+    {
+      "Name": "Native website portal navigation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Single-file portal navigation is injected into preview and production exports"
+    },
+    {
+      "Name": "Website portal page foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Filament Database, Pricing \u0026 Value, Flexible Testing, Experimental Lab, Manufacturers, calculator and Methodology surfaces are present"
+    },
+    {
+      "Name": "Website hash navigation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Direct hash links and browser Back/Forward routing are available"
+    },
+    {
+      "Name": "Printing price calculator parity contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "The scoped calculator retains fields/formulas/quote attribution, omits route clutter and consumes no website DATA"
+    },
+    {
+      "Name": "Canonical website branding contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical Labs wordmark replaces the header brand text; favicon and wrapping navigation use governed relative styling"
+    },
+    {
+      "Name": "Pricing \u0026 Value portal placement",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Pricing Explorer, Performance vs Price and Value Rankings live only in the dedicated #pricing page"
+    },
+    {
+      "Name": "Pricing filter synchronization",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Pricing tab mirrors the canonical Filament Database filter state without duplicating calculation ownership"
+    },
+    {
+      "Name": "Pricing filter interaction parity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Pricing controls publish through the canonical input event and multi-select options toggle without requiring Ctrl/Cmd"
+    },
+    {
+      "Name": "Pricing filter visual parity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Database and Pricing share eight top-row filters, with Reset above Search, Sort between Search and pricing, and pricing controls bottom-aligned right"
+    },
+    {
+      "Name": "Database methodology summary retirement",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "The obsolete Database summary is removed; the governed Methodology tab remains canonical"
+    },
+    {
+      "Name": "Native manufacturers portal",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Manufacturers tab is generated inside the canonical single-file website export"
+    },
+    {
+      "Name": "Manufacturer outreach and submission portal",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Manufacturer participation, submission CTA, platform scope, methodology and whitepaper handoffs are present"
+    },
+    {
+      "Name": "Manufacturer structured submission form",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Company, contact, material, sample, link and independent-testing acknowledgement fields are present"
+    },
+    {
+      "Name": "Manufacturer email handoff and fallback",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Browser-only mailto handoff, reference ID and copy-details fallback are present without a server API"
+    },
+    {
+      "Name": "Manufacturer submission Preview/Production parity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Preview and Production consume the same deterministic manufacturer portal renderer"
+    },
+    {
+      "Name": "Manufacturer profile website binding",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Active SQLite manufacturer profiles are available to the website portal renderer"
+    },
+    {
+      "Name": "Manufacturer engineering intelligence",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Verified Material Summary and EngineeringScoreProfile outputs drive manufacturer leaders, coverage and top-material summaries"
+    },
+    {
+      "Name": "Methodology portal content",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Level 2 Engineering methodology sections are embedded in the single-file portal export"
+    },
+    {
+      "Name": "Methodology procedure videos",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Tensile, impact and stiffness procedure videos are linked from their test cards"
+    },
+    {
+      "Name": "Methodology technical constants",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Public technical details align with the native tensile, impact and stiffness calculation constants"
+    },
+    {
+      "Name": "Methodology thermal contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Public Heat Deflection content matches the immutable v61 fixture/result contract without a certified-standard claim"
+    },
+    {
+      "Name": "Izod and Charpy methodology coverage",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Both published methodology sources document direct methods, specimen geometry, missing evidence and separate comparison scores"
+    },
+    {
+      "Name": "Native documentation model",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Methodology sections are owned by the native Documentation Engine model"
+    },
+    {
+      "Name": "Engineering whitepaper thermal contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Governed whitepaper source carries the same Heat Deflection fixture, endpoint, method and interpretation boundaries"
+    },
+    {
+      "Name": "Engineering whitepaper TPU compression contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Governed whitepaper source carries the accepted TPU method, corrected validation evidence and non-standard boundaries"
+    },
+    {
+      "Name": "Engineering whitepaper generation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Generated 194459 PDF bytes from methodology version 1.0"
+    },
+    {
+      "Name": "Methodology and whitepaper governance",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Website methodology links to the whitepaper generated from the governed native documentation model"
+    },
+    {
+      "Name": "SQLite-governed explicit FTPS publishing contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "SQLite endpoint 3dpicelandweb@www.iskort.is:21; explicit TLS/passive mode and safety paths remain governed"
+    },
+    {
+      "Name": "Catalog-driven Production publish readiness",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Generate Production creates an exact SHA-256 allowlist with preview routes excluded and the root index activated last"
+    },
+    {
+      "Name": "Isolated website test publishing",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Publish Website Test uses only /preview/ plus /index-test.html last and cannot pass the Production plan contract"
+    },
+    {
+      "Name": "Manifest-driven Production backup restore",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Completed Production backups carry original existence, byte and SHA-256 metadata; restore creates a recovery snapshot and preserves root-index-last ordering"
+    },
+    {
+      "Name": "Host-compatible FTPS staging with bounded local multitasking",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Four local workers validate governed artifacts in parallel; one runtime-proven retry-capable FTPS session performs safe remote backup/staging before the sequential activation barrier"
+    },
+    {
+      "Name": "Manifest-driven incremental FTPS publishing",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Completed Test/Production manifests carry full route, byte and SHA-256 state; unchanged live-size-matched artifacts are skipped with safe full-publish fallback"
+    },
+    {
+      "Name": "Guarded catalog-driven public-report FTPS deployment",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "The exact Test or Production allowlist is backed up and fully staged before ordered activation, with size verification, entry index last and rollback coverage for replaced and newly added files"
+    },
+    {
+      "Name": "v63.0.0 Website chart-scoped orientation terminology",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Tensile and Impact headings, legends and tooltips retain their owning terminology without cross-chart leakage"
+    },
+    {
+      "Name": "Website pricing terminology mapping",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Performance vs Price and Value Rankings use the public tensile terminology"
+    },
+    {
+      "Name": "Website Preview/Production renderer parity",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Preview and Production differ only by their explicit output-mode header and safe reports index filename"
+    },
+    {
+      "Name": "Website portal release contract",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Release identity, five portal routes and mode-aware manufacturer redirects are present"
+    },
+    {
+      "Name": "Website export package contract",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Preview/Production manifests cover main HTML, manufacturer redirect, whitepaper, report portal staging and safety behavior"
+    },
+    {
+      "Name": "Reporting pipeline source",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "221 native MaterialID rows consume 221 verified summaries"
+    },
+    {
+      "Name": "Reporting summary coverage",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Report rows 221, complete 0, partial 221"
+    },
+    {
+      "Name": "Report generator",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "ReportGeneratorService owns report model generation"
+    },
+    {
+      "Name": "Report payload coverage",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Generated reports 221, metric sections 1051"
+    },
+    {
+      "Name": "Report model validation",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Overview \u002B engineering summary sections present"
+    },
+    {
+      "Name": "PDF renderer",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "WebView2 HTML Print Engine exclusively owns user PDF export"
+    },
+    {
+      "Name": "PDF payload validation",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "PDF payload pages 430, bytes 1359094"
+    },
+    {
+      "Name": "PDF render readiness",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical HTML can be printed to PDF from the report package"
+    },
+    {
+      "Name": "Certificate generator",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "ReportCertificateGeneratorService owns certificate payload generation"
+    },
+    {
+      "Name": "Certificate payload validation",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Certificates 221, source PDF pages 430"
+    },
+    {
+      "Name": "Certificate issue readiness",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Certificates are ready from verified report models and PDF payload"
+    },
+    {
+      "Name": "Report template service",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "ReportTemplateService owns native report template payloads"
+    },
+    {
+      "Name": "Report template payload validation",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Templates 6, outputs 6"
+    },
+    {
+      "Name": "Report template render readiness",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Template outputs are ready for PDF renderer consumption"
+    },
+    {
+      "Name": "Report export UI",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Reports / PDF Export tab exposes native template preview/export workflow"
+    },
+    {
+      "Name": "Report export UI payload",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Template options 6, verified template payloads consumed"
+    },
+    {
+      "Name": "Report export UI readiness",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Preview and HTML print-to-PDF workflows are ready"
+    },
+    {
+      "Name": "Material engineering report",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "MaterialEngineeringReportService owns production material engineering report payloads"
+    },
+    {
+      "Name": "Material engineering payload",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Engineering reports 221, metric sections 1051"
+    },
+    {
+      "Name": "Material engineering render readiness",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Material Engineering Report is ready for PDF renderer consumption"
+    },
+    {
+      "Name": "Material engineering intelligence handoff",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical report payload declares the governed Engineering Intelligence source boundary"
+    },
+    {
+      "Name": "Branded PDF renderer",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "PDF output is generated by printing the canonical HTML layout"
+    },
+    {
+      "Name": "Report logo asset",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "3DPIceland Labs logo is available to native PDF renderer"
+    },
+    {
+      "Name": "Canonical report branding selection",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical HTML embeds the selected normalized PNG; package/native PDF use its stable JPEG derivative"
+    },
+    {
+      "Name": "Canonical report material scope",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "All Visible Materials uses the filtered native Materials view and the active SQLite material total"
+    },
+    {
+      "Name": "REPORT-110 Material Summary identity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Material Summary has distinct identity, scope, coverage and material content"
+    },
+    {
+      "Name": "REPORT-110 native test coverage parity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Material Summary module counts match native Materials test flags and Verified Material Summary presence"
+    },
+    {
+      "Name": "REPORT-120 Comparison Report identity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Comparison Report has distinct selected-anchor and all-visible comparison contracts"
+    },
+    {
+      "Name": "REPORT-130 Manufacturer Report identity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Manufacturer Report has distinct selected-manufacturer portfolio and all-visible manufacturer contracts"
+    },
+    {
+      "Name": "REPORT-140 Test Session Report identity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Test Session Report has distinct selected-record detail, all-visible ledger and honest traceability boundaries"
+    },
+    {
+      "Name": "REPORT-150 Printing Recommendation Report identity",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Printing Recommendation Report has distinct selected guidance, all-visible ledger, settings boundary and no Video Planner hooks"
+    },
+    {
+      "Name": "Engineering Report Package contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Six accepted reports export as independent canonical HTML/PDF packages with an indexed manifest and metadata"
+    },
+    {
+      "Name": "Concise report package naming",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Report folders use report-name-yyyyMMdd-HHmmss without duplicate key/type/title segments"
+    },
+    {
+      "Name": "Application icon asset",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Taskbar/application icon asset refreshed from provided logo"
+    },
+    {
+      "Name": "Unified report renderer",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "UnifiedReportRenderingService owns canonical HTML report package flow"
+    },
+    {
+      "Name": "Canonical HTML layout",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "HTML report is the master layout for preview/export packages"
+    },
+    {
+      "Name": "HTML/PDF shared assets",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Logo/image assets are shared by HTML report and PDF workflow"
+    },
+    {
+      "Name": "HTML-to-PDF package readiness",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "PDF export prints the companion canonical HTML and writes a manifest"
+    },
+    {
+      "Name": "HTML print engine",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "WebView2 PrintToPdf engine is available for user-facing PDF export"
+    },
+    {
+      "Name": "PDF visual parity path",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Export PDF uses the same canonical HTML file that preview/package export writes"
+    },
+    {
+      "Name": "Legacy PDF layout bypassed",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "User-facing Export PDF no longer uses the hand-drawn native PDF layout"
+    },
+    {
+      "Name": "Report asset pipeline",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "ReportAssetPipelineService owns report asset discovery/copy readiness"
+    },
+    {
+      "Name": "Report asset coverage",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Assets available 2, shared HTML/PDF assets 1"
+    },
+    {
+      "Name": "Report asset manifest readiness",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical report package manifest can reference shared logo/image assets"
+    },
+    {
+      "Name": "Report package folder standard",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Exports use a dedicated package folder with report.html, manifest.txt, metadata JSON, and assets/"
+    },
+    {
+      "Name": "Report package metadata",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Report metadata JSON can describe report type, material counts, canonical HTML, and PDF artifact"
+    },
+    {
+      "Name": "Report package naming",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Timestamped package folder names are generated from report key and report title"
+    },
+    {
+      "Name": "Report chart renderer",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical HTML report renders radar, score bars, and average comparison charts"
+    },
+    {
+      "Name": "Engineering chart payload",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Metric sections available for chart rendering: 1051"
+    },
+    {
+      "Name": "Report chart asset validation",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Charts use inline HTML/CSS/SVG and shared report package assets"
+    },
+    {
+      "Name": "Interactive report readiness",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "HTML preview and WebView2 PDF export share the same engineering chart layout"
+    },
+    {
+      "Name": "Engineering intelligence layer",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Engineering summaries, badges, recommendations, ranks and percentiles are generated from verified report data"
+    },
+    {
+      "Name": "Recommendation engine",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Recommended applications can be derived from engineering score profiles"
+    },
+    {
+      "Name": "Ranking and percentile engine",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Rank and percentile context available for 221 materials"
+    },
+    {
+      "Name": "AI engineering review",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Executive summaries, strengths, weaknesses and trade-offs are generated from verified report context"
+    },
+    {
+      "Name": "Better alternatives engine",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Alternative recommendations can be selected from 221 verified materials"
+    },
+    {
+      "Name": "Review decision guidance",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Decision guidance is derived from the selected material score profile and report context"
+    },
+    {
+      "Name": "Reporting platform readiness",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical HTML reporting, PDF print path and verified engineering payloads are ready"
+    },
+    {
+      "Name": "Long-term stability baseline",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Daily-use baseline validated across Engineering, Website and Reporting platforms"
+    },
+    {
+      "Name": "Website production workflow preserved",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Website export remains ready for publish from verified Material Summary data"
+    },
+    {
+      "Name": "Database path diagnostics",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "SQLite C:\\Users\\maddi\\AppData\\Local\\Temp\\3DPIceland-Automation\\20261011154457-00d6048d\\database\\filamentdb.sqlite | Modified 2026-10-11 15:46:13"
+    },
+    {
+      "Name": "Executable path diagnostics",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Executable C:\\3DPIceland-App-Codex\\App\\FilamentDbApp\\bin\\Release\\net9.0-windows\\3DPIcelandFilamentDB.exe"
+    },
+    {
+      "Name": "Storage folder diagnostics",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Storage C:\\Users\\maddi\\AppData\\Local\\Temp\\3DPIceland-Automation\\20261011154457-00d6048d\\database"
+    },
+    {
+      "Name": "Legacy snapshot path governance",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Legacy JSON snapshots remain beside SQLite but are not canonical working stores"
+    },
+    {
+      "Name": "v40 local integration release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Engineering, Experimental, Website, Reporting, workspace and release identity gates passed; production FTPS was operationally validated on 2026-07-21"
+    },
+    {
+      "Name": "v41 explainable advisor release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Deterministic evidence, comparison, missing-data honesty, UI and release identity gates passed"
+    },
+    {
+      "Name": "v41.1 alternatives release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Comparable, value, specialist, filter-context, UI, advisor and release identity gates passed"
+    },
+    {
+      "Name": "v41.2 consistency and outlier release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Verified-summary repeatability, variation review, outlier honesty, UI, advisor, alternatives and release identity gates passed"
+    },
+    {
+      "Name": "v41.3 engineering context release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical price, inventory and manufacturer context, UI, prior engineering intelligence and release identity gates passed"
+    },
+    {
+      "Name": "v41.4 manufacturer and category position release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Manufacturer/category rank, peer count, group average, missing-data honesty, UI, prior engineering intelligence and release identity gates passed"
+    },
+    {
+      "Name": "v41.5 governed intelligence handoff release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical report, whitepaper, Video Planner, prior intelligence and release identity gates passed"
+    },
+    {
+      "Name": "v41.6 internal repeatability calibration release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Internal score bands, CV review boundaries, app, website, report, whitepaper and release identity gates passed"
+    },
+    {
+      "Name": "v41.7.1 Material Summary report release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical native scope, distinct REPORT-110 content, HTML/PDF export and release identity gates passed"
+    },
+    {
+      "Name": "v41.7.2 canonical material projection release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Materials, analytics, rankings, awards, advisor, reporting, website and AI scopes share the native MaterialID projection"
+    },
+    {
+      "Name": "v41.7.3 Comparison Report release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "REPORT-120 selected-anchor/all-visible comparison, canonical scope, HTML/PDF and prior report gates passed"
+    },
+    {
+      "Name": "v41.7.4 concise report package naming release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Concise folder naming, REPORT-120, canonical report scope, HTML/PDF and prior gates passed"
+    },
+    {
+      "Name": "v41.7.5 Manufacturer Report release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "REPORT-130 manufacturer portfolios, global/category position, product context, canonical scope, HTML/PDF and prior gates passed"
+    },
+    {
+      "Name": "v41.7.6 Test Session Report release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "REPORT-140 native test records, specimen/result quality, method context, honest traceability limits and prior report gates passed"
+    },
+    {
+      "Name": "v41.7.7 Printing Recommendation Report release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "REPORT-150 governed application guidance, print-workflow checks, settings honesty, all-visible ledger and prior report gates passed"
+    },
+    {
+      "Name": "v41.7.8 Combined Engineering Report Package release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "All six accepted report contracts, canonical HTML/PDF subpackages, package index, manifest, metadata and prior gates passed"
+    },
+    {
+      "Name": "v41.8.0 startup instrumentation release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Cold/warm startup phase diagnostics are recorded without changing canonical data ownership or startup scheduling"
+    },
+    {
+      "Name": "v41.8.1 startup refresh coalescing release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Repeated bulk-load collection callbacks are suppressed and replaced by one measured downstream refresh"
+    },
+    {
+      "Name": "v41.8.2 deferred measurement warm-up release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Accepted Fast measurement views initialize directly; retired DataGrid pre-realization is absent"
+    },
+    {
+      "Name": "v42.1 public report publishing foundation release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Allowlisted selected-Material Engineering static preview, stable MaterialID route, canonical HTML/PDF contract and safety checks passed"
+    },
+    {
+      "Name": "v42.2 canonical public material selection release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Explicit SQLite-backed MaterialID opt-in, shared Preview/Production report links and prior public-report safety gates passed"
+    },
+    {
+      "Name": "v42.2.1 public report content expansion release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Governed engineering interpretation, public peer context, locale-safe radar, canonical JPEG branding and prior publication-selection gates passed"
+    },
+    {
+      "Name": "v42.3 public Comparison Report release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Stable Material Family routes, explicit comparison allowlist, canonical HTML/PDF, public MaterialID selection and prior public-report gates passed"
+    },
+    {
+      "Name": "v42.4 public Manufacturer Report release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Stable manufacturer routes, explicit manufacturer allowlist, public-only portfolio/category context, canonical HTML/PDF and prior public-report gates passed"
+    },
+    {
+      "Name": "v42.5 public Test Session Report release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "MaterialID routes, full aggregate traceability, explicit raw-detail approval, canonical HTML/PDF and prior public-report gates passed"
+    },
+    {
+      "Name": "v42.6 public Printing Recommendation Report release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Full recommendation parity, public-only alternatives, settings honesty and prior gates passed"
+    },
+    {
+      "Name": "v42.7 public Material Summary Report release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Stable public dataset summary, REPORT-110 coverage parity, public-only MaterialID membership, canonical HTML/PDF and prior gates passed"
+    },
+    {
+      "Name": "v42.8 Public Engineering Report Package release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical public portfolio index, six report types, safe artifact catalog, manifest and all prior public-report gates passed"
+    },
+    {
+      "Name": "v42.8.1 Public Report Batch Performance release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Reusable STA-safe WebView2 batch printing, elapsed-time diagnostics, canonical PDF parity and all prior public-report gates passed"
+    },
+    {
+      "Name": "v42.8.2 Public Report Bounded Multitasking release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Bounded four-worker artifact validation, dynamic page readiness, reusable canonical PDF printing and all prior public-report gates passed"
+    },
+    {
+      "Name": "v42.8.3 Public Report PDF Layout Parity release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical print grids, landscape wide-report rendering, portrait per-MaterialID rendering and all prior public-report gates passed"
+    },
+    {
+      "Name": "v42.9 Public Website Report Portal release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Catalog-driven local website staging, contextual public-only links, Preview/Production portal parity and all prior public-report gates passed"
+    },
+    {
+      "Name": "v42.9.1 Automatic Website Report Prerequisites release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Preview and Production automatically ensure missing or stale public reports through the shared canonical package pipeline"
+    },
+    {
+      "Name": "v42.9.2 Public Report Data Freshness release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical SQLite report inputs and public selection are fingerprinted so changed measurements automatically invalidate and rebuild the public package"
+    },
+    {
+      "Name": "v42.10 Production Publish Readiness release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Generate Production emits a verified catalog-derived deployment allowlist with explicit local-compatible HTML targets after ensuring the complete data-fresh public report package"
+    },
+    {
+      "Name": "v42.11 Guarded Public Report FTPS Deployment release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Test and Production publishing use exact isolated SHA-256 allowlists, and completed Production backups support recovery-snapshotted one-click restore with root index last"
+    },
+    {
+      "Name": "v42.11.1 Host-Compatible FTPS Staging release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Four bounded local workers validate artifacts concurrently; one runtime-proven retry-capable FTPS session preserves the complete-transfer barrier, sequential activation, entry-index-last and rollback contracts"
+    },
+    {
+      "Name": "v42.12 Incremental FTPS Publishing release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Full allowlists remain locally verified while completed remote state limits backup, staging and activation to changed artifacts with Restore-aware fallback"
+    },
+    {
+      "Name": "v42.13 Material Printing Settings Foundation release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical SQLite/UI/import-export printing settings passed while public report allowlists remain unchanged"
+    },
+    {
+      "Name": "v42.14 Base Material Printing Profiles release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical baseline profile identity, cooling/drying units, slicer identity, provenance, source and checked-date contracts passed; public allowlists unchanged"
+    },
+    {
+      "Name": "v42.15 Deployment Settings Governance release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "SQLite owns 3dpicelandweb@www.iskort.is:21; password remains host/user-scoped in Windows Credential Manager"
+    },
+    {
+      "Name": "v42.16 SQLite Native Measurements release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "SQLite canonical parity: tensile 4.066, impact 4.172, stiffness 209, notes 631"
+    },
+    {
+      "Name": "v42.17 SQLite Canonical Working Stores release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "SQLite owns 221 Materials rows and 71 general Settings rows; legacy JSON is snapshot-only"
+    },
+    {
+      "Name": "v43.1 Local SQLite Backup and Restore release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Verified online backup, compatibility inspection, pre-restore recovery snapshot, atomic replacement, rollback and controlled restart are available; 3DPIceland-Automatic-2026-10-11_154459_179.bak: integrity ok, schema v45, materials 221"
+    },
+    {
+      "Name": "v43.2 Excel Disaster Recovery release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Format v1; 34 canonical tables; 9.888 rows; lossless typed chunk encoding, per-table SHA-256, transactional restore and SQLite recovery backup"
+    },
+    {
+      "Name": "v48.1.1 Printer and Pricing Settings Foundation release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v35; 3 canonical printers; seven governed Pricing defaults; deterministic 50.02 ISK/hour probe; PrinterProfiles is governed by Excel recovery"
+    },
+    {
+      "Name": "v48.1.2 Print Job Quote Workflow release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v36; 0 immutable quote snapshots; exact grams-per-part \u00D7 quantity probe; Material/manual provenance, Printer/settings/rates and calculation v1 are snapshotted"
+    },
+    {
+      "Name": "v48.2 Optional Official Exchange-rate Reference Catalog release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v37; deterministic ECB EUR cross-rate parser; Purchase Order provenance recovery; loaded orders are excluded from reference refresh"
+    },
+    {
+      "Name": "v58 document branding validation and persistence foundation",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v45; PNG limits/source/cache, brand validation, backup/restart and fallback/default pass."
+    },
+    {
+      "Name": "v58.0.2 Document branding foundation retained contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v39\u002B and governed PNG validation/persistence foundation remain aligned"
+    },
+    {
+      "Name": "v58.0.3 Document branding Settings workflow retained contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v39\u002B; Select, Preview, default-No Restore, status and image preview align"
+    },
+    {
+      "Name": "v58.0.4 Canonical document branding renderer retained contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Default; source SHA-256 D54CA2096912; embedded PNG and stable JPEG derivative align"
+    },
+    {
+      "Name": "v58.0.4.1 Governed document brand identity retained contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v40; brand \u00273DPIceland Labs\u0027 is normalized, encoded and renderer-aligned"
+    },
+    {
+      "Name": "v58.0.5 Document branding migration and recovery retained contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v45; PNG limits/source/cache, brand validation, backup/restart and fallback/default pass."
+    },
+    {
+      "Name": "v58.0.6 Governed document branding closure release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v41, image/name renderers, migration/recovery and release identity align"
+    },
+    {
+      "Name": "v53.0.1 Governed Landed-cost Currency additive schema release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v37 fixture migrated to v45 with exact monetary values and explicit 1:1 legacy metadata."
+    },
+    {
+      "Name": "v53.0.2 Landed-cost Currency Settings default and Draft override release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Governed default; invoice-ISK / landed-ISK cross-rate direction; restart-stable uncalculated Draft override; legacy lock and explicit UI contract pass"
+    },
+    {
+      "Name": "v53.0.3 Cross-currency calculation and downstream snapshot release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Invoice allocations remain EUR; landed outputs convert to USD; report ISK factor, one-time stamp, Inventory provenance and non-destructive failure pass"
+    },
+    {
+      "Name": "v53.0.4.1 Landed-cost acceptance authorization and control surface gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Exact safe PO/Material/Inventory authorization matches only the approved triplet; invalid/duplicate IDs fail; required real controls are discoverable"
+    },
+    {
+      "Name": "v53.0.4.2 Disposable landed-cost lifecycle surface gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Six exact-ID lifecycle checkpoints and the hidden authorized status surface are present"
+    },
+    {
+      "Name": "v53.0.4.3 Migration, recovery and historical stability gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema-v38 landed-cost migration and exact authorized Excel-recovery mutation contracts are present"
+    },
+    {
+      "Name": "v53.0.4.4 Diagnostics and Help reconciliation gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Secret-safe landed-cost snapshot aggregates, migration/recovery boundaries and matching Help markers are present"
+    },
+    {
+      "Name": "v53.0.5 Post-v50 Help reconciliation gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "v51 runtime profiles, v52 OpenAI boundaries and v53 Inventory provenance have exact Help markers"
+    },
+    {
+      "Name": "v54.0.5 Materials multi-select and exact-scope candidate gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "v54 identity, OR/AND persistence Help and honest AI scope-limit markers are aligned"
+    },
+    {
+      "Name": "v54.0.6 Runtime acceptance and scalar-filter retirement gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Owner-accepted six-facet workflow is canonical and hidden scalar filter controls/matcher are absent"
+    },
+    {
+      "Name": "v57.0.5 Website calculator and branding retained contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Accepted default-No deletion and reviewed cleanup ownership remain intact"
+    },
+    {
+      "Name": "v49.0 Experimental Workflow Integrity release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Active-only comparison with explicit history review; duplicate reset, readiness, baseline ownership and persistence wiring are verified"
+    },
+    {
+      "Name": "v48.0.5 Canonical Usage Persistence release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v34; 0 immutable usage events; 0 reversals; 0 replacements; zero relationship/duplicate-reversal defects; UsageEvents is governed by Excel recovery"
+    },
+    {
+      "Name": "v48.0.6 Bounded Usage Workspace release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Exact MaterialID selector, same-Material optional Inventory selector, immutable ledger, append-only record/correction actions and stable automation identities are present; no Print Job/Test Session or public-output surface is added"
+    },
+    {
+      "Name": "v48.0.7 Internal Usage Analytics release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Private selected-Material projection distinguishes 3 immutable ledger rows from 1 effective event, nets correction to 80 g/3,300 seconds and exposes honest evidence coverage with stable AutomationIds"
+    },
+    {
+      "Name": "v44.5 Retired Original Excel Import Surface release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Unreachable original-Excel database import UI/service surface is absent; governed Excel disaster-recovery export, verification and guarded restore remain available"
+    },
+    {
+      "Name": "v44.5.1 Active SQLite preservation release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Canonical schema and supported migration shapes remain available; malformed canonical, newer and unreadable active databases are blocked unchanged with retained evidence copies."
+    },
+    {
+      "Name": "v44.5.2 Canonical SQLite UI boundaries release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Misleading cache UI, legacy-material sync/fallback and dead Excel-default reset are absent; MaterialsImport is retired after verified backup while canonical SQLite, storage-folder UI and lower-level compatibility storage remain available"
+    },
+    {
+      "Name": "v44.5.3 Canonical storage terminology release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Visible storage terminology identifies SQLite as canonical while supported JSON empty-database migration, governed Excel disaster recovery and explicit SQLite restore remain available"
+    },
+    {
+      "Name": "v44.5.4 Measurement help clarity release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Tensile, Impact and Stiffness each expose one concise instruction followed by their unchanged read-only calculation guidance"
+    },
+    {
+      "Name": "v44.5.5 Retired legacy write entry points release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Caller-free workbook/material/cache replacement entry points are absent while legacy-table readers, schema compatibility, governed Excel disaster recovery and explicit SQLite restore remain available"
+    },
+    {
+      "Name": "v44.5.6 Retired workbook metadata readers release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Original-workbook sheet metadata is absent from Material Detail, Tools and diagnostics while supported-schema inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
+    },
+    {
+      "Name": "v44.5.7 Legacy workbook schema retirement release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v34 contains no original-workbook tables; engineering metrics use canonical measurement rows while supported migration inspection, governed Excel disaster recovery and explicit SQLite restore remain available"
+    },
+    {
+      "Name": "v44.5.8 Retired transition UI residue release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Caller-free load/import-sync handlers and unused JSON save-state allocations are absent while supported empty-canonical JSON migration readers and governed recovery remain available"
+    },
+    {
+      "Name": "v44.5.9 Supported migration naming release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Internal names distinguish canonical SQLite projection, supported empty-target JSON migration and built-in defaults; whole-revolution/degree-only stiffness and close-time measurement persistence are covered"
+    },
+    {
+      "Name": "v43.3 Recovery Compatibility Center release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "3 local SQLite backups classified; older supported schemas require isolated dry-run, current schema ready, legacy/newer/corrupt blocked; verify-only and guarded restore UI available"
+    },
+    {
+      "Name": "v43.3.1 Backup and Recovery Center UI release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Manual SQLite backup, compatibility verify/restore, SQLite-backup restore, governed Excel backup/restore and one storage-folder action share the consolidated center"
+    },
+    {
+      "Name": "v43.4.0 Signed Update Readiness Foundation release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Signed fixture accepted; tampered payload, downgrade, path traversal, wrong production key and missing trust root blocked. Package inspection remains read-only."
+    },
+    {
+      "Name": "v43.4.1 Governed Signed Release Packaging release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Production ECDSA P-256 trust root fingerprint 87D407FEA230D484D8F436A4BA4958BF7F70336B968FFEC7F3966C15DFDFF1EA; wrong-key and unsigned packages blocked; apply remains disabled"
+    },
+    {
+      "Name": "v43.5.0 Transactional Updater Engine release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Isolated success committed; injected partial install and failed health rolled back; Prepared safely restarted; SnapshotReady, Installed, RollingBack and RollbackFailed restored; read-only history classified; traversal blocked; SQLite backup reference preserved. Isolated transaction-engine foundation remains intact."
+    },
+    {
+      "Name": "v43.5.1 Guarded Application Update release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Verified re-inspection/extraction, SQLite backup, external process wait, durable snapshot/install, version/schema health acknowledgement and rollback/relaunch contracts are wired behind default-No Apply"
+    },
+    {
+      "Name": "v43.6.0 Update and Deployment Diagnostics release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Read-only durable history, startup detection and default-No external recovery cover Prepared, SnapshotReady, Installed, RollingBack and RollbackFailed; evidence/backups retained; SQLite restore prohibited"
+    },
+    {
+      "Name": "v57.0.1 Public Demo Download deployment contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Exact one-ZIP allowlist, bytes/SHA-256, immutable versioned route and stable demo route passed; unrelated routes blocked. Guarded owner UI and install/remove Help are present; Production remains explicit and default-No."
+    },
+    {
+      "Name": "v57.0.2.1 Restored Public Demo profile classification contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Only the exact governed AppMeta marker enables the existing 12 website-publication N/A checks; every other check remains mandatory."
+    },
+    {
+      "Name": "v43.7.0 Installer and Portable Deployment release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Exact installer/portable allowlist, local bytes/SHA-256, versioned downloads and stable-route-last separation passed; website routes blocked. Clean-profile material seed and private FTPS identity defaults are empty; splash icon and header logo are distinct embedded WPF resources; per-user install/uninstall preserves external SQLite, backups, configuration and transaction evidence; publish remains explicit default-No."
+    },
+    {
+      "Name": "v43.8.0 Remote Signed Update Delivery release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Governed HTTPS feed, trusted manifest before download, bounded bytes/SHA-256, full package re-verification, delayed/manual discovery, default-No apply and isolated update publishing are wired to the accepted helper."
+    },
+    {
+      "Name": "v49.0.0 application release compatibility contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Signed updates support the governed schema-v29 public baseline through current schema v45."
+    },
+    {
+      "Name": "v50.2.1 data, cost and configuration Help reference contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "118 unique offline topics retain the accepted workflow and cover nine mapped data, cost and configuration surfaces."
+    },
+    {
+      "Name": "v50.2.2 testing and analysis Help reference contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "22 stable testing/analysis Help destinations, exact top-level mappings and representative scope/save/lifecycle markers are present."
+    },
+    {
+      "Name": "v50.2.3 output and creator-tool Help reference contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "34 substantive multi-paragraph Reports, Website, AI, YouTube and packaged Help destinations preserve control, write and safety boundaries."
+    },
+    {
+      "Name": "v50.2.4 contextual Help entry-point and coverage contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "26 unique top-level and 16 unique nested tab AutomationIds resolve to stable central Help destinations; current-view F1/menu, Tools validation Help and Website menu retirement contracts are present."
+    },
+    {
+      "Name": "v50.3 safety, recovery and troubleshooting Help contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "18 substantive safety/recovery Help destinations preserve read-only versus mutating, default-No, no-auto-SQLite-restore, application/Website publishing and secret-safe evidence boundaries."
+    },
+    {
+      "Name": "v50.4.1 data and configuration control/field Help contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Nine substantive control/field destinations cover Materials, Manufacturers, Purchase Orders, Inventory, Usage, Printers, Quotes, Base Materials and Settings with units, validation, save timing and historical boundaries."
+    },
+    {
+      "Name": "v50.4.2 measurement, experimental and analysis control/field Help contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Four substantive destinations cover native Measurements, Experimental Testing, interactive Material Detail and global Analysis controls/fields with units, read-only projections, persistence and scope."
+    },
+    {
+      "Name": "v50.4.3 output, creator and runtime control/field Help contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Five substantive destinations cover Reports, Website, AI, YouTube, menus and runtime windows with local/external, read-only/mutating, credential, confirmation and automation-only boundaries."
+    },
+    {
+      "Name": "v50.4.4 hierarchical Help navigation contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Central Help exposes a stable category/topic TreeView model with expandable and selected-node state."
+    },
+    {
+      "Name": "v44.1 Verification profiles and diagnostic honesty release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Zero-data dependencies map to Not applicable with exact reasons; unexpected readiness failures remain FAIL; full-data checks remain mandatory; successful SQLite restore records verified post-restore evidence; compiled seeds and deployment identity remain empty"
+    },
+    {
+      "Name": "v44.2 Daily-use UI state and MaterialID clarity release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Window and keyed grid layout remain machine-local; saved column order and visible canonical MaterialID selection restore fail-safe; Materials, Material Detail and Reports expose the same selected identity"
+    },
+    {
+      "Name": "v44.3 Backup and recovery evidence clarity release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": true,
+      "Detail": "Healthy schema-current zero-data backups are explicit restore-ready empty profiles; transaction, health acknowledgement, application rollback snapshot and SQLite backup evidence are separate read-only boundaries; guarded/default-No restore boundaries remain intact"
+    },
+    {
+      "Name": "v44.6.0 Recovery Center clarity release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Recovery Center shows one concise compatibility summary and selected-backup details; verbose update evidence remains available through diagnostics without weakening guarded restore"
+    },
+    {
+      "Name": "v44.7.8 Backup Filename Compatibility release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "New SQLite backups use readable collision-safe .bak names; legacy .sqlite discovery/restore, explicit recovery snapshots, updater evidence and no-automatic-SQLite-restore boundaries remain intact"
+    },
+    {
+      "Name": "v44.7.9 Public Measurement Date Provenance release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Material Engineering and Test Session reports publish allowlisted canonical ISO measured dates; missing dates remain Not recorded and internal edit timestamps stay excluded"
+    },
+    {
+      "Name": "v44.7.10 Canonical MaterialID Default Row Order release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Fast Materials, Tensile, Impact and Stiffness use natural numeric MaterialID default order; active sorts reapply after source changes, and close commits editors plus parent Materials before FK-child measurements"
+    },
+    {
+      "Name": "v44.7.11 Settings Manager Command Clarity release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Reload Saved Settings is default-No and SQLite-owned; built-in restore is General-only, and Reset Columns changes only both Settings layouts"
+    },
+    {
+      "Name": "v44.6.2 Canonical measurement date foundation release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Schema v31 stores nullable ISO measurement dates for native Tensile, Impact and Stiffness metadata plus Experimental runs; first-input assignment preserves existing dates and Excel disaster recovery includes both columns"
+    },
+    {
+      "Name": "v44.7.1 Category Rankings scope controls release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Category Rankings supports safe 5, 10, 50, 100 and All row scopes while preserving the existing score selectors, ordering and canonical visible MaterialID source"
+    },
+    {
+      "Name": "v44.7.2 Material row Validation help clarity release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Materials explains the five required row-identity fields and OK meaning while the established ValidationSummary rules remain unchanged"
+    },
+    {
+      "Name": "v44.7.3 Fast Workflow Grid - Tensile candidate release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Fast Tensile owns separate keyed layout state and canonical measurement apply/save integration"
+    },
+    {
+      "Name": "v44.7.4 Fast Workflow Grid - Impact candidate release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Fast Impact owns separate keyed layout state, bounded canonical measurement apply/save and non-negative input"
+    },
+    {
+      "Name": "v44.7.5 Fast Workflow Grid - Stiffness candidate release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Fast Stiffness owns separate keyed layout state and bounded canonical input/save integration"
+    },
+    {
+      "Name": "v44.7.6 Fast Workflow Grid - Settings candidate release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Fast Settings owns separate general/Base Material layouts and canonical apply contracts as the only activatable UI"
+    },
+    {
+      "Name": "v44.7.7 Legacy Grid Retirement UI-stage release gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Legacy/preview switches are absent or hidden while accepted Fast contracts and temporary adapters remain intact"
+    },
+    {
+      "Name": "v44.7.7 Measurement Fast-contract retirement stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Tensile, Impact and Stiffness Fast schemas and visible rows come from explicit contracts and canonical collections"
+    },
+    {
+      "Name": "v44.7.7 Materials Fast-contract retirement stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Materials Fast schema and visible rows come from an explicit contract and the canonical filtered collection"
+    },
+    {
+      "Name": "v45.1 canonical Manufacturer selection contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Nullable ManufacturerId links resolve exact catalog names; 0 unlinked rows are filterable; legacy text and delete guards remain"
+    },
+    {
+      "Name": "v44.7.7 Settings Fast-contract retirement stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "General Settings and Base Materials use explicit Fast schemas and canonical row collections"
+    },
+    {
+      "Name": "v45.2 Base Materials workspace contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Dedicated Base Materials tab owns Add, Duplicate, Delete, editable Fast catalog and independent layout reset"
+    },
+    {
+      "Name": "v55.0.2 default-No Base Material delete contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Named Yes/No warning defaults to No; every non-Yes result preserves state and deletion is bounded by BaseMaterialID"
+    },
+    {
+      "Name": "v55.0.5.1 shared safe-delete dialog contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Material and Base Material use one named default-No dialog with Escape and close mapped to safe cancellation"
+    },
+    {
+      "Name": "v59.0.6 default-No Materials column reset contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Reset Columns uses the shared named warning; No, Escape and close preserve layout and only Yes resets"
+    },
+    {
+      "Name": "v45.2.1 canonical Base Material identity contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Nullable BaseMaterialId links resolve canonical names; 0 legacy rows remain explicit and filterable"
+    },
+    {
+      "Name": "v65.0.0 catalog-driven new-Material Base Material choices contract",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Add Material refreshes its long-lived dropdown choices from every non-empty canonical Base Material"
+    },
+    {
+      "Name": "v44.7.7 Measurement fallback-code retirement stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Measurement legacy toggle controls, handlers and fallback state are absent"
+    },
+    {
+      "Name": "v44.7.7 Tensile legacy-grid deletion stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Tensile legacy DataGrid XAML and grid-specific edit/commit lifecycle are absent"
+    },
+    {
+      "Name": "v44.7.7 Impact legacy-grid deletion stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Impact legacy DataGrid XAML and grid-specific edit/commit lifecycle are absent"
+    },
+    {
+      "Name": "v44.7.7 Stiffness legacy-grid deletion stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Stiffness legacy DataGrid XAML, grid lifecycle and obsolete measurement warm-up are absent"
+    },
+    {
+      "Name": "v44.7.7 Settings legacy-grid deletion stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Settings legacy DataGrid XAML and grid-specific bind/edit/selection lifecycle are absent"
+    },
+    {
+      "Name": "v44.7.7 Materials canonical selection ownership stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Materials selection and CRUD resolve through canonical Fast-owned selection without a DataGrid parameter"
+    },
+    {
+      "Name": "v44.7.7 Materials canonical filter/report ownership stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Materials filters, visible reports and governed column boundaries use canonical Fast contracts"
+    },
+    {
+      "Name": "v44.7.7 Materials legacy edit/recovery lifecycle stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Materials edit, validation, recovery and close/save paths no longer require DataGrid commit lifecycle"
+    },
+    {
+      "Name": "v44.7.7 Materials residual caller retirement stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "Fast/canonical selection and refresh own Materials; no residual legacy grid caller remains"
+    },
+    {
+      "Name": "v44.7.7 Materials legacy XAML deletion stage gate",
+      "status": "Pass",
+      "applicability": "Mandatory",
+      "MandatoryEvidence": false,
+      "Detail": "The retired Materials DataGrid and its duplicate columns are absent; Fast Materials is the sole grid host"
+    },
+    {
+      "Name": "v44.7.12 Clean baseline retirement release gate",
+      "status": "Pass",
+      "applicability": "CanonicalDataDependent",
+      "MandatoryEvidence": false,
+      "Detail": "Caller-free PDF, workbook-write, legacy template and retired workflow residue is absent; canonical owners remain"
+    }
+  ],
+  "databasePath": "C:\\Users\\maddi\\AppData\\Local\\Temp\\3DPIceland-Automation\\20261011154457-00d6048d\\database\\filamentdb.sqlite",
+  "databaseHashOwner": "AutomationRunner before/after controlled runtime",
+  "generatedAtUtc": "2026-10-11T15:46:24.6583330\u002B00:00"
+}

@@ -1,3 +1,9 @@
+## Accepted measurement footer correction — 2026-10-11
+
+Existing disposable smoke owns the new blank/zero/orientation regression; no new scenario or authority.
+Full Data Verification 483/483 and smoke PASS; baseline/final byte and business-state hashes match.
+Evidence: Reports/MeasurementFooter/2026-10-11. Owner confirms counts correct.
+
 ## v70.0.4 Methodology coverage
 
 Full Verification now checks both portal and whitepaper method descriptions. Existing reports scenario covers downstream regression; it does not publish the website. Exact embedded portal is independently rendered at desktop/mobile widths, and native PDF pages visually reviewed. No new editor or scenario authorization. Evidence: Reports/V70_METHODOLOGY_EVIDENCE.md.

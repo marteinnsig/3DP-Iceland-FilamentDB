@@ -6,7 +6,7 @@
       "EntryPoint": "NativeCountStatusText",
       "HelpDestination": "start-here",
       "Status": "manual-only",
-      "Scope": "Loaded measurement footer totals; tooltip explains row, measured-material and session units. Owner runtime/visual acceptance 2026-10-02."
+      "Scope": "Loaded totals; Materials counts all rows; Tensile/Impact/Stiffness count material rows with numeric raw readings. Empty rows excluded, zero included. Other units unchanged. Owner runtime acceptance 2026-10-11; Full Verification 483/483 PASS."
     }
   ],
   "XamlSource": "App/FilamentDbApp/MainWindow.xaml",
