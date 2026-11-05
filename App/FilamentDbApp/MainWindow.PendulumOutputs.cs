@@ -1,6 +1,7 @@
 using FilamentDbApp.Models;
 using FilamentDbApp.Services.Reporting;
 using System.Data;
+using FilamentDbApp.Services.Website;
 using System.Text;
 
 namespace FilamentDbApp;
@@ -39,19 +40,14 @@ public partial class MainWindow
         [new MaterialDetailField("Separate saved measurement summaries", GetPendulumReportResults(materialId) is { Count: > 0 } groups
             ? PendulumImpactReportService.RenderText(groups) : "No saved Izod or Charpy results.")]);
 
-    private string BuildPendulumWebsiteSection(IReadOnlyList<DataRow> rows)
+    private IReadOnlyList<WebsiteChartMaterialInput> BuildPendulumWebsiteChartInputs(
+        IReadOnlyList<NativeMaterialRow> rows, IReadOnlyDictionary<string, FilamentDbApp.Services.Calculations.MaterialResults> summaries)
     {
         var graph = _database.LoadPendulumImpactGraph();
-        var content = new StringBuilder();
-        foreach (var material in GetNativeWebsitePipelineRows(rows))
-        {
-            var groups = PendulumImpactReportService.Build(material.MaterialID, graph.Runs, graph.Specimens);
-            if (groups.Count == 0) continue;
-            content.Append("<article><h3>").Append(Html(material.WebsiteDisplayName)).Append("</h3>")
-                .Append(PendulumImpactReportService.RenderHtml(groups)).Append("</article>");
-        }
-        return content.Length == 0 ? "" : "<section id=\"pendulumImpactResults\"><h2>Separate pendulum measurements</h2>" +
-            "<p>Saved measurement summaries for materials included in this website export. This static section does not follow the interactive table filters or rankings.</p>" +
-            content + "</section>";
+        return rows.Where(row => summaries.ContainsKey(row.MaterialID.Trim()))
+            .Select(row => new WebsiteChartMaterialInput(BuildWebsiteTemplateCommonFields(row), summaries[row.MaterialID.Trim()])
+            {
+                PendulumResults = PendulumImpactReportService.Build(row.MaterialID, graph.Runs, graph.Specimens)
+            }).ToArray();
     }
 }

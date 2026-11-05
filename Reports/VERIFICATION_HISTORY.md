@@ -1,3 +1,7 @@
+## v70.0.5 - Izod and Charpy Website Details
+
+Debug/Release builds and Help/docs/dependency gates PASS. Deterministic saved-evidence and browser tests cover same-method MaterialID ownership, dates/statistics, escaping, null/zero, filters, grouped membership and stale-pin dismissal. Direct disposable Verification Center export: Full Data Verification 483/483 PASS, exact business-state hash preserved; reports runner navigation failures remain documented separately. Owner approved the presentation and requested Release promotion on 2026-11-05; all 54 promoted files match candidate size/SHA-256. See Docs/V70_WEBSITE_DETAILS_ACCEPTANCE.md.
+
 ## v70.0.4 - Izod and Charpy Methodology
 
 Dedicated website and native-whitepaper method coverage: direct kJ/m² readings, confirmed specimen geometry,

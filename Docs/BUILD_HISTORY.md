@@ -1,3 +1,7 @@
+## v70.0.5 - Izod and Charpy Website Details
+
+Saved same-method measurement evidence now appears in each Izod/Charpy website bar tooltip, replacing the static bottom list. Existing Legacy Impact hover/click/keyboard interaction is reused; group membership and filters retain material identity. Help, deterministic verification and browser acceptance updated. Builds/static/browser checks and direct disposable Full Data Verification 483/483 pass; exact business state preserved. Reports runner navigation failures retained separately; owner accepted the reviewed presentation and requested normal Release promotion on 2026-11-05. All 54 exact candidate files verified in normal Release; prior-file backup retained. See Docs/V70_WEBSITE_DETAILS_ACCEPTANCE.md for retained evidence and exact checklist. No Production/FTPS publication or normal Release promotion.
+
 ## v70.0.4 - Izod and Charpy Methodology
 Owner acceptance 2026-09-29: approved the updated methodology and whitepaper and requested continuation.
 Exact v70.0.4 tested bytes promoted to App/FilamentDbApp/bin/Release/net9.0-windows without rebuilding.

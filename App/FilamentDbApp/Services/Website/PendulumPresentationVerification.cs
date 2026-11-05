@@ -64,7 +64,7 @@ public static class PendulumPresentationVerification
         return scopeAndMissing && independent.IzodScore == 100 && independent.CharpyScore is null &&
             independent.OverallScore is null && scores.BuildProfile(baseline).OverallScore is null &&
             metricProfile.IzodScore is null && metricProfile.CharpyScore is null &&
-            metricProfile.OverallScore is null && VerifyScoringContract() &&
+            metricProfile.OverallScore is null && VerifyScoringContract() && VerifyTooltipEvidenceContract() &&
             service.Verify(model, publication).Passed &&
             publication.Html.Contains(">Izod</text>", StringComparison.Ordinal) &&
             publication.Html.Contains(">Charpy</text>", StringComparison.Ordinal) &&
@@ -74,6 +74,30 @@ public static class PendulumPresentationVerification
             System.Text.RegularExpressions.Regex.Matches(publication.Html, "<circle class=\"radar-poly-selected\"").Count == 2 &&
             publication.Html.Contains("versioned method references", StringComparison.Ordinal) &&
             publication.MetadataJson.Contains("\"CharpyScore\": \"n/a\"", StringComparison.Ordinal);
+    }
+
+    private static bool VerifyTooltipEvidenceContract()
+    {
+        var runs = new[]
+        {
+            new PendulumImpactRunRecord { RunId = "i", MaterialID = "A", Method = "Izod", Date = "2026-11-05", InputMode = "DirectStrength", Notes = "PRIVATE-NOTES" },
+            new PendulumImpactRunRecord { RunId = "c", MaterialID = "A", Method = "Charpy", InputMode = "DirectStrength" },
+            new PendulumImpactRunRecord { RunId = "other", MaterialID = "B", Method = "Izod", InputMode = "DirectStrength" }
+        };
+        var specimens = new[] { "i", "c", "other" }.Select(id => new PendulumImpactSpecimenRecord
+            { RunId = id, StrengthKjM2Raw = id == "c" ? "80" : "40" }).ToArray();
+        var summary = new MaterialResults("A", null, null, null, DateTime.UnixEpoch);
+        var payload = new WebsiteChartGeneratorService().BuildPayload([
+            new WebsiteChartMaterialInput(new Dictionary<string, object?> { ["materialId"] = "A" }, summary)
+            { PendulumResults = PendulumImpactReportService.Build("A", runs, specimens) }]);
+        var izod = (string)payload.Izod.Single()["measurementEvidence"]!;
+        var charpy = (string)payload.Charpy.Single()["measurementEvidence"]!;
+        return izod.Contains("Izod Impact Strength · 2026-11-05", StringComparison.Ordinal) &&
+            izod.Contains("Mean 40 kJ/m²", StringComparison.Ordinal) &&
+            izod.Contains("Samples 1; Confidence 1", StringComparison.Ordinal) &&
+            izod.Contains("standard conformity unverified", StringComparison.Ordinal) &&
+            !izod.Contains("Charpy", StringComparison.Ordinal) && !izod.Contains("PRIVATE", StringComparison.Ordinal) &&
+            charpy.Contains("Mean 80 kJ/m²", StringComparison.Ordinal) && !charpy.Contains("Izod", StringComparison.Ordinal);
     }
 
     private static bool VerifyScoringContract()

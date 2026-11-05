@@ -2,13 +2,13 @@
 
 Current canonical release: **v59.0.11 — Public Base-material Printing Guidance**
 
-Last runtime-accepted baseline: **v70.0.4 — Izod and Charpy Methodology**
+Last runtime-accepted baseline: **v70.0.5 — Izod and Charpy Website Details**
 
-Current canonical application release: **v70.0.4 — Izod and Charpy Methodology**
+Current canonical application release: **v70.0.5 — Izod and Charpy Website Details**
 
-Current roadmap increment: **v70.0.4 — Izod and Charpy Methodology**
+Current roadmap increment: **v70.0.5 — Izod and Charpy Website Details (complete)**
 
-Current acceptance note: owner accepted website methodology and whitepaper content on 2026-09-29; exact tested v70.0.4 bytes promoted to normal Release.
+Current acceptance note: owner accepted the website tooltip presentation and requested Release promotion on 2026-11-05; all 54 exact v70.0.5 candidate files verified in normal Release.
 
 Footer correction accepted 2026-10-11: measured Tensile/Impact/Stiffness material counts; owner acceptance, Debug/Release, Help/docs and Full Verification 483/483 PASS. Evidence: Docs/MEASUREMENT_FOOTER_COUNTS_ACCEPTANCE.md.
 Next note: v70.0.0 replaces cohort-relative impact scoring with versioned references and explicit coverage.
@@ -64,6 +64,14 @@ This file is the canonical strategic roadmap. Completed build details belong in
 | v70 | Method-aware Impact Scoring | ★★★★★ | Complete — v70.0.1 application runtime accepted; numeric references deferred |
 
 ## Reconciliation of the older plans
+
+## Accepted — v70.0.5 Izod and Charpy website details
+
+- Scope: show saved same-method measurement evidence in each material's Izod/Charpy chart tooltip, using the existing Legacy Impact hover/click interaction; remove the static bottom list after replacement verification.
+- Preserve method identity, MaterialID ownership, dates, statistics, missing values and comparative-testing limitations. Group views must identify their constituent materials rather than imply pooled specimen statistics.
+- Update Help, website documentation and deterministic/disposable reports acceptance. No database edits, Production promotion or live publication.
+- Verified 2026-11-05: Debug/Release, Help/docs, dependency audit, deterministic/browser checks and direct disposable Full Data Verification 483/483 PASS; exact baseline/final business state retained. Reports runner navigation failures are retained separately, not counted as reports acceptance.
+- Complete: owner accepted the reviewed presentation and requested normal Release promotion on 2026-11-05. All 54 candidate files promoted with exact size/SHA-256 parity and prior-file backup. Evidence: `Docs/V70_WEBSITE_DETAILS_ACCEPTANCE.md`.
 
 ## Accepted — Materials autosave status and periodic retry
 

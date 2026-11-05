@@ -9,8 +9,8 @@ namespace FilamentDbApp;
 /// </summary>
 public static class BuildInfo
 {
-    public const string ReleaseCode = "DIRECT-IMPACT-METHODOLOGY";
-    public const string ReleaseTitle = "Izod and Charpy Methodology";
+    public const string ReleaseCode = "PENDULUM-WEBSITE-DETAILS";
+    public const string ReleaseTitle = "Izod and Charpy Website Details";
     public const int MinimumUpdateDatabaseSchema = 29;
     public const int CurrentDatabaseSchema = 45;
 

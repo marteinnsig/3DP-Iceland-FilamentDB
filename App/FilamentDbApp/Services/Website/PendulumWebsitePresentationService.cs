@@ -80,6 +80,7 @@ function canonicalScoreRows(){
  });
 }
 function renderPendulumCharts(){
+ if(typeof lockedTooltipElement!=='undefined'&&lockedTooltipElement?.closest('#izodChart,#charpyChart'))unlockTooltip();
  const anchor=$('impactChart')?.closest('section')||$('stiffnessChart')?.closest('section');
  if(!anchor)return;
  ['izod','charpy'].forEach(method=>{
@@ -89,12 +90,24 @@ function renderPendulumCharts(){
      section.innerHTML=`<h2>${title} impact strength</h2><div class="meta"><span id="${method}Count"></span><span>Direct instrument kJ/m²; scores use versioned method references. Unconfigured references and missing results remain N/A.</span></div><div class="scroll"><div id="${id}"></div></div>`;
      anchor.before(section);
    }
-   const rows=aggregateSingle(apply(DATA[method]||[])).filter(r=>r.value!=null&&isFinite(r.value)).sort((a,b)=>b.value-a.value);
+   const source=apply(DATA[method]||[]).filter(r=>r.value!=null&&isFinite(r.value));
+   const rows=aggregateSingle(source).sort((a,b)=>b.value-a.value);
    $(method+'Count').textContent=rows.length+' measured materials / groups';
-   drawHorizontalMetrics(id,rows,[{key:'value',unit:'kJ/m²',color:'var(--single)',tip:(r,v)=>`${esc(r.label)}<br>${title}: ${fmt(v)} kJ/m²`}]);
+   drawHorizontalMetrics(id,rows,[{key:'value',unit:'kJ/m²',color:'var(--single)',tip:(r,v)=>pendulumMeasurementTip(r,v,title,source)}]);
  });
 }
+function pendulumMeasurementTip(row,value,title,source){
+ const mode=$('chartMode')?.value||'samples';
+ const members=mode==='samples'?[row]:source.filter(r=>(r[mode]||'(blank)')+' average'===row.label);
+ const heading=`${esc(row.label)}<br>${title}: ${fmt(value)} kJ/m²`;
+ const details=members.map(r=>{
+   const evidence=r.measurementEvidence||'Saved measurement details unavailable. Comparative measurements; standard conformity unverified.';
+   return `${esc(r.label)}${r.materialId?' · '+esc(r.materialId):''}<br>${esc(evidence).replace(/\r?\n/g,'<br>')}`;
+ }).join('<br><br>');
+ return `<div class="pendulum-measurement-details">${heading}${mode==='samples'?'':'<br>Mean of material means; constituent results below are separate, not pooled specimen statistics.'}<br><br>${details}</div>`;
+}
 """;
+        html = html.Replace("</head>", "<style>.tooltip:has(.pendulum-measurement-details){max-height:70vh;overflow-y:auto;box-sizing:border-box}.tooltip.locked:has(.pendulum-measurement-details){pointer-events:auto}</style></head>", StringComparison.Ordinal);
         return html.Replace("function renderAll(){", Marker + "\n" + script + "\nfunction renderAll(){", StringComparison.Ordinal);
     }
 }

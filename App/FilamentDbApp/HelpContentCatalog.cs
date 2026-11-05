@@ -1999,6 +1999,11 @@ internal static class HelpContentCatalog
             Main Website DATA includes every active, non-archived MaterialID; public-report checkboxes control linked report artifacts.
             Website bar charts are horizontal, with material names beside the bars and values at their ends. Tensile and Impact
             keep separate orientation colors and horizontal SD whiskers. Hover or click a bar for its existing evidence details.
+            Izod and Charpy bars show each material's saved same-method dates, mean, SD, CV%, Samples, Confidence and
+            no-break/invalid/excluded counts with the comparative-testing limitation. These details replace the bottom list.
+            Tab to a bar and press Enter or Space to pin its details; Escape dismisses them. Click to pin and scroll longer
+            details. Group views show the mean of material means and identify constituent materials separately; their specimen
+            statistics are not pooled. Filters also apply to the material details.
             Experimental score bars retain best-result and baseline highlights. Line, scatter and radar charts keep their axes.
 
             Flexible Testing sits beside Pricing & Value. Its filters mirror Filament Database; the Filaments list selects individual materials.

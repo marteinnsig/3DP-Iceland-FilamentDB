@@ -4,9 +4,9 @@ An independent, data-driven platform for testing, comparing and publishing engin
 
 Private Windows deployment supports a per-user Setup EXE and a portable ZIP built from the same production-signed governed package used by the transactional updater. Installer/uninstall never owns SQLite data, backups, configured storage or update evidence. Authenticode signing is deferred while distribution remains private, so Windows may show an Unknown publisher warning.
 
-- **Current runtime-accepted release:** v70.0.4 — Izod and Charpy Methodology
+- **Current runtime-accepted release:** v70.0.5 — Izod and Charpy Website Details
 - **Live engineering database:** [iskort.is/3dp](https://iskort.is/3dp/)
-- **Current development focus:** v70.0.4 accepted: synchronized Izod/Charpy website methodology and Engineering Whitepaper.
+- **Current development focus:** v70.0.5 accepted: Izod/Charpy measurement details in per-material chart tooltips; normal Release updated.
 - **Windows downloads:** [Installer](https://www.iskort.is/3dp/downloads/3DPIceland-Setup-x64.exe)
   | [Portable ZIP](https://www.iskort.is/3dp/downloads/3DPIceland-Portable-x64.zip)
 

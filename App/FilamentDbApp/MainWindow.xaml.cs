@@ -8358,16 +8358,7 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
     {
         var candidateRows = GetNativeWebsitePipelineRows(rows);
         var summaries = BuildVerifiedMaterialSummaryMap(candidateRows);
-        var chartInputs = new List<WebsiteChartMaterialInput>();
-
-        foreach (var material in candidateRows)
-        {
-            var materialId = material.MaterialID?.Trim() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(materialId)) continue;
-            if (!summaries.TryGetValue(materialId, out var summary)) continue;
-
-            chartInputs.Add(new WebsiteChartMaterialInput(BuildWebsiteTemplateCommonFields(material), summary));
-        }
+        var chartInputs = BuildPendulumWebsiteChartInputs(candidateRows, summaries);
 
         return _websiteChartGeneratorService.BuildDataJson(chartInputs);
     }
@@ -8474,7 +8465,6 @@ Keep the title style similar to 3DP Iceland Labs: catchy first part, then materi
         portalBody.AppendLine("</nav>");
         portalBody.AppendLine("<section id=\"portalPageDatabase\" class=\"portal-page is-active\" data-portal-page=\"database\">");
         portalBody.AppendLine(databaseContent.Trim());
-        portalBody.AppendLine(BuildPendulumWebsiteSection(flexibleRows ?? Array.Empty<DataRow>()));
         portalBody.AppendLine("</section>");
         portalBody.AppendLine("<section id=\"portalPagePricing\" class=\"portal-page\" data-portal-page=\"pricing\" hidden>");
         portalBody.AppendLine("  <div class=\"portal-page-heading pricing-portal-heading\"><p class=\"portal-eyebrow\">Pricing intelligence</p><h1>Pricing &amp; Value</h1><p>Explore public MSRP, measured performance per dollar and comparable value rankings. Filters are synchronized with the Filament Database so both tabs always use the same visible material set.</p></div>");
@@ -21891,15 +21881,7 @@ private void AppendMaterialReportPreview(StringBuilder sb, IReadOnlyList<DataRow
 
             var candidates = GetNativeWebsiteExportCandidateRows();
             var summaries = BuildVerifiedMaterialSummaryMap(candidates);
-            var chartInputs = candidates
-                .Select(material => new
-                {
-                    Material = material,
-                    MaterialId = material.MaterialID?.Trim() ?? string.Empty
-                })
-                .Where(item => !string.IsNullOrWhiteSpace(item.MaterialId) && summaries.ContainsKey(item.MaterialId))
-                .Select(item => new WebsiteChartMaterialInput(BuildWebsiteTemplateCommonFields(item.Material), summaries[item.MaterialId]))
-                .ToList();
+            var chartInputs = BuildPendulumWebsiteChartInputs(candidates, summaries);
 
             var payload = _websiteChartGeneratorService.BuildPayload(chartInputs);
             var dataJson = _websiteChartGeneratorService.BuildDataJson(chartInputs);

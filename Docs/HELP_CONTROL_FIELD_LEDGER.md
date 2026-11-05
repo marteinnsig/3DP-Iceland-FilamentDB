@@ -389,3 +389,6 @@ Analytics radar scales uniformly to double size; horizontal/vertical scrolling s
 
 ## v70.0.4
 Existing Engineering Whitepaper Help documents Izod/Charpy coverage and website companion PDF regeneration. No control or AutomationId changes.
+
+## v70.0.5
+website.preview owns Izod/Charpy hover/click/keyboard evidence, pinned scrolling, same-method MaterialID ownership and grouped-result limits. Static bottom list retired; no new WPF control or editor. Owner accepted the reviewed preview presentation on 2026-11-05; normal Release promoted.

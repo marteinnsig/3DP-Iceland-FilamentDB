@@ -1,5 +1,7 @@
 ﻿using FilamentDbApp.Services.Calculations;
 using System.Text.Json;
+using FilamentDbApp.Services.Reporting;
+using FilamentDbApp.Models;
 using System.Text.Json.Serialization;
 
 namespace FilamentDbApp.Services.Website;
@@ -48,8 +50,8 @@ public sealed class WebsiteChartGeneratorService
             common["scoreCoverage"] = profile.CoverageSummary;
             common["isOverallComparable"] = profile.IsOverallComparable;
             common["scorePolicyVersion"] = profile.ScorePolicyVersion;
-            izodRows.Add(BuildPendulumRow(common, summary.Izod, profile.IzodScore));
-            charpyRows.Add(BuildPendulumRow(common, summary.Charpy, profile.CharpyScore));
+            izodRows.Add(BuildPendulumRow(common, summary.Izod, profile.IzodScore, material.PendulumResults, "Izod"));
+            charpyRows.Add(BuildPendulumRow(common, summary.Charpy, profile.CharpyScore, material.PendulumResults, "Charpy"));
 
             tensileRows.Add(new Dictionary<string, object?>(common)
             {
@@ -94,8 +96,9 @@ public sealed class WebsiteChartGeneratorService
     }
 
     private static Dictionary<string, object?> BuildPendulumRow(Dictionary<string, object?> common,
-        PendulumMethodResults? result, double? score) => new(common)
+        PendulumMethodResults? result, double? score, IReadOnlyList<PublicPendulumImpactGroup> groups, string method) => new(common)
     {
+        ["measurementEvidence"] = PendulumImpactReportService.RenderText(groups.Where(g => g.Method == method + " Impact Strength").ToArray()),
         ["value"] = result?.MeanKjM2,
         ["standardDeviation"] = result?.Statistics.SampleStdDev,
         ["coefficientOfVariation"] = result?.Statistics.CoefficientOfVariation,
@@ -130,7 +133,10 @@ public sealed class WebsiteChartGeneratorService
 
 public sealed record WebsiteChartMaterialInput(
     IReadOnlyDictionary<string, object?> CommonFields,
-    MaterialResults Summary);
+    MaterialResults Summary)
+{
+    public IReadOnlyList<PublicPendulumImpactGroup> PendulumResults { get; init; } = Array.Empty<PublicPendulumImpactGroup>();
+}
 
 public sealed record WebsiteChartPayload(
     [property: JsonPropertyName("tensile")] IReadOnlyList<Dictionary<string, object?>> Tensile,

@@ -1,3 +1,8 @@
+## v70.0.5 - Izod and Charpy Website Details
+
+Owner approved the tooltip presentation on 2026-11-05 and explicitly requested normal Release promotion. All 54 governed application files were copied unchanged from the retained v70.0.5 Release candidate; each size and SHA-256 matches its accepted manifest. Previous governed files are retained at `.private/v70-tooltips/pre-promotion-release`. DLL SHA-256: `90F26AE118CE82B2891A2FB11DBC3B8D4C6F0C6D73BFC2BFD4FC994B3C3F2CA8`. Owner database, WebView2 state, other existing Release contents and live website are preserved. No installer/update package or FTPS publication occurred.
+Debug/Release, deterministic/browser/Help/docs checks and direct disposable Full Data Verification 483/483 PASS. Exact business-state recovery verified. Existing reports-runner navigation failures retained separately, not counted as reports acceptance. Evidence: Docs/V70_WEBSITE_DETAILS_ACCEPTANCE.md.
+
 ## v70.0.4 - Izod and Charpy Methodology
 Owner acceptance 2026-09-29: approved the updated methodology and whitepaper and requested continuation.
 Exact v70.0.4 tested bytes promoted to App/FilamentDbApp/bin/Release/net9.0-windows without rebuilding.
